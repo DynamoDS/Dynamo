@@ -6,6 +6,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="300">
     
@@ -26,26 +27,30 @@
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
             
+            <viewModels:RunPeriodConverter x:Key="RunPeriodConverter"/>
+            
         </ResourceDictionary>
     </UserControl.Resources>
     
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <ComboBox ItemsSource="{Binding Source={StaticResource RunTypes}}"
+            <ComboBox Name="EnumComboBox"
+                      ItemsSource="{Binding Source={StaticResource RunTypes}}"
                       SelectedItem="{Binding RunType}"
                       Width ="100" 
                       VerticalContentAlignment="Center"
-                      HorizontalContentAlignment="Center"
+                      HorizontalContentAlignment="Right"
                       Style="{DynamicResource ResourceKey=SComboBox}" 
-                      Foreground="#bbbbbb" Padding="2" FontSize="14px">
+                      Foreground="#bbbbbb" 
+                      Padding="2" FontSize="14px">
             </ComboBox>
-            <TextBox Text="{Binding RunPeriod}"
+            <TextBox Name="RunPeriodTextBox" 
+                    Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, UpdateSourceTrigger=Explicit}"
                      VerticalContentAlignment="Center"
                      Visibility="{Binding RunPeriodInputVisibilty}"
                      Width="80" FontSize="14px"
-                     Style="{DynamicResource ResourceKey=SDarkTextBox}" Foreground="#bbbbbb"/>
-            <Label Content="ms" Foreground="#bbbbbb" Visibility="{Binding RunPeriodInputVisibilty}" 
-                   VerticalAlignment="Center" FontSize="14px"/>
+                     Style="{DynamicResource ResourceKey=SDarkTextBox}" Foreground="#bbbbbb" 
+                     KeyDown="UIElement_OnKeyDown"/>
         </StackPanel>
         
     </Grid>
