@@ -74,7 +74,8 @@ namespace Dynamo.ViewModels
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
             CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
-            SetPeriodicTimerCommand = new DelegateCommand(SetPeriodicTimer, CanSetPeriodicTimer);
+            StartPeriodicTimerCommand = new DelegateCommand(StartPeriodicTimer, CanStartPeriodicTimer);
+            StopPeriodicTimerCommand = new DelegateCommand(StopPeriodicTimer, CanStopPeriodicTimer);
         }
 
         public DelegateCommand OpenCommand { get; set; }
@@ -148,6 +149,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
         public DelegateCommand CheckForLatestRenderCommand { get; set; }
         public DelegateCommand DumpLibraryToXmlCommand { get; set; }
-        public DelegateCommand SetPeriodicTimerCommand { get; set; }
+        public DelegateCommand StartPeriodicTimerCommand { get; set; }
+        public DelegateCommand StopPeriodicTimerCommand { get; set; }
     }
 }
