@@ -1267,19 +1267,12 @@ namespace ProtoCore.AST.AssociativeAST
         protected List<string> returnKeys;
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> 1959e1d85998ae033bdda92609fef4cdd7b9750c
         /// <summary>
         /// Gets/Sets description for the method.
         /// </summary>
         public string Description { get; set; }
-<<<<<<< HEAD
-=======
-        
->>>>>>> 1959e1d85998ae033bdda92609fef4cdd7b9750c
+
         public MethodAttributes(bool hiddenInLibrary = false, string msg = "")
         {
             HiddenInLibrary = hiddenInLibrary;

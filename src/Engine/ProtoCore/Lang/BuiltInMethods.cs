@@ -169,12 +169,9 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kCount,
-<<<<<<< HEAD
                     MethodAttributes = new MethodAttributes(){Description  = Resources.ReturnsNumberOfItems}
                    
-=======
-                    MethodAttributes = new MethodAttributes(){Description = "Returns number of items in the specified list."}
->>>>>>> 1959e1d85998ae033bdda92609fef4cdd7b9750c
+
                 },
 
                 new BuiltInMethod
