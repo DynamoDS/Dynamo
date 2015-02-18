@@ -4,6 +4,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
+    [SupressImportIntoVM]
     public class Types
     {
         [IsVisibleInDynamoLibrary(false)]
