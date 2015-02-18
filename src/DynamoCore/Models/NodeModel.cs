@@ -1142,7 +1142,7 @@ namespace Dynamo.Models
                             p.UsingDefaultValue = true;
                             p.DefaultValueEnabled = true;
                         }
-
+                        p.ToolTipContent = data.ToolTipString;
                         return p;
                     }
 
