@@ -5444,6 +5444,33 @@ a = p.UpdateCount;
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("y", 1);
         }
+
+        [Test]
+        public void TestAssociativeupdateWithinFunction01()
+        {
+            // Test that there are no warnings because the unbound variable is resolved downstream
+            string code =
+            @"
+def f()
+{
+	a = 1;
+	b = a;
+	a = 10;
+	return = b;
+}
+x = f();
+            ";
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, code));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 10);
+        }
     }
 
 }
