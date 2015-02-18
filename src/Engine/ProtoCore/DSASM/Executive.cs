@@ -6928,22 +6928,7 @@ namespace ProtoCore.DSASM
             {
                 // Go to the next pc
                 pc++;
-
-                // Given the next pc, get the next graphnode to execute and mark it clean
-                if (runtimeCore.Options.IsDeltaExecution)
-                {
-                    // On delta execution, it is possible that the next graphnode is clean
-                    // Retrieve the next dirty graphnode given the pc
-                    // Associative update is handled when ApplyUpdate = true
-                    Properties.executingGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(pc, ci, fi);
-                }
-                else
-                {
-                    // On normal execution, just retrieve the graphnode associated with pc
-                    // Associative update is handled in jdep
-                    Properties.executingGraphNode = istream.dependencyGraph.GetGraphNode(pc, ci, fi);
-                }
-
+                Properties.executingGraphNode = GetNextGraphNodeToExecute(pc, ci, fi);
                 if (Properties.executingGraphNode != null)
                 {
                     Properties.executingGraphNode.isDirty = false;
@@ -6952,6 +6937,45 @@ namespace ProtoCore.DSASM
             }
             GC();
             return;
+        }
+
+        /// <summary>
+        /// Get the next graphnode to execute given the current next pc and scope
+        /// </summary>
+        /// <param name="pc"></param>
+        /// <param name="ci"></param>
+        /// <param name="fi"></param>
+        private AssociativeGraph.GraphNode GetNextGraphNodeToExecute(int nextPC, int ci, int fi)
+        {
+            AssociativeGraph.GraphNode nextGraphNode = null;
+
+            // Given the next pc, get the next graphnode to execute and mark it clean
+            if (runtimeCore.Options.IsDeltaExecution)
+            {
+                if (IsGlobalScope())
+                {
+                    // At the global scope, no associative update occurs. Dirty nodes are accumulated and only executed on ApplyUpdate
+                    // This behavior conforms to the Transaction Update design
+                    // https://docs.google.com/a/adsk-oss.com/document/d/1v-eV16hzeBINKKY-F8sa6b0s_Q4Fafih1uOus8hYyD8
+
+                    // On delta execution, it is possible that the next graphnode is clean
+                    // Retrieve the next dirty graphnode given the pc
+                    // Associative update is handled when ApplyUpdate = true
+                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(nextPC, ci, fi);
+                }
+                else
+                {
+                    // Allow immediate update if we are in a local scope.
+                    nextGraphNode = istream.dependencyGraph.GetFirstDirtyGraphNode(Constants.kInvalidIndex, ci, fi);
+                }
+            }
+            else
+            {
+                // On normal execution, just retrieve the graphnode associated with pc
+                // Associative update is handled in jdep
+                nextGraphNode = istream.dependencyGraph.GetGraphNode(nextPC, ci, fi);
+            }
+            return nextGraphNode;
         }
 
         private void JDEP_Handler(Instruction instruction)
