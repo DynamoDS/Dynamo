@@ -365,6 +365,12 @@ namespace ProtoCore.DSASM
                 fi = rmem.CurrentStackFrame.FunctionScope;
             }
 
+            //  Entering a nested block requires all the nodes of that block to be executed
+            if (executingBlock > 0)
+            {
+                istream.dependencyGraph.MarkGraphNodesDirty(executingBlock, ci, fi);
+            }
+
             if (fepRun)
             {
                 UpdateMethodDependencyGraph(pc, fi, ci);

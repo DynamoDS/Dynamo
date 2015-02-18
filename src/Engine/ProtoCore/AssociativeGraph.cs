@@ -69,11 +69,14 @@ namespace ProtoCore.AssociativeEngine
             int dirtyNodes = 0;
             var graph = exe.instrStreamList[0].dependencyGraph;
             var graphNodes = graph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
-            foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
+            if (graphNodes != null)
             {
-                if (graphNode.isDirty)
+                foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
-                    ++dirtyNodes;
+                    if (graphNode.isDirty)
+                    {
+                        ++dirtyNodes;
+                    }
                 }
             }
             return dirtyNodes;
@@ -1259,6 +1262,28 @@ namespace ProtoCore.AssociativeGraph
         }
 
         /// <summary>
+        /// Mark graphnodes in scope as dirty
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        public void MarkGraphNodesDirty(int block, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.languageBlockId == block)
+                    {
+                        gnode.isDirty = true;
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
         /// Gets the graphnode of the given pc and scope
         /// </summary>
         /// <param name="pc"></param>
@@ -1296,19 +1321,15 @@ namespace ProtoCore.AssociativeGraph
             {
                 foreach (GraphNode gnode in gnodeList)
                 {
-                    if (gnode.isActive && gnode.isDirty)
+                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
                     {
-                        bool isFirstDirtyNode = pc == Constants.kInvalidIndex;
-                        bool isFirstDirtyNodeAfterPC = pc != Constants.kInvalidIndex && gnode.updateBlock.startpc >= pc;
-                        if (isFirstDirtyNode || isFirstDirtyNodeAfterPC)
-                        {
-                            return gnode;
-                        }
+                        return gnode;
                     }
                 }
             }
             return null;
         }
+
 
         private ulong GetGraphNodeKey(int classIndex, int procIndex)
         {
