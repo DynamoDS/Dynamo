@@ -31,7 +31,13 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="AnalysisImages.resx" />
+    <EmbeddedResource Include="DSRevitNodesUIImages.resx">
+      <LastGenOutput>DSRevitNodesUIImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="DynamoUnitsImages.resx" />
+    <EmbeddedResource Include="RevitNodesImages.resx">
+      <LastGenOutput>Revit.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UnitsUIImages.resx" />
     <EmbeddedResource Include="DynamoCoreImages.resx" />
     <EmbeddedResource Include="DynamoWatch3DImages.resx" />
@@ -41,6 +47,9 @@
     <EmbeddedResource Include="DSOfficeImages.resx" />
     <EmbeddedResource Include="ProtoGeometryImages.resx" />
     <EmbeddedResource Include="TessellationImages.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
@@ -69,11 +78,15 @@
     <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" />
     <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)AnalysisImages.resx" OutputResources="$(ProjectDir)AnalysisImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL TargetType="library" EmbedResources="$(ProjectDir)AnalysisImages.resources" OutputAssembly="$(OutDir)Analysis.customization.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)RevitNodesImages.resx" OutputResources="$(ProjectDir)RevitNodesImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)RevitNodesImages.resources" OutputAssembly="$(OutDir)RevitNodes.customization.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DSRevitNodesUIImages.resx" OutputResources="$(ProjectDir)DSRevitNodesUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)DSRevitNodesUIImages.resources" OutputAssembly="$(OutDir)DSRevitNodesUI.customization.dll" />
   </Target>
   <Target Name="AfterBuild">
     <ItemGroup>
       <DeleteFiles Include="$(TargetDir)$(ProjectName).*" />
-    </ItemGroup>    
-	<Delete Files="@(DeleteFiles)" />
+    </ItemGroup>
+    <Delete Files="@(DeleteFiles)" />
   </Target>
 </Project>
