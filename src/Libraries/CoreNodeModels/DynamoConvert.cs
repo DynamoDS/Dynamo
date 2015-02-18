@@ -11,7 +11,7 @@ namespace DSCoreNodesUI
 {
     [NodeCategory(BuiltinNodeCategories.CORE)]
     [NodeName("Convert")]
-    [NodeDescription("Convert between units of measure.")]
+    [NodeDescription("ConversionNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class DynamoConvert : NodeModel
     {
@@ -64,7 +64,7 @@ namespace DSCoreNodesUI
             node = AstFactory.BuildFunctionCall(
                         new Func<double, double, double, double>(Conversions.ConvertUnitTypes),
                         new List<AssociativeNode> {inputAstNodes[0], conversionFromNode, conversionToNode});
-            
+          
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
 

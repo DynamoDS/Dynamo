@@ -510,4 +510,7 @@
     <value>print;output;disply;panel;inspect;debug</value>
     <comment>Search Tags for WatchNode</comment>
   </data>
+  <data name="ConversionNodeDescription" xml:space="preserve">
+    <value>Convert between units of measure.</value>
+  </data>
 </root>

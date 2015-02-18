@@ -3,11 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"                  
+             xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
+             xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              mc:Ignorable="d" 
              d:DesignHeight="30" Width="247.2">
-   
-    <Grid Height="26" Width="Auto" >        
+
+    <Grid Height="{x:Static ui2:Configurations.PortHeightInPixels}"  Width="Auto" >        
         <StackPanel Orientation="Horizontal">           
             <ComboBox Name="SelectConversionFrom"                
                 ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"

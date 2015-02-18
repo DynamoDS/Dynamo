@@ -16,8 +16,7 @@ namespace Dynamo.Wpf.NodeViewCustomizations
         private DynamoConverterControl converterControl;
         private NodeViewModel nodeViewModel;
         private DynamoConvert convertModel;
-        private bool IsExecuted { get; set; }
-
+      
         public void CustomizeView(DynamoConvert model, NodeView nodeView)
         {
             nodeModel = nodeView.ViewModel.NodeModel;
@@ -56,28 +55,12 @@ namespace Dynamo.Wpf.NodeViewCustomizations
 
         private void OnSelectConversionToChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (!IsExecuted)
-            {
-                nodeModel.OnNodeModified(true);
-                IsExecuted = true;
-            }
-            else
-            {
-                IsExecuted = false;
-            }
+            nodeModel.OnNodeModified(true);
         }
 
         void OnSelectConversionFromChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (!IsExecuted)
-            {
-                nodeModel.OnNodeModified(true);
-                IsExecuted = true;
-            }
-            else
-            {
-                IsExecuted = true;
-            }
+            nodeModel.OnNodeModified(true);
         }
 
         public void Dispose()
