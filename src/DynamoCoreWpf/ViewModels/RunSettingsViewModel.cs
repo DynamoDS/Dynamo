@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
 
 using Dynamo.Core;
 using Dynamo.Models;
@@ -18,6 +21,8 @@ namespace Dynamo.Wpf.ViewModels
             set
             {
                 Model.RunType = value;
+                RaisePropertyChanged("RunType");
+                RaisePropertyChanged("RunPeriodInputVisibilty");
             }
         }
 
@@ -27,6 +32,7 @@ namespace Dynamo.Wpf.ViewModels
             set
             {
                 Model.RunPeriod = value; 
+                RaisePropertyChanged("RunPeriod");
             }
         }
 
@@ -50,19 +56,20 @@ namespace Dynamo.Wpf.ViewModels
         public RunSettingsViewModel(RunSettings settings)
         {
             Model = settings;
-            Model.PropertyChanged += settings_PropertyChanged;
+        }
+    }
+
+    public class RunPeriodConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return string.Format("{0}{1}", value, "ms");
         }
 
-        void settings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch (e.PropertyName)
-            {
-                case "RunType":
-                    RaisePropertyChanged("RunType");
-                    RaisePropertyChanged("RunPeriod");
-                    RaisePropertyChanged("RunPeriodInputVisibilty");
-                    break;
-            }
+            int ms;
+            return !Int32.TryParse(value.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out ms) ? 100 : Math.Abs(ms);
         }
     }
 }
