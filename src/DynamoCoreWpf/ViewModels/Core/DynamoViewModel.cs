@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 
 using System.IO;
@@ -140,7 +141,8 @@ namespace Dynamo.ViewModels
         {
             WorkspaceActualWidth = width;
             WorkspaceActualHeight = height;
-            RaisePropertyChanged("WorkspaceActualSize");
+            RaisePropertyChanged("WorkspaceActualHeight");
+            RaisePropertyChanged("WorkspaceActualWidth");
         }
 
         /// <summary>
@@ -273,6 +275,17 @@ namespace Dynamo.ViewModels
             get { return model.Logger.LogText; }
         }
 
+        public string PeriodicEvaluationText
+        {
+            get
+            {
+                if (model.EvaluationPeriod == 0)
+                    return "Set Timer";
+
+                return string.Format("Timer: {0}ms", model.EvaluationPeriod);
+            }
+        }
+
         public int ConsoleHeight
         {
             get
@@ -311,6 +324,18 @@ namespace Dynamo.ViewModels
                 model.IsShowingConnectors = value;
 
                 RaisePropertyChanged("IsShowingConnectors");
+            }
+        }
+
+        public bool HasNodeThatPeriodicallyUpdates
+        {
+            get
+            {
+                var workspace = model.CurrentWorkspace as HomeWorkspaceModel;
+                if (workspace == null)
+                    return false;
+
+                return workspace.HasNodeThatPeriodicallyUpdates;
             }
         }
 
@@ -700,6 +725,23 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void SetPeriodicTimer(object parameter)
+        {
+            if (model == null)
+                return;
+
+            if (model.EvaluationPeriod != 0)
+            {
+                model.StopPeriodicEvaluation();
+            }
+            else
+            {
+                model.StartPeriodicEvaluation(300);
+            }
+
+            RaisePropertyChanged("PeriodicEvaluationText");
+        }
+        
         public void ReturnFocusToSearch()
         {
             this.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
@@ -785,7 +827,7 @@ namespace Dynamo.ViewModels
                 shutdownHost: true, allowCancellation: true));
         }
 
-        void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void CollectInfoManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -802,7 +844,7 @@ namespace Dynamo.ViewModels
             DeleteCommand.RaiseCanExecuteChanged();
         }
 
-        void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void Controller_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -812,7 +854,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
             switch (e.PropertyName)
@@ -825,7 +867,7 @@ namespace Dynamo.ViewModels
 
         }
 
-        void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void _model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -841,9 +883,25 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     RaisePropertyChanged("RunEnabled");
+                    RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
                     break;
                 case "RunEnabled":
                     RaisePropertyChanged("RunEnabled");
+                    break;
+            }
+        }
+
+        // TODO(Sriram): This method is currently not used, but it should really 
+        // be. It watches property change notifications coming from the current 
+        // WorkspaceModel, and then enables/disables 'set timer' button on the UI.
+        // 
+        void CurrentWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "RunEnabled":
+                case "HasNodeThatPeriodicallyUpdates":
+                    RaisePropertyChanged(e.PropertyName);
                     break;
             }
         }

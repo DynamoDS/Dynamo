@@ -1,4 +1,13 @@
-using DSCoreNodesUI;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
+﻿using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
@@ -17,15 +26,6 @@ using DynamoUnits;
 using DynamoUtilities;
 using Greg; // Dynamo package manager
 using ProtoCore;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.AST;
@@ -98,8 +98,15 @@ namespace Dynamo.Models
         }
 
         #endregion
-        
+
+        #region internal members
+
+        private PulseMaker pulseMaker;
+
+        #endregion
+
         #region static properties
+
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
@@ -114,6 +121,7 @@ namespace Dynamo.Models
                 InstrumentationLogger.IsTestMode = value;
             }
         }
+
         private static bool isTestMode;
 
         /// <summary>
@@ -324,6 +332,10 @@ namespace Dynamo.Models
 
             ShutdownRequested = true;
 
+            // If there exists a PulseMaker, disable it first.
+            if (pulseMaker != null)
+                pulseMaker.Stop();
+
             OnShutdownStarted(); // Notify possible event handlers.
 
             PreShutdownCore(shutdownHost);
@@ -335,6 +347,11 @@ namespace Dynamo.Models
 
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
+        }
+
+        public int EvaluationPeriod
+        {
+            get { return pulseMaker == null ? 0 : pulseMaker.TimerPeriod; }
         }
 
         protected virtual void ShutDownCore(bool shutdownHost)
@@ -607,6 +624,37 @@ namespace Dynamo.Models
                 };
             };
             CustomNodeManager.DefinitionUpdated += RegisterCustomNodeDefinitionWithEngine;
+        }
+
+        /// <summary>
+        /// Start periodic evaluation by the given amount of time. If there
+        /// is an on-going periodic evaluation, an exception will be thrown.
+        /// </summary>
+        /// <param name="milliseconds">The desired amount of time between two 
+        /// evaluations in milliseconds.</param>
+        /// 
+        public void StartPeriodicEvaluation(int milliseconds)
+        {
+            if (pulseMaker == null)
+                pulseMaker = new PulseMaker(this);
+
+            if (pulseMaker.TimerPeriod != 0)
+            {
+                throw new InvalidOperationException(
+                    "Periodic evaluation cannot be started without stopping");
+            }
+
+            pulseMaker.Start(milliseconds);
+        }
+
+        /// <summary>
+        /// Stop the on-going periodic evaluation, if there is any.
+        /// </summary>
+        /// 
+        public void StopPeriodicEvaluation()
+        {
+            if (pulseMaker != null && (pulseMaker.TimerPeriod != 0))
+                pulseMaker.Stop();
         }
 
         private void InitializeIncludedNodes()

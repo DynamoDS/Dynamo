@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using Dynamo.Annotations;
 using Dynamo.Core;
@@ -103,6 +104,35 @@ namespace Dynamo.Models
         {
             if (CleaningUp != null)
                 CleaningUp(this);
+        }
+
+        private void OnNodeCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (NodeModel newItem in e.NewItems)
+                        newItem.PropertyChanged += OnNodePropertyChanged;
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (NodeModel oldItem in e.OldItems)
+                        oldItem.PropertyChanged -= OnNodePropertyChanged;
+                    break;
+            }
+
+            OnPropertyChanged("HasNodeThatPeriodicallyUpdates");
+        }
+
+        private void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "EnablePeriodicUpdate":
+                    OnPropertyChanged("HasNodeThatPeriodicallyUpdates");
+                    break;
+            }
         }
 
         public event NodeHandler RequestCancelActiveStateForNode;

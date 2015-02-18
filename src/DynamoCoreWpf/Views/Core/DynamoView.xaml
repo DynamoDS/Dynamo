@@ -1589,6 +1589,11 @@
                            VerticalAlignment="Stretch">
 
                     <StackPanel Orientation="Horizontal">
+                        <StackPanel.Visibility>
+                            <Binding Path="HasNodeThatPeriodicallyUpdates"
+                                     Mode="OneWay"
+                                     Converter="{StaticResource InverseBoolToVisibilityCollapsedConverter}" />
+                        </StackPanel.Visibility>
                         <Button Name="RunButton"
                                 Width="100"
                                 Content="{x:Static p:Resources.DynamoViewRunButton}"
@@ -1622,6 +1627,21 @@
                                   VerticalAlignment="Center"
                                   VerticalContentAlignment="Center" />
                     </StackPanel>
+
+                    <Button Name="periodicEvaluationButton"
+                            Width="auto"
+                            Content="{Binding PeriodicEvaluationText}"
+                            Focusable="False"
+                            Style="{DynamicResource ResourceKey=STextButton}"
+                            ToolTip="Set/reset periodic evaluation timer"
+                            Command="{Binding SetPeriodicTimerCommand}"
+                            Margin="5">
+                        <Button.Visibility>
+                            <Binding Path="HasNodeThatPeriodicallyUpdates"
+                                     Mode="OneWay"
+                                     Converter="{StaticResource BooleanToVisibilityConverter}" />
+                        </Button.Visibility>
+                    </Button>
 
                     <!--CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
