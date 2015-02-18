@@ -17,6 +17,7 @@
         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -1590,10 +1591,11 @@
                            VerticalAlignment="Stretch">
 
                     <StackPanel Orientation="Horizontal">
+                        
                         <Button Name="RunButton"
                                 Width="100"
                                 Content="{x:Static p:Resources.DynamoViewRunButton}"
-                                Margin="5"
+                                Margin="5,5,2.5,5"
                                 Style="{DynamicResource ResourceKey=STextButton}"
                                 Click="RunButton_OnClick"
                                 Command="{Binding RunExpressionCommand}"
@@ -1602,18 +1604,19 @@
                                 IsEnabled="{Binding Path=RunEnabled}"
                                 Focusable="False" />
 
-                        <Button Name="cancelButton"
+                        <controls1:RunSettingsControl Margin="2.5,5,5,5" 
+                                                     VerticalAlignment="Stretch"
+                                                     DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}"/>
+
+                        <!--<Button Name="cancelButton"
                                 Width="100"
                                 Content="{x:Static p:Resources.CancelButton}"
                                 Focusable="False"
                                 Style="{DynamicResource ResourceKey=STextButton}"
                                 ToolTip="{x:Static p:Resources.DynamoViewCancelButtonTooltip}"
                                 Command="{Binding CancelRunCommand}"
-                                Margin="5" />
+                                Margin="5" />-->
 
-                        <controls1:RunSettingsControl Margin="5" 
-                                                     VerticalAlignment="Stretch"
-                                                     DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}"/>
                         
                     </StackPanel>
 
