@@ -1303,6 +1303,11 @@ namespace Dynamo.Models
             return foundModels;
         }
 
+        public IEnumerable<NodeModel> GetFunctionInstances(Guid functionId)
+        {
+            return nodes.OfType<Function>()
+                        .Where(n => n.Definition.FunctionId == functionId);
+        }
         #endregion
 
         #region Node To Code Reconnection

@@ -1064,5 +1064,26 @@ namespace Dynamo.Core
             }
             return newWorkspace;
         }
+
+        public IEnumerable<Guid> GetAllDependenciesGuids(CustomNodeDefinition def)
+        {
+            var idSet = new HashSet<Guid>();
+            idSet.Add(def.FunctionId);
+
+            while (true)
+            {
+                bool isUpdated = false;
+                foreach (var d in this.LoadedDefinitions)
+                {
+                    if (d.Dependencies.Any(x => idSet.Contains(x.FunctionId)))
+                        isUpdated = isUpdated || idSet.Add(d.FunctionId);
+                }
+
+                if (!isUpdated)
+                    break;
+            }
+
+            return idSet;
+        }
     }
 }
