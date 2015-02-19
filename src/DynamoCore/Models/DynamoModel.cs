@@ -285,17 +285,6 @@ namespace Dynamo.Models
             }
         }
 
-        public bool RunEnabled
-        {
-            get 
-            { 
-                if (CurrentWorkspace == null)
-                    return false;
-                
-                return this.CurrentWorkspace.RunEnabled;
-            }
-        }
-
         /// <summary>
         ///     The private collection of visible workspaces in Dynamo
         /// </summary>

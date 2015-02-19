@@ -40,9 +40,8 @@ namespace Dynamo.ViewModels
         private readonly DynamoModel model;
 
         private System.Windows.Point transformOrigin;
-        private bool runEnabled = true;
-        protected bool canRunDynamically = true;
-        protected bool debug = false;
+        //private bool runEnabled = true;
+        
         private bool canNavigateBackground = false;
         private bool showStartPage = false;
         private bool watchEscapeIsDown = false;
@@ -78,32 +77,6 @@ namespace Dynamo.ViewModels
             {
                 transformOrigin = value;
                 RaisePropertyChanged("TransformOrigin");
-            }
-        }
-
-        public bool RunEnabled
-        {
-            get
-            {
-                var homeSpace = model.Workspaces.FirstOrDefault(ws => ws is HomeWorkspaceModel) as HomeWorkspaceModel;
-                return model.RunEnabled &&
-                    homeSpace.RunSettings.RunType != RunType.Automatic && 
-                    homeSpace.RunSettings.RunType != RunType.Periodic;
-            }
-        }
-
-        public virtual bool CanRunDynamically
-        {
-            get
-            {
-                //we don't want to be able to run
-                //dynamically if we're in debug mode
-                return !debug;
-            }
-            set
-            {
-                canRunDynamically = value;
-                RaisePropertyChanged("CanRunDynamically");
             }
         }
 
@@ -498,9 +471,9 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
-            var homespace = new WorkspaceViewModel(model.CurrentWorkspace, this);
-            workspaces.Add(homespace);
-            homespace.PropertyChanged += workSpace_propertyChanged;
+            var homespaceViewModel = new WorkspaceViewModel(model.CurrentWorkspace, this);
+            workspaces.Add(homespaceViewModel);
+            homespaceViewModel.PropertyChanged += workSpace_propertyChanged;
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -692,32 +665,9 @@ namespace Dynamo.ViewModels
             //VisualizationManager.ClearRenderables();
         }
 
-        public void CancelRunCmd(object parameter)
-        {
-            var command = new DynamoModel.RunCancelCommand(false, true);
-            this.ExecuteCommand(command);
-        }
-
-        internal bool CanCancelRunCmd(object parameter)
-        {
-            return true;
-        }
-
         public void ReturnFocusToSearch()
         {
             this.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
-        }
-
-        internal void RunExprCmd(object parameters)
-        {
-            bool displayErrors = Convert.ToBoolean(parameters);
-            var command = new DynamoModel.RunCancelCommand(displayErrors, false);
-            this.ExecuteCommand(command);
-        }
-
-        internal bool CanRunExprCmd(object parameters)
-        {
-            return true;
         }
 
         internal void ForceRunExprCmd(object parameters)
@@ -805,16 +755,6 @@ namespace Dynamo.ViewModels
             DeleteCommand.RaiseCanExecuteChanged();
         }
 
-        void Controller_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "IsUILocked":
-                    RaisePropertyChanged("IsUILocked");
-                    break;
-            }
-        }
-
         void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
@@ -843,11 +783,7 @@ namespace Dynamo.ViewModels
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
-                    RaisePropertyChanged("RunEnabled");
-                    RaisePropertyChanged("HasNodeThatPeriodicallyUpdates");
-                    break;
-                case "RunEnabled":
-                    RaisePropertyChanged("RunEnabled");
+                    //RaisePropertyChanged("RunEnabled");
                     break;
             }
         }
@@ -856,16 +792,15 @@ namespace Dynamo.ViewModels
         // be. It watches property change notifications coming from the current 
         // WorkspaceModel, and then enables/disables 'set timer' button on the UI.
         // 
-        void CurrentWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "RunEnabled":
-                case "HasNodeThatPeriodicallyUpdates":
-                    RaisePropertyChanged(e.PropertyName);
-                    break;
-            }
-        }
+        //void CurrentWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        //{
+        //    switch (e.PropertyName)
+        //    {
+        //        case "RunEnabled":
+        //            RaisePropertyChanged(e.PropertyName);
+        //            break;
+        //    }
+        //}
 
         private void CleanUp(DynamoModel dynamoModel)
         {
@@ -935,7 +870,7 @@ namespace Dynamo.ViewModels
                 Model.RemoveWorkspace(HomeSpace);
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
-                RaisePropertyChanged("DynamicRunEnabled");
+                //RaisePropertyChanged("DynamicRunEnabled");
                 item.PropertyChanged += workSpace_propertyChanged;
             }
             else
@@ -951,7 +886,7 @@ namespace Dynamo.ViewModels
             workspaces.Remove(workspaces.First(x => x.Model == item));
 
             // Update the ViewModel property to reflect change in WorkspaceModel
-            RaisePropertyChanged("DynamicRunEnabled");
+            //RaisePropertyChanged("DynamicRunEnabled");
         }
 
         private void workSpace_propertyChanged(object sender, PropertyChangedEventArgs e)
@@ -959,7 +894,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "RunSettingsViewModel":
-                    RaisePropertyChanged("RunEnabled");
+                    RaisePropertyChanged("RunSettingsViewModel");
                     break;
             }
         }
@@ -1146,23 +1081,6 @@ namespace Dynamo.ViewModels
         internal void SaveAs(string path)
         {
             Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerCore);
-        }
-
-        public virtual bool RunInDebug
-        {
-            get { return debug; }
-            set
-            {
-                debug = value;
-
-                //toggle off dynamic run
-                CanRunDynamically = !debug;
-
-                if (debug)
-                    HomeSpace.RunSettings.RunType = RunType.Manual;
-
-                RaisePropertyChanged("RunInDebug");
-            }
         }
 
         /// <summary>

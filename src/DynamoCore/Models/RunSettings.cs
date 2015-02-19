@@ -1,11 +1,29 @@
-﻿namespace Dynamo.Models
+﻿using System.Diagnostics;
+
+using Dynamo.Core;
+
+namespace Dynamo.Models
 {
+    /// <summary>
+    /// The RunType enumeration provides values for
+    /// specifying the type of run that will be conducted.
+    /// </summary>
     public enum RunType { Manual, Automatic, Periodic }
 
-    public class RunSettings
+    /// <summary>
+    /// The RunSettings object contains properties which control
+    /// how execution is carried out.
+    /// </summary>
+    public class RunSettings : NotificationObject
     {
+        #region private members
+
         private int runPeriod;
         private RunType runType;
+        
+        #endregion
+
+        #region properties
 
         public int RunPeriod
         {
@@ -13,6 +31,7 @@
             set
             {
                 runPeriod = value;
+                RaisePropertyChangeWithDebug("RunPeriod");
             }
         }
 
@@ -22,19 +41,52 @@
             set
             {
                 runType = value;
+                RaisePropertyChangeWithDebug("RunType");
             }
         }
+
+        private bool runEnabled;
+        public bool RunEnabled
+        {
+            get { return runEnabled; }
+            set
+            {
+                if (Equals(value, runEnabled)) return;
+                runEnabled = value;
+                RaisePropertyChangeWithDebug("RunEnabled");
+            }
+        }
+
+        #endregion
+
+        #region constructors
 
         public RunSettings()
         {
             RunPeriod = 100;
             RunType = RunType.Manual;
+            RunEnabled = true;
         }
 
         public RunSettings(RunType runType, int period)
         {
             RunPeriod = period;
             RunType = runType;
+            RunEnabled = true;
         }
+
+        #endregion
+
+        #region private methods
+
+        private void RaisePropertyChangeWithDebug(string propertyName)
+        {
+#if DEBUG
+            Debug.WriteLine(string.Format("{0} property change raised on the RunSettings object.", propertyName));
+#endif
+            RaisePropertyChanged(propertyName);
+        }
+
+        #endregion
     }
 }

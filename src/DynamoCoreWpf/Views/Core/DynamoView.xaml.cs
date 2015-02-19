@@ -1187,11 +1187,6 @@ namespace Dynamo.Controls
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
         }
 
-        private void RunButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            dynamoViewModel.ReturnFocusToSearch();
-        }
-
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))

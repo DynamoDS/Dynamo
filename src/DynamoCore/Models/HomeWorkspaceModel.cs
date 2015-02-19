@@ -37,7 +37,6 @@ namespace Dynamo.Models
             bool isTestMode, ElementResolver elementResolver, string fileName = "")
             : base("Home", e, n, x, y, factory, elementResolver, fileName)
         {
-            RunEnabled = true;
             
 #if DEBUG
             RunSettings = new RunSettings(RunType.Automatic, 100);
@@ -151,7 +150,7 @@ namespace Dynamo.Models
         {
             base.Clear();
             PreloadedTraceData = null;
-            RunEnabled = true;
+            RunSettings.RunEnabled = true;
         }
 
         #region evaluation
@@ -240,7 +239,7 @@ namespace Dynamo.Models
             }
 
             // Notify listeners (optional) of completion.
-            RunEnabled = true; // Re-enable 'Run' button.
+            RunSettings.RunEnabled = true; // Re-enable 'Run' button.
 
             // This method is guaranteed to be called in the context of 
             // ISchedulerThread (for Revit's case, it is the idle thread).
@@ -286,7 +285,7 @@ namespace Dynamo.Models
             if (task.Initialize(EngineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
-                RunEnabled = false; // Disable 'Run' button.
+                RunSettings.RunEnabled = false; // Disable 'Run' button.
                 scheduler.ScheduleForExecution(task);
             }
             else

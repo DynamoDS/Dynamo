@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 using Dynamo.Controls;
@@ -60,14 +61,19 @@ namespace Dynamo.Wpf.Controls
                 case RunType.Manual:
                     return;
                 case RunType.Automatic:
-                    dynamoVm.RunExpressionCommand.Execute(true);
+                    vm.RunExpressionCommand.Execute(true);
                     return;
                 case RunType.Periodic:
                     dynamoVm.StartPeriodicTimerCommand.Execute(null);
                     return;
             }
-            
-            
+        }
+
+        private void RunButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            var dynamoVm = dynamoView.DataContext as DynamoViewModel;
+            dynamoVm.ReturnFocusToSearch();
         }
     }
 }

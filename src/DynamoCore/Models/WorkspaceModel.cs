@@ -430,17 +430,6 @@ namespace Dynamo.Models
 
         public ElementResolver ElementResolver { get; private set; }
 
-        private bool runEnabled;
-        public bool RunEnabled
-        {
-            get { return runEnabled; }
-            set
-            {
-                if (Equals(value, runEnabled)) return;
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
-            }
-        }
         #endregion
 
         #region constructors

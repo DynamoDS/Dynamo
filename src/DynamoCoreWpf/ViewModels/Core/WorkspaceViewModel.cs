@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -283,7 +284,7 @@ namespace Dynamo.ViewModels
 
             if (Model is HomeWorkspaceModel)
             {
-                RunSettingsViewModel = new RunSettingsViewModel(((HomeWorkspaceModel)model).RunSettings);
+                RunSettingsViewModel = new RunSettingsViewModel(((HomeWorkspaceModel)model).RunSettings, dynamoViewModel);
                 RunSettingsViewModel.PropertyChanged += RunSettingsViewModel_PropertyChanged;
             }
                 
@@ -291,6 +292,10 @@ namespace Dynamo.ViewModels
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            // If any property changes on the run settings object
+            // Raise a property change notification for the RunSettingsViewModel
+            // property
+            Debug.WriteLine(string.Format("{0} property change handled on the WorkspaceViewModel object.", e.PropertyName));
             RaisePropertyChanged("RunSettingsViewModel");
         }
 

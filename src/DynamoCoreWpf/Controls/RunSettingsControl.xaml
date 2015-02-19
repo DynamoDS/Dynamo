@@ -7,6 +7,7 @@
              xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="300">
     
@@ -34,6 +35,18 @@
     
     <Grid>
         <StackPanel Orientation="Horizontal">
+
+            <Button Name="RunButton"
+                                Width="100"
+                                Content="{x:Static p:Resources.DynamoViewRunButton}"
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                Click="RunButton_OnClick"
+                                Command="{Binding RunExpressionCommand}"
+                                CommandParameter="{Binding Path=RunInDebug}"
+                                ToolTip="{x:Static p:Resources.DynamoViewRunButtonTooltip}"
+                                IsEnabled="{Binding Path=RunEnabled}"
+                                Focusable="False" />
+            
             <ComboBox Name="EnumComboBox"
                       ItemsSource="{Binding Source={StaticResource RunTypes}}"
                       SelectedItem="{Binding RunType}"
@@ -44,13 +57,29 @@
                       Foreground="#bbbbbb" 
                       Padding="2" FontSize="14px">
             </ComboBox>
+            
             <TextBox Name="RunPeriodTextBox" 
                     Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, UpdateSourceTrigger=Explicit}"
                      VerticalContentAlignment="Center"
-                     Visibility="{Binding RunPeriodInputVisibilty}"
+                     Visibility="{Binding RunPeriodInputVisibility}"
                      Width="80" FontSize="14px"
                      Style="{DynamicResource ResourceKey=SDarkTextBox}" Foreground="#bbbbbb" 
                      KeyDown="UIElement_OnKeyDown"/>
+
+            <!--<Button Name="cancelButton"
+                                Width="100"
+                                Content="{x:Static p:Resources.CancelButton}"
+                                Focusable="False"
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                ToolTip="{x:Static p:Resources.DynamoViewCancelButtonTooltip}"
+                                Command="{Binding CancelRunCommand}"
+                                Margin="5" />-->
+
+            <!--<CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
+                      FontSize="11" VerticalAlignment="Center" Foreground="Gray"
+                      IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
+                      Content="Debug" VerticalContentAlignment="Center"/>-->
+            
         </StackPanel>
         
     </Grid>

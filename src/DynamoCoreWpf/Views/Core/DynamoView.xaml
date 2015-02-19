@@ -755,13 +755,13 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuForceReExecute}"
                                   Command="{Binding ForceRunExpressionCommand}"
                                   CommandParameter="{Binding Path=RunInDebug}"
-                                  IsEnabled="{Binding Path=RunEnabled}"></MenuItem>
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="MutateTest"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuRunMutationTest}"
                                   Command="{Binding MutateTestDelegateCommand}"
                                   CommandParameter="{Binding Path=RunInDebug}"
-                                  IsEnabled="{Binding Path=RunEnabled}"></MenuItem>
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="CheckDailyBuilds"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuCheckDailyBuild}"
@@ -1590,42 +1590,12 @@
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch">
 
-                    <StackPanel Orientation="Horizontal">
-                        
-                        <Button Name="RunButton"
-                                Width="100"
-                                Content="{x:Static p:Resources.DynamoViewRunButton}"
-                                Margin="5,5,2.5,5"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                Click="RunButton_OnClick"
-                                Command="{Binding RunExpressionCommand}"
-                                CommandParameter="{Binding Path=RunInDebug}"
-                                ToolTip="{x:Static p:Resources.DynamoViewRunButtonTooltip}"
-                                IsEnabled="{Binding Path=RunEnabled}"
-                                Focusable="False" />
-
-                        <controls1:RunSettingsControl Margin="2.5,5,5,5" 
+                        <controls1:RunSettingsControl x:Name="RunSettingsControl"
+                                                    Margin="2.5,5,5,5" 
                                                      VerticalAlignment="Stretch"
                                                      DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}"/>
-
-                        <!--<Button Name="cancelButton"
-                                Width="100"
-                                Content="{x:Static p:Resources.CancelButton}"
-                                Focusable="False"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                ToolTip="{x:Static p:Resources.DynamoViewCancelButtonTooltip}"
-                                Command="{Binding CancelRunCommand}"
-                                Margin="5" />-->
-
-                        
-                    </StackPanel>
-
-                    <!--CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
-                      FontSize="11" VerticalAlignment="Center" Foreground="Gray"
-                      IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
-                      Content="Debug" VerticalContentAlignment="Center"/-->
-
                 </WrapPanel>
+                
                 <TextBlock Name="warningText"
                            Grid.Column="1"
                            Text="{Binding Path=Model.Logger.Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}"
