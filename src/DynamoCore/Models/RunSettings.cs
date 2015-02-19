@@ -26,6 +26,10 @@ namespace Dynamo.Models
 
         #region properties
 
+        /// <summary>
+        /// The length, in milliseconds, of the period
+        /// between requests to execute.
+        /// </summary>
         public int RunPeriod
         {
             get { return runPeriod; }
@@ -36,6 +40,9 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// The current RunType.
+        /// </summary>
         public RunType RunType
         {
             get { return runType; }
@@ -46,6 +53,11 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// A flag which indicates whether running is possible. This 
+        /// flag is set to false during execution and is set to true
+        /// when execution is completed.
+        /// </summary>
         public bool RunEnabled
         {
             get { return runEnabled; }
