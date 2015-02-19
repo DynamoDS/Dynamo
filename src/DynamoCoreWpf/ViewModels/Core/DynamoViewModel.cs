@@ -85,7 +85,10 @@ namespace Dynamo.ViewModels
             get { return model.CurrentWorkspace == HomeSpace; }
         }
 
-        public bool IsAbleToGoHome { get; set; }
+        public bool IsAbleToGoHome
+        {
+            get { return !(model.CurrentWorkspace is HomeWorkspaceModel); }
+        }
 
         public HomeWorkspaceModel HomeSpace
         {
@@ -772,7 +775,6 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "CurrentWorkspace":
-                    IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
                     RaisePropertyChanged("IsAbleToGoHome");
                     RaisePropertyChanged("CurrentSpace");
                     RaisePropertyChanged("BackgroundColor");

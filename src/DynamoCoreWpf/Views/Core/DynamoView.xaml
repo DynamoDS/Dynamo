@@ -1588,7 +1588,8 @@
                            Grid.Row="0"
                            Grid.Column="0"
                            HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch">
+                           VerticalAlignment="Stretch" 
+                           IsEnabled="{Binding IsAbleToGoHome, Converter={StaticResource InverseBooleanConverter}}">
 
                         <controls1:RunSettingsControl x:Name="RunSettingsControl"
                                                     Margin="2.5,5,5,5" 
