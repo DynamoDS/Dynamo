@@ -380,7 +380,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        
         /// <summary>
         /// Handles the port snapping on Mouse Enter.
         /// </summary>

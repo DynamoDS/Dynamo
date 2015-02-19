@@ -43,7 +43,8 @@
                                 Click="RunButton_OnClick"
                                 Command="{Binding RunExpressionCommand}"
                                 CommandParameter="{Binding Path=RunInDebug}"
-                                ToolTip="{x:Static p:Resources.DynamoViewRunButtonTooltip}"
+                                ToolTip="{Binding RunButtonToolTip}"
+                                ToolTipService.ShowOnDisabled="True"
                                 IsEnabled="{Binding Path=RunButtonEnabled}"
                                 Focusable="False" />
             

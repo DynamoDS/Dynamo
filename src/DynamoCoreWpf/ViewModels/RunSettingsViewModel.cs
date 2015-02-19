@@ -8,6 +8,7 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -75,6 +76,11 @@ namespace Dynamo.Wpf.ViewModels
 
         }
 
+        public bool RunEnabled
+        {
+            get { return Model.RunEnabled; }
+        }
+
         public bool RunButtonEnabled
         {
             get
@@ -82,6 +88,16 @@ namespace Dynamo.Wpf.ViewModels
                 return Model.RunEnabled &&
                     Model.RunType != RunType.Automatically &&
                     Model.RunType != RunType.Periodically;
+            }
+        }
+
+        public string RunButtonToolTip
+        {
+            get
+            {
+                return RunButtonEnabled
+                    ? Resources.DynamoViewRunButtonTooltip
+                    : Resources.DynamoViewRunButtonToolTipDisabled;
             }
         }
 
@@ -134,12 +150,17 @@ namespace Dynamo.Wpf.ViewModels
             switch (e.PropertyName)
             {
                 case "RunEnabled":
+                    RaisePropertyChanged("RunEnabled");
                     RaisePropertyChanged("RunButtonEnabled");
+                    RaisePropertyChanged("RunButtonToolTip");
                     break;
                 case "RunPeriod":
                     RaisePropertyChanged("RunPeriod");
                     break;
                 case "RunType":
+                    RaisePropertyChanged("RunEnabled");
+                    RaisePropertyChanged("RunButtonEnabled");
+                    RaisePropertyChanged("RunButtonToolTip");
                     RaisePropertyChanged("RunType");
                     RaisePropertyChanged("RunPeriodInputVisibility");
                     RaisePropertyChanged("RunButtonEnabled");
