@@ -540,7 +540,7 @@ namespace Dynamo.Models
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
-                        Logger.Log(String.Format(Properties.Resources.EvaluationComleted, executionTimeSpan));
+                        Logger.Log(String.Format(Properties.Resources.EvaluationCompleted, executionTimeSpan));
                         ExecutionEvents.OnGraphPostExecution();
                     }
                     break;
