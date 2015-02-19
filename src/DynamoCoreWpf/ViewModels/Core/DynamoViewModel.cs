@@ -1416,8 +1416,6 @@ namespace Dynamo.ViewModels
 
                 model.ClearCurrentWorkspace();
 
-                // Update the ViewModel property to reflect change in WorkspaceModel
-                RaisePropertyChanged("DynamicRunEnabled");
                 return true;
             }
 
