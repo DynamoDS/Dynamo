@@ -52,21 +52,7 @@ namespace Dynamo.Wpf.Controls
         /// <param name="e"></param>
         private void EnumComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var dynamoView = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-            var dynamoVm = dynamoView.DataContext as DynamoViewModel;
-
-            dynamoVm.StopPeriodicTimerCommand.Execute(null);
-            switch (vm.RunType)
-            {
-                case RunType.Manual:
-                    return;
-                case RunType.Automatic:
-                    vm.RunExpressionCommand.Execute(true);
-                    return;
-                case RunType.Periodic:
-                    dynamoVm.StartPeriodicTimerCommand.Execute(null);
-                    return;
-            }
+            vm.RunTypeChangedRunCommand.Execute(null);
         }
 
         private void RunButton_OnClick(object sender, RoutedEventArgs e)

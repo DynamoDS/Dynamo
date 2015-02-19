@@ -122,6 +122,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public DelegateCommand RunExpressionCommand { get; private set; }
         public DelegateCommand CancelRunCommand { get; set; }
+        public DelegateCommand RunTypeChangedRunCommand { get; set; }
 
         #endregion
 
@@ -132,8 +133,32 @@ namespace Dynamo.Wpf.ViewModels
             Model = settings;
             Model.PropertyChanged += Model_PropertyChanged;
             this.dynamoViewModel = dynamoViewModel;
+            
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             RunExpressionCommand = new DelegateCommand(RunExpression, CanRunExpression);
+            RunTypeChangedRunCommand = new DelegateCommand(RunTypeChangedRun, CanRunTypeChangedRun);
+        
+        }
+
+        private void RunTypeChangedRun(object obj)
+        {
+            dynamoViewModel.StopPeriodicTimerCommand.Execute(null);
+            switch (Model.RunType)
+            {
+                case RunType.Manual:
+                    return;
+                case RunType.Automatic:
+                    RunExpressionCommand.Execute(true);
+                    return;
+                case RunType.Periodic:
+                    dynamoViewModel.StartPeriodicTimerCommand.Execute(null);
+                    return;
+            }
+        }
+
+        private bool CanRunTypeChangedRun(object obj)
+        {
+            return true;
         }
 
         #endregion
