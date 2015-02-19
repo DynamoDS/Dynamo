@@ -46,6 +46,7 @@ namespace Dynamo.Models
             RunEnabled = true;
 #if DEBUG
             DynamicRunEnabled = true;
+            ShowRunPreview = false;
 #else
             DynamicRunEnabled = false;
 #endif
