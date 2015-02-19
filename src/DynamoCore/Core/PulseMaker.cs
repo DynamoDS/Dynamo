@@ -67,6 +67,7 @@ namespace Dynamo.Core
             {
                 TimerPeriod = 0;
                 evaluationRequestPending = false;
+                evaluationInProgress = false;
                 internalTimer.Change(Timeout.Infinite, Timeout.Infinite);
             }
         }
