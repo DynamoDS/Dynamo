@@ -34,7 +34,7 @@
     </UserControl.Resources>
     
     <Grid>
-        <StackPanel Orientation="Horizontal" IsEnabled="{Binding RunEnabled}">
+        <StackPanel Orientation="Horizontal">
 
             <Button Name="RunButton"
                                 Width="100"
