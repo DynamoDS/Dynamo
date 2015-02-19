@@ -25,8 +25,6 @@ namespace Dynamo.Wpf.Controls
         void RunSettingsControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             vm = DataContext as RunSettingsViewModel;
-
-            EnumComboBox.SelectionChanged += EnumComboBox_OnSelectionChanged;
         }
 
         /// <summary>
@@ -41,17 +39,6 @@ namespace Dynamo.Wpf.Controls
 
             var bindingExpr = RunPeriodTextBox.GetBindingExpression(TextBox.TextProperty);
             bindingExpr.UpdateSource();
-        }
-
-        /// <summary>
-        /// Use the SelectionChanged event handler to trigger a run
-        /// depending on what type of run is set.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EnumComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            vm.RunTypeChangedRunCommand.Execute(null);
         }
 
         private void RunButton_OnClick(object sender, RoutedEventArgs e)
