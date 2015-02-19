@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 using Dynamo.Controls;
-using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;

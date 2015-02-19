@@ -25,11 +25,8 @@ namespace Dynamo.Wpf.ViewModels
     {
         #region private members
 
-        //protected bool debug = false;
-        //protected bool canRunDynamically = true;
-
+        private bool debug = false;
         private DynamoViewModel dynamoViewModel;
-        private Visibility runPeriodInputVisibility;
 
         #endregion
 
@@ -88,37 +85,19 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        //public virtual bool RunInDebug
-        //{
-        //    get { return debug; }
-        //    set
-        //    {
-        //        debug = value;
+        public virtual bool RunInDebug
+        {
+            get { return debug; }
+            set
+            {
+                debug = value;
 
-        //        //toggle off dynamic run
-        //        CanRunDynamically = !debug;
+                if (debug)
+                    RunType = RunType.Manual;
 
-        //        if (debug)
-        //            RunType = RunType.Manual;
-
-        //        RaisePropertyChanged("RunInDebug");
-        //    }
-        //}
-
-        //public virtual bool CanRunDynamically
-        //{
-        //    get
-        //    {
-        //        //we don't want to be able to run
-        //        //dynamically if we're in debug mode
-        //        return !debug;
-        //    }
-        //    set
-        //    {
-        //        canRunDynamically = value;
-        //        RaisePropertyChanged("CanRunDynamically");
-        //    }
-        //}
+                RaisePropertyChanged("RunInDebug");
+            }
+        }
 
         public DelegateCommand RunExpressionCommand { get; private set; }
         public DelegateCommand CancelRunCommand { get; set; }
@@ -138,27 +117,6 @@ namespace Dynamo.Wpf.ViewModels
             RunExpressionCommand = new DelegateCommand(RunExpression, CanRunExpression);
             RunTypeChangedRunCommand = new DelegateCommand(RunTypeChangedRun, CanRunTypeChangedRun);
         
-        }
-
-        private void RunTypeChangedRun(object obj)
-        {
-            dynamoViewModel.StopPeriodicTimerCommand.Execute(null);
-            switch (Model.RunType)
-            {
-                case RunType.Manual:
-                    return;
-                case RunType.Automatic:
-                    RunExpressionCommand.Execute(true);
-                    return;
-                case RunType.Periodic:
-                    dynamoViewModel.StartPeriodicTimerCommand.Execute(null);
-                    return;
-            }
-        }
-
-        private bool CanRunTypeChangedRun(object obj)
-        {
-            return true;
         }
 
         #endregion
@@ -184,8 +142,30 @@ namespace Dynamo.Wpf.ViewModels
                 case "RunType":
                     RaisePropertyChanged("RunType");
                     RaisePropertyChanged("RunPeriodInputVisibility");
+                    RaisePropertyChanged("RunEnabled");
                     break;
             }
+        }
+
+        private void RunTypeChangedRun(object obj)
+        {
+            dynamoViewModel.StopPeriodicTimerCommand.Execute(null);
+            switch (Model.RunType)
+            {
+                case RunType.Manual:
+                    return;
+                case RunType.Automatic:
+                    RunExpressionCommand.Execute(true);
+                    return;
+                case RunType.Periodic:
+                    dynamoViewModel.StartPeriodicTimerCommand.Execute(null);
+                    return;
+            }
+        }
+
+        private bool CanRunTypeChangedRun(object obj)
+        {
+            return true;
         }
 
         private void RunExpression(object parameters)

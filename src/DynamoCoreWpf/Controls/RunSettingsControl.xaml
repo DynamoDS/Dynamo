@@ -75,10 +75,10 @@
                                 Command="{Binding CancelRunCommand}"
                                 Margin="5" />-->
 
-            <!--<CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
+            <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
                       IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
-                      Content="Debug" VerticalContentAlignment="Center"/>-->
+                      Content="Debug" VerticalContentAlignment="Center"/>
             
         </StackPanel>
         
