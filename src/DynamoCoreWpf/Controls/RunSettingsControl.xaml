@@ -55,7 +55,8 @@
                       HorizontalContentAlignment="Right"
                       Style="{DynamicResource ResourceKey=SComboBox}" 
                       Foreground="#bbbbbb" 
-                      Padding="2" FontSize="14px"/>
+                      Padding="2" 
+                      FontSize="14px"/>
             
             <TextBox Name="RunPeriodTextBox" 
                     Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, UpdateSourceTrigger=Explicit}"
