@@ -871,6 +871,13 @@ namespace Dynamo.ViewModels
                 Model.RemoveWorkspace(HomeSpace);
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
+
+                // The RunSettings control is a child of the DynamoView, 
+                // but has its DataContext set to the RunSettingsViewModel 
+                // on the HomeWorkspaceViewModel. When the home workspace is changed,
+                // we need to raise a property change notification for the 
+                // homespace view model, so the RunSettingsControl's bindings
+                // get updated.
                 RaisePropertyChanged("HomeSpaceViewModel");
             }
             else
