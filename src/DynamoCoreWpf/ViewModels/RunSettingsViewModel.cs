@@ -152,9 +152,8 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunButtonToolTip");
                     break;
                 case "RunPeriod":
-                    RaisePropertyChanged("RunPeriod");
-                    break;
                 case "RunType":
+                    RaisePropertyChanged("RunPeriod");
                     RaisePropertyChanged("RunEnabled");
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunButtonToolTip");
