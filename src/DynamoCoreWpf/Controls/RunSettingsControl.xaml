@@ -46,26 +46,31 @@
                                 ToolTip="{Binding RunButtonToolTip}"
                                 ToolTipService.ShowOnDisabled="True"
                                 IsEnabled="{Binding Path=RunButtonEnabled}"
-                                Focusable="False" />
-            
+                                Focusable="False" Margin="0,0,2.5,0"/>
+
             <ComboBox Name="EnumComboBox"
                       ItemsSource="{Binding Source={StaticResource RunTypes}}"
                       SelectedItem="{Binding RunType}"
-                      Width ="100" 
+                      Width ="Auto" 
                       VerticalContentAlignment="Center"
-                      HorizontalContentAlignment="Right"
+                      HorizontalContentAlignment="Left"
                       Style="{DynamicResource ResourceKey=SComboBox}" 
                       Foreground="#bbbbbb" 
-                      Padding="2" 
-                      FontSize="14px"/>
-            
+                      FontSize="14px" Margin="2.5,0,2.5,0">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding}" Foreground="#bbbbbb"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
             <TextBox Name="RunPeriodTextBox" 
                     Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, UpdateSourceTrigger=Explicit}"
                      VerticalContentAlignment="Center"
                      Visibility="{Binding RunPeriodInputVisibility}"
                      Width="80" FontSize="14px"
                      Style="{DynamicResource ResourceKey=SDarkTextBox}" Foreground="#bbbbbb" 
-                     KeyDown="UIElement_OnKeyDown"/>
+                     KeyDown="UIElement_OnKeyDown" Margin="2.5,0,0,0"/>
 
             <!--<Button Name="cancelButton"
                                 Width="100"
