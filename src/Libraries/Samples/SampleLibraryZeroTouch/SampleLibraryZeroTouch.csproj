@@ -52,7 +52,7 @@
     </Compile>
     <Compile Include="HelloDynamoZeroTouch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SampleMethods.cs" />
+    <Compile Include="PointField.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
