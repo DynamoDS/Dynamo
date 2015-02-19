@@ -473,7 +473,6 @@ namespace Dynamo.ViewModels
             //updates to the workspaces collection
             var homespaceViewModel = new WorkspaceViewModel(model.CurrentWorkspace, this);
             workspaces.Add(homespaceViewModel);
-            homespaceViewModel.PropertyChanged += workSpace_propertyChanged;
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -870,8 +869,6 @@ namespace Dynamo.ViewModels
                 Model.RemoveWorkspace(HomeSpace);
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
-                //RaisePropertyChanged("DynamicRunEnabled");
-                item.PropertyChanged += workSpace_propertyChanged;
             }
             else
                 workspaces.Add(newVm);
@@ -879,24 +876,7 @@ namespace Dynamo.ViewModels
 
         private void WorkspaceRemoved(WorkspaceModel item)
         {
-            if (item is HomeWorkspaceModel)
-            {
-                item.PropertyChanged -= workSpace_propertyChanged;
-            }
             workspaces.Remove(workspaces.First(x => x.Model == item));
-
-            // Update the ViewModel property to reflect change in WorkspaceModel
-            //RaisePropertyChanged("DynamicRunEnabled");
-        }
-
-        private void workSpace_propertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "RunSettingsViewModel":
-                    RaisePropertyChanged("RunSettingsViewModel");
-                    break;
-            }
         }
 
         internal void AddToRecentFiles(string path)

@@ -20,7 +20,8 @@ namespace Dynamo.Models
 
         private int runPeriod;
         private RunType runType;
-        
+        private bool runEnabled;
+
         #endregion
 
         #region properties
@@ -45,7 +46,6 @@ namespace Dynamo.Models
             }
         }
 
-        private bool runEnabled;
         public bool RunEnabled
         {
             get { return runEnabled; }
