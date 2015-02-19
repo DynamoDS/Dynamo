@@ -679,6 +679,15 @@
                                                                 <Setter Property="Margin"
                                                                         Value="0,0,0,0" />
                                                             </DataTrigger>
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                                             Path="DataContext"
+                                                                             Converter="{StaticResource NodeCategoryVMToBoolConverter}" />
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Margin"
+                                                                        Value="0,0,0,0" />
+                                                            </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </ItemsPresenter.Style>
