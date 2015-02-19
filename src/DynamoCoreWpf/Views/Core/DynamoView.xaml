@@ -755,13 +755,13 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuForceReExecute}"
                                   Command="{Binding ForceRunExpressionCommand}"
                                   CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
-                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}"></MenuItem>
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="MutateTest"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuRunMutationTest}"
                                   Command="{Binding MutateTestDelegateCommand}"
                                   CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
-                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}"></MenuItem>
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="CheckDailyBuilds"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuCheckDailyBuild}"

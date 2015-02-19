@@ -34,7 +34,7 @@
     </UserControl.Resources>
     
     <Grid>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" IsEnabled="{Binding RunEnabled}">
 
             <Button Name="RunButton"
                                 Width="100"
@@ -44,7 +44,7 @@
                                 Command="{Binding RunExpressionCommand}"
                                 CommandParameter="{Binding Path=RunInDebug}"
                                 ToolTip="{x:Static p:Resources.DynamoViewRunButtonTooltip}"
-                                IsEnabled="{Binding Path=RunEnabled}"
+                                IsEnabled="{Binding Path=RunButtonEnabled}"
                                 Focusable="False" />
             
             <ComboBox Name="EnumComboBox"
@@ -55,8 +55,7 @@
                       HorizontalContentAlignment="Right"
                       Style="{DynamicResource ResourceKey=SComboBox}" 
                       Foreground="#bbbbbb" 
-                      Padding="2" FontSize="14px">
-            </ComboBox>
+                      Padding="2" FontSize="14px"/>
             
             <TextBox Name="RunPeriodTextBox" 
                     Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, UpdateSourceTrigger=Explicit}"
@@ -78,7 +77,8 @@
             <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
                       FontSize="11" VerticalAlignment="Center" Foreground="Gray"
                       IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
-                      Content="Debug" VerticalContentAlignment="Center"/>
+                      Content="Debug" 
+                      VerticalContentAlignment="Center"/>
             
         </StackPanel>
         

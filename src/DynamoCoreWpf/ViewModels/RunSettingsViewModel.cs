@@ -75,7 +75,7 @@ namespace Dynamo.Wpf.ViewModels
 
         }
 
-        public bool RunEnabled
+        public bool RunButtonEnabled
         {
             get
             {
@@ -134,7 +134,7 @@ namespace Dynamo.Wpf.ViewModels
             switch (e.PropertyName)
             {
                 case "RunEnabled":
-                    RaisePropertyChanged("RunEnabled");
+                    RaisePropertyChanged("RunButtonEnabled");
                     break;
                 case "RunPeriod":
                     RaisePropertyChanged("RunPeriod");
@@ -142,7 +142,7 @@ namespace Dynamo.Wpf.ViewModels
                 case "RunType":
                     RaisePropertyChanged("RunType");
                     RaisePropertyChanged("RunPeriodInputVisibility");
-                    RaisePropertyChanged("RunEnabled");
+                    RaisePropertyChanged("RunButtonEnabled");
                     break;
             }
         }
