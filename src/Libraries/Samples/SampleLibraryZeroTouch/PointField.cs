@@ -14,9 +14,9 @@ namespace SampleLibraryZeroTouch
 
         private PointField(double t)
         {
-            for (double x = -5; x <= 5; x += 1)
+            for (double x = -5; x <= 5; x += 0.5)
             {
-                for (double y = -5; y <= 5; y += 1)
+                for (double y = -5; y <= 5; y += 0.5)
                 {
                     double z = Math.Sin(Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2)) - t);
                     points.Add(Point.ByCoordinates(x, y, z));
