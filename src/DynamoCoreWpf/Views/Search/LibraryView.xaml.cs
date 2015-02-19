@@ -57,6 +57,13 @@ namespace Dynamo.UI.Views
             }
 
             // 2 case.
+            // If mouse is not over this control, but it handles event.
+            // This means user scroll inside of tooltip. We do not need change something,
+            // we also do not set Handled to true, because tooltip's scrollviewer will handle this event.
+            if (!(sender as UIElement).IsMouseOver)
+                return;
+
+            // 3 case.
             // User uses just mouse wheel. That means user wants to scroll down LibraryView.
             // So, we just change VerticalOffset, and there is no need to go further and change something.
             // Set Handled to true.
