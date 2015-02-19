@@ -660,11 +660,29 @@
 
                                         <Border Grid.Row="1"
                                                 Background="#2F2F2F">
-                                            <ItemsPresenter x:Name="ItemsHost"
-                                                            Margin="0,3,0,3">
+                                            <ItemsPresenter x:Name="ItemsHost">
                                                 <ItemsPresenter.Visibility>
                                                     <Binding Converter="{StaticResource LibraryTreeItemsHostVisibilityConverter}" />
                                                 </ItemsPresenter.Visibility>
+
+                                                <ItemsPresenter.Style>
+                                                    <Style TargetType="{x:Type ItemsPresenter}">
+                                                        <Setter Property="Margin"
+                                                                Value="0,3,0,3" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <Binding RelativeSource="{RelativeSource Self}"
+                                                                             Path="DataContext"
+                                                                             Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Margin"
+                                                                        Value="0,0,0,0" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ItemsPresenter.Style>
+
                                             </ItemsPresenter>
                                         </Border>
                                     </Grid>
