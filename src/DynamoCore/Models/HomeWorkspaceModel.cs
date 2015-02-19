@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Xml;
 
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+using Dynamo.Properties;
+
 using ProtoCore.Namespace;
 
 namespace Dynamo.Models
@@ -28,21 +32,21 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 0,
-                0, verboseLogging, isTestMode, new ElementResolver(), fileName) { }
+                0, verboseLogging, isTestMode, new ElementResolver(), 
+                RunType.Automatically, 100, fileName) { }
 
         public HomeWorkspaceModel(
             EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
             double x, double y, bool verboseLogging,
-            bool isTestMode, ElementResolver elementResolver, string fileName = "")
+            bool isTestMode, ElementResolver elementResolver, 
+            RunType runType, int runPeriod,
+            string fileName = "")
             : base("Home", e, n, x, y, factory, elementResolver, fileName)
         {
             
-#if DEBUG
-            RunSettings = new RunSettings(RunType.Automatically, 100);
-#else
-            RunSettings = new RunSettings(RunType.Manually, 100);
-#endif
+            RunSettings = new RunSettings(runType, runPeriod);
+
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
             VerboseLogging = verboseLogging;
@@ -151,6 +155,21 @@ namespace Dynamo.Models
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.RunEnabled = true;
+        }
+
+        protected override bool PopulateXmlDocument(XmlDocument document)
+        {
+            if (!base.PopulateXmlDocument(document))
+                return false;
+
+            var root = document.DocumentElement;
+            if (root == null)
+                return false;
+
+            root.SetAttribute("RunType", RunSettings.RunType.ToString());
+            root.SetAttribute("RunPeriod", RunSettings.RunPeriod.ToString(CultureInfo.InvariantCulture));
+
+            return true;
         }
 
         #region evaluation

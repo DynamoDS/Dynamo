@@ -24,6 +24,8 @@ namespace Dynamo.Models
                 string category = "";
                 string description = "";
                 string version = "";
+                var runType = Models.RunType.Manually;
+                int runPeriod = 100;
 
                 var topNode = xmlDoc.GetElementsByTagName("Workspace");
 
@@ -54,6 +56,15 @@ namespace Dynamo.Models
                             description = att.Value;
                         else if (att.Name.Equals("Version"))
                             version = att.Value;
+                        else if (att.Name.Equals("RunType"))
+                        {
+                            if (!Enum.TryParse(att.Value, false, out runType))
+                            {
+                                runType = RunType.Manually;
+                            }
+                        }
+                        else if (att.Name.Equals("RunPeriod"))
+                            runPeriod = Int32.Parse(att.Value);
                     }
                 }
 
@@ -75,7 +86,9 @@ namespace Dynamo.Models
                     FileName = path,
                     Category = category,
                     Description = description,
-                    Version = version
+                    Version = version,
+                    RunType  = runType,
+                    RunPeriod = runPeriod
                 };
                 return true;
             }
@@ -103,6 +116,8 @@ namespace Dynamo.Models
         public string Name { get; private set; }
         public string ID { get; private set; }
         public string FileName { get; private set; }
+        public RunType RunType { get; private set; }
+        public int RunPeriod{get; private set;}
 
         public bool IsCustomNodeWorkspace
         {

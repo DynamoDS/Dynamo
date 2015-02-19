@@ -871,6 +871,7 @@ namespace Dynamo.ViewModels
                 Model.RemoveWorkspace(HomeSpace);
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
+                RaisePropertyChanged("HomeSpaceViewModel");
             }
             else
                 workspaces.Add(newVm);

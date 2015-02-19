@@ -914,14 +914,20 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 workspaceInfo.X,
                 workspaceInfo.Y,
-                DebugSettings.VerboseLogging, IsTestMode, nodeGraph.ElementResolver, workspaceInfo.FileName);
+                DebugSettings.VerboseLogging, 
+                IsTestMode, 
+                nodeGraph.ElementResolver, 
+                workspaceInfo.RunType, 
+                workspaceInfo.RunPeriod,
+                workspaceInfo.FileName
+               );
 
             RegisterHomeWorkspace(newWorkspace);
             
             var currentHomeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             if (currentHomeWorkspace != null)
             {
-                newWorkspace.RunSettings.RunType = currentHomeWorkspace.RunSettings.RunType;
+                //newWorkspace.RunSettings.RunType = currentHomeWorkspace.RunSettings.RunType;
             }
             workspace = newWorkspace;
 
