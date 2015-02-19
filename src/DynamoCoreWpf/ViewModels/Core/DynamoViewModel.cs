@@ -1144,7 +1144,7 @@ namespace Dynamo.ViewModels
 
         internal void ShowElement(NodeModel e)
         {
-            if (HomeSpace.RunSettings.RunType == RunType.Automatic)
+            if (HomeSpace.RunSettings.RunType == RunType.Automatically)
                 return;
 
             if (!model.CurrentWorkspace.Nodes.Contains(e))

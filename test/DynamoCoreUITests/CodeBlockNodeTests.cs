@@ -255,8 +255,8 @@ namespace DynamoCoreUITests
                 });
 
             ViewModel.HomeSpace.RunSettings.RunType = autoRun ? 
-                RunType.Automatic : 
-                RunType.Manual;
+                RunType.Automatically : 
+                RunType.Manually;
 
             RegisterCommandCallback(commandCallback);
 

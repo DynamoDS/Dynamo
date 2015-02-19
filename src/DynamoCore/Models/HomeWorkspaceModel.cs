@@ -39,9 +39,9 @@ namespace Dynamo.Models
         {
             
 #if DEBUG
-            RunSettings = new RunSettings(RunType.Automatic, 100);
+            RunSettings = new RunSettings(RunType.Automatically, 100);
 #else
-            RunSettings = new RunSettings(RunType.Manual, 100);
+            RunSettings = new RunSettings(RunType.Manually, 100);
 #endif
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
@@ -137,7 +137,7 @@ namespace Dynamo.Models
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check that shutdown has not been requested.
-            if (RunSettings.RunType != RunType.Manual && EngineController != null)
+            if (RunSettings.RunType != RunType.Manually && EngineController != null)
             {
                 DynamoModel.OnRequestDispatcherBeginInvoke(Run);
             }
@@ -186,7 +186,7 @@ namespace Dynamo.Models
                 OnNodesModified();
             }
 
-            if (RunSettings.RunType == RunType.Automatic)
+            if (RunSettings.RunType == RunType.Automatically)
                 Run();
         }
 

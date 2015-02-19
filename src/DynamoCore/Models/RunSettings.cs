@@ -8,7 +8,7 @@ namespace Dynamo.Models
     /// The RunType enumeration provides values for
     /// specifying the type of run that will be conducted.
     /// </summary>
-    public enum RunType { Manual, Automatic, Periodic }
+    public enum RunType { Manually, Automatically, Periodically }
 
     /// <summary>
     /// The RunSettings object contains properties which control
@@ -64,7 +64,7 @@ namespace Dynamo.Models
         public RunSettings()
         {
             RunPeriod = 100;
-            RunType = RunType.Manual;
+            RunType = RunType.Manually;
             RunEnabled = true;
         }
 
