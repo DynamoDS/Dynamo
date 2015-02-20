@@ -1526,4 +1526,16 @@ Do you want to install the latest Dynamo update?</value>
   <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
     <value>Run is disabled when the run type is set to Automatic or Periodic</value>
   </data>
+  <data name="RunTypeToolTipAutomatically" xml:space="preserve">
+    <value>Run whenever an input to the graph is updated.</value>
+  </data>
+  <data name="RunTypeToolTipManually" xml:space="preserve">
+    <value>Run when you click the Run button.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
+    <value>Run Periodically is only available when there are nodes in the graph that support periodic update.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
+    <value>Run at the specified interval.</value>
+  </data>
 </root>

@@ -3206,6 +3206,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run whenever an input to the graph is updated..
+        /// </summary>
+        public static string RunTypeToolTipAutomatically {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run when you click the Run button..
+        /// </summary>
+        public static string RunTypeToolTipManually {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run Periodically is only available when there are nodes in the graph that support periodic update..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyDisabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run at the specified interval..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyEnabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirmation.
         /// </summary>
         public static string SaveConfirmationMessageBoxTitle {

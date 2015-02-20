@@ -50,14 +50,14 @@ namespace Dynamo.Wpf.ViewModels
                 switch (RunType)
                 {
                     case RunType.Automatically:
-                        return "Run whenever an input to the graph is updated.";
+                        return Resources.RunTypeToolTipAutomatically;
                     case RunType.Manually:
-                        return "Run when you click the Run button.";
+                        return Resources.RunTypeToolTipManually;
                     case RunType.Periodically:
                         return enabled
-                            ? "Run at the specified interval."
-                            : "Run Periodically is only available when there are nodes in the graph that support periodic update.";
-                    default:
+                            ? Resources.RunTypeToolTipPeriodicallyEnabled
+                            : Resources.RunTypeToolTipPeriodicallyDisabled;
+                    default: 
                         return string.Empty;
                 }
             }
@@ -224,7 +224,6 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunEnabled");
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunButtonToolTip");
-                    //RaisePropertyChanged("RunType");
                     RaisePropertyChanged("RunPeriodInputVisibility");
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunTypeItems");
