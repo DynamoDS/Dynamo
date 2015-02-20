@@ -19,7 +19,7 @@ namespace Dynamo.Library
         #region Class Data Members and Properties
 
         private readonly string dynamoRootFolder;
-        private readonly string libGFolderName;
+        private readonly string preloaderLocation;
         private readonly string geometryFactoryPath;
         private readonly IGeometryConfiguration configuration;
 
@@ -36,14 +36,17 @@ namespace Dynamo.Library
 
             this.configuration = configuration;
 
-            var assemblyPath = Assembly.GetCallingAssembly().Location;
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
             dynamoRootFolder = Path.GetDirectoryName(assemblyPath);
 
             var version = ((int)configuration.Version);
-            libGFolderName = string.Format("libg_{0}", version);
+            var libGFolderName = string.Format("libg_{0}", version);
+            preloaderLocation = Path.Combine(dynamoRootFolder, libGFolderName);
+            geometryFactoryPath = Path.Combine(preloaderLocation, Utils.GeometryFactoryAssembly);
 
-            geometryFactoryPath = Path.Combine(dynamoRootFolder,
-                libGFolderName, Utils.GeometryFactoryAssembly);
+            // TODO(PATHMANAGER): This retains the existing behavior of SetLibGPath method. Move this
+            // out when DynamoPathManager is completely replaced by generic path resolution mechanism.
+            DynamoPathManager.Instance.AddResolutionPath(preloaderLocation);
         }
 
         internal bool Preload()
@@ -51,10 +54,8 @@ namespace Dynamo.Library
             if (!configuration.PreloadShapeManager)
                 return false;
 
-            var preloaderLocation = Path.Combine(dynamoRootFolder, libGFolderName);
             var asmLocation = configuration.ShapeManagerPath;
             Utils.PreloadAsmFromPath(preloaderLocation, asmLocation);
-
             return true;
         }
 
