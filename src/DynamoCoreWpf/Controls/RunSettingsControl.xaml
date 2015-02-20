@@ -64,7 +64,11 @@
                 </ComboBox.ItemContainerStyle>
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <Label Content="{Binding Name}" IsEnabled="{Binding Enabled}" Foreground="#bbbbbb"/>
+                        <Label Content="{Binding Name}" 
+                               IsEnabled="{Binding Enabled}" 
+                               Foreground="#bbbbbb" 
+                               ToolTip="{Binding ToolTipText}"
+                               ToolTipService.ShowOnDisabled="True" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>

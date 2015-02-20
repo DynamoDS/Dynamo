@@ -32,6 +32,7 @@ namespace Dynamo.Wpf.ViewModels
             {
                 enabled = value;
                 RaisePropertyChanged("Enabled");
+                RaisePropertyChanged("ToolTipText");
             }
         }
 
@@ -42,11 +43,32 @@ namespace Dynamo.Wpf.ViewModels
             get { return RunType.ToString(); }
         }
 
+        public string ToolTipText
+        {
+            get
+            {
+                switch (RunType)
+                {
+                    case RunType.Automatically:
+                        return "Run whenever an input to the graph is updated.";
+                    case RunType.Manually:
+                        return "Run when you click the Run button.";
+                    case RunType.Periodically:
+                        return enabled
+                            ? "Run at the specified interval."
+                            : "Run Periodically is only available when there are nodes in the graph that support periodic update.";
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
+
         public RunTypeItem(RunType runType)
         {
             RunType = runType;
             Enabled = true;
         }
+    
     }
 
     /// <summary>
