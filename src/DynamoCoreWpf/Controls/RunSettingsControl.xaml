@@ -49,17 +49,22 @@
                                 Focusable="False" Margin="0,0,2.5,0"/>
 
             <ComboBox Name="EnumComboBox"
-                      ItemsSource="{Binding Source={StaticResource RunTypes}}"
-                      SelectedItem="{Binding RunType}"
+                      ItemsSource="{Binding RunTypeItems}"
+                      SelectedItem="{Binding SelectedRunTypeItem}"
                       Width ="Auto" 
                       VerticalContentAlignment="Center"
                       HorizontalContentAlignment="Left"
                       Style="{DynamicResource ResourceKey=SComboBox}" 
                       Foreground="#bbbbbb" 
                       FontSize="14px" Margin="2.5,0,2.5,0">
+                <ComboBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ComboBoxItem}">
+                        <Setter Property="IsEnabled" Value="{Binding Enabled}"/>
+                    </Style>
+                </ComboBox.ItemContainerStyle>
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <Label Content="{Binding}" Foreground="#bbbbbb"/>
+                        <Label Content="{Binding Name}" IsEnabled="{Binding Enabled}" Foreground="#bbbbbb"/>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>

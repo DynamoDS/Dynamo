@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
@@ -12,6 +14,41 @@ using Dynamo.Wpf.Properties;
 
 namespace Dynamo.Wpf.ViewModels
 {
+    /// <summary>
+    /// The RunTypeItem class wraps a RunType for display in the ComboBox.
+    /// </summary>
+    public class RunTypeItem : NotificationObject
+    {
+        private bool enabled;
+
+        /// <summary>
+        /// The enabled flag sets whether the RunType is selectablable
+        /// in the view.
+        /// </summary>
+        public bool Enabled
+        {
+            get { return enabled; }
+            set
+            {
+                enabled = value;
+                RaisePropertyChanged("Enabled");
+            }
+        }
+
+        public RunType RunType { get; set; }
+
+        public string Name
+        {
+            get { return RunType.ToString(); }
+        }
+
+        public RunTypeItem(RunType runType)
+        {
+            RunType = runType;
+            Enabled = true;
+        }
+    }
+
     /// <summary>
     /// The RunSettingsViewModel is the view model for the 
     /// RunSettings object on a given HomeWorkspaceModel. This class
@@ -28,24 +65,13 @@ namespace Dynamo.Wpf.ViewModels
 
         private bool debug = false;
         private DynamoViewModel dynamoViewModel;
+        private RunTypeItem selectedRunTypeItem;
 
         #endregion
 
         #region properties
 
         public RunSettings Model { get; private set; }
-
-        public RunType RunType
-        {
-            get
-            {
-                return Model.RunType;
-            }
-            set
-            {
-                Model.RunType = value;
-            }
-        }
 
         public int RunPeriod
         {
@@ -62,7 +88,7 @@ namespace Dynamo.Wpf.ViewModels
             {
                 // When switching the run type, also
                 // set the run period input visibility
-                switch (RunType)
+                switch (SelectedRunTypeItem.RunType)
                 {
                     case RunType.Manually:
                     case RunType.Automatically:
@@ -109,12 +135,24 @@ namespace Dynamo.Wpf.ViewModels
                 debug = value;
 
                 if (debug)
-                    RunType = RunType.Manually;
+                    SelectedRunTypeItem.RunType = RunType.Manually;
 
                 RaisePropertyChanged("RunInDebug");
             }
         }
 
+        public RunTypeItem SelectedRunTypeItem
+        {
+            get { return RunTypeItems.First(rt => rt.RunType == Model.RunType); }
+            set
+            {
+                selectedRunTypeItem = value;
+                Model.RunType = selectedRunTypeItem.RunType;
+            }
+        }
+
+        public ObservableCollection<RunTypeItem> RunTypeItems { get; set; }
+ 
         public DelegateCommand RunExpressionCommand { get; private set; }
         public DelegateCommand CancelRunCommand { get; set; }
 
@@ -130,6 +168,13 @@ namespace Dynamo.Wpf.ViewModels
             
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             RunExpressionCommand = new DelegateCommand(RunExpression, CanRunExpression);
+
+            RunTypeItems = new ObservableCollection<RunTypeItem>();
+            foreach (RunType val in Enum.GetValues(typeof(RunType)))
+            {
+                RunTypeItems.Add(new RunTypeItem(val));
+            }
+            TogglePeriodicRunTypeSelection(false);
         }
 
         #endregion
@@ -157,9 +202,11 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunEnabled");
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunButtonToolTip");
-                    RaisePropertyChanged("RunType");
+                    //RaisePropertyChanged("RunType");
                     RaisePropertyChanged("RunPeriodInputVisibility");
                     RaisePropertyChanged("RunButtonEnabled");
+                    RaisePropertyChanged("RunTypeItems");
+                    RaisePropertyChanged("SelectedRunType");
                     RunTypeChangedRun(null);
                     break;
             }
@@ -202,6 +249,12 @@ namespace Dynamo.Wpf.ViewModels
         private static bool CanCancelRun(object parameter)
         {
             return true;
+        }
+
+        internal void TogglePeriodicRunTypeSelection(bool value)
+        {
+            var prt = RunTypeItems.First(rt => rt.RunType == RunType.Periodically);
+            prt.Enabled = value;
         }
 
         #endregion

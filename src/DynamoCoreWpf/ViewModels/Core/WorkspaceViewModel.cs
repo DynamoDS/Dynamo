@@ -378,6 +378,12 @@ namespace Dynamo.ViewModels
                     }
                     break;
             }
+
+            if (RunSettingsViewModel != null)
+            {
+                var periodUpdateAvailable = Model.Nodes.Any(n => n.EnablePeriodicUpdate);
+                RunSettingsViewModel.TogglePeriodicRunTypeSelection(periodUpdateAvailable);
+            }
         }
 
         /// <summary>

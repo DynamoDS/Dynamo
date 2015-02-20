@@ -121,18 +121,11 @@ namespace Dynamo.Models
                         oldItem.PropertyChanged -= OnNodePropertyChanged;
                     break;
             }
-
-            OnPropertyChanged("HasNodeThatPeriodicallyUpdates");
         }
 
         private void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (e.PropertyName)
-            {
-                case "EnablePeriodicUpdate":
-                    OnPropertyChanged("HasNodeThatPeriodicallyUpdates");
-                    break;
-            }
+
         }
 
         public event NodeHandler RequestCancelActiveStateForNode;
