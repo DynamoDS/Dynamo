@@ -35,6 +35,13 @@ namespace DynamoWebServer.Messages
         public string Data { get; private set; }
 
         /// <summary>
+        /// Number of array items the result object has.
+        /// It will be null for not array node
+        /// </summary>
+        [DataMember]
+        public object ArrayItemsNumber { get; private set; }
+
+        /// <summary>
         /// Indicates whether the result object should be drawn on the canvas
         /// </summary>
         [DataMember]
@@ -47,6 +54,11 @@ namespace DynamoWebServer.Messages
             this.StateMessage = node.ToolTipText;
             this.Data = data;
             this.ContainsGeometryData = node.HasRenderPackages;
+
+            if (node.CachedValue != null && node.CachedValue.IsCollection)
+            {
+                this.ArrayItemsNumber = node.CachedValue.GetElements().Count;
+            }
         }
     }
 }

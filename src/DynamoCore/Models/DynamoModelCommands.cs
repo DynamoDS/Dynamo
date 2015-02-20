@@ -78,34 +78,44 @@ namespace Dynamo.Models
                     {
                         Guid customNodeId; // To be used in the event it's a custom node we're making.
 
-                    // Then, we have to figure out what kind of node to make, based on the name.
+                        if (command is CreateProxyNodeCommand)
+                        {
+                            var proxyCommand = command as CreateProxyNodeCommand;
 
-                    // First, we check for a DSFunction by looking for a FunctionDescriptor
-                    var functionItem = LibraryServices.GetFunctionDescriptor(name);
-                    if (functionItem != null)
-                    {
-                        node = (functionItem.IsVarArg)
-                            ? new DSVarArgFunction(functionItem) as NodeModel
-                            : new DSFunction(functionItem);
-                        node.GUID = nodeId;
-                    }
-                    // If that didn't work, let's try using the NodeFactory
-                    else if (NodeFactory.CreateNodeFromTypeName(name, out node))
-                    {
-                        node.GUID = nodeId;
-                    }
-                    // And if that didn't work, then it must be a custom node.
-                    else if (Guid.TryParse(name, out customNodeId))
-                    {
-                        node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
-                        node.GUID = nodeId;
-                    }
-                    // We're out of ideas, log an error.
-                    else
-                    {
-                        Logger.LogError("Could not create instance of node with name: " + name);
-                        return;
-                    }
+                            node = NodeFactory.CreateProxyNodeInstance(nodeId, name, 
+                                proxyCommand.NickName, proxyCommand.Inputs, proxyCommand.Outputs);
+                        }
+                        else
+                        {
+                            // Then, we have to figure out what kind of node to make, based on the name.
+
+                            // First, we check for a DSFunction by looking for a FunctionDescriptor
+                            var functionItem = LibraryServices.GetFunctionDescriptor(name);
+                            if (functionItem != null)
+                            {
+                                node = (functionItem.IsVarArg)
+                                    ? new DSVarArgFunction(functionItem) as NodeModel
+                                    : new DSFunction(functionItem);
+                                node.GUID = nodeId;
+                            }
+                            // If that didn't work, let's try using the NodeFactory
+                            else if (NodeFactory.CreateNodeFromTypeName(name, out node))
+                            {
+                                node.GUID = nodeId;
+                            }
+                            // And if that didn't work, then it must be a custom node.
+                            else if (Guid.TryParse(name, out customNodeId))
+                            {
+                                node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
+                                node.GUID = nodeId;
+                            }
+                            // We're out of ideas, log an error.
+                            else
+                            {
+                                Logger.LogError("Could not create instance of node with name: " + name);
+                                return;
+                            }
+                        }
                     }
                 }
             }
