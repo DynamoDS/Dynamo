@@ -1199,7 +1199,8 @@ namespace Dynamo.Models
                 foreach (var elem in this.SearchModel.SearchEntries)
                 {
                     var libItem = new LibraryItem(elem);
-                    SetTagsAndPorts(libItem);
+                    libItem.Keywords = SearchModel.GetTags(elem);
+                    SetPorts(libItem);
                     allLibraryItems.Add(libItem);
                 }
             }
@@ -1211,7 +1212,7 @@ namespace Dynamo.Models
 
         #region private methods
 
-        private void SetTagsAndPorts(LibraryItem item)
+        private void SetPorts(LibraryItem item)
         {
             var functionItem = LibraryServices.GetFunctionDescriptor(item.CreationName);
             NodeModel newElement = null;
