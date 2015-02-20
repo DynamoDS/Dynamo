@@ -368,6 +368,10 @@ namespace Dynamo.ViewModels
                 string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
                 var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
                 var licensePath = System.IO.Path.Combine(rootModuleDirectory, language, "License.rtf");
+                // Fall back to en-US folder
+                if (!File.Exists(licensePath))
+                    licensePath = System.IO.Path.Combine(rootModuleDirectory, "en-US", "License.rtf");
+
                 return licensePath;
             }
         }

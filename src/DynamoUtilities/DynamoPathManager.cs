@@ -148,7 +148,12 @@ namespace DynamoUtilities
             CommonSamples = Path.Combine(commonData, "samples", UICulture);
             if (!Directory.Exists(CommonSamples))
             {
-                Directory.CreateDirectory(CommonSamples);
+                var neturalCommonSamples = Path.Combine(commonData, "samples", "en-US");
+
+                if (Directory.Exists(neturalCommonSamples))
+                    CommonSamples = neturalCommonSamples;
+                else
+                    Directory.CreateDirectory(CommonSamples);
             }
 
             if (Nodes == null)
