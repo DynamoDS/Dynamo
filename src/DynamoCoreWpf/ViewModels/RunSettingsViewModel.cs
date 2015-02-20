@@ -157,7 +157,10 @@ namespace Dynamo.Wpf.ViewModels
                 debug = value;
 
                 if (debug)
-                    SelectedRunTypeItem.RunType = RunType.Manually;
+                    Model.RunType = RunType.Manually;
+
+                ToggleRunTypeEnabled(RunType.Automatically, !debug);
+                ToggleRunTypeEnabled(RunType.Periodically, !debug);
 
                 RaisePropertyChanged("RunInDebug");
             }
@@ -196,7 +199,7 @@ namespace Dynamo.Wpf.ViewModels
             {
                 RunTypeItems.Add(new RunTypeItem(val));
             }
-            TogglePeriodicRunTypeSelection(false);
+            ToggleRunTypeEnabled(RunType.Periodically, false);
         }
 
         #endregion
@@ -227,7 +230,7 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunPeriodInputVisibility");
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunTypeItems");
-                    RaisePropertyChanged("SelectedRunType");
+                    RaisePropertyChanged("SelectedRunTypeItem");
                     RunTypeChangedRun(null);
                     break;
             }
@@ -272,10 +275,10 @@ namespace Dynamo.Wpf.ViewModels
             return true;
         }
 
-        internal void TogglePeriodicRunTypeSelection(bool value)
+        internal void ToggleRunTypeEnabled(RunType runType, bool enabled)
         {
-            var prt = RunTypeItems.First(rt => rt.RunType == RunType.Periodically);
-            prt.Enabled = value;
+            var prt = RunTypeItems.First(rt => rt.RunType == runType);
+            prt.Enabled = enabled;
         }
 
         #endregion

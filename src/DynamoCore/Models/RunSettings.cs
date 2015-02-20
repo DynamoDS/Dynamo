@@ -100,5 +100,16 @@ namespace Dynamo.Models
         }
 
         #endregion
+
+        #region public methods
+
+        public void Reset()
+        {
+            RunEnabled = true;
+            RunType = RunType.Automatically;
+            RunPeriod = 100;
+        }
+
+        #endregion
     }
 }

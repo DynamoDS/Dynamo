@@ -48,7 +48,7 @@
                                 IsEnabled="{Binding Path=RunButtonEnabled}"
                                 Focusable="False" Margin="0,0,2.5,0"/>
 
-            <ComboBox Name="EnumComboBox"
+            <ComboBox Name="RunTypesComboBox"
                       ItemsSource="{Binding RunTypeItems}"
                       SelectedItem="{Binding SelectedRunTypeItem}"
                       Width ="Auto" 

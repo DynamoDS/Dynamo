@@ -382,7 +382,7 @@ namespace Dynamo.ViewModels
             if (RunSettingsViewModel != null)
             {
                 var periodUpdateAvailable = Model.Nodes.Any(n => n.EnablePeriodicUpdate);
-                RunSettingsViewModel.TogglePeriodicRunTypeSelection(periodUpdateAvailable);
+                RunSettingsViewModel.ToggleRunTypeEnabled(RunType.Periodically, periodUpdateAvailable);
             }
         }
 

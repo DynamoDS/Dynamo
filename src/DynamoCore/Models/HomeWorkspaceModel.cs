@@ -154,7 +154,7 @@ namespace Dynamo.Models
         {
             base.Clear();
             PreloadedTraceData = null;
-            RunSettings.RunEnabled = true;
+            RunSettings.Reset();
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)
