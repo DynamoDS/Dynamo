@@ -127,4 +127,8 @@
   <data name="Watch3DPortDataOutputToolTip" xml:space="preserve">
     <value>Watch contents, passed through</value>
   </data>
+  <data name="Watch3DSearchTags" xml:space="preserve">
+    <value>panel;3dview;view;inspect;debug;watch geo;</value>
+    <comment>Search Tags for Watch 3D</comment>
+  </data>
 </root>

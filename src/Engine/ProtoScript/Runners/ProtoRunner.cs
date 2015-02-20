@@ -24,7 +24,6 @@ namespace ProtoScript.Runners
         public ProtoVMState PreStart(String source, Dictionary<string, Object> context)
         {
             ProtoCore.Options options = new ProtoCore.Options();
-            options.WebRunner = false;
             options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
 
 
@@ -123,17 +122,19 @@ namespace ProtoScript.Runners
         public class ProtoVMState
         {
             private ProtoCore.Core core;
+            private ProtoCore.RuntimeCore runtimeCore;
 
             public ProtoVMState(ProtoCore.Core core)
             {
                 this.core = core;
+                this.runtimeCore = this.core.__TempCoreHostForRefactoring;
             }
 
             public ProtoCore.Mirror.RuntimeMirror LookupName(string name, int blockID)
             {
                 // TODO Jun: The expression interpreter must be integrated into the mirror
                 core.Rmem.PushConstructBlockId(blockID);
-                core.DebugProps.CurrentBlockId = blockID;
+                runtimeCore.DebugProps.CurrentBlockId = blockID;
                 ProtoScript.Runners.ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
 
                 List<ProtoCore.Core.CodeBlockCompilationSnapshot> snapShots = null;

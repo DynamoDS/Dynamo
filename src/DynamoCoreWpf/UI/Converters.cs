@@ -232,11 +232,20 @@ namespace Dynamo.Controls
         }
     }
 
+    // This converter expects the following properties to be bound through XAML 
+    // (these properties are also to be bound in the exact order as stated here):
+    // 
+    //      SearchViewModel.SearchRootCategories.Count (int)
+    //      SearchViewModel.SearchAddonsVisibility (bool)
+    //      SearchViewModel.SearchText (string)
+    //
+    // Rewrite converter when Addons treeview will be visible.
+    // Task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6226.
     public class SearchResultsToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
+            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[2] as string))
             {
                 return Visibility.Visible;
             }
@@ -727,23 +736,6 @@ namespace Dynamo.Controls
 
             bool isRow = rowColumn.Equals("Row");
             return isRow ? row : column;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    // TODO(Vladimir): check if this converter used anyewhere.
-    public class BrowserItemToBooleanConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is NodeSearchElementViewModel)
-                return true;
-
-            return false;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1392,7 +1384,22 @@ namespace Dynamo.Controls
         {
             //target -> source
             int val = 0;
-            int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val);
+            if (int.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out val))
+                return val;
+            //check if the value exceeds the 32 bit maximum / minimum value
+            string integerValue = value.ToString();
+            if (integerValue.Length > 1)
+            {
+                var start = integerValue[0] == '-' ? 1 : 0;
+                for (var i = start; i < integerValue.Length; i++)
+                {
+                    if (!char.IsDigit(integerValue[i]))
+                    {
+                        return 0;
+                    }
+                }
+                val = start == 0 ? int.MaxValue : int.MinValue;
+            }
             return val;
         }
     }
@@ -1720,20 +1727,6 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-    public class StringLengthToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (string.IsNullOrEmpty((string)value))
-                return Visibility.Visible;
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
 
     /// This converter is used to format the display string for both input and output 
     /// parameters on the "TooltipWindow.xaml". If "parameter" here is "inputParam", 
@@ -1764,6 +1757,28 @@ namespace Dynamo.Controls
                 return String.Concat(ColonString, SpaceString, input);
             else
                 return input;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// The converter switches between LibraryView and LibrarySearchView
+    /// using SearchViewModel.ViewMode as value, the View as parameter.
+    /// Converter is used on LibraryConatiner.
+    public class ViewModeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (parameter == null)
+                return Visibility.Collapsed;
+
+            if (((SearchViewModel.ViewMode)value).ToString() == parameter.ToString())
+                return Visibility.Visible;
+
+            return Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1832,6 +1847,23 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public class NodeCategoryVMToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (value is NodeCategoryViewModel) &&
+                (!(value is RootNodeCategoryViewModel)) &&
+                (!(value is ClassesNodeCategoryViewModel));
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
     public class HasParentRootElement : IValueConverter
     {
@@ -1862,6 +1894,32 @@ namespace Dynamo.Controls
         }
     }
 
+    // Depending on the number of points in FullCategoryName margin will be done.
+    // E.g. Geometry -> Margin="5,0,0,0"
+    // E.g. RootCategory.Namespace1.Namespace2 -> Margin="45,0,20,0"
+    public class FullCategoryNameToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var incomingString = value as string;
+
+            if (string.IsNullOrEmpty(incomingString))
+                throw new ArgumentException("value string should not be empty.");
+
+            var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
+            if (numberOfPoints == 0)
+                return new Thickness(5, 0, 0, 0);
+
+            return new Thickness(5 + 20 * numberOfPoints, 0, 20, 0);
+        }
+
+        public object ConvertBack(
+            object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Converter that will be used, if number of items equals 0. Then control should be collapsed.
     public class IntToVisibilityConverter : IValueConverter
     {
@@ -1878,6 +1936,25 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    // Converter is used in LibraryView.xaml. Do not show LibraryTreeView TreviewItem ItemsHost
+    // for only one item, item should be of type ClassesNodeCategoryViewModel.
+    public class LibraryTreeItemsHostVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ClassesNodeCategoryViewModel)
+                return Visibility.Collapsed;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     // Converter is used to specify Margin of highlight rectangle. 
     // This rectangle highlights first instance of search phrase.
     //

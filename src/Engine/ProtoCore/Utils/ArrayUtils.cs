@@ -364,7 +364,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static HeapElement GetHeapElement(StackValue heapObject, Core core)
         {
-            if (!heapObject.IsArray && !heapObject.IsString && !heapObject.IsPointer)
+            if (!heapObject.IsArray && !heapObject.IsPointer)
             {
                 return null;
             }
@@ -426,8 +426,8 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static int GetElementSize(StackValue array, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
-            if (!array.IsArray && !array.IsString)
+            Validity.Assert(array.IsArray);
+            if (!array.IsArray)
             {
                 return Constants.kInvalidIndex;
             }
@@ -549,12 +549,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, int index, StackValue value, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
-            if (array.IsString && !value.IsChar)
-            {
-                core.RuntimeStatus.LogWarning(Runtime.WarningID.kTypeMismatch, Resources.kAssignNonCharacterToString);
-                return StackValue.Null;
-            }
+            Validity.Assert(array.IsArray);
 
             HeapElement arrayHeap = GetHeapElement(array, core);
             index = arrayHeap.ExpandByAcessingAt(index);
@@ -574,7 +569,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndex(StackValue array, StackValue index, StackValue value, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
+            Validity.Assert(array.IsArray);
 
             if (index.IsNumeric)
             {
@@ -613,7 +608,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndices(StackValue array, StackValue[] indices, StackValue value, Core core)
         {
-            Validity.Assert(array.IsArray || array.IsString);
+            Validity.Assert(array.IsArray);
 
             for (int i = 0; i < indices.Length - 1; ++i)
             {
@@ -718,13 +713,31 @@ namespace ProtoCore.Utils
         public static StackValue GetValueFromIndex(StackValue array, int index, Core core)
         {
             Validity.Assert(array.IsArray || array.IsString);
-            if (!array.IsArray && !array.IsString)
-            {
-                return StackValue.Null;
-            }
 
-            HeapElement he = GetHeapElement(array, core);
-            return StackUtils.GetValue(he, index, core);
+            if (array.IsString)
+            {
+                string str = core.Heap.GetString(array);
+                if (str == null)
+                    return StackValue.Null;
+
+                if (index < 0)
+                {
+                    index = index + str.Length;
+                }
+
+                if (index >= str.Length || index < 0)
+                {
+                    core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                    return StackValue.Null;
+                }
+
+                return core.Heap.AllocateString(str.Substring(index, 1));
+            }
+            else
+            {
+                HeapElement he = GetHeapElement(array, core);
+                return StackUtils.GetValue(he, index, core);
+            }
         }
 
         /// <summary>
@@ -805,6 +818,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, StackValue[] indices, Core core)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             Validity.Assert(array.IsArray || array.IsString);
             for (int i = 0; i < indices.Length - 1; ++i)
             {
@@ -818,15 +832,15 @@ namespace ProtoCore.Utils
                 {
                     if (!array.IsArray)
                     {
-                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                         return StackValue.Null;
                     }
                     array = GetValueFromIndex(array, index, core);
                 }
 
-                if (!array.IsArray && !array.IsString)
+                if (!array.IsArray)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
@@ -844,13 +858,14 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, List<StackValue> indices, Core core)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (indices.Count == 0)
             {
                 return array;
             }
             else if (!array.IsArray && !array.IsString)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 
@@ -868,7 +883,15 @@ namespace ProtoCore.Utils
 
             if (zippedIndices.Length > 1)
             {
-                return core.Heap.AllocateArray(values, null);
+                if (array.IsString)
+                {
+                    string result = string.Join(string.Empty, values.Select(v => core.Heap.GetString(v)));
+                    return core.Heap.AllocateString(result);
+                }
+                else
+                {
+                    return core.Heap.AllocateArray(values, null);
+                }
             }
             else
             {

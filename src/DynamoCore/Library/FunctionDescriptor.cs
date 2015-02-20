@@ -54,7 +54,7 @@ namespace Dynamo.DSEngine
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, IEnumerable<TypedParameter> parameters,
-            ProtoCore.Type returnType, FunctionType type,  bool isVisibleInLibrary = true,
+            ProtoCore.Type returnType, FunctionType type, bool isVisibleInLibrary = true,
             IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
             : this(
                 assembly,
@@ -71,7 +71,7 @@ namespace Dynamo.DSEngine
 
         public FunctionDescriptor(
             string assembly, string className, string functionName, string summary,
-            IEnumerable<TypedParameter> parameters, ProtoCore.Type returnType, FunctionType type, 
+            IEnumerable<TypedParameter> parameters, ProtoCore.Type returnType, FunctionType type,
             bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
         {
             this.summary = summary;
@@ -91,7 +91,21 @@ namespace Dynamo.DSEngine
                     });
             }
 
-            ReturnType = returnType.ToShortString();
+            var inputParameters = new List<Tuple<string, string>>();
+            //Add instance parameter as one of the inputs for instance method as well as properties.
+            if(type == FunctionType.InstanceMethod || type == FunctionType.InstanceProperty)
+                inputParameters.Add(Tuple.Create(UnqualifedClassName.ToLower(), UnqualifedClassName));
+
+            if (Parameters.Any())
+            {
+                inputParameters.AddRange(Parameters.Select(
+                    par => Tuple.Create(par.Name, par.DisplayTypeName)));
+            }
+
+            InputParameters = inputParameters;
+            
+            //Not sure why returnType for constructors are var[]..[], use UnqualifiedClassName
+            ReturnType = (type == FunctionType.Constructor) ? UnqualifedClassName : returnType.ToShortString();
             Type = type;
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;
@@ -156,9 +170,17 @@ namespace Dynamo.DSEngine
         /// </summary>
         public string Description
         {
-            get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
+            get { return !String.IsNullOrEmpty(Summary) ? Summary : string.Empty; }
         }
 
+        /// <summary>
+        ///     Inputs for Node
+        /// </summary>
+        public IEnumerable<Tuple<string, string>> InputParameters
+        {
+            get;
+            private set;
+        }
         /// <summary>
         ///     The category of this function.
         /// </summary>

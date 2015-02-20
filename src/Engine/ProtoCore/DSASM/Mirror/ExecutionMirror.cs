@@ -179,9 +179,9 @@ namespace ProtoCore.DSASM.Mirror
                     return (val.opdata == 0) ? "false" : "true";
                 case AddressType.String:
                     if (forPrint)
-                        return GetStringTrace(val, heap);
+                        return heap.GetString(val);
                     else
-                        return "\"" + GetStringTrace(val, heap) + "\"";                    
+                        return "\"" + heap.GetString(val)+ "\"";                    
                 case AddressType.Char:
                     Char character = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(val.opdata);
                     if (forPrint)
@@ -498,12 +498,13 @@ namespace ProtoCore.DSASM.Mirror
         private int GetSymbolIndex(string name, out int ci, ref int block, out SymbolNode symbol)
         {
             ProtoCore.DSASM.Executable exe = core.DSExecutable;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             int functionIndex = Constants.kGlobalScope;
             ci = Constants.kInvalidIndex;
             int functionBlock = Constants.kGlobalScope;
-            
-            if (core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
+
+            if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 ci = core.watchClassScope = core.Rmem.CurrentStackFrame.ClassScope;
                 functionIndex = core.Rmem.CurrentStackFrame.FunctionScope;
@@ -1139,7 +1140,6 @@ namespace ProtoCore.DSASM.Mirror
             switch (val.optype)
             {
                 case AddressType.ArrayPointer:
-                case AddressType.String:
                     {
                         DsasmArray ret = new DsasmArray();
 
@@ -1167,6 +1167,16 @@ namespace ProtoCore.DSASM.Mirror
                         };
 
                         return retO;
+                    }
+                case AddressType.String:
+                    {
+                        string str = heap.GetString(val);
+                        Obj o = new Obj(val)
+                        {
+                            Payload = str,
+                            Type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString, 0)
+                        };
+                        return o;
                     }
                 case AddressType.Int:
                     {

@@ -187,8 +187,8 @@ namespace Dynamo.Search.SearchElements
         {
             get
             {
-                if (inputParameters == null)
-                    inputParameters = GenerateInputParameters();
+                if (!inputParameters.Any())
+                    GenerateInputParameters();
 
                 return inputParameters;
             }
@@ -199,7 +199,10 @@ namespace Dynamo.Search.SearchElements
         {
             get
             {
-                return GenerateOutputParameters();
+                if (!outputParameters.Any())
+                    GenerateOutputParameters();
+
+                return outputParameters;
             }
         }
 
@@ -228,6 +231,11 @@ namespace Dynamo.Search.SearchElements
             OnItemProduced(ConstructNewNodeModel());
         }
 
+        public NodeModel CreateNode()
+        {
+            return ConstructNewNodeModel();
+        }
+
         ICollection<string> ISearchEntry.SearchTags
         {
             get
@@ -247,19 +255,14 @@ namespace Dynamo.Search.SearchElements
 
         protected virtual List<string> GenerateOutputParameters()
         {
-            if (outputParameters == null)
-            {
-                outputParameters = new List<String>();
-                outputParameters.Add("none");
-            }
+            outputParameters.Add("none");
             return outputParameters;
         }
 
         protected virtual List<Tuple<string, string>> GenerateInputParameters()
         {
-            List<Tuple<string, string>> inputPar = new List<Tuple<string, string>>();
-            inputPar.Add(Tuple.Create("", "none"));
-            return inputPar;
+            inputParameters.Add(Tuple.Create("", "none"));
+            return inputParameters;
         }
     }
 }

@@ -14,7 +14,7 @@ namespace DynamoUtilities
     public class DynamoPathManager
     {
         private readonly HashSet<string> preloadLibaries = new HashSet<string>();
-        private List<string> addResolvePaths = new List<string>();
+        private readonly List<string> addResolvePaths = new List<string>();
 
         private static DynamoPathManager instance;
 
@@ -22,35 +22,30 @@ namespace DynamoUtilities
         /// The main execution path of Dynamo. This is the directory
         /// which contains DynamoCore.dll
         /// </summary>
-        public string MainExecPath { get; set; }
+        public string MainExecPath { get; private set; }
 
         /// <summary>
         /// The definitions folder, which contains custom nodes
         /// created by the user.
         /// </summary>
-        public string UserDefinitions { get; set; }
+        public string UserDefinitions { get; private set; }
 
         /// <summary>
         /// The definitions folder which contains custom nodes
         /// available to all users.
         /// </summary>
-        public string CommonDefinitions { get; set; }
+        public string CommonDefinitions { get; private set; }
 
         /// <summary>
         /// The location of the Samples folder.
         /// </summary>
-        public string CommonSamples { get; set; }
+        public string CommonSamples { get; private set; }
 
         /// <summary>
         /// The packages folder, which contains pacakages downloaded
         /// with the package manager.
         /// </summary>
-        public string Packages { get; set; }
-
-        /// <summary>
-        /// The UI folder, which contains the UI resources.
-        /// </summary>
-        public string Ui { get; set; }
+        public string Packages { get; private set; }
 
         /// <summary>
         /// The ASM folder which contains LibG and the 
@@ -61,7 +56,7 @@ namespace DynamoUtilities
         /// <summary>
         /// All 'nodes' folders.
         /// </summary>
-        public HashSet<string> Nodes { get; set; }
+        public HashSet<string> Nodes { get; private set; }
 
         /// <summary>
         /// Libraries to be preloaded by library services.
@@ -74,16 +69,16 @@ namespace DynamoUtilities
         /// <summary>
         /// The Logs folder.
         /// </summary>
-        public string Logs { get; set; }
+        public string Logs { get; private set; }
 
         /// <summary>
         /// The Dynamo folder in AppData
         /// </summary>
-        public string AppData { get; set;}
+        public string AppData { get; private set;}
 
-        public string GeometryFactory { get; set; }
+        public string GeometryFactory { get; private set; }
 
-        public string AsmPreloader { get; set; }
+        public string AsmPreloader { get; private set; }
 
         /// <summary>
         /// Additional paths that should be searched during
@@ -92,7 +87,6 @@ namespace DynamoUtilities
         public List<string> AdditionalResolutionPaths
         {
             get { return addResolvePaths; }
-            set { addResolvePaths = value; }
         }
 
         public static DynamoPathManager Instance
@@ -154,10 +148,13 @@ namespace DynamoUtilities
             CommonSamples = Path.Combine(commonData, "samples", UICulture);
             if (!Directory.Exists(CommonSamples))
             {
-                Directory.CreateDirectory(CommonSamples);
-            }
+                var neturalCommonSamples = Path.Combine(commonData, "samples", "en-US");
 
-            Ui = Path.Combine(MainExecPath , "UI");
+                if (Directory.Exists(neturalCommonSamples))
+                    CommonSamples = neturalCommonSamples;
+                else
+                    Directory.CreateDirectory(CommonSamples);
+            }
 
             if (Nodes == null)
             {
@@ -172,7 +169,6 @@ namespace DynamoUtilities
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(String.Format("Packages: {0}", Packages));
-            sb.AppendLine(String.Format("Ui: {0}", Ui));
             sb.AppendLine(String.Format("Asm: {0}", LibG));
             Nodes.ToList().ForEach(n=>sb.AppendLine(String.Format("Nodes: {0}", n)));
             
@@ -299,6 +295,35 @@ namespace DynamoUtilities
             }
         }
 
+        // This is a temporary method while we phase DynamoPathManager out.
+        private static bool FindAlternativeAsm(string version,
+            DynamoPathManager pathManager, out string hostLocation)
+        {
+            hostLocation = string.Empty;
+
+            try
+            {
+                var libgFolder = Path.Combine(pathManager.MainExecPath, "libg_" + version);
+                if (!Directory.Exists(libgFolder)) // Did not find the LibG folder.
+                    return false;
+
+                // The target binary file name to search for.
+                var targetFileName = string.Format("ASMAHL{0}A.DLL", version);
+
+                var directory = new DirectoryInfo(libgFolder);
+                var files = directory.GetFiles("*.dll");
+                if (files.Any(f => f.Name.ToUpper() == targetFileName))
+                    hostLocation = libgFolder;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            // Returns true if a host location is found.
+            return !String.IsNullOrEmpty(hostLocation);
+        }
+
         /// <summary>
         /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs
         /// for the specified version.
@@ -364,10 +389,13 @@ namespace DynamoUtilities
             Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
 
             string hostLocation;
-            if (!FindAsm(version, out hostLocation))
+            if (!FindAlternativeAsm(version, pathManager, out hostLocation))
             {
-                Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
-                return false;
+                if (!FindAsm(version, out hostLocation))
+                {
+                    Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
+                    return false;
+                }
             }
 
             pathManager.SetLibGPath(version);
@@ -400,7 +428,8 @@ namespace DynamoUtilities
         {
             if (PreloadAsmVersion("219", pathManager)) return true;
             if (PreloadAsmVersion("220", pathManager)) return true;
-            
+            if (PreloadAsmVersion("221", pathManager)) return true;
+
             return false;
         }
     }

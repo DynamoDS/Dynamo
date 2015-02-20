@@ -59,9 +59,14 @@
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Controls\DynamoConverterControl.xaml.cs">
+      <DependentUpon>DynamoConverterControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DynamoSlider.xaml.cs">
       <DependentUpon>DynamoSlider.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConverterViewModel.cs" />
+    <Compile Include="NodeViewCustomizations\ConverterNodeViewCustomization.cs" />
     <Compile Include="NodeViewCustomizations\DoubleInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="NodeViewCustomizations\BoolSelector.cs" />
@@ -93,6 +98,11 @@
     <Compile Include="SliderViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DynamoConversions\DynamoConversions.csproj">
+      <Project>{c5adc05b-34e8-47bf-8e78-9c7bf96418c2}</Project>
+      <Name>DynamoConversions</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
@@ -120,6 +130,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\DynamoConverterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DoubleSliderSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

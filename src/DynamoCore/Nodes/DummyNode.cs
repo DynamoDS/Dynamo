@@ -43,6 +43,8 @@ namespace DSCoreNodesUI
 
             UpdatePorts();
 
+            // Take the position from the old node (because a dummy node
+            // should always be created at the location of the old node).
             var helper = new XmlElementHelper(originalElement);
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
