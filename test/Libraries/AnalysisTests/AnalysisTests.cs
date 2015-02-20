@@ -8,7 +8,8 @@ using Analysis.DataTypes;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Dynamo;
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 
 using DynamoUtilities;
@@ -27,7 +28,6 @@ namespace AnalysisTests
         public void SetUp()
         {
             DynamoPathManager.Instance.InitializeCore(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
 
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
 
@@ -290,6 +290,8 @@ namespace AnalysisTests
     class TestExecutionSession : IExecutionSession, IConfiguration, IDisposable
     {
         private Dictionary<string, object> configValues;
+        private GeometryConfigurationForTests geomConfiguration;
+
         public TestExecutionSession()
         {
             configValues = new Dictionary<string, object>();
@@ -326,7 +328,18 @@ namespace AnalysisTests
         public object GetConfigValue(string config)
         {
             if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
-                return Path.Combine(DynamoPathManager.Instance.LibG, "LibG.ProtoInterface.dll");
+            {
+                var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                var rootDirectory = Path.GetDirectoryName(assemblyPath);
+
+                if (geomConfiguration == null)
+                {
+                    geomConfiguration = new GeometryConfigurationForTests();
+                    geomConfiguration.PreloadAsm(rootDirectory);
+                }
+
+                return geomConfiguration.GetGeometryFactoryPath(rootDirectory);
+            }
 
             if (configValues.ContainsKey(config))
                 return configValues[config];

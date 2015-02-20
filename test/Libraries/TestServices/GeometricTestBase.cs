@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Reflection;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Dynamo;
+using Dynamo.Interfaces;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -20,7 +21,6 @@ namespace TestServices
         public virtual void Setup()
         {
             AssemblyResolver.Setup();
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
             application.OnBeginExecution(session);
             HostFactory.Instance.StartUp();
         }
@@ -41,6 +41,8 @@ namespace TestServices
     class TestExecutionSession : IExecutionSession, IConfiguration, IDisposable
     {
         private Dictionary<string, object> configValues;
+        private GeometryConfigurationForTests geomConfiguration;
+
         public TestExecutionSession()
         {
             configValues = new Dictionary<string, object>();
@@ -77,7 +79,18 @@ namespace TestServices
         public object GetConfigValue(string config)
         {
             if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
-                return Path.Combine(DynamoPathManager.Instance.LibG, "LibG.ProtoInterface.dll");
+            {
+                var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                var rootDirectory = Path.GetDirectoryName(assemblyPath);
+
+                if (geomConfiguration == null)
+                {
+                    geomConfiguration = new GeometryConfigurationForTests();
+                    geomConfiguration.PreloadAsm(rootDirectory);
+                }
+
+                return geomConfiguration.GetGeometryFactoryPath(rootDirectory);
+            }
 
             if (configValues.ContainsKey(config))
                 return configValues[config];

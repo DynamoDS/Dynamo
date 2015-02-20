@@ -44,10 +44,11 @@ namespace Dynamo
             get { return true; }
         }
 
-        public string GetPreloaderLocation(string rootDirectory)
+        public void PreloadAsm(string rootDirectory)
         {
             var version = ((int)libraryVersion);
-            return Path.Combine(rootDirectory, string.Format("libg_{0}", version));
+            var preloaderLocation = Path.Combine(rootDirectory, string.Format("libg_{0}", version));
+            Utils.PreloadAsmFromPath(preloaderLocation, ShapeManagerPath);
         }
 
         public string GetGeometryFactoryPath(string rootDirectory)
