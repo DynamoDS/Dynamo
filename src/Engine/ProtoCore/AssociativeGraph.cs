@@ -1296,15 +1296,19 @@ namespace ProtoCore.AssociativeGraph
             {
                 foreach (GraphNode gnode in gnodeList)
                 {
-                    if (gnode.isActive && gnode.isDirty && gnode.updateBlock.startpc >= pc)
+                    if (gnode.isActive && gnode.isDirty)
                     {
-                        return gnode;
+                        bool isFirstDirtyNode = pc == Constants.kInvalidIndex;
+                        bool isFirstDirtyNodeAfterPC = pc != Constants.kInvalidIndex && gnode.updateBlock.startpc >= pc;
+                        if (isFirstDirtyNode || isFirstDirtyNodeAfterPC)
+                        {
+                            return gnode;
+                        }
                     }
                 }
             }
             return null;
         }
-
 
         private ulong GetGraphNodeKey(int classIndex, int procIndex)
         {
