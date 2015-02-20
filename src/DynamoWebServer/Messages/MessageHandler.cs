@@ -112,7 +112,7 @@ namespace DynamoWebServer.Messages
             else if (message is GetLibraryItemsMessage)
             {
                 OnResultReady(this, new ResultReadyEventArgs(
-                    new LibraryItemsListResponse(dynamoModel.SearchModel.GetAllLibraryItemsByCategory(dynamoModel)),
+                    new LibraryItemsListResponse(dynamoModel.GetAllLibraryItemsByCategory()),
                     sessionId));
             }
             else if (message is SaveFileMessage)

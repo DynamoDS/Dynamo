@@ -12,9 +12,6 @@ namespace Dynamo.Search
     /// </summary>
     public class NodeSearchModel : SearchLibrary<NodeSearchElement, NodeModel>
     {
-        //For caching of search elements
-        List<LibraryItem> allLibraryItems;
-
         /// <summary>
         ///     Dumps the contents of search into an Xml file.
         /// </summary>
@@ -68,19 +65,6 @@ namespace Dynamo.Search
 
             foreach (var entry in category.Entries)
                 AddEntryToXml(element, entry);
-        }
-
-        public IEnumerable<LibraryItem> GetAllLibraryItemsByCategory(DynamoModel dynamoModel)
-        {
-            if (allLibraryItems == null || allLibraryItems.Count == 0)
-            {
-                allLibraryItems = new List<LibraryItem>();
-                foreach (var elem in SearchEntries)
-                {
-                    allLibraryItems.Add(new LibraryItem(elem, dynamoModel));
-                }
-            }
-            return allLibraryItems;
         }
     }
 }

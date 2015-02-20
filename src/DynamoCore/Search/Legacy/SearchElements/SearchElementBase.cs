@@ -91,7 +91,7 @@ namespace Dynamo.Search.SearchElements
         /// The name that will be displayed on node itself 
         /// </summary>
         [DataMember]
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; set; }
 
         /// <summary>
         /// A string describing what the node does
@@ -110,65 +110,28 @@ namespace Dynamo.Search.SearchElements
         /// This property represents the list of words used for element search.
         /// </summary>
         [DataMember]
-        public IEnumerable<string> Keywords { get; private set; }
+        public IEnumerable<string> Keywords { get; set; }
 
         /// <summary>
         /// This property represents the list of node inputs.
         /// </summary>
         [DataMember]
-        public IEnumerable<PortInfo> Parameters { get; private set; }
+        public IEnumerable<PortInfo> Parameters { get; set; }
 
         /// <summary>
         /// This property represents the list of node outputs.
         /// </summary>
         [DataMember]
-        public IEnumerable<PortInfo> ReturnKeys { get; private set; }
+        public IEnumerable<PortInfo> ReturnKeys { get; set; }
 
 
-        public LibraryItem(NodeSearchElement node, DynamoModel dynamoModel)
+        public LibraryItem(NodeSearchElement node)
         {
             Category = node.FullCategoryName;
             DisplayName = Name = node.Name;
             CreationName = node.CreationName;
             Description = node.Description;
             Weight = node.Weight;
-            Keywords = dynamoModel.SearchModel.GetTags(node);
-
-            PopulateKeysAndParameters(dynamoModel);
-        }
-
-        private void PopulateKeysAndParameters(DynamoModel dynamoModel)
-        {
-            var services = dynamoModel.LibraryServices;
-            var functionItem = services.GetFunctionDescriptor(CreationName);
-            NodeModel newElement = null;
-            if (functionItem != null)
-            {
-                DisplayName = functionItem.DisplayName;
-                newElement = (functionItem.IsVarArg)
-                    ? new DSVarArgFunction(functionItem) as NodeModel
-                    : new DSFunction(functionItem);
-            }
-            // If that didn't work, let's try using the NodeFactory
-            else
-            {
-                dynamoModel.NodeFactory.CreateNodeFromTypeName(CreationName, out newElement);
-            }
-
-            if (newElement == null)
-                throw new TypeLoadException("Unable to create instance of NodeModel element by CreationName");
-
-            Parameters = newElement.InPorts.Select(elem => new PortInfo
-            {
-                Name = elem.PortName,
-                Type = elem.ToolTipContent.Split('.').Last(),
-                DefaultValue = newElement.InPortData[elem.Index].DefaultValue
-            });
-
-            ReturnKeys = newElement.OutPorts.Select(elem => new PortInfo
-            {
-                Name = elem.PortName
-            });
         }
 
         public struct PortInfo
