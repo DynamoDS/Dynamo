@@ -61,8 +61,6 @@ namespace SystemTestServices
                 workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             }
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
@@ -82,7 +80,8 @@ namespace SystemTestServices
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true,
-                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
+                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath,
+                    GeometryConfiguration = new GeometryConfigurationForTests()
                 });
 
             ViewModel = DynamoViewModel.Start(

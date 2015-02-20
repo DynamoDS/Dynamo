@@ -34,8 +34,6 @@ namespace DynamoCoreUITests
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
             CreateTemporaryFolder();
 
@@ -45,7 +43,8 @@ namespace DynamoCoreUITests
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = true,
+                    GeometryConfiguration = new GeometryConfigurationForTests()
                 });
 
             ViewModel = DynamoViewModel.Start(

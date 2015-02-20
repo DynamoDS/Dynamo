@@ -1216,15 +1216,14 @@ namespace Dynamo
             DynamoPathManager.Instance.InitializeCore(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-
             schedulerThread = new SampleSchedulerThread();
             dynamoModel = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
                     // See documentation for 'SchedulerIntegrationTests' above.
                     StartInTestMode = false,
-                    SchedulerThread = schedulerThread
+                    SchedulerThread = schedulerThread,
+                    GeometryConfiguration = new GeometryConfigurationForTests()
                 });
         }
 

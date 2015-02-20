@@ -46,8 +46,6 @@ namespace DynamoCoreUITests
             // to create our own copy of Controller here with command file path.
             DynamoPathManager.Instance.InitializeCore(
               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
         }
 
         [SetUp]

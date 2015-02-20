@@ -83,12 +83,11 @@ namespace Dynamo.Tests
             DynamoPathManager.Instance.InitializeCore(
                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-            
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = true,
+                    GeometryConfiguration = new GeometryConfigurationForTests()
                 });
 
             this.ViewModel = DynamoViewModel.Start(
