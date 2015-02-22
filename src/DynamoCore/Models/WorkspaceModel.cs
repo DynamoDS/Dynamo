@@ -519,6 +519,10 @@ namespace Dynamo.Models
 
             ClearUndoRecorder();
             ResetWorkspace();
+
+            X = 0.0;
+            Y = 0.0;
+            Zoom = 1.0;
         }
 
         /// <summary>
