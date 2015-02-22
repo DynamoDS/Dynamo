@@ -876,7 +876,8 @@ namespace Dynamo.Models
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
                 workspaceInfo.X,
-                workspaceInfo.Y,
+                workspaceInfo.Y, 
+                workspaceInfo.Zoom,
                 DebugSettings.VerboseLogging, IsTestMode, nodeGraph.ElementResolver, workspaceInfo.FileName);
 
             RegisterHomeWorkspace(newWorkspace);

@@ -27,14 +27,14 @@ namespace Dynamo.Models
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 0,
-                0, verboseLogging, isTestMode, new ElementResolver(), fileName) { }
+                0,1, verboseLogging, isTestMode, new ElementResolver(), fileName) { }
 
         public HomeWorkspaceModel(
             EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, bool verboseLogging,
+            double x, double y, double zoom, bool verboseLogging,
             bool isTestMode, ElementResolver elementResolver, string fileName = "")
-            : base("Home", e, n, x, y, factory, elementResolver, fileName)
+            : base("Home", e, n, x, y, zoom, factory, elementResolver, fileName)
         {
             RunEnabled = true;
 #if DEBUG

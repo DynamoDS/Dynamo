@@ -32,7 +32,7 @@ namespace Dynamo.Models
         #region Contructors
 
         public CustomNodeWorkspaceModel(
-            string name, string category, string description, double x, double y, Guid customNodeId,
+            string name, string category, string description, double x, double y, double zoom, Guid customNodeId,
             NodeFactory factory, ElementResolver elementResolver, string fileName="")
             : this(
                 name,
@@ -43,12 +43,13 @@ namespace Dynamo.Models
                 Enumerable.Empty<NoteModel>(),
                 x,
                 y,
+                zoom,
                 customNodeId, elementResolver, fileName) { }
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, Guid customNodeId, ElementResolver elementResolver, string fileName="") 
-            : base(name, e, n, x, y, factory, elementResolver, fileName)
+            double x, double y, double zoom, Guid customNodeId, ElementResolver elementResolver, string fileName="") 
+            : base(name, e, n, x, y, zoom, factory, elementResolver, fileName)
         {
             CustomNodeId = customNodeId;
             HasUnsavedChanges = false;

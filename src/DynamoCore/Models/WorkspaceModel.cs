@@ -442,7 +442,7 @@ namespace Dynamo.Models
 
         protected WorkspaceModel(
             string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
+            double x, double y, double zoom, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
             guid = Guid.NewGuid();
 
@@ -452,6 +452,7 @@ namespace Dynamo.Models
             notes = new ObservableCollection<NoteModel>(n);
             X = x;
             Y = y;
+            Zoom = zoom;
             FileName = fileName;
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
