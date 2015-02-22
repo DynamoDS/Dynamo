@@ -42,6 +42,11 @@ namespace ProtoTestFx.TD
             return testCore;
         }
 
+        public ProtoCore.RuntimeCore GetTestRuntimeCore()
+        {
+            return testCore.__TempCoreHostForRefactoring;
+        }
+
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
@@ -53,7 +58,9 @@ namespace ProtoTestFx.TD
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
-//            testCore.Options.kDynamicCycleThreshold = 5;
+
+            testCore.__TempCoreHostForRefactoring.SetProperties(testCore.Options, null);
+            testCore.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = testCore.BuildStatus.MessageHandler;
             
             //FFI registration and cleanup
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
@@ -598,12 +605,12 @@ namespace ProtoTestFx.TD
 
         public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.Runtime.WarningID id)
         {
-            Assert.IsTrue(core.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
+            Assert.IsTrue(core.__TempCoreHostForRefactoring.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyRuntimeWarningCount(int count)
         {
-            Assert.IsTrue(testCore.RuntimeStatus.WarningCount == count, mErrorMessage);
+            Assert.IsTrue(testCore.__TempCoreHostForRefactoring.RuntimeStatus.WarningCount == count, mErrorMessage);
         }
 
         public void VerifyProperty(string dsVariable, string propertyName, object expectedValue, int startBlock = 0)
