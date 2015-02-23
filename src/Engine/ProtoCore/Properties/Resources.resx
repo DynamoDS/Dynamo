@@ -478,7 +478,7 @@
     <value>Imports from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)</value>
   </data>
   <data name="removeKeys" xml:space="preserve">
-    <value>Returns true if the specified key is removed from array, otherwise returns false.</value>
+    <value>Returns true if the specified key is removed from list, otherwise returns false.</value>
   </data>
   <data name="ReturnsListWithRankDepth" xml:space="preserve">
     <value>Returns multidimentional list according the rank given</value>

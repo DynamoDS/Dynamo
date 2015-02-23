@@ -979,7 +979,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns true if the specified key is removed from array, otherwise returns false..
+        ///   Looks up a localized string similar to Returns true if the specified key is removed from list, otherwise returns false..
         /// </summary>
         public static string removeKeys {
             get {
