@@ -450,9 +450,10 @@ namespace Dynamo.UI.Controls
             if (!nodeModel.Code.Equals(InnerTextEditor.Text))
             {
                 nodeViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(nodeModel.GUID,
-                        "Code", InnerTextEditor.Text,
-                        nodeViewModel.WorkspaceViewModel.Model));
+                    new DynCmd.UpdateModelValueCommand(
+                        nodeViewModel.WorkspaceViewModel.Model.Guid,
+                        nodeModel.GUID,
+                        "Code", InnerTextEditor.Text));
             }
 
             if (createdForNewCodeBlock)

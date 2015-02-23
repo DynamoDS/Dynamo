@@ -279,7 +279,10 @@ namespace Dynamo.Models
 
         void UpdateModelValueImpl(UpdateModelValueCommand command)
         {
-            var targetWorkspace = command.TargetWorkspace ?? CurrentWorkspace;
+            WorkspaceModel targetWorkspace  = CurrentWorkspace;
+            if (!command.WorkspaceGuid.Equals(System.Guid.Empty))
+                targetWorkspace = Workspaces.FirstOrDefault(w => w.Guid.Equals(command.WorkspaceGuid));
+
             targetWorkspace.UpdateModelValue(command.ModelGuids,
                 command.Name, command.Value);
         }

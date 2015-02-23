@@ -926,26 +926,26 @@ namespace Dynamo.Models
 
             /// <summary>
             /// </summary>
-            /// <param name="modelGuid"></param>
+            /// <param name="workspaceGuid">Guid of the target workspace. Guid.Empty means current workspace</param>
+            /// <param name="modelGuid">Guid of node model</param>
             /// <param name="name"></param>
             /// <param name="value"></param>
-            /// <param name="workspaceModel">If workspace model is null, this command will be sent to the current workspace</param>
-            public UpdateModelValueCommand(Guid modelGuid, string name, string value, WorkspaceModel workspaceModel = null)
-                : this(new[] {modelGuid}, name, value, workspaceModel)
+            public UpdateModelValueCommand(Guid workspaceGuid, Guid modelGuid, string name, string value)
+                : this(workspaceGuid, new[] {modelGuid}, name, value)
             {
             }
 
             /// <summary>
             /// 
             /// </summary>
+            /// <param name="workspaceGuid">Guid of the target workspace. Guid.Empty means current workspace</param>
             /// <param name="modelGuids"></param>
             /// <param name="name"></param>
             /// <param name="value"></param>
-            /// <param name="workspaceModel">If workspace model is null, this command will be sent to the current workspace</param>
-            public UpdateModelValueCommand(IEnumerable<Guid> modelGuids, string name, string value, WorkspaceModel workspaceModel = null)
+            public UpdateModelValueCommand(Guid workspaceGuid, IEnumerable<Guid> modelGuids, string name, string value)
             {
                 this.modelGuids = new List<Guid>(modelGuids);
-                TargetWorkspace = workspaceModel;
+                WorkspaceGuid = workspaceGuid;
                 Name = name;
                 Value = value;
             }
@@ -956,12 +956,21 @@ namespace Dynamo.Models
                 string name = helper.ReadString("Name");
                 string value = helper.ReadString("Value");
 
+                Guid workspaceGuid = helper.ReadGuid("WorkspaceGuid", Guid.Empty);
+
+                // TODO: once recordable framework serialize workspace's GUID, 
+                // we should use the GUID that read from file instead of using 
+                // empty GUID. Empty GUID means the command will be executed on 
+                // the current workspace, but it may not be the desired target 
+                // workspace.
+                workspaceGuid = Guid.Empty;
+
                 Guid modelGuid = helper.ReadGuid("ModelGuid", Guid.Empty);
                 if (modelGuid != Guid.Empty)
                 {
                     // An old type of 'UpdateModelValueCommand' works for only one 
                     // 'NodeModel' whose Guid is stored under 'ModelGuid' attribute.
-                    return new UpdateModelValueCommand(modelGuid, name, value);
+                    return new UpdateModelValueCommand(workspaceGuid, modelGuid, name, value);
                 }
                 else
                 {
@@ -973,7 +982,7 @@ namespace Dynamo.Models
                                       where xmlNode.Name.Equals("ModelGuid")
                                       select Guid.Parse(xmlNode.InnerText)).ToList();
 
-                    return new UpdateModelValueCommand(modelGuids, name, value);
+                    return new UpdateModelValueCommand(workspaceGuid, modelGuids, name, value);
                 }
             }
 
@@ -984,7 +993,7 @@ namespace Dynamo.Models
             internal IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
             internal string Name { get; private set; }
             internal string Value { get; private set; }
-            internal WorkspaceModel TargetWorkspace { get; private set; } 
+            internal Guid WorkspaceGuid { get; private set; } 
 
             #endregion
 
@@ -1000,6 +1009,7 @@ namespace Dynamo.Models
                 var helper = new XmlElementHelper(element);
                 helper.SetAttribute("Name", Name);
                 helper.SetAttribute("Value", Value);
+                helper.SetAttribute("WorkspaceGuid", WorkspaceGuid.ToString());
 
                 var document = element.OwnerDocument;
                 foreach (var modelGuid in modelGuids)
