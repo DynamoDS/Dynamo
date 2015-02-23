@@ -3921,7 +3921,7 @@ namespace ProtoCore.DSASM
                     if (Constants.kGlobalScope == classId)
                     {
                         procName = exe.procedureTable[blockId].procList[procId].name;
-                        CodeBlock codeblock = core.GetCodeBlock(core.CodeBlockList, blockId);
+                        CodeBlock codeblock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, blockId);
                         procNode = core.GetFirstVisibleProcedure(procName, arglist, codeblock);
                     }
                     else

@@ -101,6 +101,17 @@ namespace ProtoCore.DSASM
 
         public bool isBreakable { get; set; }
 
+        /// <summary>
+        /// A CodeBlock represents a body of DS code
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="type"></param>
+        /// <param name="langId"></param>
+        /// <param name="cbID"></param>
+        /// <param name="symbols"></param>
+        /// <param name="procTable"></param>
+        /// <param name="isBreakableBlock"></param>
+        /// <param name="core"></param>
         public CodeBlock(Guid guid, CodeBlockType type, ProtoCore.Language langId, int cbID, SymbolTable symbols, ProcedureTable procTable, bool isBreakableBlock = false, ProtoCore.Core core = null)
         {
             this.guid = guid;

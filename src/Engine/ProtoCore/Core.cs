@@ -993,24 +993,6 @@ namespace ProtoCore
             return null;
         }
 
-        public CodeBlock GetCodeBlock(List<CodeBlock> blockList, int blockId)
-        {
-            CodeBlock codeblock = null;
-            codeblock = blockList.Find(x => x.codeBlockId == blockId);
-            if (codeblock == null)
-            {
-                foreach (CodeBlock block in blockList)
-                {
-                    codeblock = GetCodeBlock(block.children, blockId);
-                    if (codeblock != null)
-                    {
-                        break;
-                    }
-                }
-            }
-            return codeblock;
-        }
-
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)
         {
             if (CodeBlockType.kLanguage == codeBlock.blockType
@@ -1224,7 +1206,7 @@ namespace ProtoCore
             if (constructBlockId == Constants.kInvalidIndex)
                 return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
 
-            CodeBlock constructBlock = GetCodeBlock(CodeBlockList, constructBlockId);
+            CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
             while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
             {
                 constructBlock = constructBlock.parent;
