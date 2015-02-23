@@ -384,17 +384,17 @@
   <data name="kStringIndexingCannotBeAssigned" xml:space="preserve">
     <value>String indexing cannot be assigned to, it is read only.</value>
   </data>
-  <data name="ChecksArrayWithUniformDepth" xml:space="preserve">
-    <value>Checks if the array has a uniform depth</value>
+  <data name="ChecksListWithUniformDepth" xml:space="preserve">
+    <value>Checks if the list has a uniform depth</value>
   </data>
-  <data name="ChecksIfArrayContainsTheMember" xml:space="preserve">
-    <value>Checks if the array contains the given member </value>
+  <data name="ChecksIfListContainsTheElement" xml:space="preserve">
+    <value>Checks if the list contains the given element</value>
   </data>
-  <data name="ChecksIfTheArrayIsAllFalse" xml:space="preserve">
-    <value>Checks if all elements in the specified array is false</value>
+  <data name="ChecksIfTheListIsAllFalse" xml:space="preserve">
+    <value>Checks if all elements in the specified list is false</value>
   </data>
-  <data name="ChecksIfTheArrayIsAllTrue" xml:space="preserve">
-    <value>Checks if all elements in the specified array is true</value>
+  <data name="ChecksIfTheListIsAllTrue" xml:space="preserve">
+    <value>Checks if all elements in the specified list is true</value>
   </data>
   <data name="DeterminesObjectsAreEqual" xml:space="preserve">
     <value>Determines whether two object instances are equal</value>
@@ -402,8 +402,8 @@
   <data name="gettypes" xml:space="preserve">
     <value>Gets the Type of the current instance</value>
   </data>
-  <data name="InsertsAnElementIntoArray" xml:space="preserve">
-    <value>Inserts an element into array at the specified index</value>
+  <data name="InsertsAnElementIntoList" xml:space="preserve">
+    <value>Inserts an element into a list at the specified index</value>
   </data>
   <data name="MapsValueFromOneRangeToAnotherRange" xml:space="preserve">
     <value>Maps a vlaue from one range to another range</value>
@@ -417,59 +417,59 @@
   <data name="ProducesTheSetUnion" xml:space="preserve">
     <value>Produces the set union of two sequences by using the default equality comparer.</value>
   </data>
-  <data name="RemovesTheMembersofTheArray" xml:space="preserve">
-    <value>Removes the members of the array which are not members of the specified type</value>
+  <data name="RemovesTheMembersofTheList" xml:space="preserve">
+    <value>Removes the members of the list which are not members of the specified type</value>
   </data>
-  <data name="ReordersArray" xml:space="preserve">
-    <value>Reorders the array using the specified indices</value>
+  <data name="ReordersList" xml:space="preserve">
+    <value>Reorders the list using the specified indices</value>
   </data>
-  <data name="ReturnsArrayWithUniformDepth" xml:space="preserve">
-    <value>Returns an array with uniform depth as specified by the input depth</value>
+  <data name="ReturnsListWithUniformDepth" xml:space="preserve">
+    <value>Returns a list with uniform depth as specified by the input depth</value>
   </data>
-  <data name="ReturnsConcatenatingArray" xml:space="preserve">
-    <value>Returns a string that is the result of concatenating two arrays values.</value>
+  <data name="ReturnsConcatenatingList" xml:space="preserve">
+    <value>Joins two lists into a single list.</value>
   </data>
   <data name="ReturnsNumberOfItems" xml:space="preserve">
     <value>Returns number of items in the specified list.</value>
   </data>
-  <data name="ReturnsTheDeepestDepthOfTheArray" xml:space="preserve">
-    <value>Returns the deepest depth of the array</value>
+  <data name="ReturnsTheDeepestDepthOfTheList" xml:space="preserve">
+    <value>Returns the deepest depth of the list</value>
   </data>
-  <data name="ReturnsTheFlattened1DArray" xml:space="preserve">
-    <value>Returns the flattened 1D array of the multi-dimensional input array</value>
+  <data name="ReturnsTheFlattened1DList" xml:space="preserve">
+    <value>Returns the flattened 1D list of the multi-dimensional input list</value>
   </data>
   <data name="ReturnsTheIndex" xml:space="preserve">
-    <value>Returns the index of the member in the array</value>
+    <value>Returns the index of the member in the list</value>
   </data>
-  <data name="ReturnsTheNumberOfFalseValueInArray" xml:space="preserve">
-    <value>Returns the number of  false values in array</value>
+  <data name="ReturnsTheNumberOfFalseValueInList" xml:space="preserve">
+    <value>Returns the number of  false values in the list</value>
   </data>
   <data name="ReturnsTheNumberOfTrueValue" xml:space="preserve">
-    <value>Returns the number of true values in the array</value>
+    <value>Returns the number of true values in the list</value>
   </data>
-  <data name="SortsArrayByValue" xml:space="preserve">
-    <value>Sorts an array by the values of its members in either ascending or descending order</value>
+  <data name="SortsListByValue" xml:space="preserve">
+    <value>Sorts a specified list by the values of its members in either ascending or descending order</value>
   </data>
-  <data name="SortsArrayByValueInAscending" xml:space="preserve">
-    <value>Sorts array by values of its members in ascending order</value>
+  <data name="SortsListByValueInAscending" xml:space="preserve">
+    <value>Sorts a specified list by values of its members in ascending order</value>
   </data>
-  <data name="ObjectsContainsInArray1NotInArray2" xml:space="preserve">
-    <value>Returns objects that are included in Array1 but excluded in Array2</value>
+  <data name="ObjectsContainsInList1NotInList2" xml:space="preserve">
+    <value>Returns objects that are included in List1 but excluded in List2</value>
   </data>
-  <data name="CheckIfTheElementsInArrayAreSameType" xml:space="preserve">
-    <value>Checks if the elements in the specified array have the same type.</value>
+  <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
+    <value>Checks if the elements in the specified list have the same type.</value>
   </data>
-  <data name="ChecksIfLengthsAreSameInMultiDimentionalArray" xml:space="preserve">
-    <value>Check if each row in multidimentional array has the same length</value>
+  <data name="ChecksIfLengthsAreSameInMultiDimentionalList" xml:space="preserve">
+    <value>Check if each row in multidimentional list has the same length</value>
   </data>
   <data name="ContainsKeys" xml:space="preserve">
-    <value>Checks if an array contains a specific key</value>
+    <value>Checks if a list contains a specific key</value>
   </data>
   <data name="getKeys" xml:space="preserve">
-    <value>Gets all keys from an array</value>
+    <value>Gets all keys from an list</value>
   </data>
   <data name="getValues" xml:space="preserve">
-    <value>Gets all values that stored in the array, including in dictionary</value>
+    <value>Gets all values that stored in the list, including in dictionary</value>
   </data>
   <data name="ImportFileByGivenFilePath" xml:space="preserve">
     <value>Imports from CSV by providing file path</value>
@@ -480,7 +480,10 @@
   <data name="removeKeys" xml:space="preserve">
     <value>Returns true if the specified key is removed from array, otherwise returns false.</value>
   </data>
-  <data name="ReturnsArrayWithRankDepth" xml:space="preserve">
-    <value>Returns multidimentional array according the rank given</value>
+  <data name="ReturnsListWithRankDepth" xml:space="preserve">
+    <value>Returns multidimentional list according the rank given</value>
+  </data>
+  <data name="UseListJoinNode" xml:space="preserve">
+    <value>Use List.Join node instead.</value>
   </data>
 </root>

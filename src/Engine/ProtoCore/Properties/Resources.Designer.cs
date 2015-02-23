@@ -79,56 +79,56 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if the elements in the specified array have the same type..
+        ///   Looks up a localized string similar to Checks if the elements in the specified list have the same type..
         /// </summary>
-        public static string CheckIfTheElementsInArrayAreSameType {
+        public static string CheckIfTheElementsInListAreSameType {
             get {
-                return ResourceManager.GetString("CheckIfTheElementsInArrayAreSameType", resourceCulture);
+                return ResourceManager.GetString("CheckIfTheElementsInListAreSameType", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if the array has a uniform depth.
+        ///   Looks up a localized string similar to Check if each row in multidimentional list has the same length.
         /// </summary>
-        public static string ChecksArrayWithUniformDepth {
+        public static string ChecksIfLengthsAreSameInMultiDimentionalList {
             get {
-                return ResourceManager.GetString("ChecksArrayWithUniformDepth", resourceCulture);
+                return ResourceManager.GetString("ChecksIfLengthsAreSameInMultiDimentionalList", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if the array contains the given member .
+        ///   Looks up a localized string similar to Checks if the list contains the given element.
         /// </summary>
-        public static string ChecksIfArrayContainsTheMember {
+        public static string ChecksIfListContainsTheElement {
             get {
-                return ResourceManager.GetString("ChecksIfArrayContainsTheMember", resourceCulture);
+                return ResourceManager.GetString("ChecksIfListContainsTheElement", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if each row in multidimentional array has the same length.
+        ///   Looks up a localized string similar to Checks if all elements in the specified list is false.
         /// </summary>
-        public static string ChecksIfLengthsAreSameInMultiDimentionalArray {
+        public static string ChecksIfTheListIsAllFalse {
             get {
-                return ResourceManager.GetString("ChecksIfLengthsAreSameInMultiDimentionalArray", resourceCulture);
+                return ResourceManager.GetString("ChecksIfTheListIsAllFalse", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if all elements in the specified array is false.
+        ///   Looks up a localized string similar to Checks if all elements in the specified list is true.
         /// </summary>
-        public static string ChecksIfTheArrayIsAllFalse {
+        public static string ChecksIfTheListIsAllTrue {
             get {
-                return ResourceManager.GetString("ChecksIfTheArrayIsAllFalse", resourceCulture);
+                return ResourceManager.GetString("ChecksIfTheListIsAllTrue", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if all elements in the specified array is true.
+        ///   Looks up a localized string similar to Checks if the list has a uniform depth.
         /// </summary>
-        public static string ChecksIfTheArrayIsAllTrue {
+        public static string ChecksListWithUniformDepth {
             get {
-                return ResourceManager.GetString("ChecksIfTheArrayIsAllTrue", resourceCulture);
+                return ResourceManager.GetString("ChecksListWithUniformDepth", resourceCulture);
             }
         }
         
@@ -142,7 +142,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if an array contains a specific key.
+        ///   Looks up a localized string similar to Checks if a list contains a specific key.
         /// </summary>
         public static string ContainsKeys {
             get {
@@ -196,7 +196,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gets all keys from an array.
+        ///   Looks up a localized string similar to Gets all keys from an list.
         /// </summary>
         public static string getKeys {
             get {
@@ -214,7 +214,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gets all values that stored in the array, including in dictionary.
+        ///   Looks up a localized string similar to Gets all values that stored in the list, including in dictionary.
         /// </summary>
         public static string getValues {
             get {
@@ -250,11 +250,11 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inserts an element into array at the specified index.
+        ///   Looks up a localized string similar to Inserts an element into a list at the specified index.
         /// </summary>
-        public static string InsertsAnElementIntoArray {
+        public static string InsertsAnElementIntoList {
             get {
-                return ResourceManager.GetString("InsertsAnElementIntoArray", resourceCulture);
+                return ResourceManager.GetString("InsertsAnElementIntoList", resourceCulture);
             }
         }
         
@@ -952,11 +952,11 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns objects that are included in Array1 but excluded in Array2.
+        ///   Looks up a localized string similar to Returns objects that are included in List1 but excluded in List2.
         /// </summary>
-        public static string ObjectsContainsInArray1NotInArray2 {
+        public static string ObjectsContainsInList1NotInList2 {
             get {
-                return ResourceManager.GetString("ObjectsContainsInArray1NotInArray2", resourceCulture);
+                return ResourceManager.GetString("ObjectsContainsInList1NotInList2", resourceCulture);
             }
         }
         
@@ -988,47 +988,47 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removes the members of the array which are not members of the specified type.
+        ///   Looks up a localized string similar to Removes the members of the list which are not members of the specified type.
         /// </summary>
-        public static string RemovesTheMembersofTheArray {
+        public static string RemovesTheMembersofTheList {
             get {
-                return ResourceManager.GetString("RemovesTheMembersofTheArray", resourceCulture);
+                return ResourceManager.GetString("RemovesTheMembersofTheList", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reorders the array using the specified indices.
+        ///   Looks up a localized string similar to Reorders the list using the specified indices.
         /// </summary>
-        public static string ReordersArray {
+        public static string ReordersList {
             get {
-                return ResourceManager.GetString("ReordersArray", resourceCulture);
+                return ResourceManager.GetString("ReordersList", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns multidimentional array according the rank given.
+        ///   Looks up a localized string similar to Joins two lists into a single list..
         /// </summary>
-        public static string ReturnsArrayWithRankDepth {
+        public static string ReturnsConcatenatingList {
             get {
-                return ResourceManager.GetString("ReturnsArrayWithRankDepth", resourceCulture);
+                return ResourceManager.GetString("ReturnsConcatenatingList", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns an array with uniform depth as specified by the input depth.
+        ///   Looks up a localized string similar to Returns multidimentional list according the rank given.
         /// </summary>
-        public static string ReturnsArrayWithUniformDepth {
+        public static string ReturnsListWithRankDepth {
             get {
-                return ResourceManager.GetString("ReturnsArrayWithUniformDepth", resourceCulture);
+                return ResourceManager.GetString("ReturnsListWithRankDepth", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns a string that is the result of concatenating two arrays values..
+        ///   Looks up a localized string similar to Returns a list with uniform depth as specified by the input depth.
         /// </summary>
-        public static string ReturnsConcatenatingArray {
+        public static string ReturnsListWithUniformDepth {
             get {
-                return ResourceManager.GetString("ReturnsConcatenatingArray", resourceCulture);
+                return ResourceManager.GetString("ReturnsListWithUniformDepth", resourceCulture);
             }
         }
         
@@ -1051,25 +1051,25 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns the deepest depth of the array.
+        ///   Looks up a localized string similar to Returns the deepest depth of the list.
         /// </summary>
-        public static string ReturnsTheDeepestDepthOfTheArray {
+        public static string ReturnsTheDeepestDepthOfTheList {
             get {
-                return ResourceManager.GetString("ReturnsTheDeepestDepthOfTheArray", resourceCulture);
+                return ResourceManager.GetString("ReturnsTheDeepestDepthOfTheList", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns the flattened 1D array of the multi-dimensional input array.
+        ///   Looks up a localized string similar to Returns the flattened 1D list of the multi-dimensional input list.
         /// </summary>
-        public static string ReturnsTheFlattened1DArray {
+        public static string ReturnsTheFlattened1DList {
             get {
-                return ResourceManager.GetString("ReturnsTheFlattened1DArray", resourceCulture);
+                return ResourceManager.GetString("ReturnsTheFlattened1DList", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns the index of the member in the array.
+        ///   Looks up a localized string similar to Returns the index of the member in the list.
         /// </summary>
         public static string ReturnsTheIndex {
             get {
@@ -1078,16 +1078,16 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns the number of  false values in array.
+        ///   Looks up a localized string similar to Returns the number of  false values in the list.
         /// </summary>
-        public static string ReturnsTheNumberOfFalseValueInArray {
+        public static string ReturnsTheNumberOfFalseValueInList {
             get {
-                return ResourceManager.GetString("ReturnsTheNumberOfFalseValueInArray", resourceCulture);
+                return ResourceManager.GetString("ReturnsTheNumberOfFalseValueInList", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns the number of true values in the array.
+        ///   Looks up a localized string similar to Returns the number of true values in the list.
         /// </summary>
         public static string ReturnsTheNumberOfTrueValue {
             get {
@@ -1105,20 +1105,20 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorts an array by the values of its members in either ascending or descending order.
+        ///   Looks up a localized string similar to Sorts a specified list by the values of its members in either ascending or descending order.
         /// </summary>
-        public static string SortsArrayByValue {
+        public static string SortsListByValue {
             get {
-                return ResourceManager.GetString("SortsArrayByValue", resourceCulture);
+                return ResourceManager.GetString("SortsListByValue", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorts array by values of its members in ascending order.
+        ///   Looks up a localized string similar to Sorts a specified list by values of its members in ascending order.
         /// </summary>
-        public static string SortsArrayByValueInAscending {
+        public static string SortsListByValueInAscending {
             get {
-                return ResourceManager.GetString("SortsArrayByValueInAscending", resourceCulture);
+                return ResourceManager.GetString("SortsListByValueInAscending", resourceCulture);
             }
         }
         
@@ -1146,6 +1146,15 @@ namespace ProtoCore.Properties {
         public static string useInlineConditional {
             get {
                 return ResourceManager.GetString("useInlineConditional", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use List.Join node instead..
+        /// </summary>
+        public static string UseListJoinNode {
+            get {
+                return ResourceManager.GetString("UseListJoinNode", resourceCulture);
             }
         }
         
