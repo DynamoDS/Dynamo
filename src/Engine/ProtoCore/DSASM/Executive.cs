@@ -368,7 +368,7 @@ namespace ProtoCore.DSASM
             //  Entering a nested block requires all the nodes of that block to be executed
             if (executingBlock > 0)
             {
-                istream.dependencyGraph.MarkGraphNodesDirty(executingBlock, ci, fi);
+                istream.dependencyGraph.MarkAllGraphNodesDirty(executingBlock, ci, fi);
             }
 
             if (fepRun)
