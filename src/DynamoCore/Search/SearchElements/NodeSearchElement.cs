@@ -41,6 +41,11 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
+        /// The name that is used during node creation
+        /// </summary>
+        public virtual string CreationName { get { return this.Name; } }
+
+        /// <summary>
         ///     List of nested categories this search element is contained in.
         /// </summary>
         public ICollection<string> Categories

@@ -11,6 +11,11 @@ namespace Dynamo.Search.SearchElements
     {
         private readonly FunctionDescriptor functionDescriptor;
 
+        /// <summary>
+        /// The name that is used during node creation
+        /// </summary>
+        public override string CreationName { get { return functionDescriptor != null ? functionDescriptor.MangledName : this.Name; } }
+        
         public ZeroTouchSearchElement(FunctionDescriptor functionDescriptor)
         {
             this.functionDescriptor = functionDescriptor;

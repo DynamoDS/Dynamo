@@ -76,12 +76,6 @@ namespace Dynamo.Search.SearchElements
         public string Category { get; private set; }
 
         /// <summary>
-        /// A string describing the type of object
-        /// </summary>
-        [DataMember]
-        public string Type { get; private set; }
-
-        /// <summary>
         /// Model name in the list of all node models
         /// </summary>
         [DataMember]
@@ -97,19 +91,13 @@ namespace Dynamo.Search.SearchElements
         /// The name that will be displayed on node itself 
         /// </summary>
         [DataMember]
-        public string DisplayName { get; private set; }
+        public string DisplayName { get; set; }
 
         /// <summary>
         /// A string describing what the node does
         /// </summary>
         [DataMember]
         public string Description { get; private set; }
-
-        /// <summary>
-        /// A bool indicating if the object will appear in searches
-        /// </summary>
-        [DataMember]
-        public bool Searchable { get; private set; }
 
         /// <summary>
         /// Number defining the relative importance of the element in search. 
@@ -122,81 +110,28 @@ namespace Dynamo.Search.SearchElements
         /// This property represents the list of words used for element search.
         /// </summary>
         [DataMember]
-        public IEnumerable<string> Keywords { get; private set; }
+        public IEnumerable<string> Keywords { get; set; }
 
         /// <summary>
         /// This property represents the list of node inputs.
         /// </summary>
         [DataMember]
-        public IEnumerable<PortInfo> Parameters { get; private set; }
+        public IEnumerable<PortInfo> Parameters { get; set; }
 
         /// <summary>
         /// This property represents the list of node outputs.
         /// </summary>
         [DataMember]
-        public IEnumerable<PortInfo> ReturnKeys { get; private set; }
+        public IEnumerable<PortInfo> ReturnKeys { get; set; }
 
 
-        public LibraryItem(SearchElementBase node, DynamoModel dynamoModel)
+        public LibraryItem(NodeSearchElement node)
         {
             Category = node.FullCategoryName;
-            Type = node.Type;
             DisplayName = Name = node.Name;
             CreationName = node.CreationName;
             Description = node.Description;
-            Searchable = node.Searchable;
             Weight = node.Weight;
-            Keywords = dynamoModel.SearchModel.SearchDictionary.GetTags(node);
-
-            PopulateKeysAndParameters(dynamoModel);
-        }
-
-        private void PopulateKeysAndParameters(DynamoModel dynamoModel)
-        {
-            var controller = dynamoModel.EngineController;
-            var functionItem = (controller.GetFunctionDescriptor(CreationName));
-            NodeModel newElement = null;
-            if (functionItem != null)
-            {
-                DisplayName = functionItem.DisplayName;
-                if (functionItem.IsVarArg)
-                    newElement = new DSVarArgFunction(dynamoModel.CurrentWorkspace, functionItem);
-                else
-                    newElement = new DSFunction(dynamoModel.CurrentWorkspace, functionItem);
-            }
-            else
-            {
-                TypeLoadData tld = null;
-
-                if (dynamoModel.BuiltInTypesByName.ContainsKey(CreationName))
-                {
-                    tld = dynamoModel.BuiltInTypesByName[CreationName];
-                }
-                else if (dynamoModel.BuiltInTypesByNickname.ContainsKey(CreationName))
-                {
-                    tld = dynamoModel.BuiltInTypesByNickname[CreationName];
-                }
-
-                if (tld != null)
-                {
-                    newElement = (NodeModel)Activator.CreateInstance(tld.Type, dynamoModel.CurrentWorkspace);
-                }
-            }
-
-            if (newElement == null)
-                throw new TypeLoadException("Unable to create instance of NodeModel element by CreationName");
-
-            Parameters = newElement.InPorts.Select(elem => new PortInfo
-            {
-                Name = elem.PortName,
-                Type = elem.ToolTipContent.Split('.').Last(),
-                DefaultValue = newElement.InPortData[elem.Index].DefaultValue
-            });
-
-            ReturnKeys = newElement.OutPorts.Select(elem => new PortInfo
-            {
-                Name = elem.PortName
-            });
         }
 
         public struct PortInfo

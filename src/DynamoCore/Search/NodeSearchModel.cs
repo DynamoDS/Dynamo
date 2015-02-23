@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Collections.Generic;
+using System.Xml;
 using Dynamo.Models;
 using Dynamo.Search.Interfaces;
 using Dynamo.Search.SearchElements;
