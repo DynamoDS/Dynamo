@@ -64,13 +64,16 @@ namespace ProtoCore
     /// </summary>
     public class RuntimeCore
     {
-        public RuntimeCore()
+        public RuntimeCore(Heap heap)
         {
+            // The heap is initialized by the core and is used to allocate strings
+            // Use the that heap for runtime
+            Validity.Assert(heap != null);
+
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
 
-            Heap = new Heap();
-            RuntimeMemory = new RuntimeMemory(Heap);
+            RuntimeMemory = new RuntimeMemory(heap);
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)

@@ -315,7 +315,7 @@ namespace ProtoCore
         public int BaseOffset { get; set; }
         public int GraphNodeUID { get; set; }
 
-        //public Heap Heap { get; set; }
+        public Heap Heap { get; private set; }
         //public RuntimeMemory Rmem { get; set; }
 
         public int ClassIndex { get; set; }     // Holds the current class scope
@@ -633,12 +633,15 @@ namespace ProtoCore
         private void ResetRuntimeCore()
         {
             RuntimeData = new ProtoCore.RuntimeData();
-            __TempCoreHostForRefactoring = new RuntimeCore();
+            __TempCoreHostForRefactoring = new RuntimeCore(Heap);
             __TempCoreHostForRefactoring.RuntimeStatus = new ProtoCore.RuntimeStatus(this);
         }
 
         private void ResetAll(Options options)
         {
+            Heap = new Heap();
+            //Rmem = new RuntimeMemory(Heap);
+
             ResetRuntimeCore();
 
             Validity.AssertExpiry();
@@ -650,8 +653,6 @@ namespace ProtoCore
             FunctionTable = new FunctionTable(); 
             Langverify = new LangVerify();
 
-            //Heap = new Heap();
-            //Rmem = new RuntimeMemory(Heap);
 
             watchClassScope = Constants.kInvalidIndex;
             watchFunctionScope = Constants.kInvalidIndex;
