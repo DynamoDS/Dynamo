@@ -924,6 +924,9 @@ namespace ProtoCore.DSASM.Mirror
         /// <param name="value"></param>
         public void SetValueAndExecute(string varName, int? value)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            Executable exe = runtimeCore.DSExecutable;
+
             core.Options.IsDeltaExecution = true;
             int nodesMarkedDirty = 0;
             bool wasSet = SetValue(varName, value, out nodesMarkedDirty);
@@ -932,7 +935,7 @@ namespace ProtoCore.DSASM.Mirror
             {
                 try
                 {
-                    foreach (ProtoCore.DSASM.CodeBlock codeblock in core.CodeBlockList)
+                    foreach (ProtoCore.DSASM.CodeBlock codeblock in exe.CodeBlocks)
                     {
                         ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
 
