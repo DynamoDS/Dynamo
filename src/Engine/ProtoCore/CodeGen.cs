@@ -2279,7 +2279,7 @@ namespace ProtoCore
             }
 
             string value = (string)sNode.value;
-            StackValue svString = core.Heap.AllocateFixedString(value);
+            StackValue svString = new StackValue(); // core.Heap.AllocateFixedString(value);
             if (core.Options.TempReplicationGuideEmptyFlag && emitReplicationGuide)
             {
                 EmitInstrConsole(kw.pushg, "\"" + value + "\"");

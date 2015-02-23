@@ -17,7 +17,9 @@ namespace ProtoCore
             public Dictionary<string, bool> execFlagList { get; private set; }
             public Dictionary<int, bool> exprExecutionFlags { get; set; }
             public SymbolTable symbolTable { get; set; }
+
             public int CurrentBlockId { get; private set; }
+            public ProtoCore.Runtime.RuntimeMemory MemoryState { get; private set; }
 
 
             /// <summary>
@@ -38,7 +40,7 @@ namespace ProtoCore
                 CurrentBlockId = Constants.kInvalidIndex;
             }
 
-            public void SetData(string source, Dictionary<string, Object> context, Dictionary<string, bool> flagList, int currentBlockID)
+            public void SetData(string source, Dictionary<string, Object> context, Dictionary<string, bool> flagList, int currentBlockID, ProtoCore.Runtime.RuntimeMemory memState)
             {
                 SourceCode = source;
                 GlobalVarList = context;
@@ -46,6 +48,7 @@ namespace ProtoCore
                 exprExecutionFlags = new Dictionary<int, bool>();
                 applySSATransform = true;
                 CurrentBlockId = currentBlockID;
+                MemoryState = memState;
             }
 
             public Context(string source, Dictionary<string, Object> context = null, Dictionary<string, bool> flagList = null)

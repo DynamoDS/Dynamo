@@ -315,8 +315,8 @@ namespace ProtoCore
         public int BaseOffset { get; set; }
         public int GraphNodeUID { get; set; }
 
-        public Heap Heap { get; set; }
-        public RuntimeMemory Rmem { get; set; }
+        //public Heap Heap { get; set; }
+        //public RuntimeMemory Rmem { get; set; }
 
         public int ClassIndex { get; set; }     // Holds the current class scope
         public int RunningBlock { get; set; }
@@ -650,8 +650,8 @@ namespace ProtoCore
             FunctionTable = new FunctionTable(); 
             Langverify = new LangVerify();
 
-            Heap = new Heap();
-            Rmem = new RuntimeMemory(Heap);
+            //Heap = new Heap();
+            //Rmem = new RuntimeMemory(Heap);
 
             watchClassScope = Constants.kInvalidIndex;
             watchFunctionScope = Constants.kInvalidIndex;
@@ -1207,9 +1207,30 @@ namespace ProtoCore
             return ancestors;
         }
 
+        //public int GetCurrentBlockId()
+        //{
+        //    int constructBlockId = Rmem.CurrentConstructBlockId;
+        //    if (constructBlockId == Constants.kInvalidIndex)
+        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
+
+        //    CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
+        //    while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
+        //    {
+        //        constructBlock = constructBlock.parent;
+        //    }
+
+        //    if (null != constructBlock)
+        //        constructBlockId = constructBlock.codeBlockId;
+
+        //    if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
+        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
+        //    else
+        //        return Rmem.CurrentConstructBlockId;
+        //}
+
         public int GetCurrentBlockId()
         {
-            int constructBlockId = Rmem.CurrentConstructBlockId;
+            int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
             if (constructBlockId == Constants.kInvalidIndex)
                 return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
 
@@ -1225,7 +1246,7 @@ namespace ProtoCore
             if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
                 return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
             else
-                return Rmem.CurrentConstructBlockId;
+                return __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
         }
 
         public GraphNode GetExecutingGraphNode()

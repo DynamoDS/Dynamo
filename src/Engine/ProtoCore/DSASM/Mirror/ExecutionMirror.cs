@@ -212,6 +212,7 @@ namespace ProtoCore.DSASM.Mirror
             if (!formatParams.ContinueOutputTrace())
                 return "...";
 
+            RuntimeMemory rmem = MirrorTarget.rmem;
             Executable exe = MirrorTarget.exe;
             ClassTable classTable = MirrorTarget.Core.ClassTable;
 
@@ -261,7 +262,7 @@ namespace ProtoCore.DSASM.Mirror
                         if (symbol.isStatic)
                         {
                             var staticSymbol = exe.runtimeSymbols[langblock].symbolList[symbol.symbolTableIndex];
-                            StackValue staticProp = core.Rmem.GetSymbolValue(staticSymbol);
+                            StackValue staticProp = rmem.GetSymbolValue(staticSymbol);
                             propValue = GetStringValue(staticProp, heap, langblock, forPrint);
                         }
                         else
@@ -497,6 +498,7 @@ namespace ProtoCore.DSASM.Mirror
 
         private int GetSymbolIndex(string name, out int ci, ref int block, out SymbolNode symbol)
         {
+            RuntimeMemory rmem = MirrorTarget.rmem;
             ProtoCore.DSASM.Executable exe = core.DSExecutable;
             RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
@@ -506,9 +508,9 @@ namespace ProtoCore.DSASM.Mirror
 
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
-                ci = core.watchClassScope = core.Rmem.CurrentStackFrame.ClassScope;
-                functionIndex = core.Rmem.CurrentStackFrame.FunctionScope;
-                functionBlock = core.Rmem.CurrentStackFrame.FunctionBlock;
+                ci = core.watchClassScope = rmem.CurrentStackFrame.ClassScope;
+                functionIndex = rmem.CurrentStackFrame.FunctionScope;
+                functionBlock = rmem.CurrentStackFrame.FunctionBlock;
             }
 
             // TODO Jun: 'block' is incremented only if there was no other block provided by the programmer
@@ -650,7 +652,7 @@ namespace ProtoCore.DSASM.Mirror
 
         public string GetType(string name)
         {
-            RuntimeMemory rmem = core.Rmem;
+            RuntimeMemory rmem = MirrorTarget.rmem;
 
             int classcope;
             int block = core.RunningBlock;
@@ -879,7 +881,7 @@ namespace ProtoCore.DSASM.Mirror
             {
                 sv = StackValue.BuildInt((long)value);
             }
-            MirrorTarget.Core.Rmem.Stack[globalStackIndex] = sv;
+            MirrorTarget.rmem.Stack[globalStackIndex] = sv;
 
             // 4. Get all graphnpodes dependent on the symbol and mark them dirty
             const int outerBlock = 0;
@@ -965,8 +967,8 @@ namespace ProtoCore.DSASM.Mirror
         {
             int classcope;
             int block = core.GetCurrentBlockId();
-            
-            RuntimeMemory rmem = core.Rmem;
+
+            RuntimeMemory rmem = MirrorTarget.rmem;
             SymbolNode symbol;
             int index = GetSymbolIndex(name, out classcope, ref block, out symbol);
             StackValue sv;
@@ -984,13 +986,14 @@ namespace ProtoCore.DSASM.Mirror
         // traverse an class type object to get its property
         public Dictionary<string, Obj> GetProperties(Obj obj, bool excludeStatic = false)
         {
+            RuntimeMemory rmem = MirrorTarget.rmem;
             if (obj == null || !obj.DsasmValue.IsPointer)
                 return null;
 
             Dictionary<string, Obj> ret = new Dictionary<string, Obj>();
             int classIndex = obj.DsasmValue.metaData.type;
             IDictionary<int,SymbolNode> symbolList = core.ClassTable.ClassNodes[classIndex].symbols.symbolList;
-            StackValue[] svs = core.Heap.GetHeapElement(obj.DsasmValue).Stack;
+            StackValue[] svs = rmem.Heap.GetHeapElement(obj.DsasmValue).Stack;
             int index = 0;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
@@ -1002,7 +1005,7 @@ namespace ProtoCore.DSASM.Mirror
                 // check if the members are primitive type
                 if (val.IsPointer)
                 {
-                    var heapElement = core.Heap.GetHeapElement(val);
+                    var heapElement = rmem.Heap.GetHeapElement(val);
                     if (heapElement.Stack.Length == 1 &&
                         !heapElement.Stack[0].IsPointer &&
                         !heapElement.Stack[0].IsArray)
@@ -1026,7 +1029,7 @@ namespace ProtoCore.DSASM.Mirror
             List<string> ret = new List<string>();
             int classIndex = obj.DsasmValue.metaData.type;
 
-            StackValue[] svs = core.Heap.GetHeapElement(obj.DsasmValue).Stack;
+            StackValue[] svs = MirrorTarget.rmem.Heap.GetHeapElement(obj.DsasmValue).Stack;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 string propertyName = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix].name;
@@ -1042,7 +1045,7 @@ namespace ProtoCore.DSASM.Mirror
             if ( obj == null || !obj.DsasmValue.IsArray)
                 return null;
 
-            return core.Heap.GetHeapElement(obj.DsasmValue).Stack.Select(x => Unpack(x)).ToList();
+            return MirrorTarget.rmem.Heap.GetHeapElement(obj.DsasmValue).Stack.Select(x => Unpack(x)).ToList();
         }
 
         public StackValue GetGlobalValue(string name, int startBlock = 0)
@@ -1265,13 +1268,14 @@ namespace ProtoCore.DSASM.Mirror
 
         public static Obj Unpack(StackValue val, Core core)
         {
+            RuntimeMemory rmem = core.__TempCoreHostForRefactoring.RuntimeMemory;
             switch (val.optype)
             {
                 case AddressType.ArrayPointer:
                     {
                         //It was a pointer that we pulled, so the value lives on the heap
                         DsasmArray ret = new DsasmArray();
-                        HeapElement hs = core.Heap.GetHeapElement(val);
+                        HeapElement hs = rmem.Heap.GetHeapElement(val);
 
                         StackValue[] nodes = hs.Stack;
                         ret.members = new Obj[nodes.Length];

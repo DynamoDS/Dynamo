@@ -1347,6 +1347,7 @@ namespace ProtoCore
                                               StackFrame stackFrame, Core core, FunctionGroup funcGroup, 
             SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (core.Options.ExecutionMode == ExecutionMode.Parallel)
                 throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
 
@@ -1497,7 +1498,7 @@ namespace ProtoCore
 
                 }
 
-                StackValue ret = core.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
                 return ret;
             }
             else
@@ -1662,7 +1663,7 @@ namespace ProtoCore
 #endif
                 }
 
-                StackValue ret = core.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
                 return ret;
 
             }
@@ -1806,7 +1807,7 @@ namespace ProtoCore
                                                                           providedRepGuides, Core core)
         {
             //return arguments; // no nothing for test validation
-
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             if (providedRepGuides.Count == 0)
                 return arguments;
@@ -1834,7 +1835,7 @@ namespace ProtoCore
                 
                 for (int p = 0; p < promotionsRequired; p++)
                 {
-                    StackValue newSV = core.Heap.AllocateArray( new StackValue[1] { oldSv } , null);
+                    StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv }, null);
                     oldSv = newSV;
                 }
 

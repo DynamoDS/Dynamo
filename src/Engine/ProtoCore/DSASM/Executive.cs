@@ -108,7 +108,8 @@ namespace ProtoCore.DSASM
             fepRun = isFep;
             Properties = new InterpreterProperties();
 
-            rmem = core.Rmem;
+            //rmem = runtimeCore.RuntimeMemory;
+            rmem = runtimeCore.RuntimeMemory;
 
             // Execute DS View VM Log
             //
@@ -2565,7 +2566,8 @@ namespace ProtoCore.DSASM
             Validity.Assert(null != instructions);
 
             // Restore the previous state
-            rmem = core.Rmem;
+            //rmem = runtimeCore.RuntimeMemory;
+            rmem = runtimeCore.RuntimeMemory;
 
             if (runtimeCore.DebugProps.isResume)   // resume from a breakpoint, 
             {
@@ -2837,7 +2839,8 @@ namespace ProtoCore.DSASM
                     runtimeCore.DebugProps.DebugEntryPC = pc;
                 }
 
-                core.Rmem = rmem;
+                //runtimeCore.RuntimeMemory = rmem;
+                runtimeCore.RuntimeMemory = rmem;
 
                 bool terminateExec = HandleBreakpoint(breakpoints, instructions, pc);
                 if (terminateExec)
@@ -4262,12 +4265,12 @@ namespace ProtoCore.DSASM
 
             if (0 == dimensions && !elementBasedUpdate || !objectIndexing)
             {
-                int fp = core.Rmem.FramePointer;
+                int fp = runtimeCore.RuntimeMemory.FramePointer;
                 if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter && instruction.op1.IsThisPtr)
-                    core.Rmem.FramePointer = core.watchFramePointer;
+                    runtimeCore.RuntimeMemory.FramePointer = core.watchFramePointer;
                 StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
                 if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter && instruction.op1.IsThisPtr)
-                    core.Rmem.FramePointer = fp;
+                    runtimeCore.RuntimeMemory.FramePointer = fp;
                 rmem.Push(opdata1);
             }
             else
@@ -4329,9 +4332,9 @@ namespace ProtoCore.DSASM
                 blockId = (int)svBlock.opdata;
             }
 
-            int fp = core.Rmem.FramePointer;
+            int fp = runtimeCore.RuntimeMemory.FramePointer;
             if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
-                core.Rmem.FramePointer = core.watchFramePointer;
+                runtimeCore.RuntimeMemory.FramePointer = core.watchFramePointer;
 
             if (0 == dimensions)
             {
@@ -4348,7 +4351,7 @@ namespace ProtoCore.DSASM
             }
 
             if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
-                core.Rmem.FramePointer = fp;
+                runtimeCore.RuntimeMemory.FramePointer = fp;
 
             ++pc;
         }
@@ -4564,7 +4567,7 @@ namespace ProtoCore.DSASM
         {
             if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                core.Rmem.PushConstructBlockId((int)instruction.op1.opdata);
+                runtimeCore.RuntimeMemory.PushConstructBlockId((int)instruction.op1.opdata);
             }
             ++pc;
         }
@@ -4573,7 +4576,7 @@ namespace ProtoCore.DSASM
         {
             if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                core.Rmem.PopConstructBlockId();
+                runtimeCore.RuntimeMemory.PopConstructBlockId();
             }
             ++pc;
         }
@@ -5731,10 +5734,10 @@ namespace ProtoCore.DSASM
             // TODO(Jun/Jiong): Considering store the orig block id to stack frame
             core.RunningBlock = blockId;
 
-            core.Rmem = rmem;
+            runtimeCore.RuntimeMemory = rmem;
             if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                core.Rmem.PushConstructBlockId(blockId);
+                runtimeCore.RuntimeMemory.PushConstructBlockId(blockId);
             }
 
 #if ENABLE_EXCEPTION_HANDLING
@@ -5776,7 +5779,7 @@ namespace ProtoCore.DSASM
 
             StackFrameType type = StackFrameType.kTypeLanguage;
             int depth = (int)rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
-            int framePointer = core.Rmem.FramePointer;
+            int framePointer = runtimeCore.RuntimeMemory.FramePointer;
 
             // Comment Jun: Use the register TX to store explicit/implicit bounce state
             bounceType = CallingConvention.BounceType.kExplicit;
@@ -5960,7 +5963,7 @@ namespace ProtoCore.DSASM
         {
             if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                core.Rmem.PushConstructBlockId(-1);
+                runtimeCore.RuntimeMemory.PushConstructBlockId(-1);
             }
             throw new NotImplementedException();
         }
@@ -6166,7 +6169,7 @@ namespace ProtoCore.DSASM
         {
             if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                core.Rmem.PopConstructBlockId();
+                runtimeCore.RuntimeMemory.PopConstructBlockId();
             }
 
             if (!runtimeCore.Options.IsDeltaExecution || (runtimeCore.Options.IsDeltaExecution && 0 != core.RunningBlock))
@@ -6271,7 +6274,7 @@ namespace ProtoCore.DSASM
         {
             if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                core.Rmem.PopConstructBlockId();
+                runtimeCore.RuntimeMemory.PopConstructBlockId();
             }
 
             StackValue op1 = instruction.op1;

@@ -68,6 +68,9 @@ namespace ProtoCore
         {
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
+
+            Heap = new Heap();
+            RuntimeMemory = new RuntimeMemory(Heap);
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
@@ -83,9 +86,10 @@ namespace ProtoCore
         public Options Options { get; private set; }
         public RuntimeStatus RuntimeStatus { get; set; }
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
-
-        public RuntimeMemory RuntimeMemory { get; set; }
         public ProtoCore.Runtime.Context Context { get; set; }
+
+        public Heap Heap { get; set; }
+        public RuntimeMemory RuntimeMemory { get; set; }
 
         /// <summary>
         /// RuntimeExpressionUID is used by the associative engine at runtime to determine the current expression ID being executed
