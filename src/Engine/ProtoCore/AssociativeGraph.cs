@@ -66,7 +66,6 @@ namespace ProtoCore.AssociativeEngine
         public static bool IsGlobalScopeDirty(Executable exe)
         {
             Validity.Assert(exe != null);
-            int dirtyNodes = 0;
             var graph = exe.instrStreamList[0].dependencyGraph;
             var graphNodes = graph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
             if (graphNodes != null)
