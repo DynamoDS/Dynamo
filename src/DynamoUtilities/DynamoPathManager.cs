@@ -76,10 +76,6 @@ namespace DynamoUtilities
         /// </summary>
         public string AppData { get; private set;}
 
-        public string GeometryFactory { get; private set; }
-
-        public string AsmPreloader { get; private set; }
-
         /// <summary>
         /// Additional paths that should be searched during
         /// assembly resolution
@@ -278,18 +274,6 @@ namespace DynamoUtilities
         {
             if (!addResolvePaths.Contains(path))
                 addResolvePaths.Add(path);
-        }
-
-        public void SetLibGPath(string version)
-        {
-            LibG = Path.Combine(MainExecPath, string.Format("libg_{0}", version));
-            var splits = LibG.Split('\\');
-            GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
-            AsmPreloader = Path.Combine(
-                MainExecPath,
-                splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll");
-
-            AddResolutionPath(LibG);
         }
     }
 }
