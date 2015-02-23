@@ -38,7 +38,7 @@ namespace DynamoWebServer.Messages
                     IsCustomNode = uploadFileMessage.IsCustomNode;
                     var content = uploadFileMessage.FileContent;
                     var filePath = Path.GetTempPath() + "\\" + uploadFileMessage.FileName;
-                    
+
                     File.WriteAllBytes(filePath, content);
 
                     dynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(filePath));
@@ -48,6 +48,16 @@ namespace DynamoWebServer.Messages
 
                 nodesToCreate.Clear();
                 connectorsToCreate.Clear();
+
+                // Since this work is being performed on view layer
+                // we need to perform it ourselves
+                if (dynamoModel.CurrentWorkspace is HomeWorkspaceModel)
+                {
+                    var oldHomes = new List<WorkspaceModel>(dynamoModel.Workspaces)
+                        .FindAll(w => w is HomeWorkspaceModel && w != dynamoModel.CurrentWorkspace);
+                    oldHomes.ForEach(h => dynamoModel.RemoveWorkspace(h));
+                    dynamoModel.ResetEngine();
+                }
 
                 return result;
             }
