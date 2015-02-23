@@ -912,14 +912,10 @@ namespace Dynamo.Models
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                workspaceInfo.X,
-                workspaceInfo.Y,
+                workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode, 
-                nodeGraph.ElementResolver, 
-                workspaceInfo.RunType, 
-                workspaceInfo.RunPeriod,
-                workspaceInfo.FileName
+                nodeGraph.ElementResolver
                );
 
             RegisterHomeWorkspace(newWorkspace);

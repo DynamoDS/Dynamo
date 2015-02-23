@@ -9,7 +9,7 @@ namespace Dynamo.Models
 {
     public class WorkspaceInfo
     {
-        private WorkspaceInfo() { }
+        public WorkspaceInfo() { }
 
         public static bool FromXmlDocument(
             XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceInfo workspaceInfo)
@@ -107,17 +107,17 @@ namespace Dynamo.Models
             }
         }
 
-        public string Version { get; private set; }
-        public string Description { get; private set; }
-        public string Category { get; private set; }
-        public double X { get; private set; }
-        public double Y { get; private set; }
-        public double Zoom { get; private set; }
-        public string Name { get; private set; }
-        public string ID { get; private set; }
-        public string FileName { get; private set; }
-        public RunType RunType { get; private set; }
-        public int RunPeriod{get; private set;}
+        public string Version { get; internal set; }
+        public string Description { get; internal set; }
+        public string Category { get; internal set; }
+        public double X { get; internal set; }
+        public double Y { get; internal set; }
+        public double Zoom { get; internal set; }
+        public string Name { get; internal set; }
+        public string ID { get; internal set; }
+        public string FileName { get; internal set; }
+        public RunType RunType { get; internal set; }
+        public int RunPeriod { get; internal set; }
 
         public bool IsCustomNodeWorkspace
         {

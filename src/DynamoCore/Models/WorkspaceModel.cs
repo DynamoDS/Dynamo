@@ -14,7 +14,6 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 
-using ProtoCore.AST;
 using ProtoCore.Namespace;
 using String = System.String;
 using Utils = Dynamo.Nodes.Utilities;
@@ -437,8 +436,12 @@ namespace Dynamo.Models
         #region constructors
 
         protected WorkspaceModel(
-            string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
+            string name, 
+            IEnumerable<NodeModel> e, 
+            IEnumerable<NoteModel> n,
+            WorkspaceInfo info, 
+            NodeFactory factory, 
+            ElementResolver elementResolver)
         {
             guid = Guid.NewGuid();
 
@@ -446,9 +449,13 @@ namespace Dynamo.Models
 
             nodes = new ObservableCollection<NodeModel>(e);
             notes = new ObservableCollection<NoteModel>(n);
-            X = x;
-            Y = y;
-            FileName = fileName;
+
+            // Set workspace info from WorkspaceInfo object
+            X = info.X;
+            Y = info.Y;
+            FileName = info.FileName;
+            Zoom = info.Zoom;
+
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 

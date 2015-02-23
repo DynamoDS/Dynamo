@@ -32,8 +32,15 @@ namespace Dynamo.Models
         #region Contructors
 
         public CustomNodeWorkspaceModel(
-            string name, string category, string description, double x, double y, Guid customNodeId,
-            NodeFactory factory, ElementResolver elementResolver, string fileName="")
+            string name, 
+            string category, 
+            string description, 
+            double x, 
+            double y, 
+            Guid customNodeId,
+            NodeFactory factory, 
+            ElementResolver elementResolver, 
+            string fileName="")
             : this(
                 name,
                 category,
@@ -46,8 +53,17 @@ namespace Dynamo.Models
                 customNodeId, elementResolver, fileName) { }
 
         public CustomNodeWorkspaceModel(
-            string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, Guid customNodeId, ElementResolver elementResolver, string fileName="") 
+            string name, 
+            string category, 
+            string description, 
+            NodeFactory factory, 
+            IEnumerable<NodeModel> e, 
+            IEnumerable<NoteModel> n, 
+            double x, 
+            double y, 
+            Guid customNodeId, 
+            ElementResolver elementResolver, 
+            string fileName="") 
             : base(name, e, n, x, y, factory, elementResolver, fileName)
         {
             CustomNodeId = customNodeId;

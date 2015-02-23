@@ -31,21 +31,25 @@ namespace Dynamo.Models
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
-                0,
-                0, verboseLogging, isTestMode, new ElementResolver(), 
-                RunType.Automatically, 100, fileName) { }
+                new WorkspaceInfo(){X = 0, Y = 0, RunType = RunType.Automatically, RunPeriod = 100, FileName = fileName},
+                verboseLogging, 
+                isTestMode, new ElementResolver()) { }
 
         public HomeWorkspaceModel(
-            EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
-            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, bool verboseLogging,
-            bool isTestMode, ElementResolver elementResolver, 
-            RunType runType, int runPeriod,
-            string fileName = "")
-            : base("Home", e, n, x, y, factory, elementResolver, fileName)
+            EngineController engine, 
+            DynamoScheduler scheduler, 
+            NodeFactory factory,
+            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
+            IEnumerable<NodeModel> e, 
+            IEnumerable<NoteModel> n, 
+            WorkspaceInfo info, 
+            bool verboseLogging,
+            bool isTestMode, 
+            ElementResolver elementResolver)
+            : base("Home", e, n, info, factory, elementResolver)
         {
             
-            RunSettings = new RunSettings(runType, runPeriod);
+            RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
