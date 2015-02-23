@@ -11,6 +11,10 @@
              Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
             <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
@@ -21,155 +25,6 @@
             <controls:BooleanToBrushConverter x:Key="DescriptionToColorConverter"
                                               TrueBrush="#cccccc"
                                               FalseBrush="#666666" />
-
-            <!-- Region ScrollBar Template-->
-
-            <ControlTemplate x:Key="ScrollViewerControlTemplate"
-                             TargetType="{x:Type ScrollViewer}">
-                <Grid x:Name="Grid"
-                      Background="{TemplateBinding Background}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
-                                            CanContentScroll="{TemplateBinding CanContentScroll}"
-                                            CanHorizontallyScroll="False"
-                                            CanVerticallyScroll="True"
-                                            ContentTemplate="{TemplateBinding ContentTemplate}"
-                                            Content="{TemplateBinding Content}"
-                                            Grid.RowSpan="2"
-                                            Margin="{TemplateBinding Padding}"
-                                            Grid.ColumnSpan="2" />
-                    <ScrollBar x:Name="PART_VerticalScrollBar"
-                               AutomationProperties.AutomationId="VerticalScrollBar"
-                               Cursor="Arrow"
-                               Grid.Column="1"
-                               Maximum="{TemplateBinding ScrollableHeight}"
-                               Minimum="0"
-                               Grid.Row="0"
-                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                               Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
-                               ViewportSize="{TemplateBinding ViewportHeight}"
-                               Width="10" />
-                </Grid>
-            </ControlTemplate>
-
-            <!--EndRegion-->
-
-            <!-- Region ScrollBar Styles-->
-
-            <Style x:Key="VerticalThumb"
-                   TargetType="{x:Type Thumb}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Thumb}">
-                            <Grid>
-                                <Rectangle HorizontalAlignment="Stretch"
-                                           VerticalAlignment="Stretch"
-                                           Width="Auto"
-                                           Height="Auto"
-                                           Fill="Transparent" />
-                                <Border x:Name="Rectangle1"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Width="5"
-                                        Height="Auto"
-                                        Background="#aaaaaa"
-                                        Opacity="0.5"
-                                        CornerRadius="2" />
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="ScrollViewerStyle"
-                   TargetType="ScrollViewer">
-                <Setter Property="VerticalScrollBarVisibility"
-                        Value="Hidden" />
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver"
-                             Value="true">
-                        <Setter Property="VerticalScrollBarVisibility"
-                                Value="Auto" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style TargetType="{x:Type ScrollBar}">
-                <Setter Property="Stylus.IsPressAndHoldEnabled"
-                        Value="false" />
-                <Setter Property="Stylus.IsFlicksEnabled"
-                        Value="false" />
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-                <Setter Property="Width"
-                        Value="10" />
-                <Setter Property="MinWidth"
-                        Value="10" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ScrollBar}">
-                            <Grid x:Name="Bg"
-                                  SnapsToDevicePixels="true"
-                                  Background="Transparent">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="0.00001*" />
-                                </Grid.RowDefinitions>
-                                <Track x:Name="PART_Track"
-                                       IsDirectionReversed="true"
-                                       IsEnabled="{TemplateBinding IsMouseOver}">
-                                    <Track.Thumb>
-                                        <Thumb Style="{DynamicResource VerticalThumb}"
-                                               Width="6" />
-                                    </Track.Thumb>
-                                </Track>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Style.Triggers>
-                    <Trigger Property="Orientation"
-                             Value="Horizontal">
-                        <Setter Property="Width"
-                                Value="Auto" />
-                        <Setter Property="MinWidth"
-                                Value="0" />
-                        <Setter Property="Height"
-                                Value="10" />
-                        <Setter Property="MinHeight"
-                                Value="10" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type ScrollBar}">
-                                    <Grid x:Name="Bg"
-                                          SnapsToDevicePixels="true"
-                                          Background="#7FA7A7A7">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="0.00001*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Track x:Name="PART_Track"
-                                               IsEnabled="{TemplateBinding IsMouseOver}">
-                                            <Track.Thumb>
-                                                <Thumb Style="{DynamicResource HorizontalThumb}"
-                                                       Height="6" />
-                                            </Track.Thumb>
-                                        </Track>
-                                    </Grid>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <!--EndRegion-->
-
         </ResourceDictionary>
     </UserControl.Resources>
     <Border CornerRadius="5"
@@ -199,8 +54,8 @@
                     <ColumnDefinition Width="96"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <ScrollViewer Template="{DynamicResource ScrollViewerControlTemplate}"
-                              Style="{StaticResource ScrollViewerStyle}"
+                <ScrollViewer Template="{DynamicResource TooltipScrollViewerControlTemplate}"
+                              Style="{DynamicResource LibraryScrollViewerStyle}"
                               CanContentScroll="True">
                     <TextBlock Text="{Binding Path=Description}"
                                FontSize="13"
