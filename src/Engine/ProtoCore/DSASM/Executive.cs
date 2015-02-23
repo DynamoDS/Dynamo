@@ -2054,7 +2054,7 @@ namespace ProtoCore.DSASM
                         if (graphNode.isLanguageBlock && currentLangBlock != Constants.kInvalidIndex)
                         {
                             if (graphNode.languageBlockId == currentLangBlock
-                                || core.CompleteCodeBlockList[currentLangBlock].IsMyAncestorBlock(graphNode.languageBlockId))
+                                || exe.CompleteCodeBlocks[currentLangBlock].IsMyAncestorBlock(graphNode.languageBlockId))
                             {
                                 continue;
                             }
@@ -3700,7 +3700,7 @@ namespace ProtoCore.DSASM
                 {
                     if (addressType == AddressType.StaticMemVarIndex)
                     {
-                        node = core.CodeBlockList[0].symbolTable.symbolList[symbolIndex];
+                        node = exe.CodeBlocks[0].symbolTable.symbolList[symbolIndex];
                         isStatic = true;
                     }
                     else
@@ -3842,7 +3842,7 @@ namespace ProtoCore.DSASM
                     {
                         if (addressType == AddressType.StaticMemVarIndex)
                         {
-                            node = core.CodeBlockList[0].symbolTable.symbolList[symbolIndex];
+                            node = exe.CodeBlocks[0].symbolTable.symbolList[symbolIndex];
                             isStatic = true;
                         }
                         else
@@ -3921,7 +3921,7 @@ namespace ProtoCore.DSASM
                     if (Constants.kGlobalScope == classId)
                     {
                         procName = exe.procedureTable[blockId].procList[procId].name;
-                        CodeBlock codeblock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, blockId);
+                        CodeBlock codeblock = ProtoCore.Utils.CoreUtils.GetCodeBlock(exe.CodeBlocks, blockId);
                         procNode = core.GetFirstVisibleProcedure(procName, arglist, codeblock);
                     }
                     else
@@ -4061,7 +4061,7 @@ namespace ProtoCore.DSASM
             List<StackValue> ptrList = new List<StackValue>();
             if (Constants.kInvalidIndex == classIndex)
             {
-                st = core.CompleteCodeBlockList[blockId].symbolTable;
+                st = exe.CompleteCodeBlocks[blockId].symbolTable;
             }
             else
             {
@@ -4093,7 +4093,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            foreach (CodeBlock cb in core.CompleteCodeBlockList[blockId].children)
+            foreach (CodeBlock cb in exe.CompleteCodeBlocks[blockId].children)
             {
                 if (cb.blockType == CodeBlockType.kConstruct)
                     GCCodeBlock(cb.codeBlockId, functionIndex, classIndex);
@@ -6279,7 +6279,7 @@ namespace ProtoCore.DSASM
             int blockId = (int)op1.opdata;
 
 
-            CodeBlock codeBlock = core.CompleteCodeBlockList[blockId];
+            CodeBlock codeBlock = exe.CompleteCodeBlocks[blockId];
             runtimeVerify(codeBlock.blockType == CodeBlockType.kConstruct);
             GCCodeBlock(blockId);
             pc++;
@@ -7666,7 +7666,7 @@ namespace ProtoCore.DSASM
             var isInNestedImperativeBlock = frames.Any(f =>
                 {
                     var callerBlockId = f.FunctionCallerBlock;
-                    var cbn = core.CompleteCodeBlockList[callerBlockId];
+                    var cbn = exe.CompleteCodeBlocks[callerBlockId];
                     return cbn.language == Language.kImperative;
                 });
 
@@ -7720,7 +7720,7 @@ namespace ProtoCore.DSASM
                     while (workingList.Any())
                     {
                         blockId = workingList.Pop();
-                        var block = core.CompleteCodeBlockList[blockId];
+                        var block = exe.CompleteCodeBlocks[blockId];
 
                         foreach (var child in block.children)
                         {

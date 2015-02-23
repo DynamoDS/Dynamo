@@ -50,6 +50,9 @@ namespace ProtoCore.DSASM
         public ProtoCore.DSASM.ProcedureTable[] procedureTable { get; set; }
         public ProtoCore.DSASM.SymbolTable[] runtimeSymbols { get; set; }
 
+        public List<CodeBlock> CodeBlocks { get; set; }
+        public List<CodeBlock> CompleteCodeBlocks { get; set; }
+
         public InstructionStream[] instrStreamList { get; set; } 
         public InstructionStream iStreamCanvas { get; set; }
 
@@ -69,6 +72,8 @@ namespace ProtoCore.DSASM
             instrStreamList = null;
             iStreamCanvas = null;
             RuntimeData = null;
+            CodeBlocks = null;
+            CompleteCodeBlocks = null;
         }
     }
 

@@ -546,7 +546,7 @@ namespace ProtoCore.DSASM.Mirror
             }
             else
             {
-                CodeBlock searchBlock = core.CompleteCodeBlockList[block];
+                CodeBlock searchBlock = runtimeCore.DSExecutable.CompleteCodeBlocks[block];
 
                 // To detal with the case that a language block defined in a function
                 //

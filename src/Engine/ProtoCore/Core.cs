@@ -1107,6 +1107,13 @@ namespace ProtoCore
 
             SetupRuntimeCore();
 
+            // Create the code block list data
+            DSExecutable.CodeBlocks = new List<CodeBlock>();
+            DSExecutable.CodeBlocks.AddRange(CodeBlockList);
+            DSExecutable.CompleteCodeBlocks = new List<CodeBlock>();
+            DSExecutable.CompleteCodeBlocks.AddRange(CompleteCodeBlockList);
+
+
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
