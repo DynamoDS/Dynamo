@@ -1621,7 +1621,7 @@ namespace ProtoScript.Runners
 
         private void ApplyUpdate()
         {
-            if (ProtoCore.AssociativeEngine.Utils.GetDirtyNodeCountAtGlobalScope(runnerCore.DSExecutable) > 0)
+            if (ProtoCore.AssociativeEngine.Utils.IsGlobalScopeDirty(runnerCore.DSExecutable))
             {
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
