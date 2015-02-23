@@ -421,16 +421,16 @@ namespace Dynamo.Core
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(path);
 
-                WorkspaceHeader header;
-                if (!WorkspaceHeader.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
+                WorkspaceInfo header;
+                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
                 {
                     Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                     info = null;
                     return false;
                 }
                 info = new CustomNodeInfo(
-                    Guid.Parse(header.ID), 
-                    header.Name, 
+                    Guid.Parse(header.ID),
+                    header.Name,
                     header.Category,
                     header.Description, 
                     path);
@@ -446,7 +446,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceHeader.
+        ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceInfo.
         /// </summary>
         /// <param name="xmlDoc">XmlDocument representing the parsed custom node file.</param>
         /// <param name="workspaceInfo">Workspace header describing the custom node file.</param>
@@ -456,7 +456,7 @@ namespace Dynamo.Core
         /// <param name="workspace"></param>
         /// <returns></returns>
         public bool OpenCustomNodeWorkspace(
-            XmlDocument xmlDoc, WorkspaceHeader workspaceInfo, bool isTestMode, out WorkspaceModel workspace)
+            XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, bool isTestMode, out WorkspaceModel workspace)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (InitializeCustomNode(
@@ -473,7 +473,7 @@ namespace Dynamo.Core
         }
 
         private bool InitializeCustomNode(
-            Guid functionId, WorkspaceHeader workspaceInfo,
+            Guid functionId, WorkspaceInfo workspaceInfo,
             XmlDocument xmlDoc, out CustomNodeWorkspaceModel workspace)
         {
             // Add custom node definition firstly so that a recursive
@@ -557,17 +557,17 @@ namespace Dynamo.Core
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
 
-                WorkspaceHeader header;
-                if (WorkspaceHeader.FromXmlDocument(
+                WorkspaceInfo info;
+                if (WorkspaceInfo.FromXmlDocument(
                     xmlDoc,
                     xmlPath,
                     isTestMode,
                     AsLogger(),
-                    out header) && header.IsCustomNodeWorkspace)
+                    out info) && info.IsCustomNodeWorkspace)
                 {
-                    if (migrationManager.ProcessWorkspace(header, xmlDoc, isTestMode, nodeFactory))
+                    if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
                     {
-                        return InitializeCustomNode(functionId, header, xmlDoc, out workspace);
+                        return InitializeCustomNode(functionId, info, xmlDoc, out workspace);
                     }
                 }
                 Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));

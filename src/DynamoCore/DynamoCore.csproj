@@ -175,7 +175,7 @@ limitations under the License.
     <Compile Include="Models\DynamoModelEvents.cs" />
     <Compile Include="Models\NodeFactory.cs" />
     <Compile Include="Models\TypeLoadData.cs" />
-    <Compile Include="Models\WorkspaceHeader.cs" />
+    <Compile Include="Models\WorkspaceInfo.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
     <Compile Include="PackageManager\PackageFileInfo.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />

@@ -131,7 +131,7 @@ namespace Dynamo.Models
         /// <param name="workspaceInfo"></param>
         /// <param name="xmlDoc"></param>
         /// <returns></returns>
-        public bool ProcessWorkspace(WorkspaceHeader workspaceInfo, XmlDocument xmlDoc, bool isTestMode, NodeFactory factory)
+        public bool ProcessWorkspace(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, bool isTestMode, NodeFactory factory)
         {
             Version fileVersion = VersionFromString(workspaceInfo.Version);
 

@@ -7,12 +7,12 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
-    public class WorkspaceHeader
+    public class WorkspaceInfo
     {
-        private WorkspaceHeader() { }
+        private WorkspaceInfo() { }
 
         public static bool FromXmlDocument(
-            XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceHeader workspaceInfo)
+            XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceInfo workspaceInfo)
         {
             try
             {
@@ -76,7 +76,7 @@ namespace Dynamo.Models
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
 
-                workspaceInfo = new WorkspaceHeader
+                workspaceInfo = new WorkspaceInfo
                 {
                     ID = id,
                     Name = funName,
