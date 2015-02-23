@@ -1,21 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Region ImageSources-->
-    <BitmapImage x:Key="CollapseStateNormal"
-                 UriSource="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"/>
-    <BitmapImage x:Key="CollapseStateHover"
-                 UriSource="/DynamoCoreWpf;component/UI/Images/collapsestate_hover.png" />
-    <BitmapImage x:Key="ExpandStateHover"
-                 UriSource="/DynamoCoreWpf;component/UI/Images/expandstate_hover.png" />
-    <BitmapImage x:Key="ExpandStateNormal"
-                 UriSource="/DynamoCoreWpf;component/UI/Images/expandstate_normal.png" />
-
-    <!--EndRegion-->
-
     <!-- Region Control Templates-->
 
-    <!-- Region Scrolling-->
 
     <!-- Region LibraryView + LibrarySearchView-->
 
@@ -173,17 +160,7 @@
 
     <!--EndRegion-->
 
-    <!-- Region Expansion-->
-
-
-    <!--EndRegion-->
-
-    <!--EndRegion-->
-
-
     <!-- Region Styles-->
-
-    <!-- Region Scrolling-->
 
     <!-- Region LibraryView + LibrarySearchView-->
 
@@ -216,7 +193,7 @@
     <Style x:Key="LibraryVerticalThumb"
            TargetType="{x:Type Thumb}">
         <Setter Property="Template"
-                Value="{StaticResource LibraryThumbTemplate}"/>
+                Value="{StaticResource LibraryThumbTemplate}" />
     </Style>
 
     <!--EndRegion-->
@@ -235,8 +212,6 @@
         <Setter Property="Template"
                 Value="{StaticResource TooltipThumbTemplate}" />
     </Style>
-
-    <!--EndRegion-->
 
     <!--EndRegion-->
 
