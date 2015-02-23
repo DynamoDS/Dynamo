@@ -79,7 +79,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if the elements in the specified array have the same type..
+        ///   Looks up a localized string similar to Checks if the elements in the specified array have the same type..
         /// </summary>
         public static string CheckIfTheElementsInArrayAreSameType {
             get {
@@ -97,7 +97,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if the array contains the member var.
+        ///   Looks up a localized string similar to Checks if the array contains the given member .
         /// </summary>
         public static string ChecksIfArrayContainsTheMember {
             get {
@@ -115,7 +115,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if the array is all false.
+        ///   Looks up a localized string similar to Checks if all elements in the specified array is false.
         /// </summary>
         public static string ChecksIfTheArrayIsAllFalse {
             get {
@@ -124,7 +124,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if the array is all true.
+        ///   Looks up a localized string similar to Checks if all elements in the specified array is true.
         /// </summary>
         public static string ChecksIfTheArrayIsAllTrue {
             get {
@@ -196,7 +196,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get all keys from an array.
+        ///   Looks up a localized string similar to Gets all keys from an array.
         /// </summary>
         public static string getKeys {
             get {
@@ -205,7 +205,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get the Type of the current instance.
+        ///   Looks up a localized string similar to Gets the Type of the current instance.
         /// </summary>
         public static string gettypes {
             get {
@@ -214,7 +214,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get all values that stored in the array, including in dictionary.
+        ///   Looks up a localized string similar to Gets all values that stored in the array, including in dictionary.
         /// </summary>
         public static string getValues {
             get {
@@ -223,7 +223,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import from CSV by providing file path.
+        ///   Looks up a localized string similar to Imports from CSV by providing file path.
         /// </summary>
         public static string ImportFileByGivenFilePath {
             get {
@@ -232,7 +232,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true).
+        ///   Looks up a localized string similar to Imports from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true).
         /// </summary>
         public static string ImportFileByGivenFilePathWithMode {
             get {
@@ -952,7 +952,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return objects that are included in Array1 but excluded in Array2.
+        ///   Looks up a localized string similar to Returns objects that are included in Array1 but excluded in Array2.
         /// </summary>
         public static string ObjectsContainsInArray1NotInArray2 {
             get {

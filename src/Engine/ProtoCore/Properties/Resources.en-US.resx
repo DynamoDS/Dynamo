@@ -388,19 +388,19 @@
     <value>Checks if the array has a uniform depth</value>
   </data>
   <data name="ChecksIfArrayContainsTheMember" xml:space="preserve">
-    <value>Checks if the array contains the member var</value>
+    <value>Checks if the array contains the given member </value>
   </data>
   <data name="ChecksIfTheArrayIsAllFalse" xml:space="preserve">
-    <value>Check if the array is all false</value>
+    <value>Checks if all elements in the specified array is false</value>
   </data>
   <data name="ChecksIfTheArrayIsAllTrue" xml:space="preserve">
-    <value>Check if the array is all true</value>
+    <value>Checks if all elements in the specified array is true</value>
   </data>
   <data name="DeterminesObjectsAreEqual" xml:space="preserve">
     <value>Determines whether two object instances are equal</value>
   </data>
   <data name="gettypes" xml:space="preserve">
-    <value>Get the Type of the current instance</value>
+    <value>Gets the Type of the current instance</value>
   </data>
   <data name="InsertsAnElementIntoArray" xml:space="preserve">
     <value>Inserts an element into array at the specified index</value>
@@ -454,7 +454,7 @@
     <value>Sorts array by values of its members in ascending order</value>
   </data>
   <data name="CheckIfTheElementsInArrayAreSameType" xml:space="preserve">
-    <value>Check if the elements in the specified array have the same type.</value>
+    <value>Checks if the elements in the specified array have the same type.</value>
   </data>
   <data name="ChecksIfLengthsAreSameInMultiDimentionalArray" xml:space="preserve">
     <value>Check if each row in multidimentional array has the same length</value>
@@ -463,19 +463,19 @@
     <value>Checks if an array contains a specific key</value>
   </data>
   <data name="getKeys" xml:space="preserve">
-    <value>Get all keys from an array</value>
+    <value>Gets all keys from an array</value>
   </data>
   <data name="getValues" xml:space="preserve">
-    <value>Get all values that stored in the array, including in dictionary</value>
+    <value>Gets all values that stored in the array, including in dictionary</value>
   </data>
   <data name="ImportFileByGivenFilePath" xml:space="preserve">
-    <value>Import from CSV by providing file path</value>
+    <value>Imports from CSV by providing file path</value>
   </data>
   <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
-    <value>Import from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)</value>
+    <value>Imports from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)</value>
   </data>
   <data name="ObjectsContainsInArray1NotInArray2" xml:space="preserve">
-    <value>Return objects that are included in Array1 but excluded in Array2</value>
+    <value>Returns objects that are included in Array1 but excluded in Array2</value>
   </data>
   <data name="removeKeys" xml:space="preserve">
     <value>Returns true if the specified key is removed from array, otherwise returns false.</value>
