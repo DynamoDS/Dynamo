@@ -59,11 +59,11 @@ namespace ProtoCore.AssociativeEngine
         }
 
         /// <summary>
-        /// Gets the number of dirty VM graphnodes at the global scope
+        /// Determines if at least one graphnode in the glboal scope is dirty
         /// </summary>
         /// <param name="exe"></param>
         /// <returns></returns>
-        public static int GetDirtyNodeCountAtGlobalScope(Executable exe)
+        public static bool IsGlobalScopeDirty(Executable exe)
         {
             Validity.Assert(exe != null);
             int dirtyNodes = 0;
@@ -75,11 +75,11 @@ namespace ProtoCore.AssociativeEngine
                 {
                     if (graphNode.isDirty)
                     {
-                        ++dirtyNodes;
+                        return true;
                     }
                 }
             }
-            return dirtyNodes;
+            return false;
         }
 
         /// <summary>
@@ -1262,12 +1262,12 @@ namespace ProtoCore.AssociativeGraph
         }
 
         /// <summary>
-        /// Mark graphnodes in scope as dirty
+        /// Marks all graphnodes in scope as dirty
         /// </summary>
         /// <param name="block"></param>
         /// <param name="classIndex"></param>
         /// <param name="procIndex"></param>
-        public void MarkGraphNodesDirty(int block, int classIndex, int procIndex)
+        public void MarkAllGraphNodesDirty(int block, int classIndex, int procIndex)
         {
             List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
             if (gnodeList != null)
