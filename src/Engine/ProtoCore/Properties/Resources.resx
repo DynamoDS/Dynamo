@@ -391,10 +391,10 @@
     <value>Checks if the list contains the given element</value>
   </data>
   <data name="ChecksIfTheListIsAllFalse" xml:space="preserve">
-    <value>Checks if all elements in the specified list is false</value>
+    <value>Checks if all elements in the specified list are false</value>
   </data>
   <data name="ChecksIfTheListIsAllTrue" xml:space="preserve">
-    <value>Checks if all elements in the specified list is true</value>
+    <value>Checks if all elements in the specified list are true</value>
   </data>
   <data name="DeterminesObjectsAreEqual" xml:space="preserve">
     <value>Determines whether two object instances are equal</value>
@@ -457,10 +457,10 @@
     <value>Returns objects that are included in List1 but excluded in List2</value>
   </data>
   <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
-    <value>Checks if the elements in the specified list have the same type.</value>
+    <value>Checks if all the elements in the specified list have the same type.</value>
   </data>
   <data name="ChecksIfLengthsAreSameInMultiDimentionalList" xml:space="preserve">
-    <value>Check if each row in multidimentional list has the same length</value>
+    <value>Checks if each of rows in multidimentional list has the same number of elements </value>
   </data>
   <data name="ContainsKeys" xml:space="preserve">
     <value>Checks if a list contains a specific key</value>
@@ -475,7 +475,7 @@
     <value>Imports from CSV by providing file path</value>
   </data>
   <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
-    <value>Imports from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)</value>
+    <value>Imports from CSV by providing file path. The result is transposed when trans is false</value>
   </data>
   <data name="removeKeys" xml:space="preserve">
     <value>Returns true if the specified key is removed from list, otherwise returns false.</value>

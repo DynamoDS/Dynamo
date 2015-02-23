@@ -124,19 +124,19 @@
     <value>'base' is expected here to call base constructor.</value>
   </data>
   <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
-    <value>Checks if the elements in the specified list have the same type.</value>
+    <value>Checks if all the elements in the specified list have the same type.</value>
   </data>
   <data name="ChecksIfLengthsAreSameInMultiDimentionalList" xml:space="preserve">
-    <value>Check if each row in multidimentional list has the same length</value>
+    <value>Checks if each of rows in multidimentional list has the same number of elements</value>
   </data>
   <data name="ChecksIfListContainsTheElement" xml:space="preserve">
     <value>Checks if the list contains the given element</value>
   </data>
   <data name="ChecksIfTheListIsAllFalse" xml:space="preserve">
-    <value>Checks if all elements in the specified list is false</value>
+    <value>Checks if all elements in the specified list are false</value>
   </data>
   <data name="ChecksIfTheListIsAllTrue" xml:space="preserve">
-    <value>Checks if all elements in the specified list is true</value>
+    <value>Checks if all elements in the specified list are true</value>
   </data>
   <data name="ChecksListWithUniformDepth" xml:space="preserve">
     <value>Checks if the list has a uniform depth</value>
@@ -175,7 +175,7 @@
     <value>Imports from CSV by providing file path</value>
   </data>
   <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
-    <value>Imports from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true)</value>
+    <value>Imports from CSV by providing file path. The result is transposed when trans is false</value>
   </data>
   <data name="importStatementNotSupported" xml:space="preserve">
     <value>Import statements are not supported in CodeBlock Nodes.</value>

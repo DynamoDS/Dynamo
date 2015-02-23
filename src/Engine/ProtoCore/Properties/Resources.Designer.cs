@@ -79,7 +79,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if the elements in the specified list have the same type..
+        ///   Looks up a localized string similar to Checks if all the elements in the specified list have the same type..
         /// </summary>
         public static string CheckIfTheElementsInListAreSameType {
             get {
@@ -88,7 +88,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check if each row in multidimentional list has the same length.
+        ///   Looks up a localized string similar to Checks if each of rows in multidimentional list has the same number of elements .
         /// </summary>
         public static string ChecksIfLengthsAreSameInMultiDimentionalList {
             get {
@@ -106,7 +106,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if all elements in the specified list is false.
+        ///   Looks up a localized string similar to Checks if all elements in the specified list are false.
         /// </summary>
         public static string ChecksIfTheListIsAllFalse {
             get {
@@ -115,7 +115,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if all elements in the specified list is true.
+        ///   Looks up a localized string similar to Checks if all elements in the specified list are true.
         /// </summary>
         public static string ChecksIfTheListIsAllTrue {
             get {
@@ -232,7 +232,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Imports from CSV by providing file path, Judge whether the array needed to be transposed(when Boolean:trans is false) or not(when Boolean:trans is true).
+        ///   Looks up a localized string similar to Imports from CSV by providing file path. The result is transposed when trans is false.
         /// </summary>
         public static string ImportFileByGivenFilePathWithMode {
             get {
