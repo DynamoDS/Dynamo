@@ -787,11 +787,7 @@ namespace Dynamo.Models
             var dependencies = CustomNodeManager.GetAllDependenciesGuids(def);
             var funcNodes = homeWorkspace.Nodes.OfType<Function>();
             var dirtyNodes = funcNodes.Where(n => dependencies.Contains(n.Definition.FunctionId));
-
-            foreach (var node in dirtyNodes)
-            {
-                node.OnNodeModified();
-            }
+            homeWorkspace.MarkNodesAsModified(dirtyNodes);
         }
 
         /// <summary>
