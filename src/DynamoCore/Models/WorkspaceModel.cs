@@ -436,7 +436,6 @@ namespace Dynamo.Models
         #region constructors
 
         protected WorkspaceModel(
-            string name, 
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n,
             WorkspaceInfo info, 
@@ -445,12 +444,11 @@ namespace Dynamo.Models
         {
             guid = Guid.NewGuid();
 
-            Name = name;
-
             nodes = new ObservableCollection<NodeModel>(e);
             notes = new ObservableCollection<NoteModel>(n);
 
             // Set workspace info from WorkspaceInfo object
+            Name = info.Name;
             X = info.X;
             Y = info.Y;
             FileName = info.FileName;

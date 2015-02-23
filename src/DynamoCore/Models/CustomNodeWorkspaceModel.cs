@@ -31,45 +31,30 @@ namespace Dynamo.Models
 
         #region Contructors
 
-        public CustomNodeWorkspaceModel(
-            string name, 
-            string category, 
-            string description, 
-            double x, 
-            double y, 
-            Guid customNodeId,
+        public CustomNodeWorkspaceModel( 
+            WorkspaceInfo info, 
             NodeFactory factory, 
-            ElementResolver elementResolver, 
-            string fileName="")
+            ElementResolver elementResolver)
             : this(
-                name,
-                category,
-                description,
                 factory,
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
-                x,
-                y,
-                customNodeId, elementResolver, fileName) { }
+                info,
+                elementResolver) { }
 
-        public CustomNodeWorkspaceModel(
-            string name, 
-            string category, 
-            string description, 
+        public CustomNodeWorkspaceModel( 
             NodeFactory factory, 
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
-            double x, 
-            double y, 
-            Guid customNodeId, 
-            ElementResolver elementResolver, 
-            string fileName="") 
-            : base(name, e, n, x, y, factory, elementResolver, fileName)
+            WorkspaceInfo info,
+            ElementResolver elementResolver) 
+            : base(e, n, info, factory, elementResolver)
         {
-            CustomNodeId = customNodeId;
             HasUnsavedChanges = false;
-            Category = category;
-            Description = description;
+
+            CustomNodeId = Guid.Parse(info.ID);
+            Category = info.Category;
+            Description = info.Description;
 
             PropertyChanged += OnPropertyChanged;
         }

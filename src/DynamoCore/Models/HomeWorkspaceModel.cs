@@ -31,7 +31,7 @@ namespace Dynamo.Models
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
-                new WorkspaceInfo(){X = 0, Y = 0, RunType = RunType.Automatically, RunPeriod = 100, FileName = fileName},
+                new WorkspaceInfo(){X = 0, Y = 0, RunType = RunType.Automatically, RunPeriod = 100, FileName = fileName, Name = "Home"},
                 verboseLogging, 
                 isTestMode, new ElementResolver()) { }
 
@@ -46,9 +46,8 @@ namespace Dynamo.Models
             bool verboseLogging,
             bool isTestMode, 
             ElementResolver elementResolver)
-            : base("Home", e, n, info, factory, elementResolver)
+            : base(e, n, info, factory, elementResolver)
         {
-            
             RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 
             PreloadedTraceData = traceData;

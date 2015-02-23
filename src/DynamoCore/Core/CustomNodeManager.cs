@@ -460,7 +460,6 @@ namespace Dynamo.Core
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (InitializeCustomNode(
-                Guid.Parse(workspaceInfo.ID),
                 workspaceInfo,
                 xmlDoc,
                 out customNodeWorkspace))
@@ -473,25 +472,21 @@ namespace Dynamo.Core
         }
 
         private bool InitializeCustomNode(
-            Guid functionId, WorkspaceInfo workspaceInfo,
+            WorkspaceInfo workspaceInfo,
             XmlDocument xmlDoc, out CustomNodeWorkspaceModel workspace)
         {
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
-            SetPreloadFunctionDefinition(functionId);
+            SetPreloadFunctionDefinition(Guid.Parse(workspaceInfo.ID));
  
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
            
             var newWorkspace = new CustomNodeWorkspaceModel(
-                workspaceInfo.Name,
-                workspaceInfo.Category,
-                workspaceInfo.Description,
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                workspaceInfo.X,
-                workspaceInfo.Y,
-                functionId, nodeGraph.ElementResolver, workspaceInfo.FileName);
+                workspaceInfo,
+                nodeGraph.ElementResolver);
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -565,9 +560,10 @@ namespace Dynamo.Core
                     AsLogger(),
                     out info) && info.IsCustomNodeWorkspace)
                 {
+                    info.ID = functionId.ToString();
                     if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
                     {
-                        return InitializeCustomNode(functionId, info, xmlDoc, out workspace);
+                        return InitializeCustomNode(info, xmlDoc, out workspace);
                     }
                 }
                 Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
@@ -600,7 +596,17 @@ namespace Dynamo.Core
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
-            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, new ElementResolver(), string.Empty);
+            var info = new WorkspaceInfo()
+            {
+                Name = name,
+                Category = category,
+                Description = description,
+                X = 0,
+                Y = 0,
+                ID = newId.ToString(), 
+                FileName = string.Empty
+            };
+            var workspace = new CustomNodeWorkspaceModel(info, nodeFactory, new ElementResolver());
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
@@ -1016,15 +1022,20 @@ namespace Dynamo.Core
 
                 var newId = Guid.NewGuid();
                 newWorkspace = new CustomNodeWorkspaceModel(
-                    args.Name,
-                    args.Category,
-                    args.Description,
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
-                    0,
-                    0,
-                    newId, currentWorkspace.ElementResolver, string.Empty);
+                    new WorkspaceInfo()
+                    {
+                        X = 0,
+                        Y = 0,
+                        Name = args.Name,
+                        Category = args.Category,
+                        Description = args.Description,
+                        ID = newId.ToString(),
+                        FileName = string.Empty
+                    },
+                    currentWorkspace.ElementResolver);
 
                 newWorkspace.HasUnsavedChanges = true;
 
