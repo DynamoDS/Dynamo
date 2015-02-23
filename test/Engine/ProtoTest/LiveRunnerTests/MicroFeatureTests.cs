@@ -5471,6 +5471,71 @@ x = f();
 
             AssertValue("x", 10);
         }
+
+        [Test]
+        public void TestReExecuteScopeIf01()
+        {
+            List<string> codes = new List<string>() 
+            {
+
+@"
+a = false;
+",
+
+ @"
+a = true;
+",
+
+@"
+
+d = [Imperative]
+{
+    if(a)
+    {
+        return = [Associative]
+        {
+            e = true;
+            return = e;
+
+        }
+    }
+    else
+    {
+        return = [Associative]
+        {
+            f = false;
+            return = f;
+
+        }
+    }
+}
+"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+
+            // Execute All
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Modify 'a 'to true
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Modify 'a 'to false
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+        }
     }
 
 }
