@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Core;
@@ -56,6 +57,13 @@ namespace Dynamo.Controls
 
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
+            // Revit2015+ has disabled hardware acceleration for WPF to
+            // avoid issues with rendering certain elements in the Revit UI. 
+            // Here we get it back, by setting the ProcessRenderMode to Default,
+            // signifying that we want to use hardware rendering if it's 
+            // available.
+            RenderOptions.ProcessRenderMode = RenderMode.Default;
+
             this.dynamoViewModel = dynamoViewModel;
             this.dynamoViewModel.UIDispatcher = Dispatcher;
 
