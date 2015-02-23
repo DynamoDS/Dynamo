@@ -1065,7 +1065,7 @@ namespace Dynamo.Core
             return newWorkspace;
         }
 
-        public IEnumerable<Guid> GetAllDependenciesGuids(CustomNodeDefinition def)
+        internal IEnumerable<Guid> GetAllDependenciesGuids(CustomNodeDefinition def)
         {
             var idSet = new HashSet<Guid>();
             idSet.Add(def.FunctionId);

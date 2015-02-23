@@ -781,6 +781,9 @@ namespace Dynamo.Models
         private void MarkAllDependenciesAsModified(CustomNodeDefinition def)
         {
             var homeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            if (homeWorkspace == null)
+                return;
+
             var dependencies = CustomNodeManager.GetAllDependenciesGuids(def);
             var funcNodes = homeWorkspace.Nodes.OfType<Function>();
             var dirtyNodes = funcNodes.Where(n => dependencies.Contains(n.Definition.FunctionId));
