@@ -12,7 +12,7 @@ using ProtoScript.Runners;
 
 namespace ProtoTest.ComponentTest
 {
-    public class CompileAndExecute : ProtoTestBase
+    class CompileAndExecute : ProtoTestBase
     {
         readonly string testCasePath = Path.GetFullPath(@"..\..\..\Scripts\Associative\MicroFeatureTests\");
 
