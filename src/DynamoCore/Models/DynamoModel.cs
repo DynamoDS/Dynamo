@@ -548,7 +548,7 @@ namespace Dynamo.Models
         public void Dispose()
         {
             LibraryServices.Dispose();
-            LibraryServices.LibraryManagementCore.Cleanup();
+            LibraryServices.LibraryManagementCore.__TempCoreHostForRefactoring.Cleanup();
             Logger.Dispose();
 
             if (PreferenceSettings != null)

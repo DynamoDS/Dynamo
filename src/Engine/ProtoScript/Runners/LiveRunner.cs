@@ -1129,8 +1129,8 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
-                    runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
-                    runnerCore.Cleanup();
+                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
+                    runtimeCore.Cleanup();
                 }
 
                 terminating = true;
@@ -1161,17 +1161,16 @@ namespace ProtoScript.Runners
             runnerCore = new ProtoCore.Core(coreOptions);
             runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
             runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
-            runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
+
+            runtimeCore = runnerCore.__TempCoreHostForRefactoring;
+            runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
 
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
             foreach (var item in configuration.PassThroughConfiguration)
             {
-                runnerCore.Configurations[item.Key] = item.Value;
+                runtimeCore.Configurations[item.Key] = item.Value;
             }
-
-
-            runtimeCore = runnerCore.__TempCoreHostForRefactoring;
 
             vmState = null;
         }
@@ -1559,7 +1558,7 @@ namespace ProtoScript.Runners
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
-                runnerCore.Cleanup();
+                runtimeCore.Cleanup();
                 ReInitializeLiveRunner();
             }
 

@@ -250,7 +250,10 @@ namespace ProtoFFI
                 codeBlockNode = dllModule.ImportCodeBlock(typeName, alias, refNode);
                 Type type = dllModule.GetExtensionAppType();
                 if (type != null)
-                    FFIExecutionManager.Instance.RegisterExtensionApplicationType(_coreObj, type);
+                {
+                    ProtoCore.RuntimeCore runtimeCore = _coreObj.__TempCoreHostForRefactoring;
+                    FFIExecutionManager.Instance.RegisterExtensionApplicationType(runtimeCore, type);
+                }
             }
             else if (extension == ".ds")
             {

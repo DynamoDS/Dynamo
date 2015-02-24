@@ -258,7 +258,7 @@ namespace ProtoFFI
             List<Object> parameters = new List<object>();
             List<StackValue> s = dsi.runtime.rmem.Stack;
             Object thisObject = null;
-            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.Core);
+            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
             if (!ReflectionInfo.IsStatic)
             {
                 try
@@ -429,7 +429,7 @@ namespace ProtoFFI
         {
             Object retVal = base.Execute(c, dsi);
             List<StackValue> s = dsi.runtime.rmem.Stack;
-            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.Core);
+            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
             marshaller.OnDispose(s.Last(), c, dsi); //Notify marshler for dispose.
 
             return retVal;

@@ -31,22 +31,22 @@ namespace ProtoTestFx
             {
                 Core debugRunCore = DebugRunnerRunOnly(code);
                 CompareCores(runCore, debugRunCore, defectID);
-                debugRunCore.Cleanup();
+                debugRunCore.__TempCoreHostForRefactoring.Cleanup();
             }
 
             {
                 Core stepOverCore = DebugRunnerStepOver(code);
                 CompareCores(runCore, stepOverCore, defectID);
-                stepOverCore.Cleanup();
+                stepOverCore.__TempCoreHostForRefactoring.Cleanup();
             }
 
             {
                 Core stepInCore = DebugRunerStepIn(code);
                 CompareCores(runCore, stepInCore, defectID);
-                stepInCore.Cleanup();
+                stepInCore.__TempCoreHostForRefactoring.Cleanup();
             }
 
-            runCore.Cleanup();
+            runCore.__TempCoreHostForRefactoring.Cleanup();
 
         }
 

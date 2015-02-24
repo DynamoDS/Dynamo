@@ -385,7 +385,7 @@ namespace ProtoTestFx
             Mirror = fsr.Execute(code, core);
 
             //sw.Close();
-            core.Cleanup();
+            core.__TempCoreHostForRefactoring.Cleanup();
         }
 
         internal static void DebugRunnerStepIn(string includePath, string code, /*string logFile*/Dictionary<int, List<string>> map, 
@@ -488,7 +488,7 @@ namespace ProtoTestFx
                 }
                 //isPrevBreakAtPop = false;
             }
-            core.Cleanup();
+            core.__TempCoreHostForRefactoring.Cleanup();
         }
 
         /*internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core, StreamReader log,

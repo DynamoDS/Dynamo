@@ -684,7 +684,7 @@ namespace ProtoCore.Lang
             IContextDataProvider provider = ContextDataManager.GetInstance(core).GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
-            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(core);
+            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(core.__TempCoreHostForRefactoring);
 
             Dictionary<string, Object> parameters = new Dictionary<string,object>();
             if (!svConnectionParameters.IsArray)
