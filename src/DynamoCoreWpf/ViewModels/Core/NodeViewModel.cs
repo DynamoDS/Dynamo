@@ -551,7 +551,7 @@ namespace Dynamo.ViewModels
         {           
             this.DynamoViewModel.ExecuteCommand(
               new DynamoModel.UpdateModelValueCommand(
-                    this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
+                    System.Guid.Empty, this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
           
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
