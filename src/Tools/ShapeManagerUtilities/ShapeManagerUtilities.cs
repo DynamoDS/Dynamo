@@ -20,14 +20,13 @@ namespace ShapeManagerUtilities
         /// product folders for ASM binaries with the targeted version.
         /// </summary>
         /// <param name="versions">A list of version numbers to check for in order 
-        /// of preference. For example, { 221, 220, 219 }. This argument cannot be 
-        /// null or empty.</param>
+        /// of preference. This argument cannot be null or empty.</param>
         /// <param name="location">The full path of the directory in which targeted
         /// ASM binaries are found. This argument cannot be null.</param>
         /// <returns>Returns a zero based index into the versions list if any 
         /// installed ASM is found, or -1 otherwise.</returns>
         /// 
-        public static int GetInstalledAsmVersion(IEnumerable<int> versions, ref string location)
+        public static int GetInstalledAsmVersion(IEnumerable<LibraryVersion> versions, ref string location)
         {
             if ((versions == null) || !versions.Any())
                 throw new ArgumentNullException("versions");
@@ -53,7 +52,7 @@ namespace ShapeManagerUtilities
                 foreach (var version in versions)
                 {
                     versionIndex++;
-                    var assemblyName = string.Format("ASMAHL{0}A.DLL", version);
+                    var assemblyName = string.Format("ASMAHL{0}A.DLL", ((int) version));
 
                     foreach (var directoryInfo in directories)
                     {
