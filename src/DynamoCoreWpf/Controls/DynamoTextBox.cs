@@ -356,6 +356,7 @@ namespace Dynamo.UI.Controls
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
             this.CustomPopupPlacementCallback = PlacementCallback;
+            this.DataContext = null;
             this.Child = tooltip;
             this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;

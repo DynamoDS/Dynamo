@@ -13,6 +13,10 @@ namespace Dynamo.UI.Controls
         public AddonsTreeView()
         {
             InitializeComponent();
+
+            // In future DataContext will be set SearchViewModel in binding, but for now set it to null. 
+            // Therefore we can escape errors in VS Output.
+            this.DataContext = null;
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)

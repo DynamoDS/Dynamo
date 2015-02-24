@@ -26,6 +26,9 @@ namespace Dynamo.UI.Views
         public LibrarySearchView()
         {
             InitializeComponent();
+            // In future DataContext will be set SearchViewModel in binding, but for now set it to null. 
+            // Therefore we can escape errors in VS Output.
+            this.DataContext = null;
 
             Loaded += OnLibrarySearchViewLoaded;
         }
