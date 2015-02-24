@@ -126,6 +126,7 @@ namespace SystemTestServices
         {
             var exePath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(exePath));
+            preloader.Preload();
 
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
