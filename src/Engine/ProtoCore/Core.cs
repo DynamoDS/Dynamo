@@ -391,8 +391,6 @@ namespace ProtoCore
         /// </summary>
         public DebugProperties DebuggerProperties;
 
-        // Continuation properties used for Serial mode execution and Debugging of Replicated calls
-        public ContinuationStructure ContinuationStruct { get; set; }
 
         /// <summary>
         /// Gets the reason why the execution was last suspended
@@ -687,7 +685,6 @@ namespace ProtoCore
 
             ExecutiveProvider = new ExecutiveProvider();
 
-            ContinuationStruct = new ContinuationStructure();
             ParsingMode = ParseMode.Normal;
             
             IsParsingPreloadedAssembly = false;

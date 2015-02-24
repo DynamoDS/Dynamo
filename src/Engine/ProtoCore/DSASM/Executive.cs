@@ -896,7 +896,7 @@ namespace ProtoCore.DSASM
             {
                 if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
                 {
-                    if (core.ContinuationStruct.IsFirstCall)
+                    if (runtimeCore.ContinuationStruct.IsFirstCall)
                     {
                         runtimeCore.DebugProps.SetUpCallrForDebug(core,
                                                            runtimeCore,
@@ -920,10 +920,10 @@ namespace ProtoCore.DSASM
                                                            pc, 
                                                            false, 
                                                            callsite, 
-                                                           core.ContinuationStruct.InitialArguments, 
+                                                           runtimeCore.ContinuationStruct.InitialArguments, 
                                                            replicationGuides, 
                                                            stackFrame,
-                                                           core.ContinuationStruct.InitialDotCallDimensions, 
+                                                           runtimeCore.ContinuationStruct.InitialDotCallDimensions, 
                                                            hasDebugInfo);
                     }
                 }
@@ -943,21 +943,21 @@ namespace ProtoCore.DSASM
                 {
                     DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
 
-                    //if (debugFrame.IsReplicating || core.ContinuationStruct.IsContinuation)
+                    //if (debugFrame.IsReplicating || runtimeCore.ContinuationStruct.IsContinuation)
                     if (debugFrame.IsReplicating)
                     {
                         FunctionEndPoint fep = null;
-                        ContinuationStructure cs = core.ContinuationStruct;
+                        ContinuationStructure cs = runtimeCore.ContinuationStruct;
 
                         if (runtimeCore.RuntimeOptions.ExecutionMode == ProtoCore.ExecutionMode.Serial || runtimeCore.RuntimeOptions.IDEDebugMode)
                         {
                             // This needs to be done only for the initial argument arrays (ie before the first replicating call) - pratapa
-                            if(core.ContinuationStruct.IsFirstCall)
+                            if(runtimeCore.ContinuationStruct.IsFirstCall)
                             {
-                                core.ContinuationStruct.InitialDepth = depth;
-                                core.ContinuationStruct.InitialPC = pc;
-                                core.ContinuationStruct.InitialArguments = arguments;
-                                core.ContinuationStruct.InitialDotCallDimensions = dotCallDimensions;
+                                runtimeCore.ContinuationStruct.InitialDepth = depth;
+                                runtimeCore.ContinuationStruct.InitialPC = pc;
+                                runtimeCore.ContinuationStruct.InitialArguments = arguments;
+                                runtimeCore.ContinuationStruct.InitialDotCallDimensions = dotCallDimensions;
 
                                 for (int i = 0; i < arguments.Count; ++i)
                                 {
@@ -965,7 +965,7 @@ namespace ProtoCore.DSASM
                                 }
 
                                 // Hardcoded
-                                core.ContinuationStruct.NextDispatchArgs.Add(StackValue.BuildInt(1));
+                                runtimeCore.ContinuationStruct.NextDispatchArgs.Add(StackValue.BuildInt(1));
                             }
 
                             // The Resolve function is currently hard-coded as a place holder to test debugging replication - pratapa
@@ -979,8 +979,8 @@ namespace ProtoCore.DSASM
                             // Push Stackframe
                             sv = callsite.ExecuteContinuation(fep, stackFrame, core);
 
-                            core.ContinuationStruct = cs;
-                            core.ContinuationStruct.IsFirstCall = true;
+                            runtimeCore.ContinuationStruct = cs;
+                            runtimeCore.ContinuationStruct.IsFirstCall = true;
 
                         }
                     }
@@ -6442,17 +6442,17 @@ namespace ProtoCore.DSASM
             {
                 RX = CallSite.PerformReturnTypeCoerce(procNode, core, RX);
 
-                core.ContinuationStruct.RunningResult.Add(RX);
-                core.ContinuationStruct.Result = RX;
+                runtimeCore.ContinuationStruct.RunningResult.Add(RX);
+                runtimeCore.ContinuationStruct.Result = RX;
 
-                pc = core.ContinuationStruct.InitialPC;
+                pc = runtimeCore.ContinuationStruct.InitialPC;
 
-                if (core.ContinuationStruct.Done)
+                if (runtimeCore.ContinuationStruct.Done)
                 {
-                    RX = rmem.Heap.AllocateArray(core.ContinuationStruct.RunningResult, null);
+                    RX = rmem.Heap.AllocateArray(runtimeCore.ContinuationStruct.RunningResult, null);
 
-                    core.ContinuationStruct.RunningResult.Clear();
-                    core.ContinuationStruct.IsFirstCall = true;
+                    runtimeCore.ContinuationStruct.RunningResult.Clear();
+                    runtimeCore.ContinuationStruct.IsFirstCall = true;
 
                     if (runtimeCore.Options.IDEDebugMode)
                     {
@@ -6501,7 +6501,7 @@ namespace ProtoCore.DSASM
                         if (thisPtr != null)
                         {
                             // Replicating member function
-                            PerformCoercionAndGC(null, false, thisPtr, core.ContinuationStruct.InitialArguments, core.ContinuationStruct.InitialDotCallDimensions);
+                            PerformCoercionAndGC(null, false, thisPtr, runtimeCore.ContinuationStruct.InitialArguments, runtimeCore.ContinuationStruct.InitialDotCallDimensions);
 
                             // Perform coercion and GC for Dot call
                             ProcedureNode dotCallprocNode = null;
@@ -6511,7 +6511,7 @@ namespace ProtoCore.DSASM
                         }
                         else
                         {
-                            PerformCoercionAndGC(procNode, isBaseCall, null, core.ContinuationStruct.InitialArguments, core.ContinuationStruct.InitialDotCallDimensions);
+                            PerformCoercionAndGC(procNode, isBaseCall, null, runtimeCore.ContinuationStruct.InitialArguments, runtimeCore.ContinuationStruct.InitialDotCallDimensions);
                         }
                     }
 
@@ -6522,7 +6522,7 @@ namespace ProtoCore.DSASM
                 else
                 {
                     // Jump back to Callr to call ResolveForReplication and recompute fep with next argument
-                    core.ContinuationStruct.IsFirstCall = false;
+                    runtimeCore.ContinuationStruct.IsFirstCall = false;
 
                     ReturnToCallSiteForReplication(procNode, ci, fi);
                     return;
@@ -6537,7 +6537,7 @@ namespace ProtoCore.DSASM
             // Need to push new arguments, then cache block, dim and type, push them before calling callr - pratapa
 
             // This functionality has to be common for both Serial mode execution and the debugger - pratap
-            List<StackValue> nextArgs = core.ContinuationStruct.NextDispatchArgs;
+            List<StackValue> nextArgs = runtimeCore.ContinuationStruct.NextDispatchArgs;
 
             foreach (var arg in nextArgs)
             {
@@ -6556,7 +6556,7 @@ namespace ProtoCore.DSASM
             rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
 
             bool explicitCall = true;
-            Callr(fi, ci, core.ContinuationStruct.InitialDepth, ref explicitCall);
+            Callr(fi, ci, runtimeCore.ContinuationStruct.InitialDepth, ref explicitCall);
         }
 
         private void JMP_Handler(Instruction instruction)
