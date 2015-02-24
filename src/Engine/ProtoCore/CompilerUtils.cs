@@ -377,7 +377,7 @@ namespace ProtoCore.Utils
                 // Handle non Binary expression nodes separately
                 if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
                 {
-                    core.BuildStatus.LogSemanticError(Resources.modifierBlockNotSupported);
+                    core.BuildStatus.LogSemanticError(Resources.ModifierBlockNotSupported);
                 }
                 else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
                 {
@@ -397,7 +397,7 @@ namespace ProtoCore.Utils
                         ModifierStackNode mNode = ben.RightNode as ModifierStackNode;
                         if (mNode != null)
                         {
-                            core.BuildStatus.LogSemanticError(Resources.modifierBlockNotSupported);
+                            core.BuildStatus.LogSemanticError(Resources.ModifierBlockNotSupported);
                         }
                         IdentifierNode lNode = ben.LeftNode as IdentifierNode;
                         if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)

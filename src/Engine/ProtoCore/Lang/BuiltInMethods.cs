@@ -831,7 +831,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0)),
                     },
                     ID = BuiltInMethods.MethodID.kGetType,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.gettypes}
+                    MethodAttributes = new MethodAttributes(){Description = Resources.Gettypes}
                 },
 
                 new BuiltInMethod
@@ -842,7 +842,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)),
                     },
                     ID = BuiltInMethods.MethodID.kGetType,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.gettypes}
+                    MethodAttributes = new MethodAttributes(){Description = Resources.Gettypes}
                 },
 
                 new BuiltInMethod
@@ -906,7 +906,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = MethodID.kGetKeys,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.getKeys}
+                     MethodAttributes = new MethodAttributes(){Description = Resources.GetKeys}
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -918,7 +918,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = MethodID.kGetValues,
-                     MethodAttributes = new MethodAttributes(){Description = Resources.getValues}
+                     MethodAttributes = new MethodAttributes(){Description = Resources.GetValues}
                     //MAGN_3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -931,7 +931,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("key", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0))
                     },
                     ID = MethodID.kRemoveKey,
-                    MethodAttributes = new MethodAttributes(){Description = Resources.removeKeys}
+                    MethodAttributes = new MethodAttributes(){Description = Resources.RemoveKeys}
                     //MethodAttributes = new MethodAttributes(true), MAGN-3382
                 },
 

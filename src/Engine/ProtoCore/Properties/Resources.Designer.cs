@@ -70,7 +70,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;base&apos; is expected here to call base constructor..
+        ///   Looks up a localized string similar to The keyword &apos;base&apos; is expected here to call base constructor.
         /// </summary>
         public static string baseIsExpectedToCallBaseConstructor {
             get {
@@ -79,7 +79,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if all the elements in the specified list have the same type..
+        ///   Looks up a localized string similar to Checks if all the elements in the specified list are of the same type.
         /// </summary>
         public static string CheckIfTheElementsInListAreSameType {
             get {
@@ -88,7 +88,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if each of rows in multidimentional list has the same number of elements .
+        ///   Looks up a localized string similar to Checks if each of rows in multidimensional list has the same number of elements .
         /// </summary>
         public static string ChecksIfLengthsAreSameInMultiDimentionalList {
             get {
@@ -97,7 +97,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if the list contains the given element.
+        ///   Looks up a localized string similar to Checks if the specified element is present in the specified list.
         /// </summary>
         public static string ChecksIfListContainsTheElement {
             get {
@@ -135,14 +135,14 @@ namespace ProtoCore.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &apos;)&apos; expected - Imcomplete Closure.
         /// </summary>
-        public static string closeBracketExpected {
+        public static string CloseBracketExpected {
             get {
-                return ResourceManager.GetString("closeBracketExpected", resourceCulture);
+                return ResourceManager.GetString("CloseBracketExpected", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Checks if a list contains a specific key.
+        ///   Looks up a localized string similar to Checks if the specified key is present in the specified key-value pair list.
         /// </summary>
         public static string ContainsKeys {
             get {
@@ -160,25 +160,25 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Empty character literal..
+        ///   Looks up a localized string similar to Empty character literal.
         /// </summary>
-        public static string emptyCharacterLiteral {
+        public static string EmptyCharacterLiteral {
             get {
-                return ResourceManager.GetString("emptyCharacterLiteral", resourceCulture);
+                return ResourceManager.GetString("EmptyCharacterLiteral", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Failed to import {0}.
         /// </summary>
-        public static string failedToImport {
+        public static string FailedToImport {
             get {
-                return ResourceManager.GetString("failedToImport", resourceCulture);
+                return ResourceManager.GetString("FailedToImport", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No function called {0} could be found. Please check the name of the function..
+        ///   Looks up a localized string similar to No function called {0} could be found. Please check the name of the function.
         /// </summary>
         public static string FUNCTION_GROUP_RESOLUTION_FAILURE {
             get {
@@ -187,38 +187,38 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to function call is not allowed at the left hand side of an assignment.
+        ///   Looks up a localized string similar to A function call is not allowed to the left hand side of an assignment.
         /// </summary>
-        public static string functionCallCannotBeAtLeftSide {
+        public static string FunctionCallCannotBeAtLeftSide {
             get {
-                return ResourceManager.GetString("functionCallCannotBeAtLeftSide", resourceCulture);
+                return ResourceManager.GetString("FunctionCallCannotBeAtLeftSide", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gets all keys from an list.
+        ///   Looks up a localized string similar to Gets all keys from the specified key-value pair list.
         /// </summary>
-        public static string getKeys {
+        public static string GetKeys {
             get {
-                return ResourceManager.GetString("getKeys", resourceCulture);
+                return ResourceManager.GetString("GetKeys", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Gets the Type of the current instance.
         /// </summary>
-        public static string gettypes {
+        public static string Gettypes {
             get {
-                return ResourceManager.GetString("gettypes", resourceCulture);
+                return ResourceManager.GetString("Gettypes", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Gets all values that stored in the list, including in dictionary.
+        ///   Looks up a localized string similar to Gets all values stored in the specified key-value pair list and for a simple list it returns all elements in the list.
         /// </summary>
-        public static string getValues {
+        public static string GetValues {
             get {
-                return ResourceManager.GetString("getValues", resourceCulture);
+                return ResourceManager.GetString("GetValues", resourceCulture);
             }
         }
         
@@ -241,7 +241,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import statements are not supported in CodeBlock Nodes..
+        ///   Looks up a localized string similar to Import statements are not supported in CodeBlock Nodes.
         /// </summary>
         public static string importStatementNotSupported {
             get {
@@ -261,27 +261,27 @@ namespace ProtoCore.Properties {
         /// <summary>
         ///   Looks up a localized string similar to \&quot;{0}\&quot; is not a valid language block identifier, do you mean \&quot;Associative\&quot; or \&quot;Imperative\&quot;?.
         /// </summary>
-        public static string invalidLanguageBlockIdentifier {
+        public static string InvalidLanguageBlockIdentifier {
             get {
-                return ResourceManager.GetString("invalidLanguageBlockIdentifier", resourceCulture);
+                return ResourceManager.GetString("InvalidLanguageBlockIdentifier", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Return statement is invalid. Do you mean: return = {0} ?.
         /// </summary>
-        public static string invalidReturnStatement {
+        public static string InvalidReturnStatement {
             get {
-                return ResourceManager.GetString("invalidReturnStatement", resourceCulture);
+                return ResourceManager.GetString("InvalidReturnStatement", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Syntax Error: invalid symbol &apos;{0}&apos;. (Did you mean to use Modifier Stack \&quot; =&gt; \&quot;).
         /// </summary>
-        public static string invalidSymbol {
+        public static string InvalidSymbol {
             get {
-                return ResourceManager.GetString("invalidSymbol", resourceCulture);
+                return ResourceManager.GetString("InvalidSymbol", resourceCulture);
             }
         }
         
@@ -295,7 +295,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}..
+        ///   Looks up a localized string similar to Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}.
         /// </summary>
         public static string kAmbigousMethodDispatch {
             get {
@@ -304,7 +304,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type &apos;{0}&apos; of argument &apos;{1}&apos; is not defined..
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; of argument &apos;{1}&apos; is not defined.
         /// </summary>
         public static string kArgumentTypeUndefined {
             get {
@@ -313,7 +313,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is over indexed..
+        ///   Looks up a localized string similar to Variable is over indexed.
         /// </summary>
         public static string kArrayOverIndexed {
             get {
@@ -331,7 +331,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only character can be assigned to a position in a string..
+        ///   Looks up a localized string similar to Only character can be assigned to a position in a string.
         /// </summary>
         public static string kAssignNonCharacterToString {
             get {
@@ -340,7 +340,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;this&apos; is readonly and cannot be assigned to..
+        ///   Looks up a localized string similar to &apos;this&apos; is readonly and cannot be assigned to.
         /// </summary>
         public static string kAssingToThis {
             get {
@@ -349,7 +349,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot call constructor &apos;{0}()&apos; in itself..
+        ///   Looks up a localized string similar to Cannot call constructor &apos;{0}()&apos; in itself.
         /// </summary>
         public static string kCallingConstructorInConstructor {
             get {
@@ -358,7 +358,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot call constructor &apos;{0}()&apos; on instance..
+        ///   Looks up a localized string similar to Cannot call constructor &apos;{0}()&apos; on instance.
         /// </summary>
         public static string KCallingConstructorOnInstance {
             get {
@@ -367,7 +367,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}.{1}()&apos; is not a static method..
+        ///   Looks up a localized string similar to &apos;{0}.{1}()&apos; is not a static method.
         /// </summary>
         public static string kCallingNonStaticMethod {
             get {
@@ -376,7 +376,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}.{1}&apos; is not a static property..
+        ///   Looks up a localized string similar to &apos;{0}.{1}&apos; is not a static property.
         /// </summary>
         public static string kCallingNonStaticProperty {
             get {
@@ -394,7 +394,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting an array to {0} would cause array rank reduction and is not permitted..
+        ///   Looks up a localized string similar to Converting an array to {0} would cause array rank reduction and is not permitted.
         /// </summary>
         public static string kConvertArrayToNonArray {
             get {
@@ -403,7 +403,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting double to int will cause possible information loss..
+        ///   Looks up a localized string similar to Converting double to int will cause possible information loss.
         /// </summary>
         public static string kConvertDoubleToInt {
             get {
@@ -412,7 +412,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Asked to convert non-convertible types..
+        ///   Looks up a localized string similar to Asked to convert non-convertible types.
         /// </summary>
         public static string kConvertNonConvertibleTypes {
             get {
@@ -421,7 +421,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cyclic dependency detected at &apos;{0}&apos; and &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Cyclic dependency detected at &apos;{0}&apos; and &apos;{1}&apos;.
         /// </summary>
         public static string kCyclicDependency {
             get {
@@ -430,7 +430,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dereferencing a non-pointer..
+        ///   Looks up a localized string similar to Dereferencing a non-pointer.
         /// </summary>
         public static string kDeferencingNonPointer {
             get {
@@ -439,7 +439,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exception type &apos;{0}&apos; is not defined..
+        ///   Looks up a localized string similar to Exception type &apos;{0}&apos; is not defined.
         /// </summary>
         public static string kExceptionTypeUndefined {
             get {
@@ -466,7 +466,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting other things to function pointer is not allowed..
+        ///   Looks up a localized string similar to Converting other things to function pointer is not allowed.
         /// </summary>
         public static string kFailToConverToFunction {
             get {
@@ -475,7 +475,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting other things to null is not allowed..
+        ///   Looks up a localized string similar to Converting other things to null is not allowed.
         /// </summary>
         public static string kFailToConverToNull {
             get {
@@ -484,7 +484,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting other things to pointer is not allowed..
+        ///   Looks up a localized string similar to Converting other things to pointer is not allowed.
         /// </summary>
         public static string kFailToConverToPointer {
             get {
@@ -493,7 +493,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to obtain object &apos;{0}&apos; for &apos;{1}.{2}&apos;..
+        ///   Looks up a localized string similar to Failed to obtain object &apos;{0}&apos; for &apos;{1}.{2}&apos;.
         /// </summary>
         public static string kFFIFailedToObtainObject {
             get {
@@ -502,7 +502,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to obtain this object for &apos;{0}.{1}&apos;..
+        ///   Looks up a localized string similar to Failed to obtain this object for &apos;{0}.{1}&apos;.
         /// </summary>
         public static string kFFIFailedToObtainThisObject {
             get {
@@ -511,7 +511,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is being cast to &apos;{1}&apos;, but the allowed range is [{2}..{3}]..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is being cast to &apos;{1}&apos;, but the allowed range is [{2}..{3}].
         /// </summary>
         public static string kFFIInvalidCast {
             get {
@@ -529,7 +529,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No candidate function could be found..
+        ///   Looks up a localized string similar to No candidate function could be found.
         /// </summary>
         public static string kFunctionNotFound {
             get {
@@ -538,7 +538,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}()&apos; doesn&apos;t return at all code paths..
+        ///   Looks up a localized string similar to Method &apos;{0}()&apos; doesn&apos;t return at all code paths.
         /// </summary>
         public static string kFunctionNotReturnAtAllCodePaths {
             get {
@@ -547,7 +547,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Index is out of range..
+        ///   Looks up a localized string similar to Index is out of range.
         /// </summary>
         public static string kIndexOutOfRange {
             get {
@@ -556,7 +556,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The amount in range expression should be an positive integer..
+        ///   Looks up a localized string similar to The amount in range expression should be an positive integer.
         /// </summary>
         public static string kInvalidAmountInRangeExpression {
             get {
@@ -565,7 +565,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Argument is invalid..
+        ///   Looks up a localized string similar to Argument is invalid.
         /// </summary>
         public static string kInvalidArguments {
             get {
@@ -574,7 +574,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value that used in range expression should be either integer or double..
+        ///   Looks up a localized string similar to The value that used in range expression should be either integer or double.
         /// </summary>
         public static string kInvalidArgumentsInRangeExpression {
             get {
@@ -583,7 +583,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Statement break causes function to abnormally return null..
+        ///   Looks up a localized string similar to Statement break causes function to abnormally return null.
         /// </summary>
         public static string kInvalidBreakForFunction {
             get {
@@ -592,7 +592,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Statement continue cause function to abnormally return null..
+        ///   Looks up a localized string similar to Statement continue cause function to abnormally return null.
         /// </summary>
         public static string kInvalidContinueForFunction {
             get {
@@ -601,7 +601,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cyclic dependency detected at &apos;{0}&apos; and &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Cyclic dependency detected at &apos;{0}&apos; and &apos;{1}&apos;.
         /// </summary>
         public static string kInvalidStaticCyclicDependency {
             get {
@@ -610,7 +610,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;this&apos; can only be used in member methods..
+        ///   Looks up a localized string similar to &apos;this&apos; can only be used in member methods.
         /// </summary>
         public static string kInvalidThis {
             get {
@@ -619,7 +619,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}()&apos; is invoked on invalid object..
+        ///   Looks up a localized string similar to Method &apos;{0}()&apos; is invoked on invalid object.
         /// </summary>
         public static string kInvokeMethodOnInvalidObject {
             get {
@@ -628,7 +628,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}()&apos; is already defined..
+        ///   Looks up a localized string similar to Method &apos;{0}()&apos; is already defined.
         /// </summary>
         public static string kMethodAlreadyDefined {
             get {
@@ -637,7 +637,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}()&apos; has some invalid arguments..
+        ///   Looks up a localized string similar to &apos;{0}()&apos; has some invalid arguments.
         /// </summary>
         public static string kMethodHasInvalidArguments {
             get {
@@ -646,7 +646,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}()&apos; is inaccessible..
+        ///   Looks up a localized string similar to Method &apos;{0}()&apos; is inaccessible.
         /// </summary>
         public static string kMethodIsInaccessible {
             get {
@@ -655,7 +655,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}()&apos; not found..
+        ///   Looks up a localized string similar to Method &apos;{0}()&apos; not found.
         /// </summary>
         public static string kMethodNotFound {
             get {
@@ -664,7 +664,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B..
+        ///   Looks up a localized string similar to Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B.
         /// </summary>
         public static string kMethodResolutionFailure {
             get {
@@ -673,7 +673,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operator &apos;{0}&apos; cannot be applied to operands of type &apos;{1}&apos; and &apos;{2}&apos;..
+        ///   Looks up a localized string similar to Operator &apos;{0}&apos; cannot be applied to operands of type &apos;{1}&apos; and &apos;{2}&apos;.
         /// </summary>
         public static string kMethodResolutionFailureForOperator {
             get {
@@ -682,7 +682,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn&apos;t find a version of {0} that takes arguments of type {1}..
+        ///   Looks up a localized string similar to One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn&apos;t find a version of {0} that takes arguments of type {1}.
         /// </summary>
         public static string kMethodResolutionFailureWithTypes {
             get {
@@ -718,7 +718,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No step size is specified in amount range expression..
+        ///   Looks up a localized string similar to No step size is specified in amount range expression.
         /// </summary>
         public static string kNoStepSizeInAmountRangeExpression {
             get {
@@ -727,7 +727,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Property &apos;{0}&apos; is inaccessible..
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; is inaccessible.
         /// </summary>
         public static string kPropertyInaccessible {
             get {
@@ -736,7 +736,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Property &apos;{0}&apos; is inaccessible..
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; is inaccessible.
         /// </summary>
         public static string kPropertyIsInaccessible {
             get {
@@ -745,7 +745,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Property &apos;{0}&apos; not found..
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; not found.
         /// </summary>
         public static string kPropertyNotFound {
             get {
@@ -754,7 +754,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Class &apos;{0}&apos; does not have a property &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Class &apos;{0}&apos; does not have a property &apos;{1}&apos;.
         /// </summary>
         public static string kPropertyOfClassNotFound {
             get {
@@ -763,7 +763,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The amount operator cannot be used together with step operator..
+        ///   Looks up a localized string similar to The amount operator cannot be used together with step operator.
         /// </summary>
         public static string kRangeExpressionConflictOperator {
             get {
@@ -790,7 +790,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The step number of range expression should be greater than 0..
+        ///   Looks up a localized string similar to The step number of range expression should be greater than 0.
         /// </summary>
         public static string kRangeExpressionWithNegativeStepNumber {
             get {
@@ -799,7 +799,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The step number of range expression should be integer..
+        ///   Looks up a localized string similar to The step number of range expression should be integer.
         /// </summary>
         public static string kRangeExpressionWithNonIntegerStepNumber {
             get {
@@ -808,7 +808,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The step size of range expression should not be 0..
+        ///   Looks up a localized string similar to The step size of range expression should not be 0.
         /// </summary>
         public static string kRangeExpressionWithStepSizeZero {
             get {
@@ -817,7 +817,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Return type &apos;{0}&apos; of method &apos;{1}()&apos; is not defined..
+        ///   Looks up a localized string similar to Return type &apos;{0}&apos; of method &apos;{1}()&apos; is not defined.
         /// </summary>
         public static string kReturnTypeUndefined {
             get {
@@ -826,7 +826,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot find static method or constructor {0}.{1}()..
+        ///   Looks up a localized string similar to Cannot find static method or constructor {0}.{1}().
         /// </summary>
         public static string kStaticMethodNotFound {
             get {
@@ -835,7 +835,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to String indexing cannot be assigned to, it is read only..
+        ///   Looks up a localized string similar to String indexing cannot be assigned to, it is read only.
         /// </summary>
         public static string kStringIndexingCannotBeAssigned {
             get {
@@ -853,7 +853,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to String is over indexed..
+        ///   Looks up a localized string similar to String is over indexed.
         /// </summary>
         public static string kStringOverIndexed {
             get {
@@ -862,7 +862,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is over indexed..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is over indexed.
         /// </summary>
         public static string kSymbolOverIndexed {
             get {
@@ -871,7 +871,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type &apos;{0}&apos; is not defined..
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; is not defined.
         /// </summary>
         public static string kTypeUndefined {
             get {
@@ -880,7 +880,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable &apos;{0}&apos; hasn&apos;t been defined yet..
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; hasn&apos;t been defined yet.
         /// </summary>
         public static string kUnboundIdentifierMsg {
             get {
@@ -898,7 +898,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;this&apos; cannot be used in static method..
+        ///   Looks up a localized string similar to &apos;this&apos; cannot be used in static method.
         /// </summary>
         public static string kUsingThisInStaticFunction {
             get {
@@ -925,29 +925,29 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Modifier Blocks are not supported currently..
+        ///   Looks up a localized string similar to Modifier Blocks are not supported currently.
         /// </summary>
-        public static string modifierBlockNotSupported {
+        public static string ModifierBlockNotSupported {
             get {
-                return ResourceManager.GetString("modifierBlockNotSupported", resourceCulture);
+                return ResourceManager.GetString("ModifierBlockNotSupported", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to No constructors for Attribute &apos;{0}&apos; takes {1} arguments.
         /// </summary>
-        public static string noConstructorForAttribute {
+        public static string NoConstructorForAttribute {
             get {
-                return ResourceManager.GetString("noConstructorForAttribute", resourceCulture);
+                return ResourceManager.GetString("NoConstructorForAttribute", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Cannot import file: &apos;{0}&apos;: No such file or directory.
         /// </summary>
-        public static string noSuchFileOrDirectoryToImport {
+        public static string NoSuchFileOrDirectoryToImport {
             get {
-                return ResourceManager.GetString("noSuchFileOrDirectoryToImport", resourceCulture);
+                return ResourceManager.GetString("NoSuchFileOrDirectoryToImport", resourceCulture);
             }
         }
         
@@ -970,7 +970,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Produces the set union of two sequences by using the default equality comparer..
+        ///   Looks up a localized string similar to Produces the set union of two sequences by using the default equality comparer.
         /// </summary>
         public static string ProducesTheSetUnion {
             get {
@@ -979,11 +979,11 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns true if the specified key is removed from list, otherwise returns false..
+        ///   Looks up a localized string similar to Returns true if the specified key is removed from list, otherwise returns false.
         /// </summary>
-        public static string removeKeys {
+        public static string RemoveKeys {
             get {
-                return ResourceManager.GetString("removeKeys", resourceCulture);
+                return ResourceManager.GetString("RemoveKeys", resourceCulture);
             }
         }
         
@@ -1006,7 +1006,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Joins two lists into a single list..
+        ///   Looks up a localized string similar to Joins two lists into a single list.
         /// </summary>
         public static string ReturnsConcatenatingList {
             get {
@@ -1033,7 +1033,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns number of items in the specified list..
+        ///   Looks up a localized string similar to Returns number of items in the specified list.
         /// </summary>
         public static string ReturnsNumberOfItems {
             get {
@@ -1044,9 +1044,9 @@ namespace ProtoCore.Properties {
         /// <summary>
         ///   Looks up a localized string similar to return statement is not allowed in constructor.
         /// </summary>
-        public static string returnStatementIsNotAllowedInConstructor {
+        public static string ReturnStatementIsNotAllowedInConstructor {
             get {
-                return ResourceManager.GetString("returnStatementIsNotAllowedInConstructor", resourceCulture);
+                return ResourceManager.GetString("ReturnStatementIsNotAllowedInConstructor", resourceCulture);
             }
         }
         
@@ -1096,11 +1096,11 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;;&apos; is expected..
+        ///   Looks up a localized string similar to &apos;;&apos; is expected.
         /// </summary>
-        public static string semiColonExpected {
+        public static string SemiColonExpected {
             get {
-                return ResourceManager.GetString("semiColonExpected", resourceCulture);
+                return ResourceManager.GetString("SemiColonExpected", resourceCulture);
             }
         }
         
@@ -1125,32 +1125,32 @@ namespace ProtoCore.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Too many characters in character literal.
         /// </summary>
-        public static string tooManyCharacters {
+        public static string TooManyCharacters {
             get {
-                return ResourceManager.GetString("tooManyCharacters", resourceCulture);
+                return ResourceManager.GetString("TooManyCharacters", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unknown attribute {0}.
         /// </summary>
-        public static string unknownAttribute {
+        public static string UnknownAttribute {
             get {
-                return ResourceManager.GetString("unknownAttribute", resourceCulture);
+                return ResourceManager.GetString("UnknownAttribute", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; statement can only be used in imperative language block, consider using an inline conditional instead?.
         /// </summary>
-        public static string useInlineConditional {
+        public static string UseInlineConditional {
             get {
-                return ResourceManager.GetString("useInlineConditional", resourceCulture);
+                return ResourceManager.GetString("UseInlineConditional", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use List.Join node instead..
+        ///   Looks up a localized string similar to Use List.Join node instead.
         /// </summary>
         public static string UseListJoinNode {
             get {
@@ -1159,11 +1159,11 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; statement can only be used in imperative language block..
+        ///   Looks up a localized string similar to &apos;{0}&apos; statement can only be used in imperative language block.
         /// </summary>
-        public static string validForImperativeBlockOnly {
+        public static string ValidForImperativeBlockOnly {
             get {
-                return ResourceManager.GetString("validForImperativeBlockOnly", resourceCulture);
+                return ResourceManager.GetString("ValidForImperativeBlockOnly", resourceCulture);
             }
         }
     }
