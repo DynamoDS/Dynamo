@@ -315,5 +315,40 @@ namespace ProtoScript.Runners
             else
                 return null;
         }
+
+        /// <summary>
+        /// The public method to compile DS code
+        /// </summary>
+        /// <param name="sourcecode"></param>
+        /// <param name="compileCore"></param>
+        /// <param name="dsExecutable"></param>
+        /// <returns></returns>
+        public bool CompileMe(string sourcecode, ProtoCore.Core compileCore, out Executable dsExecutable)
+        {
+            int blockID = 0;
+            bool succeeded = Compile(sourcecode, compileCore, out blockID);
+
+            compileCore.GenerateExecutable();
+            dsExecutable = compileCore.DSExecutable;
+
+            return succeeded;
+        }
+
+        public ExecutionMirror ExecuteMe(ProtoCore.RuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
+
+            try
+            {
+                //Execute(runtimeCore, 0, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+            }
+            catch (ProtoCore.Exceptions.ExecutionCancelledException e)
+            {
+                Console.WriteLine("The execution has been cancelled!");
+            }
+             
+            //return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+        }
+
     }
 }
