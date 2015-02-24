@@ -15,6 +15,8 @@ using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoFFI;
 
+using RestSharp;
+
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
 
@@ -95,17 +97,34 @@ namespace Dynamo.DSEngine
 
         public string NicknameFromFunctionSignatureHint(string functionSignature)
         {
-            string[] splitted = functionSignature.Split('@');
+            string[] splitted = null;
+            string newName = null;
 
-            if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
-                return null;
+            if (priorNameHints.ContainsKey(functionSignature))
+            {
+                var mappedSignature = priorNameHints[functionSignature];
 
-            string qualifiedFunction = splitted[0];
+                splitted = mappedSignature.Split('@');
 
-            if (!priorNameHints.ContainsKey(qualifiedFunction))
-                return null;
+                if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
+                    return null;
 
-            string newName = priorNameHints[qualifiedFunction];
+                newName = splitted[0];
+            }
+            else
+            {
+                splitted = functionSignature.Split('@');
+
+                if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
+                    return null;
+
+                string qualifiedFunction = splitted[0];
+
+                if (!priorNameHints.ContainsKey(qualifiedFunction))
+                    return null;
+
+                newName = priorNameHints[qualifiedFunction];
+            }
 
             splitted = newName.Split('.');
 
@@ -117,6 +136,11 @@ namespace Dynamo.DSEngine
 
         public string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
         {
+            // if the hint is explicit, we can simply return the mapped function
+            if (priorNameHints.ContainsKey(functionSignature))
+                return priorNameHints[functionSignature];
+
+            // if the hint is not explicit, we try the function name without parameters
             string[] splitted = functionSignature.Split('@');
 
             if (splitted.Length < 2 || String.IsNullOrEmpty(splitted[0]) || String.IsNullOrEmpty(splitted[1]))

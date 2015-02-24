@@ -275,7 +275,7 @@ namespace DynamoUnits
         public abstract SIUnit Ceiling();
         public abstract SIUnit Floor();
 
-        #region operator overloads
+        #region operator overloads;
 
         public static SIUnit operator +(SIUnit x, SIUnit y)
         {
@@ -328,7 +328,7 @@ namespace DynamoUnits
             if (x.GetType() == y.GetType())
             {
                 return x.Value / y.Value;
-            }    
+            }
 
             return x.Divide(y);
         }
@@ -504,7 +504,7 @@ namespace DynamoUnits
 
         public override SIUnit Add(SIUnit x)
         {
-            if(x is Length)
+            if (x is Length)
                 return new Length(_value + x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -517,7 +517,7 @@ namespace DynamoUnits
 
         public override SIUnit Subtract(SIUnit x)
         {
-            if(x is Length)
+            if (x is Length)
                 return new Length(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -552,7 +552,7 @@ namespace DynamoUnits
         {
             if (x is Length)
             {
-                return _value/x.Value;
+                return _value / x.Value;
             }
 
             throw new UnitsException(GetType(), x.GetType());
@@ -565,7 +565,7 @@ namespace DynamoUnits
 
         public override SIUnit Modulo(SIUnit x)
         {
-            if(x is Length)
+            if (x is Length)
                 return new Length(_value % x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -783,7 +783,7 @@ namespace DynamoUnits
 
         public override SIUnit Add(SIUnit x)
         {
-            if(x is Area)
+            if (x is Area)
                 return new Area(_value + x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -796,7 +796,7 @@ namespace DynamoUnits
 
         public override SIUnit Subtract(SIUnit x)
         {
-            if(x is Area)
+            if (x is Area)
                 return new Area(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -828,13 +828,13 @@ namespace DynamoUnits
             if (x is Area)
             {
                 //return a double
-                return _value/x.Value;
+                return _value / x.Value;
             }
 
             if (x is Length)
             {
                 //return length
-                return new Length(_value/x.Value);
+                return new Length(_value / x.Value);
             }
 
             throw new UnitsException(GetType(), x.GetType());
@@ -842,7 +842,7 @@ namespace DynamoUnits
 
         public override SIUnit Divide(double x)
         {
-            return new Area(_value/x);
+            return new Area(_value / x);
         }
 
         public override SIUnit Modulo(SIUnit x)
@@ -851,7 +851,7 @@ namespace DynamoUnits
             {
                 return new Area(_value % x.Value);
             }
-            
+
             throw new UnitsException(GetType(), x.GetType());
         }
 
@@ -1071,7 +1071,7 @@ namespace DynamoUnits
 
         public override SIUnit Add(SIUnit x)
         {
-            if(x is Volume)
+            if (x is Volume)
                 return new Volume(_value + x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -1084,7 +1084,7 @@ namespace DynamoUnits
 
         public override SIUnit Subtract(SIUnit x)
         {
-            if(x is Volume)
+            if (x is Volume)
                 return new Volume(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -1109,11 +1109,11 @@ namespace DynamoUnits
         {
             if (x is Length)
             {
-                return new Area(_value/x.Value);
+                return new Area(_value / x.Value);
             }
             else if (x is Area)
             {
-                return new Length(_value/x.Value);
+                return new Length(_value / x.Value);
             }
 
             throw new UnitsException(GetType(), x.GetType());
@@ -1121,7 +1121,7 @@ namespace DynamoUnits
 
         public override SIUnit Divide(double x)
         {
-            return new Volume(_value/x);
+            return new Volume(_value / x);
         }
 
         public override SIUnit Modulo(SIUnit x)
@@ -1130,7 +1130,7 @@ namespace DynamoUnits
             {
                 return new Volume(_value % x.Value);
             }
-            
+
             throw new UnitsException(GetType(), x.GetType());
         }
 
