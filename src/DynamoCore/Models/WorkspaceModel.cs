@@ -1400,7 +1400,7 @@ namespace Dynamo.Models
             document.AppendChild(document.CreateElement("Workspace"));
 
             //This is only used for computing relative offsets, it's not actually created
-            string virtualFileName = Path.GetTempPath() + "DynamoTemp.dyn";
+            string virtualFileName = Path.Combine(Path.GetTempPath(), "DynamoTemp.dyn");
             Utils.SetDocumentXmlPath(document, virtualFileName);
 
             if (!PopulateXmlDocument(document))
