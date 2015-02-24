@@ -3,6 +3,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Threading;
 using Dynamo;
@@ -12,6 +13,7 @@ using Dynamo.DynamoSandbox;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.ViewModels;
+using DynamoShapeManager;
 using DynamoUtilities;
 
 namespace DynamoSandbox
@@ -20,14 +22,18 @@ namespace DynamoSandbox
     {
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
-            DynamoPathManager.Instance.InitializeCore(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            var rootFolder = Path.GetDirectoryName(exePath);
+            DynamoPathManager.Instance.InitializeCore(rootFolder);
+
+            var geometryFactoryPath = string.Empty;
+            PreloadShapeManager(ref geometryFactoryPath);
 
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    Preferences = PreferenceSettings.Load(),
-                    GeometryConfiguration = new GeometryConfiguration()
+                    GeometryFactoryPath = geometryFactoryPath,
+                    Preferences = PreferenceSettings.Load()
                 });
 
             viewModel = DynamoViewModel.Start(
@@ -41,6 +47,34 @@ namespace DynamoSandbox
 
             var app = new Application();
             app.Run(view);
+        }
+
+        private static void PreloadShapeManager(ref string geometryFactoryPath)
+        {
+            geometryFactoryPath = string.Empty;
+
+            var versions = new[]
+            {
+                LibraryVersion.Version219,
+                LibraryVersion.Version220,
+                LibraryVersion.Version221
+            };
+
+            var shapeManagerPath = string.Empty;
+            var version = Utilities.GetInstalledAsmVersion(versions, ref shapeManagerPath);
+
+            if (version >= 0)
+            {
+                var exePath = Assembly.GetExecutingAssembly().Location;
+                var rootFolder = Path.GetDirectoryName(exePath);
+
+                var preloader = new Preloader(rootFolder, versions[version]);
+                preloader.Preload(shapeManagerPath);
+                geometryFactoryPath = preloader.GeometryFactoryPath;
+
+                // TODO(PATHMANAGER): Do we really libg_xxx folder on resolution path?
+                DynamoPathManager.Instance.AddResolutionPath(preloader.PreloaderLocation);
+            }
         }
 
         [STAThread]

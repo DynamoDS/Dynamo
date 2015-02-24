@@ -25,6 +25,7 @@ namespace DynamoShapeManager
         private readonly string preloaderLocation;
         private readonly string geometryFactoryPath;
 
+        public string PreloaderLocation { get { return preloaderLocation; } }
         public string GeometryFactoryPath { get { return geometryFactoryPath; } }
 
         #endregion
