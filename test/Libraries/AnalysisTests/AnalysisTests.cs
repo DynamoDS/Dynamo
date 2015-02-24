@@ -11,7 +11,7 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -290,7 +290,7 @@ namespace AnalysisTests
     class TestExecutionSession : IExecutionSession, IConfiguration, IDisposable
     {
         private Dictionary<string, object> configValues;
-        private GeometryConfigurationForTests geomConfiguration;
+        private Preloader preloader;
 
         public TestExecutionSession()
         {
@@ -329,16 +329,14 @@ namespace AnalysisTests
         {
             if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
             {
-                var assemblyPath = Assembly.GetExecutingAssembly().Location;
-                var rootDirectory = Path.GetDirectoryName(assemblyPath);
-
-                if (geomConfiguration == null)
+                if (preloader == null)
                 {
-                    geomConfiguration = new GeometryConfigurationForTests();
-                    geomConfiguration.PreloadAsm(rootDirectory);
+                    var exePath = Assembly.GetExecutingAssembly().Location;
+                    preloader = new Preloader(Path.GetDirectoryName(exePath));
+                    preloader.Preload();
                 }
 
-                return geomConfiguration.GetGeometryFactoryPath(rootDirectory);
+                return preloader.GeometryFactoryPath;
             }
 
             if (configValues.ContainsKey(config))

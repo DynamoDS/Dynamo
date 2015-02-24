@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 
 using Dynamo;
@@ -11,7 +12,7 @@ using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -29,6 +30,7 @@ namespace SystemTestServices
     public abstract class SystemTestBase
     {
         protected string workingDirectory;
+        private Preloader preloader;
 
         #region protected properties
 
@@ -76,12 +78,15 @@ namespace SystemTestServices
 
         public virtual void StartDynamo()
         {
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            preloader = new Preloader(Path.GetDirectoryName(exePath));
+
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true,
-                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath,
-                    GeometryConfiguration = new GeometryConfigurationForTests()
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
                 });
 
             ViewModel = DynamoViewModel.Start(
