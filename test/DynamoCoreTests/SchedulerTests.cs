@@ -327,11 +327,11 @@ namespace Dynamo
         }
     }
 
-    internal class FakeActionBasedAsyncTask : ActionBasedAsyncTask
+    internal class FakeDelegateBasedAsyncTask : DelegateBasedAsyncTask
     {
         private readonly FakeAsyncTaskData data;
 
-        internal FakeActionBasedAsyncTask(FakeAsyncTaskData data)
+        internal FakeDelegateBasedAsyncTask(FakeAsyncTaskData data)
             : base(data.Scheduler)
         {
             this.data = data;
@@ -1266,7 +1266,7 @@ namespace Dynamo
 
         private AsyncTask MakeDelegateBasedAsyncTask()
         {
-            return new FakeActionBasedAsyncTask(MakeAsyncTaskData());
+            return new FakeDelegateBasedAsyncTask(MakeAsyncTaskData());
         }
 
         private AsyncTask MakeNotifyRenderPackagesReadyAsyncTask()

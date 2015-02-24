@@ -7,7 +7,7 @@ namespace Dynamo.Core.Threading
     /// to be scheduled for asynchronous execution on the ISchedulerThread. 
     /// </summary>
     /// 
-    internal class ActionBasedAsyncTask : AsyncTask
+    internal class DelegateBasedAsyncTask : AsyncTask
     {
         private Action actionToPerform;
 
@@ -18,7 +18,12 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal ActionBasedAsyncTask(IScheduler scheduler, Action action)
+        internal DelegateBasedAsyncTask(IScheduler scheduler)
+            : base(scheduler)
+        {
+        }
+        
+        internal DelegateBasedAsyncTask(IScheduler scheduler, Action action)
             : base(scheduler)
         {
             this.Initialize(action);

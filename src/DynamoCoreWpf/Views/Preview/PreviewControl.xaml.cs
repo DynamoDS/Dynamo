@@ -135,17 +135,14 @@ namespace Dynamo.UI.Controls
             if (this.IsCondensed)
             {
                 RefreshCondensedDisplay();
-
-                scheduler.ScheduleForExecution(
-                    new ActionBasedAsyncTask(scheduler,
-                        () => Dispatcher.BeginInvoke((Action)(() => BeginViewSizeTransition(ComputeSmallContentSize())))));
+                BeginViewSizeTransition(ComputeSmallContentSize());
             }
             else if (this.IsExpanded)
             {
                 RefreshExpandedDisplayAsync();
 
                 scheduler.ScheduleForExecution(
-                    new ActionBasedAsyncTask(scheduler, 
+                    new DelegateBasedAsyncTask(scheduler, 
                         () => Dispatcher.BeginInvoke((Action)(() => BeginViewSizeTransition(ComputeLargeContentSize())))));
             }
         }
@@ -296,7 +293,7 @@ namespace Dynamo.UI.Controls
             var watchTree = largeContentGrid.Children[0] as WatchTree;
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
-            var task0 = new ActionBasedAsyncTask(scheduler, () =>
+            var task0 = new DelegateBasedAsyncTask(scheduler, () =>
             {
                 cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                     mirrorData, null, string.Empty, false);
@@ -304,7 +301,7 @@ namespace Dynamo.UI.Controls
 
             scheduler.ScheduleForExecution(task0);
 
-            var task1 = new ActionBasedAsyncTask(scheduler, () =>
+            var task1 = new DelegateBasedAsyncTask(scheduler, () =>
                 Dispatcher.BeginInvoke((Action) (() =>
                 {
                     rootDataContext.Children.Add(cachedLargeContent);
