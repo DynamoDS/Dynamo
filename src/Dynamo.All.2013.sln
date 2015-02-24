@@ -34,8 +34,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodes", "Libraries\Core
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModels", "Libraries\CoreNodeModels\CoreNodeModels.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2} = {C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModelsWpf", "Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj", "{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2} = {C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino", "Libraries\DynamoArduino\Arduino.csproj", "{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}"
 	ProjectSection(ProjectDependencies) = postProject
