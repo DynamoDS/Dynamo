@@ -1170,6 +1170,9 @@ namespace ProtoScript.Runners
                 runnerCore.Configurations[item.Key] = item.Value;
             }
 
+
+            runtimeCore = runnerCore.__TempCoreHostForRefactoring;
+
             vmState = null;
         }
 
@@ -1531,7 +1534,6 @@ namespace ProtoScript.Runners
 
         private ProtoRunner.ProtoVMState Execute()
         {
-            runtimeCore = runnerCore.__TempCoreHostForRefactoring;
             // runnerCore.GlobOffset is the number of global symbols that need to be allocated on the stack
             // The argument to Reallocate is the number of ONLY THE NEW global symbols as the stack needs to accomodate this delta
             int newSymbols = runnerCore.GlobOffset - deltaSymbols;
@@ -1636,6 +1638,7 @@ namespace ProtoScript.Runners
         private void ResetForDeltaExecution()
         {
             runnerCore.ResetForDeltaExecution();
+            runtimeCore.ResetForDeltaExecution();
         }
 
         /// <summary>
