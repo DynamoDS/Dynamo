@@ -135,11 +135,10 @@ namespace Dynamo.Nodes
             if (Definition == null)
                 return true;
 
-            if (Definition.Parameters != null)
+            if (Definition.DisplayParameters != null)
             {
-                var defParamNames = Definition.Parameters.Select(p => p.Name);
                 var paramNames = model.InPortData.Select(p => p.NickName);
-                if (!defParamNames.SequenceEqual(paramNames))
+                if (!Definition.DisplayParameters.SequenceEqual(paramNames))
                     return false;
 
                 var defParamTypes = Definition.Parameters.Select(p => p.Type.ToShortString());
