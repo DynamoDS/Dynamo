@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace ShapeManagerUtilities
+namespace DynamoShapeManager
 {
-    public static class ShapeManagerUtilities
+    public static class Utilities
     {
         public static readonly string GeometryFactoryAssembly = "LibG.ProtoInterface.dll";
         public static readonly string PreloaderAssembly = "LibG.AsmPreloader.Managed.dll";

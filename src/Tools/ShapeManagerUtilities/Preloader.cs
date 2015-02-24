@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 
-namespace ShapeManagerUtilities
+namespace DynamoShapeManager
 {
     public enum LibraryVersion
     {
@@ -13,20 +12,20 @@ namespace ShapeManagerUtilities
     };
 
     /// <summary>
-    /// Geometry preloader class that helps with preloading Autodesk Shape 
+    /// Shape manager preloader class that helps with preloading Autodesk Shape 
     /// Manager (ASM) binaries through geometry library (LibG). This class being
     /// part of Dynamo core module, relies on IGeometryConfiguration supplied by
     /// the host application to determine the installed location of ASM binaries.
     /// </summary>
     /// 
-    class ShapeManagerPreloader
+    public class Preloader
     {
         #region Class Data Members and Properties
 
         private readonly string preloaderLocation;
         private readonly string geometryFactoryPath;
 
-        internal string GeometryFactoryPath { get { return geometryFactoryPath; } }
+        public string GeometryFactoryPath { get { return geometryFactoryPath; } }
 
         #endregion
 
@@ -43,7 +42,7 @@ namespace ShapeManagerUtilities
         /// </param>
         /// <param name="version">The version of shape manager to load.</param>
         /// 
-        internal ShapeManagerPreloader(string rootFolder, LibraryVersion version)
+        public Preloader(string rootFolder, LibraryVersion version)
         {
             if (string.IsNullOrEmpty(rootFolder))
                 throw new ArgumentNullException("rootFolder");
@@ -55,7 +54,7 @@ namespace ShapeManagerUtilities
             var libGFolderName = string.Format("libg_{0}", ((int) version));
             preloaderLocation = Path.Combine(rootFolder, libGFolderName);
             geometryFactoryPath = Path.Combine(preloaderLocation,
-                ShapeManagerUtilities.GeometryFactoryAssembly);
+                Utilities.GeometryFactoryAssembly);
 
             // TODO(PATHMANAGER): This retains the existing behavior of SetLibGPath
             // method. Move this out when DynamoPathManager is completely replaced 
@@ -64,10 +63,9 @@ namespace ShapeManagerUtilities
             // DynamoPathManager.Instance.AddResolutionPath(preloaderLocation);
         }
 
-        internal void Preload(string shapeManagerPath)
+        public void Preload(string shapeManagerPath)
         {
-            ShapeManagerUtilities.PreloadAsmFromPath(
-                preloaderLocation, shapeManagerPath);
+            Utilities.PreloadAsmFromPath(preloaderLocation, shapeManagerPath);
         }
 
         #endregion
