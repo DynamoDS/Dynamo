@@ -91,21 +91,21 @@ namespace Dynamo.DSEngine
                     });
             }
 
+            var inputParameters = new List<Tuple<string, string>>();
+            //Add instance parameter as one of the inputs for instance method as well as properties.
+            if(type == FunctionType.InstanceMethod || type == FunctionType.InstanceProperty)
+                inputParameters.Add(Tuple.Create(UnqualifedClassName.ToLower(), UnqualifedClassName));
+
             if (Parameters.Any())
             {
-                InputParameters = Parameters.Select(
-                    par =>
-                    {
-                        return Tuple.Create<string, string>(par.Name, par.DisplayTypeName);
-                    }
-                    );
-            }
-            else
-            {
-                InputParameters = new List<Tuple<string, string>>();
+                inputParameters.AddRange(Parameters.Select(
+                    par => Tuple.Create(par.Name, par.DisplayTypeName)));
             }
 
-            ReturnType = returnType.ToShortString();
+            InputParameters = inputParameters;
+            
+            //Not sure why returnType for constructors are var[]..[], use UnqualifiedClassName
+            ReturnType = (type == FunctionType.Constructor) ? UnqualifedClassName : returnType.ToShortString();
             Type = type;
             ReturnKeys = returnKeys ?? new List<string>();
             IsVarArg = isVarArg;

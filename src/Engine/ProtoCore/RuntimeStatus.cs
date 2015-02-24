@@ -266,7 +266,7 @@ namespace ProtoCore
         {
             ulong location = (((ulong)line) << 32 | ((uint)col));
 
-            foreach (var prop in core.InterpreterProps)
+            foreach (var prop in core.__TempCoreHostForRefactoring.InterpreterProps)
             {
                 bool fileScope = false;
                 if (prop.executingGraphNode == null)

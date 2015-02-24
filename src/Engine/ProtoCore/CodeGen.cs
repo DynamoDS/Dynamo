@@ -290,7 +290,7 @@ namespace ProtoCore
 
         protected void SetStackIndex(ProtoCore.DSASM.SymbolNode symbol)
         {
-            if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 //Set the index of the symbol relative to the watching stack
                 symbol.index = core.watchBaseOffset;
@@ -1212,7 +1212,7 @@ namespace ProtoCore
             symbol = null;
             isAccessible = false;
             CodeBlock currentCodeBlock = codeBlock;
-            if (core.ExecMode == DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.RunMode == DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 int tempBlockId = core.GetCurrentBlockId();
                 currentCodeBlock = core.GetCodeBlock(core.CodeBlockList, tempBlockId);
@@ -1236,7 +1236,7 @@ namespace ProtoCore
                     return false;
                 }
 
-                if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
                     //Search local variables in the class member function first
                     if (functionScope != Constants.kGlobalScope)
@@ -1419,7 +1419,7 @@ namespace ProtoCore
 
                 //Fix IDE-448
                 //Search current running block as well.
-                searchBlock = core.GetCodeBlock(core.CodeBlockList, core.RunningBlock);
+                searchBlock = core.GetCodeBlock(core.CodeBlockList, 0);
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
                 if (symbolIndex != Constants.kInvalidIndex)
                 {
@@ -1458,7 +1458,7 @@ namespace ProtoCore
             ProtoCore.DSASM.AddressType addressType;
             ProtoCore.DSASM.ClassNode classnode = core.ClassTable.ClassNodes[globalClassIndex];
 
-            int symbolIndex = classnode.GetSymbolIndex(name, globalClassIndex, globalProcIndex, core.RunningBlock, core, out hasThisSymbol, out addressType);
+            int symbolIndex = classnode.GetSymbolIndex(name, globalClassIndex, globalProcIndex, 0, core, out hasThisSymbol, out addressType);
             if (symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
                 return false;
@@ -1929,7 +1929,7 @@ namespace ProtoCore
 
         private void AppendInstruction(Instruction instr, int line = Constants.kInvalidIndex, int col = Constants.kInvalidIndex)
         {
-            if (DSASM.InterpreterMode.kExpressionInterpreter == core.ExecMode)
+            if (DSASM.InterpreterMode.kExpressionInterpreter == core.Options.RunMode)
             {
                 core.ExprInterpreterExe.iStreamCanvas.instrList.Add(instr);
             }

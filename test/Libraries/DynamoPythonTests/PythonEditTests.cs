@@ -129,7 +129,7 @@ namespace Dynamo.Tests
         private void UpdatePythonNodeContent(ModelBase pythonNode, string value)
         {
             var command = new DynCmd.UpdateModelValueCommand(
-                pythonNode.GUID, "ScriptContent", value);
+                System.Guid.Empty, pythonNode.GUID, "ScriptContent", value);
 
             ViewModel.ExecuteCommand(command);
         }

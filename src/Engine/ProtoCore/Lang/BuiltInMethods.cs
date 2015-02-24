@@ -167,7 +167,8 @@ namespace ProtoCore.Lang
                     {
                         new KeyValuePair<string, ProtoCore.Type>("array", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
-                    ID = BuiltInMethods.MethodID.kCount
+                    ID = BuiltInMethods.MethodID.kCount,
+                    MethodAttributes = new MethodAttributes(){Description = "Returns number of items in the specified list."}
                 },
 
                 new BuiltInMethod

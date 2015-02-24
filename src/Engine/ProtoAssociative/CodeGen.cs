@@ -3957,7 +3957,7 @@ namespace ProtoAssociative
             AllocateContextGlobals();
 
             core.startPC = this.pc;
-            if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 return EmitExpressionInterpreter(codeBlockNode);
             }
@@ -4315,7 +4315,7 @@ namespace ProtoAssociative
                 {
                     // The variable is unbound
                     ProtoCore.DSASM.SymbolNode unboundVariable = null;
-                    if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter != core.ExecMode)
+                    if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter != core.Options.RunMode)
                     {
                         inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeNull;
 
@@ -4437,7 +4437,7 @@ namespace ProtoAssociative
             }
             else
             {
-                if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter &&
+                if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter &&
                     !isAllocated)
                 {
                     // It happens when the debugger try to watch a variable 
@@ -4537,7 +4537,7 @@ namespace ProtoAssociative
 
                 EmitPushVarData(runtimeIndex, dimensions);
 
-                if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter == core.ExecMode)
+                if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter == core.Options.RunMode)
                 {
                     EmitInstrConsole(ProtoCore.DSASM.kw.pushw, t.Value);
                     EmitPushForSymbolW(symbolnode, t.line, t.col);
@@ -8463,7 +8463,7 @@ namespace ProtoAssociative
                                     false, ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
 
                                 // Add the symbols during watching process to the watch symbol list.
-                                if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                                if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                                 {
                                     core.watchSymbolList.Add(symbolnode);
                                 }
@@ -8490,7 +8490,7 @@ namespace ProtoAssociative
                             }
                             else
                             {
-                                if (core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                                if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                                 {
                                     EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Name);
                                     EmitPopForSymbol(symbolnode, node.line, node.col, node.endLine, node.endCol);
@@ -8546,7 +8546,7 @@ namespace ProtoAssociative
                             symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, ProtoCore.DSASM.Constants.kPrimitiveSize,
                                     false, ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
 
-                            if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                             {
                                 core.watchSymbolList.Add(symbolnode);
                             }
@@ -8575,7 +8575,7 @@ namespace ProtoAssociative
                         castType = symbolnode.staticType;
                         EmitPushVarData(runtimeIndex, dimensions, castType.UID, castType.rank);
 
-                        if (core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                        if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                         {
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, symbolnode.name);
                             EmitPopForSymbol(symbolnode, node.line, node.col, node.endLine, node.endCol);
