@@ -117,11 +117,7 @@ namespace Dynamo.Models
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            foreach (var node in Nodes)
-            {
-                node.MarkNodeAsModified();
-            }
-            OnNodesModified();
+            MarkNodesAsModified(Nodes);
         }
 
         public override void OnNodesModified()
@@ -173,15 +169,27 @@ namespace Dynamo.Models
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                foreach (var node in Nodes)
-                {
-                    node.MarkNodeAsModified();
-                }
-                OnNodesModified();
+                MarkNodesAsModified(Nodes); 
             }
 
             if (DynamicRunEnabled)
                 Run();
+        }
+
+        /// <summary>
+        /// Mark all nodes as modified. 
+        /// </summary>
+        /// <param name="nodes"></param>
+        public void MarkNodesAsModified(IEnumerable<NodeModel> nodes)
+        {
+            if (nodes == null)
+                throw new ArgumentNullException("nodes");
+
+            foreach (var node in nodes)
+                node.MarkNodeAsModified();
+
+            if (nodes.Any())
+                OnNodesModified();
         }
 
         /// <summary>

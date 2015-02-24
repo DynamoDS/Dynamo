@@ -181,9 +181,9 @@ namespace Dynamo.UI.Controls
 
             nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
+                    nodeViewModel.WorkspaceViewModel.Model.Guid,
                     nodeViewModel.NodeModel.GUID, "InputSymbol",
                     InnerTextEditor.Text));
-
         }
 
         /// <summary>
