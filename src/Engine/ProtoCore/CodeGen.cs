@@ -2975,7 +2975,7 @@ namespace ProtoCore
             {
                 if (!IsConstantExpression(attr))
                 {
-                    buildStatus.LogSemanticError(Resources.attributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
+                    buildStatus.LogSemanticError(Resources.AttributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
                     return null;
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);

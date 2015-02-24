@@ -63,18 +63,18 @@ namespace ProtoCore.Properties {
         /// <summary>
         ///   Looks up a localized string similar to An attribute argument must be a constant expression.
         /// </summary>
-        public static string attributeArgMustBeConstant {
+        public static string AttributeArgMustBeConstant {
             get {
-                return ResourceManager.GetString("attributeArgMustBeConstant", resourceCulture);
+                return ResourceManager.GetString("AttributeArgMustBeConstant", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The keyword &apos;base&apos; is expected here to call base constructor.
         /// </summary>
-        public static string baseIsExpectedToCallBaseConstructor {
+        public static string BaseIsExpectedToCallBaseConstructor {
             get {
-                return ResourceManager.GetString("baseIsExpectedToCallBaseConstructor", resourceCulture);
+                return ResourceManager.GetString("BaseIsExpectedToCallBaseConstructor", resourceCulture);
             }
         }
         
@@ -223,7 +223,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Imports from CSV by providing file path.
+        ///   Looks up a localized string similar to Imports data from a text file containing comma separated values into two-dimensional list.
         /// </summary>
         public static string ImportFileByGivenFilePath {
             get {
@@ -232,7 +232,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Imports from CSV by providing file path. The result is transposed when trans is false.
+        ///   Looks up a localized string similar to Imports data from a text file containing comma separated values into two-dimensional list and also transpose the output list if specified.
         /// </summary>
         public static string ImportFileByGivenFilePathWithMode {
             get {
@@ -241,16 +241,16 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import statements are not supported in CodeBlock Nodes.
+        ///   Looks up a localized string similar to Imports statements are not supported in CodeBlock Nodes.
         /// </summary>
-        public static string importStatementNotSupported {
+        public static string ImportStatementNotSupported {
             get {
-                return ResourceManager.GetString("importStatementNotSupported", resourceCulture);
+                return ResourceManager.GetString("ImportStatementNotSupported", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inserts an element into a list at the specified index.
+        ///   Looks up a localized string similar to Inserts an element into a list at specified index.
         /// </summary>
         public static string InsertsAnElementIntoList {
             get {
@@ -466,7 +466,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting other things to function pointer is not allowed.
+        ///   Looks up a localized string similar to Converting other objects to a function pointer is not allowed.
         /// </summary>
         public static string kFailToConverToFunction {
             get {

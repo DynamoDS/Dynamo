@@ -1733,7 +1733,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		List<ProtoCore.AST.AssociativeAST.AssociativeNode> args = null; 
 		if (la.val != "base")
 		{
-		   SynErr(Resources.baseIsExpectedToCallBaseConstructor); 
+		   SynErr(Resources.BaseIsExpectedToCallBaseConstructor); 
 		}
 		else
 		{

@@ -381,7 +381,7 @@ namespace ProtoCore.Utils
                 }
                 else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
                 {
-                    core.BuildStatus.LogSemanticError(Resources.importStatementNotSupported);
+                    core.BuildStatus.LogSemanticError(Resources.ImportStatementNotSupported);
                 }
                 else if (isFunctionOrClassDef)
                 {

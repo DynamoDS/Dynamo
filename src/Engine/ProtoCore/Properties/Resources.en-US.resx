@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="attributeArgMustBeConstant" xml:space="preserve">
+  <data name="AttributeArgMustBeConstant" xml:space="preserve">
     <value>An attribute argument must be a constant expression</value>
   </data>
-  <data name="baseIsExpectedToCallBaseConstructor" xml:space="preserve">
+  <data name="BaseIsExpectedToCallBaseConstructor" xml:space="preserve">
     <value>The keyword 'base' is expected here to call base constructor</value>
   </data>
   <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
@@ -172,16 +172,16 @@
     <value>Gets all values stored in the specified key-value pair list and for a simple list it returns all elements in the list</value>
   </data>
   <data name="ImportFileByGivenFilePath" xml:space="preserve">
-    <value>Imports from CSV by providing file path</value>
+    <value>Imports data from a text file containing comma separated values into two-dimensional list</value>
   </data>
   <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
-    <value>Imports from CSV by providing file path. The result is transposed when trans is false</value>
+    <value>Imports data from a text file containing comma separated values into two-dimensional list and also transpose the output list if specified</value>
   </data>
-  <data name="importStatementNotSupported" xml:space="preserve">
-    <value>Import statements are not supported in CodeBlock Nodes</value>
+  <data name="ImportStatementNotSupported" xml:space="preserve">
+    <value>Imports statements are not supported in CodeBlock Nodes</value>
   </data>
   <data name="InsertsAnElementIntoList" xml:space="preserve">
-    <value>Inserts an element into a list at the specified index</value>
+    <value>Inserts an element into a list at specified index</value>
   </data>
   <data name="InvalidLanguageBlockIdentifier" xml:space="preserve">
     <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
@@ -253,7 +253,7 @@
     <value>\"{0}\" is a keyword, identifier expected</value>
   </data>
   <data name="kFailToConverToFunction" xml:space="preserve">
-    <value>Converting other things to function pointer is not allowed</value>
+    <value>Converting other objects to a function pointer is not allowed</value>
   </data>
   <data name="kFailToConverToNull" xml:space="preserve">
     <value>Converting other things to null is not allowed</value>
