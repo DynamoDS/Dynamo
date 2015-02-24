@@ -5,7 +5,6 @@ using System.Reflection;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo;
-using Dynamo.Interfaces;
 using DynamoShapeManager;
 using DynamoUtilities;
 

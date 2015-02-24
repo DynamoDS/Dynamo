@@ -9,7 +9,6 @@ using Analysis.DataTypes;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo;
-using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using DynamoShapeManager;
 using DynamoUtilities;
