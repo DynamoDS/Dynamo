@@ -47,7 +47,8 @@ namespace Dynamo.Models
         public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
 
         #region private members
-        private readonly GeometryPreloader geometryPreloader;
+
+        private readonly string geometryFactoryPath;
         private WorkspaceModel currentWorkspace;
         #endregion
 
@@ -373,7 +374,7 @@ namespace Dynamo.Models
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
-            public IGeometryConfiguration GeometryConfiguration { get; set; }
+            public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public string PackageManagerAddress { get; set; }
         }
@@ -434,11 +435,7 @@ namespace Dynamo.Models
             Scheduler = new DynamoScheduler(thread, IsTestMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
 
-            if (config.GeometryConfiguration != null)
-            {
-                geometryPreloader = new GeometryPreloader(config.GeometryConfiguration);
-                geometryPreloader.Preload();
-            }
+            geometryFactoryPath = config.GeometryFactoryPath;
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
@@ -823,13 +820,9 @@ namespace Dynamo.Models
                 EngineController = null;
             }
 
-            var geomFactory = string.Empty;
-            if (geometryPreloader != null)
-                geomFactory = geometryPreloader.GeometryFactoryPath;
-
             EngineController = new EngineController(
                 LibraryServices,
-                geomFactory,
+                geometryFactoryPath,
                 DebugSettings.VerboseLogging);
             EngineController.MessageLogged += LogMessage;
 
