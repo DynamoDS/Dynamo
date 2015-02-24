@@ -38,6 +38,25 @@ namespace DynamoShapeManager
         #region Public Class Operational Methods
 
         /// <summary>
+        /// Constructs a preloader object to help preload shape manager.
+        /// </summary>
+        /// <param name="rootFolder">Full path of the directory that contains 
+        /// LibG_xxx folder, where 'xxx' represents the library version. In a 
+        /// typical setup this would be the same directory that contains Dynamo 
+        /// core modules. This must represent a valid directory.
+        /// </param>
+        /// 
+        public Preloader(string rootFolder)
+            : this(rootFolder, new[]
+            {
+                LibraryVersion.Version219,
+                LibraryVersion.Version220,
+                LibraryVersion.Version221
+            })
+        {
+        }
+
+        /// <summary>
         /// Constructs a preloader object to help preload a specific version of 
         /// shape manager.
         /// </summary>
