@@ -1636,7 +1636,6 @@ namespace ProtoScript.Runners
         private void ResetForDeltaExecution()
         {
             runnerCore.ResetForDeltaExecution();
-            runtimeCore.ResetForDeltaExecution();
         }
 
         /// <summary>

@@ -115,12 +115,6 @@ namespace ProtoCore
         public List<Instruction> Breakpoints { get; set; }
 #endregion 
         
-
-
-        public void ResetForDeltaExecution()
-        {
-            RunningBlock = 0;
-        }
         
         public bool IsEvalutingPropertyChanged()
         {
