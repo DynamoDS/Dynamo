@@ -62,7 +62,6 @@
     </Compile>
     <Compile Include="AssemblyResolver.cs" />
     <Compile Include="GeometricTestBase.cs" />
-    <Compile Include="GeometryConfigurationForTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
