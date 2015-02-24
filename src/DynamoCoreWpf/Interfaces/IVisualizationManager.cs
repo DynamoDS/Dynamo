@@ -33,14 +33,6 @@ namespace Dynamo.Interfaces
         int MaxTesselationDivisions { get; set; }
 
         /// <summary>
-        /// Aggregates all upstream geometry for the given node then sends
-        /// a message that a visualization is ready
-        /// </summary>
-        /// <param name="node">The node whose upstream geometry you need.</param>
-        /// <returns>A render description containing all upstream geometry.</returns>
-        void AggregateUpstreamRenderPackages(RenderTag tag);
-
-        /// <summary>
         /// An event triggered on the completion of visualization update.
         /// </summary>
         event RenderCompleteEventHandler RenderComplete;
