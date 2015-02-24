@@ -668,25 +668,16 @@
                                                 <ItemsPresenter.Style>
                                                     <Style TargetType="{x:Type ItemsPresenter}">
                                                         <Setter Property="Margin"
-                                                                Value="0,3,0,3" />
+                                                                Value="0,0,0,0" />
                                                         <Style.Triggers>
                                                             <DataTrigger Value="True">
                                                                 <DataTrigger.Binding>
                                                                     <Binding RelativeSource="{RelativeSource Self}"
                                                                              Path="DataContext"
-                                                                             Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
+                                                                             Converter="{StaticResource RootElementToBoolConverter}" />
                                                                 </DataTrigger.Binding>
                                                                 <Setter Property="Margin"
-                                                                        Value="0,0,0,0" />
-                                                            </DataTrigger>
-                                                            <DataTrigger Value="True">
-                                                                <DataTrigger.Binding>
-                                                                    <Binding RelativeSource="{RelativeSource Self}"
-                                                                             Path="DataContext"
-                                                                             Converter="{StaticResource NodeCategoryVMToBoolConverter}" />
-                                                                </DataTrigger.Binding>
-                                                                <Setter Property="Margin"
-                                                                        Value="0,0,0,0" />
+                                                                        Value="0,3,0,3" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
