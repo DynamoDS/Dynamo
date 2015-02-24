@@ -191,7 +191,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServicesTests", "..\t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocumentationsUtility", "Tools\XmlDocumentationsUtility\XmlDocumentationsUtility.csproj", "{4CAB9005-0001-4B03-BBA0-57070ED105F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoConversions", "DynamoConversions\DynamoConversions.csproj", "{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoConversions", "Libraries\DynamoConversions\DynamoConversions.csproj", "{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
