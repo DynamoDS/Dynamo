@@ -30,6 +30,7 @@ namespace Dynamo.Tests
         {
             try
             {
+                preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
                 var shutdownParams = new DynamoViewModel.ShutdownParams(

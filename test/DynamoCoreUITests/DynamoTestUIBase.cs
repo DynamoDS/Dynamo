@@ -87,6 +87,7 @@ namespace DynamoCoreUITests
 
             View = null;
             Model = null;
+            preloader = null;
 
             GC.Collect();
 

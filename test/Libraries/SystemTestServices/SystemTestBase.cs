@@ -122,6 +122,7 @@ namespace SystemTestServices
 
             View = null;
             Model = null;
+            preloader = null;
 
             GC.Collect();
 
