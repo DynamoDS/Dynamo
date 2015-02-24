@@ -110,6 +110,7 @@ namespace ProtoCore
         public Dictionary<string, object> Configurations { get; set; }
         public FFIPropertyChangedMonitor FFIPropertyChangedMonitor { get; private set; }
 
+        //public Executive CurrentExecutive { get; private set; }
 
         /// <summary>
         /// The currently executing blockID
@@ -131,6 +132,10 @@ namespace ProtoCore
 
         // Continuation properties used for Serial mode execution and Debugging of Replicated calls
         public ContinuationStructure ContinuationStruct { get; set; }
+        /// <summary>
+        /// Gets the reason why the execution was last suspended
+        /// </summary>
+        public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
 #endregion 
         
         public void ResetForDeltaExecution()

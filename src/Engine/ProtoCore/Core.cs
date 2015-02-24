@@ -392,11 +392,6 @@ namespace ProtoCore
         public DebugProperties DebuggerProperties;
 
 
-        /// <summary>
-        /// Gets the reason why the execution was last suspended
-        /// </summary>
-        public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
-
         public bool builtInsLoaded { get; set; }
         public List<string> LoadedDLLs = new List<string>();
         public int deltaCompileStartPC { get; set; }

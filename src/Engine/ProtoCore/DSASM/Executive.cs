@@ -2637,20 +2637,20 @@ namespace ProtoCore.DSASM
             {
                 if (currentPC < 0)
                 {
-                    core.ReasonForExecutionSuspend = ReasonForExecutionSuspend.NoEntryPoint;
+                    runtimeCore.ReasonForExecutionSuspend = ReasonForExecutionSuspend.NoEntryPoint;
                     terminateExec = true;
                     //break;
                 }
                 else if (pc >= runningInstructions.Count)
                 {
-                    core.ReasonForExecutionSuspend = ReasonForExecutionSuspend.EndOfFile;
+                    runtimeCore.ReasonForExecutionSuspend = ReasonForExecutionSuspend.EndOfFile;
                     terminateExec = true;
                     //break;
                 }
                 else
                 {
                     Validity.Assert(breakpoints.Contains(runningInstructions[currentPC]));
-                    core.ReasonForExecutionSuspend = ReasonForExecutionSuspend.Breakpoint;
+                    runtimeCore.ReasonForExecutionSuspend = ReasonForExecutionSuspend.Breakpoint;
                     logVMMessage("Breakpoint at: " + runningInstructions[currentPC]);
 
                     Validity.Assert(runtimeCore.DebugProps.DebugStackFrame.Count > 0);
