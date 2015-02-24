@@ -191,7 +191,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return Workspaces.First(x => x.Model == model.CurrentWorkspace);
+                return currentWorkspaceViewModel;
             }
         }
 
