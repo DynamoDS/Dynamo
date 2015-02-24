@@ -19,23 +19,53 @@ namespace Dynamo.Wpf
         private NodeViewModel nodeViewModel;
         private NodeModel nodeModel;
 
-        public ConversionUnit SelectedFromConversion
+        public object SelectedMetricConversion
+        {
+            get { return dynamoConvertModel.SelectedMetricConversion; }
+            set
+            {
+                dynamoConvertModel.SelectedMetricConversion = value;                 
+                RaisePropertyChanged("SelectedMetricConversion");
+            }
+        }
+
+        public object SelectedFromConversion
         {
             get { return dynamoConvertModel.SelectedFromConversion; }
             set
             {
-                dynamoConvertModel.SelectedFromConversion = value;
+                dynamoConvertModel.SelectedFromConversion = value;               
                 RaisePropertyChanged("SelectedFromConversion");
             }
         }
 
-        public ConversionUnit SelectedToConversion
+        public object SelectedToConversion
         {
             get { return dynamoConvertModel.SelectedToConversion; }
             set
             {
-                dynamoConvertModel.SelectedToConversion = value;
+                dynamoConvertModel.SelectedToConversion = value;                
                 RaisePropertyChanged("SelectedToConversion");
+            }
+        }
+
+        public object SelectedFromConversionSource
+        {
+            get { return dynamoConvertModel.SelectedFromConversionSource; }
+            set
+            {
+                dynamoConvertModel.SelectedFromConversionSource = value;
+                RaisePropertyChanged("SelectedFromConversionSource");
+            }
+        }
+
+        public object SelectedToConversionSource
+        {
+            get { return dynamoConvertModel.SelectedToConversionSource; }
+            set
+            {
+                dynamoConvertModel.SelectedFromConversionSource = value;
+                RaisePropertyChanged("SelectedToConversionSource");
             }
         }
 
@@ -45,24 +75,31 @@ namespace Dynamo.Wpf
             nodeViewModel = nodeView.ViewModel;
             nodeModel = nodeView.ViewModel.NodeModel;
             model.PropertyChanged +=model_PropertyChanged;
-            ToggleButtonClick = new DelegateCommand(OnToggleButtonClick, CanToggleButton);
+            ToggleButtonClick = new DelegateCommand(OnToggleButtonClick, CanToggleButton);         
         }
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
+                case "SelectedMetricConversion":
+                    RaisePropertyChanged("SelectedMetricConversion");
+                    break;
+                case "SelectedFromConversionSource":
+                    RaisePropertyChanged("SelectedFromConversionSource");
+                    break;
+                case "SelectedToConversionSource":
+                    RaisePropertyChanged("SelectedToConversionSource");
+                    break;
                 case "SelectedFromConversion":
                     RaisePropertyChanged("SelectedFromConversion");
                     break;
-
                 case "SelectedToConversion":                    
                     RaisePropertyChanged("SelectedToConversion");
                     break;
 
             }
         }
-
 
         /// <summary>
         /// Called when Toggle button is clicked.
@@ -74,19 +111,13 @@ namespace Dynamo.Wpf
         {
             var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
             WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);   
-            var temp = this.SelectedFromConversion;
-            this.SelectedFromConversion = this.SelectedToConversion;
-            this.SelectedToConversion = temp;
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true; 
-            
+            dynamoConvertModel.ToggleDropdownValues();
+            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;             
         }
 
         private bool CanToggleButton(object obj)
         {
             return true;
         }
-
-
-
     }
 }

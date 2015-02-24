@@ -5,15 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
              xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
-             mc:Ignorable="d" 
-             d:DesignHeight="30" Width="247.2">
+             mc:Ignorable="d" Width="243.2" Height="61.2">
 
-    <Grid Height="{x:Static ui2:Configurations.PortHeightInPixels}"  Width="Auto" >        
-        <StackPanel Orientation="Horizontal">           
+    <Grid Width="Auto">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ComboBox Name="SelectConversionMetric"                
+                ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionMetricDictionary}, Path=Keys}"   
+                Grid.Row="0"
+                SelectedItem="{Binding SelectedMetricConversion}"/>
+        <StackPanel Orientation="Horizontal"  Grid.Row="1" Margin="0,2,0,1">
             <ComboBox Name="SelectConversionFrom"                
-                ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"
+                ItemsSource="{Binding SelectedFromConversionSource}"                   
                 Width="100"   
-                Margin="1,0,0,0"
+                Margin="1,0,0,0"   
+                SelectedIndex="1"
                 SelectedItem="{Binding SelectedFromConversion}"/>
 
             <Button Name="DirectionButton"
@@ -22,13 +30,14 @@
                 Width="40" Command="{Binding ToggleButtonClick}"/>
 
             <ComboBox x:Name="SelectConversionTo"        	
-        	ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"
+        	ItemsSource="{Binding SelectedToConversionSource}"
         	Width="100"  
-            Margin="1,0,0,0"
+            Margin="1,0,0,0"   
+            SelectedIndex="1"
         	SelectedItem="{Binding SelectedToConversion}"/>
 
         </StackPanel>
 
-      
+
     </Grid>
 </UserControl>
