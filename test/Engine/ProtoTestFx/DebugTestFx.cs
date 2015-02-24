@@ -203,6 +203,8 @@ namespace ProtoTestFx
 
         internal static void CompareCores(Core c1, Core c2, string defectID = "")
         {
+            RuntimeCore rtcore1 = c1.__TempCoreHostForRefactoring;
+
             Assert.AreEqual(c1.DSExecutable.runtimeSymbols.Length, c2.DSExecutable.runtimeSymbols.Length, defectID);
 
 
@@ -235,7 +237,7 @@ namespace ProtoTestFx
                     catch (Exception ex)
                     {
                         if ((ex is ArgumentOutOfRangeException || ex is IndexOutOfRangeException) &&
-                            (c1.RunningBlock != symNode.runtimeTableIndex))
+                            (rtcore1.RunningBlock != symNode.runtimeTableIndex))
                         {
                             // Quite possible that variables defined in the inner
                             // language block have been garbage collected and 

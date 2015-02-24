@@ -526,7 +526,7 @@ namespace ProtoCore.DSASM.Mirror
             {
                 ClassNode classnode = core.ClassTable.ClassNodes[ci];
 
-                if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex && functionBlock != core.RunningBlock)
+                if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex && functionBlock != runtimeCore.RunningBlock)
                 {
                     index = exe.runtimeSymbols[block].IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
                 }
@@ -655,7 +655,7 @@ namespace ProtoCore.DSASM.Mirror
             RuntimeMemory rmem = MirrorTarget.rmem;
 
             int classcope;
-            int block = core.RunningBlock;
+            int block = MirrorTarget.RuntimeCore.RunningBlock;
             SymbolNode symbol;
             int index = GetSymbolIndex(name, out classcope, ref block, out symbol);
 

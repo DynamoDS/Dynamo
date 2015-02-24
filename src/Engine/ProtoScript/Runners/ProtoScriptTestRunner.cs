@@ -131,7 +131,7 @@ namespace ProtoScript.Runners
             ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             // Move these core setup to runtime core 
             runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
-            core.RunningBlock = runningBlock;
+            runtimeCore.RunningBlock = runningBlock;
 
             try
             {

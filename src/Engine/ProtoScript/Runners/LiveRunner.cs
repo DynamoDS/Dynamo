@@ -1573,7 +1573,7 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(code, out blockId);
             if (succeeded)
             {
-                runnerCore.RunningBlock = blockId;
+                runtimeCore.RunningBlock = blockId;
                 vmState = Execute();
             }
             return succeeded;
@@ -1586,7 +1586,7 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(astList, runnerCore, out blockId);
             if (succeeded)
             {
-                runnerCore.RunningBlock = blockId;
+                runtimeCore.RunningBlock = blockId;
                 vmState = Execute();
             }
             return succeeded;
@@ -1636,6 +1636,7 @@ namespace ProtoScript.Runners
         private void ResetForDeltaExecution()
         {
             runnerCore.ResetForDeltaExecution();
+            runtimeCore.ResetForDeltaExecution();
         }
 
         /// <summary>

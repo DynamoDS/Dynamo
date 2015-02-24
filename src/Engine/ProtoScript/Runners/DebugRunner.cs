@@ -278,7 +278,7 @@ namespace ProtoScript.Runners
 
         private Instruction GetCurrentInstruction()
         {
-            return core.DSExecutable.instrStreamList[core.RunningBlock].instrList[runtimeCore.DebugProps.DebugEntryPC];
+            return core.DSExecutable.instrStreamList[runtimeCore.RunningBlock].instrList[runtimeCore.DebugProps.DebugEntryPC];
         }
 
         private ProtoCore.CodeModel.CodePoint InstructionToBeginCodePoint(Instruction instr)
@@ -542,7 +542,7 @@ namespace ProtoScript.Runners
 
             ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
             runtimeCore.Breakpoints = breakpoints;
-            resumeBlockID = core.RunningBlock;
+            resumeBlockID = runtimeCore.RunningBlock;
 
 
             if (runtimeCore.DebugProps.FirstStackFrame != null)

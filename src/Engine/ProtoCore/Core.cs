@@ -319,7 +319,6 @@ namespace ProtoCore
         //public RuntimeMemory Rmem { get; set; }
 
         public int ClassIndex { get; set; }     // Holds the current class scope
-        public int RunningBlock { get; set; }
         public int CodeBlockIndex { get; set; }
         public int RuntimeTableIndex { get; set; }
 
@@ -579,7 +578,6 @@ namespace ProtoCore
 
             Options.RunMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
-            RunningBlock = 0;
 
             // The main codeblock never goes out of scope
             // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
@@ -666,7 +664,6 @@ namespace ProtoCore
             GlobHeapOffset = 0;
             BaseOffset = 0;
             GraphNodeUID = 0;
-            RunningBlock = 0;
             CodeBlockIndex = 0;
             RuntimeTableIndex = 0;
             CodeBlockList = new List<CodeBlock>();

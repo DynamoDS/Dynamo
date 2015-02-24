@@ -304,8 +304,8 @@ namespace ProtoCore.Lang
                         int blockId = (1 == (int)svCondition.opdata) ? (int)svTrue.opdata : (int)svFalse.opdata;
 
                         ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-                        int oldRunningBlockId = core.RunningBlock;
-                        core.RunningBlock = blockId;
+                        int oldRunningBlockId = runtimeCore.RunningBlock;
+                        runtimeCore.RunningBlock = blockId;
 
                         int returnAddr = stackFrame.ReturnPC;
 
@@ -342,7 +342,7 @@ namespace ProtoCore.Lang
 
                         ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, core.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
-                        core.RunningBlock = oldRunningBlockId;
+                        runtimeCore.RunningBlock = oldRunningBlockId;
                         break;
                     }
 
@@ -635,8 +635,8 @@ namespace ProtoCore.Lang
                 runtimeData.ExecutingGraphnode, 
                 thisObjectType, 
                 functionName, 
-                runtime.exe, 
-                core.RunningBlock, 
+                runtime.exe,
+                runtimeCore.RunningBlock, 
                 core.Options, 
                 runtimeCore.RuntimeStatus);
             Validity.Assert(null != callsite);

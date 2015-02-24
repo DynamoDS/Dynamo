@@ -74,6 +74,8 @@ namespace ProtoCore
 
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
+
+            RunningBlock = 0;
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
@@ -95,6 +97,11 @@ namespace ProtoCore
         public RuntimeMemory RuntimeMemory { get; set; }
 
         /// <summary>
+        /// The currently executing blockID
+        /// </summary>
+        public int RunningBlock { get; set; }
+
+        /// <summary>
         /// RuntimeExpressionUID is used by the associative engine at runtime to determine the current expression ID being executed
         /// </summary>
         public int RuntimeExpressionUID = 0;
@@ -107,7 +114,13 @@ namespace ProtoCore
         public DebugProperties DebugProps { get; set; }
         public List<Instruction> Breakpoints { get; set; }
 #endregion 
+        
 
+
+        public void ResetForDeltaExecution()
+        {
+            RunningBlock = 0;
+        }
         
         public bool IsEvalutingPropertyChanged()
         {

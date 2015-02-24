@@ -208,7 +208,7 @@ namespace ProtoCore
             if (core != null)
             {
                 pc = core.CurrentExecutive.CurrentDSASMExec.PC;
-                codeBlock = core.RunningBlock;
+                codeBlock = runtimeCore.RunningBlock;
 
                 if (String.IsNullOrEmpty(filePath))
                 {
