@@ -1144,6 +1144,7 @@ namespace ProtoCore.DSASM.Mirror
         /// <returns></returns>
         public static Obj Unpack(StackValue val, Heap heap, Core core, int type = (int)PrimitiveType.kTypePointer) 
         {
+            Executable exe = core.__TempCoreHostForRefactoring.DSExecutable;
             switch (val.optype)
             {
                 case AddressType.ArrayPointer:
@@ -1167,9 +1168,9 @@ namespace ProtoCore.DSASM.Mirror
                         Obj retO = new Obj(val) 
                         { 
                             Payload = ret, 
-                            Type = core.TypeSystem.BuildTypeObject(
-                                        (ret.members.Length > 0) 
-                                        ? core.TypeSystem.GetType(ret.members[0].Type.Name) 
+                            Type = exe.TypeSystem.BuildTypeObject(
+                                        (ret.members.Length > 0)
+                                        ? exe.TypeSystem.GetType(ret.members[0].Type.Name) 
                                         : (int)ProtoCore.PrimitiveType.kTypeVoid, Constants.kArbitraryRank) 
                         };
 
@@ -1240,8 +1241,8 @@ namespace ProtoCore.DSASM.Mirror
                         Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
-                            Type = core.TypeSystem.BuildTypeObject(type, 0) 
+                            Payload = data,
+                            Type = exe.TypeSystem.BuildTypeObject(type, 0) 
                         };
                         return o;
                     }
@@ -1269,7 +1270,9 @@ namespace ProtoCore.DSASM.Mirror
 
         public static Obj Unpack(StackValue val, Core core)
         {
-            RuntimeMemory rmem = core.__TempCoreHostForRefactoring.RuntimeMemory;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
+            Executable exe = runtimeCore.DSExecutable;
             switch (val.optype)
             {
                 case AddressType.ArrayPointer:
@@ -1288,8 +1291,8 @@ namespace ProtoCore.DSASM.Mirror
 
                         Obj retO = new Obj(val) 
                         { 
-                            Payload = ret, 
-                            Type = core.TypeSystem.BuildTypeObject((ret.members.Length > 0) ? core.TypeSystem.GetType(ret.members[0].Type.Name) : (int)ProtoCore.PrimitiveType.kTypeVar, Constants.kArbitraryRank)
+                            Payload = ret,
+                            Type = exe.TypeSystem.BuildTypeObject((ret.members.Length > 0) ? exe.TypeSystem.GetType(ret.members[0].Type.Name) : (int)ProtoCore.PrimitiveType.kTypeVar, Constants.kArbitraryRank)
                         };
 
                         return retO;
@@ -1347,8 +1350,8 @@ namespace ProtoCore.DSASM.Mirror
                         Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
-                            Type = core.TypeSystem.BuildTypeObject(val.metaData.type, 0) 
+                            Payload = data,
+                            Type = exe.TypeSystem.BuildTypeObject(val.metaData.type, 0) 
                         };
                         return o;
                     }

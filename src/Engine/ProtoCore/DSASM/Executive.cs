@@ -2951,7 +2951,7 @@ namespace ProtoCore.DSASM
                 case AddressType.DefaultArg:
                 case AddressType.FunctionPointer:
                     data = opSymbol;
-                    data.metaData.type = core.TypeSystem.GetType(opSymbol);
+                    data.metaData.type = exe.TypeSystem.GetType(opSymbol);
                     break;
                 case AddressType.StaticType:
                     data = opSymbol;
@@ -4953,7 +4953,7 @@ namespace ProtoCore.DSASM
             // The returned stackvalue is used by watch test framework - pratapa
             StackValue tempSvData = svData;
 
-            svData.metaData.type = core.TypeSystem.GetType(svData);
+            svData.metaData.type = exe.TypeSystem.GetType(svData);
 
             // TODO(Jun/Jiong): Find a more reliable way to update the current block Id
             //runtimeCore.DebugProps.CurrentBlockId = blockId;

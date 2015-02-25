@@ -989,6 +989,8 @@ namespace ProtoCore
             // Debug properties
             // Move WatchSymbolList to runtimeData
             __TempCoreHostForRefactoring.WatchSymbolList = watchSymbolList;
+
+            ExprInterpreterExe.TypeSystem = TypeSystem;
             
             // Copy all instruction streams
             // TODO Jun: What method to copy all? Use that
@@ -1055,7 +1057,11 @@ namespace ProtoCore
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
+            // The TypeSystem is a record of all primitive and compiler generated types
+            DSExecutable.TypeSystem = TypeSystem;
+
             RuntimeTableIndex = CompleteCodeBlockList.Count;
+
 
             // Build the runtime symbols
             DSExecutable.runtimeSymbols = new SymbolTable[RuntimeTableIndex];

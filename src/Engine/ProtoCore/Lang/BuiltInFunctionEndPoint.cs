@@ -1650,7 +1650,7 @@ namespace ProtoCore.Lang
 
             if (typeString == "array")
                 typeString = ProtoCore.DSDefinitions.Keyword.Array;
-            int type = runtime.runtime.Core.TypeSystem.GetType(typeString);
+            int type = runtimeCore.DSExecutable.TypeSystem.GetType(typeString);
 
             var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
             foreach (StackValue op in svArray)
