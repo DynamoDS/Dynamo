@@ -185,6 +185,7 @@ namespace DynamoUtilities
                 "Optimize.ds",
                 "DynamoUnits.dll",
                 "Tessellation.dll",
+                "DynamoConversions.dll",
                 "Analysis.dll"
             };
 

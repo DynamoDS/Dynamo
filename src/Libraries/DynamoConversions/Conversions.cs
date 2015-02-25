@@ -6,8 +6,16 @@ using Autodesk.DesignScript.Runtime;
 namespace DynamoConversions
 {
     public enum ConversionDirection { To, From }
-    public enum ConversionUnit { Feet, Inches, Millimeters, Centimeters, Meters, Degrees, Radians, Kilograms, Pounds }
-    public enum ConversionMetricUnit { Length,Mass,Area,Volume,Angle} 
+    public enum ConversionUnit 
+    { Feet, Inches, Millimeters, Centimeters, Meters, Degrees, Radians, Kilograms, Pounds,
+        CubicMeters,CubicFoot,SquareMeter,SquareFoot }
+
+    public enum ConversionMetricUnit
+    {
+        Length,
+        Area,
+        Volume
+    }
 
     [IsVisibleInDynamoLibrary(false)]
     public static class Conversions
@@ -22,15 +30,19 @@ namespace DynamoConversions
             {ConversionUnit.Degrees, 0.0174532925},
             {ConversionUnit.Radians, 1},
             {ConversionUnit.Pounds, 0.453592},
-            {ConversionUnit.Kilograms, 1}
+            {ConversionUnit.Kilograms, 1},
+            {ConversionUnit.CubicMeters,1},           
+            {ConversionUnit.CubicFoot,1.639},
+            {ConversionUnit.SquareMeter,1},
+            {ConversionUnit.SquareFoot,0.093},        
         };
 
         public static readonly Dictionary<ConversionMetricUnit, double> ConversionMetricDictionary =
             new Dictionary<ConversionMetricUnit, double>()
             {
                 {ConversionMetricUnit.Length, 1.0},
-                {ConversionMetricUnit.Mass, 2.0},
-                {ConversionMetricUnit.Angle, 3.0}
+                {ConversionMetricUnit.Area, 2.0},
+                {ConversionMetricUnit.Volume, 3.0}
             };
             
         public static readonly Dictionary<ConversionMetricUnit, List<ConversionUnit>> ConversionMetricLookup =
@@ -39,21 +51,22 @@ namespace DynamoConversions
                 {ConversionMetricUnit.Length, new List<ConversionUnit>()
                                     {ConversionUnit.Feet,ConversionUnit.Inches,ConversionUnit.Millimeters,ConversionUnit.Centimeters, 
                                         ConversionUnit.Meters}},
-                {ConversionMetricUnit.Mass, new List<ConversionUnit>()
-                                    {ConversionUnit.Pounds,ConversionUnit.Kilograms}},
-                   {ConversionMetricUnit.Angle, new List<ConversionUnit>()
-                                    {ConversionUnit.Degrees,ConversionUnit.Radians}}
+                {ConversionMetricUnit.Area, new List<ConversionUnit>()
+                                    {ConversionUnit.SquareMeter,ConversionUnit.SquareFoot}},
+                   {ConversionMetricUnit.Volume, new List<ConversionUnit>()
+                                    {ConversionUnit.CubicMeters,ConversionUnit.CubicFoot}}
             };
 
         public static readonly Dictionary<ConversionMetricUnit, ConversionUnit> ConversionDefaults =
             new Dictionary<ConversionMetricUnit, ConversionUnit>()
             {
                 {ConversionMetricUnit.Length, ConversionUnit.Meters},
-                {ConversionMetricUnit.Mass, ConversionUnit.Kilograms},
-                {ConversionMetricUnit.Angle, ConversionUnit.Degrees},                    
+                {ConversionMetricUnit.Area, ConversionUnit.SquareMeter},
+                {ConversionMetricUnit.Volume, ConversionUnit.CubicMeters},                    
             };
 
-       
+
+        
         public static double ConvertUnitTypes(double value, double conversion, double conversionto)
         {
             var convertValue =  value / conversionto;

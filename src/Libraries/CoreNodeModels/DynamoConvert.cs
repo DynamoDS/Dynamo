@@ -42,7 +42,7 @@ namespace DSCoreNodesUI
             }
         }
       
-        public object SelectedMetricConversion
+        public virtual object SelectedMetricConversion
         {
             get { return selectedMetricConversion; }
             set
@@ -63,7 +63,7 @@ namespace DSCoreNodesUI
         }
 
 
-        public object SelectedFromConversion
+        public virtual object SelectedFromConversion
         {
             get { return selectedFromConversion; }
             set
@@ -76,7 +76,7 @@ namespace DSCoreNodesUI
             }
         }
 
-        public object SelectedToConversion
+        public virtual object SelectedToConversion
         {
             get { return selectedToConversion; }
             set
@@ -93,9 +93,7 @@ namespace DSCoreNodesUI
         public DynamoConvert()
         {           
             SelectedMetricConversion = ConversionMetricUnit.Length;
-            SelectedFromConversion = ConversionUnit.Meters;
-            SelectedToConversion = ConversionUnit.Meters;
-          
+           
             InPortData.Add(new PortData("", "A numeric value for conversion."));
             OutPortData.Add(new PortData("", "A converted numeric value."));
 
