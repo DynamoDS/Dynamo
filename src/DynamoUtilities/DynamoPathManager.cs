@@ -25,18 +25,6 @@ namespace DynamoUtilities
         public string MainExecPath { get; private set; }
 
         /// <summary>
-        /// The definitions folder, which contains custom nodes
-        /// created by the user.
-        /// </summary>
-        public string UserDefinitions { get; private set; }
-
-        /// <summary>
-        /// The definitions folder which contains custom nodes
-        /// available to all users.
-        /// </summary>
-        public string CommonDefinitions { get; private set; }
-
-        /// <summary>
         /// The location of the Samples folder.
         /// </summary>
         public string CommonSamples { get; private set; }
@@ -109,12 +97,6 @@ namespace DynamoUtilities
                 Directory.CreateDirectory(Logs);
             }
 
-            UserDefinitions = Path.Combine(AppData, "definitions");
-            if (!Directory.Exists(UserDefinitions))
-            {
-                Directory.CreateDirectory(UserDefinitions);
-            }
-
             Packages = Path.Combine(AppData, "packages");
             if (!Directory.Exists(Packages))
             {
@@ -122,12 +104,6 @@ namespace DynamoUtilities
             }
 
             var commonData = GetDynamoCommonDataFolder(MainExecPath);
-
-            CommonDefinitions = Path.Combine(commonData, "definitions");
-            if (!Directory.Exists(CommonDefinitions))
-            {
-                Directory.CreateDirectory(CommonDefinitions);
-            }
 
             var UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
             CommonSamples = Path.Combine(commonData, "samples", UICulture);
@@ -150,7 +126,6 @@ namespace DynamoUtilities
 #if DEBUG
             var sb = new StringBuilder();
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
-            sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(String.Format("Packages: {0}", Packages));
             
             Debug.WriteLine(sb);
