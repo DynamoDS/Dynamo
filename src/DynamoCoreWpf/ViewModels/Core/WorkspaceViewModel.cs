@@ -239,7 +239,7 @@ namespace Dynamo.ViewModels
 
         public Action FindNodesFromElements { get; set; }
 
-        public RunSettingsViewModel RunSettingsViewModel { get; private set; }
+        public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
 
         #endregion
 
@@ -283,12 +283,6 @@ namespace Dynamo.ViewModels
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
 
-            if (Model is HomeWorkspaceModel)
-            {
-                RunSettingsViewModel = new RunSettingsViewModel(((HomeWorkspaceModel)model).RunSettings, dynamoViewModel);
-                RunSettingsViewModel.PropertyChanged += RunSettingsViewModel_PropertyChanged;
-            }
-                
         }
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

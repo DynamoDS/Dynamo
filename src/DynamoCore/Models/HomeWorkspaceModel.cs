@@ -19,7 +19,7 @@ namespace Dynamo.Models
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
 
-        public RunSettings RunSettings { get; private set; }
+        public RunSettings RunSettings { get; protected set; }
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")

@@ -20,6 +20,7 @@ using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
+using Dynamo.Wpf.ViewModels.Core;
 
 using DynamoUnits;
 
@@ -492,7 +493,7 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
-            var homespaceViewModel = new WorkspaceViewModel(model.CurrentWorkspace, this);
+            var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
             workspaces.Add(homespaceViewModel);
 
             model.WorkspaceAdded += WorkspaceAdded;
@@ -883,9 +884,9 @@ namespace Dynamo.ViewModels
 
         private void WorkspaceAdded(WorkspaceModel item)
         {
-            var newVm = new WorkspaceViewModel(item, this);
             if (item is HomeWorkspaceModel)
             {
+                var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
                 Model.RemoveWorkspace(HomeSpace);
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
@@ -899,7 +900,10 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("HomeSpaceViewModel");
             }
             else
+            {
+                var newVm = new WorkspaceViewModel(item, this);
                 workspaces.Add(newVm);
+            }   
         }
 
         private void WorkspaceRemoved(WorkspaceModel item)
