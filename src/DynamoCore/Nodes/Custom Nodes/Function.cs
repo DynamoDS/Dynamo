@@ -96,13 +96,12 @@ namespace Dynamo.Nodes
             if (descNode != null && descNode.Attributes != null)
                 Description = descNode.Attributes["value"].Value;
 
-            if (!Controller.IsInSyncWithNode(this))
+            if (Controller.Definition != null && !Controller.IsInSyncWithNode(this))
             {
                 Controller.SyncNodeWithDefinition(this);
                 OnNodeModified();
+                return;
             }
-            else
-            {
                 foreach (XmlNode subNode in childNodes)
                 {
                     if (subNode.Name.Equals("Outputs"))
@@ -162,7 +161,6 @@ namespace Dynamo.Nodes
                 }
 
                 RegisterAllPorts();
-            }
         }
 
         #endregion
