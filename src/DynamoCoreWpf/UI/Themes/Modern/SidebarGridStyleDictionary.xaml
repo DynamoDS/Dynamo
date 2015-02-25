@@ -3,7 +3,6 @@
 
     <!-- Region Control Templates-->
 
-
     <!-- Region LibraryView + LibrarySearchView-->
 
     <ControlTemplate x:Key="LibraryThumbTemplate"
@@ -37,7 +36,7 @@
                    IsDirectionReversed="true"
                    IsEnabled="{TemplateBinding IsMouseOver}">
                 <Track.Thumb>
-                    <Thumb Style="{DynamicResource LibraryVerticalThumb}" />
+                    <Thumb Template="{StaticResource LibraryThumbTemplate}" />
                 </Track.Thumb>
             </Track>
         </Grid>
@@ -81,83 +80,6 @@
 
     <!--EndRegion-->
 
-    <!-- Region TooltipWindow -->
-
-    <ControlTemplate x:Key="TooltipThumbTemplate"
-                     TargetType="{x:Type Thumb}">
-        <Grid>
-            <Rectangle HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-                       Width="Auto"
-                       Height="Auto"
-                       Fill="Transparent" />
-            <Border x:Name="Rectangle1"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Width="5"
-                    Height="Auto"
-                    Background="#aaaaaa"
-                    Opacity="0.5"
-                    CornerRadius="2" />
-        </Grid>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="TooltipScrollBarTemplate"
-                     TargetType="{x:Type ScrollBar}">
-        <Grid x:Name="Bg"
-              SnapsToDevicePixels="true"
-              Background="Transparent">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="0.00001*" />
-            </Grid.RowDefinitions>
-            <Track x:Name="PART_Track"
-                   IsDirectionReversed="true"
-                   IsEnabled="{TemplateBinding IsMouseOver}">
-                <Track.Thumb>
-                    <Thumb Style="{DynamicResource TooltipVerticalThumb}" />
-                </Track.Thumb>
-            </Track>
-        </Grid>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="TooltipScrollViewerControlTemplate"
-                     TargetType="{x:Type ScrollViewer}">
-        <Grid x:Name="Grid"
-              Background="{TemplateBinding Background}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
-                                    CanContentScroll="{TemplateBinding CanContentScroll}"
-                                    CanHorizontallyScroll="False"
-                                    CanVerticallyScroll="True"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    Content="{TemplateBinding Content}"
-                                    Grid.RowSpan="2"
-                                    Margin="{TemplateBinding Padding}"
-                                    Grid.ColumnSpan="2" />
-            <ScrollBar x:Name="PART_VerticalScrollBar"
-                       AutomationProperties.AutomationId="VerticalScrollBar"
-                       Cursor="Arrow"
-                       Grid.Column="1"
-                       Maximum="{TemplateBinding ScrollableHeight}"
-                       Minimum="0"
-                       Grid.Row="0"
-                       Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                       Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
-                       ViewportSize="{TemplateBinding ViewportHeight}"
-                       Width="5"
-                       Style="{DynamicResource TooltipScrollBarStyle}" />
-        </Grid>
-    </ControlTemplate>
-
-    <!--EndRegion-->
-
     <!--EndRegion-->
 
     <!-- Region Styles-->
@@ -188,29 +110,6 @@
                 Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter Property="Template"
                 Value="{StaticResource LibraryScrollBarTemplate}" />
-    </Style>
-
-    <Style x:Key="LibraryVerticalThumb"
-           TargetType="{x:Type Thumb}">
-        <Setter Property="Template"
-                Value="{StaticResource LibraryThumbTemplate}" />
-    </Style>
-
-    <!--EndRegion-->
-
-    <!-- Region TooltipWindow -->
-
-    <Style x:Key="TooltipScrollBarStyle"
-           TargetType="{x:Type ScrollBar}"
-           BasedOn="{StaticResource LibraryScrollBarStyle}">
-        <Setter Property="Template"
-                Value="{StaticResource TooltipScrollBarTemplate}" />
-    </Style>
-
-    <Style x:Key="TooltipVerticalThumb"
-           TargetType="{x:Type Thumb}">
-        <Setter Property="Template"
-                Value="{StaticResource TooltipThumbTemplate}" />
     </Style>
 
     <!--EndRegion-->

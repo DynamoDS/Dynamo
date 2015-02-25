@@ -54,7 +54,7 @@
                     <ColumnDefinition Width="96"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <ScrollViewer Template="{DynamicResource TooltipScrollViewerControlTemplate}"
+                <ScrollViewer Template="{DynamicResource LibraryScrollViewerControlTemplate}"
                               Style="{DynamicResource LibraryScrollViewerStyle}"
                               CanContentScroll="True">
                     <TextBlock Text="{Binding Path=Description}"
