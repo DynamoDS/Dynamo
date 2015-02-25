@@ -2228,7 +2228,7 @@ namespace ProtoCore.DSASM
             // and for such calls 'PerformReturnTypeCoerce' is not called 
             if (!isBaseCall)
             {
-                RX = CallSite.PerformReturnTypeCoerce(procNode, core, RX);
+                RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
 
                 if (thisPtr == null)
                 {
@@ -6444,7 +6444,7 @@ namespace ProtoCore.DSASM
                 // 2. Normal execution in Serial (explicit call), non-replicating mode
                 if (!wasDebugPropsPopped)
                 {
-                    RX = CallSite.PerformReturnTypeCoerce(procNode, core, RX);
+                    RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
                     StackValue svRet = RX;
                     GCDotMethods(procNode.name, ref svRet, Properties.functionCallDotCallDimensions, Properties.functionCallArguments);
                     RX = svRet;
@@ -6459,7 +6459,7 @@ namespace ProtoCore.DSASM
             // TODO: Decide where to insert this common code block for Serial mode and Debugging - pratapa
             if (runtimeCore.Options.ExecutionMode == ProtoCore.ExecutionMode.Serial || runtimeCore.Options.IDEDebugMode)
             {
-                RX = CallSite.PerformReturnTypeCoerce(procNode, core, RX);
+                RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
 
                 runtimeCore.ContinuationStruct.RunningResult.Add(RX);
                 runtimeCore.ContinuationStruct.Result = RX;

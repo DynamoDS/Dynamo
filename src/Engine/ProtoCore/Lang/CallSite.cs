@@ -1690,12 +1690,12 @@ namespace ProtoCore
 
             if (functionEndPoint == null)
             {
-                core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure,
+                runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure,
                                               "Function dispatch could not be completed {2EB39E1B-557C-4819-94D8-CF7C9F933E8A}");
                 return StackValue.Null;
             }
 
-            if (core.Options.IDEDebugMode && runtimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
                 debugFrame.FinalFepChosen = finalFep;
@@ -1748,7 +1748,7 @@ namespace ProtoCore
             // An explicit call requires return coercion at the return instruction
             if (!ret.IsExplicitCall)
             {
-                ret = PerformReturnTypeCoerce(finalFep, core, ret);
+                ret = PerformReturnTypeCoerce(finalFep, runtimeCore, ret);
             }
             return ret;
         }
@@ -1845,12 +1845,10 @@ namespace ProtoCore
             return newArgs;
         }
 
-        public static StackValue PerformReturnTypeCoerce(ProcedureNode procNode, Core core, StackValue ret)
+        public static StackValue PerformReturnTypeCoerce(ProcedureNode procNode, RuntimeCore runtimeCore, StackValue ret)
         {
             Validity.Assert(procNode != null,
                             "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
-
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             //Now cast ret into the return type
             Type retType = procNode.returntype;
@@ -1890,11 +1888,11 @@ namespace ProtoCore
                 return coercedRet;
             }
 
-            if (!core.ClassTable.ClassNodes[ret.metaData.type].ConvertibleTo(retType.UID))
+            if (!runtimeCore.DSExecutable.classTable.ClassNodes[ret.metaData.type].ConvertibleTo(retType.UID))
             {
                 //@TODO(Luke): log no-type coercion possible warning
 
-                core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible,
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible,
                                               Resources.kConvertNonConvertibleTypes);
 
                 return StackValue.Null;
@@ -1905,9 +1903,10 @@ namespace ProtoCore
                 return coercedRet;
             }
         }
-        public static StackValue PerformReturnTypeCoerce(FunctionEndPoint functionEndPoint, Core core, StackValue ret)
+
+        public static StackValue PerformReturnTypeCoerce(FunctionEndPoint functionEndPoint, RuntimeCore runtimeCore, StackValue ret)
         {
-            return PerformReturnTypeCoerce(functionEndPoint.procedureNode, core, ret);
+            return PerformReturnTypeCoerce(functionEndPoint.procedureNode, runtimeCore, ret);
         }
 
         #endregion
