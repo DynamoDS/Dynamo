@@ -9,7 +9,14 @@ namespace Dynamo.Models
 {
     public class WorkspaceInfo
     {
-        public WorkspaceInfo() { }
+        public WorkspaceInfo()
+        {
+            Zoom = 1.0;
+            X = 0; 
+            Y = 0;
+            RunType = RunType.Automatically;
+            RunPeriod = 100;
+        }
 
         public static bool FromXmlDocument(
             XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceInfo workspaceInfo)
@@ -118,7 +125,6 @@ namespace Dynamo.Models
         public string FileName { get; internal set; }
         public RunType RunType { get; internal set; }
         public int RunPeriod { get; internal set; }
-
         public bool IsCustomNodeWorkspace
         {
             get { return !string.IsNullOrEmpty(ID); }
