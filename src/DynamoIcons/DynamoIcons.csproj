@@ -31,7 +31,19 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="AnalysisImages.resx" />
+    <EmbeddedResource Include="DSRevitNodesUIImages.resx">
+      <LastGenOutput>DSRevitNodesUIImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DynamoRaaSImages.resx">
+      <LastGenOutput>DynamoRaaSImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="DynamoUnitsImages.resx" />
+    <EmbeddedResource Include="RevitNodesImages.resx">
+      <LastGenOutput>Revit.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SimpleRaaSImages.resx">
+      <LastGenOutput>SimpleRaaSImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UnitsUIImages.resx" />
     <EmbeddedResource Include="DynamoCoreImages.resx" />
     <EmbeddedResource Include="DynamoWatch3DImages.resx" />
@@ -72,6 +84,14 @@
     <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" />
     <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)AnalysisImages.resx" OutputResources="$(ProjectDir)AnalysisImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL TargetType="library" EmbedResources="$(ProjectDir)AnalysisImages.resources" OutputAssembly="$(OutDir)Analysis.customization.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)RevitNodesImages.resx" OutputResources="$(ProjectDir)RevitNodesImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)RevitNodesImages.resources" OutputAssembly="$(OutDir)RevitNodes.customization.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DSRevitNodesUIImages.resx" OutputResources="$(ProjectDir)DSRevitNodesUIImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)DSRevitNodesUIImages.resources" OutputAssembly="$(OutDir)DSRevitNodesUI.customization.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)SimpleRaaSImages.resx" OutputResources="$(ProjectDir)SimpleRaaSImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)SimpleRaaSImages.resources" OutputAssembly="$(OutDir)SimpleRaaS.customization.dll" />
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoRaaSImages.resx" OutputResources="$(ProjectDir)DynamoRaaSImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoRaaSImages.resources" OutputAssembly="$(OutDir)DynamoRaaS.customization.dll" />
   </Target>
   <Target Name="AfterBuild">
     <ItemGroup>
