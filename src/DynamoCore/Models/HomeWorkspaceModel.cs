@@ -178,8 +178,11 @@ namespace Dynamo.Models
         {
             if (pulseMaker == null)
             {
-                pulseMaker = new PulseMaker(this);
+                pulseMaker = new PulseMaker();
             }
+
+            pulseMaker.RunStarted += pulseMaker_RunStarted;
+            EvaluationCompleted += pulseMaker.OnRunExpressionCompleted;
 
             if (pulseMaker.TimerPeriod != 0)
             {
@@ -190,14 +193,33 @@ namespace Dynamo.Models
             pulseMaker.Start(milliseconds);
         }
 
+        void pulseMaker_RunStarted(object sender, EventArgs e)
+        {
+            var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
+
+            DynamoModel.OnRequestDispatcherBeginInvoke(() =>
+            {
+                // Dirty selective nodes so they get included for evaluation.
+                foreach (var nodeToUpdate in nodesToUpdate)
+                {
+                    nodeToUpdate.MarkNodeAsModified(true);
+                }
+
+                OnNodesModified();
+            });
+        }
+
         /// <summary>
         /// Stop the on-going periodic evaluation, if there is any.
         /// </summary>
         /// 
         public void StopPeriodicEvaluation()
         {
-            if (pulseMaker != null && (pulseMaker.TimerPeriod != 0))
-                pulseMaker.Stop();
+            if (pulseMaker == null || (pulseMaker.TimerPeriod == 0)) return;
+
+            pulseMaker.RunStarted -= pulseMaker_RunStarted;
+            EvaluationCompleted -= pulseMaker.OnRunExpressionCompleted;
+            pulseMaker.Stop();
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)
