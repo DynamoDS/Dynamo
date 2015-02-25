@@ -41,8 +41,10 @@ namespace Dynamo.Core
 
             if (!File.Exists(Path.Combine(dynamoCoreDir, "DynamoCore.dll")))
             {
-                throw new InvalidOperationException(
-                    "PathManager starts off within an invalid assembly.");
+                throw new Exception("Dynamo's core path could not be found. " +
+                    "If you are running Dynamo from a test, try specifying the " +
+                    "Dynamo core location in the DynamoBasePath variable in " +
+                    "TestServices.dll.config.");
             }
 
             userDataDir = CreateFolder(GetUserDataFolder());
@@ -87,15 +89,6 @@ namespace Dynamo.Core
         private string GetDynamoDataFolder(Environment.SpecialFolder folder)
         {
             var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
-
-            if (!File.Exists(assemblyPath))
-            {
-                throw new Exception("Dynamo's core path could not be found. " +
-                    "If you are running Dynamo from a test, try specifying the " +
-                    "Dynamo core location in the DynamoBasePath variable in " +
-                    "TestServices.dll.config.");
-            }
-
             var v = FileVersionInfo.GetVersionInfo(assemblyPath);
             return Path.Combine(Environment.GetFolderPath(folder), "Dynamo",
                 String.Format("{0}.{1}", v.FileMajorPart, v.FileMinorPart));
