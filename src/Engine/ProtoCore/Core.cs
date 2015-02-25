@@ -1026,6 +1026,7 @@ namespace ProtoCore
             Validity.Assert(RuntimeData != null);
             RuntimeData.FunctionTable = FunctionTable;
             RuntimeData.DynamicVarTable = DynamicVariableTable;
+            RuntimeData.DynamicFuncTable = DynamicFunctionTable;
             return RuntimeData;
         }
 

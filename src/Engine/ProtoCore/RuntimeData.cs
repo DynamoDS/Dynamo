@@ -65,6 +65,7 @@ namespace ProtoCore
         public List<AssociativeNode> CachedSSANodes { get; set; }
 
         public DynamicVariableTable DynamicVarTable { get; set; }
+        public DynamicFunctionTable DynamicFuncTable { get; set; }
 
  #endregion
 

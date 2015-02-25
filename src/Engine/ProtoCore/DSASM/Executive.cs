@@ -9,7 +9,7 @@ using System.Diagnostics;
 using ProtoCore.Properties;
 
 namespace ProtoCore.DSASM
-{
+{ 
     public class Executive : IExecutive
     {
         private readonly bool enableLogging = true;
@@ -3736,7 +3736,7 @@ namespace ProtoCore.DSASM
                 functionDynamicIndex = (int)rmem.Pop().opdata;
             }
 
-            var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex(functionDynamicIndex);
+            var dynamicFunction = exe.RuntimeData.DynamicFuncTable.GetFunctionAtIndex(functionDynamicIndex);
 
             if (isDotMemFuncBody)
             {
