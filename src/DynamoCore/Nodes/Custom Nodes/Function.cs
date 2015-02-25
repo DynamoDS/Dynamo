@@ -100,7 +100,6 @@ namespace Dynamo.Nodes
             {
                 Controller.SyncNodeWithDefinition(this);
                 OnNodeModified();
-                return;
             }
             else if (Controller.Definition == null || Controller.Definition.IsProxy)
             {
