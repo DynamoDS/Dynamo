@@ -49,6 +49,7 @@ namespace Dynamo.Models
         #region private members
 
         private readonly string geometryFactoryPath;
+        private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         #endregion
 
@@ -156,6 +157,13 @@ namespace Dynamo.Models
         {
             get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
+
+        /// <summary>
+        ///     The path manager that configures path information required for 
+        ///     Dynamo to function properly. See IPathManager interface for more 
+        ///     details.
+        /// </summary>
+        public IPathManager PathManager { get { return pathManager; } }
 
         /// <summary>
         ///     The context that Dynamo is running under.
@@ -421,6 +429,7 @@ namespace Dynamo.Models
             bool testMode = config.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
+            pathManager = new PathManager();
 
             Context = context;
             IsTestMode = testMode;
