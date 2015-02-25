@@ -99,6 +99,7 @@ namespace Dynamo.PackageManager
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
 
+
         /// <summary>
         ///     Determines if there are binaries in the package
         /// </summary>
