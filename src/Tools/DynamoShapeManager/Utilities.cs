@@ -121,16 +121,13 @@ namespace DynamoShapeManager
         /// <param name="rootFolder">Full path of the directory that contains 
         /// LibG_xxx folder, where 'xxx' represents the library version. In a 
         /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory.
-        /// </param>
+        /// core modules. This must represent a valid directory.</param>
         /// <param name="version">Version number of the targeted geometry library.
-        /// This argument must be the three-digit value (e.g. 219) that gets 
-        /// appended to form a valid 'LibG_xxx' folder name. If the resulting 
-        /// folder does not exist, this method throws an FileNotFoundException.
-        /// </param>
+        /// If the resulting folder does not exist, this method throws an 
+        /// FileNotFoundException.</param>
         /// <returns>The full path to GeometryFactoryAssembly assembly.</returns>
         /// 
-        public static string GetGeometryFactoryPath(string rootFolder, int version)
+        public static string GetGeometryFactoryPath(string rootFolder, LibraryVersion version)
         {
             if (string.IsNullOrEmpty(rootFolder))
                 throw new ArgumentNullException("rootFolder");
@@ -142,7 +139,7 @@ namespace DynamoShapeManager
                     "Directory not found: {0}", rootFolder));
             }
 
-            var libGFolderName = string.Format("libg_{0}", version);
+            var libGFolderName = string.Format("libg_{0}", ((int) version));
             var libGFolder = Path.Combine(rootFolder, libGFolderName);
             if (!Directory.Exists(libGFolder))
             {
