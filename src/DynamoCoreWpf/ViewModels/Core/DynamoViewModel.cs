@@ -8,8 +8,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 using Dynamo.DSEngine;
@@ -22,7 +20,6 @@ using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
-using Dynamo.Wpf.ViewModels;
 
 using DynamoUnits;
 
@@ -38,10 +35,7 @@ namespace Dynamo.ViewModels
         #region properties
 
         private readonly DynamoModel model;
-
         private System.Windows.Point transformOrigin;
-        //private bool runEnabled = true;
-        
         private bool canNavigateBackground = false;
         private bool showStartPage = false;
         private bool watchEscapeIsDown = false;

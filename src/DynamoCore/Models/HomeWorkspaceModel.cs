@@ -116,20 +116,10 @@ namespace Dynamo.Models
             }
         }
 
-        protected override void OnNodeAdded(NodeModel node)
-        {
-            base.OnNodeAdded(node);
-        }
-
         protected override void OnNodeRemoved(NodeModel node)
         {
             base.OnNodeRemoved(node);
             EngineController.NodeDeleted(node);
-        }
-
-        protected override void ResetWorkspaceCore()
-        {
-            base.ResetWorkspaceCore();
         }
 
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
