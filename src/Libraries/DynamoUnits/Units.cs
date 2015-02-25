@@ -436,8 +436,6 @@ namespace DynamoUnits
     /// </summary>
     public class Length : SIUnit, IComparable, IEquatable<Length>
     {
-        internal LengthUnit UnitSystem { get; set; }
-
         //length conversions
         private const double METER_TO_MILLIMETER = 1000;
         private const double METER_TO_CENTIMETER = 100;
