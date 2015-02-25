@@ -2700,7 +2700,7 @@ namespace ProtoCore.DSASM
         /// <param name="language"></param>
         public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
         {
-            if (core.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
+            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
                 ExecuteDebug(exeblock, entry, breakpoints, language);
             }
@@ -5284,7 +5284,7 @@ namespace ProtoCore.DSASM
             }
             else if (opdata1.IsString && opdata2.IsString)
             {
-                opdata2 = StringUtils.ConcatString(opdata2, opdata1, core);
+                opdata2 = StringUtils.ConcatString(opdata2, opdata1, runtimeCore);
             }
             else if (opdata1.IsString || opdata2.IsString)
             {
@@ -5292,12 +5292,12 @@ namespace ProtoCore.DSASM
                 if (opdata1.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata2, core, rmem);
-                    opdata2 = StringUtils.ConcatString(newSV, opdata1, core);
+                    opdata2 = StringUtils.ConcatString(newSV, opdata1, runtimeCore);
                 }
                 else if (opdata2.IsString)
                 {
                     newSV = StringUtils.ConvertToString(opdata1, core, rmem);
-                    opdata2 = StringUtils.ConcatString(opdata2, newSV, core);
+                    opdata2 = StringUtils.ConcatString(opdata2, newSV, runtimeCore);
                 }
             }
             else if (opdata2.IsArrayKey && opdata1.IsInteger)

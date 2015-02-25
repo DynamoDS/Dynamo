@@ -40,9 +40,8 @@ namespace ProtoCore.Utils
             return returnSV;
         }
 
-        public static StackValue ConcatString(StackValue op1, StackValue op2, ProtoCore.Core core)
+        public static StackValue ConcatString(StackValue op1, StackValue op2, RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             var v1 = runtimeCore.RuntimeMemory.Heap.GetString(op1);
             var v2 = runtimeCore.RuntimeMemory.Heap.GetString(op2);
             return StackValue.BuildString(v1 + v2, runtimeCore.RuntimeMemory.Heap);
