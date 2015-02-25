@@ -683,7 +683,8 @@ namespace Dynamo.Models
 
             List<TypeLoadData> modelTypes;
             List<TypeLoadData> migrationTypes;
-            Loader.LoadNodeModelsAndMigrations(Context, out modelTypes, out migrationTypes);
+            Loader.LoadNodeModelsAndMigrations(pathManager.NodeDirectories,
+                Context, out modelTypes, out migrationTypes);
 
             // Load NodeModels
             foreach (var type in modelTypes)
