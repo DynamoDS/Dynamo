@@ -3024,7 +3024,7 @@ namespace ProtoCore.DSASM
             int classIndex = (int)op2.opdata;
             SymbolNode symbol = GetSymbolNode(blockId, classIndex, symbolIndex);
             int offset = symbol.index;
-            core.watchStack[offset] = opVal;
+            runtimeCore.watchStack[offset] = opVal;
         }
 
         private void PushW(int block, StackValue op1, StackValue op2)
@@ -3043,9 +3043,9 @@ namespace ProtoCore.DSASM
 
             int offset = node.index;
             //For watch symbol, use watching stack.
-            if (core.watchSymbolList.Contains(node))
+            if (runtimeCore.WatchSymbolList.Contains(node))
             {
-                rmem.Push(core.watchStack[offset]);
+                rmem.Push(runtimeCore.watchStack[offset]);
             }
             else
             {
@@ -3584,9 +3584,9 @@ namespace ProtoCore.DSASM
             string varname = symbolNode.name;
 
             StackValue thisArray;
-            if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter && core.watchSymbolList.Contains(symbolNode))
+            if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter && runtimeCore.WatchSymbolList.Contains(symbolNode))
             {
-                thisArray = core.watchStack[symbolNode.index];
+                thisArray = runtimeCore.watchStack[symbolNode.index];
             }
             else
             {
@@ -3683,7 +3683,7 @@ namespace ProtoCore.DSASM
         private bool ProcessDynamicVariable(bool isArray, ref StackValue svPtr, int classIndex)
         {
             int variableDynamicIndex = (int)svPtr.opdata;
-            var dynamicVariableNode = core.DynamicVariableTable.variableTable[variableDynamicIndex];
+            var dynamicVariableNode = exe.RuntimeData.DynamicVarTable.variableTable[variableDynamicIndex];
 
             SymbolNode node = null;
             bool isStatic = false;
@@ -4267,7 +4267,7 @@ namespace ProtoCore.DSASM
             {
                 int fp = runtimeCore.RuntimeMemory.FramePointer;
                 if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter && instruction.op1.IsThisPtr)
-                    runtimeCore.RuntimeMemory.FramePointer = core.watchFramePointer;
+                    runtimeCore.RuntimeMemory.FramePointer = runtimeCore.watchFramePointer;
                 StackValue opdata1 = GetOperandData(blockId, instruction.op1, instruction.op2);
                 if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter && instruction.op1.IsThisPtr)
                     runtimeCore.RuntimeMemory.FramePointer = fp;
@@ -4334,7 +4334,7 @@ namespace ProtoCore.DSASM
 
             int fp = runtimeCore.RuntimeMemory.FramePointer;
             if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
-                runtimeCore.RuntimeMemory.FramePointer = core.watchFramePointer;
+                runtimeCore.RuntimeMemory.FramePointer = runtimeCore.watchFramePointer;
 
             if (0 == dimensions)
             {

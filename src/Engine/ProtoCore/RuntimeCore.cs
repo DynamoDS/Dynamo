@@ -81,6 +81,11 @@ namespace ProtoCore
             FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
 
             ContinuationStruct = new ContinuationStructure();
+
+
+            watchStack = new List<StackValue>();
+            watchFramePointer = Constants.kInvalidIndex;
+            WatchSymbolList = new List<SymbolNode>();
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
@@ -136,6 +141,12 @@ namespace ProtoCore
         /// Gets the reason why the execution was last suspended
         /// </summary>
         public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
+
+
+        public List<StackValue> watchStack { get; set; }
+        public int watchFramePointer { get; set; }
+
+        public List<SymbolNode> WatchSymbolList { get; set; }
 #endregion 
         
         public void ResetForDeltaExecution()

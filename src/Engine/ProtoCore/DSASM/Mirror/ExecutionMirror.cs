@@ -727,22 +727,23 @@ namespace ProtoCore.DSASM.Mirror
 
         public Obj GetWatchValue()
         {
-            int count = MirrorTarget.Core.watchStack.Count;
-            int n = MirrorTarget.Core.watchSymbolList.FindIndex(x => { return string.Equals(x.name, Constants.kWatchResultVar); });
+            RuntimeCore runtimeCore = MirrorTarget.RuntimeCore;
+            int count = runtimeCore.watchStack.Count;
+            int n = runtimeCore.WatchSymbolList.FindIndex(x => { return string.Equals(x.name, Constants.kWatchResultVar); });
 
             if (n < 0 || n >= count)
             {
-                core.watchSymbolList.Clear();
+                runtimeCore.WatchSymbolList.Clear();
                 return new Obj { Payload = null };
             }
 
             Obj retVal = null;
             try
             {
-                StackValue sv = MirrorTarget.Core.watchStack[n];
+                StackValue sv = runtimeCore.watchStack[n];
                 if (!sv.IsInvalid)
                 {
-                    retVal = Unpack(MirrorTarget.Core.watchStack[n], MirrorTarget.rmem.Heap, core);
+                    retVal = Unpack(runtimeCore.watchStack[n], MirrorTarget.rmem.Heap, core);
                 }
                 else
                 {
@@ -755,7 +756,7 @@ namespace ProtoCore.DSASM.Mirror
             }
             finally
             {
-                core.watchSymbolList.Clear();
+                runtimeCore.WatchSymbolList.Clear();
             }
 
             return retVal;

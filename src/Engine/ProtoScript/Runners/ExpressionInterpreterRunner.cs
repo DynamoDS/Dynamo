@@ -84,7 +84,7 @@ namespace ProtoScript.Runners
             //Initialize the watch stack and watchBaseOffset
             //The watchBaseOffset is used to indexing the watch variables and related temporary variables
             Core.watchBaseOffset = 0;
-            Core.watchStack.Clear();
+            runtimeCore.watchStack.Clear();
 
             bool succeeded = Compile(code, Core.GetCurrentBlockId(), out blockId);
 
@@ -93,7 +93,7 @@ namespace ProtoScript.Runners
             Core.BuildStatus.ClearWarnings();
 
             for (int i = 0; i < Core.watchBaseOffset; ++i )
-                Core.watchStack.Add(StackValue.Null);
+                runtimeCore.watchStack.Add(StackValue.Null);
 
             //Record the old function call depth
             //Fix IDE-523: part of error for watching non-existing member
@@ -116,7 +116,7 @@ namespace ProtoScript.Runners
                 int oldDebugEntryPC = runtimeCore.DebugProps.DebugEntryPC;
 
                 //a5. Record the frame pointer for referencing to thisPtr
-                Core.watchFramePointer = runtimeCore.RuntimeMemory.FramePointer;
+                runtimeCore.watchFramePointer = runtimeCore.RuntimeMemory.FramePointer;
 
                 // The "Core.Bounce" below is gonna adjust the "FramePointer" 
                 // based on the current size of "Core.Rmem.Stack". All that is 
@@ -142,7 +142,7 @@ namespace ProtoScript.Runners
                 { }
 
                 //r5. Restore frame pointer.
-                runtimeCore.RuntimeMemory.FramePointer = Core.watchFramePointer; 
+                runtimeCore.RuntimeMemory.FramePointer = runtimeCore.watchFramePointer; 
 
                 //r4. Restore the debug entry PC and stack size of FileFepChosen
                 runtimeCore.DebugProps.DebugEntryPC = oldDebugEntryPC;
@@ -164,7 +164,7 @@ namespace ProtoScript.Runners
 
 
                 //Clear the watchSymbolList
-                foreach (SymbolNode node in Core.watchSymbolList)
+                foreach (SymbolNode node in runtimeCore.WatchSymbolList)
                 {
                     if (ProtoCore.DSASM.Constants.kInvalidIndex == node.classScope)
                         Core.DSExecutable.runtimeSymbols[node.runtimeTableIndex].Remove(node);
@@ -182,7 +182,7 @@ namespace ProtoScript.Runners
                 Core.FunctionCallDepth = oldFunctionCallDepth;
 
                 //Clear the watchSymbolList
-                foreach (SymbolNode node in Core.watchSymbolList)
+                foreach (SymbolNode node in runtimeCore.WatchSymbolList)
                 {
                     if (ProtoCore.DSASM.Constants.kInvalidIndex == node.classScope)
                         Core.DSExecutable.runtimeSymbols[node.runtimeTableIndex].Remove(node);

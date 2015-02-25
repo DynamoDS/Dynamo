@@ -611,10 +611,8 @@ namespace ProtoCore
 
             watchClassScope = Constants.kInvalidIndex;
             watchFunctionScope = Constants.kInvalidIndex;
-            watchBaseOffset = 0;
-            watchStack = new List<StackValue>();
             watchSymbolList = new List<SymbolNode>();
-            watchFramePointer = Constants.kInvalidIndex;
+            watchBaseOffset = 0;
 
 
             GlobOffset = 0;
@@ -734,12 +732,10 @@ namespace ProtoCore
         //           It must be moved to its own core, whre each core is an instance of a compiler+interpreter
         //
         public Executable ExprInterpreterExe { get; set; }
-        public List<SymbolNode> watchSymbolList { get; set; }
         public int watchClassScope { get; set; }
         public int watchFunctionScope { get; set; }
         public int watchBaseOffset { get; set; }
-        public List<StackValue> watchStack { get; set; }
-        public int watchFramePointer { get; set; }
+        public List<SymbolNode> watchSymbolList { get; set; }
 
         public CodeGen assocCodegen { get; set; }
 
@@ -989,6 +985,10 @@ namespace ProtoCore
             ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
             ExprInterpreterExe.runtimeSymbols = DSExecutable.runtimeSymbols;
             ExprInterpreterExe.isSingleAssocBlock = DSExecutable.isSingleAssocBlock;
+
+            // Debug properties
+            // Move WatchSymbolList to runtimeData
+            __TempCoreHostForRefactoring.WatchSymbolList = watchSymbolList;
             
             // Copy all instruction streams
             // TODO Jun: What method to copy all? Use that
@@ -1025,6 +1025,7 @@ namespace ProtoCore
         {
             Validity.Assert(RuntimeData != null);
             RuntimeData.FunctionTable = FunctionTable;
+            RuntimeData.DynamicVarTable = DynamicVariableTable;
             return RuntimeData;
         }
 
