@@ -19,7 +19,7 @@ using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificati
 
 namespace Dynamo.Models
 {
-    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, INodeRepository
+    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable
     {
 
         public const double ZOOM_MAXIMUM = 4.0;
@@ -1298,7 +1298,7 @@ namespace Dynamo.Models
             }
             else if (typeName.StartsWith("Dynamo.Models.AnnotationModel"))
             {
-                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData);
+                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData, Nodes);
                 Annotations.Add(annotationModel);
             }
             else // Other node types.
@@ -1491,16 +1491,6 @@ namespace Dynamo.Models
                     break;
             }
         }
-        #endregion
-
-        public NodeModel GetNodeModel(Guid modelGuid)
-        {
-            NodeModel nodeModel = null;
-            if (Nodes.Count > 0)
-                nodeModel = Nodes.FirstOrDefault((x) => (x.GUID == modelGuid));
-
-            return nodeModel;
-        }
-
+        #endregion       
     }
 }

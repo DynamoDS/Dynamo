@@ -91,16 +91,20 @@ namespace Dynamo.Models
                 RaisePropertyChanged("BackGroundColor");
             }
         }
+       
+        private string nodeGuids { get; set; }
 
-        private INodeRepository _workspaceModel;
-        public INodeRepository WorkspaceModel
+        private IEnumerable<NodeModel> nodesInWorkspace;
+
+        public IEnumerable<NodeModel> NodesInWorkspace
         {
-            get { return _workspaceModel; }
-            set { _workspaceModel = value; }
+            get
+            {
+                return nodesInWorkspace;                
+            }
+            set { nodesInWorkspace = value; }
         }
 
-        private string nodeGuids { get; set; }
-      
         private IEnumerable<NodeModel> selectedNodes;
         public IEnumerable<NodeModel> SelectedNodes
         {
@@ -143,9 +147,10 @@ namespace Dynamo.Models
             set { isInDrag = value; }
         }
 
-        public AnnotationModel(IEnumerable<NodeModel> selectedNodeModels )
+        public AnnotationModel(IEnumerable<NodeModel> nodes )
         {
-            this.SelectedNodes = selectedNodeModels;
+            this.nodesInWorkspace = nodes;
+            this.SelectedNodes = nodes.Where(x => x.IsSelected);
             this.AnnotationText = "<<Double click to edit the grouping>>";
         }
 
@@ -211,7 +216,7 @@ namespace Dynamo.Models
             return region;
         }
 
-        public void DeserializeNodeModels()
+        private void DeserializeNodeModels()
         {
             var listOfNodes = new List<NodeModel>();
             this.isInDrag = false;
@@ -219,14 +224,13 @@ namespace Dynamo.Models
             {
                 Guid result;
                 if (Guid.TryParse(objGuid, out result))
-                    if (WorkspaceModel != null)
+                    if (NodesInWorkspace != null)
                     {
-                        var model = WorkspaceModel.GetNodeModel(result);
+                        var model = NodesInWorkspace.FirstOrDefault(x => x.GUID == result);                        
                         listOfNodes.Add(model);
                     }
             }
-            this.SelectedNodes = listOfNodes;
-           // this.isInDrag = true;
+            this.SelectedNodes = listOfNodes;          
         }
 
         #region Command Framework Supporting Methods
@@ -271,6 +275,7 @@ namespace Dynamo.Models
             this.Height = helper.ReadDouble("height", 0.0);
             this.BackGroundColor = helper.ReadString("annotationColor", "");
             nodeGuids = helper.ReadString("NodeModelGUIDs", "");
+            DeserializeNodeModels();
             this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);           
         }
 

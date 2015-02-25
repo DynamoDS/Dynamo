@@ -79,8 +79,7 @@ namespace Dynamo.Nodes
         }
      
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            DynamoSelection.Instance.ClearSelection();
+        {           
             var dataContext = this.DataContext as AnnotationViewModel;
             var view = sender as AnnotationView;
             if (view != null) Panel.SetZIndex(view, 9999);

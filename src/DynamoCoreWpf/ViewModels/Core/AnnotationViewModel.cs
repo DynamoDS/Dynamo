@@ -14,7 +14,7 @@ using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
 {
-    public partial class AnnotationViewModel : ViewModelBase
+    public class AnnotationViewModel : ViewModelBase
     {
         private AnnotationModel _annotationModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;
@@ -70,30 +70,7 @@ namespace Dynamo.ViewModels
                 _annotationModel.AnnotationText = value;                
             }
         }
-
-        private Visibility _textBoxVisible;
-        public Visibility MakeTextBoxVisible
-        {
-            get { return _textBoxVisible; }
-            set
-            {
-                _textBoxVisible = value;
-                RaisePropertyChanged("MakeTextBoxVisible");
-            }
-        }
-
-        private Visibility _textBlockVisible;
-
-        public Visibility MakeTextBlockVisible
-        {
-            get { return _textBlockVisible; }
-            set
-            {
-                _textBlockVisible = value;
-                RaisePropertyChanged("MakeTextBlockVisible");
-            }
-        }
-
+       
         private int _textBoxWidth;
         public double TextBoxHeight
         {
@@ -136,13 +113,8 @@ namespace Dynamo.ViewModels
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {            
             _annotationModel = model;           
-            this.WorkspaceViewModel = workspaceViewModel;
-            this.MakeTextBlockVisible = Visibility.Visible;
-            this.MakeTextBoxVisible = Visibility.Collapsed;
-            this.IsInDrag = false;
-            model.WorkspaceModel = workspaceViewModel.Model;  
-            if(model.SelectedNodes == null)
-                model.DeserializeNodeModels();
+            this.WorkspaceViewModel = workspaceViewModel;            
+            this.IsInDrag = false;                
             model.PropertyChanged += model_PropertyChanged;
         }
        
@@ -176,27 +148,6 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("RectRegion");
                     break;
             }
-        }
-
-        internal void SaveTextboxValue(object parameter)
-        {
-            this.MakeTextBlockVisible = Visibility.Visible;
-            this.MakeTextBoxVisible = Visibility.Collapsed;
-        }
-
-        internal bool CanSaveTextboxValue(object parameter)
-        {
-            return true;
-        }
-
-        internal void BringToFront(object parameter)
-        {
-            String message = "test";
-        }
-
-        internal bool CanBringToFront(object parameter)
-        {
-            return true;
-        }
+        }      
     }
 }

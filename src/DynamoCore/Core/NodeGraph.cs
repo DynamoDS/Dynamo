@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using ProtoCore.AST;
 using ProtoCore.Namespace;
 
 namespace Dynamo.Core
@@ -110,23 +111,23 @@ namespace Dynamo.Core
                 : Enumerable.Empty<NoteModel>();
         }
 
-        public static AnnotationModel LoadAnnotationFromXml(XmlNode annotation)
+        public static AnnotationModel LoadAnnotationFromXml(XmlNode annotation,IEnumerable<NodeModel> nodes )
         {
-            var instance = new AnnotationModel(null);
+            var instance = new AnnotationModel(nodes);             
             instance.Deserialize(annotation as XmlElement, SaveContext.File);
             return instance;
         }
 
-        private static IEnumerable<AnnotationModel> LoadAnnotationsFromXml(XmlDocument xmlDoc)
+        private static IEnumerable<AnnotationModel> LoadAnnotationsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodes )
         {
             XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Annotations");
             if (nNodes.Count == 0)
                 nNodes = xmlDoc.GetElementsByTagName("dynAnnotations");
             XmlNode nNodesList = nNodes[0];
-
-            return nNodesList != null
-                ? nNodesList.ChildNodes.Cast<XmlNode>().Select(LoadAnnotationFromXml)
-                : Enumerable.Empty<AnnotationModel>();
+            if (nNodesList != null)
+                return from XmlElement annotation in nNodesList.ChildNodes.Cast<XmlNode>() select LoadAnnotationFromXml(annotation, nodes);
+            
+            return Enumerable.Empty<AnnotationModel>();
         }
 
         /// <summary>
@@ -143,7 +144,7 @@ namespace Dynamo.Core
             var nodes = LoadNodesFromXml(xmlDoc, nodeFactory).ToList();
             var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
             var notes = LoadNotesFromXml(xmlDoc).ToList();
-            var annotations=LoadAnnotationsFromXml(xmlDoc).ToList();
+            var annotations = LoadAnnotationsFromXml(xmlDoc, nodes).ToList();
 
             return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations =annotations, ElementResolver = elementResolver };
         }
