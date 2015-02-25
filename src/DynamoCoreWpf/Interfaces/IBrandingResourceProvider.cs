@@ -1,15 +1,11 @@
-﻿using System.Windows.Media;
+﻿using System.Windows;
+using System.Windows.Media;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.Interfaces
 {
     public struct ResourceNames
     {
-        public enum AboutBox
-        {
-            Title,   
-            Image       
-        }
-
         public enum ConsentForm
         {
             Image,        
@@ -36,12 +32,12 @@ namespace Dynamo.Wpf.Interfaces
 
     public interface IBrandingResourceProvider
     {
-        ImageSource GetImageSource(ResourceNames.AboutBox resourceName);
         ImageSource GetImageSource(ResourceNames.ConsentForm resourceName);
         ImageSource GetImageSource(ResourceNames.StartPage resourceName);
 
         string GetString(ResourceNames.MainWindow resourceName);
-        string GetString(ResourceNames.AboutBox resourceName);
         string GetString(ResourceNames.ConsentForm resourceName);
+
+        Window CreateAboutBox(DynamoViewModel model);
     }
 }

@@ -727,7 +727,7 @@ namespace ProtoCore.Utils
 
                 if (index >= str.Length || index < 0)
                 {
-                    core.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                    core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                     return StackValue.Null;
                 }
 
@@ -818,6 +818,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, StackValue[] indices, Core core)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             Validity.Assert(array.IsArray || array.IsString);
             for (int i = 0; i < indices.Length - 1; ++i)
             {
@@ -831,7 +832,7 @@ namespace ProtoCore.Utils
                 {
                     if (!array.IsArray)
                     {
-                        core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                         return StackValue.Null;
                     }
                     array = GetValueFromIndex(array, index, core);
@@ -839,7 +840,7 @@ namespace ProtoCore.Utils
 
                 if (!array.IsArray)
                 {
-                    core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                     return StackValue.Null;
                 }
             }
@@ -857,13 +858,14 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue GetValueFromIndices(StackValue array, List<StackValue> indices, Core core)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (indices.Count == 0)
             {
                 return array;
             }
             else if (!array.IsArray && !array.IsString)
             {
-                core.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 

@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 
 using Dynamo.ViewModels;
 
@@ -25,8 +24,7 @@ namespace Dynamo.UI.Views
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = dynamoViewModel;
 
-            var id = Wpf.Interfaces.ResourceNames.AboutBox.Title;
-            Title = dynamoViewModel.BrandingResourceProvider.GetString(id);
+            Title = Dynamo.Wpf.Properties.Resources.AboutWindowTitle;
         }
 
         public bool InstallNewUpdate { get; private set; }
@@ -44,7 +42,7 @@ namespace Dynamo.UI.Views
 
         private void OnClickLink(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/DynamoDS/Dynamo");
+            Process.Start("http://dynamobim.org/");
         }
     }
 

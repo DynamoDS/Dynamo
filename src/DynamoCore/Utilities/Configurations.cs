@@ -185,7 +185,7 @@ namespace Dynamo.UI
 
         public const string SmallIconPostfix = ".Small";
         public const string LargeIconPostfix = ".Large";
-        public const string ResourcesDLL = ".resources.dll";
+        public const string IconResourcesDLL = ".customization.dll";
         public const string DefaultIcon = "DefaultIcon";
         public const string DefaultCustomNodeIcon = "DefaultCustomNode";
         public const string DefaultAssembly = "DynamoCore";
@@ -207,7 +207,7 @@ namespace Dynamo.UI
         public const string CategoryGroupAction = "Actions";
         public const string CategoryGroupQuery = "Query";
         public const char CategoryDelimiter = '.';
-        public const char ShortenedCategoryDelimiter = '>';
+        public const char ShortenedCategoryDelimiter = '-';
 
         public const string ClassesDefaultName = "Classes";
 

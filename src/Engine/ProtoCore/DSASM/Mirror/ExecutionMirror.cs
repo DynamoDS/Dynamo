@@ -498,12 +498,13 @@ namespace ProtoCore.DSASM.Mirror
         private int GetSymbolIndex(string name, out int ci, ref int block, out SymbolNode symbol)
         {
             ProtoCore.DSASM.Executable exe = core.DSExecutable;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             int functionIndex = Constants.kGlobalScope;
             ci = Constants.kInvalidIndex;
             int functionBlock = Constants.kGlobalScope;
-            
-            if (core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
+
+            if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 ci = core.watchClassScope = core.Rmem.CurrentStackFrame.ClassScope;
                 functionIndex = core.Rmem.CurrentStackFrame.FunctionScope;

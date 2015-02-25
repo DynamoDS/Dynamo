@@ -396,23 +396,12 @@ namespace Dynamo.Controls
             UnsubscribeNodeViewCustomizationEvents();
         }
 
-        private AboutWindow _aboutWindow;
         void DynamoViewModelRequestAboutWindow(DynamoViewModel model)
         {
-            if (_aboutWindow == null)
-            {
-                _aboutWindow = new AboutWindow(model)
-                {
-                    Owner = this,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
-                _aboutWindow.Show();
-
-                if (_aboutWindow.IsLoaded && IsLoaded) _aboutWindow.Owner = this;
-            }
-
-            _aboutWindow.Focus();
+            var aboutWindow = model.BrandingResourceProvider.CreateAboutBox(model);
+            aboutWindow.Owner = this;
+            aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            aboutWindow.ShowDialog();
         }
 
         private PublishPackageView _pubPkgView;
@@ -1072,15 +1061,19 @@ namespace Dynamo.Controls
                 {
                     // Handle tab closing with no change in window size
                     // Shift window
-
                     if (tabSlidingWindowEnd > lastTab)
                     {
                         tabSlidingWindowStart--;
                         tabSlidingWindowEnd--;
                     }
+                    // Handle case that selected tab is still 0 and 
+                    // a new tab is created. 
+                    else if (tabSlidingWindowEnd < lastTab)
+                    {
+                        tabSlidingWindowEnd++;
+                    }
                 }
             }
-
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)

@@ -30,7 +30,7 @@ namespace ProtoAssociative
                 {
                     ProtoCore.CodeGen oldCodegen = core.assocCodegen;
 
-                    if (ProtoCore.DSASM.InterpreterMode.kNormal == core.ExecMode)
+                    if (ProtoCore.DSASM.InterpreterMode.kNormal == core.Options.RunMode)
                     {
                         if ((core.IsParsingPreloadedAssembly || core.IsParsingCodeBlockNode) && parentBlock == null)
                         {
@@ -90,7 +90,7 @@ namespace ProtoAssociative
                         //Temporarily change the code block for code gen to the current block, in the case it is an imperative block
                         //CodeGen for ProtoImperative is modified to passing in the core object.
                         ProtoCore.DSASM.CodeBlock oldCodeBlock = core.assocCodegen.codeBlock;
-                        if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                        if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                         {
                             int tempBlockId = core.GetCurrentBlockId();
 
@@ -106,7 +106,7 @@ namespace ProtoAssociative
                         {
                              blockId = core.assocCodegen.Emit((codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode), graphNode);
                         }
-                        if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                        if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                         {
                             blockId = core.assocCodegen.codeBlock.codeBlockId;
                             //Restore the code block.
