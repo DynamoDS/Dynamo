@@ -340,7 +340,7 @@ namespace DSCore
                 index = list.Count + index;
             }
 
-            if (index > list.Count || index < 0)
+            if (index >= list.Count || index < 0)
             {
                 throw new IndexOutOfRangeException();
             }
