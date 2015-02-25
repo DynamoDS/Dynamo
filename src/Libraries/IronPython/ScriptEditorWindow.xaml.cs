@@ -129,7 +129,7 @@ namespace DSIronPythonNode
             if (DialogResult.HasValue && (DialogResult.Value))
             {
                 var command = new DynamoModel.UpdateModelValueCommand(
-                    boundNodeId, propertyName, editText.Text);
+                    System.Guid.Empty, boundNodeId, propertyName, editText.Text);
 
                 dynamoViewModel.ExecuteCommand(command);
             }

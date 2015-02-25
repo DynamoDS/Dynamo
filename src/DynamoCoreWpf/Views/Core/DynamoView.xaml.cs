@@ -1061,15 +1061,19 @@ namespace Dynamo.Controls
                 {
                     // Handle tab closing with no change in window size
                     // Shift window
-
                     if (tabSlidingWindowEnd > lastTab)
                     {
                         tabSlidingWindowStart--;
                         tabSlidingWindowEnd--;
                     }
+                    // Handle case that selected tab is still 0 and 
+                    // a new tab is created. 
+                    else if (tabSlidingWindowEnd < lastTab)
+                    {
+                        tabSlidingWindowEnd++;
+                    }
                 }
             }
-
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)

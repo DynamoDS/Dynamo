@@ -169,7 +169,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
 
-                    var cmd = new DynamoModel.UpdateModelValueCommand(node.GUID, "Code", replacement);
+                    var cmd = new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Code", replacement);
 
                     this.DynamoViewModel.ExecuteCommand(cmd);
                 }));

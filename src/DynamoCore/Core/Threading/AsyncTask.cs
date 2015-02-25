@@ -58,7 +58,7 @@ namespace Dynamo.Core.Threading
             KeepOther
         }
 
-        private readonly IScheduler scheduler;
+        internal readonly IScheduler scheduler;
 
         #endregion
 

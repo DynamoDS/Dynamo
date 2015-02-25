@@ -804,6 +804,27 @@ namespace Dynamo.Models
                 Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Nodes),
                 definition,
                 DebugSettings.VerboseLogging);
+
+            MarkAllDependenciesAsModified(definition);
+        }
+
+        /// <summary>
+        /// Get all function instances or directly or indrectly dependo on the 
+        /// specified function definition and mark them as modified so that 
+        /// their values will be re-queryed.
+        /// </summary>
+        /// <param name="functionId"></param>
+        /// <returns></returns>
+        private void MarkAllDependenciesAsModified(CustomNodeDefinition def)
+        {
+            var homeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
+            if (homeWorkspace == null)
+                return;
+
+            var dependencies = CustomNodeManager.GetAllDependenciesGuids(def);
+            var funcNodes = homeWorkspace.Nodes.OfType<Function>();
+            var dirtyNodes = funcNodes.Where(n => dependencies.Contains(n.Definition.FunctionId));
+            homeWorkspace.MarkNodesAsModified(dirtyNodes);
         }
 
         /// <summary>

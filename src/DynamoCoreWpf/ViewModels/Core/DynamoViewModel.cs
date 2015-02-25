@@ -121,6 +121,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("WorkspaceActualWidth");
         }
 
+        private WorkspaceViewModel currentWorkspaceViewModel;
         /// <summary>
         /// The index in the collection of workspaces of the current workspace.
         /// This property is bound to the SelectedIndex property in the workspaces tab control
@@ -129,16 +130,35 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                // It is safe to assume that DynamoModel.CurrentWorkspace is
+                // update-to-date.
                 var viewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
                 var index = workspaces.IndexOf(viewModel);
+
+                // As the getter could aslo be triggered by the change of model,
+                // we need to update currentWorkspaceViewModel here. 
+                if (currentWorkspaceViewModel != viewModel)
+                    currentWorkspaceViewModel = viewModel;
+
                 return index;
             }
             set
             {
-                var viewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
-                var index = workspaces.IndexOf(viewModel);
-                if (index != value)
-                    this.ExecuteCommand(new DynamoModel.SwitchTabCommand(value));
+                // It happens when current workspace is home workspace, and we 
+                // open a new home workspace. At this moment, the old homework 
+                // space is removed, before new home workspace is added, Dynamo
+                // has no idea about what is selected tab index.
+                if (value < 0)
+                    return;
+
+                var viewModel = workspaces.ElementAt(value);
+                if (currentWorkspaceViewModel != viewModel)
+                {
+                    currentWorkspaceViewModel = viewModel;
+
+                    // Keep DynamoModel.CurrentWorkspace update-to-date
+                    model.CurrentWorkspace = currentWorkspaceViewModel.Model;
+                }
             }
         }
 
@@ -149,7 +169,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return Workspaces.First(x => x.Model == model.CurrentWorkspace);
+                return currentWorkspaceViewModel;
             }
         }
 
@@ -890,7 +910,10 @@ namespace Dynamo.ViewModels
 
         private void WorkspaceRemoved(WorkspaceModel item)
         {
-            workspaces.Remove(workspaces.First(x => x.Model == item));
+            var viewModel = workspaces.First(x => x.Model == item);
+            if (currentWorkspaceViewModel == viewModel)
+                currentWorkspaceViewModel = null;
+            workspaces.Remove(viewModel);
         }
 
         internal void AddToRecentFiles(string path)

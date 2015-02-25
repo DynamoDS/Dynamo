@@ -115,7 +115,7 @@ namespace Dynamo.TestInfrastructure
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoModel.UpdateModelValueCommand updateValue =
-                    new DynamoModel.UpdateModelValueCommand(node.GUID, "Value", value);
+                    new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", value);
 
                 DynamoViewModel.ExecuteCommand(updateValue);
             }));
