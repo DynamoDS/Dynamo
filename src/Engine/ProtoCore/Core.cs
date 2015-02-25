@@ -1090,45 +1090,6 @@ namespace ProtoCore
             return modStateTemp;
         }
 
-        public List<int> GetAncestorBlockIdsOfBlock(int blockId)
-        {
-            if (blockId >= CompleteCodeBlockList.Count || blockId < 0)
-            {
-                return new List<int>();
-            }
-            CodeBlock thisBlock = CompleteCodeBlockList[blockId];
-
-            var ancestors = new List<int>();
-            CodeBlock codeBlock = thisBlock.parent;
-            while (codeBlock != null)
-            {
-                ancestors.Add(codeBlock.codeBlockId);
-                codeBlock = codeBlock.parent;
-            }
-            return ancestors;
-        }
-
-        //public int GetCurrentBlockId()
-        //{
-        //    int constructBlockId = Rmem.CurrentConstructBlockId;
-        //    if (constructBlockId == Constants.kInvalidIndex)
-        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
-
-        //    CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
-        //    while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
-        //    {
-        //        constructBlock = constructBlock.parent;
-        //    }
-
-        //    if (null != constructBlock)
-        //        constructBlockId = constructBlock.codeBlockId;
-
-        //    if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
-        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
-        //    else
-        //        return Rmem.CurrentConstructBlockId;
-        //}
-
         public int GetCurrentBlockId()
         {
             int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;

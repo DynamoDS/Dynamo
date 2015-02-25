@@ -3698,7 +3698,16 @@ namespace ProtoCore.DSASM
                 string name = dynamicVariableNode.variableName;
                 int contextClassIndex = dynamicVariableNode.classIndex;
                 int contextProcIndex = dynamicVariableNode.procIndex;
-                int symbolIndex = exe.classTable.ClassNodes[classIndex].GetSymbolIndex(name, contextClassIndex, contextProcIndex, runtimeCore.RunningBlock, core, out hasThisSymbol, out addressType);
+                ClassNode classNode = exe.classTable.ClassNodes[classIndex];
+                int symbolIndex = ClassUtils.GetSymbolIndex(
+                    classNode, 
+                    name, 
+                    contextClassIndex, 
+                    contextProcIndex, 
+                    runtimeCore.RunningBlock,
+                    exe.CompleteCodeBlocks, 
+                    out hasThisSymbol,
+                    out addressType);
                 if (Constants.kInvalidIndex != symbolIndex)
                 {
                     if (addressType == AddressType.StaticMemVarIndex)
@@ -3840,7 +3849,17 @@ namespace ProtoCore.DSASM
                     AddressType addressType;
                     SymbolNode node = null;
                     bool isStatic = false;
-                    int symbolIndex = exe.classTable.ClassNodes[type].GetSymbolIndex(procName, type, Constants.kGlobalScope, runtimeCore.RunningBlock, core, out hasThisSymbol, out addressType);
+                    ClassNode classNode = exe.classTable.ClassNodes[type];
+                    int symbolIndex = ClassUtils.GetSymbolIndex(
+                        classNode, 
+                        procName, 
+                        type, 
+                        Constants.kGlobalScope, 
+                        runtimeCore.RunningBlock,
+                        exe.CompleteCodeBlocks, 
+                        out hasThisSymbol,
+                        out addressType);
+
                     if (Constants.kInvalidIndex != symbolIndex)
                     {
                         if (addressType == AddressType.StaticMemVarIndex)
