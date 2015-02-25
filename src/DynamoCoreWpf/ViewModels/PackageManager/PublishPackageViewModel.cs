@@ -7,8 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
@@ -326,24 +324,6 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Icon property </summary>
-        /// <value>
-        /// Icon for the package</value>
-        private ImageSource _icon;
-        public ImageSource Icon
-        {
-            get { return _icon; }
-            set
-            {
-                if (_icon != value)
-                {
-                    _icon = value;
-                    RaisePropertyChanged("Icon");
-                }
-            }
-        }
-
-        /// <summary>
         /// Name property </summary>
         /// <value>
         /// The name of the node to be uploaded </value>
@@ -404,12 +384,6 @@ namespace Dynamo.PackageManager
         /// <value>
         /// A command which, when executed, submits the current package</value>
         public DelegateCommand ToggleMoreCommand { get; private set; }
-
-        /// <summary>
-        /// LoadIcon property </summary>
-        /// <value>
-        /// A command which, when executed, loads file dialog</value>
-        public DelegateCommand LoadIcon { get; private set; }
 
         /// <summary>
         /// The package used for this submission
@@ -510,7 +484,6 @@ namespace Dynamo.PackageManager
             SubmitCommand = new DelegateCommand(Submit, CanSubmit);
             ShowAddFileDialogAndAddCommand = new DelegateCommand(ShowAddFileDialogAndAdd, CanShowAddFileDialogAndAdd);
             ToggleMoreCommand = new DelegateCommand(() => MoreExpanded = !MoreExpanded, () => true);
-            LoadIcon = new DelegateCommand(ShowIconFileDialog, CanShowIconFileDialog);
             Dependencies = new ObservableCollection<PackageDependency>();
             Assemblies = new List<PackageAssembly>();
             PropertyChanged += ThisPropertyChanged;
@@ -843,32 +816,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void ShowIconFileDialog()
-        {
-            // show file open dialog
-            FileDialog fDialog = null;
-
-            if (fDialog == null)
-            {
-                fDialog = new OpenFileDialog()
-                {
-                    Filter = Resources.FileDialogPNGFiles,
-                    Title = Resources.AddIconToPackageDialogTitle
-                };
-            }
-
-            if (fDialog.ShowDialog() == DialogResult.OK)
-            {
-                AddIcon(fDialog.FileName);
-            }
-        }
-
         private bool CanShowAddFileDialogAndAdd()
-        {
-            return true;
-        }
-
-        private bool CanShowIconFileDialog()
         {
             return true;
         }
@@ -890,17 +838,6 @@ namespace Dynamo.PackageManager
             }
 
             AddAdditionalFile(filename);
-        }
-
-        private void AddIcon(string filename)
-        {
-            if (!File.Exists(filename)) return;
-
-            if (filename.ToLower().EndsWith(".png"))
-            {
-                Icon = new BitmapImage(new Uri(filename));
-                return;
-            }
         }
 
         private void AddCustomNodeFile(string filename)
@@ -981,7 +918,6 @@ namespace Dynamo.PackageManager
                 Package.License = License;
                 Package.SiteUrl = SiteUrl;
                 Package.RepositoryUrl = RepositoryUrl;
-                Package.Icon = Icon;
 
                 AppendPackageContents();
 

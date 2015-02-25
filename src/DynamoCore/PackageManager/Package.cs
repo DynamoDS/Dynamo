@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows.Media;
 
 using Dynamo.Core;
 using Dynamo.DSEngine;
@@ -99,20 +98,6 @@ namespace Dynamo.PackageManager
 
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
-
-        private ImageSource _icon;
-        public ImageSource Icon
-        {
-            get { return _icon; }
-            set
-            {
-                if (_icon != value)
-                {
-                    _icon = value;
-                    RaisePropertyChanged("Icon");
-                }
-            }
-        }
 
         /// <summary>
         ///     Determines if there are binaries in the package

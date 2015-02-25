@@ -48,36 +48,7 @@
 
                 <Border Width="{Binding Path=ActualWidth,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}}" >
                     <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="106" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="96" />
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Name="Indicator"
-                                       Foreground="WhiteSmoke"
-                                       VerticalAlignment="Center"
-                                       FontSize="15"
-                                       Text="{x:Static p:Resources.PublishPackageViewPublish}"
-                                       Grid.Column="0" />
-                            <Border BorderBrush="WhiteSmoke"
-                                    BorderThickness="1"
-                                    Grid.Column="1"
-                                    HorizontalAlignment="Left">
-                                <Button Background="Transparent"
-                                        Command="{Binding LoadIcon}">
-                                    <Image Name="Icon"
-                                           Width="96"
-                                           Height="96"
-                                           Grid.Column="1"
-                                           HorizontalAlignment="Left"
-                                           Source="{Binding Icon}"/>
-                                </Button>
-                            </Border>
-                        </Grid>
+                        <TextBlock Name="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.PublishPackageViewPublish}" />
 
                         <Label Content="{x:Static p:Resources.PublishPackageViewPackageName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                             <Label.ToolTip>

@@ -1523,7 +1523,4 @@ Do you want to install the latest Dynamo update?</value>
   <data name="InvalidLoginUrl" xml:space="preserve">
     <value>Invalid URL for login page!</value>
   </data>
-  <data name="AddIconToPackageDialogTitle" xml:space="preserve">
-    <value>Add Icon to Package...</value>
-  </data>
 </root>
