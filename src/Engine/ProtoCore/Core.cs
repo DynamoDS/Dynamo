@@ -986,6 +986,7 @@ namespace ProtoCore
             RuntimeData.FunctionTable = FunctionTable;
             RuntimeData.DynamicVarTable = DynamicVariableTable;
             RuntimeData.DynamicFuncTable = DynamicFunctionTable;
+            RuntimeData.FuncPointerTable = FunctionPointerTable;
             return RuntimeData;
         }
 

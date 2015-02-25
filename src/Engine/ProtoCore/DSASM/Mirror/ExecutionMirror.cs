@@ -141,6 +141,7 @@ namespace ProtoCore.DSASM.Mirror
 
         public string GetStringValue(StackValue val, Heap heap, int langblock, int maxArraySize, int maxOutputDepth, bool forPrint = false)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (formatParams == null)
                 formatParams = new OutputFormatParameters(maxArraySize, maxOutputDepth);
 
@@ -163,7 +164,7 @@ namespace ProtoCore.DSASM.Mirror
                         return "{ " + arrTrace + " }";
                 case AddressType.FunctionPointer:
                     ProcedureNode procNode;
-                    if (core.FunctionPointerTable.TryGetFunction(val, core, out procNode))
+                    if (runtimeCore.DSExecutable.RuntimeData.FuncPointerTable.TryGetFunction(val, core, out procNode))
                     {
                         string className = String.Empty;
                         if (procNode.classScope != Constants.kGlobalScope)

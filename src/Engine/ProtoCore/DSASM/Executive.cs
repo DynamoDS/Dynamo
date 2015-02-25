@@ -3915,7 +3915,7 @@ namespace ProtoCore.DSASM
             if (isFunctionPointerCall)
             {
                 FunctionPointerNode fptrNode;
-                if (core.FunctionPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
+                if (exe.RuntimeData.FuncPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
                 {
                     int blockId = fptrNode.blockId;
                     int procId = fptrNode.procId;
