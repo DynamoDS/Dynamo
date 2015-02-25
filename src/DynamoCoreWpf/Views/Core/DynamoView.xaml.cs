@@ -1,5 +1,3 @@
-//#define __NO_SAMPLES_MENU
-
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -20,7 +18,6 @@ using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.UI;
-using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
@@ -42,15 +39,10 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class DynamoView : Window
     {
-        public const int CANVAS_OFFSET_Y = 0;
-        public const int CANVAS_OFFSET_X = 0;
-
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
-
-        internal DynamoViewModel dynamoViewModel = null;
-        private Stopwatch _timer = null;
-        private StartPageViewModel startPage = null;
-
+        private DynamoViewModel dynamoViewModel;
+        private Stopwatch _timer;
+        private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
@@ -62,8 +54,9 @@ namespace Dynamo.Controls
             // Here we get it back, by setting the ProcessRenderMode to Default,
             // signifying that we want to use hardware rendering if it's 
             // available.
-            RenderOptions.ProcessRenderMode = RenderMode.Default;
-
+            RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ? 
+                RenderMode.Default : RenderMode.SoftwareOnly;
+            
             this.dynamoViewModel = dynamoViewModel;
             this.dynamoViewModel.UIDispatcher = Dispatcher;
 
