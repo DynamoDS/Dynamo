@@ -668,7 +668,7 @@ namespace ProtoCore.Lang
                 runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
-                runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode);
+                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }
 
             return ret;

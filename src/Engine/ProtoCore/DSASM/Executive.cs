@@ -1027,7 +1027,7 @@ namespace ProtoCore.DSASM
                 // Restore debug properties after returning from a CALL/CALLR
                 if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
                 {
-                    runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, fNode);
+                    runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, fNode);
                 }
 
                 GCDotMethods(fNode.name, ref sv, dotCallDimensions, arguments);
@@ -1665,7 +1665,8 @@ namespace ProtoCore.DSASM
             int functionScope = Constants.kInvalidIndex;
             GetCallerInformation(out classScope, out functionScope);
             var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
-            List<AssociativeGraph.GraphNode> redefinedNodes = AssociativeEngine.Utils.GetRedefinedGraphNodes(core, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
+            List<AssociativeGraph.GraphNode> redefinedNodes = 
+                AssociativeEngine.Utils.GetRedefinedGraphNodes(runtimeCore, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
             Validity.Assert(redefinedNodes != null);
             foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
             {
@@ -2531,7 +2532,7 @@ namespace ProtoCore.DSASM
 
                 if (!waspopped)
                 {
-                    runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode, isReplicating);
+                    runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode, isReplicating);
                 }
             }
 
@@ -6481,7 +6482,7 @@ namespace ProtoCore.DSASM
                             // if stepping over outermost function call
                             if (!runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsFunctionStepOver))
                             {
-                                runtimeCore.DebugProps.SetUpStepOverFunctionCalls(core, runtimeCore, procNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
+                                runtimeCore.DebugProps.SetUpStepOverFunctionCalls(runtimeCore, procNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
                             }
                         }
                         // The DebugFrame passed here is the previous one that was popped off before this call
@@ -6502,7 +6503,7 @@ namespace ProtoCore.DSASM
                             }
                             else
                             {
-                                runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode, false);
+                                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode, false);
                             }
                             DebugPerformCoercionAndGC(debugFrame);
                         }

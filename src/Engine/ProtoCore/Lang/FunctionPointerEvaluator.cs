@@ -148,7 +148,7 @@ namespace ProtoCore.Lang
 
             if (isInDebugMode)
             {
-                runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode);
+                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }
 
             return rx;

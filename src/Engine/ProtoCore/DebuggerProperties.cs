@@ -543,7 +543,7 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="fNode"></param>
         /// <param name="isReplicating"></param>
-        public void RestoreCallrForNoBreak(Core core, RuntimeCore runtimeCore, ProcedureNode fNode, bool isReplicating = false)
+        public void RestoreCallrForNoBreak(RuntimeCore runtimeCore, ProcedureNode fNode, bool isReplicating = false)
         {
             Validity.Assert(DebugStackFrame.Count > 0);
             
@@ -590,13 +590,13 @@ namespace ProtoCore
                     // if stepping over outermost function call
                     if (!DebugStackFrameContains(StackFrameFlagOptions.IsFunctionStepOver))
                     {
-                        SetUpStepOverFunctionCalls(core, runtimeCore, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
+                        SetUpStepOverFunctionCalls(runtimeCore, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
                     }
                 }
             }
         }
 
-        public void SetUpStepOverFunctionCalls(Core core, RuntimeCore runtimeCore, ProcedureNode fNode, GraphNode graphNode, bool hasDebugInfo)
+        public void SetUpStepOverFunctionCalls(RuntimeCore runtimeCore, ProcedureNode fNode, GraphNode graphNode, bool hasDebugInfo)
         {
             int tempPC = DebugEntryPC;
             int limit = 0;  // end pc of current expression
