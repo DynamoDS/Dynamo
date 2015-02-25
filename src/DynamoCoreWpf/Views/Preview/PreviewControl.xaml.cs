@@ -139,11 +139,7 @@ namespace Dynamo.UI.Controls
             }
             else if (this.IsExpanded)
             {
-                RefreshExpandedDisplayAsync();
-
-                scheduler.ScheduleForExecution(
-                    new DelegateBasedAsyncTask(scheduler, 
-                        () => Dispatcher.BeginInvoke((Action)(() => BeginViewSizeTransition(ComputeLargeContentSize())))));
+                RefreshExpandedDisplayAsync(() => BeginViewSizeTransition(ComputeLargeContentSize()));
             }
         }
 
@@ -271,7 +267,7 @@ namespace Dynamo.UI.Controls
             smallContentView.Text = cachedSmallContent; // Update displayed text.
         }
 
-        private void RefreshExpandedDisplayAsync()
+        private void RefreshExpandedDisplayAsync(Action continuation = null)
         {
             var scheduler = nodeViewModel.DynamoViewModel.Model.Scheduler;
 
@@ -293,28 +289,33 @@ namespace Dynamo.UI.Controls
             var watchTree = largeContentGrid.Children[0] as WatchTree;
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
-            var task0 = new DelegateBasedAsyncTask(scheduler, () =>
+            WatchViewModel newViewModel = null;
+
+            var mirrorDataTask = new DelegateBasedAsyncTask(scheduler, () =>
             {
-                cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
+                newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                     mirrorData, null, string.Empty, false);
             });
 
-            scheduler.ScheduleForExecution(task0);
+            // once completed, run this on the dispatcher sync context
+            mirrorDataTask.ThenPost((_) =>
+            {
+                cachedLargeContent = newViewModel;
 
-            var task1 = new DelegateBasedAsyncTask(scheduler, () =>
-                Dispatcher.BeginInvoke((Action) (() =>
-                {
-                    rootDataContext.Children.Add(cachedLargeContent);
+                rootDataContext.Children.Add(cachedLargeContent);
 
-                    watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
-                        new Binding("Children")
-                        {
-                            Mode = BindingMode.TwoWay,
-                            Source = rootDataContext
-                        });
-                })));
+                watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
+                    new Binding("Children")
+                    {
+                        Mode = BindingMode.TwoWay,
+                        Source = rootDataContext
+                    });
 
-            scheduler.ScheduleForExecution(task1);
+                if (continuation != null) continuation();
+
+            }, new DispatcherSynchronizationContext(this.Dispatcher));
+
+            scheduler.ScheduleForExecution(mirrorDataTask);
         }
 
         private void RefreshExpandedDisplay()
@@ -484,7 +485,7 @@ namespace Dynamo.UI.Controls
             if (this.IsCondensed == false)
                 throw new InvalidOperationException();
 
-            RefreshExpandedDisplay(); // Bind data to the view, if needed.
+            RefreshExpandedDisplay();
 
             this.largeContentGrid.Visibility = System.Windows.Visibility.Visible;
             SetCurrentStateAndNotify(State.InTransition);
@@ -492,6 +493,7 @@ namespace Dynamo.UI.Controls
             var largeContentSize = ComputeLargeContentSize();
             UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
             this.expandStoryboard.Begin(this, true);
+
         }
 
         private void BeginViewSizeTransition(Size targetSize)
