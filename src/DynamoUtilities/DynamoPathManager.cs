@@ -48,12 +48,6 @@ namespace DynamoUtilities
         public string Packages { get; private set; }
 
         /// <summary>
-        /// The ASM folder which contains LibG and the 
-        /// ASM binaries.
-        /// </summary>
-        public string LibG { get; private set; }
-
-        /// <summary>
         /// All 'nodes' folders.
         /// </summary>
         public HashSet<string> Nodes { get; private set; }
@@ -171,7 +165,6 @@ namespace DynamoUtilities
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(String.Format("Packages: {0}", Packages));
-            sb.AppendLine(String.Format("Asm: {0}", LibG));
             Nodes.ToList().ForEach(n=>sb.AppendLine(String.Format("Nodes: {0}", n)));
             
             Debug.WriteLine(sb);
