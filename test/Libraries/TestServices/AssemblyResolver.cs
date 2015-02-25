@@ -29,20 +29,6 @@ namespace TestServices
             resolverSetup = true;
         }
 
-        /// <summary>
-        /// Setup the assembly resolver, specifying a core path.
-        /// </summary>
-        /// <param name="corePath"></param>
-        public static void Setup(string corePath)
-        {
-            if (resolverSetup) return;
-
-            DynamoPathManager.Instance.InitializeCore(corePath);
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
-
-            resolverSetup = true;
-        }
-
         public static string GetDynamoRootDirectory()
         {
             var assemPath = Assembly.GetExecutingAssembly().Location;
