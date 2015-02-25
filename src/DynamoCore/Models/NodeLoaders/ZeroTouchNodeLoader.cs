@@ -55,6 +55,10 @@ namespace Dynamo.Models.NodeLoaders
                     nodeElement.Attributes["nickname"].Value =
                         libraryServices.NicknameFromFunctionSignatureHint(xmlSignature);
                     function = hintedSigniture;
+
+                    // if the node needs additional parameters, add them here
+                    if (libraryServices.FunctionSignatureNeedsAdditionalParameters(xmlSignature))
+                        libraryServices.AddAdditionalParametersToNode(xmlSignature, nodeElement);
                 }
                 else
                 {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -38,8 +39,22 @@ namespace Dynamo.DSEngine
 
         public readonly ProtoCore.Core LibraryManagementCore;
 
-        private readonly Dictionary<string, string> priorNameHints =
-            new Dictionary<string, string>();
+        private class UpgradeHint
+        {
+            public UpgradeHint()
+            {
+                UpgradeName = null;
+                AdditionalParameters = new Dictionary<string, string>();
+            }
+
+            // The new name of the method in Dynamo
+            public string UpgradeName { get; set; }
+            // A list of additional parameters to append or change on the XML node when migrating
+            public Dictionary<string, string> AdditionalParameters { get; set; } 
+        }
+
+        private readonly Dictionary<string, UpgradeHint> priorNameHints =
+            new Dictionary<string, UpgradeHint>();
 
         public LibraryServices(ProtoCore.Core libraryManagementCore)
         {
@@ -95,6 +110,20 @@ namespace Dynamo.DSEngine
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
         }
 
+        public bool FunctionSignatureNeedsAdditionalParameters(string functionSignature)
+        {
+            return priorNameHints[functionSignature].AdditionalParameters.Count > 0;
+        }
+
+        public void AddAdditionalParametersToNode(string functionSignature, XmlElement nodeElement)
+        {
+            var upgradeHint = priorNameHints[functionSignature];
+            foreach (string key in upgradeHint.AdditionalParameters.Keys)
+            {
+                nodeElement.Attributes[key].Value = upgradeHint.AdditionalParameters[key];
+            }
+        }
+
         public string NicknameFromFunctionSignatureHint(string functionSignature)
         {
             string[] splitted = null;
@@ -102,7 +131,7 @@ namespace Dynamo.DSEngine
 
             if (priorNameHints.ContainsKey(functionSignature))
             {
-                var mappedSignature = priorNameHints[functionSignature];
+                var mappedSignature = priorNameHints[functionSignature].UpgradeName;
 
                 splitted = mappedSignature.Split('@');
 
@@ -123,7 +152,7 @@ namespace Dynamo.DSEngine
                 if (!priorNameHints.ContainsKey(qualifiedFunction))
                     return null;
 
-                newName = priorNameHints[qualifiedFunction];
+                newName = priorNameHints[qualifiedFunction].UpgradeName;
             }
 
             splitted = newName.Split('.');
@@ -138,7 +167,7 @@ namespace Dynamo.DSEngine
         {
             // if the hint is explicit, we can simply return the mapped function
             if (priorNameHints.ContainsKey(functionSignature))
-                return priorNameHints[functionSignature];
+                return priorNameHints[functionSignature].UpgradeName;
 
             // if the hint is not explicit, we try the function name without parameters
             string[] splitted = functionSignature.Split('@');
@@ -151,7 +180,7 @@ namespace Dynamo.DSEngine
             if (!priorNameHints.ContainsKey(qualifiedFunction))
                 return null;
 
-            string newName = priorNameHints[qualifiedFunction];
+            string newName = priorNameHints[qualifiedFunction].UpgradeName;
 
             return newName + "@" + splitted[1];
         }
@@ -360,7 +389,7 @@ namespace Dynamo.DSEngine
             if (!File.Exists(migrationsXMLFile))
                 return;
 
-            var foundPriorNameHints = new Dictionary<string, string>();
+            var foundPriorNameHints = new Dictionary<string, UpgradeHint>();
 
             try
             {
@@ -373,12 +402,37 @@ namespace Dynamo.DSEngine
                         if (!reader.Read())
                             break;
 
+                        var hintSubtree = reader.ReadSubtree();
+
                         reader.ReadToFollowing("oldName");
                         string oldName = reader.ReadElementContentAsString();
                         reader.ReadToFollowing("newName");
                         string newName = reader.ReadElementContentAsString();
 
-                        foundPriorNameHints[oldName] = newName;
+                        var upgradeHint = new UpgradeHint();
+                        upgradeHint.UpgradeName = newName;
+
+                        foundPriorNameHints[oldName] = upgradeHint;
+
+                        hintSubtree.ReadToFollowing("additionalParameters");
+
+                        if (!hintSubtree.Read())
+                            continue;
+
+                        while (true)
+                        {
+                            hintSubtree.ReadToFollowing("name");
+
+                            if (!hintSubtree.Read())
+                                break;
+
+                            string paramName = reader.ReadElementContentAsString();
+                            hintSubtree.ReadToFollowing("value");
+                            string paramValue = reader.ReadElementContentAsString();
+
+                            foundPriorNameHints[oldName].AdditionalParameters[paramName] =
+                                paramValue;
+                        }
                     }
                 }
             }
