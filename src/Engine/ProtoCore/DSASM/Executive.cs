@@ -5517,7 +5517,7 @@ namespace ProtoCore.DSASM
             }
             else if (opdata1.IsString && opdata2.IsString)
             {
-                int diffIndex = StringUtils.CompareString(opdata2, opdata1, core);
+                int diffIndex = StringUtils.CompareString(opdata2, opdata1, runtimeCore);
                 opdata2 = StackValue.BuildBoolean(diffIndex == 0);
             }
             else if (opdata1.optype == opdata2.optype)
@@ -5560,7 +5560,7 @@ namespace ProtoCore.DSASM
             }
             else if (opdata1.IsString && opdata2.IsString)
             {
-                int diffIndex = StringUtils.CompareString(opdata1, opdata2, core);
+                int diffIndex = StringUtils.CompareString(opdata1, opdata2, runtimeCore);
                 opdata2 = StackValue.BuildBoolean(diffIndex != 0);
             }
             else if (opdata1.optype == opdata2.optype)
@@ -5569,7 +5569,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                opdata2 = StackValue.BuildBoolean(true); ;
+                opdata2 = StackValue.BuildBoolean(true);
             }
 
             SetOperandData(instruction.op1, opdata2);
@@ -6008,7 +6008,7 @@ namespace ProtoCore.DSASM
             core.ExceptionHandlingManager.SwitchContextTo(blockId, functionIndex, classIndex, pc);
 #endif
 
-            ++core.FunctionCallDepth;
+            ++runtimeCore.FunctionCallDepth;
 
             bool explicitCall = false;
 
@@ -6046,7 +6046,7 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            --core.FunctionCallDepth;
+            --runtimeCore.FunctionCallDepth;
 
             if (!explicitCall)
             {

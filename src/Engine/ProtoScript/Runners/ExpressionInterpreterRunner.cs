@@ -97,7 +97,7 @@ namespace ProtoScript.Runners
 
             //Record the old function call depth
             //Fix IDE-523: part of error for watching non-existing member
-            int oldFunctionCallDepth = Core.FunctionCallDepth;
+            int oldFunctionCallDepth = runtimeCore.FunctionCallDepth;
 
             //Record the old start PC
             int oldStartPC = Core.startPC;
@@ -160,7 +160,7 @@ namespace ProtoScript.Runners
 
                 //Restore the function call depth
                 //Fix IDE-523: part of error for watching non-existing member
-                Core.FunctionCallDepth = oldFunctionCallDepth;
+                runtimeCore.FunctionCallDepth = oldFunctionCallDepth;
 
 
                 //Clear the watchSymbolList
@@ -179,7 +179,7 @@ namespace ProtoScript.Runners
 
                 //Restore the function call depth
                 //Fix IDE-523: part of error for watching non-existing member
-                Core.FunctionCallDepth = oldFunctionCallDepth;
+                runtimeCore.FunctionCallDepth = oldFunctionCallDepth;
 
                 //Clear the watchSymbolList
                 foreach (SymbolNode node in runtimeCore.WatchSymbolList)

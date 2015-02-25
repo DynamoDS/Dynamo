@@ -669,7 +669,6 @@ namespace ProtoCore
             Options.RunMode = InterpreterMode.kNormal;
 
             assocCodegen = null;
-            FunctionCallDepth = 0;
 
             // Default execution log is Console.Out.
             ExecutionLog = Console.Out;
@@ -739,12 +738,7 @@ namespace ProtoCore
 
         public CodeGen assocCodegen { get; set; }
 
-        // this one is to address the issue that when the execution control is in a language block
-        // which is further inside a function, the compiler feprun is false, 
-        // when inspecting value in that language block or the function, debugger will assume the function index is -1, 
-        // name look up will fail beacuse all the local variables inside 
-        // that language block and fucntion has non-zero function index 
-        public int FunctionCallDepth { get; set; }
+
         public TextWriter ExecutionLog { get; set; }
 
         public Core(Options options)

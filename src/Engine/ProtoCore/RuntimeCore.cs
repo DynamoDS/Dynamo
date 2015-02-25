@@ -86,6 +86,8 @@ namespace ProtoCore
             watchStack = new List<StackValue>();
             watchFramePointer = Constants.kInvalidIndex;
             WatchSymbolList = new List<SymbolNode>();
+
+            FunctionCallDepth = 0;
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -117,7 +119,12 @@ namespace ProtoCore
         public Dictionary<string, object> Configurations { get; set; }
         public FFIPropertyChangedMonitor FFIPropertyChangedMonitor { get; private set; }
 
-        //public Executive CurrentExecutive { get; private set; }
+        // this one is to address the issue that when the execution control is in a language block
+        // which is further inside a function, the compiler feprun is false, 
+        // when inspecting value in that language block or the function, debugger will assume the function index is -1, 
+        // name look up will fail beacuse all the local variables inside 
+        // that language block and fucntion has non-zero function index 
+        public int FunctionCallDepth { get; set; }
 
         /// <summary>
         /// The currently executing blockID

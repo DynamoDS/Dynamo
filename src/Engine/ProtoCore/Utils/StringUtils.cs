@@ -10,15 +10,13 @@ namespace ProtoCore.Utils
 {
     public static class StringUtils
     {
-        public static int CompareString(StackValue s1, StackValue s2, Core core)
+        public static int CompareString(StackValue s1, StackValue s2, RuntimeCore runtimeCore)
         {
             if (!s1.IsString || !s2.IsString)
                 return Constants.kInvalidIndex;
 
             if (s1.Equals(s2))
                 return 0;
-
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             string str1 = runtimeCore.RuntimeMemory.Heap.GetString(s1);
             string str2 = runtimeCore.RuntimeMemory.Heap.GetString(s2);
