@@ -99,12 +99,6 @@ namespace Dynamo.Models
 
         #endregion
 
-        #region internal members
-
-        private PulseMaker pulseMaker;
-
-        #endregion
-
         #region static properties
 
         /// <summary>
@@ -321,10 +315,6 @@ namespace Dynamo.Models
 
             ShutdownRequested = true;
 
-            // If there exists a PulseMaker, disable it first.
-            if (pulseMaker != null)
-                pulseMaker.Stop();
-
             OnShutdownStarted(); // Notify possible event handlers.
 
             PreShutdownCore(shutdownHost);
@@ -336,11 +326,6 @@ namespace Dynamo.Models
 
         protected virtual void PreShutdownCore(bool shutdownHost)
         {
-        }
-
-        public int EvaluationPeriod
-        {
-            get { return pulseMaker == null ? 0 : pulseMaker.TimerPeriod; }
         }
 
         protected virtual void ShutDownCore(bool shutdownHost)
@@ -613,37 +598,6 @@ namespace Dynamo.Models
                 };
             };
             CustomNodeManager.DefinitionUpdated += RegisterCustomNodeDefinitionWithEngine;
-        }
-
-        /// <summary>
-        /// Start periodic evaluation by the given amount of time. If there
-        /// is an on-going periodic evaluation, an exception will be thrown.
-        /// </summary>
-        /// <param name="milliseconds">The desired amount of time between two 
-        /// evaluations in milliseconds.</param>
-        /// 
-        public void StartPeriodicEvaluation(int milliseconds)
-        {
-            if (pulseMaker == null)
-                pulseMaker = new PulseMaker(this);
-
-            if (pulseMaker.TimerPeriod != 0)
-            {
-                throw new InvalidOperationException(
-                    "Periodic evaluation cannot be started without stopping");
-            }
-
-            pulseMaker.Start(milliseconds);
-        }
-
-        /// <summary>
-        /// Stop the on-going periodic evaluation, if there is any.
-        /// </summary>
-        /// 
-        public void StopPeriodicEvaluation()
-        {
-            if (pulseMaker != null && (pulseMaker.TimerPeriod != 0))
-                pulseMaker.Stop();
         }
 
         private void InitializeIncludedNodes()

@@ -2157,7 +2157,7 @@ namespace Dynamo.ViewModels
             if (Model == null)
                 return;
 
-            model.StartPeriodicEvaluation(HomeSpace.RunSettings.RunPeriod);
+            HomeSpace.StartPeriodicEvaluation(HomeSpace.RunSettings.RunPeriod);
         }
 
         private bool CanStartPeriodicTimer(object parameter)
@@ -2170,7 +2170,7 @@ namespace Dynamo.ViewModels
             if (Model == null)
                 return;
 
-            model.StopPeriodicEvaluation();
+            HomeSpace.StopPeriodicEvaluation();
         }
 
         private bool CanStopPeriodicTimer(object parameter)

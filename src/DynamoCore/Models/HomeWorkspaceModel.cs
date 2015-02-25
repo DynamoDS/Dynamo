@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
 
+using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
-using Dynamo.Properties;
 
 using ProtoCore.Namespace;
 
@@ -17,10 +16,15 @@ namespace Dynamo.Models
     {
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
+        private PulseMaker pulseMaker;
+        private readonly bool verboseLogging;
 
         public RunSettings RunSettings { get; private set; }
 
-        public readonly bool VerboseLogging;
+        public int EvaluationPeriod
+        {
+            get { return pulseMaker == null ? 0 : pulseMaker.TimerPeriod; }
+        }
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
@@ -52,7 +56,7 @@ namespace Dynamo.Models
 
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
-            VerboseLogging = verboseLogging;
+            this.verboseLogging = verboseLogging;
             IsTestMode = isTestMode;
             EngineController = engine;
         }
@@ -64,6 +68,13 @@ namespace Dynamo.Models
             {
                 EngineController.MessageLogged -= Log;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+            }
+
+            if (pulseMaker != null)
+            {
+                // If there exists a PulseMaker, disable it first.
+                if (pulseMaker != null)
+                    pulseMaker.Stop();
             }
         }
 
@@ -154,6 +165,39 @@ namespace Dynamo.Models
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();
+        }
+
+        /// <summary>
+        /// Start periodic evaluation by the given amount of time. If there
+        /// is an on-going periodic evaluation, an exception will be thrown.
+        /// </summary>
+        /// <param name="milliseconds">The desired amount of time between two 
+        /// evaluations in milliseconds.</param>
+        /// 
+        public void StartPeriodicEvaluation(int milliseconds)
+        {
+            if (pulseMaker == null)
+            {
+                pulseMaker = new PulseMaker(this);
+            }
+
+            if (pulseMaker.TimerPeriod != 0)
+            {
+                throw new InvalidOperationException(
+                    "Periodic evaluation cannot be started without stopping");
+            }
+
+            pulseMaker.Start(milliseconds);
+        }
+
+        /// <summary>
+        /// Stop the on-going periodic evaluation, if there is any.
+        /// </summary>
+        /// 
+        public void StopPeriodicEvaluation()
+        {
+            if (pulseMaker != null && (pulseMaker.TimerPeriod != 0))
+                pulseMaker.Stop();
         }
 
         protected override bool PopulateXmlDocument(XmlDocument document)
@@ -311,7 +355,7 @@ namespace Dynamo.Models
             // 
             EngineController.ProcessPendingCustomNodeSyncData(scheduler);
 
-            var task = new UpdateGraphAsyncTask(scheduler, VerboseLogging);
+            var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
             if (task.Initialize(EngineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;

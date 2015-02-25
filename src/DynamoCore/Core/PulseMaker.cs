@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 
-using Dynamo.Core.Threading;
 using Dynamo.Models;
 
 namespace Dynamo.Core
@@ -12,13 +11,10 @@ namespace Dynamo.Core
         #region Class Data Members and Properties
 
         private readonly Timer internalTimer;
-        private readonly DynamoModel dynamoModel;
-
-        // PulseMaker internal state management objects.
         private readonly object stateMutex;
         private bool evaluationInProgress = false;
         private bool evaluationRequestPending = false;
-
+        private HomeWorkspaceModel workspace;
         internal int TimerPeriod { get; private set; }
 
         #endregion
@@ -31,11 +27,10 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="dynamoModel">The owning DynamoModel object.</param>
         /// 
-        internal PulseMaker(DynamoModel dynamoModel)
+        internal PulseMaker(HomeWorkspaceModel workspace)
         {
-            this.dynamoModel = dynamoModel;
-            this.dynamoModel.EvaluationCompleted += OnRunExpressionCompleted;
-
+            workspace.EvaluationCompleted += OnRunExpressionCompleted;
+            this.workspace = workspace;
             stateMutex = new object();
             internalTimer = new Timer(OnTimerTicked);
         }
@@ -128,14 +123,6 @@ namespace Dynamo.Core
 
             DynamoModel.OnRequestDispatcherBeginInvoke(() =>
             {
-                var workspace = dynamoModel.CurrentWorkspace;
-                var homeWorkspace = workspace as HomeWorkspaceModel;
-                if (homeWorkspace == null) // We only evaluate home workspace.
-                {
-                    evaluationInProgress = false;
-                    return;
-                }
-
                 // Dirty selective nodes so they get included for evaluation.
                 var nodesToUpdate = workspace.Nodes.Where(n => n.EnablePeriodicUpdate);
                 foreach (var nodeToUpdate in nodesToUpdate)
@@ -143,7 +130,7 @@ namespace Dynamo.Core
                     nodeToUpdate.MarkNodeAsModified(true);
                 }
 
-                homeWorkspace.OnNodesModified();
+                workspace.OnNodesModified();
             });
         }
 
