@@ -102,7 +102,7 @@ namespace ProtoCore.DSASM
             this.runtimeCore = core.__TempCoreHostForRefactoring;
             enableLogging = runtimeCore.Options.Verbose;
 
-            exe = core.DSExecutable;
+            exe = runtimeCore.DSExecutable;
             istream = null;
 
             fepRun = isFep;
@@ -405,7 +405,7 @@ namespace ProtoCore.DSASM
 
             if (runtimeCore.Options.RunMode == InterpreterMode.kNormal)
             {
-                exe = core.DSExecutable;
+                exe = runtimeCore.DSExecutable;
             }
             else if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
             {
@@ -458,7 +458,7 @@ namespace ProtoCore.DSASM
 
             if (runtimeCore.Options.RunMode == InterpreterMode.kNormal)
             {
-                exe = core.DSExecutable;
+                exe = runtimeCore.DSExecutable;
             }
             else if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
             {
@@ -2553,7 +2553,7 @@ namespace ProtoCore.DSASM
             // for function call with replication, gc is triggered to handle the parameter and return value at FunctionEndPoint
             // gc requirs exe to be not null but at that point, Execute has not been called
             //Validity.Assert(exe == null);
-            exe = core.DSExecutable;
+            exe = runtimeCore.DSExecutable;
             executingBlock = exeblock;
 
             runtimeCore.DebugProps.CurrentBlockId = exeblock;
