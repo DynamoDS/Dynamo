@@ -437,6 +437,18 @@ namespace Dynamo.Models
                 RaisePropertyChanged("RunEnabled");
             }
         }
+
+        private bool showRunPreview = true;
+
+        public bool ShowRunPreview
+        {
+            get { return showRunPreview; }
+            set
+            {
+                showRunPreview = value;
+                RaisePropertyChanged("ShowRunPreview");
+            }
+        }
         #endregion
 
         #region constructors
@@ -597,19 +609,13 @@ namespace Dynamo.Models
         private void RegisterNode(NodeModel node)
         {
             node.NodeModified += OnNodesModified;
-            node.ConnectorAdded += OnConnectorAdded;
-            SetShowExecutionPreview(node);
+            node.ConnectorAdded += OnConnectorAdded;          
         }
 
         /// <summary>
         ///     Indicates that this workspace's DesignScript AST has been updated.
         /// </summary>
         public virtual void OnNodesModified()
-        {
-            
-        }
-
-        public virtual void SetShowExecutionPreview(NodeModel node)
         {
             
         }

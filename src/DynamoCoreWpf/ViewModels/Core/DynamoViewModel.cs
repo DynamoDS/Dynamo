@@ -102,15 +102,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                ShowRunPreview = !HomeSpace.DynamicRunEnabled;
                 return HomeSpace.DynamicRunEnabled; //selecting debug now toggles this on/off
             }
             set
             {
-                HomeSpace.DynamicRunEnabled = value;
-                //Uncheck the Show Run Preview in settings
-                if (value)
-                    ShowRunPreview = false;
-
+                HomeSpace.DynamicRunEnabled = value;               
                 RaisePropertyChanged("DynamicRunEnabled");
             }
         }
@@ -444,10 +441,10 @@ namespace Dynamo.ViewModels
 
         public bool ShowRunPreview
         {
-            get { return HomeSpace.ShowRunPreview; }
+            get { return CurrentSpace.ShowRunPreview; }
             set
             {
-                HomeSpace.ShowRunPreview = value;               
+                CurrentSpace.ShowRunPreview = value;               
                 RaisePropertyChanged("ShowRunPreview");
             }
         }
@@ -1491,8 +1488,7 @@ namespace Dynamo.ViewModels
                 model.ClearCurrentWorkspace();
 
                 // Update the ViewModel property to reflect change in WorkspaceModel
-                RaisePropertyChanged("DynamicRunEnabled");
-                RaisePropertyChanged("ShowRunPreview");
+                RaisePropertyChanged("DynamicRunEnabled");               
                 return true;
             }
 

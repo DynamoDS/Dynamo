@@ -267,6 +267,7 @@ namespace Dynamo.ViewModels
         public bool ShowExecutionPreview
         {
             get { return NodeModel.ShowExecutionPreview; }
+            set { NodeModel.ShowExecutionPreview = value; }
         }
 
         public PreviewState PreviewState
@@ -285,6 +286,12 @@ namespace Dynamo.ViewModels
 
                 return PreviewState.None;
             }
+        }
+
+        public bool IsNodeAddedRecently
+        {
+            get { return NodeModel.IsNodeAddedRecently; }
+            set { NodeModel.IsNodeAddedRecently = value; }
         }
 
         #endregion
@@ -325,7 +332,7 @@ namespace Dynamo.ViewModels
         {
             this.WorkspaceViewModel = workspaceViewModel;
             this.DynamoViewModel = workspaceViewModel.DynamoViewModel;
-
+           
             nodeLogic = logic;
             
             //respond to collection changed events to sadd
@@ -351,6 +358,8 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.EngineController.AstBuilt += EngineController_AstBuilt;
             }
+            ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
+            IsNodeAddedRecently = true;
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)

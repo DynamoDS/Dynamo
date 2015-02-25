@@ -158,12 +158,7 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
             OnDefinitionUpdated();
         }
-        
-        public override void SetShowExecutionPreview(NodeModel node)
-        {
-            node.ShowExecutionPreview = false;
-        }
-
+       
         public event Action InfoChanged;
         protected virtual void OnInfoChanged()
         {

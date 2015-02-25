@@ -19,9 +19,7 @@ namespace Dynamo.Models
         private bool graphExecuted;
         
         public bool DynamicRunEnabled;
-
-        public bool ShowRunPreview = true;
-
+       
         public readonly bool VerboseLogging;
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
@@ -45,8 +43,7 @@ namespace Dynamo.Models
         {
             RunEnabled = true;
 #if DEBUG
-            DynamicRunEnabled = true;
-            ShowRunPreview = false;
+            DynamicRunEnabled = true;          
 #else
             DynamicRunEnabled = false;
 #endif
@@ -122,12 +119,10 @@ namespace Dynamo.Models
 
             // Reset Run Automatic option to false on resetting the workspace
 #if DEBUG
-            DynamicRunEnabled = true;
-            ShowRunPreview = false;
+            DynamicRunEnabled = true;          
 
 #else
-            DynamicRunEnabled = false;
-           ShowRunPreview = true;
+            DynamicRunEnabled = false;          
 #endif
 
         }
@@ -167,12 +162,6 @@ namespace Dynamo.Models
             base.Clear();
             PreloadedTraceData = null;
             RunEnabled = true;
-        }
-
-        public override void SetShowExecutionPreview(NodeModel node)
-        {
-            node.ShowExecutionPreview = ShowRunPreview;
-            node.IsNodeAddedRecently = true;
         }
 
         #region evaluation
@@ -336,7 +325,7 @@ namespace Dynamo.Models
         internal void GetExecutingNodes()
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
-            bool showRunPreview = ShowRunPreview;           
+            bool showRunPreview = ShowRunPreview;               
             //The Graph is executed and Show node execution is checked on the Debug menu
             if (graphExecuted && showRunPreview)
             {
