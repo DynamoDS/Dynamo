@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using ProtoCore.AST;
 
 namespace Dynamo.Core
 {
@@ -12,6 +13,7 @@ namespace Dynamo.Core
 
     class PathManager : IPathManager
     {
+        private readonly HashSet<string> nodeDirectories;
         private readonly string dynamoCoreDir; // DynamoCore.dll directory.
 
         internal PathManager()
@@ -26,11 +28,14 @@ namespace Dynamo.Core
                 throw new InvalidOperationException(
                     "PathManager starts off within an invalid assembly.");
             }
+
+            nodeDirectories = new HashSet<string>();
+            nodeDirectories.Add(Path.Combine(dynamoCoreDir, "nodes"));
         }
 
         public IEnumerable<string> NodeDirectories
         {
-            get { throw new System.NotImplementedException(); }
+            get { return nodeDirectories; }
         }
     }
 }

@@ -48,11 +48,6 @@ namespace DynamoUtilities
         public string Packages { get; private set; }
 
         /// <summary>
-        /// All 'nodes' folders.
-        /// </summary>
-        public HashSet<string> Nodes { get; private set; }
-
-        /// <summary>
         /// Libraries to be preloaded by library services.
         /// </summary>
         public IEnumerable<string> PreloadLibraries
@@ -152,20 +147,11 @@ namespace DynamoUtilities
                     CommonSamples = neturalCommonSamples;
             }
 
-            if (Nodes == null)
-            {
-                Nodes = new HashSet<string>();
-            }
-
-            // Only register the core nodes directory
-            Nodes.Add(Path.Combine(MainExecPath, "nodes"));
-
 #if DEBUG
             var sb = new StringBuilder();
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(String.Format("Packages: {0}", Packages));
-            Nodes.ToList().ForEach(n=>sb.AppendLine(String.Format("Nodes: {0}", n)));
             
             Debug.WriteLine(sb);
 #endif
