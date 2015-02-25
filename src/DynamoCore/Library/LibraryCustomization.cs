@@ -87,6 +87,14 @@ namespace Dynamo.DSEngine
                 var fn = Path.GetFileNameWithoutExtension(assemblyLocation);
                 resourceAssemblyPath = fn + Configurations.IconResourcesDLL;
 
+                if (DynamoPathManager.Instance.ResolveLibraryPath(ref resourceAssemblyPath))
+                    return true;
+
+                // If customization dll wasn't found among common paths,
+                // try to search it at the same path as dll's.
+                // This case is made just for 3 party dll.
+                var dirName = Path.GetDirectoryName(assemblyLocation);
+                resourceAssemblyPath = Path.Combine(dirName, fn + Configurations.IconResourcesDLL);
                 return DynamoPathManager.Instance.ResolveLibraryPath(ref resourceAssemblyPath);
             }
             catch
