@@ -897,34 +897,6 @@ namespace ProtoCore
             return false;
         }
 
-        public ProcedureNode GetFirstVisibleProcedure(string name, List<Type> argTypeList, CodeBlock codeblock)
-        {
-            Validity.Assert(null != codeblock);
-            if (null == codeblock)
-            {
-                return null;
-            }
-
-            CodeBlock searchBlock = codeblock;
-            while (null != searchBlock)
-            {
-                if (null == searchBlock.procedureTable)
-                {
-                    searchBlock = searchBlock.parent;
-                    continue;
-                }
-
-                // The class table is passed just to check for coercion values
-                int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
-                if (Constants.kInvalidIndex != procIndex)
-                {
-                    return searchBlock.procedureTable.procList[procIndex];
-                }
-                searchBlock = searchBlock.parent;
-            }
-            return null;
-        }
-
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)
         {
             if (CodeBlockType.kLanguage == codeBlock.blockType

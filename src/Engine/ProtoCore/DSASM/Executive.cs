@@ -3925,7 +3925,7 @@ namespace ProtoCore.DSASM
                     {
                         procName = exe.procedureTable[blockId].procList[procId].name;
                         CodeBlock codeblock = ProtoCore.Utils.CoreUtils.GetCodeBlock(exe.CodeBlocks, blockId);
-                        procNode = core.GetFirstVisibleProcedure(procName, arglist, codeblock);
+                        procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeblock);
                     }
                     else
                     {
