@@ -692,7 +692,6 @@ namespace ProtoCore
             GraphNodeCallList = new List<GraphNode>();
 
             newEntryPoint = Constants.kInvalidIndex;
-            cancellationPending = false;
         }
 
         // The unique subscript for SSA temporaries
@@ -712,14 +711,6 @@ namespace ProtoCore
         private int tempVarId = 0;
         private int tempLanguageId = 0;
 
-        private bool cancellationPending = false;
-        public bool CancellationPending
-        {
-            get
-            {
-                return cancellationPending;
-            }
-        }
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AssociativeNode AssocNode { get; set; }
@@ -1172,16 +1163,6 @@ namespace ProtoCore
             SSASubscript_GUID = guid;
             SSASubscript = subscript;
         }
-
-        public void RequestCancellation()
-        {
-            if (cancellationPending)
-            {
-                var message = "Cancellation cannot be requested twice";
-                throw new InvalidOperationException(message);
-            }
-
-            cancellationPending = true;
-        }
+       
     }
 }

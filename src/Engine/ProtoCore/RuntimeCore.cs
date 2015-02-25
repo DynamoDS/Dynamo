@@ -88,6 +88,7 @@ namespace ProtoCore
             WatchSymbolList = new List<SymbolNode>();
 
             FunctionCallDepth = 0;
+            cancellationPending = false;
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -139,6 +140,15 @@ namespace ProtoCore
         // Cached replication guides for the current call. 
         // TODO Jun: Store this in the dynamic table node
         public List<List<ReplicationGuide>> ReplicationGuides;
+
+        private bool cancellationPending = false;
+        public bool CancellationPending
+        {
+            get
+            {
+                return cancellationPending;
+            }
+        }
 
 #region DEBUGGER_PROPERTIES
         public DebugProperties DebugProps { get; set; }
@@ -217,5 +227,15 @@ namespace ProtoCore
             return false;
         }
 
+        public void RequestCancellation()
+        {
+            if (cancellationPending)
+            {
+                var message = "Cancellation cannot be requested twice";
+                throw new InvalidOperationException(message);
+            }
+
+            cancellationPending = true;
+        }
     }
 }

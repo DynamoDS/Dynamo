@@ -2870,7 +2870,7 @@ namespace ProtoCore.DSASM
 
             while (!terminate)
             {
-                if(core.CancellationPending)
+                if(runtimeCore.CancellationPending)
                 {
                     throw new ExecutionCancelledException();
                 }

@@ -1680,7 +1680,7 @@ namespace ProtoCore
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
-            if(core.CancellationPending)
+            if (runtimeCore.CancellationPending)
             {
                 throw new ExecutionCancelledException();               
             }
