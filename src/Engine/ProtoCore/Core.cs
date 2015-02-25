@@ -1009,15 +1009,13 @@ namespace ProtoCore
         /// </summary>
         private void SetupRuntimeCore()
         {
-            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
             DSExecutable.RuntimeData = GenerateRuntimeData();
+            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
         }
 
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
-
-            SetupRuntimeCore();
 
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
@@ -1064,6 +1062,7 @@ namespace ProtoCore
                 DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
             }
             GenerateExprExe();
+            SetupRuntimeCore();
         }
 
 

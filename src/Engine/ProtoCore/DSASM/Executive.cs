@@ -409,7 +409,7 @@ namespace ProtoCore.DSASM
             }
             else if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
             {
-                exe = core.ExprInterpreterExe;
+                exe = runtimeCore.ExprInterpreterExe;
             }
             else
             {
@@ -462,7 +462,7 @@ namespace ProtoCore.DSASM
             }
             else if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter)
             {
-                exe = core.ExprInterpreterExe;
+                exe = runtimeCore.ExprInterpreterExe;
             }
             else
             {

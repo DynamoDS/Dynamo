@@ -88,17 +88,19 @@ namespace ProtoCore
             WatchSymbolList = new List<SymbolNode>();
         }
 
-        public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
+        public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
         {
             this.Context = context;
             this.DSExecutable = executable;
             this.Options = runtimeOptions;
             this.DebugProps = debugProps;
+            this.ExprInterpreterExe = exprInterpreterExe;
         }
 
 
         // Execution properties
         public Executable DSExecutable { get; private set; }
+        public Executable ExprInterpreterExe { get; private set; }
         public Options Options { get; private set; }
         public RuntimeStatus RuntimeStatus { get; set; }
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
