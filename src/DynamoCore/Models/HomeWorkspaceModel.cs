@@ -21,11 +21,6 @@ namespace Dynamo.Models
 
         public RunSettings RunSettings { get; private set; }
 
-        public int EvaluationPeriod
-        {
-            get { return pulseMaker == null ? 0 : pulseMaker.TimerPeriod; }
-        }
-
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
