@@ -84,7 +84,7 @@ namespace ProtoCore.Lang
                 thisPtr = args[0];
                 if (thisPtr.IsArray)
                 {
-                    isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, core);
+                    isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, runtimeCore);
                 }
                 else
                 {

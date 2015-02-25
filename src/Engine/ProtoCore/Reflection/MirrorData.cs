@@ -85,7 +85,7 @@ namespace ProtoCore
                         values.Add(sv);
                         break;
                     case ProtoCore.DSASM.AddressType.ArrayPointer:
-                        var stackValues = ArrayUtils.GetValues(sv, core);
+                        var stackValues = ArrayUtils.GetValues(sv, core.__TempCoreHostForRefactoring);
                         foreach (var item in stackValues)
                             GetPointersRecursively(item, values);
 
@@ -146,7 +146,7 @@ namespace ProtoCore
                 if (!this.IsCollection)
                     return null;
 
-                return ArrayUtils.GetValues(svData, core).Select(x => new MirrorData(this.core, x)).ToList();
+                return ArrayUtils.GetValues(svData, core.__TempCoreHostForRefactoring).Select(x => new MirrorData(this.core, x)).ToList();
             }
 
             /// <summary>
@@ -275,7 +275,7 @@ namespace ProtoCore
                 if (null == data)
                     return false;
 
-                return StackUtils.CompareStackValues(this.svData, data.svData, this.core, data.core);
+                return StackUtils.CompareStackValues(this.svData, data.svData, this.core.__TempCoreHostForRefactoring, data.core.__TempCoreHostForRefactoring);
             }
         }
     }

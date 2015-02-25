@@ -189,6 +189,7 @@ namespace ProtoCore
 
         public static bool CheckInvalidArrayCoersion(FunctionEndPoint fep, List<StackValue> reducedSVs, ClassTable classTable, Core core, bool allowArrayPromotion)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             for (int i = 0; i < reducedSVs.Count; i++)
             {
                 Type typ = fep.FormalParams[i];
@@ -205,20 +206,20 @@ namespace ProtoCore
 
                 if (!allowArrayPromotion)
                 {
-                    if (typ.rank != ArrayUtils.GetMaxRankForArray(reducedSVs[i], core) &&
+                    if (typ.rank != ArrayUtils.GetMaxRankForArray(reducedSVs[i], runtimeCore) &&
                         typ.rank != DSASM.Constants.kArbitraryRank)
                         return true; //Invalid co-ercsion
                 }
                 else
                 {
-                    if (typ.rank < ArrayUtils.GetMaxRankForArray(reducedSVs[i], core) &&
+                    if (typ.rank < ArrayUtils.GetMaxRankForArray(reducedSVs[i], runtimeCore) &&
                         typ.rank != DSASM.Constants.kArbitraryRank)
                         return true; //Invalid co-ercsion
                     
                 }
 
 
-                Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(reducedSVs[i], core);
+                Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(reducedSVs[i], runtimeCore);
 
                 ClassNode cn = null;
 
@@ -236,7 +237,7 @@ namespace ProtoCore
                 }
                 else if (arrayTypes.Count > 1)
                 {
-                    ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(reducedSVs[i], core);
+                    ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(reducedSVs[i], runtimeCore);
 
                     if (commonBaseType == null)
                         throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported("Array with no common superclass not yet supported: {0C644179-14F5-4172-8EF8-A2F3739901B2}");

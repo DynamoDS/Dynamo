@@ -1394,7 +1394,7 @@ namespace ProtoCore
                     StackValue[] subParameters = null;
                     if (formalParameters[repIndex].IsArray)
                     {
-                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], core).ToArray();
+                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], runtimeCore).ToArray();
                     }
                     else
                     {
@@ -1519,7 +1519,7 @@ namespace ProtoCore
                 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], core).ToArray();
+                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], runtimeCore).ToArray();
                     retSize = parameters.Length;
                 }
                 else
@@ -1850,6 +1850,7 @@ namespace ProtoCore
             Validity.Assert(procNode != null,
                             "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
 
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             //Now cast ret into the return type
             Type retType = procNode.returntype;
@@ -1862,7 +1863,7 @@ namespace ProtoCore
                 }
                 else
                 {
-                    StackValue coercedRet = TypeSystem.Coerce(ret, procNode.returntype, core);
+                    StackValue coercedRet = TypeSystem.Coerce(ret, procNode.returntype, runtimeCore);
                     return coercedRet;
                 }
             }
@@ -1874,7 +1875,7 @@ namespace ProtoCore
                 !ret.IsArray &&
                 retType.IsIndexable)
             {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
+                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
 
@@ -1885,7 +1886,7 @@ namespace ProtoCore
 
             if (ret.IsArray && procNode.returntype.IsIndexable)
             {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
+                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
 
@@ -1900,7 +1901,7 @@ namespace ProtoCore
             }
             else
             {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
+                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
         }

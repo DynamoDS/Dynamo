@@ -160,21 +160,20 @@ namespace ProtoCore.DSASM
 
     public class StackValueComparer : IEqualityComparer<StackValue>
     {
-        private Core core;
+        private RuntimeCore runtimeCore;
 
-        public StackValueComparer(Core core)
+        public StackValueComparer(RuntimeCore runtimeCore)
         {
-            this.core = core;
+            this.runtimeCore = runtimeCore;
         }
 
         public bool Equals(StackValue x, StackValue y)
         {
-            return StackUtils.CompareStackValues(x, y, core, core);
+            return StackUtils.CompareStackValues(x, y, runtimeCore, runtimeCore);
         }
 
         public int GetHashCode(StackValue value)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (value.IsString)
             {
                 string s = runtimeCore.Heap.GetString(value);

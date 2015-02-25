@@ -1068,7 +1068,7 @@ namespace ProtoCore.DSASM
             bool isValidThisPointer = true;
             if (lhs.IsArray)
             {
-                isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
+                isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, runtimeCore);
                 arguments.Insert(0, lhs);
             }
 
@@ -3189,7 +3189,7 @@ namespace ProtoCore.DSASM
 
                 }
 
-                ret = ArrayUtils.SetValueForIndices(value, dimlist, data, t, core);
+                ret = ArrayUtils.SetValueForIndices(value, dimlist, data, t, runtimeCore);
             }
             else if (value.IsString)
             {
@@ -3209,9 +3209,9 @@ namespace ProtoCore.DSASM
                     rmem.SetSymbolValue(symbolnode, array);
                     if (!value.IsNull)
                     {
-                        ArrayUtils.SetValueForIndex(array, 0, value, core);
+                        ArrayUtils.SetValueForIndex(array, 0, value, runtimeCore);
                     }
-                    ret = ArrayUtils.SetValueForIndices(array, dimlist, data, t, core);
+                    ret = ArrayUtils.SetValueForIndices(array, dimlist, data, t, runtimeCore);
                 }
             }
 
@@ -3531,7 +3531,7 @@ namespace ProtoCore.DSASM
                 // TODO Jun: This means that variables are coerced to 32-bit when used as an array index
                 try
                 {
-                    StackValue array = rmem.Heap.GetHeapElement(svPtr).GetValue(dimList[n], core);
+                    StackValue array = rmem.Heap.GetHeapElement(svPtr).GetValue(dimList[n], runtimeCore);
                     if (!array.IsArray)
                     {
                         runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
@@ -3548,7 +3548,7 @@ namespace ProtoCore.DSASM
             StackValue sv;
             try
             {
-                sv = rmem.Heap.GetHeapElement(svPtr).GetValue(dimList[dimensions - 1], core);
+                sv = rmem.Heap.GetHeapElement(svPtr).GetValue(dimList[dimensions - 1], runtimeCore);
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -3565,7 +3565,7 @@ namespace ProtoCore.DSASM
 
         public StackValue GetIndexedArray(StackValue array, List<StackValue> indices)
         {
-            return ArrayUtils.GetValueFromIndices(array, indices, core);
+            return ArrayUtils.GetValueFromIndices(array, indices, runtimeCore);
         }
 
         public StackValue GetIndexedArrayW(int dimensions, int blockId, StackValue op1, StackValue op2)
@@ -3770,7 +3770,7 @@ namespace ProtoCore.DSASM
             {
                 arglist = new List<Type>();
                 StackValue argArraySv = rmem.Pop();
-                for (int i = 0; i < ArrayUtils.GetElementSize(argArraySv, core); ++i)
+                for (int i = 0; i < ArrayUtils.GetElementSize(argArraySv, runtimeCore); ++i)
                 {
                     StackValue sv = rmem.Heap.GetHeapElement(argArraySv).Stack[i];
                     argSvList.Add(sv); //actual arguments
@@ -4646,7 +4646,7 @@ namespace ProtoCore.DSASM
             StackValue key = StackValue.Null;
             if (svArrayToIterate.IsArray)
             {
-                HeapElement he = ArrayUtils.GetHeapElement(svArrayToIterate, core);
+                HeapElement he = ArrayUtils.GetHeapElement(svArrayToIterate, runtimeCore);
                 Validity.Assert(he != null);
                 bool arrayHasElement = he.VisibleItems.Any();
                 bool dictionaryHasElement = he.Dict != null && he.Dict.Count > 0;
@@ -4739,7 +4739,7 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
+                    coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
                 }
 
                 tempSvData = coercedValue;
@@ -4875,7 +4875,7 @@ namespace ProtoCore.DSASM
                 runtimeVerify(instruction.op2.IsClassIndex);
 
                 svData = rmem.Pop();
-                StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
+                StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
                 PopToW(blockId, instruction.op1, instruction.op2, coercedValue);
             }
             else
@@ -4962,7 +4962,7 @@ namespace ProtoCore.DSASM
             {
                 if (0 == dimensions)
                 {
-                    StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, core);
+                    StackValue coercedValue = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
                     tempSvData = coercedValue;
                     EX = PopTo(blockId, instruction.op1, instruction.op2, coercedValue);
                 }
@@ -4994,7 +4994,7 @@ namespace ProtoCore.DSASM
             {
                 if (dimensions == 0)
                 {
-                    StackValue coercedType = TypeSystem.Coerce(svData, staticType, rank, core);
+                    StackValue coercedType = TypeSystem.Coerce(svData, staticType, rank, runtimeCore);
                     svData = coercedType;
                 }
                 else
@@ -5050,7 +5050,7 @@ namespace ProtoCore.DSASM
             }
             else if (svProperty.IsArray && (dimensions > 0))
             {
-                EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, core);
+                EX = ArrayUtils.SetValueForIndices(svProperty, dimList, svData, targetType, runtimeCore);
             }
             else // This property has NOT been allocated
             {
@@ -5147,7 +5147,7 @@ namespace ProtoCore.DSASM
                 {
                     for (int d = listInfo[n].Dimlist.Length - 1; d >= 0; --d)
                     {
-                        finalPointer = listInfo[n].Sv = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[n].Dimlist[d], core);
+                        finalPointer = listInfo[n].Sv = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[n].Dimlist[d], runtimeCore);
                     }
                 }
             }
@@ -5197,8 +5197,8 @@ namespace ProtoCore.DSASM
             {
                 finalPointer = tryPointer;
                 for (int d = listInfo[0].Dimlist.Length - 1; d >= 1; --d)
-                    finalPointer = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[d], core);
-                tryPointer = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], core);
+                    finalPointer = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[d], runtimeCore);
+                tryPointer = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], runtimeCore);
             }
 
             if (tryPointer.IsNull)
@@ -5224,7 +5224,7 @@ namespace ProtoCore.DSASM
 
                 // Setting a pointer
                 int idx = (int)listInfo[0].Sv.opdata;
-                DX = ArrayUtils.GetValueFromIndex(finalPointer, idx, core);
+                DX = ArrayUtils.GetValueFromIndex(finalPointer, idx, runtimeCore);
                 rmem.Heap.GetHeapElement(finalPointer).Stack[listInfo[0].Sv.opdata] = data;
             }
             else
@@ -5234,7 +5234,7 @@ namespace ProtoCore.DSASM
                 runtimeVerify(finalPointer.IsArray);
 
                 // Setting an array
-                DX = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], core);
+                DX = rmem.Heap.GetHeapElement(finalPointer).GetValue(listInfo[0].Dimlist[0], runtimeCore);
                 rmem.Heap.GetHeapElement(finalPointer).SetValue(listInfo[0].Dimlist[0], data);
             }
 
@@ -5304,7 +5304,7 @@ namespace ProtoCore.DSASM
             {
                 if (opdata1.opdata == 1)
                 {
-                    opdata2 = ArrayUtils.GetNextKey(opdata2, core);
+                    opdata2 = ArrayUtils.GetNextKey(opdata2, runtimeCore);
                 }
                 else
                 {
@@ -5433,8 +5433,8 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            opdata1 = opdata1.ToBoolean(core);
-            opdata2 = opdata2.ToBoolean(core);
+            opdata1 = opdata1.ToBoolean(runtimeCore);
+            opdata2 = opdata2.ToBoolean(runtimeCore);
             if (opdata1.IsNull || opdata2.IsNull)
             {
                 opdata2 = StackValue.Null;
@@ -5453,8 +5453,8 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            opdata1 = opdata1.ToBoolean(core);
-            opdata2 = opdata2.ToBoolean(core);
+            opdata1 = opdata1.ToBoolean(runtimeCore);
+            opdata2 = opdata2.ToBoolean(runtimeCore);
             if (opdata1.IsNull || opdata2.IsNull)
             {
                 opdata2 = StackValue.Null;
@@ -5473,7 +5473,7 @@ namespace ProtoCore.DSASM
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
 
-            opdata1 = opdata1.ToBoolean(core);
+            opdata1 = opdata1.ToBoolean(runtimeCore);
             if (!opdata1.IsNull)
             {
                 opdata1 = StackValue.BuildBoolean(opdata1.opdata == 0L);
@@ -5491,8 +5491,8 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsBoolean || opdata2.IsBoolean)
             {
-                opdata1 = opdata1.ToBoolean(core);
-                opdata2 = opdata2.ToBoolean(core);
+                opdata1 = opdata1.ToBoolean(runtimeCore);
+                opdata2 = opdata2.ToBoolean(runtimeCore);
                 if (opdata1.IsNull || opdata2.IsNull) 
                 {
                     opdata2 = StackValue.Null;
@@ -5541,8 +5541,8 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsBoolean || opdata2.IsBoolean)
             {
-                opdata1 = opdata1.ToBoolean(core);
-                opdata2 = opdata2.ToBoolean(core);
+                opdata1 = opdata1.ToBoolean(runtimeCore);
+                opdata2 = opdata2.ToBoolean(runtimeCore);
                 opdata2 = StackValue.BuildBoolean(opdata1.opdata != opdata2.opdata);
             }
             else if (opdata1.IsNumeric && opdata2.IsNumeric)
