@@ -1132,9 +1132,9 @@ namespace Dynamo.Models
         {
             #region Public Class Methods
 
-            public SwitchTabCommand(int tabIndex)
+            public SwitchTabCommand(int modelIndex)
             {
-                TabIndex = tabIndex;
+                WorkspaceModelIndex = modelIndex;
             }
 
             internal static SwitchTabCommand DeserializeCore(XmlElement element)
@@ -1147,7 +1147,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal int TabIndex { get; private set; }
+            internal int WorkspaceModelIndex { get; private set; }
 
             #endregion
 
@@ -1155,13 +1155,13 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoModel.SwitchTabImpl(this);
+                dynamoModel.SwitchWorkspaceImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                helper.SetAttribute("TabIndex", TabIndex);
+                helper.SetAttribute("TabIndex", WorkspaceModelIndex);
             }
 
             #endregion
