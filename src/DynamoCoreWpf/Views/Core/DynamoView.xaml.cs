@@ -49,11 +49,11 @@ namespace Dynamo.Controls
 
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
-            // Revit2015+ has disabled hardware acceleration for WPF to
-            // avoid issues with rendering certain elements in the Revit UI. 
-            // Here we get it back, by setting the ProcessRenderMode to Default,
-            // signifying that we want to use hardware rendering if it's 
-            // available.
+            // The user's choice to enable hardware acceleration is now saved in
+            // the Dynamo preferences. It is set to true by default. 
+            // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
+            //This preference is not exposed in the UI and can be used to debug hardware issues only
+            // by modifying the preferences xml.
             RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ? 
                 RenderMode.Default : RenderMode.SoftwareOnly;
             
