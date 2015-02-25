@@ -19,7 +19,7 @@ using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificati
 
 namespace Dynamo.Models
 {
-    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable
+    public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, INodeRepository
     {
 
         public const double ZOOM_MAXIMUM = 4.0;
@@ -58,6 +58,7 @@ namespace Dynamo.Models
         private bool hasUnsavedChanges;
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
+        private readonly ObservableCollection<AnnotationModel> annotations;
         private readonly UndoRedoRecorder undoRecorder;
         private Guid guid;
 
@@ -275,6 +276,9 @@ namespace Dynamo.Models
         ///     All of the notes currently in the workspace.
         /// </summary>
         public ObservableCollection<NoteModel> Notes { get { return notes; } }
+
+        public ObservableCollection<AnnotationModel> Annotations { get { return annotations; } }
+
         /// <summary>
         ///     Path to the file this workspace is associated with. If null or empty, this workspace has never been saved.
         /// </summary>
@@ -441,7 +445,7 @@ namespace Dynamo.Models
         #region constructors
 
         protected WorkspaceModel(
-            string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
+            string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, IEnumerable<AnnotationModel> a,
             double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
         {
             guid = Guid.NewGuid();
@@ -450,6 +454,7 @@ namespace Dynamo.Models
 
             nodes = new ObservableCollection<NodeModel>(e);
             notes = new ObservableCollection<NoteModel>(n);
+            annotations = new ObservableCollection<AnnotationModel>(a);
             X = x;
             Y = y;
             FileName = fileName;
@@ -515,6 +520,7 @@ namespace Dynamo.Models
 
             Nodes.Clear();
             Notes.Clear();
+            Annotations.Clear();
 
             ClearUndoRecorder();
             ResetWorkspace();
@@ -645,6 +651,21 @@ namespace Dynamo.Models
 
             AddNote(noteModel, centerNote);
             return noteModel;
+        }
+
+        public AnnotationModel AddAnnotation(double xPos, double yPos, string text, Guid id)
+        {
+            var selectedNodes = DynamoSelection.Instance.Selection.Where(n => n is NodeModel)
+                .Select(n => (n as NodeModel));
+
+            var annotationModel = new AnnotationModel(selectedNodes) {GUID = id};
+
+            var args = new ModelEventArgs(annotationModel, true);
+            OnRequestNodeCentered(this, args);
+
+            Annotations.Add(annotationModel);
+            HasUnsavedChanges = true;
+            return annotationModel;
         }
 
         /// <summary>
@@ -799,6 +820,25 @@ namespace Dynamo.Models
                     note.SetAttribute("text", n.Text);
                     note.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
                     note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
+                }
+
+                //save the annotation
+                var annotationList = xmlDoc.CreateElement("Annotations");
+                root.AppendChild(annotationList);
+                foreach (var n in annotations)
+                {
+                    var annotation = xmlDoc.CreateElement(n.GetType().ToString());
+                    annotationList.AppendChild(annotation);
+                    annotation.SetAttribute("guid", n.GUID.ToString());
+                    annotation.SetAttribute("text", n.AnnotationText);
+                    annotation.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("left", n.Left.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("top", n.Top.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("width", this.Width.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("height", this.Height.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("annotationColor", (n.BackGroundColor == null ? "" : n.BackGroundColor.ToString()));
+                    annotation.SetAttribute("NodeModelGUIDs", string.Join(",", n.SelectedNodes.Select(z => z.GUID)));
                 }
 
                 return true;
@@ -1127,6 +1167,11 @@ namespace Dynamo.Models
                         undoRecorder.RecordDeletionForUndo(model);
                         Notes.Remove(model as NoteModel);
                     }
+                    else if (model is AnnotationModel)
+                    {
+                        undoRecorder.RecordDeletionForUndo(model);
+                        Annotations.Remove(model as AnnotationModel);
+                    }
                     else if (model is NodeModel)
                     {
                         // Just to make sure we don't end up deleting nodes from 
@@ -1186,6 +1231,8 @@ namespace Dynamo.Models
 
             if (model is NoteModel)
                 Notes.Remove(model as NoteModel);
+            else if (model is AnnotationModel)
+                Annotations.Remove(model as AnnotationModel);
             else if (model is ConnectorModel)
             {
                 var connector = model as ConnectorModel;
@@ -1249,6 +1296,11 @@ namespace Dynamo.Models
                 var noteModel = NodeGraph.LoadNoteFromXml(modelData);
                 Notes.Add(noteModel);
             }
+            else if (typeName.StartsWith("Dynamo.Models.AnnotationModel"))
+            {
+                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData);
+                Annotations.Add(annotationModel);
+            }
             else // Other node types.
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
@@ -1284,7 +1336,8 @@ namespace Dynamo.Models
         {
             ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
                 ?? (ModelBase)Nodes.FirstOrDefault(node => node.GUID == modelGuid))
-                ?? Notes.FirstOrDefault(note => note.GUID == modelGuid);
+                ?? (Notes.FirstOrDefault(note => note.GUID == modelGuid)
+                ?? (ModelBase) Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid));
 
             return foundModel;
         }
@@ -1439,5 +1492,15 @@ namespace Dynamo.Models
             }
         }
         #endregion
+
+        public NodeModel GetNodeModel(Guid modelGuid)
+        {
+            NodeModel nodeModel = null;
+            if (Nodes.Count > 0)
+                nodeModel = Nodes.FirstOrDefault((x) => (x.GUID == modelGuid));
+
+            return nodeModel;
+        }
+
     }
 }

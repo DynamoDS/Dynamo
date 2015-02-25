@@ -261,6 +261,10 @@
     <value>_Create Note</value>
     <comment>Edit menu | Create note for a node</comment>
   </data>
+  <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
+    <value>_Create Group</value>
+    <comment>Edit menu | Create Grouping for nodes</comment>
+  </data>
   <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
     <value>_Delete Selected</value>
     <comment>Edit menu | Delete selected nodes</comment>

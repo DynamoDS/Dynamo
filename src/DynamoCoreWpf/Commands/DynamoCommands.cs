@@ -115,6 +115,7 @@ namespace Dynamo.ViewModels
                 case "DeleteModelCommand":
                 case "CreateNodeCommand":
                 case "CreateNoteCommand":
+                case "CreateAnnotationCommand":
                 case "UndoRedoCommand":
                 case "ModelEventCommand":
                 case "UpdateModelValueCommand":
@@ -159,6 +160,7 @@ namespace Dynamo.ViewModels
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":
                 case "CreateNoteCommand":
+                case "CreateAnnotationCommand":
                 case "SelectModelCommand":
                 case "SelectInRegionCommand":
                 case "DragSelectionCommand":

@@ -41,14 +41,16 @@ namespace Dynamo.Models
                 factory,
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
+                Enumerable.Empty<AnnotationModel>(),
                 x,
                 y,
                 customNodeId, elementResolver, fileName) { }
 
         public CustomNodeWorkspaceModel(
             string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
+            IEnumerable<AnnotationModel> a, 
             double x, double y, Guid customNodeId, ElementResolver elementResolver, string fileName="") 
-            : base(name, e, n, x, y, factory, elementResolver, fileName)
+            : base(name, e, n, a, x, y, factory, elementResolver, fileName)
         {
             CustomNodeId = customNodeId;
             HasUnsavedChanges = false;
