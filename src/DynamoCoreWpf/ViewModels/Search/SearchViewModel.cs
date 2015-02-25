@@ -147,7 +147,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return string.IsNullOrEmpty(SearchText) ? ViewMode.LibraryView :
+                return string.IsNullOrEmpty(SearchText.Trim()) ? ViewMode.LibraryView :
                     ViewMode.LibrarySearchView;
             }
         }
@@ -617,7 +617,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SearchAndUpdateResults()
         {
-            SearchAndUpdateResults(SearchText);
+            if (!String.IsNullOrEmpty(SearchText.Trim()))
+                SearchAndUpdateResults(SearchText);
         }
 
         /// <summary>
