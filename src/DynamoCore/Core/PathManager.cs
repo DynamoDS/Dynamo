@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Interfaces;
+using System.Globalization;
 
 namespace Dynamo.Core
 {
@@ -20,6 +21,7 @@ namespace Dynamo.Core
         private readonly string commonDefinitions;
         private readonly string logDirectory;
         private readonly string packagesDirectory;
+        private readonly string samplesDirectory;
 
         private readonly HashSet<string> nodeDirectories;
         private readonly List<string> additionalResolutionPaths;
@@ -43,6 +45,12 @@ namespace Dynamo.Core
         {
             get { return packagesDirectory; }
         }
+
+        public string SamplesDirectory
+        {
+            get { return samplesDirectory; }
+        }
+
 
         public IEnumerable<string> NodeDirectories
         {
@@ -68,13 +76,18 @@ namespace Dynamo.Core
                     "TestServices.dll.config.");
             }
 
+            // Current user specific directories.
             userDataDir = CreateFolder(GetUserDataFolder());
-            commonDataDir = CreateFolder(GetCommonDataFolder());
 
             userDefinitions = CreateFolder(Path.Combine(userDataDir, "definitions"));
-            commonDefinitions = CreateFolder(Path.Combine(commonDataDir, "definitions"));
             logDirectory = CreateFolder(Path.Combine(userDataDir, "Logs"));
             packagesDirectory = CreateFolder(Path.Combine(userDataDir, "packages"));
+
+            // Common directories.
+            commonDataDir = CreateFolder(GetCommonDataFolder());
+
+            commonDefinitions = CreateFolder(Path.Combine(commonDataDir, "definitions"));
+            samplesDirectory = GetSamplesFolder(commonDataDir);
 
             nodeDirectories = new HashSet<string>
             {
@@ -138,6 +151,28 @@ namespace Dynamo.Core
                 Directory.CreateDirectory(folderPath);
 
             return folderPath;
+        }
+
+        private static string GetSamplesFolder(string dataRootDirectory)
+        {
+            var uiCulture = CultureInfo.CurrentUICulture.ToString();
+            var sampleDirectory = Path.Combine(dataRootDirectory, "samples", uiCulture);
+
+            // If the localized samples directory does not exist then fall back 
+            // to using the en-US samples folder. Do an additional check to see 
+            // if the localized folder is available but is empty.
+            // 
+            var di = new DirectoryInfo(sampleDirectory);
+            if (!Directory.Exists(sampleDirectory) ||
+                !di.GetDirectories().Any() ||
+                !di.GetFiles().Any())
+            {
+                var neturalCommonSamples = Path.Combine(dataRootDirectory, "samples", "en-US");
+                if (Directory.Exists(neturalCommonSamples))
+                    sampleDirectory = neturalCommonSamples;
+            }
+
+            return sampleDirectory;
         }
 
         private IEnumerable<string> LibrarySearchPaths(string library)

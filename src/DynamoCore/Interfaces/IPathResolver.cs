@@ -30,6 +30,12 @@ namespace Dynamo.Interfaces
         /// </summary>
         string PackagesDirectory { get; }
 
+        /// <summary>
+        /// The root directory where all sample files are stored. This directory
+        /// is common to all users on the machine.
+        /// </summary>
+        string SamplesDirectory { get; }
+
         IEnumerable<string> NodeDirectories { get; }
     }
 }
