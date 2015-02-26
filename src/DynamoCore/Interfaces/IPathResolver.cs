@@ -18,6 +18,11 @@ namespace Dynamo.Interfaces
         /// </summary>
         string CommonDefinitions { get; }
 
+        /// <summary>
+        /// The local directory where log files are generated.
+        /// </summary>
+        string LogDirectory { get; }
+
         IEnumerable<string> NodeDirectories { get; }
     }
 }

@@ -44,11 +44,6 @@ namespace DynamoUtilities
         }
 
         /// <summary>
-        /// The Logs folder.
-        /// </summary>
-        public string Logs { get; private set; }
-
-        /// <summary>
         /// The Dynamo folder in AppData
         /// </summary>
         public string AppData { get; private set;}
@@ -90,12 +85,6 @@ namespace DynamoUtilities
             }
 
             AppData = GetDynamoAppDataFolder(MainExecPath);
-
-            Logs = Path.Combine(AppData, "Logs");
-            if (!Directory.Exists(Logs))
-            {
-                Directory.CreateDirectory(Logs);
-            }
 
             Packages = Path.Combine(AppData, "packages");
             if (!Directory.Exists(Packages))

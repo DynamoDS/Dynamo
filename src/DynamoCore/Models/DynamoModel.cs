@@ -434,7 +434,7 @@ namespace Dynamo.Models
             Context = context;
             IsTestMode = testMode;
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
+            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
 
             MigrationManager = new MigrationManager(DisplayFutureFileMessage, DisplayObsoleteFileMessage);
             MigrationManager.MessageLogged += LogMessage;
@@ -968,9 +968,8 @@ namespace Dynamo.Models
 
         internal void DumpLibraryToXml(object parameter)
         {
-            string directory = DynamoPathManager.Instance.Logs;
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
-            string fullFileName = Path.Combine(directory, fileName);
+            string fullFileName = Path.Combine(pathManager.LogDirectory, fileName);
 
             SearchModel.DumpLibraryToXml(fullFileName);
 
