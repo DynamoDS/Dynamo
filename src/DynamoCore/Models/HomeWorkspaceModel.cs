@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Xml;
 
 using Dynamo.Core;
@@ -155,12 +156,13 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="milliseconds">The desired amount of time between two 
         /// evaluations in milliseconds.</param>
-        /// 
-        public void StartPeriodicEvaluation(int milliseconds)
+        /// <param name="context">A synchronization context belonging to the 
+        /// thread on which you want PulseMaker callbacks to execute.</param>
+        public void StartPeriodicEvaluation(int milliseconds, SynchronizationContext context)
         {
             if (pulseMaker == null)
             {
-                pulseMaker = new PulseMaker();
+                pulseMaker = new PulseMaker(context);
             }
 
             pulseMaker.RunStarted += pulseMaker_RunStarted;
@@ -175,20 +177,26 @@ namespace Dynamo.Models
             pulseMaker.Start(milliseconds);
         }
 
-        private void pulseMaker_RunStarted(object sender, EventArgs e)
+        private void pulseMaker_RunStarted(SynchronizationContext context)
         {
             var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
 
-            DynamoModel.OnRequestDispatcherBeginInvoke(() =>
-            {
-                // Dirty selective nodes so they get included for evaluation.
-                foreach (var nodeToUpdate in nodesToUpdate)
-                {
-                    nodeToUpdate.MarkNodeAsModified(true);
-                }
+            context.Post(MarkNodesAsModifiedAndUpdate, nodesToUpdate);
+        }
 
-                OnNodesModified();
-            });
+        private void MarkNodesAsModifiedAndUpdate(object state)
+        {
+            var nodesToUpdate = state as IEnumerable<NodeModel>;
+
+            if (nodesToUpdate == null) return;
+
+            // Dirty selective nodes so they get included for evaluation.
+            foreach (var nodeToUpdate in nodesToUpdate)
+            {
+                nodeToUpdate.MarkNodeAsModified(true);
+            }
+
+            OnNodesModified();
         }
 
         /// <summary>

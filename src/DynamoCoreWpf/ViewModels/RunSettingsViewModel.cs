@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 
@@ -91,6 +92,7 @@ namespace Dynamo.Wpf.ViewModels
         private readonly HomeWorkspaceViewModel workspaceViewModel;
         private readonly DynamoViewModel dynamoViewModel;
         private RunTypeItem selectedRunTypeItem;
+        private SynchronizationContext context;
 
         #endregion
 

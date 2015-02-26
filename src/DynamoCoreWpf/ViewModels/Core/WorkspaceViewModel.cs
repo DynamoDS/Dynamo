@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 
@@ -240,6 +241,12 @@ namespace Dynamo.ViewModels
         public Action FindNodesFromElements { get; set; }
 
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
+
+        /// <summary>
+        /// The SynchronizationContext is handed down to the view model
+        /// from the view after the view is loaded.
+        /// </summary>
+        public SynchronizationContext Context { get; set; }
 
         #endregion
 

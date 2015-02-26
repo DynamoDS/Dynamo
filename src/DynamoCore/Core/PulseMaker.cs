@@ -11,16 +11,16 @@ namespace Dynamo.Core
 
         private readonly Timer internalTimer;
         private readonly object stateMutex;
+        private SynchronizationContext context;
         private bool evaluationInProgress = false;
         private bool evaluationRequestPending = false;
-
         internal int TimerPeriod { get; private set; }
 
-        public event EventHandler<EventArgs> RunStarted;
-        protected virtual void OnRunStarted(EventArgs e)
+        public event Action<SynchronizationContext> RunStarted;
+        protected virtual void OnRunStarted(SynchronizationContext context)
         {
             var handler = RunStarted;
-            if (handler != null) handler(this, e);
+            if (handler != null) handler(context);
         }
 
         #endregion
@@ -32,8 +32,9 @@ namespace Dynamo.Core
         /// be instantiated from within DynamoModel (i.e. DynamoCore.dll).
         /// </summary>
         /// 
-        internal PulseMaker()
+        internal PulseMaker(SynchronizationContext context)
         {
+            this.context = context;
             stateMutex = new object();
             internalTimer = new Timer(OnTimerTicked);
         }
@@ -124,7 +125,7 @@ namespace Dynamo.Core
             // 
             evaluationInProgress = true;
 
-            OnRunStarted(EventArgs.Empty);
+            OnRunStarted(context);
         }
 
         #endregion
