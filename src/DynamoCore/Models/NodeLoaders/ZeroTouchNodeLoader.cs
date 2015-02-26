@@ -59,6 +59,13 @@ namespace Dynamo.Models.NodeLoaders
                     // if the node needs additional parameters, add them here
                     if (libraryServices.FunctionSignatureNeedsAdditionalParameters(xmlSignature))
                         libraryServices.AddAdditionalParametersToNode(xmlSignature, nodeElement);
+
+                    xmlAttribute = nodeElement.Attributes["assembly"];
+                    if (xmlAttribute != null)
+                    {
+                        assembly = Uri.UnescapeDataString(xmlAttribute.Value);
+                    }
+
                 }
                 else
                 {

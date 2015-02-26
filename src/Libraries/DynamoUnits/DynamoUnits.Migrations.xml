@@ -3,18 +3,52 @@
   <priorNameHint>
     <oldName>DynamoUnits.SIUnit.Add@double</oldName>
     <newName>DSCore.Math.Add@double,double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>assembly</name>
+        <value>DSCoreNodes</value>
+      </parameter>
+    </additionalParameters>
   </priorNameHint>
   <priorNameHint>
     <oldName>DynamoUnits.SIUnit.Subtract@double</oldName>
     <newName>DSCore.Math.Subtract@double,double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>assembly</name>
+        <value>DSCoreNodes</value>
+      </parameter>
+    </additionalParameters>
   </priorNameHint>
   <priorNameHint>
     <oldName>DynamoUnits.SIUnit.Divide@double</oldName>
     <newName>DSCore.Math.Divide@double,double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>assembly</name>
+        <value>DSCoreNodes</value>
+      </parameter>
+    </additionalParameters>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.SIUnit.Multiply@double</oldName>
+    <newName>DSCore.Math.Multiply@double,double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>assembly</name>
+        <value>DSCoreNodes</value>
+      </parameter>
+    </additionalParameters>
   </priorNameHint>
   <priorNameHint>
     <oldName>DynamoUnits.SIUnit.Modulo@double</oldName>
     <newName>DSCore.Math.Modulo@double,double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>assembly</name>
+        <value>DSCoreNodes</value>
+      </parameter>
+    </additionalParameters>
   </priorNameHint>
   <priorNameHint>
     <oldName>DynamoUnits.Length.FromFeet@double</oldName>
@@ -23,6 +57,56 @@
       <parameter>
         <name>index</name>
         <value>feet</value>
+      </parameter>
+    </additionalParameters>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.Length.FromDouble@double</oldName>
+    <newName>DynamoUnits.TranslateUnits@double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>index</name>
+        <value>meter</value>
+      </parameter>
+    </additionalParameters>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.Area.FromSquareFeet@double</oldName>
+    <newName>DynamoUnits.TranslateUnits@double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>index</name>
+        <value>square_feet</value>
+      </parameter>
+    </additionalParameters>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.Area.FromDouble@double</oldName>
+    <newName>DynamoUnits.TranslateUnits@double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>index</name>
+        <value>square_meter</value>
+      </parameter>
+    </additionalParameters>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.Volume.FromCubicFeet@double</oldName>
+    <newName>DynamoUnits.TranslateUnits@double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>index</name>
+        <value>cubic_feet</value>
+      </parameter>
+    </additionalParameters>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.Volume.FromDouble@double</oldName>
+    <newName>DynamoUnits.TranslateUnits@double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>index</name>
+        <value>cubic_meter</value>
       </parameter>
     </additionalParameters>
   </priorNameHint>
