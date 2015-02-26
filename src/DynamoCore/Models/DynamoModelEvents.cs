@@ -106,28 +106,6 @@ namespace Dynamo.Models
                 CleaningUp(this);
         }
 
-        private void OnNodeCollectionChanged(object sender,
-            NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (NodeModel newItem in e.NewItems)
-                        newItem.PropertyChanged += OnNodePropertyChanged;
-                    break;
-
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (NodeModel oldItem in e.OldItems)
-                        oldItem.PropertyChanged -= OnNodePropertyChanged;
-                    break;
-            }
-        }
-
-        private void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-
-        }
-
         public event NodeHandler RequestCancelActiveStateForNode;
         private void OnRequestCancelActiveStateForNode(NodeModel node)
         {
