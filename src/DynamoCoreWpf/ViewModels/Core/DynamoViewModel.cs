@@ -495,6 +495,7 @@ namespace Dynamo.ViewModels
             //updates to the workspaces collection
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
             workspaces.Add(homespaceViewModel);
+            currentWorkspaceViewModel = homespaceViewModel;
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -903,7 +904,7 @@ namespace Dynamo.ViewModels
             {
                 var newVm = new WorkspaceViewModel(item, this);
                 workspaces.Add(newVm);
-            }   
+            }
         }
 
         private void WorkspaceRemoved(WorkspaceModel item)
