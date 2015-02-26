@@ -80,7 +80,7 @@ namespace Dynamo.Models.NodeLoaders
                 assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
 
                 descriptor = libraryServices.IsLibraryLoaded(assembly) || libraryServices.ImportLibrary(assembly)
-                    ? libraryServices.GetFunctionDescriptor(function) // libraryServices.GetFunctionDescriptor(assembly, function)
+                    ? libraryServices.GetFunctionDescriptor(assembly, function)
                     : libraryServices.GetFunctionDescriptor(function);
             }
             else
