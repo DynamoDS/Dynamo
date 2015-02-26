@@ -273,7 +273,7 @@ Sorry about that.</value>
   <data name="ElapsedWhenLoadingXml" xml:space="preserve">
     <value>{0} elapsed for loading xml.</value>
   </data>
-  <data name="EvaluationComleted" xml:space="preserve">
+  <data name="EvaluationCompleted" xml:space="preserve">
     <value>Evaluation completed in {0}</value>
   </data>
   <data name="FailedToLoadHeader" xml:space="preserve">
