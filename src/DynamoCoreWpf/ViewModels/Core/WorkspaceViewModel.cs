@@ -242,12 +242,6 @@ namespace Dynamo.ViewModels
 
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
 
-        /// <summary>
-        /// The SynchronizationContext is handed down to the view model
-        /// from the view after the view is loaded.
-        /// </summary>
-        public SynchronizationContext Context { get; set; }
-
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)

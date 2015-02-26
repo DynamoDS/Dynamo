@@ -136,7 +136,7 @@ namespace Dynamo.Models
             // shutting down so we check that shutdown has not been requested.
             if (RunSettings.RunType != RunType.Manually && EngineController != null)
             {
-                DynamoModel.OnRequestDispatcherBeginInvoke(Run);
+                Context.Post(Run, null);
             }
         }
 
@@ -351,7 +351,9 @@ namespace Dynamo.Models
         /// in actual graph update (e.g. moving of node on UI), the update task 
         /// will not be scheduled for execution.
         /// </summary>
-        public void Run()
+        /// <param name="state">Any state that passed to this method by the 
+        /// running context.</param>
+        public void Run(object state=null)
         {
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())

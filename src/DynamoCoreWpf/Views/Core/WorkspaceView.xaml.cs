@@ -90,7 +90,7 @@ namespace Dynamo.Views
             // The synchronization context is handing down to the view
             // model so that operations which need to be executed on the 
             // UI thread can do so.
-            ViewModel.Context = SynchronizationContext.Current;
+            ViewModel.Model.Context = SynchronizationContext.Current;
 
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
         }
