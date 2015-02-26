@@ -151,9 +151,9 @@ namespace ProtoScript.Runners
 
                     // Initialize the entry point interpreter
                     int locals = 0; // This is the global scope, there are no locals
-                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
-                    core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-                    core.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
                 }
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
@@ -199,7 +199,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             }
 
             return null;
@@ -233,7 +233,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             }
 
             return null;
@@ -276,7 +276,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             }
 
             return null;
@@ -301,17 +301,19 @@ namespace ProtoScript.Runners
                 throw new Exception("Cannot open file " + filename);
             }
 
+            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+
             string strSource = reader.ReadToEnd();
             reader.Dispose();
             //Start the timer       
-            core.StartTimer();
+            runtimeCore.StartTimer();
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;
             Execute(strSource, core);
 
             if (isTest && !core.Options.CompileToLib)
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             else
                 return null;
         }

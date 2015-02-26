@@ -291,24 +291,8 @@ namespace ProtoCore
         public Dictionary<ulong, ulong> codeToLocation = new Dictionary<ulong, ulong>();
         public Dictionary<ulong, ErrorEntry> LocationErrorMap = new Dictionary<ulong, ErrorEntry>();
 
-        //STop
-        public Stopwatch StopWatch;
-        public void StartTimer()
-        {
-            StopWatch = new Stopwatch();
-            StopWatch.Start();
-        }
-        public TimeSpan GetCurrentTime()
-        {
-            TimeSpan ts = StopWatch.Elapsed;
-            return ts;
-        }
 
         public Dictionary<Language, Compiler> Compilers { get; private set; }
-        public Executive ExecutionInstance { get; private set; }
-
-        // This will be moved to RuntimeCore
-        public Executive CurrentExecutive { get; private set; }
 
         public int GlobOffset { get; set; }
         public int GlobHeapOffset { get; set; }
@@ -352,8 +336,6 @@ namespace ProtoCore
         //The dynamic string table and function table
         public DynamicVariableTable DynamicVariableTable { get; set; }
         public DynamicFunctionTable DynamicFunctionTable { get; set; }
-
-        public IExecutiveProvider ExecutiveProvider { get; set; }
 
 
         //Manages injected context data.
@@ -601,7 +583,7 @@ namespace ProtoCore
 
             Validity.AssertExpiry();
             Options = options;
-            ExecutionInstance = CurrentExecutive = new Executive(this);
+            
             Compilers = new Dictionary<Language, Compiler>();
             ClassIndex = Constants.kInvalidIndex;
 
@@ -674,7 +656,6 @@ namespace ProtoCore
 
             DebuggerProperties = new DebugProperties();
 
-            ExecutiveProvider = new ExecutiveProvider();
 
             ParsingMode = ParseMode.Normal;
             

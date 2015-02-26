@@ -188,7 +188,7 @@ namespace ProtoCore
                     case AddressType.Char:
                         return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(sv.opdata);
                     case AddressType.String:
-                        return StringUtils.GetStringValue(sv, core);
+                        return StringUtils.GetStringValue(sv, core.__TempCoreHostForRefactoring);
                     case AddressType.Pointer:
                         return dataProvider.GetCLRObject(sv, core);
                     default:

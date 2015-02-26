@@ -91,6 +91,9 @@ namespace ProtoCore
             cancellationPending = false;
 
             watchClassScope = Constants.kInvalidIndex;
+
+            ExecutionInstance = CurrentExecutive = new Executive(this);
+            ExecutiveProvider = new ExecutiveProvider();
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -102,6 +105,9 @@ namespace ProtoCore
             this.ExprInterpreterExe = exprInterpreterExe;
         }
 
+        public IExecutiveProvider ExecutiveProvider { get; set; }
+        public Executive ExecutionInstance { get; private set; }
+        public Executive CurrentExecutive { get; private set; }
 
         // Execution properties
         public Executable DSExecutable { get; private set; }
@@ -263,5 +269,19 @@ namespace ProtoCore
             else
                 return RuntimeMemory.CurrentConstructBlockId;
         }
+
+        //STop
+        public Stopwatch StopWatch;
+        public void StartTimer()
+        {
+            StopWatch = new Stopwatch();
+            StopWatch.Start();
+        }
+        public TimeSpan GetCurrentTime()
+        {
+            TimeSpan ts = StopWatch.Elapsed;
+            return ts;
+        }
+
     }
 }

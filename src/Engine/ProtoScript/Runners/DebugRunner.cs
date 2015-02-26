@@ -225,7 +225,7 @@ namespace ProtoScript.Runners
             }
             catch (ProtoCore.Exceptions.DebugHalting)
             {
-                if (core.CurrentExecutive == null) //This was before the VM was properly started
+                if (runtimeCore.CurrentExecutive == null) //This was before the VM was properly started
                     return null;
                 currentInstr = GetCurrentInstruction(); // set the current instruction to the current breakpoint instruction
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBreak);
@@ -237,7 +237,7 @@ namespace ProtoScript.Runners
             }
             finally
             {
-                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
                 vms = new VMState(execMirror, core);
                 vms.isEnded = isEnded;
                 ProtoCore.CodeModel.CodePoint start = new ProtoCore.CodeModel.CodePoint();
@@ -556,9 +556,9 @@ namespace ProtoScript.Runners
 
             // Initialize the entry point interpreter
             int locals = 0; // This is the global scope, there are no locals
-            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
-            core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-            core.CurrentExecutive.CurrentDSASMExec.Bounce(
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+            runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+            runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                 resumeBlockID, 
                 programCounterToExecuteFrom,
                 context, 
@@ -568,7 +568,7 @@ namespace ProtoScript.Runners
                 null,
                 breakpoints);
 
-            return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+            return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
 
         }
         /// <summary>

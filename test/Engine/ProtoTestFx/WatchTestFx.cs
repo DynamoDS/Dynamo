@@ -15,9 +15,9 @@ namespace ProtoTestFx
 {
     public class InjectionExecutiveProvider : IExecutiveProvider
     {
-        public ProtoCore.DSASM.Executive CreateExecutive(Core core, bool isFep)
+        public ProtoCore.DSASM.Executive CreateExecutive(RuntimeCore runtimeCore, bool isFep)
         {
-            return new InjectionExecutive(core, isFep);
+            return new InjectionExecutive(runtimeCore, isFep);
         }
     }
 
@@ -39,7 +39,7 @@ namespace ProtoTestFx
     public class InjectionExecutive : ProtoCore.DSASM.Executive
     {
 
-        public InjectionExecutive(Core core, bool isFep = false) : base(core, isFep) { }
+        public InjectionExecutive(RuntimeCore runtimeCore, bool isFep = false) : base(runtimeCore, isFep) { }
 
         public static int callrLineNo { get; private set; }
         public static bool IsPopToPropertyArray { get; set; }
@@ -56,10 +56,10 @@ namespace ProtoTestFx
         internal void Print(StackValue sv, int lineNo, string symbolName, int ci = Constants.kInvalidIndex)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core.__TempCoreHostForRefactoring);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, RuntimeCore);
             string result = mirror.GetStringValue(sv, RuntimeCore.RuntimeMemory.Heap, 0, true);
 
-            TextOutputStream tStream = Core.BuildStatus.MessageHandler as TextOutputStream;
+            TextOutputStream tStream = RuntimeCore.RuntimeStatus.MessageHandler as TextOutputStream;
             if (tStream != null)
             {
                 Dictionary<int, List<string>> map = tStream.Map;
@@ -140,14 +140,14 @@ namespace ProtoTestFx
             {
                 int lineNo = instruction.debug.Location.StartInclusive.LineNo;
 
-                if (Core.Options.IDEDebugMode && Core.__TempCoreHostForRefactoring.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    Core.__TempCoreHostForRefactoring.DebugProps.IsPopmCall = false;
-                    Core.__TempCoreHostForRefactoring.DebugProps.CurrentSymbolName = symbolName;
+                    RuntimeCore.DebugProps.IsPopmCall = false;
+                    RuntimeCore.DebugProps.CurrentSymbolName = symbolName;
                 }
 
                 // Add stackvalue against lineNo and variable name
-                if (!Core.Options.IDEDebugMode)
+                if (!RuntimeCore.Options.IDEDebugMode)
                 {
                     Print(svData, lineNo, symbolName);
                 }
@@ -174,17 +174,17 @@ namespace ProtoTestFx
                 }
                 string symbolName = symbolNode.name;
 
-                if (Core.Options.IDEDebugMode && Core.__TempCoreHostForRefactoring.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    if (!Core.__TempCoreHostForRefactoring.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
+                    if (!RuntimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
                     {
-                        Core.__TempCoreHostForRefactoring.DebugProps.CurrentSymbolName = symbolName;
-                        Core.__TempCoreHostForRefactoring.DebugProps.IsPopmCall = true;
+                        RuntimeCore.DebugProps.CurrentSymbolName = symbolName;
+                        RuntimeCore.DebugProps.IsPopmCall = true;
                     }
                 }
 
                 // Add stackvalue against lineNo and variable name
-                if (!Core.Options.IDEDebugMode)
+                if (!RuntimeCore.Options.IDEDebugMode)
                 {
                     int lineNo = -1;
                     if (instruction.debug == null)
@@ -213,9 +213,9 @@ namespace ProtoTestFx
 
             if (instruction.debug != null)
             {
-                if (Core.Options.IDEDebugMode && Core.__TempCoreHostForRefactoring.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (RuntimeCore.Options.IDEDebugMode && RuntimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
-                    Core.__TempCoreHostForRefactoring.DebugProps.IsPopmCall = false;
+                    RuntimeCore.DebugProps.IsPopmCall = false;
                 }
 
                 callrLineNo = instruction.debug.Location.StartInclusive.LineNo;
@@ -369,7 +369,8 @@ namespace ProtoTestFx
             // By specifying this option we inject a mock Executive ('InjectionExecutive')
             // that prints stackvalues at every assignment statement
             // by overriding the POP_handler instruction - pratapa
-            core.ExecutiveProvider = new InjectionExecutiveProvider();
+
+//            core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
@@ -419,7 +420,9 @@ namespace ProtoTestFx
 
             // Use the InjectionExecutive to overload POP and POPM
             // as we still need the symbol names and line nos. in debug mode for comparisons
-            core.ExecutiveProvider = new InjectionExecutiveProvider();
+            
+            //core.ExecutiveProvider = new InjectionExecutiveProvider();
+
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 

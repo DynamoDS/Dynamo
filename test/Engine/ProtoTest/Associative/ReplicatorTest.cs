@@ -53,7 +53,7 @@ namespace ProtoTest.Associative
                         Zipped = true
                     }
                 );
-            List<List<StackValue>> combin = ProtoCore.Lang.Replication.Replicator.ComputeAllReducedParams(args, ris, core);
+            List<List<StackValue>> combin = ProtoCore.Lang.Replication.Replicator.ComputeAllReducedParams(args, ris, core.__TempCoreHostForRefactoring);
             Assert.IsTrue(combin[0][0].opdata == 1);
             Assert.IsTrue(combin[0][1].opdata == 3);
             Assert.IsTrue(combin[1][0].opdata == 2);

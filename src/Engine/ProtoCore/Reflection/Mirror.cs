@@ -77,7 +77,7 @@ namespace ProtoCore
                 : base(runtimeCoreReflect.__TempCoreHostForRefactoring, staticCore)
             {
                 Validity.Assert(this.runtimeCore != null);
-                TargetExecutive = runtimeCoreReflect.CurrentExecutive.CurrentDSASMExec;
+                TargetExecutive = runtimeCoreReflect.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec;
                 deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCoreReflect.__TempCoreHostForRefactoring);
                 this.mirrorData = mirrorData;
             }
@@ -85,7 +85,7 @@ namespace ProtoCore
             public RuntimeMirror(string varname, int blockDecl, ProtoCore.Core core)
                 : base(core.__TempCoreHostForRefactoring)
             {
-                TargetExecutive = core.CurrentExecutive.CurrentDSASMExec;
+                TargetExecutive = core.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec;
                 deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core.__TempCoreHostForRefactoring);
 
                 Validity.Assert(this.runtimeCore != null);

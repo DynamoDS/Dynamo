@@ -24,7 +24,8 @@ namespace ProtoTest.FFITests
 
             String code = @"import(""FFITarget.dll"");";
             var execMirror = thisTest.RunScriptSource(code);
-            var core =execMirror.MirrorTarget.Core;
+
+            //var core = execMirror.MirrorTarget.Core;
 
             ClassMirror classMirror = new ClassMirror("TestCSharpAttribute", core);
             Assert.IsNotNull(classMirror);

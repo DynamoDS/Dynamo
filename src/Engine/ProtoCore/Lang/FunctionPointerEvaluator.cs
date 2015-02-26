@@ -21,8 +21,7 @@ namespace ProtoCore.Lang
         {
             Validity.Assert(pointer.IsFunctionPointer);
             interpreter = dsi;
-            Core core = dsi.runtime.Core;
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
 
             int fptr = (int)pointer.opdata;
             FunctionPointerNode fptrNode;
@@ -36,13 +35,12 @@ namespace ProtoCore.Lang
                 procNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
             }
 
-            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.RuntimeData.FunctionTable, core.Options.ExecutionMode);
+            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.RuntimeData.FunctionTable, runtimeCore.Options.ExecutionMode);
         }
 
         public StackValue Evaluate(List<StackValue> args, StackFrame stackFrame)
         {
             // Build the stackframe
-            var core = interpreter.runtime.Core;
             var runtimeCore = interpreter.runtime.RuntimeCore;
 
             int classScopeCaller = stackFrame.ClassScope;
@@ -123,11 +121,11 @@ namespace ProtoCore.Lang
                                                registers, 
                                                null);
 
-            bool isInDebugMode = core.Options.IDEDebugMode &&
+            bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
                                  runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter;
             if (isInDebugMode)
             {
-                runtimeCore.DebugProps.SetUpCallrForDebug(core, 
+                runtimeCore.DebugProps.SetUpCallrForDebug(
                                                           runtimeCore,
                                                           interpreter.runtime, 
                                                           procNode, 
@@ -143,8 +141,8 @@ namespace ProtoCore.Lang
                                         new Runtime.Context(), 
                                         args, 
                                         repGuides, 
-                                        newStackFrame, 
-                                        core);
+                                        newStackFrame,
+                                        runtimeCore);
 
             if (isInDebugMode)
             {

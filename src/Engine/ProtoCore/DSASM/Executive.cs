@@ -13,14 +13,6 @@ namespace ProtoCore.DSASM
     public class Executive : IExecutive
     {
         private readonly bool enableLogging = true;
-        private readonly Core core;
-        public Core Core
-        {
-            get
-            {
-                return core;
-            }
-        }
 
 
         private readonly RuntimeCore runtimeCore;
@@ -93,13 +85,12 @@ namespace ProtoCore.DSASM
         private Dictionary<string, List<int>> symbolArrayIndexMap = new Dictionary<string,List<int>>();
 #endif
 
-        public Executive(Core core, bool isFep = false)
+        public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
             IsExplicitCall = false;
-            Validity.Assert(core != null);
-            this.core = core;
+            Validity.Assert(runtimeCore != null);
 
-            this.runtimeCore = core.__TempCoreHostForRefactoring;
+            this.runtimeCore = runtimeCore;
             enableLogging = runtimeCore.Options.Verbose;
 
             exe = runtimeCore.DSExecutable;
@@ -185,7 +176,7 @@ namespace ProtoCore.DSASM
                 SetupAndPushBounceStackFrame(exeblock, entry, context, stackFrame, locals);
                 runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
-            return core.ExecutionInstance.Execute(exeblock, entry, context, fepRun, breakpoints);
+            return runtimeCore.ExecutionInstance.Execute(exeblock, entry, context, fepRun, breakpoints);
         }
 
         /// <summary>
@@ -876,10 +867,10 @@ namespace ProtoCore.DSASM
 
                     if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
                     {
-                        runtimeCore.DebugProps.SetUpCallrForDebug(core, runtimeCore, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
+                        runtimeCore.DebugProps.SetUpCallrForDebug(runtimeCore, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
                     }
 
-                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
+                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, runtimeCore, runtimeContext);
                 }
                 else
                 {
@@ -898,7 +889,7 @@ namespace ProtoCore.DSASM
                 {
                     if (runtimeCore.ContinuationStruct.IsFirstCall)
                     {
-                        runtimeCore.DebugProps.SetUpCallrForDebug(core,
+                        runtimeCore.DebugProps.SetUpCallrForDebug(
                                                            runtimeCore,
                                                            this, 
                                                            fNode, 
@@ -913,7 +904,7 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        runtimeCore.DebugProps.SetUpCallrForDebug(core, 
+                        runtimeCore.DebugProps.SetUpCallrForDebug( 
                                                            runtimeCore,
                                                            this, 
                                                            fNode, 
@@ -989,7 +980,7 @@ namespace ProtoCore.DSASM
                 }
                 else
 #endif
-                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
+                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, runtimeCore, runtimeContext);
 
                 if (sv.IsExplicitCall)
                 {
@@ -1108,7 +1099,7 @@ namespace ProtoCore.DSASM
 
             if (setDebugProperty)
             {
-                runtimeCore.DebugProps.SetUpCallrForDebug(core,
+                runtimeCore.DebugProps.SetUpCallrForDebug(
                                                    runtimeCore,
                                                    this,
                                                    procNode,
@@ -1128,7 +1119,7 @@ namespace ProtoCore.DSASM
             StackValue sv = callsite.JILDispatch(arguments,
                                                  repGuides,
                                                  stackFrame,
-                                                 core,
+                                                 runtimeCore,
                                                  new Runtime.Context());
 
             isExplicitCall = sv.IsExplicitCall;
@@ -5311,12 +5302,12 @@ namespace ProtoCore.DSASM
                 StackValue newSV;
                 if (opdata1.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata2, core, rmem);
+                    newSV = StringUtils.ConvertToString(opdata2, runtimeCore, rmem);
                     opdata2 = StringUtils.ConcatString(newSV, opdata1, runtimeCore);
                 }
                 else if (opdata2.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata1, core, rmem);
+                    newSV = StringUtils.ConvertToString(opdata1, runtimeCore, rmem);
                     opdata2 = StringUtils.ConcatString(opdata2, newSV, runtimeCore);
                 }
             }
@@ -5870,7 +5861,7 @@ namespace ProtoCore.DSASM
             // we need a corresponding SetUpCallr to save the states. Therefore this call here - pratapa
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                runtimeCore.DebugProps.SetUpCallrForDebug(core, runtimeCore, this, fNode, pc, true);
+                runtimeCore.DebugProps.SetUpCallrForDebug(runtimeCore, this, fNode, pc, true);
             }
 
             StackValue svThisPointer = StackValue.BuildInvalid();

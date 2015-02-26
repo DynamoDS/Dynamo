@@ -214,7 +214,7 @@ namespace ProtoCore.DSASM.Mirror
 
             RuntimeMemory rmem = MirrorTarget.rmem;
             Executable exe = MirrorTarget.exe;
-            ClassTable classTable = MirrorTarget.Core.ClassTable;
+            ClassTable classTable = MirrorTarget.RuntimeCore.DSExecutable.classTable;
 
             int classtype = val.metaData.type;
             if (classtype < 0 || (classtype >= classTable.ClassNodes.Count))
