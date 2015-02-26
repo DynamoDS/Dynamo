@@ -14,6 +14,7 @@ using Dynamo.Nodes;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoShapeManager;
 using NUnit.Framework;
 using Dynamo.UI;
 using DynamoUtilities;
@@ -32,6 +33,10 @@ namespace DynamoCoreUITests
         private System.Random randomizer = null;
         private IEnumerable<string> customNodesToBeLoaded = null;
         private CommandCallback commandCallback = null;
+
+        // Geometry preloading related members.
+        protected bool preloadGeometry;
+        protected Preloader preloader;
 
         // For access within test cases.
         protected DynamoView dynamoView = null;
@@ -75,6 +80,8 @@ namespace DynamoCoreUITests
                 }
                 this.ViewModel = null;
             }
+
+            preloader = null; // Invalid preloader object for the test.
 
             GC.Collect();
         }
@@ -682,10 +689,22 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException(message);
             }
 
+            var geometryFactoryPath = string.Empty;
+            if (preloadGeometry && (preloader == null))
+            {
+                var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+                preloader.Preload();
+
+                geometryFactoryPath = preloader.GeometryFactoryPath;
+                preloadGeometry = false;
+            }
+
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = true,
+                    GeometryFactoryPath = geometryFactoryPath
                 });
 
             // Create the DynamoViewModel to control the view
@@ -1339,6 +1358,7 @@ namespace DynamoCoreUITests
         [Category("RegressionTests")]
         public void Defect_MAGN_590()
         {
+            preloadGeometry = true;
             RunCommandsFromFile("Defect-MAGN-590.xml");
 
             //Check the nodes
@@ -1486,6 +1506,7 @@ namespace DynamoCoreUITests
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-590
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_590.xml");
 
             //Check the nodes and connectors count
@@ -1961,6 +1982,7 @@ namespace DynamoCoreUITests
             Guid callsiteGuidSecondCall = Guid.Empty;
             Guid FunctionCallNodeGuid = new Guid("22939bf5-50bc-4aa3-9c91-0dc5b5017252");
 
+            preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", false, (commandTag) =>
             {
                 ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
@@ -2018,6 +2040,7 @@ namespace DynamoCoreUITests
         {
             // This is a UI test to test for interaction crashes the application
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_1344_PythonEditor.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count());
@@ -2035,6 +2058,7 @@ namespace DynamoCoreUITests
         [Category("RegressionTests")]
         public void Defect_MAGN_2201_WatchCBN()
         {
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2201_WatchCBN.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
         }
@@ -2056,6 +2080,7 @@ namespace DynamoCoreUITests
             Guid callsiteGuidSecondCall = Guid.Empty;
             Guid FunctionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
 
+            preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", false, (commandTag) =>
             {
                 ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
@@ -2104,6 +2129,7 @@ namespace DynamoCoreUITests
 
         public void Defect_MAGN_2521()
         {
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2521.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2139,6 +2165,7 @@ namespace DynamoCoreUITests
             // this is using CBN. 
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2378.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2168,6 +2195,7 @@ namespace DynamoCoreUITests
             // this is using Point.ByCoordinates node.
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2378_Another.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2535,6 +2563,7 @@ namespace DynamoCoreUITests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2247
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2247.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
