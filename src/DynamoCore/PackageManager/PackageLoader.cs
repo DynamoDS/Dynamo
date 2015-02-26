@@ -15,10 +15,6 @@ namespace Dynamo.PackageManager
     public class PackageLoader : LogSourceBase
     {
         public string RootPackagesDirectory { get; private set; }
-        
-        public PackageLoader()
-            : this(Path.Combine(DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages))
-        { }
 
         public PackageLoader(string overridePackageDirectory)
         {

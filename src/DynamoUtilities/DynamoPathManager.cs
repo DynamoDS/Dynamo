@@ -30,12 +30,6 @@ namespace DynamoUtilities
         public string CommonSamples { get; private set; }
 
         /// <summary>
-        /// The packages folder, which contains pacakages downloaded
-        /// with the package manager.
-        /// </summary>
-        public string Packages { get; private set; }
-
-        /// <summary>
         /// Libraries to be preloaded by library services.
         /// </summary>
         public IEnumerable<string> PreloadLibraries
@@ -86,12 +80,6 @@ namespace DynamoUtilities
 
             AppData = GetDynamoAppDataFolder(MainExecPath);
 
-            Packages = Path.Combine(AppData, "packages");
-            if (!Directory.Exists(Packages))
-            {
-                Directory.CreateDirectory(Packages);
-            }
-
             var commonData = GetDynamoCommonDataFolder(MainExecPath);
 
             var UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
@@ -114,9 +102,7 @@ namespace DynamoUtilities
 
 #if DEBUG
             var sb = new StringBuilder();
-            sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
-            sb.AppendLine(String.Format("Packages: {0}", Packages));
-            
+            sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));            
             Debug.WriteLine(sb);
 #endif
             var coreLibs = new List<string>

@@ -49,7 +49,8 @@ namespace Dynamo.Tests
         [Category("Failure")]
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
-            var loader = new PackageLoader();
+            var packagesDirectory = ViewModel.Model.PathManager.PackagesDirectory;
+            var loader = new PackageLoader(packagesDirectory);
             loader.LoadPackagesIntoDynamo(
                 ViewModel.Model.PreferenceSettings,
                 ViewModel.Model.LibraryServices,

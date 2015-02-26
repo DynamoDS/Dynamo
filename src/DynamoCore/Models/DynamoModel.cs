@@ -469,7 +469,7 @@ namespace Dynamo.Models
             Loader = new DynamoLoader();
             Loader.MessageLogged += LogMessage;
 
-            PackageLoader = new PackageLoader();
+            PackageLoader = new PackageLoader(pathManager.PackagesDirectory);
             PackageLoader.MessageLogged += LogMessage;
 
             DisposeLogic.IsShuttingDown = false;
