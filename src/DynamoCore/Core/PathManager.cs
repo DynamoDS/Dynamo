@@ -2,35 +2,44 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using ProtoCore.AST;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Core
 {
-    public interface IPathManager
-    {
-        /// <summary>
-        /// The local directory that contains custom nodes created by the user.
-        /// </summary>
-        string UserDefinitions { get; }
-
-        /// <summary>
-        /// The local directory that contains custom nodes created by all users.
-        /// </summary>
-        string CommonDefinitions { get; }
-
-        IEnumerable<string> NodeDirectories { get; }
-    }
-
     class PathManager : IPathManager
     {
-        private readonly HashSet<string> nodeDirectories;
+        #region Class Data Members and Properties
+
         private readonly string dynamoCoreDir;
         private readonly string userDataDir;
         private readonly string commonDataDir;
 
         private readonly string userDefinitions;
         private readonly string commonDefinitions;
+
+        private readonly HashSet<string> nodeDirectories;
+        private readonly List<string> additionalResolutionPaths;
+
+        public string UserDefinitions
+        {
+            get { return userDefinitions; }
+        }
+
+        public string CommonDefinitions
+        {
+            get { return commonDefinitions; }
+        }
+
+        public IEnumerable<string> NodeDirectories
+        {
+            get { return nodeDirectories; }
+        }
+
+        #endregion
+
+        #region Public Class Operational Methods
 
         internal PathManager()
         {
@@ -57,22 +66,37 @@ namespace Dynamo.Core
             {
                 Path.Combine(dynamoCoreDir, "nodes")
             };
+
+            additionalResolutionPaths = new List<string>();
         }
 
-        public string UserDefinitions
+        /// <summary>
+        /// Given an initial file path with the file name, resolve the full path
+        /// to the target file. The search happens in the following order:
+        /// 
+        /// 1. If the provided file path is valid and points to an existing file, 
+        ///    the file path is return as-is.
+        /// 2. The file is searched alongside DynamoCore.dll for a match.
+        /// 3. The file is searched within AdditionalResolutionPaths.
+        /// 4. The search is left to system path resolution.
+        /// 
+        /// </summary>
+        /// <param name="library">The initial library file path.</param>
+        /// <returns>Returns true if the requested file can be located, or false
+        /// otherwise.</returns>
+        /// 
+        internal bool ResolveLibraryPath(ref string library)
         {
-            get { return userDefinitions; }
+            if (File.Exists(library)) // Absolute path, we're done here.
+                return true;
+
+            library = LibrarySearchPaths(library).FirstOrDefault(File.Exists);
+            return library != default(string);
         }
 
-        public string CommonDefinitions
-        {
-            get { return commonDefinitions; }
-        }
+        #endregion
 
-        public IEnumerable<string> NodeDirectories
-        {
-            get { return nodeDirectories; }
-        }
+        #region Private Class Helper Methods
 
         private string GetUserDataFolder()
         {
@@ -101,5 +125,26 @@ namespace Dynamo.Core
 
             return folderPath;
         }
+
+        private IEnumerable<string> LibrarySearchPaths(string library)
+        {
+            // Strip out possible directory from library path.
+            string assemblyName = Path.GetFileName(library);
+            if (assemblyName == null)
+                yield break;
+
+            var assemPath = Path.Combine(dynamoCoreDir, assemblyName);
+            yield return assemPath;
+
+            var p = additionalResolutionPaths.Select(
+                dir => Path.Combine(dir, assemblyName));
+
+            foreach (var path in p)
+                yield return path;
+
+            yield return Path.GetFullPath(library);
+        }
+
+        #endregion
     }
 }
