@@ -237,12 +237,18 @@ namespace Dynamo.ViewModels
             };
             Model.EntryRemoved += RemoveEntry;
 
+            libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
 
             ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
+        }
+
+        private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            ShowTooltipForTopResult = false;
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
