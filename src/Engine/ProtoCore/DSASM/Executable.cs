@@ -50,6 +50,9 @@ namespace ProtoCore.DSASM
         public ProtoCore.DSASM.ProcedureTable[] procedureTable { get; set; }
         public ProtoCore.DSASM.SymbolTable[] runtimeSymbols { get; set; }
 
+        public List<CodeBlock> CodeBlocks { get; set; }
+        public List<CodeBlock> CompleteCodeBlocks { get; set; }
+
         public InstructionStream[] instrStreamList { get; set; } 
         public InstructionStream iStreamCanvas { get; set; }
 
@@ -69,6 +72,8 @@ namespace ProtoCore.DSASM
             instrStreamList = null;
             iStreamCanvas = null;
             RuntimeData = null;
+            CodeBlocks = null;
+            CompleteCodeBlocks = null;
         }
     }
 
@@ -101,6 +106,17 @@ namespace ProtoCore.DSASM
 
         public bool isBreakable { get; set; }
 
+        /// <summary>
+        /// A CodeBlock represents a body of DS code
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="type"></param>
+        /// <param name="langId"></param>
+        /// <param name="cbID"></param>
+        /// <param name="symbols"></param>
+        /// <param name="procTable"></param>
+        /// <param name="isBreakableBlock"></param>
+        /// <param name="core"></param>
         public CodeBlock(Guid guid, CodeBlockType type, ProtoCore.Language langId, int cbID, SymbolTable symbols, ProcedureTable procTable, bool isBreakableBlock = false, ProtoCore.Core core = null)
         {
             this.guid = guid;

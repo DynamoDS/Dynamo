@@ -11,6 +11,10 @@
              Background="Transparent">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            
             <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
             <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
             <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
@@ -29,7 +33,7 @@
             Padding="10">
         <Grid Width="325">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="96"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
@@ -49,15 +53,21 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="96"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding Path=Description}"
-                           FontSize="13"
-                           Margin="0,0,10,0"
-                           TextWrapping="WrapWithOverflow">
-                    <TextBlock.Foreground>
-                        <Binding Path="HasDescription"
-                                 Converter="{StaticResource DescriptionToColorConverter}" />
-                    </TextBlock.Foreground>
-                </TextBlock>
+
+                <ScrollViewer Template="{DynamicResource LibraryScrollViewerControlTemplate}"
+                              Style="{DynamicResource LibraryScrollViewerStyle}"
+                              CanContentScroll="True">
+                    <TextBlock Text="{Binding Path=Description}"
+                               FontSize="13"
+                               Margin="0,0,10,0"
+                               TextWrapping="WrapWithOverflow">
+                        <TextBlock.Foreground>
+                            <Binding Path="HasDescription"
+                                     Converter="{StaticResource DescriptionToColorConverter}" />
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                </ScrollViewer>
+
                 <Image Grid.Column="1"
                        Height="96"
                        Width="96"
@@ -88,18 +98,20 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock FontSize="13">
-                            <Run Foreground="#cccccc"
-                                 Text="{Binding Item1, Mode=OneWay}" /> 
-                            <Run Foreground="#777777">
-                                <Run.Text>
+                        <WrapPanel Orientation="Horizontal">
+                            <TextBlock FontSize="13"
+                                       Foreground="#cccccc"
+                                       Text="{Binding Item1, Mode=OneWay}" />
+                            <TextBlock FontSize="13"
+                                       Foreground="#777777">
+                                <TextBlock.Text>
                                     <Binding Path="Item2"
                                              Mode="OneWay"
                                              Converter="{StaticResource InOutParamTypeConverter}"
                                              ConverterParameter="inputParam" />
-                                </Run.Text>
-                            </Run>
-                        </TextBlock>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </WrapPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

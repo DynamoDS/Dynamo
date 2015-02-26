@@ -314,6 +314,7 @@ namespace Dynamo.ViewModels
             {
                 var parent = treeStack.Pop();
                 parent.SubCategories.Remove(target);
+                parent.Items.Remove(target);
 
                 // Check to see if all items under "parent" are removed, leaving behind only one 
                 // entry that is "ClassInformationViewModel" (a class used to show StandardPanel).

@@ -2576,6 +2576,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to none.
+        /// </summary>
+        public static string NoneString {
+            get {
+                return ResourceManager.GetString("NoneString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string NoteViewContextMenuDelete {
