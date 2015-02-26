@@ -22,6 +22,7 @@
                 Width="100"   
                 Margin="1,0,0,0"   
                 SelectedIndex="1"
+                IsEnabled="{Binding IsSelectionFromBoxEnabled}"
                 SelectedItem="{Binding SelectedFromConversion}"/>
 
             <Button Name="DirectionButton"

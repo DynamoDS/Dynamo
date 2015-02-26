@@ -69,6 +69,16 @@ namespace Dynamo.Wpf
             }
         }
 
+        public bool IsSelectionFromBoxEnabled
+        {
+            get { return dynamoConvertModel.IsSelectionFromBoxEnabled; }
+            set
+            {
+                dynamoConvertModel.IsSelectionFromBoxEnabled = value;
+                RaisePropertyChanged("IsSelectionFromBoxEnabled");
+            }
+        }
+
         public ConverterViewModel(DynamoConvert model,NodeView nodeView)
         {
             dynamoConvertModel = model;           
@@ -97,7 +107,9 @@ namespace Dynamo.Wpf
                 case "SelectedToConversion":                    
                     RaisePropertyChanged("SelectedToConversion");
                     break;
-
+                case "IsSelectionFromBoxEnabled":
+                    RaisePropertyChanged("IsSelectionFromBoxEnabled");
+                    break;
             }
         }
 

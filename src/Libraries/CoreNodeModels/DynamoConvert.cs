@@ -18,6 +18,7 @@ namespace DSCoreNodesUI
         private object selectedFromConversion;
         private object selectedToConversion;
         private object selectedMetricConversion;
+        private bool isSelectionFromBoxEnabled;
 
         private object selectedFromConversionSource;
 
@@ -89,6 +90,16 @@ namespace DSCoreNodesUI
             }
         }
 
+        public bool IsSelectionFromBoxEnabled
+        {
+            get { return isSelectionFromBoxEnabled; }
+            set
+            {
+                isSelectionFromBoxEnabled = value;
+                RaisePropertyChanged("IsSelectionFromBoxEnabled");
+            }
+        }
+
       
         public DynamoConvert()
         {           
@@ -98,7 +109,19 @@ namespace DSCoreNodesUI
             OutPortData.Add(new PortData("", "A converted numeric value."));
 
             ShouldDisplayPreviewCore = false;
+            IsSelectionFromBoxEnabled = true;
+            RegisterAllPorts();
+        }
 
+        public DynamoConvert(string value)
+        {
+            SelectedMetricConversion = ConversionMetricUnit.Length;
+
+            InPortData.Add(new PortData("", "A numeric value for conversion."));
+            OutPortData.Add(new PortData("", "A converted numeric value."));
+
+            ShouldDisplayPreviewCore = false;
+            IsSelectionFromBoxEnabled = false;
             RegisterAllPorts();
         }
 
