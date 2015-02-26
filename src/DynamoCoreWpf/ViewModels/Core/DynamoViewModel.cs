@@ -191,6 +191,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                if (currentWorkspaceViewModel == null)
+                    currentWorkspaceViewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+
                 return currentWorkspaceViewModel;
             }
         }
