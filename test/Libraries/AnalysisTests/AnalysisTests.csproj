@@ -67,6 +67,10 @@
       <Project>{76686ed6-e759-4772-81c2-768740be13fa}</Project>
       <Name>Analysis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
+      <Name>DynamoShapeManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

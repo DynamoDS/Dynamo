@@ -290,7 +290,7 @@ namespace ProtoCore
 
         protected void SetStackIndex(ProtoCore.DSASM.SymbolNode symbol)
         {
-            if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 //Set the index of the symbol relative to the watching stack
                 symbol.index = core.watchBaseOffset;
@@ -1212,10 +1212,10 @@ namespace ProtoCore
             symbol = null;
             isAccessible = false;
             CodeBlock currentCodeBlock = codeBlock;
-            if (core.ExecMode == DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.RunMode == DSASM.InterpreterMode.kExpressionInterpreter)
             {
-                int tempBlockId = core.GetCurrentBlockId();
-                currentCodeBlock = core.GetCodeBlock(core.CodeBlockList, tempBlockId);
+                int tempBlockId = context.CurrentBlockId;
+                currentCodeBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, tempBlockId);
             }
 
             if (classScope != Constants.kGlobalScope)
@@ -1236,7 +1236,7 @@ namespace ProtoCore
                     return false;
                 }
 
-                if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
                     //Search local variables in the class member function first
                     if (functionScope != Constants.kGlobalScope)
@@ -1419,7 +1419,7 @@ namespace ProtoCore
 
                 //Fix IDE-448
                 //Search current running block as well.
-                searchBlock = core.GetCodeBlock(core.CodeBlockList, core.RunningBlock);
+                searchBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, 0);
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
                 if (symbolIndex != Constants.kInvalidIndex)
                 {
@@ -1458,7 +1458,7 @@ namespace ProtoCore
             ProtoCore.DSASM.AddressType addressType;
             ProtoCore.DSASM.ClassNode classnode = core.ClassTable.ClassNodes[globalClassIndex];
 
-            int symbolIndex = classnode.GetSymbolIndex(name, globalClassIndex, globalProcIndex, core.RunningBlock, core, out hasThisSymbol, out addressType);
+            int symbolIndex = classnode.GetSymbolIndex(name, globalClassIndex, globalProcIndex, 0, core, out hasThisSymbol, out addressType);
             if (symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
                 return false;
@@ -1929,7 +1929,7 @@ namespace ProtoCore
 
         private void AppendInstruction(Instruction instr, int line = Constants.kInvalidIndex, int col = Constants.kInvalidIndex)
         {
-            if (DSASM.InterpreterMode.kExpressionInterpreter == core.ExecMode)
+            if (DSASM.InterpreterMode.kExpressionInterpreter == core.Options.RunMode)
             {
                 core.ExprInterpreterExe.iStreamCanvas.instrList.Add(instr);
             }
@@ -2231,7 +2231,7 @@ namespace ProtoCore
             String value = Encoding.UTF8.GetString(utf8bytes);
             if (value.Length > 1)
             {
-                buildStatus.LogSyntaxError(Resources.tooManyCharacters, null, node.line, node.col);
+                buildStatus.LogSyntaxError(Resources.TooManyCharacters, null, node.line, node.col);
             }
   
             String strValue = "'" + value + "'";
@@ -2611,7 +2611,7 @@ namespace ProtoCore
                 localProcedure.isConstructor &&
                 core.IsFunctionCodeBlock(codeBlock))
             {
-                buildStatus.LogSemanticError(Resources.returnStatementIsNotAllowedInConstructor, 
+                buildStatus.LogSemanticError(Resources.ReturnStatementIsNotAllowedInConstructor, 
                                              core.CurrentDSFileName, 
                                              node.line, 
                                              node.col);
@@ -2966,7 +2966,7 @@ namespace ProtoCore
             int cix = core.ClassTable.IndexOf(string.Format("{0}Attribute", anode.Function.Name));
             if (cix == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
-                buildStatus.LogSemanticError(string.Format(Resources.unknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resources.UnknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
             }
             ProtoCore.DSASM.AttributeEntry attribute = new ProtoCore.DSASM.AttributeEntry();
             attribute.ClassIndex = cix;
@@ -2975,7 +2975,7 @@ namespace ProtoCore
             {
                 if (!IsConstantExpression(attr))
                 {
-                    buildStatus.LogSemanticError(Resources.attributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
+                    buildStatus.LogSemanticError(Resources.AttributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
                     return null;
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);
@@ -2993,7 +2993,7 @@ namespace ProtoCore
             }
             if (!hasMatchedConstructor)
             {
-                buildStatus.LogSemanticError(string.Format(Resources.noConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resources.NoConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
                 return null;
             }
             

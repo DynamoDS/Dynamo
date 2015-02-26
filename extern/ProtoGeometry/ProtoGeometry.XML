@@ -52,7 +52,7 @@
              Form a Vector by 3 Euclidean coordinates
              </summary>
             <search>
-            vector
+            vector,xyz,vector3
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ByCoordinates(System.Double,System.Double,System.Double,System.Boolean)">
@@ -60,20 +60,23 @@
              Form a Vector by 3 Euclidean coordinates and normalize the Vector
              </summary>
             <search>
-            normalize
+            normalize,vector3
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ByTwoPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Form a Vector by two end points.  The result is a vector from the start to the end point.
-            </summary>
+             <summary>
+             Form a Vector by two end points.  The result is a vector from the start to the end point.
+             </summary>
+            <search>
+            vector2
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.XAxis">
              <summary>
              Get the canonical X axis Vector (1,0,0)
              </summary>
             <search>
-            x,basis
+            x,basis,right
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.YAxis">
@@ -81,7 +84,7 @@
              Get the canonical Y axis Vector (0,1,0)
              </summary>
             <search>
-            y,basis
+            y,basis,forward
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ZAxis">
@@ -89,38 +92,56 @@
              Get the canonical Z axis Vector (0,0,1)
              </summary>
             <search>
-            z,basis
+            z,basis,up
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AsPoint">
-            <summary>
-            Get the Point with the same X, Y, and Z component
-            </summary>
+             <summary>
+             Get the Point with the same X, Y, and Z component
+             </summary>
+            <search>
+            convertopoint,vector2point
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Reverse">
-            <summary>
-            Get the reverse of the vector.  Essentially this negates the X, Y, and Z components of the Vector.
-            </summary>
+             <summary>
+             Get the reverse of the vector.  Essentially this negates the X, Y, and Z components of the Vector.
+             </summary>
+            <search>
+            backwards,vectorflip
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Add(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Add a vector
-            </summary>
+             <summary>
+             Add a vector
+             </summary>
+            <search>
+            sum,sumvectors
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Subtract(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Subtract a vector
-            </summary>
+             <summary>
+             Subtract a vector
+             </summary>
+            <search>
+            substact,diff vectors,between
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Cross(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Form the cross product of two vectors
-            </summary>
+             <summary>
+             Form the cross product of two vectors
+             </summary>
+            <search>
+            perpendicular
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Dot(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Form the dot product of two vectors
-            </summary>
+             <summary>
+             Form the dot product of two vectors
+             </summary>
+            <search>
+            project,projectvector,vectorproject,onto
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Normalized">
             <summary>
@@ -133,9 +154,12 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Determine whether two vectors ae almost equal
-            </summary>
+             <summary>
+             Determine whether two vectors ae almost equal
+             </summary>
+            <search>
+            vector approximate,near,same
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
@@ -143,29 +167,44 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>
-            Rotates a Vector around an axis by a specified number of degrees
-            </summary>
+             <summary>
+             Rotates a Vector around an axis by a specified number of degrees
+             </summary>
+            <search>
+            around,axis,degrees
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>
-            Rotates an object around the Plane origin and normal by a specified  degree
-            </summary>
+             <summary>
+             Rotates a vector around the Plane origin and normal by a specified  degree
+             </summary>
+            <search>
+            around,normal,degrees
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double)">
-            <summary>
-            Scale Vector uniformly around the origin
-            </summary>
+             <summary>
+             Scale Vector uniformly around the origin
+             </summary>
+            <search>
+            resize,size
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.Scale(System.Double,System.Double,System.Double)">
-            <summary>
-            Scale Vector non-uniformly around the origin
-            </summary>
+             <summary>
+             Scale Vector non-uniformly around the origin
+             </summary>
+            <search>
+            resize,size,scaleNU,scalenu
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Returns the angle between the two Vectors, in degrees
-            </summary>
+             <summary>
+             Returns the angle between the two Vectors, in degrees
+             </summary>
+            <search>
+            rotation angle
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vector.X">
             <summary>
@@ -183,9 +222,12 @@
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vector.Length">
-            <summary>
-            Get the length of the vector - otherwise known as the Euclidean norm
-            </summary>
+             <summary>
+             Get the length of the vector - otherwise known as the Euclidean norm
+             </summary>
+            <search>
+            magnitude
+            </search>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
             <summary>
@@ -217,11 +259,13 @@
             <param name="yTranslation">Displacement along Y-axis.</param>
             <param name="zTranslation">Displacement along Z-axis.</param>
             <returns>Transformed Geometry.</returns>
+            <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Translate geometry in the given direction by the vector length
             </summary>
+            <search>move,along vector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
             <summary>
@@ -231,6 +275,7 @@
             <param name="direction">Displacement direction.</param>
             <param name="distance">Displacement distance along given direction.</param>
             <returns>Transformed Geometry.</returns>
+            <search>move,along vector,distance</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
@@ -245,54 +290,63 @@
             <param name="fromCoordinateSystem"></param>
             <param name="contextCoordinateSystem"></param>
             <returns>Transformed Geometry.</returns>
+            <search>from,to</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
             <summary>
             Rotates an object around an origin and an axis by a specified 
             degree
             </summary>
+            <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
             <summary>
             Rotates an object around the Plane origin and normal by a specified 
             degree
             </summary>
+            <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Mirror(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
             Mirror the object across the input Plane
             </summary>
-            <search>reflect</search>
+            <search>reflect,flip over</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(System.Double)">
             <summary>
             Scale uniformly around the origin
             </summary>
+            <search>resize,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(System.Double,System.Double,System.Double)">
             <summary>
             Scale non-uniformly around the origin
             </summary>
+            <search>resize,size,scalenu,scaleNU</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double)">
             <summary>
             Scale non-uniformly around a given Plane
             </summary>
+            <search>resize,size,scalenu,scaleNU</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Scale uniformly around a given point, using two pick points as scalars
             </summary>
+            <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Scale in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and pick0.
             </summary>
+            <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Scale in two dimension by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors
             </summary>
+            <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>
@@ -300,6 +354,7 @@
             </summary>
             <param name="entity">The other Geometry</param>
             <returns>The distance</returns>
+            <search>between,length,from,to</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ClosestPointTo(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>
@@ -311,21 +366,25 @@
             <summary>
             Determine if another Geometry object intersects with this one
             </summary>
+            <search>intersects?,check intersection,test intersection</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Intersect(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>
             Get the intersection Geometry for this object and another
             </summary>
+            <search>get overlap</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.IntersectAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>
             Get the intersection of Geometry for this object and a collection of other Geometries. Finds common geometry of all participants.
             </summary>
+            <search>get overlap,multi intersect,intersect many</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>
             Split this Geometry using another Geometry as a cutting "tool"
             </summary>
+            <search>cut</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Trim(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Point)">
             <summary>
@@ -342,6 +401,7 @@
             <summary>
             Check if the two objects have the same representational geometry or numerical values
             </summary>
+            <search>approximate,near,close</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
             WARNING: non-ascii characters are not supported in file nams.
@@ -353,6 +413,7 @@
             <summary>
             Get the BoundingBox containing the given piece of Geometry
             </summary>
+            <search>bounds</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Geometry.ContextCoordinateSystem">
             <summary>
@@ -385,59 +446,92 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByJoinedSurfaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>
-            Create a solid by specifying it's component faces as Surfaces.
-            </summary>
+             <summary>
+             Create a solid by specifying it's component faces as Surfaces.
+             </summary>
+            <search>
+            Brep,brep
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>
-            Create a Solid by lofting between input cross section closed Curves.
-            </summary>
+             <summary>
+             Create a Solid by lofting between input cross section closed Curves.
+             </summary>
+            <search>
+            Brep,brep
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Create a Solid by lofting between input cross section closed Curves,  with guide Curve to assist. Guide Curve must intersect all cross section Curves.
-            </summary>
+             <summary>
+             Create a Solid by lofting between input cross section closed Curves,  with guide Curve to assist. Guide Curve must intersect all cross section Curves.
+             </summary>
+            <search>
+            Brep,brep,guide,loft
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>
-            Create a Solid by lofting between input cross section closed Curves,  with guide Curves to assist. Guide Curves must intersect all cross  section Curves.
-            </summary>
+             <summary>
+             Create a Solid by lofting between input cross section closed Curves,  with guide Curves to assist. Guide Curves must intersect all cross  section Curves.
+             </summary>
+            <search>
+            Brep,brep,guides,loft
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Sweep a closed Curve along a path.
-            </summary>
+             <summary>
+             Sweep a closed Curve along a path.
+             </summary>
+            <search>
+            Brep,brep,sweep1
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Sweep a closed profile Curve along two rail Curves.
-            </summary>
+             <summary>
+             Sweep a closed profile Curve along two rail Curves.
+             </summary>
+            <search>
+            Brep,brep,sweep2,guides,sweepprofile
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>
-            Create a Surface of revolution, sweeping the profile Curve around the axis Ray formed by the origin and the axis Vector, from the start angle in degrees to the sweep angle in degrees.
-            </summary>
+             <summary>
+             Create a Surface of revolution, sweeping the profile Curve around the axis Ray formed by the origin and the axis Vector, from the start angle in degrees to the sweep angle in degrees.
+             </summary>
+            <search>
+            Brep,brep,lathe,revolveprofile
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
-            <summary>
-            Union a collection of solids into one solid
-            </summary>
+             <summary>
+             Union a collection of solids into one solid
+             </summary>
+            <search>
+            Brep,brep,boolean,addition
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Centroid">
-            <summary>
-            The centroid of the Solid
-            </summary>
+             <summary>
+             The centroid of the Solid
+             </summary>
+            <search>
+            average,center
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Union(Autodesk.DesignScript.Geometry.Solid)">
-            <summary>
-            The boolean union of this Solid and another.
-            </summary>
+             <summary>
+             The boolean union of this Solid and another.
+             </summary>
+            <search>
+            addition,merge,combine
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
-            <summary>
-            Unions a list of Solids with this Solid.
-            </summary>
+             <summary>
+             Unions a list of Solids with this Solid.
+             </summary>
+            <search>
+            addition,merge,combine,unionmany,union multi
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Difference(Autodesk.DesignScript.Geometry.Solid)">
             <summary>
@@ -445,29 +539,44 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.DifferenceAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
-            <summary>
-            The boolean difference of this Solid and the union of input Solids
-            </summary>
+             <summary>
+             The boolean difference of this Solid and the union of input Solids
+             </summary>
+            <search>
+            subtract,differencemany,diffall,diff multi
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ThinShell(System.Double,System.Double)">
-            <summary>
-            Obtain a solid Shell from the Faces of this Solid
-            </summary>
+             <summary>
+             Obtain a solid Shell from the Faces of this Solid
+             </summary>
+            <search>
+            extract shell,offset and extract
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Projects the input Geometry onto this Solid, in the direction of the input Vector
-            </summary>
+             <summary>
+             Projects the input Geometry onto this Solid, in the direction of the input Vector
+             </summary>
+            <search>
+            projectonto,projectonsolid,projecttosolid
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Fillet(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
-            <summary>
-            Fillets a Solid along input Edges with a given radius.
-            </summary>
+             <summary>
+             Fillets a Solid along input Edges with a given radius.
+             </summary>
+            <search>
+            round,smooth,smoothedge,roundedges
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Chamfer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
-            <summary>
-            Chamfers a Solid along input Edges with a given offset from the edge corner.
-            </summary>
+             <summary>
+             Chamfers a Solid along input Edges with a given offset from the edge corner.
+             </summary>
+            <search>
+            bevel,flattenedges
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Solid.Area">
             <summary>
@@ -493,67 +602,100 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>
-            Create a Surface by lofting between input cross section Lines.  This is slightly faster and produces a less smooth result than Surface.ByLoft.
-            </summary>
+             <summary>
+             Create a Surface by lofting between input cross section Lines.  This is slightly faster and produces a less smooth result than Surface.ByLoft.
+             </summary>
+            <search>
+            ruledsurface
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Loft a Surface through the cross sections with a specified guide curve (aka a rail). Guide curve must intersect all of the cross section  curves.
-            </summary>
+             <summary>
+             Loft a Surface through the cross sections with a specified guide curve (aka a rail). Guide curve must intersect all of the cross section  curves.
+             </summary>
+            <search>
+            loftbyrail
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>
-            Loft a Surface through the cross sections with a specified guide curves (aka a rails). Guide curves must intersect all of the cross section  curves.
-            </summary>
+             <summary>
+             Loft a Surface through the cross sections with a specified guide curves (aka a rails). Guide curves must intersect all of the cross section  curves.
+             </summary>
+            <search>
+            loftbyrails,loft rails,guides
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
              <summary>
              Create a Surface by sweeping a cross section Curve along a path.
              </summary>
             <search>
-            sweep
+            sweep,rail,guide,sweep1
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            Create a Polygon Surface connecting input Points in a closed Polygon and patching it.
-            </summary>
+             <summary>
+             Create a Polygon Surface connecting input Points in a closed Polygon and patching it.
+             </summary>
+            <search>
+            patch,surfacebypolygon
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Sweep the cross section curve along a path guided by a two rails
-            </summary>
+             <summary>
+             Sweep the cross section curve along a path guided by a two rails
+             </summary>
+            <search>
+            sweep2,guides
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>
-            Create a Surface by sweeping the profile Curve around the axis ray formed  by origin Point in the direction of the axis Vector, starting at start_angle in degrees, sweeping sweep_angle in degrees.
-            </summary>
+             <summary>
+             Create a Surface by sweeping the profile Curve around the axis ray formed  by origin Point in the direction of the axis Vector, starting at start_angle in degrees, sweeping sweep_angle in degrees.
+             </summary>
+            <search>
+            lathe
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Create a Surface by filling in the interior of a closed boundary defined by input Curves.
-            </summary>
+             <summary>
+             Create a Surface by filling in the interior of a closed boundary defined by input Curves.
+             </summary>
+            <search>
+            edgesrf,edgesurface,patch,fill
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
-            <summary>
-            Subtract the input tools from this Surface.
-            </summary>
+             <summary>
+             Subtract the input tools from this Surface.
+             </summary>
+            <search>
+            difference,trim,removefrom,cut
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Return the UV parameter pair at the input Point. This is the inverse of Point at parameter.
-            </summary>
+             <summary>
+             Return the UV parameter pair at the input Point. This is the inverse of Point at parameter.
+             </summary>
+            <search>
+            evaluateatpoint,surfaceatpoint,uvatpoint
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>
-            Trim the surface with a collection of loops within the surface
-            </summary>
+             <summary>
+             Trim the surface with a collection of loops within the surface
+             </summary>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Return the surface normal at the input Point on the Surface.
-            </summary>
+             <summary>
+             Return the surface normal at the input Point on the Surface.
+             </summary>
+            <search>
+            perpendicular
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
             <summary>
@@ -561,19 +703,28 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>
-            Gets a Nurbs representation of the Surface within a specified tolerance. This method may approximate Surface in certain circumstances.
-            </summary>
+             <summary>
+             Gets a Nurbs representation of the Surface within a specified tolerance. This method may approximate Surface in certain circumstances.
+             </summary>
+            <search>
+            tonurbs
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>
-            Thicken Surface into a Solid, extruding in the direction of Surface  normals on both sides of the Surface.
-            </summary>
+             <summary>
+             Thicken Surface into a Solid, extruding in the direction of Surface  normals on both sides of the Surface.
+             </summary>
+            <search>
+            offset,tosolid
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>
-            Thicken Surface into a Solid, extruding in the direction of Surface  normals. If both_sides parameter is true, surface is thickened  on both sides.
-            </summary>
+             <summary>
+             Thicken Surface into a Solid, extruding in the direction of Surface  normals. If both_sides parameter is true, surface is thickened  on both sides.
+             </summary>
+            <search>
+            offset,bothsides,tosolid
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
             <summary>
@@ -606,14 +757,20 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
-            <summary>
-            Return the derivatives at input U and V coordinates.
-            </summary>
+             <summary>
+             Return the derivatives at input U and V coordinates.
+             </summary>
+            <search>
+            tangent,normal
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
-            <summary>
-            Returns the Gaussian curvature at V and V parameters.
-            </summary>
+             <summary>
+             Returns the Gaussian curvature at U and V parameters.
+             </summary>
+            <search>
+            developable
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
             <summary>
@@ -626,14 +783,20 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
-            <summary>
-            Return the Point at specified U and V parameters.
-            </summary>
+             <summary>
+             Return the Point at specified U and V parameters.
+             </summary>
+            <search>
+            surfacepoint
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
-            <summary>
-            Return all the boundary Curves of the Surface.
-            </summary>
+             <summary>
+             Return all the boundary Curves of the Surface.
+             </summary>
+            <search>
+            edges
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
             <summary>
@@ -646,19 +809,28 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>
-            Combines this Surface and input Surface into a PolySurface
-            </summary>
+             <summary>
+             Combines this Surface and input Surface into a PolySurface
+             </summary>
+            <search>
+            topolysurface
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>
-            Combines this Surface and input Surfaces into a PolySurface
-            </summary>
+             <summary>
+             Combines this Surface and input Surfaces into a PolySurface
+             </summary>
+            <search>
+            join multiple,joinmany,joinall,topolysurface
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Projects the input Geometry onto this Surface in the input Vector direction
-            </summary>
+             <summary>
+             Projects the input Geometry onto this Surface in the input Vector direction
+             </summary>
+            <search>
+            projecttosurface,projectonto
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
             <summary>
@@ -666,9 +838,12 @@
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
-            <summary>
-            Returns the sum of all edges of the Surface.
-            </summary>
+             <summary>
+             Returns the sum of all edges of the Surface.
+             </summary>
+            <search>
+            circumference
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
             <summary>
@@ -695,7 +870,7 @@
              Creates a NurbsSurface with specified interpolated points and  U and V degrees.  The resultant surface will pass through all of the points.
              </summary>
             <search>
-            fit
+            fit,topoints
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangents(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
@@ -703,17 +878,20 @@
              Creates a NurbsSurface with specified interpolated points and  U and V degrees.  The resultant surface will pass through all of the points.  The number of tangents must match the number of  points in the corresponding direction.  The resultant surface will be degree 3 in both the U and V direction.
              </summary>
             <search>
-            fit
+            fit,topoints,totangents
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByPointsTangentsKnotsDerivatives(Autodesk.DesignScript.Geometry.Point[][],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector},System.Double[],System.Double[],System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>
-            Creates a NurbsSurface satisfying a collection of different surface characteristics. This is the most advanced surface fitting method.  The resultant surface  will pass through all of the points.  The number of tangents must match  the number of points in the corresponding direction.  The resultant surface will be degree 3 in both the U and V direction.  The corner derivatives should be  second order (dP/dUdV) and should be supplied in this order [ lowU, lowV ], [ highU, lowV ],  [ lowU, highV ], [ highU, highV ].
-            </summary>
+             <summary>
+             Creates a NurbsSurface satisfying a collection of different surface characteristics. This is the most advanced surface fitting method.  The resultant surface  will pass through all of the points.  The number of tangents must match  the number of points in the corresponding direction.  The resultant surface will be degree 3 in both the U and V direction.  The corner derivatives should be  second order (dP/dUdV) and should be supplied in this order [ lowU, lowV ], [ highU, lowV ],  [ lowU, highV ], [ highU, highV ].
+             </summary>
+            <search>
+            fit,topoints,totangents,fit corners,complex fit
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPoints(Autodesk.DesignScript.Geometry.Point[][],System.Int32,System.Int32)">
             <summary>
-            Create a BSplineCurve by using explicit control Points, with specified U and V degrees.
+            Create a NurbsSurface by using explicit control Points, with specified U and V degrees.
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPointsWeightsKnots(Autodesk.DesignScript.Geometry.Point[][],System.Double[][],System.Double[],System.Double[],System.Int32,System.Int32)">
@@ -727,9 +905,12 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.Weights">
-            <summary>
-            Returns NurbsSurface control point weigths.
-            </summary>
+             <summary>
+             Returns NurbsSurface control point weights.
+             </summary>
+            <search>
+            ptweights
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.UKnots">
             <summary>
@@ -742,14 +923,20 @@
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsSurface.DegreeU">
-            <summary>
-            Surface degree in the U direction.
-            </summary>
+             <summary>
+             Surface degree in the U direction.
+             </summary>
+            <search>
+            surface smoothness,continuity
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsSurface.DegreeV">
-            <summary>
-            Surface degree in the V direction.
-            </summary>
+             <summary>
+             Surface degree in the V direction.
+             </summary>
+            <search>
+            surface smoothness,continuity
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsSurface.NumControlPointsU">
             <summary>
@@ -762,14 +949,20 @@
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsSurface.IsPeriodicInU">
-            <summary>
-            Returns true if the Surface is periodic in the U direction.
-            </summary>
+             <summary>
+             Returns true if the Surface is periodic in the U direction.
+             </summary>
+            <search>
+            closedinU
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsSurface.IsPeriodicInV">
-            <summary>
-            Returns true if the Surface is periodic in the V direction.
-            </summary>
+             <summary>
+             Returns true if the Surface is periodic in the V direction.
+             </summary>
+            <search>
+            closedinV
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsSurface.IsRational">
             <summary>
@@ -799,49 +992,76 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Makes PolySurface by Loft through PolyCurves.
-            </summary>
+             <summary>
+             Makes PolySurface by Loft through PolyCurves.
+             </summary>
+            <search>
+            loftbyrail
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByLoftGuides(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>
-            Makes PolySurface by Loft through PolyCurves.
-            </summary>
+             <summary>
+             Makes PolySurface by Loft through PolyCurves.
+             </summary>
+            <search>
+            loftbyrails,loft rails,guides
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ByJoinedSurfaces(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>
-            Make Polysurface by joining surfaces.
-            </summary>
+             <summary>
+             Make Polysurface by joining surfaces.
+             </summary>
+            <search>
+            joinsurfaces,joinsrf
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySolid(Autodesk.DesignScript.Geometry.Solid)">
-            <summary>
-            Make Polysurface by surfaces of Solid.
-            </summary>
+             <summary>
+             Make Polysurface by surfaces of Solid.
+             </summary>
+            <search>
+            solid2poly,solidtopoly,convertsolid
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>
-            Make Polysurface by sweeping curves along rail.
-            </summary>
+             <summary>
+             Make Polysurface by sweeping curves along rail.
+             </summary>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Make Polysurface by sweeping a curve along rail.
-            </summary>
+             <summary>
+             Make Polysurface by sweeping a curve along rail.
+             </summary>
+            <search>
+            sweep,rail,guide,sweep1,sweepprofile,profile
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
-            <summary>
-            Return new Surfaces representing the underlying Surfaces.
-            </summary>
+             <summary>
+             Return new Surfaces representing the underlying Surfaces.
+             </summary>
+            <search>
+            subsurfaces,getsurfaces,explode
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Locate Surfaces by point. Takes first intersection in forward direction.  Returns one surface if hit  surface interior, two if hit edge interior, and many if hit vertex
-            </summary>
+             <summary>
+             Locate Surfaces by point. Takes first intersection in forward direction.  Returns one surface if hit  surface interior, two if hit edge interior, and many if hit vertex
+             </summary>
+            <search>
+            surfacesatpoint,findsurfaces,extractsurfaces
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByLine(Autodesk.DesignScript.Geometry.Line)">
-            <summary>
-            Locate Surfaces by Line. Takes all surfaces hit by line.
-            </summary>
+             <summary>
+             Locate Surfaces by Line. Takes all surfaces hit by line.
+             </summary>
+            <search>
+            surfacesonline,findsurfaces,extractsurfaces
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.UnconnectedBoundaries">
             <summary>
@@ -869,14 +1089,20 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Fillet(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
-            <summary>
-            Fillets a Solid along input Edges with a given radius.
-            </summary>
+             <summary>
+             Fillets a PolySurface along input Edges with a given radius.
+             </summary>
+            <search>
+            round,smooth,smoothedge,roundedges
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Chamfer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Double)">
-            <summary>
-            Chamfers a Solid along input Edges with a given offset from the edge corner.
-            </summary>
+             <summary>
+             Chamfers a PolySurface along input Edges with a given offset from the edge corner.
+             </summary>
+            <search>
+            bevel,flattenedges
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
             <summary>
@@ -888,98 +1114,152 @@
              Create a curve by line of surface in uv space
              </summary>
             <search>
-            isocurve
+            isocurve,curvebyuv
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean)">
-            <summary>
-            Create a curve by line of surface in uv space
-            </summary>
+             <summary>
+             Create a curve that blends between two curves
+             </summary>
+            <search>
+            blend,make continuous,connect
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
-            <summary>
-            Create a curve by isoline of surface
-            </summary>
+             <summary>
+             Create a curve by isoline of surface
+             </summary>
+            <search>
+            isocurve,curvebydir
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
-            <summary>
-            Get a Point on the Curve at a specified parameter between StartParameter() and EndParameter()
-            </summary>
+             <summary>
+             Get a Point on the Curve at a specified parameter between StartParameter() and EndParameter()
+             </summary>
+            <search>
+            pointoncurve,curvepoint
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
-            <summary>
-            Get a Vector tangent to the curve at a specified parameter between StartParameter() and EndParameter()
-            </summary>
+             <summary>
+             Get a Vector tangent to the curve at a specified parameter between StartParameter() and EndParameter()
+             </summary>
+            <search>
+            tangentoncurve,curvetan
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
-            <summary>
-            Get a Vector perpendicular to the curve at a specified parameter between StartParameter() and EndParameter()
-            </summary>
+             <summary>
+             Get a Vector perpendicular to the curve at a specified parameter between StartParameter() and EndParameter()
+             </summary>
+            <search>
+            normaloncurve,curvenorm
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>
-            Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal and the YAxis is aligned with the curve tangent at this point
-            </summary>
+             <summary>
+             Get a CoordinateSystem with origin at the point at the given parameter. The XAxis is aligned with the curve normal and the YAxis is aligned with the curve tangent at this point
+             </summary>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
-            <summary>
-            Get a CoordinateSystem with origin at the point at the given parameter
-            </summary>
+             <summary>
+             Get a CoordinateSystem with origin at the point at the given parameter
+             </summary>
+            <search>
+            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>
-            Returns a Plane whose normal aligns with the tangent of the Curve. Parameters are adjusted such that 0 is always the start Point and 1 is always the end Point.
-            </summary>
+             <summary>
+             Returns a Plane whose normal aligns with the tangent of the Curve. Parameters are adjusted such that 0 is always the start Point and 1 is always the end Point.
+             </summary>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtDistance(System.Double)">
-            <summary>
-            Get a Point at a particular arc length along the curve
-            </summary>
+             <summary>
+             Get a Point at a particular arc length along the curve
+             </summary>
+            <search>
+            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtDistance(System.Double)">
-            <summary>
-            Returns a CoordinateSystem at specified distance from Curve start Point. Y Axis lies tangent to the Curve, X Axis is the curvature.
-            </summary>
+             <summary>
+             Returns a CoordinateSystem at specified distance from Curve start Point. Y Axis lies tangent to the Curve, X Axis is the curvature.
+             </summary>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance(System.Double)">
-            <summary>
-            Returns a Plane at the specified distance along the Curve from the  start Point. The normal of the Plane aligns with the tangent of the  Curve.
-            </summary>
+             <summary>
+             Returns a Plane at the specified distance along the Curve from the  start Point. The normal of the Plane aligns with the tangent of the  Curve.
+             </summary>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DistanceAtParameter(System.Double)">
-            <summary>
-            Get the arc length along the Curve at the particular parameter.
-            </summary>
+             <summary>
+             Get the arc length along the Curve at the particular parameter.
+             </summary>
+            <search>
+            lengthatparameter,dist along,lengthatpoint
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance(System.Double)">
-            <summary>
-            Get the parameter at a particular arc length along the curve.
-            </summary>
+             <summary>
+             Get the parameter at a particular arc length along the curve.
+             </summary>
+            <search>
+            parameteratlen,param along,paramatlen
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>
-            Get the parameter at a particular chord length along the curve from given location.
-            </summary>
+             <summary>
+             Get the parameter at a particular chord length along the curve from given location.
+             </summary>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
-            <summary>
-            Get the start of the domain in which the curve can be evaluated
-            </summary>
+             <summary>
+             Get the start of the domain in which the curve can be evaluated
+             </summary>
+            <search>
+            start domain,curvestart
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
-            <summary>
-            Get the end of the domain in which the curve can be evaluated
-            </summary>
+             <summary>
+             Get the end of the domain in which the curve can be evaluated
+             </summary>
+            <search>
+            end domain,curveend
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters(System.Double,System.Double)">
-            <summary>
-            Get the arc length between two parameter points on the curve
-            </summary>
+             <summary>
+             Get the arc length between two parameter points on the curve
+             </summary>
+            <search>
+            measure,distance
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Get the parameter at a particular point along the Curve
-            </summary>
+             <summary>
+             Get the parameter at a particular point along the Curve
+             </summary>
+            <search>
+            projectpoint,closestparam,curveparam
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
              <summary>
@@ -990,149 +1270,236 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
-            <summary>
-            Offset a Curve by a specified amount. Curve must be planar, and, if a BSplineCurve/NurbsCurve, must have degree > 1.
-            </summary>
+             <summary>
+             Offset a Curve by a specified amount. Curve must be planar, and, if a BSplineCurve/NurbsCurve, must have degree > 1.
+             </summary>
+            <search>
+            thicken
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>
-            Create a curve by pulling onto plane
-            </summary>
+             <summary>
+             Create a curve by pulling onto plane
+             </summary>
+            <search>
+            projectcurve,toplane
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>
-            Pull this Curve onto the input Surface, in the direction of the Surface normals.
-            </summary>
+             <summary>
+             Pull this Curve onto the input Surface, in the direction of the Surface normals.
+             </summary>
+            <search>
+            projectcurve,tosurf
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
-            <summary>
-            Divides curve into given number of equal length curves
-            </summary>
+             <summary>
+             Divides curve into given number of equal length curves
+             </summary>
+            <search>
+            chopcurve,segment,slices
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistance(System.Int32)">
-            <summary>
-            Divides curve into given number of curves with equal distances between start and end of each curve (equal chords).
-            </summary>
+             <summary>
+             Divides curve into given number of curves with equal distances between start and end of each curve (equal chords).
+             </summary>
+            <search>
+            divide by chordlength,chord,segment,chopcurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter(System.Double,System.Double)">
-            <summary>
-            Divides curve into curves of given length measuring from given location
-            </summary>
+             <summary>
+             Divides curve into curves of given length measuring from given location
+             </summary>
+            <search>
+            divide by chordlength,chord,segment,chopcurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistanceFromParameter(System.Double,System.Double)">
-            <summary>
-            Divides curve into curves of given distances between start and end (chords) measuring from given location
-            </summary>
+             <summary>
+             Divides curve into curves of given distances between start and end (chords) measuring from given location
+             </summary>
+            <search>
+            divide by chordlength,chord,segment,chopcurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimStart(System.Double)">
-            <summary>
-            Removes the start of the Curve at the specified parameter
-            </summary>
+             <summary>
+             Removes the start of the Curve at the specified parameter
+             </summary>
+            <search>
+            rem,remstart,removestart,trimcurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimEnd(System.Double)">
-            <summary>
-            Removes the end of the Curve at the specified parameter
-            </summary>
+             <summary>
+             Removes the end of the Curve at the specified parameter
+             </summary>
+            <search>
+            rem,remend,removeend,trimcurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrim(System.Double,System.Double)">
-            <summary>
-            Removes the beginning and ends of at the specified parameters.
-            </summary>
+             <summary>
+             Removes the beginning and ends of at the specified parameters.
+             </summary>
+            <search>
+            rem,remend,remstart,remove,trimcurve,removeends
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimInterior(System.Double,System.Double)">
-            <summary>
-            Removes the interior portion of a Curve at the specified parameters
-            </summary>
+             <summary>
+             Removes the interior portion of a Curve at the specified parameters
+             </summary>
+            <search>
+            rem,removemiddle,middle,remmiddle,cutout,trimcurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[])">
-            <summary>
-            Removes several segments of the curve, discarding the 1st, 3rd, 5th ... segments
-            </summary>
+             <summary>
+             Removes several segments of the curve, discarding the 1st, 3rd, 5th ... segments
+             </summary>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,odd
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[],System.Boolean)">
-            <summary>
-            Removes several segments of the Curve, disgarding 2nd, 4th, 6th ... segments if the bool is true
-            </summary>
+             <summary>
+             Removes several segments of the Curve, disgarding 2nd, 4th, 6th ... segments if the bool is true
+             </summary>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,even
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double)">
-            <summary>
-            Split a Curve into two pieces at the given parameter
-            </summary>
+             <summary>
+             Split a Curve into two pieces at the given parameter
+             </summary>
+            <search>
+            cutinto,divide,curve2curves,cut
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double[])">
-            <summary>
-            Split a Curve into multiple pieces at the given parameters
-            </summary>
+             <summary>
+             Split a Curve into multiple pieces at the given parameters
+             </summary>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Join this curve and the input curve into a new PolyCurve, maintaining the original curves exactly.
-            </summary>
+             <summary>
+             Join this curve and the input curve into a new PolyCurve, maintaining the original curves exactly.
+             </summary>
+            <search>
+            convertcurve,curve2polycurve,joincurve,concat
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>
-            Join set of curves to the start of the end of the polycurve.  Flips curves to assure connectivity.
-            </summary>
+             <summary>
+             Join set of curves to the start of the end of the polycurve.  Flips curves to assure connectivity.
+             </summary>
+            <search>
+            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
-            <summary>
-            Extrudes a Curve in the normal Vector direction
-            </summary>
+             <summary>
+             Extrudes a Curve in the normal Vector direction
+             </summary>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Extrudes a Curve in the specified direction, by the length of the input Vector
-            </summary>
+             <summary>
+             Extrudes a Curve in the specified direction, by the length of the input Vector
+             </summary>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>
-            Extrudes a Curve in the specified direction, by the specified distance
-            </summary>
+             <summary>
+             Extrudes a Curve in the specified direction, by the specified distance
+             </summary>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
-            <summary>
-            Extrudes a Curve in the Normal direction by the specified distance. Curve must be closed.
-            </summary>
+             <summary>
+             Extrudes a Curve in the Normal direction by the specified distance. Curve must be closed.
+             </summary>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Extrudes a Curve in the specified direction, by the length of the input Vector. Curve must be closed.
-            </summary>
+             <summary>
+             Extrudes a Curve in the specified direction, by the length of the input Vector. Curve must be closed.
+             </summary>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>
-            Extrudes a Curve in the specified direction, by the specified distance. Curve must be closed.
-            </summary>
+             <summary>
+             Extrudes a Curve in the specified direction, by the specified distance. Curve must be closed.
+             </summary>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Extend a Curve by a given distance at a particular end determined by a pick Point.  The picked side will be extended.  Closed curves like Circles and Ellipses cannot be extended.
-            </summary>
+             <summary>
+             Extend a Curve by a given distance at a particular end determined by a pick Point.  The picked side will be extended.  Closed curves like Circles and Ellipses cannot be extended.
+             </summary>
+            <search>
+            makelonger,stretch,extendside
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
-            <summary>
-            Extend a Curve by a given distance on its start side.  Closed curves like Circles and Ellipses cannot be extended.
-            </summary>
+             <summary>
+             Extend a Curve by a given distance on its start side.  Closed curves like Circles and Ellipses cannot be extended.
+             </summary>
+            <search>
+            makelonger,stretch
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
-            <summary>
-            Extend a Curve by a given distance on its end.  Closed curves like Circles and Ellipses cannot be extended.
-            </summary>
+             <summary>
+             Extend a Curve by a given distance on its end.  Closed curves like Circles and Ellipses cannot be extended.
+             </summary>
+            <search>
+            makelonger,stretch
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
-            <summary>
-            Approximate a Curve with a collection of Arcs and Lines
-            </summary>
+             <summary>
+             Approximate a Curve with a collection of Arcs and Lines
+             </summary>
+            <search>
+            rationalizecurve,fitarcs,fitlines
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
-            <summary>
-            Converts the Curve to a NurbsCurve approximation
-            </summary>
+             <summary>
+             Converts the Curve to a NurbsCurve approximation
+             </summary>
+            <search>
+            curve2spline,convertcurve,tospline
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
-            <summary>
-            Patch a closed Curve
-            </summary>
+             <summary>
+             Patch a closed Curve
+             </summary>
+            <search>
+            fill,profiletosurf,loop,loop2surf,edgesurf
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
@@ -1140,29 +1507,44 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Sweeps this Curve along the path Curve, creating a Surface
-            </summary>
+             <summary>
+             Sweeps this Curve along the path Curve, creating a Surface
+             </summary>
+            <search>
+            sweep1,curve2surf
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Sweeps this closed Curve along the path Curve, creating a Solid
-            </summary>
+             <summary>
+             Sweeps this closed Curve along the path Curve, creating a Solid
+             </summary>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
-            <summary>
-            Returns a new Curve approximated with the supplied tolerance
-            </summary>
+             <summary>
+             Returns a new Curve approximated with the supplied tolerance
+             </summary>
+            <search>
+            fitcurve,reducecurve,simplecurve,approximate
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
-            <summary>
-            The total arc length of the curve
-            </summary>
+             <summary>
+             The total arc length of the curve
+             </summary>
+            <search>
+            distance
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
-            <summary>
-            Determine whether a Curve is planar or not
-            </summary>
+             <summary>
+             Determine whether a Curve is planar or not
+             </summary>
+            <search>
+            flat,liesinplane
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
             <summary>
@@ -1170,19 +1552,28 @@
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
-            <summary>
-            Get the start Point along the Curve
-            </summary>
+             <summary>
+             Get the start Point along the Curve
+             </summary>
+            <search>
+            begin,curvestart,startpt
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
-            <summary>
-            Get the end Point along the Curve
-            </summary>
+             <summary>
+             Get the end Point along the Curve
+             </summary>
+            <search>
+            end,curveend,endpt
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
-            <summary>
-            The normal to the plane where the curve is contained.  Only            valid for planar curves.
-            </summary>
+             <summary>
+             The normal to the plane where the curve is contained.  Only            valid for planar curves.
+             </summary>
+            <search>
+            perpendicular
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ToString">
             <summary>
@@ -1194,23 +1585,32 @@
              Creates a straight Line between two input Points.
              </summary>
             <search>
-            line
+            line,linebypoints
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByBestFitThroughPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            Creates a Line best approximating a scatter plot of Points.
-            </summary>
+             <summary>
+             Creates a Line best approximating a scatter plot of Points.
+             </summary>
+            <search>
+            line,approximate
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByTangency(Autodesk.DesignScript.Geometry.Curve,System.Double)">
-            <summary>
-            Create a Line tangent to the input Curve, positioned at the parameter Point of the input Curve.
-            </summary>
+             <summary>
+             Create a Line tangent to the input Curve, positioned at the parameter Point of the input Curve.
+             </summary>
+            <search>
+            tangentline,tangentto
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>
-            Create a straight Line starting at start Point, extending in Vector direction by specified length.
-            </summary>
+             <summary>
+             Create a straight Line starting at start Point, extending in Vector direction by specified length.
+             </summary>
+            <search>
+            linebyvector
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Line.Direction">
             <summary>
@@ -1236,14 +1636,20 @@
             <returns>A unique hashcode for this object</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.ByIndices(System.UInt32,System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Create an IndexGroup storing four indices
-            </summary>
+             <summary>
+             Create an IndexGroup storing four indices
+             </summary>
+            <search>
+            quad,polygon,mesh
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.ByIndices(System.UInt32,System.UInt32,System.UInt32)">
-            <summary>
-            Create an IndexGroup storing three indices
-            </summary>
+             <summary>
+             Create an IndexGroup storing three indices
+             </summary>
+            <search>
+            tri,polygon,mesh
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.IndexGroup.Count">
             <summary>
@@ -1617,6 +2023,7 @@
             Create a CoordinateSystem with origin at input Point, with X and Y Axes
             set as WCS X and Y Axes.
             </summary>
+            <search>bypoint</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane(Autodesk.DesignScript.Geometry.Plane)">
             <summary>
@@ -1636,6 +2043,7 @@
             axis ignored completely. Input Vectors are normalized before creating 
             the CoordinateSystem. 
             </summary>
+            <search>byxy,coord by2axis</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>
@@ -1656,7 +2064,7 @@
             <summary>
             Mirror the object across the input Plane
             </summary>
-            <search>reflect</search>
+            <search>reflect,flip over</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.PostMultiplyBy(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
@@ -1672,6 +2080,7 @@
             <summary>
             Returns a Vector containing the X, Y, and Z scale factors
             </summary>
+            <search>get size,scalecomponents,scalevector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.IsEqualTo(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
@@ -1687,11 +2096,13 @@
             <param name="yTranslation">Displacement along Y-axis.</param>
             <param name="zTranslation">Displacement along Z-axis.</param>
             <returns>Transformed CoordinateSystem.</returns>
+            <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector)">
             <summary>
             Translate the object in the direction and magnitude of input Vector.
             </summary>
+            <search>move,along vector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
             <summary>
@@ -1701,6 +2112,7 @@
             <param name="direction">Displacement direction.</param>
             <param name="distance">Displacement distance along given direction.</param>
             <returns>Transformed CoordinateSystem.</returns>
+            <search>move,along vector,distance</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
             <summary>
@@ -1721,57 +2133,68 @@
             Rotates an object around an origin and an axis by a specified 
             degree
             </summary>
+            <search>around,axis,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Rotate(Autodesk.DesignScript.Geometry.Plane,System.Double)">
             <summary>
             Rotates an object around the Plane origin and normal by a specified 
             degree
             </summary>
+            /// <search>around,normal,degrees</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double)">
             <summary>
             Scale uniformly around the origin
             </summary>
+            <search>resize,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(System.Double,System.Double,System.Double)">
             <summary>
             Scale non-uniformly around the origin
             </summary>
+            <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double)">
             <summary>
             Scale non-uniformly around a given Plane
             </summary>
+            <search>resize,size,scaleNU,scalenu</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Scale uniformly around a given point, using 
             </summary>
+            <search>resize,from,to,size</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale1D(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Scale in one dimension by base and 2 pick points.  The scaling axis is defined by the line between base and pick0.
             </summary>
+            <search>resize,size,from,to,scale1d,1d</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>
             Scale in two dimension by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors
             </summary>
+            <search>resize,size,from,to,scale2d,2d</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.IsSingular">
             <summary>
             Determine whether it is possible to get the Inverse of this CoordinateSystem
             </summary>
+            <search>inverse,testinverse</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.IsScaledOrtho">
             <summary>
             Tests if the scaling orthogonal, i.e. does it have a shear component.
             </summary>
+            <search>uniform</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.IsUniscaledOrtho">
             <summary>
             Tests if the scaling orthogonal and are all the vectors normalized.
             </summary>
+            <search>uniform,normal,samelength</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.Determinant">
             <summary>
@@ -1782,21 +2205,25 @@
             <summary>
             Creates a Point representing the CoordinateSystem origin. 
             </summary>
+            <search>position,center</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XAxis">
             <summary>
             Returns X Axis of CoordinateSystem.
             </summary>
+            <search>left,right</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.YAxis">
             <summary>
             Returns Y Axis of CoordinateSystem.
             </summary>
+            <search>forward,back</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.ZAxis">
             <summary>
             Returns Z Axis of CoordinateSystem.
             </summary>
+            <search>up,down</search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoordinateSystem.XScaleFactor">
             <summary>
@@ -1847,9 +2274,12 @@
             <returns>A unique hashcode for this object</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.UV.ByCoordinates(System.Double,System.Double)">
-            <summary>
-            Create a UV from two doubles.
-            </summary>
+             <summary>
+             Create a UV from two doubles.
+             </summary>
+            <search>
+            surfaceparam,parameters,uv
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.UV.U">
             <summary>
@@ -1871,25 +2301,31 @@
              Create a Cuboid centered at WCS origin, with width, length, and height.
              </summary>
             <search>
-            box
+            box,cube
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double)">
-            <summary>
-            Create a Cuboid centered at input Point, with specified width, length,  and height.
-            </summary>
+             <summary>
+             Create a Cuboid centered at input Point, with specified width, length,  and height.
+             </summary>
+            <search>
+            box,cube,cubebysize,bycenter
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByLengths(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>
-            Create a Cuboid centered and oriented to input CoordinateSystem, with  specified width, length, and height.
-            </summary>
+             <summary>
+             Create a Cuboid centered and oriented to input CoordinateSystem, with  specified width, length, and height.
+             </summary>
+            <search>
+            box,cube,cubebysize,bycoord
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ByCorners(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
              <summary>
              Create an Cuboid spanning from low Point to high Point.
              </summary>
             <search>
-            box
+            box,cube,byminmax,by corners,by points
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Length">
@@ -1952,29 +2388,44 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>
-            Make PolyCurve by joining curves. Flips curve as needed for connectivity
-            </summary>
+             <summary>
+             Make PolyCurve by joining curves. Flips curve as needed for connectivity
+             </summary>
+            <search>
+            segments,joincurves
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>
-            Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
-            </summary>
+             <summary>
+             Make PolyCurve from sequence of lines connecting points. For closed curve last point should be in same location as start point.
+             </summary>
+            <search>
+            segments,joincurves
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Make PolyCurve by thickening a curve.
-            </summary>
+             <summary>
+             Make PolyCurve by thickening a curve.
+             </summary>
+            <search>
+            offset
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
-            <summary>
-            Returns curves of the polycurve
-            </summary>
+             <summary>
+             Returns curves of the polycurve
+             </summary>
+            <search>
+            subcurves,polycurvesplit
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
-            <summary>
-            Returns curve of the polycurve by index
-            </summary>
+             <summary>
+             Returns curve of the polycurve by index
+             </summary>
+            <search>
+            subcurveatindex,getsubcurve,getcurvebyindex
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
             <summary>
@@ -1988,7 +2439,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
             <summary>
-            Extends polycurve by tangent ellipse
+            Extends polycurve by tangent arc
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
@@ -2007,14 +2458,20 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
-            <summary>
-            Fillet polycurve in its plane.
-            </summary>
+             <summary>
+             Fillet polycurve in its plane.
+             </summary>
+            <search>
+            round,smooth,radius
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
-            <summary>
-            Number if curves of the polycurve
-            </summary>
+             <summary>
+             Number of curves of the polycurve
+             </summary>
+            <search>
+            curvecount,subcurvecount,numbersubcurves
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ToString">
             <summary>
@@ -2030,9 +2487,12 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByPointsRadii(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,System.Double)">
-            <summary>
-            Create a Cone with axis from start Point to end Point, with given  radiuses at start and end. This object does not have an apex, and can be thought of as a trimmed Cone.
-            </summary>
+             <summary>
+             Create a Cone with axis from start Point to end Point, with given  radiuses at start and end. This object does not have an apex, and can be thought of as a trimmed Cone.
+             </summary>
+            <search>
+            trimmed cone,cone
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadius(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
             <summary>
@@ -2040,9 +2500,12 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cone.ByCoordinateSystemHeightRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>
-            Creates a Cone with base Point at CoordinateSystem origin, extending in the CoordinateSystem Z axis deriction length amount, with a  circular bases in the CoordinateSystem XY Plane.
-            </summary>
+             <summary>
+             Creates a Cone with base Point at CoordinateSystem origin, extending in the CoordinateSystem Z axis deriction length amount, with a  circular bases in the CoordinateSystem XY Plane.
+             </summary>
+            <search>
+            cone,cone by height
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.StartPoint">
             <summary>
@@ -2093,9 +2556,12 @@
             <returns>A unique hashcode for this object</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.ByCoordinates(System.Double,System.Double)">
-            <summary>
-            Form a Point in the XY plane given two 2 cartesian coordinates.  The Z component is 0.
-            </summary>
+             <summary>
+             Form a Point in the XY plane given two 2 cartesian coordinates.  The Z component is 0.
+             </summary>
+            <search>
+            xy,position
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.Origin">
              <summary>
@@ -2110,43 +2576,64 @@
              Form a Point given 3 cartesian coordinates
              </summary>
             <search>
-            point,xyz
+            point,xyz,position
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.ByCartesianCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>
-            Form a Point in the given coordinate system with 3 cartesian coordinates
-            </summary>
+             <summary>
+             Form a Point in the given coordinate system with 3 cartesian coordinates
+             </summary>
+            <search>
+            point,xyz,localposition
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>
-            Form a Point in the given coordinate system given its position in cylindrical coordinates.
-            </summary>
+             <summary>
+             Form a Point in the given coordinate system given its position in cylindrical coordinates.
+             </summary>
+            <search>
+            point,localposition
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
-            <summary>
-            Form a Point in the given coordinate system given its position in cylindrical coordinates.
-            </summary>
+             <summary>
+             Form a Point in the given coordinate system given its position in cylindrical coordinates.
+             </summary>
+            <search>
+            point,localposition
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.PruneDuplicates(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Double)">
-            <summary>
-            Prune points to exclude duplicates within tolerance of included points
-            </summary>
+             <summary>
+             Prune points to exclude duplicates within tolerance of included points
+             </summary>
+            <search>
+            unique,duplicates,remove duplicates,distinct,near
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.AsVector">
-            <summary>
-            Get the Vector with the same X, Y, and Z component
-            </summary>
+             <summary>
+             Get the Vector with the same X, Y, and Z component
+             </summary>
+            <search>
+            convertovector,point2vector
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.Add(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Add a vector to a point.  The same as Translate(Vector).
-            </summary>
+             <summary>
+             Add a vector to a point.  The same as Translate(Vector).
+             </summary>
+            <search>
+            movepoint,move,move along
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.Subtract(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Subtract a vector from a point.  The same as Translate(-Vector).
-            </summary>
+             <summary>
+             Subtract a vector from a point.  The same as Translate(-Vector).
+             </summary>
+            <search>
+            movepoint,move,move along
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Point.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
             <summary>
@@ -2210,49 +2697,76 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByCenterPointRadiusAngle(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Create an arc by providing it's center point, radius, angle sweep, and normal vector
-            </summary>
+             <summary>
+             Create an arc by providing it's center point, radius, angle sweep, and normal vector
+             </summary>
+            <search>
+            arc,center
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointSweepAngle(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Create an arc by providing it's center point, start point, sweep point, and normal
-            </summary>
+             <summary>
+             Create an arc by providing it's center point, start point, sweep point, and normal
+             </summary>
+            <search>
+            arc,center
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByCenterPointStartPointEndPoint(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Create an arc by providing it's center point, start point, and end point
-            </summary>
+             <summary>
+             Create an arc by providing it's center point, start point, and end point
+             </summary>
+            <search>
+            arc,center
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByFillet(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Double)">
-            <summary>
-            Create an arc by filleting twp curves with given radius
-            </summary>
+             <summary>
+             Create an arc by filleting twp curves with given radius
+             </summary>
+            <search>
+            arc,fillet,round,smooth
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByFilletTangentToCurve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>
-            Create an arc by filleting two curves tangent to given curve at internal point
-            </summary>
+             <summary>
+             Create an arc by filleting two curves tangent to given curve at internal point
+             </summary>
+            <search>
+            arc,fillet,round,smooth
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByBestFitThroughPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            best fit arc through points
-            </summary>
+             <summary>
+             best fit arc through points
+             </summary>
+            <search>
+            arc,approximate
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByStartEndAndTangencies(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Create an arc or tangent bi arc by start and end points and tangencies at start and end
-            </summary>
+             <summary>
+             Create an arc or tangent bi arc by start and end points and tangencies at start and end
+             </summary>
+            <search>
+            arc,tangent
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Arc.ByStartPointEndPointStartTangent(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Create an Arc from start Point to end Point with start tangent to Vector
-            </summary>
+             <summary>
+             Create an Arc from start Point to end Point with start tangent to Vector
+             </summary>
+            <search>
+            arc,tangent
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Arc.CenterPoint">
-            <summary>
-            The center point of the arc
-            </summary>
+             <summary>
+             The center point of the arc
+             </summary>
+            <search>
+            midpoint
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Arc.Radius">
             <summary>
@@ -2291,46 +2805,64 @@
              Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use  a PolyCurve instead.  NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
              </summary>
             <search>
-            nurbscurve
+            nurbscurve,spline
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32)">
-            <summary>
-            Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use  a PolyCurve instead.  NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
-            </summary>
+             <summary>
+             Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use  a PolyCurve instead.  NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
+             </summary>
+            <search>
+            nurbscurve,spline,degree
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32,System.Boolean)">
-            <summary>
-            Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use  a PolyCurve instead.  NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
-            </summary>
+             <summary>
+             Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use  a PolyCurve instead.  NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
+             </summary>
+            <search>
+            nurbscurve,spline,degree,smoothness
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Double[],System.Double[],System.Int32)">
-            <summary>
-            Create a BSplineCurve by from control vertices, weights, and knots. FROM ASM DOCS: Degree: Should be greater than 1 (piecewise-linear spline) and less than 26 (the maximum  B-spline basis degree supported by ASM). Weights: All weight values (if supplied) should be strictly positive.  Weights smaller than 1e-11 will be rejected and the function will fail.  Knots: The knot vector should be a non-decreasing sequence. Interior knot multiplicity should be no larger than degree + 1 at the start/end knot and  degree at an internal knot (this allows curves with G1 discontinuities to be  represented). Note that non-clamped knot vectors are supported, but will be  converted to clamped ones, with the corresponding changes applied to the  control point/weight data.  knot array: the array size must be num_control_points + degree + 1
-            </summary>
+             <summary>
+             Create a BSplineCurve by from control vertices, weights, and knots. FROM ASM DOCS: Degree: Should be greater than 1 (piecewise-linear spline) and less than 26 (the maximum  B-spline basis degree supported by ASM). Weights: All weight values (if supplied) should be strictly positive.  Weights smaller than 1e-11 will be rejected and the function will fail.  Knots: The knot vector should be a non-decreasing sequence. Interior knot multiplicity should be no larger than degree + 1 at the start/end knot and  degree at an internal knot (this allows curves with G1 discontinuities to be  represented). Note that non-clamped knot vectors are supported, but will be  converted to clamped ones, with the corresponding changes applied to the  control point/weight data.  knot array: the array size must be num_control_points + degree + 1
+             </summary>
+            <search>
+            explicit,nurbscurve,spline,degree,spline byarray
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
              <summary>
              Create a BSplineCurve by interpolating between points.
              </summary>
             <search>
-            fit
+            fit,approximate,spline
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>
-            Create a BSplineCurve by interpolating between points. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
-            </summary>
+             <summary>
+             Create a BSplineCurve by interpolating between points. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.
+             </summary>
+            <search>
+            fit,approximate,spline
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Int32)">
-            <summary>
-            Create a BSplineCurve by interpolating between points with specified degree.
-            </summary>
+             <summary>
+             Create a BSplineCurve by interpolating between points with specified degree.
+             </summary>
+            <search>
+            fit,approximate,spline,smoothness
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ByPointsTangents(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Returns a BSplineCurve through the points, with tangent directions.
-            </summary>
+             <summary>
+             Returns a BSplineCurve through the points, with tangent directions.
+             </summary>
+            <search>
+            spline by tangent,tangents
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
             <summary>
@@ -2343,19 +2875,28 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
-            <summary>
-            The weights of the control vertices of the curve.  These define the magnitude of influence of the control vertices.
-            </summary>
+             <summary>
+             The weights of the control vertices of the curve.  These define the magnitude of influence of the control vertices.
+             </summary>
+            <search>
+            ptweight
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsCurve.Degree">
-            <summary>
-            The degree of the curve
-            </summary>
+             <summary>
+             The degree of the curve
+             </summary>
+            <search>
+            smoothness,interpolation,continuity
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsCurve.IsPeriodic">
-            <summary>
-            Whether the NurbsCurve is periodic or not
-            </summary>
+             <summary>
+             Whether the NurbsCurve is periodic or not
+             </summary>
+            <search>
+            isclosed
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsCurve.IsRational">
             <summary>
@@ -2372,7 +2913,7 @@
              Create a Helix. The helix always rotates clockwise about the supplied  axis direction. If viewing along the axis direction, the viewer will see  the point turning clockwise around the axis as it moves along the curve  in the direction of increasing parameter. Pitch is Distance the helix  moves in the axis direction per turn. This can be positive or negative.
              </summary>
             <search>
-            helix
+            helix,screw,corkscrew,thread
             </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Angle">
@@ -2396,9 +2937,12 @@
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.AxisPoint">
-            <summary>
-            The base point of the Helix axis
-            </summary>
+             <summary>
+             The base point of the Helix axis
+             </summary>
+            <search>
+            origin,helixstart
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ToString">
             <summary>
@@ -2452,24 +2996,36 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadiusNormal(Autodesk.DesignScript.Geometry.Point,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Creates a Circle with specified center Point, radius, and normal direction.
-            </summary>
+             <summary>
+             Creates a Circle with specified center Point, radius, and normal direction.
+             </summary>
+            <search>
+            circle,alignedcircle
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByPlaneRadius(Autodesk.DesignScript.Geometry.Plane,System.Double)">
-            <summary>
-            Create a Circle centered at the input Plane origin (root), lying in  the input Plane, with given radius.
-            </summary>
+             <summary>
+             Create a Circle centered at the input Plane origin (root), lying in  the input Plane, with given radius.
+             </summary>
+            <search>
+            circle,alignedcircle
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByThreePoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Create a Circle passing through three input Points.
-            </summary>
+             <summary>
+             Create a Circle passing through three input Points.
+             </summary>
+            <search>
+            circle
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Circle.ByBestFitThroughPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            Best fit Circle through Points
-            </summary>
+             <summary>
+             Best fit Circle through Points
+             </summary>
+            <search>
+            circle,approximate
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Circle.CenterPoint">
             <summary>
@@ -2487,19 +3043,28 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>
-            Create a Solid Sphere cetered at the input Point, with given radius.
-            </summary>
+             <summary>
+             Create a Solid Sphere cetered at the input Point, with given radius.
+             </summary>
+            <search>
+            Brep,brep
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            Create a Solid Sphere containing four input Points on the surface.
-            </summary>
+             <summary>
+             Create a Solid Sphere containing four input Points on the surface.
+             </summary>
+            <search>
+            Brep,brep
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByBestFit(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            Fit a Sphere as close as possible to the input Points.
-            </summary>
+             <summary>
+             Fit a Sphere as close as possible to the input Points.
+             </summary>
+            <search>
+            Brep,brep
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.CenterPoint">
             <summary>
@@ -2532,9 +3097,12 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
-            <summary>
-            Returns average point of corners of polygon
-            </summary>
+             <summary>
+             Returns average point of corners of polygon
+             </summary>
+            <search>
+            centroid
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
             <summary>
@@ -2562,19 +3130,28 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>
-            Create a Rectangle by four corner Points.
-            </summary>
+             <summary>
+             Create a Rectangle by four corner Points.
+             </summary>
+            <search>
+            rectbypointarray
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByCornerPoints(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Create a Rectangle by four corner Points.
-            </summary>
+             <summary>
+             Create a Rectangle by four corner Points.
+             </summary>
+            <search>
+            rectbypoints
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(System.Double,System.Double)">
-            <summary>
-            Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and height (Y Axis length).
-            </summary>
+             <summary>
+             Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and height (Y Axis length).
+             </summary>
+            <search>
+            rectbylengths
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
              <summary>
@@ -2585,19 +3162,28 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ByWidthHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>
-            Create a Rectangle centered at the input origin in the CoordinateSystem  XY Plane, with specified width (X Axis length), and height  (Y Axis length).
-            </summary>
+             <summary>
+             Create a Rectangle centered at the input origin in the CoordinateSystem  XY Plane, with specified width (X Axis length), and height  (Y Axis length).
+             </summary>
+            <search>
+            rectbylengths
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Rectangle.Width">
-            <summary>
-            The width of the Rectangle
-            </summary>
+             <summary>
+             The width of the Rectangle
+             </summary>
+            <search>
+            rectX,rectx
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Rectangle.Height">
-            <summary>
-            The height of the Rectangle
-            </summary>
+             <summary>
+             The height of the Rectangle
+             </summary>
+            <search>
+            rectY,recty
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ToString">
             <summary>
@@ -2613,19 +3199,28 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByOriginVectors(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>
-            Create an Ellipse centered at input Point, with two specified axes.  Axes should be be at 90 degrees to each other.
-            </summary>
+             <summary>
+             Create an Ellipse centered at input Point, with two specified axes.  Axes should be be at 90 degrees to each other.
+             </summary>
+            <search>
+            ellipsebylengths,ellipsebyvectors
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByCoordinateSystemRadii(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>
-            Create an Ellipse centered and aligned with input CoordinateSystem,  with a x_radius radius in the CS X direction, and y_radius radius in the  CS Y direction.
-            </summary>
+             <summary>
+             Create an Ellipse centered and aligned with input CoordinateSystem,  with a x_radius radius in the CS X direction, and y_radius radius in the  CS Y direction.
+             </summary>
+            <search>
+            ellipse,aligned ellipse,ellipsebylengths
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ByPlaneRadii(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double)">
-            <summary>
-            Create an Ellipse centered and aligned with input Plane, with a x_radius  radius in the Plane X axis direction, and y_radius radius in the  Plane Y axis direction.
-            </summary>
+             <summary>
+             Create an Ellipse centered and aligned with input Plane, with a x_radius  radius in the Plane X axis direction, and y_radius radius in the  Plane Y axis direction.
+             </summary>
+            <search>
+            ellipse,aligned ellipse,ellipsebylengths
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Ellipse.CenterPoint">
             <summary>
@@ -2717,7 +3312,7 @@
              Create a Plane centered at root Point, with input normal Vector.
              </summary>
             <search>
-            plane
+            plane,tonormal
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByOriginNormalXAxis(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
@@ -2735,7 +3330,7 @@
              Fits a Plane to the input Points; basically a 3D scatterplot fit.
              </summary>
             <search>
-            fit
+            fit,bestfit
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ByLineAndPoint(Autodesk.DesignScript.Geometry.Line,Autodesk.DesignScript.Geometry.Point)">
@@ -2764,24 +3359,36 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.ToCoordinateSystem">
-            <summary>
-            Produces a new CoordinateSystem representing this plane. It is based on  the origin, and X and Y axis basis.
-            </summary>
+             <summary>
+             Produces a new CoordinateSystem representing this plane. It is based on  the origin, and X and Y axis basis.
+             </summary>
+            <search>
+            converttoCS,convert2cs
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Plane.Offset(System.Double)">
-            <summary>
-            Create a new Plane offset by this Plane in the normal direction by the specified distance.
-            </summary>
+             <summary>
+             Create a new Plane offset by this Plane in the normal direction by the specified distance.
+             </summary>
+            <search>
+            alongnormal,moveplane
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Plane.Origin">
-            <summary>
-            Returns the origin of the Plane.
-            </summary>
+             <summary>
+             Returns the origin of the Plane.
+             </summary>
+            <search>
+            position,planecenter
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Plane.Normal">
-            <summary>
-            Returns the normal direction of the Plane.
-            </summary>
+             <summary>
+             Returns the normal direction of the Plane.
+             </summary>
+            <search>
+            perpendicular
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Plane.XAxis">
             <summary>
@@ -2816,33 +3423,48 @@
              Create an axis-aligned BoundingBox around input Geometry.
              </summary>
             <search>
-            bounding
+            bounding,bound
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
-            <summary>
-            Create an axis-aligned BoundingBox around input Geometries.
-            </summary>
+             <summary>
+             Create an axis-aligned BoundingBox around input Geometries.
+             </summary>
+            <search>
+            bounding,bound,multiple,boundall
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>
-            Create a non-axis-aligned BoundingBox around input Geometry, oriented in the X, Y, and Z axis of the CoordinateSystem.
-            </summary>
+             <summary>
+             Create a non-axis-aligned BoundingBox around input Geometry, oriented in the X, Y, and Z axis of the CoordinateSystem.
+             </summary>
+            <search>
+            bounding,bound
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometryCoordinateSystem(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>
-            Create a non-axis-aligned BoundingBox around input Geometries, oriented in the X, Y, and Z axis of the CoordinateSystem.
-            </summary>
+             <summary>
+             Create a non-axis-aligned BoundingBox around input Geometries, oriented in the X, Y, and Z axis of the CoordinateSystem.
+             </summary>
+            <search>
+            bounding,bound,multiple,boundall
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCorners(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Creates the an axis-aligned BoundingBox spanning between the minimum Point and the maximum Point.
-            </summary>
+             <summary>
+             Creates the an axis-aligned BoundingBox spanning between the minimum Point and the maximum Point.
+             </summary>
+            <search>
+            bounding,bound,bymaxmin,max,min,bypoints
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByCornersCoordinateSystem(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.CoordinateSystem)">
-            <summary>
-            Constructs a BoundingBox from minimum coordinates (lower-left-rear corner of the box), to maximum coordinates (upper-right-front corner of the box). CoordinateSystem is the transform FROM the coordinate space of the box TO the model space. This method is designed to match Revit's API, allowing you to extract out the parameters from a Revit BoundingBox without any conversions.
-            </summary>
+             <summary>
+             Constructs a BoundingBox from minimum coordinates (lower-left-rear corner of the box), to maximum coordinates (upper-right-front corner of the box). CoordinateSystem is the transform FROM the coordinate space of the box TO the model space. This method is designed to match Revit's API, allowing you to extract out the parameters from a Revit BoundingBox without any conversions.
+             </summary>
+            <search>
+            bounding,bound,bymaxmin,max,min,bypoints
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersection(Autodesk.DesignScript.Geometry.BoundingBox)">
             <summary>
@@ -2850,9 +3472,12 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Intersects(Autodesk.DesignScript.Geometry.BoundingBox)">
-            <summary>
-            Determine whether two BoundingBoxes intersect
-            </summary>
+             <summary>
+             Determine whether two BoundingBoxes intersect
+             </summary>
+            <search>
+            get overlap
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.IsEmpty">
             <summary>
@@ -2860,19 +3485,28 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Contains(Autodesk.DesignScript.Geometry.Point)">
-            <summary>
-            Determine if a point is inside of the BoundingBox
-            </summary>
+             <summary>
+             Determine if a point is inside of the BoundingBox
+             </summary>
+            <search>
+            point inside,testpoint
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToCuboid">
-            <summary>
-            Get the BoundingBox as a Solid Cuboid
-            </summary>
+             <summary>
+             Get the BoundingBox as a Solid Cuboid
+             </summary>
+            <search>
+            converttosolid,bb2cube,bb2cub,bounding tosolid
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToPolySurface">
-            <summary>
-            Get the BoundingBox as a collection of Surfaces
-            </summary>
+             <summary>
+             Get the BoundingBox as a collection of Surfaces
+             </summary>
+            <search>
+            converttosurfaces,convert2surfaces,bbtosrfs,bbtosrfs,bounding to surfaces,bound to poly,convert2poly
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.BoundingBox.MinPoint">
             <summary>
@@ -2895,14 +3529,20 @@
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ByRadiusHeight(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double)">
-            <summary>
-            Construct a Solid Cylinder defined by a parent CoordinateSystem, the radius, and the height of the cylinder
-            </summary>
+             <summary>
+             Construct a Solid Cylinder defined by a parent CoordinateSystem, the radius, and the height of the cylinder
+             </summary>
+            <search>
+            cylinder,tube
+            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ByPointsRadius(Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>
-            Construct a Solid Cylinder given the bottom and top center point of the Cylinder.
-            </summary>
+             <summary>
+             Construct a Solid Cylinder given the bottom and top center point of the Cylinder.
+             </summary>
+            <search>
+            cylinder,tube,by center points
+            </search>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Radius">
             <summary>
