@@ -109,7 +109,9 @@ limitations under the License.
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
+    <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Core\Threading\AsyncTaskExtensions.cs" />
     <Compile Include="PackageManager\PackageManagerResult.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
@@ -174,7 +176,7 @@ limitations under the License.
     <Compile Include="Models\DynamoModelEvents.cs" />
     <Compile Include="Models\NodeFactory.cs" />
     <Compile Include="Models\TypeLoadData.cs" />
-    <Compile Include="Models\WorkspaceHeader.cs" />
+    <Compile Include="Models\WorkspaceInfo.cs" />
     <Compile Include="Models\ScopedNodeModel.cs" />
     <Compile Include="PackageManager\PackageFileInfo.cs" />
     <Compile Include="Nodes\Custom Nodes\CustomNodeController.cs" />
@@ -268,6 +270,7 @@ limitations under the License.
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="Properties\Settings.settings">
