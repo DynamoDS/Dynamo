@@ -407,7 +407,7 @@ namespace ProtoCore.Lang
                     ret = StringUtils.ConvertToString(formalParameters[0], core, rmem);
                     break;
                 case BuiltInMethods.MethodID.kImportData:
-                    ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], core, interpreter, c);
+                    ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], core, core.__TempCoreHostForRefactoring, interpreter, c);
                     break;
                 case BuiltInMethods.MethodID.kBreak:
                     {
@@ -677,16 +677,16 @@ namespace ProtoCore.Lang
 
     internal class ContextDataBuiltIns
     {
-        internal static StackValue ImportData(StackValue svAppName, StackValue svConnectionParameters, Core core, Interpreter interpreter, ProtoCore.Runtime.Context c)
+        internal static StackValue ImportData(StackValue svAppName, StackValue svConnectionParameters, Core core, RuntimeCore runtimeCore, Interpreter interpreter, ProtoCore.Runtime.Context c)
         {
             string appname = StringUtils.GetStringValue(svAppName, core);
 
-            IContextDataProvider provider = ContextDataManager.GetInstance(core).GetDataProvider(appname);
+            IContextDataProvider provider = runtimeCore.DSExecutable.RuntimeData.ContextDataMngr.GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
-            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(core.__TempCoreHostForRefactoring);
+            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(runtimeCore);
 
-            Dictionary<string, Object> parameters = new Dictionary<string,object>();
+            Dictionary<string, Object> parameters = new Dictionary<string, object>();
             if (!svConnectionParameters.IsArray)
             {
                 Object connectionParameters = marshaler.UnMarshal(svConnectionParameters, c, interpreter, typeof(Object));
@@ -695,12 +695,12 @@ namespace ProtoCore.Lang
             else
             {
                 StackValue[] svArray = ArrayUtils.GetValues(svConnectionParameters, interpreter.runtime.RuntimeCore).ToArray();
-                ProtoCore.Utils.Validity.Assert(svArray.Length%2 == 0, string.Format("Connection parameters for ImportData should be array of Parameter Name followed by value"));
+                ProtoCore.Utils.Validity.Assert(svArray.Length % 2 == 0, string.Format("Connection parameters for ImportData should be array of Parameter Name followed by value"));
                 int nParameters = svArray.Length / 2;
                 for (int i = 0; i < nParameters; ++i)
                 {
-                    string paramName = StringUtils.GetStringValue(svArray[2*i], core);
-                    Object paramData = marshaler.UnMarshal(svArray[2*i+1], c, interpreter, typeof(Object));
+                    string paramName = StringUtils.GetStringValue(svArray[2 * i], core);
+                    Object paramData = marshaler.UnMarshal(svArray[2 * i + 1], c, interpreter, typeof(Object));
                     parameters.Add(paramName, paramData);
                 }
             }
