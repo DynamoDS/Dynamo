@@ -89,6 +89,8 @@ namespace ProtoCore
 
             FunctionCallDepth = 0;
             cancellationPending = false;
+
+            watchClassScope = Constants.kInvalidIndex;
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -151,6 +153,9 @@ namespace ProtoCore
         }
 
 #region DEBUGGER_PROPERTIES
+
+        public int watchClassScope { get; set; }
+
         public DebugProperties DebugProps { get; set; }
         public List<Instruction> Breakpoints { get; set; }
 
@@ -236,6 +241,27 @@ namespace ProtoCore
             }
 
             cancellationPending = true;
+        }
+
+        public int GetCurrentBlockId()
+        {
+            int constructBlockId = RuntimeMemory.CurrentConstructBlockId;
+            if (constructBlockId == Constants.kInvalidIndex)
+                return DebugProps.CurrentBlockId;
+
+            CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(DSExecutable.CodeBlocks, constructBlockId);
+            while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
+            {
+                constructBlock = constructBlock.parent;
+            }
+
+            if (null != constructBlock)
+                constructBlockId = constructBlock.codeBlockId;
+
+            if (constructBlockId != DebugProps.CurrentBlockId)
+                return DebugProps.CurrentBlockId;
+            else
+                return RuntimeMemory.CurrentConstructBlockId;
         }
     }
 }

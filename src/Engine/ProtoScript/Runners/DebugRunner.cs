@@ -237,7 +237,7 @@ namespace ProtoScript.Runners
             }
             finally
             {
-                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
                 vms = new VMState(execMirror, core);
                 vms.isEnded = isEnded;
                 ProtoCore.CodeModel.CodePoint start = new ProtoCore.CodeModel.CodePoint();
@@ -568,7 +568,7 @@ namespace ProtoScript.Runners
                 null,
                 breakpoints);
 
-            return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+            return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
 
         }
         /// <summary>

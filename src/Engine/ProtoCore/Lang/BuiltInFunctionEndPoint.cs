@@ -898,7 +898,7 @@ namespace ProtoCore.Lang
         internal static StackValue Print(StackValue msg, ProtoCore.DSASM.Interpreter runtime)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.Core);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.RuntimeCore);
             string result = mirror.GetStringValue(msg, runtime.runtime.rmem.Heap, 0, true);
             //For Console output
             Console.WriteLine(result);

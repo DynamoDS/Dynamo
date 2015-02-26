@@ -199,7 +199,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             }
 
             return null;
@@ -233,7 +233,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             }
 
             return null;
@@ -276,7 +276,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             }
 
             return null;
@@ -311,7 +311,7 @@ namespace ProtoScript.Runners
             Execute(strSource, core);
 
             if (isTest && !core.Options.CompileToLib)
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             else
                 return null;
         }

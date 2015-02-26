@@ -56,7 +56,7 @@ namespace ProtoTestFx
         internal void Print(StackValue sv, int lineNo, string symbolName, int ci = Constants.kInvalidIndex)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core.__TempCoreHostForRefactoring);
             string result = mirror.GetStringValue(sv, RuntimeCore.RuntimeMemory.Heap, 0, true);
 
             TextOutputStream tStream = Core.BuildStatus.MessageHandler as TextOutputStream;

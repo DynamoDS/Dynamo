@@ -86,7 +86,7 @@ namespace ProtoScript.Runners
             Core.watchBaseOffset = 0;
             runtimeCore.watchStack.Clear();
 
-            bool succeeded = Compile(code, Core.GetCurrentBlockId(), out blockId);
+            bool succeeded = Compile(code, runtimeCore.GetCurrentBlockId(), out blockId);
 
             //Clear the warnings and errors so they will not continue impact the next compilation.
             Core.BuildStatus.ClearErrors();
@@ -203,7 +203,7 @@ namespace ProtoScript.Runners
             runtimeCore.Options.ExecuteSSA = ssastateExec;
             runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.kNormal;
 
-            return new ExecutionMirror(Core.CurrentExecutive.CurrentDSASMExec, Core);
+            return new ExecutionMirror(Core.CurrentExecutive.CurrentDSASMExec, Core.__TempCoreHostForRefactoring);
         }
     }
 }

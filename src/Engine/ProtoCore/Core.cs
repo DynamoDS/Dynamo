@@ -609,7 +609,6 @@ namespace ProtoCore
             Langverify = new LangVerify();
 
 
-            watchClassScope = Constants.kInvalidIndex;
             watchFunctionScope = Constants.kInvalidIndex;
             watchSymbolList = new List<SymbolNode>();
             watchBaseOffset = 0;
@@ -722,7 +721,6 @@ namespace ProtoCore
         //           It must be moved to its own core, whre each core is an instance of a compiler+interpreter
         //
         public Executable ExprInterpreterExe { get; set; }
-        public int watchClassScope { get; set; }
         public int watchFunctionScope { get; set; }
         public int watchBaseOffset { get; set; }
         public List<SymbolNode> watchSymbolList { get; set; }
@@ -1090,26 +1088,26 @@ namespace ProtoCore
             return modStateTemp;
         }
 
-        public int GetCurrentBlockId()
-        {
-            int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
-            if (constructBlockId == Constants.kInvalidIndex)
-                return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
+        //public int GetCurrentBlockId()
+        //{
+        //    int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
+        //    if (constructBlockId == Constants.kInvalidIndex)
+        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
 
-            CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
-            while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
-            {
-                constructBlock = constructBlock.parent;
-            }
+        //    CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
+        //    while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
+        //    {
+        //        constructBlock = constructBlock.parent;
+        //    }
 
-            if (null != constructBlock)
-                constructBlockId = constructBlock.codeBlockId;
+        //    if (null != constructBlock)
+        //        constructBlockId = constructBlock.codeBlockId;
 
-            if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
-                return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
-            else
-                return __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
-        }
+        //    if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
+        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
+        //    else
+        //        return __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
+        //}
 
         public GraphNode GetExecutingGraphNode()
         {
