@@ -13,7 +13,7 @@ using ProtoFFI;
 namespace ProtoTest.FFITests
 {
     [TestFixture]
-    class TestCSharpAttribute : ProtoTestBase 
+    public class TestCSharpAttribute : ProtoTestBase 
     {
         [Test]
         public void BasicClassAttributeTest()
@@ -24,10 +24,9 @@ namespace ProtoTest.FFITests
 
             String code = @"import(""FFITarget.dll"");";
             var execMirror = thisTest.RunScriptSource(code);
+            var staticCore = thisTest.GetTestCore();
 
-            //var core = execMirror.MirrorTarget.Core;
-
-            ClassMirror classMirror = new ClassMirror("TestCSharpAttribute", core);
+            ClassMirror classMirror = new ClassMirror("TestCSharpAttribute", staticCore);
             Assert.IsNotNull(classMirror);
             var classAttributes = classMirror.GetClassAttributes();
             Assert.IsNotNull(classAttributes);

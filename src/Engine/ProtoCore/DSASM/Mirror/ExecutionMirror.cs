@@ -940,12 +940,12 @@ namespace ProtoCore.DSASM.Mirror
                         // Register TX is used for this.
                         stackFrame.TX = StackValue.BuildCallingConversion((int)CallingConvention.BounceType.kImplicit);
 
-                        //runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
-                        //    codeblock.codeBlockId, 
-                        //    codeblock.instrStream.entrypoint, 
-                        //    context, 
-                        //    stackFrame,
-                        //    locals);
+                        runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
+                            codeblock.codeBlockId, 
+                            codeblock.instrStream.entrypoint, 
+                            context, 
+                            stackFrame,
+                            locals);
                     }
                 }
                 catch

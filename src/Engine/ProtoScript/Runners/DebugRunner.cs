@@ -63,10 +63,10 @@ namespace ProtoScript.Runners
                 core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
                 core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-                runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             }
 
             runtimeCore = core.__TempCoreHostForRefactoring;
+            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
 
             if (null != fileName)
             {
