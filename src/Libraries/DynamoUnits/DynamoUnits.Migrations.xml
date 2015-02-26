@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<migrations>
+  <priorNameHint>
+    <oldName>DynamoUnits.SIUnit.Add@double</oldName>
+    <newName>DSCore.Math.Add@double,double</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.SIUnit.Subtract@double</oldName>
+    <newName>DSCore.Math.Subtract@double,double</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.SIUnit.Divide@double</oldName>
+    <newName>DSCore.Math.Divide@double,double</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.SIUnit.Modulo@double</oldName>
+    <newName>DSCore.Math.Modulo@double,double</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>DynamoUnits.Length.FromFeet@double</oldName>
+    <newName>DynamoUnits.TranslateUnits@double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>index</name>
+        <value>feet</value>
+      </parameter>
+    </additionalParameters>
+  </priorNameHint>
+
+
+</migrations>
