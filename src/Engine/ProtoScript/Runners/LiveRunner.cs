@@ -1496,7 +1496,7 @@ namespace ProtoScript.Runners
         {
             Dictionary<string, bool> execFlagList = null;
 
-            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList);
+            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList, Constants.kInvalidIndex);
 
             bool succeeded = runner.Compile(staticContext, runnerCore, out blockId);
             if (succeeded)
@@ -1621,7 +1621,7 @@ namespace ProtoScript.Runners
 
         private void ApplyUpdate()
         {
-            if (ProtoCore.AssociativeEngine.Utils.GetDirtyNodeCountAtGlobalScope(runnerCore.DSExecutable) > 0)
+            if (ProtoCore.AssociativeEngine.Utils.IsGlobalScopeDirty(runnerCore.DSExecutable))
             {
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;

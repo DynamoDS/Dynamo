@@ -271,7 +271,7 @@ namespace DynamoCoreUITests
             string name = randomizer.Next().ToString();
             string value = randomizer.Next().ToString();
 
-            var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuid, name, value);
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, modelGuid, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
@@ -295,7 +295,7 @@ namespace DynamoCoreUITests
             string name = randomizer.Next().ToString();
             string value = randomizer.Next().ToString();
 
-            var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuids, name, value);
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, modelGuids, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
@@ -527,7 +527,7 @@ namespace DynamoCoreUITests
         {
             var cmdOne = new DynamoModel.SwitchTabCommand(randomizer.Next());
             var cmdTwo = DuplicateAndCompare(cmdOne);
-            Assert.AreEqual(cmdOne.TabIndex, cmdTwo.TabIndex);
+            Assert.AreEqual(cmdOne.WorkspaceModelIndex, cmdTwo.WorkspaceModelIndex);
         }
 
         #endregion
