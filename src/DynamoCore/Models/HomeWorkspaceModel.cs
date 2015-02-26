@@ -133,7 +133,7 @@ namespace Dynamo.Models
 
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
-            // shutting down so we check that shutdown has not been requested.
+            // shutting down so we check whether an engine controller is available.
             if (RunSettings.RunType != RunType.Manually && EngineController != null)
             {
                 Context.Post(Run, null);
