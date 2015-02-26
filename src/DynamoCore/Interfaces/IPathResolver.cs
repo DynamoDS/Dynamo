@@ -36,6 +36,12 @@ namespace Dynamo.Interfaces
         /// </summary>
         string SamplesDirectory { get; }
 
+        /// <summary>
+        /// Full path to the preference xml file. This setting file is specific 
+        /// to the current user.
+        /// </summary>
+        string PreferenceFilePath { get; }
+
         IEnumerable<string> NodeDirectories { get; }
     }
 }

@@ -22,6 +22,7 @@ namespace Dynamo.Core
         private readonly string logDirectory;
         private readonly string packagesDirectory;
         private readonly string samplesDirectory;
+        private readonly string preferenceFilePath;
 
         private readonly HashSet<string> nodeDirectories;
         private readonly List<string> additionalResolutionPaths;
@@ -51,6 +52,10 @@ namespace Dynamo.Core
             get { return samplesDirectory; }
         }
 
+        public string PreferenceFilePath
+        {
+            get { return preferenceFilePath; }
+        }
 
         public IEnumerable<string> NodeDirectories
         {
@@ -82,6 +87,7 @@ namespace Dynamo.Core
             userDefinitions = CreateFolder(Path.Combine(userDataDir, "definitions"));
             logDirectory = CreateFolder(Path.Combine(userDataDir, "Logs"));
             packagesDirectory = CreateFolder(Path.Combine(userDataDir, "packages"));
+            preferenceFilePath = Path.Combine(userDataDir, "DynamoSettings.xml");
 
             // Common directories.
             commonDataDir = CreateFolder(GetCommonDataFolder());
