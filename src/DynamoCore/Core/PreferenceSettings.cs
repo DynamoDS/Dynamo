@@ -158,9 +158,12 @@ namespace Dynamo
         /// Save PreferenceSettings in a default directory when no path is specified
         /// </summary>
         /// <returns>Whether file is saved or error occurred.</returns>
-        public bool Save()
+        public bool SaveInternal(string preferenceFilePath)
         {
-            return Save(DynamoTestPath ?? GetSettingsFilePath());
+            if (!string.IsNullOrEmpty(DynamoTestPath))
+                preferenceFilePath = DynamoTestPath;
+
+            return Save(preferenceFilePath);
         }
 
         /// <summary>
