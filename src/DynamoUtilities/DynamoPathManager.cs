@@ -25,11 +25,6 @@ namespace DynamoUtilities
         public string MainExecPath { get; private set; }
 
         /// <summary>
-        /// The location of the Samples folder.
-        /// </summary>
-        public string CommonSamples { get; private set; }
-
-        /// <summary>
         /// Libraries to be preloaded by library services.
         /// </summary>
         public IEnumerable<string> PreloadLibraries
@@ -80,26 +75,6 @@ namespace DynamoUtilities
 
             AppData = GetDynamoAppDataFolder(MainExecPath);
 
-            var commonData = GetDynamoCommonDataFolder(MainExecPath);
-
-            var UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
-            CommonSamples = Path.Combine(commonData, "samples", UICulture);
-
-            // If the localized samples directory does not exist
-            // then fall back to using the en-US samples folder. Do an
-            // additional check whether the localized folder is available
-            // but is empty.
-            var di = new DirectoryInfo(CommonSamples);
-            if (!Directory.Exists(CommonSamples)
-                || !di.GetDirectories().Any() 
-                || !di.GetFiles().Any())
-            {
-                var neturalCommonSamples = Path.Combine(commonData, "samples", "en-US");
-
-                if (Directory.Exists(neturalCommonSamples))
-                    CommonSamples = neturalCommonSamples;
-            }
-
 #if DEBUG
             var sb = new StringBuilder();
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));            
@@ -141,18 +116,6 @@ namespace DynamoUtilities
                 "Dynamo",
                 dynVersion);
             return appData;
-        }
-
-        private static string GetDynamoCommonDataFolder(string basePath)
-        {
-            var dynCore = Path.Combine(basePath, "DynamoCore.dll");
-            var fvi = FileVersionInfo.GetVersionInfo(dynCore);
-            var dynVersion = String.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
-            var progData = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                "Dynamo",
-                dynVersion);
-            return progData;
         }
 
         /// <summary>
