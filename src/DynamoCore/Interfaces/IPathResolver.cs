@@ -19,9 +19,16 @@ namespace Dynamo.Interfaces
         string CommonDefinitions { get; }
 
         /// <summary>
-        /// The local directory where log files are generated.
+        /// The local directory where log files are generated. This directory is 
+        /// specific to the current user.
         /// </summary>
         string LogDirectory { get; }
+
+        /// <summary>
+        /// The packages directory, which contains pacakages downloaded through
+        /// the package manager. This directory is specific to the current user.
+        /// </summary>
+        string PackagesDirectory { get; }
 
         IEnumerable<string> NodeDirectories { get; }
     }
