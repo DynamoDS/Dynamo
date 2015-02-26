@@ -50,40 +50,6 @@ namespace ProtoCore
         public bool isLongest {get; private set;}
     }
 
-    public class InterpreterProperties
-    {
-        public GraphNode executingGraphNode { get; set; }
-        public List<GraphNode> nodeIterations { get; set; }
-
-        public List<StackValue> functionCallArguments { get; set; }
-        public List<StackValue> functionCallDotCallDimensions { get; set; }
-
-        public UpdateStatus updateStatus { get; set; }
-
-        public InterpreterProperties()
-        {
-            Reset();
-        }
-
-        public InterpreterProperties(InterpreterProperties rhs)
-        {
-            executingGraphNode = rhs.executingGraphNode;
-            nodeIterations = rhs.nodeIterations;
-            functionCallArguments = rhs.functionCallArguments;
-            functionCallDotCallDimensions = rhs.functionCallDotCallDimensions;
-            updateStatus = rhs.updateStatus;
-        }
-
-        public void Reset()
-        {
-            executingGraphNode = null;
-            nodeIterations = new List<GraphNode>();
-            functionCallArguments = new List<StackValue>();
-            functionCallDotCallDimensions = new List<StackValue>();
-            updateStatus = UpdateStatus.kNormalUpdate;
-        }
-    }
-
     public class Options
     {
         public Options()
@@ -173,6 +139,7 @@ namespace ProtoCore
         public bool GenerateExprID { get; set; }
         public bool IsDeltaExecution { get; set; }
         public bool ElementBasedArrayUpdate { get; set; }
+        public InterpreterMode RunMode { get; set; }
 
         /// <summary>
         /// TODO: Aparajit: This flag is true for Delta AST compilation
@@ -410,10 +377,6 @@ namespace ProtoCore
             ContextDataManager.GetInstance(this).AddData(data);
         }
 
-        // Cached replication guides for the current call. 
-        // TODO Jun: Store this in the dynamic table node
-        public List<List<ReplicationGuide>> replicationGuides;
-
         // if CompileToLib is true, this is used to output the asm instruction to the dsASM file
         // if CompilerToLib is false, this will be set to Console.Out
         public TextWriter AsmOutput;
@@ -430,8 +393,6 @@ namespace ProtoCore
         /// This is copied to the RuntimeCore after compilation
         /// </summary>
         public DebugProperties DebuggerProperties;
-        
-        public Stack<InterpreterProperties> InterpreterProps { get; set; }
 
         // Continuation properties used for Serial mode execution and Debugging of Replicated calls
         public ContinuationStructure ContinuationStruct { get; set; }
@@ -616,7 +577,7 @@ namespace ProtoCore
         {
             Options.ApplyUpdate = false;
 
-            ExecMode = InterpreterMode.kNormal;
+            Options.RunMode = InterpreterMode.kNormal;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
             RunningBlock = 0;
 
@@ -727,7 +688,6 @@ namespace ProtoCore
             //Initialize the dynamic string table and dynamic function table
             DynamicVariableTable = new DynamicVariableTable();
             DynamicFunctionTable = new DynamicFunctionTable();
-            replicationGuides = new List<List<ReplicationGuide>>();
 
             startPC = Constants.kInvalidIndex;
 
@@ -753,7 +713,7 @@ namespace ProtoCore
             ModifierStateSubscript = 0;
 
             ExprInterpreterExe = null;
-            ExecMode = InterpreterMode.kNormal;
+            Options.RunMode = InterpreterMode.kNormal;
 
             assocCodegen = null;
             FunctionCallDepth = 0;
@@ -763,7 +723,6 @@ namespace ProtoCore
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
 
             DebuggerProperties = new DebugProperties();
-            InterpreterProps = new Stack<InterpreterProperties>();
 
             ExecutiveProvider = new ExecutiveProvider();
 
@@ -825,7 +784,6 @@ namespace ProtoCore
         //           It must be moved to its own core, whre each core is an instance of a compiler+interpreter
         //
         public Executable ExprInterpreterExe { get; set; }
-        public InterpreterMode ExecMode { get; set; }
         public List<SymbolNode> watchSymbolList { get; set; }
         public int watchClassScope { get; set; }
         public int watchFunctionScope { get; set; }
@@ -1035,24 +993,6 @@ namespace ProtoCore
             return null;
         }
 
-        public CodeBlock GetCodeBlock(List<CodeBlock> blockList, int blockId)
-        {
-            CodeBlock codeblock = null;
-            codeblock = blockList.Find(x => x.codeBlockId == blockId);
-            if (codeblock == null)
-            {
-                foreach (CodeBlock block in blockList)
-                {
-                    codeblock = GetCodeBlock(block.children, blockId);
-                    if (codeblock != null)
-                    {
-                        break;
-                    }
-                }
-            }
-            return codeblock;
-        }
-
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)
         {
             if (CodeBlockType.kLanguage == codeBlock.blockType
@@ -1167,6 +1107,13 @@ namespace ProtoCore
 
             SetupRuntimeCore();
 
+            // Create the code block list data
+            DSExecutable.CodeBlocks = new List<CodeBlock>();
+            DSExecutable.CodeBlocks.AddRange(CodeBlockList);
+            DSExecutable.CompleteCodeBlocks = new List<CodeBlock>();
+            DSExecutable.CompleteCodeBlocks.AddRange(CompleteCodeBlockList);
+
+
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
@@ -1266,7 +1213,7 @@ namespace ProtoCore
             if (constructBlockId == Constants.kInvalidIndex)
                 return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
 
-            CodeBlock constructBlock = GetCodeBlock(CodeBlockList, constructBlockId);
+            CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
             while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
             {
                 constructBlock = constructBlock.parent;
@@ -1286,18 +1233,6 @@ namespace ProtoCore
             return ExecutingGraphnode;
         }
 
-        public bool IsEvalutingPropertyChanged()
-        {
-            foreach (var prop in InterpreterProps)
-            {
-                if (prop.updateStatus == UpdateStatus.kPropertyChangedUpdate)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         public GraphNode ExecutingGraphnode { get; set; }
 

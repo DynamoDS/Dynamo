@@ -101,7 +101,7 @@ namespace Dynamo.Nodes
                 Controller.SyncNodeWithDefinition(this);
                 OnNodeModified();
             }
-            else
+            else if (Controller.Definition == null || Controller.Definition.IsProxy)
             {
                 foreach (XmlNode subNode in childNodes)
                 {
@@ -251,19 +251,6 @@ namespace Dynamo.Nodes
                     }
                     else
                     {
-                        if (identifierNode.datatype.UID == Constants.kInvalidIndex)
-                        {
-                            string warningMessage = String.Format(
-                                Properties.Resources.WarningCannotFindType, 
-                                identifierNode.datatype.Name);
-                            this.Warning(warningMessage);
-                        }
-                        else
-                        {
-                            nickName = identifierNode.Value;
-                            type = identifierNode.datatype;
-                        }
-
                         if (defaultValueNode != null)
                         {
                             TypeSwitch.Do(
@@ -273,6 +260,23 @@ namespace Dynamo.Nodes
                                 TypeSwitch.Case<BooleanNode>(n => defaultValue = n.Value),
                                 TypeSwitch.Case<StringNode>(n => defaultValue = n.value),
                                 TypeSwitch.Default(() => defaultValue = null));
+                        }
+
+                        if (identifierNode.datatype.UID == Constants.kInvalidIndex)
+                        {
+                            string warningMessage = String.Format(
+                                Properties.Resources.WarningCannotFindType, 
+                                identifierNode.datatype.Name);
+                            this.Warning(warningMessage);
+                        }
+                        else
+                        {
+                            // Default value not supported or invalid, so use the original
+                            // input as nickName. For example, "y = f(x)"
+                            if (defaultValueNode == null || defaultValue != null)
+                                nickName = identifierNode.Value;
+
+                            type = identifierNode.datatype;
                         }
                     }
                 }

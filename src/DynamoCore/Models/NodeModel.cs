@@ -1766,7 +1766,9 @@ namespace Dynamo.Models
             if (resourceType == null)
                 throw new ArgumentNullException("resourceType");
 
-            var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static);
+            //Sometimes resources are made internal so that they don't appear in 
+            //node library, hence we also need to query non public properties.
+            var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
             if (prop != null && prop.PropertyType == typeof(String))
             {
                 var tagString = (string)prop.GetValue(null, null);
@@ -1818,7 +1820,9 @@ namespace Dynamo.Models
             if (resourceType == null)
                 throw new ArgumentNullException("resourceType");
 
-            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static);
+            //Sometimes resources are made internal so that they don't appear in 
+            //node library, hence we also need to query non public properties.
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
             if (prop != null && prop.PropertyType == typeof(String))
             {
                 ElementDescription = (string)prop.GetValue(null, null);

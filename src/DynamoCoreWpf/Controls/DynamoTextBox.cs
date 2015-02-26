@@ -221,6 +221,7 @@ namespace Dynamo.Nodes
                         string propName = expr.ParentBinding.Path.Path;
                         nvm.DynamoViewModel.ExecuteCommand(
                             new DynamoModel.UpdateModelValueCommand(
+                                nodeViewModel.WorkspaceViewModel.Model.Guid,
                                 nvm.NodeModel.GUID, propName, Text));
                     }
                 }
@@ -350,6 +351,7 @@ namespace Dynamo.UI.Controls
         private DispatcherTimer dispatcherTimer = new DispatcherTimer();
         private DispatcherTimer showTimer = new DispatcherTimer();
         private object nextDataContext;
+        private DynamoView mainDynamoWindow;
 
         public LibraryToolTipPopup()
         {
@@ -368,7 +370,7 @@ namespace Dynamo.UI.Controls
         // If we try to load it before, we will get null.
         private void LoadMainDynamoWindow(object sender, RoutedEventArgs e)
         {
-            var mainDynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            mainDynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             if (mainDynamoWindow == null)
                 return;
 
@@ -383,6 +385,9 @@ namespace Dynamo.UI.Controls
 
         public void SetDataContext(object dataContext, bool closeImmediately = false)
         {
+            // If Dynamo window is not active, we should not show as well as hide tooltip or do any other staff.
+            if (!mainDynamoWindow.IsActive) return;
+
             if (dataContext == null)
             {
                 if (closeImmediately)

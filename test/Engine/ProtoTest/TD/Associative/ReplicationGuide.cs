@@ -1908,7 +1908,7 @@ namespace ProtoTest.TD.Associative
             thisTest.VerifyRunScriptSource(code, errmsg);
 
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1920,7 +1920,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1932,7 +1932,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1944,7 +1944,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1956,7 +1956,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
 
         [Test]
@@ -1968,7 +1968,7 @@ namespace ProtoTest.TD.Associative
             string errmsg = "";
             thisTest.VerifyRunScriptSource(code, errmsg);
             // Should get clear after running
-            Assert.AreEqual(0, thisTest.GetTestCore().replicationGuides.Count);
+            Assert.AreEqual(0, thisTest.GetTestRuntimeCore().ReplicationGuides.Count);
         }
     }
 }

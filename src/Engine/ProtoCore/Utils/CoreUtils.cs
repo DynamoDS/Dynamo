@@ -10,7 +10,7 @@ namespace ProtoCore.Utils
     {
         public static void InsertPredefinedAndBuiltinMethods(Core core, ProtoCore.AST.Node root, bool builtinMethodsLoaded)
         {
-            if (DSASM.InterpreterMode.kNormal == core.ExecMode)
+            if (DSASM.InterpreterMode.kNormal == core.Options.RunMode)
             {
                 if (core.Options.AssocOperatorAsMethod)
                 {
@@ -845,6 +845,30 @@ namespace ProtoCore.Utils
                 astList.AddRange(BuildASTList(core, code));
             }
             return astList;
+        }
+
+        /// <summary>
+        /// Get the Codeblock given the blockId
+        /// </summary>
+        /// <param name="blockList"></param>
+        /// <param name="blockId"></param>
+        /// <returns></returns>
+        public static CodeBlock GetCodeBlock(List<CodeBlock> blockList, int blockId)
+        {
+            CodeBlock codeblock = null;
+            codeblock = blockList.Find(x => x.codeBlockId == blockId);
+            if (codeblock == null)
+            {
+                foreach (CodeBlock block in blockList)
+                {
+                    codeblock = GetCodeBlock(block.children, blockId);
+                    if (codeblock != null)
+                    {
+                        break;
+                    }
+                }
+            }
+            return codeblock;
         }
     }
 }

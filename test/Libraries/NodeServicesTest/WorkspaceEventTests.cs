@@ -12,13 +12,12 @@ namespace DynamoServicesTests
     [TestFixture, RequiresSTA]
     class WorkspaceEventTests : SystemTestBase
     {
-        public override void SetupCore()
+        protected override void SetupCore()
         {
             // Set the working path
             var asmDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             workingDirectory = Path.GetFullPath(
                 Path.Combine(asmDir, @"..\..\..\test\core\"));
-            base.SetupCore();
         }
 
         [Test]

@@ -113,7 +113,7 @@ namespace ProtoFFI
             // Ignore all property changed event when the update engine is
             // re-executing graph nodes because of previous property changed
             // event
-            if (mHostCore.IsEvalutingPropertyChanged())
+            if (mHostCore.__TempCoreHostForRefactoring.IsEvalutingPropertyChanged())
             {
                 return;
             }

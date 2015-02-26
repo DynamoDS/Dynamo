@@ -441,13 +441,15 @@ namespace Dynamo.DSEngine
                                                                     arg.Name,
                                                                     argType))
                                                         let visibleInLibrary =
-                                                            (method.MethodAttribute == null
-                                                                || !method.MethodAttribute.HiddenInLibrary)
+                                                            (method.MethodAttribute == null || !method.MethodAttribute.HiddenInLibrary)
+                                                        let description = 
+                                                            (method.MethodAttribute != null ? method.MethodAttribute.Description :String.Empty)
                                                         select
                                                             new FunctionDescriptor(
                                                                 null,
                                                                 null,
                                                                 method.name,
+                                                                description,
                                                                 arguments,
                                                                 method.returntype,
                                                                 FunctionType.GenericFunction,
