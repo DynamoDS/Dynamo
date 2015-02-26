@@ -241,8 +241,8 @@ namespace DynamoUnits
         /// </summary>
         public double Value
         {
-            get { return _value; }
-            set { _value = value; }
+            get { return _value * UiLengthConversion; }
+            set { _value = value / UiLengthConversion; }
         }
 
         /// <summary>
@@ -431,7 +431,8 @@ namespace DynamoUnits
     }
 
     /// <summary>
-    /// A length stored in meters.
+    /// A length stored in meters. This length can represent any unit type, but internally this 
+    /// is stored as meters to make algorithms simpler.
     /// </summary>
     public class Length : SIUnit, IComparable, IEquatable<Length>
     {
@@ -627,6 +628,11 @@ namespace DynamoUnits
             double fractionalInch = 0.0;
             double feet, inch, m, cm, mm, numerator, denominator;
             Utils.ParseLengthFromString(value, out feet, out inch, out m, out cm, out mm, out numerator, out denominator);
+
+            if (m != 0 || cm != 0 || mm != 0)
+                LengthUnit = LengthUnit.Meter;
+            else
+                LengthUnit = LengthUnit.DecimalFoot;
 
             if (denominator != 0)
                 fractionalInch = numerator / denominator;
@@ -928,6 +934,11 @@ namespace DynamoUnits
             double sq_mm, sq_cm, sq_m, sq_in, sq_ft;
             Utils.ParseAreaFromString(value, out sq_in, out sq_ft, out sq_mm, out sq_cm, out sq_m);
 
+            if (sq_mm != 0 || sq_cm != 0 || sq_m != 0)
+                AreaUnit = AreaUnit.SquareMeter;
+            else
+                AreaUnit = AreaUnit.SquareFoot;
+
             total += sq_mm / ToSquareMillimeters;
             total += sq_cm / ToSquareCentimeters;
             total += sq_m;
@@ -1206,6 +1217,11 @@ namespace DynamoUnits
 
             double cu_mm, cu_cm, cu_m, cu_in, cu_ft;
             Utils.ParseVolumeFromString(value, out cu_in, out cu_ft, out cu_mm, out cu_cm, out cu_m);
+
+            if (cu_mm != 0 || cu_cm != 0 || cu_m != 0)
+                VolumeUnit = VolumeUnit.CubicMeter;
+            else
+                VolumeUnit = VolumeUnit.CubicFoot;
 
             total += cu_mm / ToCubicMillimeter;
             total += cu_cm / ToCubicCentimeter;

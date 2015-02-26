@@ -1523,4 +1523,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="InvalidLoginUrl" xml:space="preserve">
     <value>Invalid URL for login page!</value>
   </data>
+  <data name="NoneString" xml:space="preserve">
+    <value>none</value>
+  </data>
 </root>
