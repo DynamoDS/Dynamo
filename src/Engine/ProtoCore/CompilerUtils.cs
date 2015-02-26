@@ -257,7 +257,7 @@ namespace ProtoCore.Utils
         /// <param name="parseParams"> container for compilation related parameters </param>
         /// <param name="elementResolver"> classname resolver </param>
         /// <returns> true if code compilation succeeds, false otherwise </returns>
-        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams, ElementResolver elementResolver)
+        public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
 
@@ -276,10 +276,10 @@ namespace ProtoCore.Utils
 
             // Compile the code to get the resultant unboundidentifiers  
             // and any errors or warnings that were caught by the compiler and cache them in parseParams
-            return CompileCodeBlockAST(core, parseParams, elementResolver);
+            return CompileCodeBlockAST(core, parseParams);
         }
 
-        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams, ElementResolver workspaceElementResolver)
+        private static bool CompileCodeBlockAST(Core core, ParseParam parseParams)
         {
             var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
 
@@ -298,15 +298,11 @@ namespace ProtoCore.Utils
 
                 var astNodes = parseParams.ParsedNodes;
 
-                // During loading of CBN from file, the elementResolver from the workspace is unavailable
-                // in which case, a local copy of the ER obtained from the CBN is used
-                ElementResolver resolver = workspaceElementResolver ?? parseParams.ElementResolver;
-
                 // Lookup namespace resolution map in elementResolver to rewrite 
                 // partial classnames with their fully qualified names in ASTs
                 // before passing them for pre-compilation. If partial class is not found in map, 
                 // update Resolution map in elementResolver with fully resolved name from compiler.
-                ElementRewriter.ReplaceClassNamesWithResolvedNames(core.ClassTable, resolver, ref astNodes);
+                ElementRewriter.RewriteElementNames(core.ClassTable, parseParams.ElementResolver, astNodes);
 
                 // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
                 // while performing SSA transforms and we want to keep the original AST's

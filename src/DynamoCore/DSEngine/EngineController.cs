@@ -626,9 +626,9 @@ namespace Dynamo.DSEngine
             compilationCore = core;
         }
 
-        public bool PreCompileCodeBlock(ref ParseParam parseParams, ElementResolver elementResolver)
+        public bool PreCompileCodeBlock(ref ParseParam parseParams)
         {
-            return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams, elementResolver);
+            return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams);
         }
     }
 }

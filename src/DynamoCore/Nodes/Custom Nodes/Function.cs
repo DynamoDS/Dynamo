@@ -322,31 +322,7 @@ namespace Dynamo.Nodes
 
             ArgumentLacing = LacingStrategy.Disabled;
 
-            DeserializeElementResolver(nodeElement);
-        }
-
-        private void DeserializeElementResolver(XmlElement nodeElement)
-        {
-            var nodes = nodeElement.GetElementsByTagName("NamespaceResolutionMap");
-
-            if (nodes.Count == 0)
-            {
-                // no namespace resolution map information exists in the DYN file
-                return;
-            }
-
-            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
-            foreach (XmlNode child in nodes[0].ChildNodes)
-            {
-                if (child.Attributes != null)
-                {
-                    XmlAttribute pName = child.Attributes["partialName"];
-                    XmlAttribute rName = child.Attributes["resolvedName"];
-                    XmlAttribute aName = child.Attributes["assemblyName"];
-                    var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
-                    resolutionMap.Add(pName.Value, kvp);
-                }
-            }
+            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
             elementResolver = new ElementResolver(resolutionMap);
         }
 
@@ -373,9 +349,12 @@ namespace Dynamo.Nodes
                 parseString = string.Format(dummyExpression, parseString);
             }
 
-            ParseParam parseParam = new ParseParam(this.GUID, parseString, elementResolver);
+            // During loading of symbol node from file, the elementResolver from the workspace is unavailable
+            // in which case, a local copy of the ER obtained from the symbol node is used
+            var resolver = workspaceElementResolver ?? elementResolver;
+            ParseParam parseParam = new ParseParam(this.GUID, parseString, resolver);
 
-            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam, workspaceElementResolver) &&
+            if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
                 parseParam.ParsedNodes != null &&
                 parseParam.ParsedNodes.Any())
             {

@@ -11,15 +11,8 @@ using System.Text;
 namespace ProtoCore.Namespace
 {
 
-    public class ElementRewriter
+    public static class ElementRewriter
     {
-        private readonly ElementResolver elementResolver;
-
-        private ElementRewriter(ElementResolver elementResolver)
-        {
-            this.elementResolver = elementResolver;
-        }
-
         /// <summary>
         /// Lookup namespace resolution map to substitute 
         /// partial classnames with their fully qualified names in ASTs.
@@ -29,22 +22,21 @@ namespace ProtoCore.Namespace
         /// <param name="classTable"></param>
         /// <param name="elementResolver"></param>
         /// <param name="astNodes"> parent AST node </param>
-        public static void ReplaceClassNamesWithResolvedNames(ClassTable classTable,
-            ElementResolver elementResolver, ref IEnumerable<Node> astNodes)
+        public static void RewriteElementNames(ClassTable classTable,
+            ElementResolver elementResolver, IEnumerable<Node> astNodes)
         {
-            var elementRewriter = new ElementRewriter(elementResolver);
-
-            for (int i = 0; i < astNodes.Count(); ++i)
+            foreach (var node in astNodes)
             {
-                var astNode = astNodes.ElementAt(i) as AssociativeNode;
-                if(astNode == null)
+                var astNode = node as AssociativeNode;
+                if (astNode == null)
                     continue;
 
-                elementRewriter.LookupResolvedNameAndRewriteAst(classTable, ref astNode);
+                LookupResolvedNameAndRewriteAst(classTable, elementResolver, ref astNode);
             }
         }
 
-        private void LookupResolvedNameAndRewriteAst(ClassTable classTable, ref AssociativeNode astNode)
+        private static void LookupResolvedNameAndRewriteAst(ClassTable classTable, ElementResolver elementResolver, 
+            ref AssociativeNode astNode)
         {
             Debug.Assert(elementResolver != null);
 
@@ -79,14 +71,14 @@ namespace ProtoCore.Namespace
                 resolvedNames.Enqueue(resolvedName);
             }
             
-            RewriteAstWithResolvedName(ref astNode, ref resolvedNames);
+            RewriteAstWithResolvedName(ref astNode, resolvedNames);
         }
 
         private static IEnumerable<IdentifierListNode> GetClassIdentifiers(AssociativeNode astNode)
         {
             var classIdentifiers = new List<IdentifierListNode>();
             var resolvedNames = new Queue<string>();
-            DfsTraverse(ref astNode, ref classIdentifiers, ref resolvedNames);
+            DfsTraverse(ref astNode, classIdentifiers, resolvedNames);
             return classIdentifiers;
         }
 
@@ -96,23 +88,23 @@ namespace ProtoCore.Namespace
         /// </summary>
         /// <param name="astNode"></param>
         /// <param name="resolvedNames"> fully qualified class identifier list </param>
-        private static void RewriteAstWithResolvedName(ref AssociativeNode astNode, ref Queue<string> resolvedNames)
+        private static void RewriteAstWithResolvedName(ref AssociativeNode astNode, Queue<string> resolvedNames)
         {
-            List<IdentifierListNode> classIdentifiers = null;
-            DfsTraverse(ref astNode, ref classIdentifiers, ref resolvedNames);
+            DfsTraverse(ref astNode, null, resolvedNames);
         }
 
         #region private utility methods
 
-        private static void DfsTraverse(ref AssociativeNode astNode, ref List<IdentifierListNode> classIdentifiers, ref Queue<string> resolvedNames)
+        private static void DfsTraverse(ref AssociativeNode astNode, ICollection<IdentifierListNode> classIdentifiers, 
+            Queue<string> resolvedNames)
         {
             if (astNode is BinaryExpressionNode)
             {
                 var bnode = astNode as BinaryExpressionNode;
                 AssociativeNode leftNode = bnode.LeftNode;
                 AssociativeNode rightNode = bnode.RightNode;
-                DfsTraverse(ref leftNode, ref classIdentifiers, ref resolvedNames);
-                DfsTraverse(ref rightNode, ref classIdentifiers, ref resolvedNames);
+                DfsTraverse(ref leftNode, classIdentifiers, resolvedNames);
+                DfsTraverse(ref rightNode, classIdentifiers, resolvedNames);
 
                 bnode.LeftNode = leftNode;
                 bnode.RightNode = rightNode;
@@ -123,7 +115,7 @@ namespace ProtoCore.Namespace
                 for (int n = 0; n < fCall.FormalArguments.Count; ++n)
                 {
                     AssociativeNode argNode = fCall.FormalArguments[n];
-                    DfsTraverse(ref argNode, ref classIdentifiers, ref resolvedNames);
+                    DfsTraverse(ref argNode, classIdentifiers, resolvedNames);
                     fCall.FormalArguments[n] = argNode;
                 }
             }
@@ -133,7 +125,7 @@ namespace ProtoCore.Namespace
                 for (int n = 0; n < exprList.list.Count; ++n)
                 {
                     AssociativeNode exprNode = exprList.list[n];
-                    DfsTraverse(ref exprNode, ref classIdentifiers, ref resolvedNames);
+                    DfsTraverse(ref exprNode, classIdentifiers, resolvedNames);
                     exprList.list[n] = exprNode;
                 }
             }
@@ -144,9 +136,9 @@ namespace ProtoCore.Namespace
                 AssociativeNode trueBody = inlineNode.TrueExpression;
                 AssociativeNode falseBody = inlineNode.FalseExpression;
 
-                DfsTraverse(ref condition, ref classIdentifiers, ref resolvedNames);
-                DfsTraverse(ref trueBody, ref classIdentifiers, ref resolvedNames);
-                DfsTraverse(ref falseBody, ref classIdentifiers, ref resolvedNames);
+                DfsTraverse(ref condition, classIdentifiers, resolvedNames);
+                DfsTraverse(ref trueBody, classIdentifiers, resolvedNames);
+                DfsTraverse(ref falseBody, classIdentifiers, resolvedNames);
 
                 inlineNode.ConditionExpression = condition;
                 inlineNode.FalseExpression = falseBody;
@@ -159,21 +151,21 @@ namespace ProtoCore.Namespace
 
                 if (rightNode is FunctionCallNode)
                 {
-                    DfsTraverse(ref rightNode, ref classIdentifiers, ref resolvedNames);
+                    DfsTraverse(ref rightNode, classIdentifiers, resolvedNames);
                 }
-                if (!resolvedNames.Any())
+                if (resolvedNames.Any())
                 {
-                    classIdentifiers.Add(identListNode);
+                    astNode = RewriteIdentifierListNode(rightNode, resolvedNames);
                 }
                 else
                 {
-                    astNode = RewriteIdentifierListNode(rightNode, ref resolvedNames);
+                    classIdentifiers.Add(identListNode);
                 }
             }
 
         }
 
-        private static IdentifierListNode RewriteIdentifierListNode(AssociativeNode rightNode, ref Queue<string> resolvedNames)
+        private static IdentifierListNode RewriteIdentifierListNode(AssociativeNode rightNode, Queue<string> resolvedNames)
         {
             var resolvedName = resolvedNames.Dequeue();
 

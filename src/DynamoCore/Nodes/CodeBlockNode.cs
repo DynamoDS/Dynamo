@@ -271,7 +271,8 @@ namespace Dynamo.Nodes
             code = helper.ReadString("CodeText");
 
             // Lookup namespace resolution map if available and initialize new instance of ElementResolver
-            DeserializeElementResolver(nodeElement);
+            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
+            ElementResolver = new ElementResolver(resolutionMap);
 
             ProcessCodeDirect();
         }
@@ -355,28 +356,6 @@ namespace Dynamo.Nodes
 
         #region Private Methods
 
-        private void DeserializeElementResolver(XmlElement nodeElement)
-        {
-            var xmlDoc = nodeElement.OwnerDocument;
-            Debug.Assert(xmlDoc != null);
-
-            var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
-
-            if (nodes.Count > 0)
-            {
-                foreach (XmlNode child in nodes[0].ChildNodes)
-                {
-                    if (child.Attributes != null)
-                    {
-                        XmlAttribute pName = child.Attributes["partialName"];
-                        XmlAttribute rName = child.Attributes["resolvedName"];
-                        XmlAttribute aName = child.Attributes["assemblyName"];
-                        ElementResolver.AddToResolutionMap(pName.Value, rName.Value, aName.Value);
-                    }
-                }
-            }
-        }
-
         internal void ProcessCodeDirect()
         {
             string errorMessage = string.Empty;
@@ -410,9 +389,12 @@ namespace Dynamo.Nodes
 
             try
             {
-                var parseParam = new ParseParam(GUID, code, this.ElementResolver);
-                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam, 
-                    workspaceElementResolver))
+                // During loading of CBN from file, the elementResolver from the workspace is unavailable
+                // in which case, a local copy of the ER obtained from the CBN is used
+                var resolver = workspaceElementResolver ?? this.ElementResolver;
+                var parseParam = new ParseParam(GUID, code, resolver);
+
+                if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
                     {
