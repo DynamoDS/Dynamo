@@ -1738,7 +1738,7 @@ namespace Dynamo.Controls
     /// no point in prefixing a colon character (e.g. we don't want ": none").
     public class InOutParamTypeConverter : IValueConverter
     {
-        private static readonly string NoneString = "none";
+        private static readonly string NoneString = Resources.NoneString;
         private static readonly string ColonString = ":";
         private static readonly string SpaceString = " ";
 
@@ -1754,7 +1754,7 @@ namespace Dynamo.Controls
                 return input;
 
             if (shouldPrefixColon)
-                return String.Concat(ColonString, SpaceString, input);
+                return String.Concat(SpaceString, ColonString, SpaceString, input);
             else
                 return input;
         }
