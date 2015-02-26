@@ -24,9 +24,11 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             StartPeriodicTimerCommand = new DelegateCommand(StartPeriodicTimer, CanStartPeriodicTimer);
             StopPeriodicTimerCommand = new DelegateCommand(StopPeriodicTimer, CanStopPeriodicTimer);
+
+            CheckAndSetPeriodicRunCapability();
         }
 
-        void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // If any property changes on the run settings object
             // Raise a property change notification for the RunSettingsViewModel

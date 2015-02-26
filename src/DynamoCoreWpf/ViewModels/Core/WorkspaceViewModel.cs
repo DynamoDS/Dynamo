@@ -283,7 +283,6 @@ namespace Dynamo.ViewModels
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
-
         }
 
         void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -375,11 +374,15 @@ namespace Dynamo.ViewModels
                     break;
             }
 
-            if (RunSettingsViewModel != null)
-            {
-                var periodUpdateAvailable = Model.Nodes.Any(n => n.EnablePeriodicUpdate);
-                RunSettingsViewModel.ToggleRunTypeEnabled(RunType.Periodically, periodUpdateAvailable);
-            }
+            if (RunSettingsViewModel == null) return;
+
+            CheckAndSetPeriodicRunCapability();
+        }
+
+        protected void CheckAndSetPeriodicRunCapability()
+        {
+            var periodUpdateAvailable = Model.Nodes.Any(n => n.EnablePeriodicUpdate);
+            RunSettingsViewModel.ToggleRunTypeEnabled(RunType.Periodically, periodUpdateAvailable);
         }
 
         /// <summary>
