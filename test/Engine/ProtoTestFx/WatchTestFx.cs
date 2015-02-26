@@ -373,6 +373,7 @@ namespace ProtoTestFx
 //            core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
+            core.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
@@ -422,6 +423,7 @@ namespace ProtoTestFx
             // as we still need the symbol names and line nos. in debug mode for comparisons
             
             //core.ExecutiveProvider = new InjectionExecutiveProvider();
+            core.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
 
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));

@@ -74,7 +74,7 @@ namespace ProtoCore
                 List<IGraphicItem> graphicItems = new List<IGraphicItem>();
                 foreach (var sv in values)
                 {
-                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.core);
+                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.runtimeCore);
                     if (items != null && (items.Count > 0))
                         graphicItems.AddRange(items);
                 }
@@ -175,7 +175,7 @@ namespace ProtoCore
             /// <param name="sv">StackValue</param>
             /// <param name="core">ProtoCore.Core</param>
             /// <returns>System.Object</returns>
-            internal static object GetData(StackValue sv, Core core)
+            internal static object GetData(StackValue sv, RuntimeCore runtimeCore)
             {
                 switch (sv.optype)
                 {
@@ -188,9 +188,9 @@ namespace ProtoCore
                     case AddressType.Char:
                         return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(sv.opdata);
                     case AddressType.String:
-                        return StringUtils.GetStringValue(sv, core.__TempCoreHostForRefactoring);
+                        return StringUtils.GetStringValue(sv, runtimeCore);
                     case AddressType.Pointer:
-                        return dataProvider.GetCLRObject(sv, core);
+                        return dataProvider.GetCLRObject(sv, runtimeCore);
                     default:
                         break;
                 }
@@ -234,7 +234,7 @@ namespace ProtoCore
                 get
                 {
                     if (null == clrdata)
-                        clrdata = GetData(svData, core);
+                        clrdata = GetData(svData, runtimeCore);
 
                     return clrdata;
                 }
