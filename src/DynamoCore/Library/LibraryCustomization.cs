@@ -92,6 +92,7 @@ namespace Dynamo.DSEngine
                 if (File.Exists(resourceAssemblyPath))
                     return true;
 
+                resourceAssemblyPath = fn + Configurations.IconResourcesDLL;
                 // Side-by-side customization dll not found, try other resolution paths.
                 return DynamoPathManager.Instance.ResolveLibraryPath(ref resourceAssemblyPath);
             }
