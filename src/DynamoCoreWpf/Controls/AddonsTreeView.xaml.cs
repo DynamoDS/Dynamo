@@ -14,8 +14,9 @@ namespace Dynamo.UI.Controls
         {
             InitializeComponent();
 
-            // In future DataContext will be set SearchViewModel in binding, but for now set it to null. 
-            // Therefore we can escape errors in VS Output.
+            // Invalidate the DataContext here because it will be set at a later 
+            // time through data binding expression. This way debugger will not 
+            // display warnings for missing properties.
             this.DataContext = null;
         }
 
