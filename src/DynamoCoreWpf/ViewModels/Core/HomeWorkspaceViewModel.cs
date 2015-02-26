@@ -7,7 +7,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
-    class HomeWorkspaceViewModel : WorkspaceViewModel
+    public class HomeWorkspaceViewModel : WorkspaceViewModel
     {
         #region commands
 
@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         public HomeWorkspaceViewModel(HomeWorkspaceModel model, DynamoViewModel dynamoViewModel)
             : base(model, dynamoViewModel)
         {
-            RunSettingsViewModel = new RunSettingsViewModel(((HomeWorkspaceModel)model).RunSettings, dynamoViewModel);
+            RunSettingsViewModel = new RunSettingsViewModel(((HomeWorkspaceModel)model).RunSettings, this, dynamoViewModel);
             RunSettingsViewModel.PropertyChanged += RunSettingsViewModel_PropertyChanged;
 
             StartPeriodicTimerCommand = new DelegateCommand(StartPeriodicTimer, CanStartPeriodicTimer);

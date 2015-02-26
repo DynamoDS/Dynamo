@@ -6,11 +6,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
+using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.Wpf.ViewModels
 {
@@ -86,7 +88,8 @@ namespace Dynamo.Wpf.ViewModels
         #region private members
 
         private bool debug = false;
-        private DynamoViewModel dynamoViewModel;
+        private readonly HomeWorkspaceViewModel workspaceViewModel;
+        private readonly DynamoViewModel dynamoViewModel;
         private RunTypeItem selectedRunTypeItem;
 
         #endregion
@@ -185,12 +188,14 @@ namespace Dynamo.Wpf.ViewModels
 
         #region constructors
 
-        public RunSettingsViewModel(RunSettings settings, DynamoViewModel dynamoViewModel)
+        public RunSettingsViewModel(RunSettings settings, HomeWorkspaceViewModel workspaceViewModel, DynamoViewModel dynamoViewModel)
         {
             Model = settings;
             Model.PropertyChanged += Model_PropertyChanged;
+
+            this.workspaceViewModel = workspaceViewModel;
             this.dynamoViewModel = dynamoViewModel;
-            
+
             CancelRunCommand = new DelegateCommand(CancelRun, CanCancelRun);
             RunExpressionCommand = new DelegateCommand(RunExpression, CanRunExpression);
 
@@ -238,7 +243,7 @@ namespace Dynamo.Wpf.ViewModels
 
         private void RunTypeChangedRun(object obj)
         {
-            dynamoViewModel.StopPeriodicTimerCommand.Execute(null);
+            workspaceViewModel.StopPeriodicTimerCommand.Execute(null);
             switch (Model.RunType)
             {
                 case RunType.Manually:
@@ -247,7 +252,7 @@ namespace Dynamo.Wpf.ViewModels
                     RunExpressionCommand.Execute(true);
                     return;
                 case RunType.Periodically:
-                    dynamoViewModel.StartPeriodicTimerCommand.Execute(null);
+                    workspaceViewModel.StartPeriodicTimerCommand.Execute(null);
                     return;
             }
         }

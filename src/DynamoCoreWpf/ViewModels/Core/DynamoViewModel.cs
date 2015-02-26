@@ -2150,32 +2150,6 @@ namespace Dynamo.ViewModels
             this.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
 
-        private void StartPeriodicTimer(object parameter)
-        {
-            if (Model == null)
-                return;
-
-            HomeSpace.StartPeriodicEvaluation(HomeSpace.RunSettings.RunPeriod);
-        }
-
-        private bool CanStartPeriodicTimer(object parameter)
-        {
-            return true;
-        }
-
-        private void StopPeriodicTimer(object parameter)
-        {
-            if (Model == null)
-                return;
-
-            HomeSpace.StopPeriodicEvaluation();
-        }
-
-        private bool CanStopPeriodicTimer(object parameter)
-        {
-            return true;
-        }
-
         public DynamoViewModel ViewModel { get { return this; } }
 
         #endregion
