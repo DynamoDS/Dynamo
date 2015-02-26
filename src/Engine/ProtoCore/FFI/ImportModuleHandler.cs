@@ -239,7 +239,7 @@ namespace ProtoFFI
                 }
                 catch
                 {
-                    _coreObj.LogSemanticError(string.Format(Resources.failedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
+                    _coreObj.LogSemanticError(string.Format(Resources.FailedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
                 }
             }
             
