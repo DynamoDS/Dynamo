@@ -439,7 +439,7 @@ namespace Dynamo.Tests
             Assert.Throws<UnitsException>(() => { var test = length + area; });
             Assert.Throws<UnitsException>(() => { var test = area + volume; });
             Assert.Throws<UnitsException>(() => { var test = length + volume; });
-            
+
             //subtraction
             var length_sub = length - length;
             Assert.AreEqual(0, length_sub.Value);
@@ -474,11 +474,11 @@ namespace Dynamo.Tests
             Assert.Throws<UnitsException>(() => { var test = length / volume; });
 
             //modulo
-            var length_mod = length%length;
+            var length_mod = length % length;
             Assert.AreEqual(0, length_mod.Value);
-            var area_mode = area%area;
+            var area_mode = area % area;
             Assert.AreEqual(0, area_mode.Value);
-            var volume_mod = volume%volume;
+            var volume_mod = volume % volume;
             Assert.AreEqual(0, volume_mod.Value);
             Assert.Throws<UnitsException>(() => { var test = length % area; });
             Assert.Throws<UnitsException>(() => { var test = area % volume; });

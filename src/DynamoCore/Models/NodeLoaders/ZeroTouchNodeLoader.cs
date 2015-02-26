@@ -50,7 +50,16 @@ namespace Dynamo.Models.NodeLoaders
                 string hintedSigniture =
                     libraryServices.FunctionSignatureFromFunctionSignatureHint(xmlSignature);
 
-                function = hintedSigniture ?? xmlSignature;
+                if (hintedSigniture != null)
+                {
+                    nodeElement.Attributes["nickname"].Value =
+                        libraryServices.NicknameFromFunctionSignatureHint(xmlSignature);
+                    function = hintedSigniture;
+                }
+                else
+                {
+                    function = xmlSignature;
+                }
             }
 
             if (context == SaveContext.File && !string.IsNullOrEmpty(assembly))
@@ -60,7 +69,7 @@ namespace Dynamo.Models.NodeLoaders
                 assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
 
                 descriptor = libraryServices.IsLibraryLoaded(assembly) || libraryServices.ImportLibrary(assembly)
-                    ? libraryServices.GetFunctionDescriptor(assembly, function)
+                    ? libraryServices.GetFunctionDescriptor(function) // libraryServices.GetFunctionDescriptor(assembly, function)
                     : libraryServices.GetFunctionDescriptor(function);
             }
             else
