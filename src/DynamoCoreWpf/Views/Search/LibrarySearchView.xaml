@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:search="clr-namespace:Dynamo.Search"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
@@ -149,6 +150,7 @@
         <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
         <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
         <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
+        <controls:MultiBoolToBoolConverter x:Key="MultiBoolToBoolConverter" />
 
         <!--EndRegion-->
 
@@ -658,10 +660,15 @@
                                         AllowsTransparency="True"
                                         MouseLeave="OnPopupMouseLeave">
             <uicontrols:LibraryToolTipPopup.IsOpen>
-                <Binding ElementName="libraryToolTipPopup"
-                         Path="DataContext"
-                         Mode="OneWay"
-                         Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
+                <MultiBinding Converter="{StaticResource MultiBoolToBoolConverter}">
+                    <Binding Path="DataContext.ShowTooltipForTopResult"
+                             Mode="OneWay"
+                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type search:SearchView}}"/>
+                    <Binding ElementName="libraryToolTipPopup"
+                             Path="DataContext"
+                             Mode="OneWay"
+                             Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
+                </MultiBinding>
             </uicontrols:LibraryToolTipPopup.IsOpen>
         </uicontrols:LibraryToolTipPopup>
     </Grid>

@@ -34,6 +34,7 @@ namespace Dynamo.ViewModels
         {
             if (RequestReturnFocusToSearch != null)
                 RequestReturnFocusToSearch(this, e);
+            ShowTooltipForTopResult = false;
         }
 
         public event EventHandler SearchTextChanged;
@@ -81,6 +82,17 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("BrowserRootCategories");
                 RaisePropertyChanged("CurrentMode");
+            }
+        }
+
+        private bool showTooltipForTopResult = true;
+        public bool ShowTooltipForTopResult
+        {
+            get { return showTooltipForTopResult; }
+            set
+            {
+                showTooltipForTopResult = value;
+                RaisePropertyChanged("ShowTooltipForTopResult");
             }
         }
 
@@ -685,9 +697,15 @@ namespace Dynamo.ViewModels
 
             // Update top result before we do not sort categories.
             if (searchRootCategories.Any())
+            {
                 UpdateTopResult(searchRootCategories.FirstOrDefault().MemberGroups.FirstOrDefault());
+                ShowTooltipForTopResult = true;
+            }
             else
+            {
                 UpdateTopResult(null);
+                ShowTooltipForTopResult = false;
+            }
 
             // Order found categories by name.
             searchRootCategories = new ObservableCollection<SearchCategory>(searchRootCategories.OrderBy(x => x.Name));
