@@ -421,16 +421,16 @@ namespace Dynamo.Core
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(path);
 
-                WorkspaceHeader header;
-                if (!WorkspaceHeader.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
+                WorkspaceInfo header;
+                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
                 {
                     Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                     info = null;
                     return false;
                 }
                 info = new CustomNodeInfo(
-                    Guid.Parse(header.ID), 
-                    header.Name, 
+                    Guid.Parse(header.ID),
+                    header.Name,
                     header.Category,
                     header.Description, 
                     path);
@@ -446,7 +446,7 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceHeader.
+        ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceInfo.
         /// </summary>
         /// <param name="xmlDoc">XmlDocument representing the parsed custom node file.</param>
         /// <param name="workspaceInfo">Workspace header describing the custom node file.</param>
@@ -456,11 +456,10 @@ namespace Dynamo.Core
         /// <param name="workspace"></param>
         /// <returns></returns>
         public bool OpenCustomNodeWorkspace(
-            XmlDocument xmlDoc, WorkspaceHeader workspaceInfo, bool isTestMode, out WorkspaceModel workspace)
+            XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, bool isTestMode, out WorkspaceModel workspace)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (InitializeCustomNode(
-                Guid.Parse(workspaceInfo.ID),
                 workspaceInfo,
                 xmlDoc,
                 out customNodeWorkspace))
@@ -473,25 +472,21 @@ namespace Dynamo.Core
         }
 
         private bool InitializeCustomNode(
-            Guid functionId, WorkspaceHeader workspaceInfo,
+            WorkspaceInfo workspaceInfo,
             XmlDocument xmlDoc, out CustomNodeWorkspaceModel workspace)
         {
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
-            SetPreloadFunctionDefinition(functionId);
+            SetPreloadFunctionDefinition(Guid.Parse(workspaceInfo.ID));
  
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
            
             var newWorkspace = new CustomNodeWorkspaceModel(
-                workspaceInfo.Name,
-                workspaceInfo.Category,
-                workspaceInfo.Description,
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                workspaceInfo.X,
-                workspaceInfo.Y,
-                functionId, nodeGraph.ElementResolver, workspaceInfo.FileName);
+                workspaceInfo,
+                nodeGraph.ElementResolver);
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -557,17 +552,18 @@ namespace Dynamo.Core
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
 
-                WorkspaceHeader header;
-                if (WorkspaceHeader.FromXmlDocument(
+                WorkspaceInfo info;
+                if (WorkspaceInfo.FromXmlDocument(
                     xmlDoc,
                     xmlPath,
                     isTestMode,
                     AsLogger(),
-                    out header) && header.IsCustomNodeWorkspace)
+                    out info) && info.IsCustomNodeWorkspace)
                 {
-                    if (migrationManager.ProcessWorkspace(header, xmlDoc, isTestMode, nodeFactory))
+                    info.ID = functionId.ToString();
+                    if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
                     {
-                        return InitializeCustomNode(functionId, header, xmlDoc, out workspace);
+                        return InitializeCustomNode(info, xmlDoc, out workspace);
                     }
                 }
                 Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
@@ -600,7 +596,17 @@ namespace Dynamo.Core
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
-            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, new ElementResolver(), string.Empty);
+            var info = new WorkspaceInfo()
+            {
+                Name = name,
+                Category = category,
+                Description = description,
+                X = 0,
+                Y = 0,
+                ID = newId.ToString(), 
+                FileName = string.Empty
+            };
+            var workspace = new CustomNodeWorkspaceModel(info, nodeFactory, new ElementResolver());
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
@@ -1016,15 +1022,20 @@ namespace Dynamo.Core
 
                 var newId = Guid.NewGuid();
                 newWorkspace = new CustomNodeWorkspaceModel(
-                    args.Name,
-                    args.Category,
-                    args.Description,
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
-                    0,
-                    0,
-                    newId, currentWorkspace.ElementResolver, string.Empty);
+                    new WorkspaceInfo()
+                    {
+                        X = 0,
+                        Y = 0,
+                        Name = args.Name,
+                        Category = args.Category,
+                        Description = args.Description,
+                        ID = newId.ToString(),
+                        FileName = string.Empty
+                    },
+                    currentWorkspace.ElementResolver);
 
                 newWorkspace.HasUnsavedChanges = true;
 
