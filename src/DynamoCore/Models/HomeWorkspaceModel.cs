@@ -175,7 +175,7 @@ namespace Dynamo.Models
             pulseMaker.Start(milliseconds);
         }
 
-        void pulseMaker_RunStarted(object sender, EventArgs e)
+        private void pulseMaker_RunStarted(object sender, EventArgs e)
         {
             var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
 
