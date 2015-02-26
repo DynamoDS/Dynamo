@@ -351,7 +351,7 @@ namespace Dynamo.Models
         protected virtual void ShutDownCore(bool shutdownHost)
         {
             Dispose();
-            PreferenceSettings.Save();
+            PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
 
             OnCleanup();
             
@@ -413,7 +413,9 @@ namespace Dynamo.Models
             }
 
             if (configuration.Preferences == null)
+            {
                 configuration.Preferences = new PreferenceSettings();
+            }
 
             return new DynamoModel(configuration);
         }

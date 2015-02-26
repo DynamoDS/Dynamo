@@ -54,17 +54,18 @@ namespace Dynamo.Services
             {
                 dynamoModel.PreferenceSettings.IsUsageReportingApproved = value;
                 RaisePropertyChanged("IsUsageReportingApproved");
+                var path = dynamoModel.PathManager.PreferenceFilePath;
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynamoModel.PreferenceSettings.Save();
+                    dynamoModel.PreferenceSettings.SaveInternal(path);
                 }
                 catch (Exception args)
                 {
                     DynamoModel.IsCrashing = true;
-                    string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Properties.Resources.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(
+                        args.Message, Properties.Resources.UsageReportingErrorMessage, path));
                 }
             }
         }
@@ -102,17 +103,18 @@ namespace Dynamo.Services
             {
                 dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved = value;
                 RaisePropertyChanged("IsAnalyticsReportingApproved");
+                var path = dynamoModel.PathManager.PreferenceFilePath;
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynamoModel.PreferenceSettings.Save();
+                    dynamoModel.PreferenceSettings.SaveInternal(path);
                 }
                 catch (Exception args)
                 {
                     DynamoModel.IsCrashing = true;
-                    string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Properties.Resources.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(
+                        args.Message, Properties.Resources.UsageReportingErrorMessage, path));
                 }
             }
 
