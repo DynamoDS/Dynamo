@@ -31,7 +31,6 @@ namespace Dynamo.Core
         /// An internal constructor to ensure PulseMaker object can only
         /// be instantiated from within DynamoModel (i.e. DynamoCore.dll).
         /// </summary>
-        /// <param name="dynamoModel">The owning DynamoModel object.</param>
         /// 
         internal PulseMaker()
         {
