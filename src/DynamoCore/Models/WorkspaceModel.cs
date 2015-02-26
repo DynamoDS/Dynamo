@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Xml;
-using System.Globalization;
 using System.Threading;
+using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
+using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 
 using ProtoCore.Namespace;
-using String = System.String;
+
 using Utils = Dynamo.Nodes.Utilities;
-using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificationUndoHelper;
 
 namespace Dynamo.Models
 {
@@ -500,7 +499,7 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void Clear()
         {
-            Log(Properties.Resources.ClearingWorkSpace);
+            Log(Resources.ClearingWorkSpace);
 
             foreach (NodeModel el in Nodes)
             {
@@ -535,7 +534,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log(String.Format(Properties.Resources.SavingInProgress, newPath));
+            Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
                 if (SaveInternal(newPath, core))
@@ -643,7 +642,7 @@ namespace Dynamo.Models
 
         public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
         {
-            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Properties.Resources.NewNoteString : text, id);
+            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Resources.NewNoteString : text, id);
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
@@ -862,7 +861,7 @@ namespace Dynamo.Models
             var nodeModel = retrievedModel as NodeModel;
             if (nodeModel != null)
             {
-                using (new ModelModificationUndoHelper(undoRecorder, nodeModel))
+                using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
                     handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
                 }
@@ -903,7 +902,7 @@ namespace Dynamo.Models
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
             var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
-            using (new ModelModificationUndoHelper(undoRecorder, retrievedModels))
+            using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, retrievedModels))
             {
                 foreach (var retrievedModel in retrievedModels)
                 {
