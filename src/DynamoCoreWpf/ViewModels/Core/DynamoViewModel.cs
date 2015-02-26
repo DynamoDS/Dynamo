@@ -179,7 +179,8 @@ namespace Dynamo.ViewModels
                     currentWorkspaceViewModel = viewModel;
 
                     // Keep DynamoModel.CurrentWorkspace update-to-date
-                    model.CurrentWorkspace = currentWorkspaceViewModel.Model;
+                    int modelIndex = model.Workspaces.IndexOf(currentWorkspaceViewModel.Model);
+                    this.ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
                 }
             }
         }
@@ -191,6 +192,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                if (currentWorkspaceViewModel == null)
+                    currentWorkspaceViewModel = workspaces.FirstOrDefault(vm => vm.Model == model.CurrentWorkspace);
+
                 return currentWorkspaceViewModel;
             }
         }

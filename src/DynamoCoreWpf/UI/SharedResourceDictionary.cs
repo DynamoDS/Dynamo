@@ -63,6 +63,7 @@ namespace Dynamo.UI
         private static ResourceDictionary _toolbarStyleDictionary;
         private static ResourceDictionary _connectorsDictionary;
         private static ResourceDictionary _portsDictionary;
+        private static ResourceDictionary _sidebarGridDictionary;
 
         public static string ThemesDirectory 
         {
@@ -116,6 +117,11 @@ namespace Dynamo.UI
         public static Uri PortsDictionaryUri
         {
             get { return new Uri(Path.Combine(ThemesDirectory, "Ports.xaml")); }
+        }
+
+        public static Uri SidebarGridDictionaryUri
+        {
+            get { return new Uri(Path.Combine(ThemesDirectory, "SidebarGridStyleDictionary.xaml")); }
         }
 
         public static ResourceDictionary DynamoModernDictionary
@@ -186,6 +192,14 @@ namespace Dynamo.UI
         {
             get {
                 return _portsDictionary ?? (_portsDictionary = new ResourceDictionary() {Source = PortsDictionaryUri});
+            }
+        }
+
+        public static ResourceDictionary SidebarGrid
+        {
+            get
+            {
+                return _sidebarGridDictionary ?? (_sidebarGridDictionary = new ResourceDictionary() { Source = SidebarGridDictionaryUri });
             }
         }
     }

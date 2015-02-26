@@ -6,7 +6,6 @@ using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using DynamoUnits;
 
 using DynamoUtilities;
 
@@ -24,7 +23,7 @@ namespace Dynamo
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
         private string numberFormat;
         private string lastUpdateDownloadPath;
-
+        
         // Variables of the settings that will be persistent
 
         #region Collect Information Settings
@@ -33,12 +32,34 @@ namespace Dynamo
         public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 
+        /// <summary>
+        /// The width of the library pane.
+        /// </summary>
         public int LibraryWidth { get; set; }
+
+        /// <summary>
+        /// The height of the console display.
+        /// </summary>
         public int ConsoleHeight { get; set; }
+
+        /// <summary>
+        /// Should connectors be visible?
+        /// </summary>
         public bool ShowConnector { get; set; }
+
+        /// <summary>
+        /// The types of connector: Bezier or Polyline.
+        /// </summary>
         public ConnectorType ConnectorType { get; set; }
+
+        /// <summary>
+        /// Should the background 3D preview be shown?
+        /// </summary>
         public bool FullscreenWatchShowing { get; set; }
 
+        /// <summary>
+        /// The decimal precision used to display numbers.
+        /// </summary>
         public string NumberFormat
         {
             get { return numberFormat; }
@@ -49,26 +70,50 @@ namespace Dynamo
             }
         }
 
+        /// <summary>
+        /// The maximum number of recent file paths to be saved.
+        /// </summary>
         public int MaxNumRecentFiles
         {
             get { return 10; }
             set { }
         }
 
+        /// <summary>
+        /// A list of recently opened file paths.
+        /// </summary>
         public List<string> RecentFiles { get; set; }
 
+        /// <summary>
+        /// A list of packages used by the Package Manager to determine
+        /// which packages are marked for deletion.
+        /// </summary>
         public List<string> PackageDirectoriesToUninstall { get; set; }
 
+        /// <summary>
+        /// The last X coordinate of the Dynamo window.
+        /// </summary>
         public double WindowX { get; set; }
+
+        /// <summary>
+        /// The last Y coordinate of the Dynamo window.
+        /// </summary>
         public double WindowY { get; set; }
+
+        /// <summary>
+        /// The last width of the Dynamo window.
+        /// </summary>
         public double WindowW { get; set; }
+
+        /// <summary>
+        /// The last height of the Dynamo window.
+        /// </summary>
         public double WindowH { get; set; }
 
-        public string LastUpdateDownloadPath
-        {
-            get { return lastUpdateDownloadPath; }
-            set { lastUpdateDownloadPath = !File.Exists(value) ? "" : value; }
-        }
+        /// <summary>
+        /// Should Dynamo use hardware acceleration if it is supported?
+        /// </summary>
+        public bool UseHardwareAcceleration { get; set; }
 
         public PreferenceSettings()
         {
@@ -88,7 +133,7 @@ namespace Dynamo
             FullscreenWatchShowing = true;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
-            LastUpdateDownloadPath = "";
+            UseHardwareAcceleration = true;
         }
 
         /// <summary>

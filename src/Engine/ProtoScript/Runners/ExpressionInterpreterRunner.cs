@@ -18,7 +18,7 @@ namespace ProtoScript.Runners
             Core = core;
         }
 
-        public bool Compile(string code, out int blockId)
+        public bool Compile(string code, int currentBlockID, out int blockId)
         {
             bool buildSucceeded = false;
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -35,6 +35,7 @@ namespace ProtoScript.Runners
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
+                context.SetData(string.Empty, null, null, currentBlockID);
                 ProtoCore.Language id = globalBlock.language;
 
                 Core.ExprInterpreterExe.iStreamCanvas = new InstructionStream(globalBlock.language, Core);
@@ -84,7 +85,7 @@ namespace ProtoScript.Runners
             Core.watchBaseOffset = 0;
             Core.watchStack.Clear();
 
-            bool succeeded = Compile(code, out blockId);
+            bool succeeded = Compile(code, Core.GetCurrentBlockId(), out blockId);
 
             //Clear the warnings and errors so they will not continue impact the next compilation.
             Core.BuildStatus.ClearErrors();
