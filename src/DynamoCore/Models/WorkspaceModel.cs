@@ -438,7 +438,7 @@ namespace Dynamo.Models
             }
         }
 
-        private bool showRunPreview = true;
+        private bool showRunPreview;
 
         public bool ShowRunPreview
         {
@@ -446,6 +446,7 @@ namespace Dynamo.Models
             set
             {
                 showRunPreview = value;
+                GetExecutingNodes();
                 RaisePropertyChanged("ShowRunPreview");
             }
         }
@@ -618,6 +619,14 @@ namespace Dynamo.Models
         public virtual void OnNodesModified()
         {
             
+        }
+
+
+        /// <summary>
+        /// This gets the next set of executing nodes 
+        /// </summary>
+        public virtual void GetExecutingNodes()
+        {
         }
 
         /// <summary>

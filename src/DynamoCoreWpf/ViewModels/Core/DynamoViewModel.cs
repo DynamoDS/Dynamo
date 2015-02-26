@@ -102,7 +102,10 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                ShowRunPreview = !HomeSpace.DynamicRunEnabled;
+                //Change the ShowRunPreview to un-checked state 
+                //when run auto is set to true.
+                if(HomeSpace.DynamicRunEnabled) 
+                    ShowRunPreview = !HomeSpace.DynamicRunEnabled;
                 return HomeSpace.DynamicRunEnabled; //selecting debug now toggles this on/off
             }
             set
@@ -412,7 +415,7 @@ namespace Dynamo.ViewModels
             {
                 model.DebugSettings.VerboseLogging = value;
                 RaisePropertyChanged("VerboseLogging");
-            }
+           }
         }
 
         public bool ShowDebugASTs
@@ -445,7 +448,7 @@ namespace Dynamo.ViewModels
             set
             {
                 CurrentSpace.ShowRunPreview = value;               
-                RaisePropertyChanged("ShowRunPreview");
+                RaisePropertyChanged("ShowRunPreview");              
             }
         }
 

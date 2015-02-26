@@ -568,7 +568,8 @@ namespace Dynamo.Models
 
             IsSelected = false;
             State = ElementState.Dead;
-            ArgumentLacing = LacingStrategy.Disabled;         
+            ArgumentLacing = LacingStrategy.Disabled;
+            ShowExecutionPreview = false;
             //IsReportingModifications = true;
         }
 
@@ -1482,7 +1483,7 @@ namespace Dynamo.Models
         }
 
 
-        public virtual bool ShowExecutionPreview
+        public bool ShowExecutionPreview
         {
             get
             {
@@ -1495,7 +1496,7 @@ namespace Dynamo.Models
             }
         }
 
-        public virtual bool IsNodeAddedRecently
+        public bool IsNodeAddedRecently
         {
             get
             {

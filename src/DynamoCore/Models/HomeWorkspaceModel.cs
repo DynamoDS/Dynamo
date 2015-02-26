@@ -150,8 +150,9 @@ namespace Dynamo.Models
                 DynamoModel.OnRequestDispatcherBeginInvoke(Run);
             }
 
-            //Find the next executing nodes
-            GetExecutingNodes();
+            //Find the next executing nodes on when Run-Auto is not set 
+            if (!DynamicRunEnabled && ShowRunPreview)
+                     GetExecutingNodes();
         }
 
         /// <summary>
@@ -322,7 +323,7 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        internal void GetExecutingNodes()
+        public override void GetExecutingNodes()
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
             bool showRunPreview = ShowRunPreview;               

@@ -312,7 +312,7 @@ namespace Dynamo.ViewModels
                 case "IsShowingConnectors":
                     RaisePropertyChanged("BezVisibility");
                     RaisePropertyChanged("PlineVisibility");
-                break;
+                break;               
             }
         }
 
