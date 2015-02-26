@@ -65,12 +65,9 @@ namespace Dynamo.Models
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
             }
 
-            if (pulseMaker != null)
-            {
-                // If there exists a PulseMaker, disable it first.
-                if (pulseMaker != null)
-                    pulseMaker.Stop();
-            }
+            if (pulseMaker == null) return;
+
+            pulseMaker.Stop();
         }
 
         /// <summary>
