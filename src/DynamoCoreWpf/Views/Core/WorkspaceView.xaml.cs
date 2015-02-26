@@ -87,11 +87,6 @@ namespace Dynamo.Views
 
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
-            // The synchronization context is handing down to the view
-            // model so that operations which need to be executed on the 
-            // UI thread can do so.
-            ViewModel.Model.Context = SynchronizationContext.Current;
-
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
         }
 

@@ -428,12 +428,6 @@ namespace Dynamo.Models
 
         public ElementResolver ElementResolver { get; private set; }
 
-        /// <summary>
-        /// The SynchronizationContext is handed down to the view model
-        /// from the view after the view is loaded.
-        /// </summary>
-        public SynchronizationContext Context { get; set; }
-
         #endregion
 
         #region constructors

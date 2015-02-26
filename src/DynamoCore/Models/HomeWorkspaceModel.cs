@@ -136,7 +136,7 @@ namespace Dynamo.Models
             // shutting down so we check whether an engine controller is available.
             if (RunSettings.RunType != RunType.Manually && EngineController != null)
             {
-                Context.Post(Run, null);
+                Run();
             }
         }
 
@@ -158,11 +158,11 @@ namespace Dynamo.Models
         /// evaluations in milliseconds.</param>
         /// <param name="context">A synchronization context belonging to the 
         /// thread on which you want PulseMaker callbacks to execute.</param>
-        public void StartPeriodicEvaluation(int milliseconds, SynchronizationContext context)
+        public void StartPeriodicEvaluation(int milliseconds)
         {
             if (pulseMaker == null)
             {
-                pulseMaker = new PulseMaker(context);
+                pulseMaker = new PulseMaker();
             }
 
             pulseMaker.RunStarted += pulseMaker_RunStarted;
@@ -177,11 +177,10 @@ namespace Dynamo.Models
             pulseMaker.Start(milliseconds);
         }
 
-        private void pulseMaker_RunStarted(SynchronizationContext context)
+        private void pulseMaker_RunStarted()
         {
             var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
-
-            context.Post(MarkNodesAsModifiedAndUpdate, nodesToUpdate);
+            MarkNodesAsModifiedAndUpdate(nodesToUpdate);
         }
 
         private void MarkNodesAsModifiedAndUpdate(object state)
@@ -353,7 +352,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="state">Any state that passed to this method by the 
         /// running context.</param>
-        public void Run(object state=null)
+        public void Run()
         {
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
