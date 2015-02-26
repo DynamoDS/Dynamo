@@ -498,6 +498,8 @@ namespace Dynamo.Models
         {
             Log(Properties.Resources.ClearingWorkSpace);
 
+            DynamoSelection.Instance.ClearSelection();
+
             foreach (NodeModel el in Nodes)
             {
                 el.Dispose();
