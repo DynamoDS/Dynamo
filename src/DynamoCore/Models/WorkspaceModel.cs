@@ -161,8 +161,6 @@ namespace Dynamo.Models
         public event Action<NodeModel> NodeAdded;
         protected virtual void OnNodeAdded(NodeModel node)
         {
-            node.PropertyChanged += OnNodePropertyChanged;
-
             var handler = NodeAdded;
             if (handler != null) handler(node);
         }
@@ -173,8 +171,6 @@ namespace Dynamo.Models
         public event Action<NodeModel> NodeRemoved;
         protected virtual void OnNodeRemoved(NodeModel node)
         {
-            node.PropertyChanged -= OnNodePropertyChanged;
-
             var handler = NodeRemoved;
             if (handler != null) handler(node);
         }
@@ -605,10 +601,6 @@ namespace Dynamo.Models
         public virtual void OnNodesModified()
         {
             
-        }
-
-        protected virtual void OnNodePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
         }
 
         /// <summary>
