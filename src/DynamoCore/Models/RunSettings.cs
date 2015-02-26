@@ -35,6 +35,8 @@ namespace Dynamo.Models
             get { return runPeriod; }
             set
             {
+                if (runPeriod == value) return;
+
                 runPeriod = value;
                 RaisePropertyChangeWithDebug("RunPeriod");
             }
@@ -48,6 +50,8 @@ namespace Dynamo.Models
             get { return runType; }
             set
             {
+                if (runType == value) return;
+
                 runType = value;
                 RaisePropertyChangeWithDebug("RunType");
             }
@@ -63,7 +67,8 @@ namespace Dynamo.Models
             get { return runEnabled; }
             set
             {
-                if (Equals(value, runEnabled)) return;
+                if (runEnabled == value) return;
+
                 runEnabled = value;
                 RaisePropertyChangeWithDebug("RunEnabled");
             }
