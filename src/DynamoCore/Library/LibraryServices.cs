@@ -118,9 +118,18 @@ namespace Dynamo.DSEngine
         public void AddAdditionalParametersToNode(string functionSignature, XmlElement nodeElement)
         {
             var upgradeHint = priorNameHints[functionSignature];
+
             foreach (string key in upgradeHint.AdditionalParameters.Keys)
             {
-                nodeElement.Attributes[key].Value = upgradeHint.AdditionalParameters[key];
+                var val = nodeElement.Attributes[key];
+
+                if (val != null)
+                {
+                    nodeElement.Attributes[key].Value = upgradeHint.AdditionalParameters[key];
+                    continue;
+                }
+
+                nodeElement.SetAttribute(key, upgradeHint.AdditionalParameters[key]);
             }
         }
 
@@ -398,11 +407,21 @@ namespace Dynamo.DSEngine
                     while (reader.Read())
                     {
                         reader.ReadToFollowing("priorNameHint");
+                        XmlReader hintSubtree = null;
 
-                        if (!reader.Read())
+                        try
+                        {
+                            hintSubtree = reader.ReadSubtree();
+                        }
+                        catch (Exception ex)
+                        {
+                            hintSubtree = null;
+                        }
+
+                        if (!reader.Read() || hintSubtree == null)
                             break;
 
-                        var hintSubtree = reader.ReadSubtree();
+                        //reader.Skip();
 
                         reader.ReadToFollowing("oldName");
                         string oldName = reader.ReadElementContentAsString();
@@ -426,9 +445,10 @@ namespace Dynamo.DSEngine
                             if (!hintSubtree.Read())
                                 break;
 
-                            string paramName = reader.ReadElementContentAsString();
+                            string paramName = reader.Value;
                             hintSubtree.ReadToFollowing("value");
-                            string paramValue = reader.ReadElementContentAsString();
+                            hintSubtree.Read();
+                            string paramValue = reader.Value;
 
                             foundPriorNameHints[oldName].AdditionalParameters[paramName] =
                                 paramValue;
@@ -436,7 +456,7 @@ namespace Dynamo.DSEngine
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 return; // if the XML file is badly formatted, return like it doesn't exist
             }

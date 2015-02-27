@@ -11,6 +11,16 @@
     </additionalParameters>
   </priorNameHint>
   <priorNameHint>
+    <oldName>DynamoUnits.SIUnit.+@DynamoUnits.SIUnit,DynamoUnits.SIUnit</oldName>
+    <newName>DSCore.Math.Add@double,double</newName>
+    <additionalParameters>
+      <parameter>
+        <name>assembly</name>
+        <value>DSCoreNodes</value>
+      </parameter>
+    </additionalParameters>
+  </priorNameHint>
+  <priorNameHint>
     <oldName>DynamoUnits.SIUnit.Subtract@double</oldName>
     <newName>DSCore.Math.Subtract@double,double</newName>
     <additionalParameters>
