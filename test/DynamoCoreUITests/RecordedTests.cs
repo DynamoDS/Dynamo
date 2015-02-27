@@ -412,11 +412,11 @@ namespace DynamoCoreUITests
                 //So the process is separated into two steps. At the second step. the button status is checked.
                 if (commandTag == "OpenFile")
                 {
-                    ViewModel.HomeSpace.RunEnabled = false;
+                    ViewModel.HomeSpace.RunSettings.RunEnabled = false;
                 }
                 else if (commandTag == "CheckButtonIsDisabled")
                 {
-                    Assert.IsFalse(dynamoView.RunButton.IsEnabled);
+                    Assert.IsFalse(dynamoView.RunSettingsControl.RunButton.IsEnabled);
                 }
             });
         }
@@ -698,7 +698,9 @@ namespace DynamoCoreUITests
                     DynamoModel = model
                 });
 
-            this.ViewModel.DynamicRunEnabled = autoRun;
+            ViewModel.HomeSpace.RunSettings.RunType = autoRun ? 
+                RunType.Automatically : 
+                RunType.Manually;
 
             // Load all custom nodes if there is any specified for this test.
             if (this.customNodesToBeLoaded != null)
@@ -2977,12 +2979,12 @@ namespace DynamoCoreUITests
                 {
                     AssertNullValues();
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
-                    Assert.AreEqual(false, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
-                    Assert.AreEqual(true, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
                 {
@@ -3007,12 +3009,12 @@ namespace DynamoCoreUITests
                 {
                     AssertNullValues();
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
-                    Assert.AreEqual(false, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
-                    Assert.AreEqual(true, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
                 {

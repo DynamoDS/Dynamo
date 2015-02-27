@@ -10,8 +10,9 @@ namespace Dynamo.ViewModels
             {
 #if DEBUG
                 return true;
-#endif
+#else
                 return false;
+#endif
             }
         }
     }
