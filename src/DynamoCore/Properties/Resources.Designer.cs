@@ -623,6 +623,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to INPUT.
+        /// </summary>
+        public static string InputLabel {
+            get {
+                return ResourceManager.GetString("InputLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A function parameter, use with custom nodes.
         /// </summary>
         public static string InputNodeDescription {
@@ -862,6 +871,15 @@ namespace Dynamo.Properties {
         public static string OpenWorkspaceError {
             get {
                 return ResourceManager.GetString("OpenWorkspaceError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OUTPUT.
+        /// </summary>
+        public static string OutputLabel {
+            get {
+                return ResourceManager.GetString("OutputLabel", resourceCulture);
             }
         }
         

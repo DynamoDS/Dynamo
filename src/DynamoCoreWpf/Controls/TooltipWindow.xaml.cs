@@ -3,6 +3,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 
+using Dynamo.UI;
+
 namespace Dynamo.UI.Controls
 {
     /// <summary>
@@ -14,6 +16,8 @@ namespace Dynamo.UI.Controls
         public ToolTipWindow()
         {
             InitializeComponent();
+            input.Text = Configurations.InputLabel;
+            output.Text = Configurations.OutputLabel;
         }
 
         public void CopyIconMouseClick(object sender, MouseButtonEventArgs e)

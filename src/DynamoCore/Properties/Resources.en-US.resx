@@ -556,11 +556,17 @@ value: bool = false</value>
   <data name="HeaderQuery" xml:space="preserve">
     <value>QUERY</value>
   </data>
+  <data name="InputLabel" xml:space="preserve">
+    <value>INPUT</value>
+  </data>
   <data name="MoreButtonTextFormat" xml:space="preserve">
     <value>SHOW MORE ({0})</value>
   </data>
   <data name="NoDescriptionAvailable" xml:space="preserve">
     <value>No description available</value>
+  </data>
+  <data name="OutputLabel" xml:space="preserve">
+    <value>OUTPUT</value>
   </data>
   <data name="TopResult" xml:space="preserve">
     <value>Top Result</value>
