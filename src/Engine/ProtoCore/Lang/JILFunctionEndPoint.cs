@@ -82,7 +82,7 @@ namespace ProtoCore.Lang
             int returnAddr = stackFrame.ReturnPC;
             int blockDecl = stackFrame.FunctionBlock;
             int blockCaller = stackFrame.FunctionCallerBlock;
-            int framePointer = core.Rmem.FramePointer; 
+            int framePointer = runtimeCore.RuntimeMemory.FramePointer; 
             int locals = activation.locals;
             
 
@@ -131,7 +131,7 @@ namespace ProtoCore.Lang
             Validity.Assert(depth == 0);
             Validity.Assert(type == DSASM.StackFrameType.kTypeFunction);
 
-            core.Rmem.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, locals, execStateSize);
+            runtimeCore.RuntimeMemory.PushStackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, locals, execStateSize);
 
 
             StackValue svRet;

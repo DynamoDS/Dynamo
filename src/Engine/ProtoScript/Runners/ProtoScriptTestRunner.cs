@@ -97,7 +97,7 @@ namespace ProtoScript.Runners
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                context.SetData(string.Empty, new Dictionary<string, object>(), null);
+                context.SetData(string.Empty, new Dictionary<string, object>(), null, Constants.kInvalidIndex, null);
                 ProtoCore.Language id = globalBlock.language;
 
                 
@@ -128,8 +128,9 @@ namespace ProtoScript.Runners
         /// <param name="runtimeContext"></param>
         public void Execute(ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
         {
+            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             // Move these core setup to runtime core 
-            core.Rmem.PushFrameForGlobals(core.GlobOffset);
+            runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
             core.RunningBlock = runningBlock;
 
             try
@@ -141,7 +142,7 @@ namespace ProtoScript.Runners
                     // On first bounce, the stackframe depth is initialized to -1 in the Stackfame constructor.
                     // Passing it to bounce() increments it so the first depth is always 0
                     ProtoCore.DSASM.StackFrame stackFrame = new ProtoCore.DSASM.StackFrame(core.GlobOffset);
-                    stackFrame.FramePointer = core.Rmem.FramePointer;
+                    stackFrame.FramePointer = runtimeCore.RuntimeMemory.FramePointer;
                     
                     // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                     // Register TX is used for this.
@@ -175,6 +176,7 @@ namespace ProtoScript.Runners
         public ExecutionMirror Execute(ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext, ProtoCore.Core core, bool isTest = true)
         {
             Validity.Assert(null != staticContext.SourceCode && String.Empty != staticContext.SourceCode);
+            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             core.AddContextData(staticContext.GlobalVarList);
    
@@ -187,7 +189,7 @@ namespace ProtoScript.Runners
                 Execute(core, blockId, staticContext, runtimeContext);
                 if (!isTest)
                 {
-                    core.Heap.Free();
+                    runtimeCore.RuntimeMemory.Heap.Free();
                 }
             }
             else
@@ -212,6 +214,7 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public ExecutionMirror Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
         {
+            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(astList, core, out blockId);
             if (succeeded)
@@ -219,8 +222,8 @@ namespace ProtoScript.Runners
                 core.GenerateExecutable();
                 Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
                 if (!isTest) 
-                { 
-                    core.Heap.Free(); 
+                {
+                    runtimeCore.RuntimeMemory.Heap.Free(); 
                 }
             }
             else
@@ -246,6 +249,7 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
         {
+            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(sourcecode, core, out blockId);
             if (succeeded)
@@ -262,7 +266,7 @@ namespace ProtoScript.Runners
                 
                 if (!isTest)
                 {
-                    core.Heap.Free();
+                    runtimeCore.RuntimeMemory.Heap.Free();
                 }
             }
             else

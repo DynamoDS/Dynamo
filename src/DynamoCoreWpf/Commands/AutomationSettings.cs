@@ -117,7 +117,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// When "DynamoModel.DynamicRunEnabled" is set to true, "HomeWorkspace"
+        /// When HomeWorkspace.RunSettings.RunType is set to Automatically, "HomeWorkspace"
         /// starts its internal "DispatcherTimer" whenever its content is being 
         /// modified. This timer starts a round of evaluation after a predefined 
         /// amount of time has ellapsed, preventing modifications in quick 

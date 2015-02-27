@@ -1496,7 +1496,7 @@ namespace ProtoScript.Runners
         {
             Dictionary<string, bool> execFlagList = null;
 
-            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList);
+            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList, Constants.kInvalidIndex, null);
 
             bool succeeded = runner.Compile(staticContext, runnerCore, out blockId);
             if (succeeded)
@@ -1531,6 +1531,7 @@ namespace ProtoScript.Runners
 
         private ProtoRunner.ProtoVMState Execute()
         {
+            runtimeCore = runnerCore.__TempCoreHostForRefactoring;
             // runnerCore.GlobOffset is the number of global symbols that need to be allocated on the stack
             // The argument to Reallocate is the number of ONLY THE NEW global symbols as the stack needs to accomodate this delta
             int newSymbols = runnerCore.GlobOffset - deltaSymbols;
@@ -1540,7 +1541,7 @@ namespace ProtoScript.Runners
             //           as no symbols point to this memory location in the stack anyway
             if (newSymbols >= 0)
             {
-                runnerCore.Rmem.PushFrameForGlobals(newSymbols);
+                runtimeCore.RuntimeMemory.PushFrameForGlobals(newSymbols);
             }
 
             // Store the current number of global symbols
@@ -1553,7 +1554,6 @@ namespace ProtoScript.Runners
             try
             {
                 runner.Execute(runnerCore, 0, compileContext, runtimeContext);
-                runtimeCore = runnerCore.__TempCoreHostForRefactoring;
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {

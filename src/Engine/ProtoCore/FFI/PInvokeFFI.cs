@@ -182,11 +182,11 @@ namespace ProtoFFI
         private object ConvertCSArrayToDSArray(double[] csArray, ProtoCore.DSASM.Interpreter dsi)
         {
            
-            var core = dsi.runtime.Core;
+            var runtimeCore = dsi.runtime.RuntimeCore;
             object retVal = null;
 
             var values = csArray.Select(x => StackValue.BuildDouble(x)).ToArray();
-            retVal = core.Heap.AllocateArray(values);
+            retVal = runtimeCore.RuntimeMemory.Heap.AllocateArray(values);
             return retVal;
         }
 

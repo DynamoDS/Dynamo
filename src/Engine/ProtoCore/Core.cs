@@ -315,8 +315,8 @@ namespace ProtoCore
         public int BaseOffset { get; set; }
         public int GraphNodeUID { get; set; }
 
-        public Heap Heap { get; set; }
-        public RuntimeMemory Rmem { get; set; }
+        public Heap Heap { get; private set; }
+        //public RuntimeMemory Rmem { get; set; }
 
         public int ClassIndex { get; set; }     // Holds the current class scope
         public int RunningBlock { get; set; }
@@ -633,12 +633,15 @@ namespace ProtoCore
         private void ResetRuntimeCore()
         {
             RuntimeData = new ProtoCore.RuntimeData();
-            __TempCoreHostForRefactoring = new RuntimeCore();
+            __TempCoreHostForRefactoring = new RuntimeCore(Heap);
             __TempCoreHostForRefactoring.RuntimeStatus = new ProtoCore.RuntimeStatus(this);
         }
 
         private void ResetAll(Options options)
         {
+            Heap = new Heap();
+            //Rmem = new RuntimeMemory(Heap);
+
             ResetRuntimeCore();
 
             Validity.AssertExpiry();
@@ -650,8 +653,6 @@ namespace ProtoCore
             FunctionTable = new FunctionTable(); 
             Langverify = new LangVerify();
 
-            Heap = new Heap();
-            Rmem = new RuntimeMemory(Heap);
 
             watchClassScope = Constants.kInvalidIndex;
             watchFunctionScope = Constants.kInvalidIndex;
@@ -993,24 +994,6 @@ namespace ProtoCore
             return null;
         }
 
-        public CodeBlock GetCodeBlock(List<CodeBlock> blockList, int blockId)
-        {
-            CodeBlock codeblock = null;
-            codeblock = blockList.Find(x => x.codeBlockId == blockId);
-            if (codeblock == null)
-            {
-                foreach (CodeBlock block in blockList)
-                {
-                    codeblock = GetCodeBlock(block.children, blockId);
-                    if (codeblock != null)
-                    {
-                        break;
-                    }
-                }
-            }
-            return codeblock;
-        }
-
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)
         {
             if (CodeBlockType.kLanguage == codeBlock.blockType
@@ -1125,6 +1108,13 @@ namespace ProtoCore
 
             SetupRuntimeCore();
 
+            // Create the code block list data
+            DSExecutable.CodeBlocks = new List<CodeBlock>();
+            DSExecutable.CodeBlocks.AddRange(CodeBlockList);
+            DSExecutable.CompleteCodeBlocks = new List<CodeBlock>();
+            DSExecutable.CompleteCodeBlocks.AddRange(CompleteCodeBlockList);
+
+
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
@@ -1218,13 +1208,34 @@ namespace ProtoCore
             return ancestors;
         }
 
+        //public int GetCurrentBlockId()
+        //{
+        //    int constructBlockId = Rmem.CurrentConstructBlockId;
+        //    if (constructBlockId == Constants.kInvalidIndex)
+        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
+
+        //    CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
+        //    while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
+        //    {
+        //        constructBlock = constructBlock.parent;
+        //    }
+
+        //    if (null != constructBlock)
+        //        constructBlockId = constructBlock.codeBlockId;
+
+        //    if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
+        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
+        //    else
+        //        return Rmem.CurrentConstructBlockId;
+        //}
+
         public int GetCurrentBlockId()
         {
-            int constructBlockId = Rmem.CurrentConstructBlockId;
+            int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
             if (constructBlockId == Constants.kInvalidIndex)
                 return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
 
-            CodeBlock constructBlock = GetCodeBlock(CodeBlockList, constructBlockId);
+            CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
             while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
             {
                 constructBlock = constructBlock.parent;
@@ -1236,7 +1247,7 @@ namespace ProtoCore
             if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
                 return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
             else
-                return Rmem.CurrentConstructBlockId;
+                return __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
         }
 
         public GraphNode GetExecutingGraphNode()

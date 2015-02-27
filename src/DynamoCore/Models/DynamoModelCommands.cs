@@ -279,7 +279,11 @@ namespace Dynamo.Models
 
         void UpdateModelValueImpl(UpdateModelValueCommand command)
         {
-            CurrentWorkspace.UpdateModelValue(command.ModelGuids,
+            WorkspaceModel targetWorkspace  = CurrentWorkspace;
+            if (!command.WorkspaceGuid.Equals(System.Guid.Empty))
+                targetWorkspace = Workspaces.FirstOrDefault(w => w.Guid.Equals(command.WorkspaceGuid));
+
+            targetWorkspace.UpdateModelValue(command.ModelGuids,
                 command.Name, command.Value);
         }
 
@@ -306,10 +310,10 @@ namespace Dynamo.Models
             CurrentWorkspace = workspace;
         }
 
-        void SwitchTabImpl(SwitchTabCommand command)
+        void SwitchWorkspaceImpl(SwitchTabCommand command)
         {
             // We don't attempt to null-check here, we need it to fail fast.
-            CurrentWorkspace = Workspaces.ElementAt(command.TabIndex);
+            CurrentWorkspace = Workspaces.ElementAt(command.WorkspaceModelIndex);
         }
     }
 }

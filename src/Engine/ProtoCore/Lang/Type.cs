@@ -407,6 +407,8 @@ namespace ProtoCore
         public static StackValue Coerce(StackValue sv, Type targetType, Core core)
         {
             RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.Runtime.RuntimeMemory rmem = runtimeCore.RuntimeMemory;
+            
             //@TODO(Jun): FIX ME - abort coersion for default args
             if (sv.IsDefaultArgument)
                 return sv;
@@ -439,7 +441,7 @@ namespace ProtoCore
                 //We're being asked to convert an array into an array
                 //walk over the structure converting each othe elements
 
-                var hpe = core.Heap.GetHeapElement(sv);
+                var hpe = rmem.Heap.GetHeapElement(sv);
                 //Validity.Assert(targetType.rank != -1, "Arbitrary rank array conversion not yet implemented {2EAF557F-62DE-48F0-9BFA-F750BBCDF2CB}");
 
                 //Decrease level of reductions by one
@@ -479,7 +481,7 @@ namespace ProtoCore
 
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, core);
-                    StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
+                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }
                 else
@@ -493,7 +495,7 @@ namespace ProtoCore
 
                     //Upcast once
                     StackValue coercedValue = Coerce(sv, newTargetType, core);
-                    StackValue newSv = core.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
+                    StackValue newSv = rmem.Heap.AllocateArray(new StackValue[] { coercedValue }, null);
                     return newSv;
                 }
             }
@@ -577,7 +579,7 @@ namespace ProtoCore
                         if (sv.metaData.type == (int)PrimitiveType.kTypeChar)
                         {
                             char ch = EncodingUtils.ConvertInt64ToCharacter(newSV.opdata);
-                            newSV = StackValue.BuildString(ch.ToString(), core.Heap);
+                            newSV = StackValue.BuildString(ch.ToString(), rmem.Heap);
                         }
                         return newSV;
                     }
