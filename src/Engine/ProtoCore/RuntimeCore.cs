@@ -74,6 +74,18 @@ namespace ProtoCore
 
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
+
+            RunningBlock = 0;
+            ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
+            Configurations = new Dictionary<string, object>();
+            FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
+
+            ContinuationStruct = new ContinuationStructure();
+
+
+            watchStack = new List<StackValue>();
+            watchFramePointer = Constants.kInvalidIndex;
+            WatchSymbolList = new List<SymbolNode>();
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
@@ -85,14 +97,30 @@ namespace ProtoCore
         }
 
 
+        // Execution properties
         public Executable DSExecutable { get; private set; }
         public Options Options { get; private set; }
         public RuntimeStatus RuntimeStatus { get; set; }
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
         public ProtoCore.Runtime.Context Context { get; set; }
 
+        // Memory
         public Heap Heap { get; set; }
         public RuntimeMemory RuntimeMemory { get; set; }
+
+        public delegate void DisposeDelegate(RuntimeCore sender);
+        public event DisposeDelegate Dispose;
+        public event EventHandler<ExecutionStateEventArgs> ExecutionEvent;
+        public int ExecutionState { get; set; }
+        public Dictionary<string, object> Configurations { get; set; }
+        public FFIPropertyChangedMonitor FFIPropertyChangedMonitor { get; private set; }
+
+        //public Executive CurrentExecutive { get; private set; }
+
+        /// <summary>
+        /// The currently executing blockID
+        /// </summary>
+        public int RunningBlock { get; set; }
 
         /// <summary>
         /// RuntimeExpressionUID is used by the associative engine at runtime to determine the current expression ID being executed
@@ -106,8 +134,66 @@ namespace ProtoCore
 #region DEBUGGER_PROPERTIES
         public DebugProperties DebugProps { get; set; }
         public List<Instruction> Breakpoints { get; set; }
-#endregion 
 
+        // Continuation properties used for Serial mode execution and Debugging of Replicated calls
+        public ContinuationStructure ContinuationStruct { get; set; }
+        /// <summary>
+        /// Gets the reason why the execution was last suspended
+        /// </summary>
+        public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
+
+
+        public List<StackValue> watchStack { get; set; }
+        public int watchFramePointer { get; set; }
+
+        public List<SymbolNode> WatchSymbolList { get; set; }
+#endregion 
+        
+        public void ResetForDeltaExecution()
+        {
+            RunningBlock = 0;
+            ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
+        }
+
+        protected void OnDispose()
+        {
+            if (Dispose != null)
+            {
+                Dispose(this);
+            }
+        }
+
+        public void Cleanup()
+        {
+            OnDispose();
+            CLRModuleType.ClearTypes();
+        }
+
+        public void NotifyExecutionEvent(ExecutionStateEventArgs.State state)
+        {
+            switch (state)
+            {
+                case ExecutionStateEventArgs.State.kExecutionBegin:
+                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kInvalid, "Invalid Execution state being notified.");
+                    break;
+                case ExecutionStateEventArgs.State.kExecutionEnd:
+                    if (ExecutionState == (int)ExecutionStateEventArgs.State.kInvalid) //execution never begun.
+                        return;
+                    break;
+                case ExecutionStateEventArgs.State.kExecutionBreak:
+                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionBegin || ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionResume, "Invalid Execution state being notified.");
+                    break;
+                case ExecutionStateEventArgs.State.kExecutionResume:
+                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionBreak, "Invalid Execution state being notified.");
+                    break;
+                default:
+                    Validity.Assert(false, "Invalid Execution state being notified.");
+                    break;
+            }
+            ExecutionState = (int)state;
+            if (null != ExecutionEvent)
+                ExecutionEvent(this, new ExecutionStateEventArgs(state));
+        }
         
         public bool IsEvalutingPropertyChanged()
         {

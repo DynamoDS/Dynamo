@@ -227,7 +227,7 @@ namespace ProtoCore.DSASM.Mirror
             if (classnode.IsImportedClass)
             {
                 var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
-                var marshaller = helper.GetMarshaller(core);
+                var marshaller = helper.GetMarshaller(core.__TempCoreHostForRefactoring);
                 var strRep = marshaller.GetStringValue(val);
                 formatParams.RestoreOutputTraceDepth();
                 return strRep;
@@ -526,7 +526,7 @@ namespace ProtoCore.DSASM.Mirror
             {
                 ClassNode classnode = core.ClassTable.ClassNodes[ci];
 
-                if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex && functionBlock != core.RunningBlock)
+                if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex && functionBlock != runtimeCore.RunningBlock)
                 {
                     index = exe.runtimeSymbols[block].IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
                 }
@@ -655,7 +655,7 @@ namespace ProtoCore.DSASM.Mirror
             RuntimeMemory rmem = MirrorTarget.rmem;
 
             int classcope;
-            int block = core.RunningBlock;
+            int block = MirrorTarget.RuntimeCore.RunningBlock;
             SymbolNode symbol;
             int index = GetSymbolIndex(name, out classcope, ref block, out symbol);
 
@@ -727,22 +727,23 @@ namespace ProtoCore.DSASM.Mirror
 
         public Obj GetWatchValue()
         {
-            int count = MirrorTarget.Core.watchStack.Count;
-            int n = MirrorTarget.Core.watchSymbolList.FindIndex(x => { return string.Equals(x.name, Constants.kWatchResultVar); });
+            RuntimeCore runtimeCore = MirrorTarget.RuntimeCore;
+            int count = runtimeCore.watchStack.Count;
+            int n = runtimeCore.WatchSymbolList.FindIndex(x => { return string.Equals(x.name, Constants.kWatchResultVar); });
 
             if (n < 0 || n >= count)
             {
-                core.watchSymbolList.Clear();
+                runtimeCore.WatchSymbolList.Clear();
                 return new Obj { Payload = null };
             }
 
             Obj retVal = null;
             try
             {
-                StackValue sv = MirrorTarget.Core.watchStack[n];
+                StackValue sv = runtimeCore.watchStack[n];
                 if (!sv.IsInvalid)
                 {
-                    retVal = Unpack(MirrorTarget.Core.watchStack[n], MirrorTarget.rmem.Heap, core);
+                    retVal = Unpack(runtimeCore.watchStack[n], MirrorTarget.rmem.Heap, core);
                 }
                 else
                 {
@@ -755,7 +756,7 @@ namespace ProtoCore.DSASM.Mirror
             }
             finally
             {
-                core.watchSymbolList.Clear();
+                runtimeCore.WatchSymbolList.Clear();
             }
 
             return retVal;
@@ -1143,6 +1144,7 @@ namespace ProtoCore.DSASM.Mirror
         /// <returns></returns>
         public static Obj Unpack(StackValue val, Heap heap, Core core, int type = (int)PrimitiveType.kTypePointer) 
         {
+            Executable exe = core.__TempCoreHostForRefactoring.DSExecutable;
             switch (val.optype)
             {
                 case AddressType.ArrayPointer:
@@ -1166,9 +1168,9 @@ namespace ProtoCore.DSASM.Mirror
                         Obj retO = new Obj(val) 
                         { 
                             Payload = ret, 
-                            Type = core.TypeSystem.BuildTypeObject(
-                                        (ret.members.Length > 0) 
-                                        ? core.TypeSystem.GetType(ret.members[0].Type.Name) 
+                            Type = exe.TypeSystem.BuildTypeObject(
+                                        (ret.members.Length > 0)
+                                        ? exe.TypeSystem.GetType(ret.members[0].Type.Name) 
                                         : (int)ProtoCore.PrimitiveType.kTypeVoid, Constants.kArbitraryRank) 
                         };
 
@@ -1239,8 +1241,8 @@ namespace ProtoCore.DSASM.Mirror
                         Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
-                            Type = core.TypeSystem.BuildTypeObject(type, 0) 
+                            Payload = data,
+                            Type = exe.TypeSystem.BuildTypeObject(type, 0) 
                         };
                         return o;
                     }
@@ -1268,7 +1270,9 @@ namespace ProtoCore.DSASM.Mirror
 
         public static Obj Unpack(StackValue val, Core core)
         {
-            RuntimeMemory rmem = core.__TempCoreHostForRefactoring.RuntimeMemory;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
+            Executable exe = runtimeCore.DSExecutable;
             switch (val.optype)
             {
                 case AddressType.ArrayPointer:
@@ -1287,8 +1291,8 @@ namespace ProtoCore.DSASM.Mirror
 
                         Obj retO = new Obj(val) 
                         { 
-                            Payload = ret, 
-                            Type = core.TypeSystem.BuildTypeObject((ret.members.Length > 0) ? core.TypeSystem.GetType(ret.members[0].Type.Name) : (int)ProtoCore.PrimitiveType.kTypeVar, Constants.kArbitraryRank)
+                            Payload = ret,
+                            Type = exe.TypeSystem.BuildTypeObject((ret.members.Length > 0) ? exe.TypeSystem.GetType(ret.members[0].Type.Name) : (int)ProtoCore.PrimitiveType.kTypeVar, Constants.kArbitraryRank)
                         };
 
                         return retO;
@@ -1346,8 +1350,8 @@ namespace ProtoCore.DSASM.Mirror
                         Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
-                            Type = core.TypeSystem.BuildTypeObject(val.metaData.type, 0) 
+                            Payload = data,
+                            Type = exe.TypeSystem.BuildTypeObject(val.metaData.type, 0) 
                         };
                         return o;
                     }

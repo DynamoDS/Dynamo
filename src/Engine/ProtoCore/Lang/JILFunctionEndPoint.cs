@@ -47,7 +47,7 @@ namespace ProtoCore.Lang
             }
 
             // Assert for the block type
-            activation.globs = core.DSExecutable.runtimeSymbols[core.RunningBlock].GetGlobalSize();
+            activation.globs = runtimeCore.DSExecutable.runtimeSymbols[runtimeCore.RunningBlock].GetGlobalSize();
 
             //
             // Comment Jun:
@@ -88,8 +88,8 @@ namespace ProtoCore.Lang
 
             // Update the running block to tell the execution engine which set of instruction to execute
             // TODO(Jun/Jiong): Considering store the orig block id to stack frame
-            int origRunningBlock = core.RunningBlock;
-            core.RunningBlock = (int)svBlockDecl.opdata;
+            int origRunningBlock = runtimeCore.RunningBlock;
+            runtimeCore.RunningBlock = (int)svBlockDecl.opdata;
 
             // Set SX register 
             interpreter.runtime.SX = svBlockDecl;
@@ -142,8 +142,8 @@ namespace ProtoCore.Lang
             }
             else
             {
-                svRet = interpreter.Run(core.RunningBlock, activation.pc, Language.kInvalid, runtimeCore.Breakpoints);
-                core.RunningBlock = origRunningBlock;
+                svRet = interpreter.Run(runtimeCore.RunningBlock, activation.pc, Language.kInvalid, runtimeCore.Breakpoints);
+                runtimeCore.RunningBlock = origRunningBlock;
             }
 
             if (core.CurrentExecutive != null)

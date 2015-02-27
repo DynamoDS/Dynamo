@@ -127,8 +127,8 @@ namespace ProtoCore.Lang
 
                 {
 
-                    interpreter.runtime.executingBlock = core.RunningBlock;
-                    activation.JILRecord.globs = core.DSExecutable.runtimeSymbols[core.RunningBlock].GetGlobalSize();
+                    interpreter.runtime.executingBlock = runtimeCore.RunningBlock;
+                    activation.JILRecord.globs = core.DSExecutable.runtimeSymbols[runtimeCore.RunningBlock].GetGlobalSize();
 
                     // Params
                     formalParameters.Reverse();
