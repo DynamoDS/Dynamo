@@ -553,7 +553,7 @@ namespace ProtoCore.Lang
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
-            var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
+            var dynamicFunction = runtimeCore.DSExecutable.RuntimeData.DynamicFuncTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
             string functionName = dynamicFunction.Name;
 
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
@@ -1650,7 +1650,7 @@ namespace ProtoCore.Lang
 
             if (typeString == "array")
                 typeString = ProtoCore.DSDefinitions.Keyword.Array;
-            int type = runtime.runtime.Core.TypeSystem.GetType(typeString);
+            int type = runtimeCore.DSExecutable.TypeSystem.GetType(typeString);
 
             var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
             foreach (StackValue op in svArray)

@@ -70,7 +70,7 @@ namespace Dynamo.Interfaces
                 }
                 else
                 {
-                    int typeId = core.TypeSystem.GetType(stackValue);
+                    int typeId = core.__TempCoreHostForRefactoring.DSExecutable.TypeSystem.GetType(stackValue);
                     ClassMirror classMirror = new ClassMirror(typeId, core);
                     stringValue = classMirror.ClassName;
                 }
