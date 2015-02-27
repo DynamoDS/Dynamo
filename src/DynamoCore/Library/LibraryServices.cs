@@ -421,34 +421,9 @@ namespace Dynamo.DSEngine
                     while (reader.Read())
                     {
                         reader.ReadToFollowing("priorNameHint");
-                        XmlReader attributeSubtree = null;
-                        XmlReader elementSubtree = null;
 
-                        try
-                        {
-                            attributeSubtree = reader.ReadSubtree();
-                            //elementSubtree = reader.ReadSubtree();
-                        }
-                        catch (Exception ex)
-                        {
-                            attributeSubtree = null;
-                            elementSubtree = null;
-                        }
-
-                        if (!reader.Read() || attributeSubtree == null)
+                        if (!reader.Read())
                             break;
-                       
-                        string fullAttribute = null;
-
-                        try
-                        {
-                            attributeSubtree.Read();
-                            fullAttribute = XDocument.Load(attributeSubtree).ToString();
-                        }
-                        catch (Exception e)
-                        {
-                            
-                        }
 
                         reader.ReadToFollowing("oldName");
                         string oldName = reader.ReadElementContentAsString();
@@ -459,20 +434,8 @@ namespace Dynamo.DSEngine
                         upgradeHint.UpgradeName = newName;
 
                         foundPriorNameHints[oldName] = upgradeHint;
-                        
-                        //var fullAttribute = XDocument.Load(attributeSubtree).ToString();
 
-                        //sb = new StringBuilder();
-
-                       // while (elementSubtree.Read())
-                       //     sb.AppendLine(reader.ReadOuterXml());
-
-                        //var fullAttribute2 = sb.ToString();
-
-                        if (library == "DynamoUnits.dll")
-                            Console.WriteLine("foo");
-
-                        if (attributeSubtree.ReadToFollowing("additionalAttributes"))
+                        if (reader.ReadToFollowing("additionalAttributes"))
                         {
                             while (true)
                             {
