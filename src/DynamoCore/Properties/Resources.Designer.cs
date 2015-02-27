@@ -686,6 +686,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Locate in Disk...
+        /// </summary>
+        public static string LocateInDisk {
+            get {
+                return ResourceManager.GetString("LocateInDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} contains a package with a malformed header.  Ignoring it..
         /// </summary>
         public static string MalformedHeaderPackage {
@@ -700,6 +709,15 @@ namespace Dynamo.Properties {
         public static string MoreButtonTextFormat {
             get {
                 return ResourceManager.GetString("MoreButtonTextFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move.
+        /// </summary>
+        public static string MoveLabel {
+            get {
+                return ResourceManager.GetString("MoveLabel", resourceCulture);
             }
         }
         
@@ -736,6 +754,15 @@ namespace Dynamo.Properties {
         public static string NoHeaderPackage {
             get {
                 return ResourceManager.GetString("NoHeaderPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No matches found.
+        /// </summary>
+        public static string NoMatchesFound {
+            get {
+                return ResourceManager.GetString("NoMatchesFound", resourceCulture);
             }
         }
         
@@ -1006,6 +1033,15 @@ namespace Dynamo.Properties {
         public static string RangeValuesGreaterThanZero {
             get {
                 return ResourceManager.GetString("RangeValuesGreaterThanZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string RemoveLabel {
+            get {
+                return ResourceManager.GetString("RemoveLabel", resourceCulture);
             }
         }
         

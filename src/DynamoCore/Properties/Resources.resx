@@ -553,4 +553,16 @@ value: bool = false</value>
   <data name="TopResult" xml:space="preserve">
     <value>Top Result</value>
   </data>
+  <data name="LocateInDisk" xml:space="preserve">
+    <value>Locate in Disk..</value>
+  </data>
+  <data name="MoveLabel" xml:space="preserve">
+    <value>Move</value>
+  </data>
+  <data name="NoMatchesFound" xml:space="preserve">
+    <value>No matches found</value>
+  </data>
+  <data name="RemoveLabel" xml:space="preserve">
+    <value>Remove</value>
+  </data>
 </root>
