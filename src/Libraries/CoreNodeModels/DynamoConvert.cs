@@ -130,7 +130,7 @@ namespace DSCoreNodesUI
         public DynamoConvert(string value)
         {
             SelectedMetricConversion = ConversionMetricUnit.Length;
-            SelectionFromBoxToolTip = "This is your Revit display unit settings";
+            SelectionFromBoxToolTip = Properties.Resources.SelectFromComboBoxToolTip;
             InPortData.Add(new PortData("", "A numeric value for conversion."));
             OutPortData.Add(new PortData("", "A converted numeric value."));
 

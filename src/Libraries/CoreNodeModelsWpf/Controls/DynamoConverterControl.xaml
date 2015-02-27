@@ -5,36 +5,37 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
              xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
-             mc:Ignorable="d" Width="243.2" Height="61.2">
+             mc:Ignorable="d" Width="243.2" Height="Auto">
 
-    <Grid Width="Auto">
+    <Grid Width="Auto" Height="Auto">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <ComboBox Name="SelectConversionMetric"                
                 ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionMetricDictionary}, Path=Keys}"   
                 Grid.Row="0"
+                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
                 SelectedItem="{Binding SelectedMetricConversion}"/>
-        <StackPanel Orientation="Horizontal"  Grid.Row="1" Margin="0,2,0,1">
+        <StackPanel Orientation="Horizontal"  Grid.Row="1">
             <ComboBox Name="SelectConversionFrom"                
-                ItemsSource="{Binding SelectedFromConversionSource}"                   
-                Width="100"   
-                Margin="1,0,0,0"  
+                ItemsSource="{Binding SelectedFromConversionSource}"
+                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"                      
+                Width="100"                   
                 ToolTip="{Binding SelectionFromBoxToolTip}"
                 ToolTipService.ShowOnDisabled="True" 
                 IsEnabled="{Binding IsSelectionFromBoxEnabled}"
                 SelectedItem="{Binding SelectedFromConversion}"/>
 
             <Button Name="DirectionButton"
-                Content="="          
-                Margin="1,0,0,0"
+                Content="="  
+                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
                 Width="40" Command="{Binding ToggleButtonClick}"/>
 
             <ComboBox x:Name="SelectConversionTo"        	
         	ItemsSource="{Binding SelectedToConversionSource}"
-        	Width="100"  
-            Margin="1,0,0,0"              
+            Height ="{x:Static ui2:Configurations.PortHeightInPixels}" 
+        	Width="100"                       
         	SelectedItem="{Binding SelectedToConversion}"/>
 
         </StackPanel>
