@@ -39,12 +39,6 @@ namespace Dynamo.Models.NodeLoaders
             }
             else
             {
-                var xmlAttribute = nodeElement.Attributes["assembly"];
-                if (xmlAttribute != null)
-                {
-                    assembly = Uri.UnescapeDataString(xmlAttribute.Value);
-                }
-
                 string xmlSignature = nodeElement.Attributes["function"].Value;
 
                 string hintedSigniture =
@@ -57,19 +51,21 @@ namespace Dynamo.Models.NodeLoaders
                     function = hintedSigniture;
 
                     // if the node needs additional parameters, add them here
-                    if (libraryServices.FunctionSignatureNeedsAdditionalParameters(xmlSignature))
-                        libraryServices.AddAdditionalParametersToNode(xmlSignature, nodeElement);
+                    if (libraryServices.FunctionSignatureNeedsAdditionalAttributes(xmlSignature))
+                        libraryServices.AddAdditionalAttributesToNode(xmlSignature, nodeElement);
 
-                    xmlAttribute = nodeElement.Attributes["assembly"];
-                    if (xmlAttribute != null)
-                    {
-                        assembly = Uri.UnescapeDataString(xmlAttribute.Value);
-                    }
-
+                    if (libraryServices.FunctionSignatureNeedsAdditionalElements(xmlSignature))
+                        libraryServices.AddAdditionalElementsToNode(xmlSignature, nodeElement);
                 }
                 else
                 {
                     function = xmlSignature;
+                }
+
+                var xmlAttribute = nodeElement.Attributes["assembly"];
+                if (xmlAttribute != null)
+                {
+                    assembly = Uri.UnescapeDataString(xmlAttribute.Value);
                 }
             }
 

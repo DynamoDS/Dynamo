@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
@@ -44,13 +46,15 @@ namespace Dynamo.DSEngine
             public UpgradeHint()
             {
                 UpgradeName = null;
-                AdditionalParameters = new Dictionary<string, string>();
+                AdditionalAttributes = new Dictionary<string, string>();
+                AdditionalElements = new List<XmlElement>();
             }
 
             // The new name of the method in Dynamo
             public string UpgradeName { get; set; }
             // A list of additional parameters to append or change on the XML node when migrating
-            public Dictionary<string, string> AdditionalParameters { get; set; } 
+            public Dictionary<string, string> AdditionalAttributes { get; set; } 
+            public List<XmlElement> AdditionalElements { get; set; } 
         }
 
         private readonly Dictionary<string, UpgradeHint> priorNameHints =
@@ -110,27 +114,37 @@ namespace Dynamo.DSEngine
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
         }
 
-        public bool FunctionSignatureNeedsAdditionalParameters(string functionSignature)
+        public bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
         {
-            return priorNameHints[functionSignature].AdditionalParameters.Count > 0;
+            return priorNameHints[functionSignature].AdditionalAttributes.Count > 0;
         }
 
-        public void AddAdditionalParametersToNode(string functionSignature, XmlElement nodeElement)
+        public bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
+        {
+            return priorNameHints[functionSignature].AdditionalElements.Count > 0;
+        }
+
+        public void AddAdditionalAttributesToNode(string functionSignature, XmlElement nodeElement)
         {
             var upgradeHint = priorNameHints[functionSignature];
 
-            foreach (string key in upgradeHint.AdditionalParameters.Keys)
+            foreach (string key in upgradeHint.AdditionalAttributes.Keys)
             {
                 var val = nodeElement.Attributes[key];
 
                 if (val != null)
                 {
-                    nodeElement.Attributes[key].Value = upgradeHint.AdditionalParameters[key];
+                    nodeElement.Attributes[key].Value = upgradeHint.AdditionalAttributes[key];
                     continue;
                 }
 
-                nodeElement.SetAttribute(key, upgradeHint.AdditionalParameters[key]);
+                nodeElement.SetAttribute(key, upgradeHint.AdditionalAttributes[key]);
             }
+        }
+
+        public void AddAdditionalElementsToNode(string functionSignature, XmlElement nodeElement)
+        {
+            // TODO: implement
         }
 
         public string NicknameFromFunctionSignatureHint(string functionSignature)
@@ -407,21 +421,34 @@ namespace Dynamo.DSEngine
                     while (reader.Read())
                     {
                         reader.ReadToFollowing("priorNameHint");
-                        XmlReader hintSubtree = null;
+                        XmlReader attributeSubtree = null;
+                        XmlReader elementSubtree = null;
 
                         try
                         {
-                            hintSubtree = reader.ReadSubtree();
+                            attributeSubtree = reader.ReadSubtree();
+                            //elementSubtree = reader.ReadSubtree();
                         }
                         catch (Exception ex)
                         {
-                            hintSubtree = null;
+                            attributeSubtree = null;
+                            elementSubtree = null;
                         }
 
-                        if (!reader.Read() || hintSubtree == null)
+                        if (!reader.Read() || attributeSubtree == null)
                             break;
+                       
+                        string fullAttribute = null;
 
-                        //reader.Skip();
+                        try
+                        {
+                            attributeSubtree.Read();
+                            fullAttribute = XDocument.Load(attributeSubtree).ToString();
+                        }
+                        catch (Exception e)
+                        {
+                            
+                        }
 
                         reader.ReadToFollowing("oldName");
                         string oldName = reader.ReadElementContentAsString();
@@ -432,27 +459,48 @@ namespace Dynamo.DSEngine
                         upgradeHint.UpgradeName = newName;
 
                         foundPriorNameHints[oldName] = upgradeHint;
+                        
+                        //var fullAttribute = XDocument.Load(attributeSubtree).ToString();
 
-                        hintSubtree.ReadToFollowing("additionalParameters");
+                        //sb = new StringBuilder();
 
-                        if (!hintSubtree.Read())
-                            continue;
+                       // while (elementSubtree.Read())
+                       //     sb.AppendLine(reader.ReadOuterXml());
 
-                        while (true)
+                        //var fullAttribute2 = sb.ToString();
+
+                        if (library == "DynamoUnits.dll")
+                            Console.WriteLine("foo");
+
+                        if (attributeSubtree.ReadToFollowing("additionalAttributes"))
                         {
-                            hintSubtree.ReadToFollowing("name");
+                            while (true)
+                            {
+                                attributeSubtree.ReadToFollowing("name");
 
-                            if (!hintSubtree.Read())
-                                break;
+                                if (!attributeSubtree.Read())
+                                    break;
 
-                            string paramName = reader.Value;
-                            hintSubtree.ReadToFollowing("value");
-                            hintSubtree.Read();
-                            string paramValue = reader.Value;
+                                string paramName = reader.Value;
+                                attributeSubtree.ReadToFollowing("value");
+                                attributeSubtree.Read();
+                                string paramValue = reader.Value;
 
-                            foundPriorNameHints[oldName].AdditionalParameters[paramName] =
-                                paramValue;
+                                foundPriorNameHints[oldName].AdditionalAttributes[paramName] =
+                                    paramValue;
+                            }
                         }
+
+                        //if (elementSubtree.ReadToFollowing("additionalElements"))
+                        //{
+                        //    var elementSubSubtree = elementSubtree.ReadSubtree();
+
+                        //    while (elementSubSubtree.Read())
+                        //    {
+                        //        var name = elementSubtree.Name;
+                        //        Console.WriteLine(name);
+                        //    }
+                        //}
                     }
                 }
             }
