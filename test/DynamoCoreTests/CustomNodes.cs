@@ -824,5 +824,33 @@ namespace Dynamo.Tests
             // All its input types are Point
             Assert.IsTrue(instance.Controller.Definition.Parameters.All(t => t.Name.Contains("Point")));
         }
+
+        [Test]
+        public void TestCustomNodeInSyncWithDefinition()
+        {
+            var basePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+
+            var model = ViewModel.Model;
+            ViewModel.OpenCommand.Execute(Path.Combine(basePath, "testCustomNodeSync.dyn"));
+            ViewModel.HomeSpace.Run();
+
+            var homeWorkspace = ViewModel.HomeSpace;
+            var customInstance = homeWorkspace.Nodes.FirstOrDefault(x => x is Function) as Function;
+            Assert.AreEqual("int", customInstance.InPorts.First().ToolTipContent);
+
+            ViewModel.OpenCommand.Execute(Path.Combine(basePath, "inputWithType.dyf"));
+            var customWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel) as CustomNodeWorkspaceModel;
+            var inputNode = customWorkspace.Nodes.FirstOrDefault(x => x is Symbol) as Symbol;
+
+            ViewModel.ExecuteCommand(
+                new DynamoModel.UpdateModelValueCommand(
+                    customWorkspace.Guid,
+                    inputNode.GUID, 
+                    "InputSymbol",
+                    "x : bool"));
+
+            customInstance.ResyncWithDefinition(customWorkspace.CustomNodeDefinition);
+            Assert.AreEqual("bool", customInstance.InPorts.First().ToolTipContent);
+        }
     }
 }
