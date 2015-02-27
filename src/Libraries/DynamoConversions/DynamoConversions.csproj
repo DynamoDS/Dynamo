@@ -7,7 +7,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}</ProjectGuid>
+    <ProjectGuid>{67CF6CF2-CD6A-442C-BABE-864F896DD8EA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoConversions</RootNamespace>
