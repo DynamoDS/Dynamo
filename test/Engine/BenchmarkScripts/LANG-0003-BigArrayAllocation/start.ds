@@ -1,0 +1,37 @@
+import ("Math.dll");
+
+// Yu Ke: This test case is to test the performance of frequently allocating
+// and freeing an array. 
+// 
+// Array is allocated in DS heap, and as the value of array object is a
+// pointer, essentially there is only one element is allocated on the heap,
+// so for this case there shouldn't have any performance issue to find out a
+// free heap slot, it should be done in O(1). The only problem is DS VM
+// needs to allocate an array of StackValue to hold those array elements. 
+//
+// If without any optimization, the performance of memory footprint totally
+// relies on .NET framework. Otherwise, those stackvalues that originall
+// allocated in array could be reused in new array. 
+
+[Imperative]
+{
+    repeat = 4 * 1024;
+    limit  = 32 * 1024;
+    len = 32;
+
+    while (len <= limit)
+    {
+        Print(len);
+
+        i = 0;
+        while (i < repeat)
+        {
+            arr = 1..len; 
+            i = i + 1;
+        }
+
+	len = len * 2;
+    }
+
+    Print("Done.");
+}

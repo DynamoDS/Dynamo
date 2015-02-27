@@ -1,0 +1,27 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" NodeName="DSCoreNodesUI.CreateList" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" Modifiers="0" />
+  <DragSelectionCommand X="323" Y="240" DragOperation="0" />
+  <DragSelectionCommand X="473" Y="237" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="b54d44bf-ff13-4978-88c5-d7ce2efec317" NodeName="Code Block" X="265" Y="254" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="b54d44bf-ff13-4978-88c5-d7ce2efec317" Name="Code" Value="6" />
+  <SelectInRegionCommand X="268" Y="401" Width="1" Height="0" IsCrossSelection="false" />
+  <MakeConnectionCommand NodeId="b54d44bf-ff13-4978-88c5-d7ce2efec317" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" PortIndex="0" Type="0" ConnectionMode="1" />
+  <ModelEventCommand ModelGuid="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="b54d44bf-ff13-4978-88c5-d7ce2efec317" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" PortIndex="1" Type="0" ConnectionMode="1" />
+  <ModelEventCommand ModelGuid="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="b54d44bf-ff13-4978-88c5-d7ce2efec317" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" PortIndex="2" Type="0" ConnectionMode="1" />
+  <ModelEventCommand ModelGuid="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" EventName="RemoveInPort" />
+  <ModelEventCommand ModelGuid="d54551b2-5775-4b1e-a064-f8b9e0f2b3a0" EventName="RemoveInPort" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+</Commands>

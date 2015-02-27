@@ -1,0 +1,4 @@
+def add : int(i : int, j : int)
+{
+	return = i + j;
+}

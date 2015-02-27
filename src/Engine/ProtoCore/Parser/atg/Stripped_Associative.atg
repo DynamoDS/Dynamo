@@ -1,0 +1,692 @@
+//------------------------------Associative----------------------------------//
+Hydrogen =
+  {
+        Import_Statement 
+  }
+  {
+    (
+		IF(IsNotAttributeFunctionClass())
+        (
+            Associative_Statement
+        )
+        |
+		(
+			[ Associative_AttributeDeclaration ]
+			(
+				( Associative_functiondecl)
+				| 
+                ( Associative_classdecl)
+			)
+		)
+    )
+  }
+.
+Import_Statement
+=  SYNC
+        kw_import '(' (( textstring) | ( ident   kw_from textstring)) ')' [kw_prefix ident]
+        endline
+.
+//------------------------------------------------------------------------
+Associative_Statement
+=  SYNC
+(
+        Associative_FunctionalStatement
+    |
+        Associative_ForLoop
+    |
+        Associative_LanguageBlock
+    |
+        Associative_ExceptionBlock
+    |
+        Associative_ThrowStatement
+    |
+        (kw_break endline)
+    |
+        (kw_continue endline)
+    |
+        endline
+)
+.
+Associative_ThrowStatement
+=
+    "throw"
+    Associative_Expression
+    endline
+.
+Associative_StatementList
+=
+{ Associative_Statement }
+.
+
+Associative_classdecl
+=
+    kw_class ident [ kw_extend ident { ident } ] 
+    '{'
+        {
+			[ Associative_AttributeDeclaration ]
+            [ Associative_AccessSpecifier ]
+            (
+                (Associative_constructordecl)
+                |
+                (
+                    [ kw_static ]
+                    (
+                        ( Associative_functiondecl)
+                        |
+                        ( Associative_vardecl endline)
+                    )
+                )
+            )
+        }
+    '}'
+.
+Associative_LanguageBlock
+=
+    openbracket
+    ident
+    {
+        WEAK ','
+		(
+			IF(IsLanguageBlockProperty())
+			(
+				ident '=' textstring                         
+			)
+			|
+			(
+				Associative_Attribute
+			)
+		)
+	}
+    closebracket
+    '{'
+    (
+    IF( langblock.codeblock.language == ProtoCore.Language.kAssociative ||
+        langblock.codeblock.language == ProtoCore.Language.kInvalid)
+    Hydrogen
+    |
+    IF( langblock.codeblock.language == ProtoCore.Language.kImperative )
+    Imperative
+    )
+    (
+     IF( langblock.codeblock.language == ProtoCore.Language.kInvalid )
+    {
+    IF (closeCurlyBraceCount <= openCurlyBraceCount)
+    (
+        Associative_LanguageBlock
+        |
+        '{'
+        |
+        '}'
+        |
+        EOF
+        '}'
+        |
+        IF(true)
+    )
+    }
+    |
+    IF(true)
+    '}'
+    )
+.
+Associative_constructordecl
+=                          
+    kw_constructor
+    Associative_MethodSignature
+    [
+        ':'
+        Associative_BaseConstructorCall
+    ]
+(
+    Associative_FunctionalMethodBodyMultiLine
+)
+.
+Associative_BaseConstructorCall
+=
+    "base"
+    "."
+    [ Associative_Ident ]
+    Associative_Arguments
+.
+//------------------------------------------------------------------------
+Associative_ExternalLibraryReference
+=
+  '(' textstring ')'
+.
+//------------------------------------------------------------------------
+Associative_AccessSpecifier
+=
+    (
+        "public" | "private" | "protected"
+    )
+.
+Associative_functiondecl
+=
+    [
+        kw_external [ kw_native ]
+        Associative_ExternalLibraryReference
+    ]
+    kw_def
+    Associative_MethodSignature
+    (
+        endline
+        |
+        (
+            '=' Associative_FunctionalMethodBodySingleLine
+        )
+        |
+        Associative_FunctionalMethodBodyMultiLine
+    )
+.
+//------------------------------------------------------------------------
+Associative_MethodSignature
+=
+ident
+[ Associative_TypeRestriction ]
+Associative_ArgumentSignatureDefinition
+[ Associative_PatternExpression ]
+.
+//------------------------------------------------------------------------
+Associative_ArgumentSignatureDefinition
+=
+'('
+    [
+        Associative_ArgDecl
+        {
+                WEAK ','
+                Associative_ArgDecl
+        }
+    ]
+    [
+        [
+            IF(argumentSignature.Arguments.Count > 0)
+            ','
+        ]
+        Associative_DefaultArgDecl
+        { ',' Associative_DefaultArgDecl }
+    ]
+')'
+.
+Associative_vardecl
+=
+    ( ident )
+    [
+    ':'
+    ident
+    [
+        openbracket closebracket
+        [
+            ( ".." openbracket closebracket )
+            |
+            ( { openbracket closebracket })
+        ]
+    ]
+    ]
+    [ '=' Associative_Expression ]
+.
+Associative_ArgDecl
+=
+    (
+        ident                       
+    )
+    [
+        ':'
+        ident
+        [
+            openbracket closebracket
+            [
+                ( ".." openbracket closebracket )
+                |
+                ( { openbracket closebracket })
+            ]
+        ]
+    ]
+.
+
+Associative_DefaultArgDecl
+=
+    Associative_ArgDecl 
+.
+
+//------------------------------------------------------------------------
+Associative_PatternExpression
+=
+'|' Associative_Expression
+.
+//------------------------------------------------------------------------
+Associative_BinaryOps
+= Associative_AddOp
+| Associative_MulOp
+| Associative_ComparisonOp
+| Associative_LogicalOp
+.
+//------------------------------------------------------------------------
+Associative_TypeRestriction
+=
+  ':'  Associative_ClassReference
+  [
+        openbracket closebracket
+        [
+            ( ".." openbracket closebracket )
+            |
+            ( { openbracket closebracket })
+        ]
+    ]
+.
+//------------------------------------------------------------------------
+Associative_ClassReference
+=
+ ident
+.
+Associative_FunctionalMethodBodySingleLine
+    Associative_Expression
+    endline
+.
+//------------------------------------------------------------------------
+Associative_FunctionalMethodBodyMultiLine
+=                                       
+    '{' Associative_StatementList '}'
+.
+Associative_DecoratedIdentifier
+=
+(
+    (IF (IsTypedVariable())
+        (
+            ident          
+            ':'
+            ident
+            [
+                openbracket closebracket
+                [
+                    ( ".." openbracket closebracket )
+                    |
+                    ( { openbracket closebracket })
+                ]
+            ]
+        )
+    )
+    |
+    (
+        Associative_IdentifierList
+    )
+)
+.
+//------------------------------------------------------------------------
+Associative_FunctionalStatement
+=
+ SYNC
+(
+    Associative_DecoratedIdentifier
+)
+(
+    endline
+    |
+    (
+        '='
+        (
+            (
+                Associative_ForLoop
+            )
+            |
+            (
+                IF(HasMoreAssignmentStatements())
+                    Associative_FunctionalStatement
+            )
+            |
+            (
+                Associative_LanguageBlock
+            )
+            |
+	        (
+        		IF(IsModifierStack())
+                    "{"
+                    Associative_Expression
+                    [ "=>" ident ]
+                    SYNC endline
+                    {
+                        [ ( Associative_BinaryOps) ] 
+                        Associative_Expression
+                        [ "=>" ident ]
+                        SYNC endline
+                    }
+                    "}"
+            )
+	        |
+            (
+                Associative_Expression
+                SYNC
+                endline
+            )
+        )
+    )
+)
+.
+//------------------------------------------------------------------------
+Associative_Expression
+=
+    ( Associative_LogicalExpression)
+    { Associative_TernaryOp }
+.
+Associative_TernaryOp
+=
+        "?"
+        Associative_Expression
+        ":"
+        Associative_Expression
+.
+Associative_UnaryExpression
+=
+    (
+        ( Associative_NegExpression) 
+        |
+        ( Associative_BitUnaryExpression)
+    )
+.
+Associative_BitUnaryExpression
+=
+    Associative_unaryop
+    Associative_Factor
+.
+Associative_NegExpression
+=
+    Associative_negop
+    (
+        ( Associative_NameReference)
+    |
+        ( '(' Associative_Expression ')')
+    )
+.
+Associative_LogicalExpression
+=
+  Associative_ComparisonExpression
+  {
+    Associative_LogicalOp
+    Associative_ComparisonExpression
+  }
+.
+//------------------------------------------------------------------------
+Associative_ComparisonOp
+= ">" | ">=" | "<" | "<=" | "==" | "!="
+.
+//------------------------------------------------------------------------
+Associative_ComparisonExpression
+=
+Associative_RangeExpr
+{
+    Associative_ComparisonOp
+    Associative_RangeExpr
+}
+.
+//------------------------------------------------------------------------
+Associative_RangeExpr
+=
+    Associative_ArithmeticExpression
+    [
+        rangeop
+        Associative_ArithmeticExpression
+        [
+            rangeop
+            Associative_rangeStepOperator
+            Associative_ArithmeticExpression
+        ]
+    ]
+.
+//------------------------------------------------------------------------
+Associative_ForLoop
+    "for" '(' Associative_IdentifierList ')'
+    '{'
+        Associative_StatementList
+    '}'
+.
+Associative_TryBlock
+=
+    "try"
+    '{'
+        Associative_StatementList
+    '}'
+.
+Associative_CatchFilter
+=
+    ident ':' ident                           
+.
+Associative_CatchBlock
+=
+    "catch"
+    "("
+        Associative_CatchFilter
+    ")"
+    '{'
+        Associative_StatementList
+    '}'
+.
+Associative_ExceptionBlock
+=
+    Associative_TryBlock
+    Associative_CatchBlock
+    {
+        Associative_CatchBlock
+    }
+.
+//------------------------------------------------------------------------
+Associative_AddOp
+=
+  ( "+" | "-").
+//------------------------------------------------------------------------
+Associative_MulOp
+=
+  ( "*" | "/" | "%").
+Associative_BitOp
+=
+  ( '&' | '^' | '|').
+/*------------------------------------------------------------------------*/
+Associative_LogicalOp
+=
+( "&&" | "||")
+.
+Associative_negop
+=
+( | '-')
+.
+Associative_unaryop
+=
+	( '!' | '~' | Associative_PostFixOp)
+.
+Associative_PostFixOp
+=
+    ( "++" | "--")
+.
+Associative_rangeStepOperator
+=
+[ '#' | '~' ]
+.
+Associative_ArithmeticExpression
+=
+    Associative_Term
+    {
+        Associative_AddOp
+        Associative_Term
+    }
+.
+Associative_Term
+=
+    Associative_interimfactor
+    {
+        Associative_MulOp
+        Associative_interimfactor
+    }
+.
+Associative_interimfactor
+=
+    Associative_Factor
+    {
+        Associative_BitOp
+        Associative_Factor
+    }
+.
+Associative_Number
+=
+    [
+        '-'
+    ]
+    (
+        number | float   
+    )
+.
+Associative_Char
+=
+    char
+.
+Associative_String
+=
+    textstring
+.
+Associative_Factor
+=
+    (
+        (
+            (IF(IsReplicationGuideIdent())
+                Associative_ReplicationGuideIdent
+            )
+        )
+        |
+        (
+            (IF(IsNumber())
+                Associative_Number
+            )
+        )
+        |
+        (
+            literal_true
+        )
+        |
+        (
+            literal_false
+        )
+        |
+        (
+            literal_null
+        )
+        |
+        (
+            Associative_Char
+        )
+        |
+        (
+            Associative_String
+        )
+        |
+        (
+            Associative_ArrayExprList
+        )
+        |
+        (
+            '('
+                Associative_Expression
+            ')'
+        )
+        |
+        (
+            Associative_IdentifierList
+        )
+        |
+        (
+            Associative_UnaryExpression
+        )
+     )
+ .
+Associative_Ident
+    ident   
+    [
+        Associative_PostFixOp       
+    ]
+.
+Associative_ArrayExprList
+=
+'{'
+    [
+        Associative_Expression
+        {
+            ',' Associative_Expression
+        }
+    ]
+'}'
+.
+Associative_NameReference
+=
+    (
+        IF(IsFunctionCall())
+            Associative_FunctionCall
+        )
+        |
+        (
+            Associative_Ident
+        )
+    )
+    [
+        openbracket
+        [
+            Associative_Expression
+        ]
+        closebracket
+        {
+            openbracket
+            [
+                Associative_Expression
+            ]
+            closebracket
+        }
+    ]
+.
+Associative_IdentifierList
+=
+    Associative_NameReference
+    {
+        '.' Associative_NameReference
+    }
+.
+Associative_FunctionCall
+=
+    Associative_Ident
+    Associative_Arguments 
+   
+Associative_Arguments
+=
+    '('
+        [
+            Associative_Expression
+            {
+                WEAK ','
+                Associative_Expression
+            }
+        ]
+    ')'
+.
+Associative_AttributeDeclaration
+=
+	'['
+		Associative_Attribute
+		{
+			WEAK ','
+			Associative_Attribute
+		}
+	']'
+.
+Associative_Attribute
+=
+    Associative_Ident
+    {
+		Associative_Arguments
+	}
+.
+Associative_ReplicationGuideIdent
+=
+    Associative_Ident
+    lessthan
+        number
+    greaterthan
+    {
+        lessthan
+            number
+        greaterthan
+    }
+.

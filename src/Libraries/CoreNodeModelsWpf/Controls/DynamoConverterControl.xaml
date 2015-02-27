@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="Dynamo.Wpf.Controls.DynamoConverterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
+             xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
+             mc:Ignorable="d" Width="243.2" Height="61.2">
+
+    <Grid Width="Auto">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ComboBox Name="SelectConversionMetric"                
+                ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionMetricDictionary}, Path=Keys}"   
+                Grid.Row="0"
+                SelectedItem="{Binding SelectedMetricConversion}"/>
+        <StackPanel Orientation="Horizontal"  Grid.Row="1" Margin="0,2,0,1">
+            <ComboBox Name="SelectConversionFrom"                
+                ItemsSource="{Binding SelectedFromConversionSource}"                   
+                Width="100"   
+                Margin="1,0,0,0"   
+                SelectedIndex="1"                
+                IsEnabled="{Binding IsSelectionFromBoxEnabled}"
+                SelectedItem="{Binding SelectedFromConversion}"/>
+
+            <Button Name="DirectionButton"
+                Content="="          
+                Margin="1,0,0,0"
+                Width="40" Command="{Binding ToggleButtonClick}"/>
+
+            <ComboBox x:Name="SelectConversionTo"        	
+        	ItemsSource="{Binding SelectedToConversionSource}"
+        	Width="100"  
+            Margin="1,0,0,0"   
+            SelectedIndex="1"
+        	SelectedItem="{Binding SelectedToConversion}"/>
+
+        </StackPanel>
+
+
+    </Grid>
+</UserControl>

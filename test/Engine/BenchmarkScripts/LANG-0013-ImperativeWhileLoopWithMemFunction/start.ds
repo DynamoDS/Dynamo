@@ -1,0 +1,19 @@
+class Test
+{
+    def foo()
+    {
+        return = null;
+    }
+}
+
+[Imperative]
+{
+    a = Test();
+
+    i = 0;
+    while (i < 1000000)
+    {
+        i = i + 1;
+        r = a.foo();
+    }
+}

@@ -1,0 +1,11 @@
+<Workspace Version="0.6.3.27769" X="-214.146577786475" Y="-37.4408659628257" zoom="1.1113575327695" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="06e59fca-a211-4cf8-9a71-fce3d50f02ca" nickname="Code Block" x="247" y="318" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="WCS = CoordinateSystem.Identity();&#xA;points      = Point.ByCoordinates(4, 0, 0..7); &#xA;points[1]   = points[1].Translate(-1, 0, 0); &#xA;points[5]   = points[5].Translate(1, 0, 0); &#xA;curve       = NurbsCurve.ByPoints(points); &#xA;axisOrigin  = Point.ByCoordinates(0, 0, 0); &#xA;axis        = Vector.ByCoordinates(0, 0, 1); &#xA;surface     = Surface.Revolve(curve, axisOrigin, axis, 0, 360);&#xA;point       = surface.PointAtParameter({ 0.25, 0.5, 0.75 }, 0.5);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="30255418-9caa-4cf2-ad4b-540c9c7d7e28" nickname="Surface.ParameterAtPoint" x="801.59543066702" y="744.759575819031" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Surface.ParameterAtPoint@Point" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="06e59fca-a211-4cf8-9a71-fce3d50f02ca" start_index="5" end="30255418-9caa-4cf2-ad4b-540c9c7d7e28" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="06e59fca-a211-4cf8-9a71-fce3d50f02ca" start_index="6" end="30255418-9caa-4cf2-ad4b-540c9c7d7e28" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

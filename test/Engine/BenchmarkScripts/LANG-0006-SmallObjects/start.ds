@@ -1,0 +1,50 @@
+import ("Math.dll");
+
+// Frequently allocate and free objects. 
+// 
+class B
+{
+    constructor B(x)
+    {
+    }
+}
+
+class A
+{
+    i;
+    constructor A()
+    {
+        // x = Math.Floor(Math.Rand(1, 128));
+        i = B(1..64);
+    }
+}
+
+[Imperative]
+{
+    arr = {};
+
+    i = 0;
+    while (i < 128)
+    {
+        arr[i] = {};
+        i = i + 1;
+    }
+
+    i = 0;
+    while (i < 128)
+    {
+        Print(i);
+        j = 0;
+
+        while ( j < 128)
+        {
+            arr[i][j] = A();
+            j = j + 1;
+        }
+
+        arr[i] = 0;
+        i = i + 1;
+    }
+    
+    Print("Done.");
+}

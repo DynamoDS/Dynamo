@@ -1,0 +1,161 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+GeometrySettings.PointVisibility = false;
+WCS = CoordinateSystem.Identity();
+
+def Hide(geom: Geometry)
+{
+    return = geom.SetVisibility(false);
+}
+
+//constants
+origin = Point.ByCoordinates(0, 0, 0);
+theta = 0..1080+180..#50;
+a = 1;
+b = 0.003;
+e = 2.71828;
+rad = a * Math.Pow(e, (b * theta))-a/1.5;
+
+//spirals
+spiral1Pts = Point.ByCoordinates(rad * Math.Cos(theta), rad * Math.Sin(theta), 0);
+spiral1 = BSplineCurve.ByControlVertices(spiral1Pts, 3, false);
+
+spiral2Pts = Point.ByCoordinates(rad/1.25 * Math.Cos(theta), rad/1.25 * Math.Sin(theta), rad/4);
+spiral2 = BSplineCurve.ByControlVertices(spiral2Pts, 3, false);
+
+spiral3Pts = Point.ByCoordinates(rad/3 * Math.Cos(theta), rad/3 * Math.Sin(theta), rad/5);
+spiral3 = BSplineCurve.ByControlVertices(spiral3Pts, 3, false);
+
+spiral4Pts = Point.ByCoordinates(rad/5 * Math.Cos(theta), rad/5 * Math.Sin(theta), rad/9.8);
+spiral4 = BSplineCurve.ByControlVertices(spiral4Pts, 3, false);
+
+across = Arc.ByPointsOnCurve(spiral1Pts, spiral2Pts, spiral4Pts);
+
+neg = { spiral1, spiral2, spiral3, spiral4 }.SetVisibility(false);
+neg = across.SetVisibility(false);
+
+//convert to surface
+sur1 = Surface.LoftFromCrossSections({ across[49..40] }).SetVisibility(false);
+sur2 = Surface.LoftFromCrossSections({ across[40..30] }).SetVisibility(false);
+sur3 = Surface.LoftFromCrossSections({ across[30..25] }).SetVisibility(false);
+sur4 = Surface.LoftFromCrossSections({ across[25..15] }).SetVisibility(false);
+sur5 = Surface.LoftFromCrossSections({ across[15..10] }).SetVisibility(false);
+sur6 = Surface.LoftFromCrossSections({ across[10..4] }).SetVisibility(false);
+sur7 = Surface.LoftFromCrossSections({ across[4..0] }).SetVisibility(false);
+neg = Hide({ sur1, sur2, sur3, sur4, sur5, sur6, sur7});
+
+//convert to solid
+thickness = 0.25;
+sol1 = sur1.Thicken(thickness, false);
+sol2 = sur2.Thicken(thickness, false);
+sol3 = sur3.Thicken(thickness,false);
+sol4 = sur4.Thicken(thickness, false);
+sol5 = sur5.Thicken(thickness, false);
+sol6 = sur6.Thicken(thickness /1.8, false);
+
+neg = Hide({ sol1, sol2, sol3, sol4, sol5, sol6});
+
+def MidPoint: Point (p1 : Point, p2 : Point)
+{
+    return = Point.ByCoordinates((p1.X+p2.X) / 2, (p1.Y+p2.Y) / 2, (p1.Z+p2.Z) / 2);
+}
+
+//project a point
+def projPt(p1 : Point, p2 : Point)
+{
+    topPt = MidPoint(p1, p2);
+    normalVector = Vector.ByCoordinates( (p1.Y - p2.Y), (p2.X - p1.X), 0);
+    return = topPt.Translate(normalVector,  p1.DistanceTo(p2)/3 );
+}
+
+def projPt1(p1 : Point, p2 : Point)
+{
+    topPt = MidPoint(p1, p2);
+    normalVector = Vector.ByCoordinates( (p1.Y - p2.Y), (p2.X - p1.X), 5*(p2.Z-p1.Z));
+    return = topPt.Translate(normalVector,  p1.DistanceTo(p2)/5 );
+}
+
+sol = { };	midArc = { };	a1 = 4..48;
+
+[Imperative]
+{
+    for(i in a1)
+    {
+        tempPt1 = projPt(spiral1Pts[i], spiral4Pts[i]);
+        tempPt2 = spiral2Pts[i];
+        tempPt3 = projPt1(tempPt1, tempPt2);
+        
+        topArc[i] = Arc.ByPointsOnCurve(spiral1Pts[i], tempPt1, spiral4Pts[i]);
+        midArc[i] = Line.ByStartPointEndPoint(tempPt1, tempPt2);
+        surf[i] = Surface.LoftFromCrossSectionsGuides({ topArc[i], across[i] }, { midArc[i] });
+	    sol[i] = surf[i].Thicken(-1*thickness*((i+1)/49), false);
+	}
+}
+neg = Hide(sol);
+
+plane = Plane.ByOriginNormal(Point.ByCoordinates(0, 0, 0.07), WCS.ZAxis, 100);
+
+outerShell = { sol1, sol2, sol3, sol4, sol5, sol6 }.Trim(plane, Point.ByCoordinates(0, 0, -1));
+innerParts = sol.Trim(plane, Point.ByCoordinates(0, 0, -1));
+
+
+glassAng = -120..195..#30;
+glassRad = a*30 * Math.Pow(e, (b * glassAng));
+glassPts = Point.ByCoordinates(glassRad * Math.Cos(glassAng), glassRad * Math.Sin(glassAng), 0);
+glassBase = BSplineCurve.ByControlVertices(glassPts, 10, true);
+glassPts[Count(glassPts)] = Point.ByCoordinates(-20, 0, 0);
+glassSur = Surface.CreateFromCurve(glassBase);
+glass = glassSur.Thicken(-0.3, false);
+
+
+legsAng = -150..160..#30;
+legsRad1 = a*12 * Math.Pow(e, (b * legsAng));
+legsPts1 = Point.ByCoordinates(legsRad1 * Math.Cos(legsAng), legsRad1 * Math.Sin(legsAng), 3);
+legs1 = BSplineCurve.ByControlVertices(legsPts1, 10, false);
+        
+legsRad2 = a*19 * Math.Pow(e, (b * legsAng));
+legsPts2 = Point.ByCoordinates(legsRad2 * Math.Cos(legsAng), legsRad2 * Math.Sin(legsAng), 3);
+legs2 = BSplineCurve.ByControlVertices(legsPts2, 10, false);
+legLines1 = Line.ByStartPointEndPoint( legs1.StartPoint, legs2.StartPoint );
+legLines2 = Line.ByStartPointEndPoint(legs1.EndPoint, legs2.EndPoint);
+legsBase1 = Curve.Composite({ legs1, legLines1, legs2, legLines2 });
+        
+BlegsRad1 = a*16 * Math.Pow(e, (b * legsAng));
+BlegsPts1 = Point.ByCoordinates(BlegsRad1 * Math.Cos(legsAng), BlegsRad1 * Math.Sin(legsAng), 15);
+Blegs1 = BSplineCurve.ByControlVertices(BlegsPts1, 10, false);
+        
+BlegsRad2 = a*17 * Math.Pow(e, (b * legsAng));
+BlegsPts2 = Point.ByCoordinates(BlegsRad2 * Math.Cos(legsAng), BlegsRad2 * Math.Sin(legsAng), 15);
+Blegs2 = BSplineCurve.ByControlVertices(BlegsPts2, 10, false);
+BlegLines1 = Line.ByStartPointEndPoint( Blegs1.StartPoint, Blegs2.StartPoint );
+BlegLines2 = Line.ByStartPointEndPoint(Blegs1.EndPoint, Blegs2.EndPoint);
+BlegsBase1 = Curve.Composite({ Blegs1, BlegLines1, Blegs2, BlegLines2 });
+        
+legs = Solid.LoftFromCrossSections({ legsBase1, BlegsBase1 });
+legs12 = legs.Trim({ sur1[0], sur2[0] }, BlegLines1.EndPoint);
+neg = Hide(legs);
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

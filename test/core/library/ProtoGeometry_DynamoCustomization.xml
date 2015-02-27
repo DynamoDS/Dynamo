@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ProtoGeometry</name>
+    </assembly>
+    <namespaces>
+        <namespace name="Autodesk.DesignScript.Geometry">
+            <category>Geometry</category>
+        </namespace>
+		<namespace name="Autodesk.DesignScript">
+            <category>DesignScript</category>
+        </namespace>
+    </namespaces>
+</doc>

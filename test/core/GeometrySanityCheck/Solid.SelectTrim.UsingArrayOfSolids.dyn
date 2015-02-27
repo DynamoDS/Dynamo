@@ -1,0 +1,12 @@
+<Workspace Version="0.6.3.27769" X="582.4091495166" Y="334.241601714813" zoom="1.2198072017255" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="adb355d3-db45-4671-ab74-dc613e66f31d" nickname="Code Block" x="-410.010916395387" y="-138.505458197693" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="WCS = CoordinateSystem.Identity();&#xA;csForCubes = CoordinateSystem.ByOriginVectors(Point.ByCartesianCoordinates(WCS, (0..50..#3)&lt;1&gt;, 0, (0..20..#3)&lt;2&gt;),&#xA;Vector.ByCoordinates(1, 0, 0), Vector.ByCoordinates(0, 0, 1));&#xA;cubes = Cuboid.ByLengths(csForCubes, 12, 5, 5);&#xA;solid1 = Cylinder.ByRadiusHeight(WCS.Translate(10, -2.5, 10).Rotate (90, WCS.XAxis), 15, 20);&#xA;solid2   = Cylinder.ByRadiusHeight(WCS.Translate(40, -2.5, 10).Rotate (90, WCS.XAxis), 15, 20);&#xA;arrayOfSolids   = { solid1, solid2 };&#xA;false;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="d2bf48de-aac0-421b-96a0-b9f1ab2161ce" nickname="Solid.SelectTrim" x="317.076035509561" y="224.994291886912" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Solid.SelectTrim@Solid[],Solid[],bool" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="adb355d3-db45-4671-ab74-dc613e66f31d" start_index="2" end="d2bf48de-aac0-421b-96a0-b9f1ab2161ce" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="adb355d3-db45-4671-ab74-dc613e66f31d" start_index="5" end="d2bf48de-aac0-421b-96a0-b9f1ab2161ce" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="adb355d3-db45-4671-ab74-dc613e66f31d" start_index="6" end="d2bf48de-aac0-421b-96a0-b9f1ab2161ce" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

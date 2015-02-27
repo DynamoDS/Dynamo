@@ -1,0 +1,49 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+
+
+WCS = CoordinateSystem.Identity();
+
+x=0..50;
+y=0..200; 
+
+radtodeg=57.2957795;
+pi=3.14159265;
+
+def pifunc: double (i: int, j: int)
+{
+	temp1=(i*pi/100)*radtodeg;
+	temp2=((11*j+100)*pi/400)*radtodeg;
+	temp3=(4*i*pi/125)*radtodeg;
+	return=(2+8*Math.Sin(temp1)+9*Math.Sin(temp2)*Math.Sin(temp2))*Math.Cos(temp3);
+}
+
+def thetafunc: double (i:int, j: int)
+{
+	temp1=(i*pi/100)*radtodeg;
+	temp2=((11*j+100)*pi/400)*radtodeg;
+	temp3=(4*i*pi/125)*radtodeg;
+	return=(2+8*Math.Sin(temp1)+9*Math.Sin(temp2)*Math.Sin(temp2))*Math.Sin(temp3);
+}
+
+def kfunc: double (j: int)
+{
+	return = j/4;
+}
+
+pastaPoints={};
+pastaSurface={};
+[Imperative]
+{
+
+	for(i in x)
+		for(j in y)
+		{	
+			ptx=pifunc(i,j);
+			pty=thetafunc(i,j);
+			ptz=kfunc(j);
+	
+			pastaPoints[i][j]=Point.ByCoordinates(ptx, pty, ptz);
+		}
+pastaSurface = BSplineSurface.ByPoints({pastaPoints});
+}

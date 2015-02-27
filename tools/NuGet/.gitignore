@@ -1,0 +1,5 @@
+*.nupkg
+lib
+build
+content
+tools

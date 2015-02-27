@@ -1,4 +1,4 @@
-<Workspace X="-325.652847152847" Y="-148.661107559108" zoom="0.6" Description="" Category="" Name="Home">
+<Workspace Version="0.6.2.29585" X="-480.13714063714" Y="-242.286772116773" zoom="1" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.LaceShortest type="Dynamo.Nodes.LaceShortest" guid="10005d3c-3bbf-4690-b658-37b11c8402b1" nickname="Lace Shortest" x="924.510989010989" y="556.77" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="efa155ce-402a-43d1-8491-4f1fe48e0f15" nickname="Watch" x="1544.64069264069" y="524.793809523809" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
@@ -20,9 +20,7 @@
     <Dynamo.Nodes.Subtraction type="Dynamo.Nodes.Subtraction" guid="c1213fa7-6b24-4c6d-b7c8-413e45394039" nickname="Subtract" x="719.393384393385" y="798.29767898768" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
     <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="c3d629f7-76a0-40bc-bf39-da45d8b8ea7a" nickname="Reverse" x="1328.90126540127" y="634.080067710068" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Combine type="Dynamo.Nodes.Combine" guid="cc23b43e-3709-4ed1-bedb-f903e4ea7d75" nickname="Combine" x="1262.90126540127" y="842.261885891886" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2" />
-    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="b75895a7-8d2c-4ff2-be63-62bc57545371" nickname="Formula" x="1006.51098901099" y="758.02" isVisible="true" isUpstreamVisible="true" lacing="Longest">
-      <FormulaText>a/b</FormulaText>
-    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="f8e5185a-38af-471f-80ff-c74777c121c7" nickname="Divide" x="1041.13714063714" y="755.786772116773" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="10005d3c-3bbf-4690-b658-37b11c8402b1" start_index="0" end="cc23b43e-3709-4ed1-bedb-f903e4ea7d75" end_index="1" portType="0" />
@@ -36,7 +34,7 @@
     <Dynamo.Models.ConnectorModel start="c1213fa7-6b24-4c6d-b7c8-413e45394039" start_index="0" end="ce7bf465-0f93-4e5a-8bc9-9960cd077f25" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="c3d629f7-76a0-40bc-bf39-da45d8b8ea7a" start_index="0" end="efa155ce-402a-43d1-8491-4f1fe48e0f15" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="cc23b43e-3709-4ed1-bedb-f903e4ea7d75" start_index="0" end="bbf33fee-c45c-47ee-a223-b8fe2778d8c3" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="b75895a7-8d2c-4ff2-be63-62bc57545371" start_index="0" end="cc23b43e-3709-4ed1-bedb-f903e4ea7d75" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f8e5185a-38af-471f-80ff-c74777c121c7" start_index="0" end="cc23b43e-3709-4ed1-bedb-f903e4ea7d75" end_index="0" portType="0" />
   </Connectors>
   <Notes />
 </Workspace>

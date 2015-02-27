@@ -1,0 +1,76 @@
+import ("ProtoGeometry.dll");
+import ("Math.dll");
+
+WCS = CoordinateSystem.Identity();
+def Hide(geom : Geometry)
+{
+    return = geom.SetVisibility(false);
+}
+
+x=0..1000..1;
+y=0..4..1; 
+
+radtodeg=57.2957795;
+pi=3.14159265;
+
+def pifunc: double (i: int, j: int)
+{
+	temp1= (3*i*pi/250)*radtodeg;
+	temp2=(31*i*pi/1000)*radtodeg; 
+
+	return=0.4*Math.Cos(temp1)+(j/80)*Math.Sin(temp2);
+}
+
+def thetafunc: double (i:int, j: int)
+{
+	temp1=(3*i*pi/250)*radtodeg;
+	temp2=(i*pi/4000); temp2a=Math.Pow(temp2,0.1)*radtodeg;
+	return=0.4*Math.Sin(temp1)*Math.Sin(temp2a);
+}
+
+def kfunc: double (i:int, j: int)
+{
+	temp1=(9*i*pi/1000)*radtodeg;
+
+	return = j/80+0.12*Math.Sin(temp1);
+}
+
+def Tfunc: double (i:int, j: int)
+{
+	temp1=(3*i*pi/250)*radtodeg;
+	temp2=(31*i*pi/1000)*radtodeg;
+	return = 0.4*Math.Cos(temp1)+j/80*Math.Sin(temp2);
+}
+
+def Xfunc: double (i:int, j: int)
+{
+	temp1=(i*pi/4000); temp1a=Math.Sqrt(temp1)*radtodeg;
+	temp2=(3*i*pi/250)*radtodeg;
+	return = 0.4*Math.Cos(temp1a)*Math.Sin(temp2);
+}
+
+def Psifunc: double (i:int, j: int)
+{
+	temp1=(9*i*pi/1000); 
+	return = j/80+0.12*Math.Sin(temp1);
+}
+
+
+pastapoints1={};
+pastapoints2={};
+
+[Imperative]
+{
+	for(i in x)
+		for(j in y)
+		{   
+			ptx1=pifunc(i,j);	pty1=thetafunc(i,j);	ptz1=kfunc(i,j);
+			ptx2=Tfunc(i,j);	pty2=Xfunc(i,j);	ptz2=Psifunc(i,j);
+
+			pastapoints1[i][j]=Point.ByCoordinates(ptx1, pty1, ptz1);
+			pastapoints2[i][j]=Point.ByCoordinates(ptx2, pty2, ptz2);
+			pastapoints2[i][j]=pastapoints2[i][j].Translate(0,0,3);
+		}
+}
+//sur1=BSplineSurface.ByPoints(pastapoints1,3,3); commenting out to test 
+//sur2=BSplineSurface.ByPoints(pastapoints2,3,3);

@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
-using Dynamo.Measure;
+
+using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Models;
-using Microsoft.Practices.Prism.ViewModel;
+using DynamoUnits;
+
+using DynamoUtilities;
 
 namespace Dynamo
 {
@@ -13,61 +18,159 @@ namespace Dynamo
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject
+    public class PreferenceSettings : NotificationObject, IPreferences
     {
-        public static string DYNAMO_TEST_PATH = null;
-        private DynamoLengthUnit _lengthUnit;
-        private DynamoAreaUnit _areaUnit;
-        private DynamoVolumeUnit _volumeUnit;
-        const string DYNAMO_SETTINGS_DIRECTORY = @"Autodesk\Dynamo\";
+        public static string DynamoTestPath = null;
         const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
-
+        private LengthUnit lengthUnit;
+        private AreaUnit areaUnit;
+        private VolumeUnit volumeUnit;
+        private string numberFormat;
+        private string lastUpdateDownloadPath;
+        
         // Variables of the settings that will be persistent
-        public bool ShowConsole { get; set; }
+
+        #region Collect Information Settings
+        public bool IsFirstRun { get; set; }
+        public bool IsUsageReportingApproved { get; set; }
+        public bool IsAnalyticsReportingApproved { get; set; }
+        #endregion
+
+        /// <summary>
+        /// The width of the library pane.
+        /// </summary>
+        public int LibraryWidth { get; set; }
+
+        /// <summary>
+        /// The height of the console display.
+        /// </summary>
+        public int ConsoleHeight { get; set; }
+
+        /// <summary>
+        /// Should connectors be visible?
+        /// </summary>
         public bool ShowConnector { get; set; }
+
+        /// <summary>
+        /// The types of connector: Bezier or Polyline.
+        /// </summary>
         public ConnectorType ConnectorType { get; set; }
+
+        /// <summary>
+        /// Should the background 3D preview be shown?
+        /// </summary>
         public bool FullscreenWatchShowing { get; set; }
 
-        public DynamoLengthUnit LengthUnit
+        /// <summary>
+        /// The decimal precision used to display numbers.
+        /// </summary>
+        public string NumberFormat
         {
-            get { return _lengthUnit; }
+            get { return numberFormat; }
             set
             {
-                _lengthUnit = value;
+                numberFormat = value;
+                RaisePropertyChanged("NumberFormat");
+            }
+        }
+
+        /// <summary>
+        /// The maximum number of recent file paths to be saved.
+        /// </summary>
+        public int MaxNumRecentFiles
+        {
+            get { return 10; }
+            set { }
+        }
+
+        /// <summary>
+        /// A list of recently opened file paths.
+        /// </summary>
+        public List<string> RecentFiles { get; set; }
+
+        /// <summary>
+        /// A list of packages used by the Package Manager to determine
+        /// which packages are marked for deletion.
+        /// </summary>
+        public List<string> PackageDirectoriesToUninstall { get; set; }
+
+        public LengthUnit LengthUnit
+        {
+            get { return lengthUnit; }
+            set
+            {
+                lengthUnit = value;
                 RaisePropertyChanged("LengthUnit");
             }
         }
 
-        public DynamoAreaUnit AreaUnit
+        public AreaUnit AreaUnit
         {
-            get { return _areaUnit; }
+            get { return areaUnit; }
             set
             {
-                _areaUnit = value;
+                areaUnit = value;
                 RaisePropertyChanged("AreaUnit");
             }
         }
 
-        public DynamoVolumeUnit VolumeUnit
+        public VolumeUnit VolumeUnit
         {
-            get { return _volumeUnit; }
+            get { return volumeUnit; }
             set
             {
-                _volumeUnit = value;
+                volumeUnit = value;
                 RaisePropertyChanged("VolumeUnit");
             }
         }
 
+        /// <summary>
+        /// The last X coordinate of the Dynamo window.
+        /// </summary>
+        public double WindowX { get; set; }
+
+        /// <summary>
+        /// The last Y coordinate of the Dynamo window.
+        /// </summary>
+        public double WindowY { get; set; }
+
+        /// <summary>
+        /// The last width of the Dynamo window.
+        /// </summary>
+        public double WindowW { get; set; }
+
+        /// <summary>
+        /// The last height of the Dynamo window.
+        /// </summary>
+        public double WindowH { get; set; }
+
+        /// <summary>
+        /// Should Dynamo use hardware acceleration if it is supported?
+        /// </summary>
+        public bool UseHardwareAcceleration { get; set; }
+
         public PreferenceSettings()
         {
+            RecentFiles = new List<string>();
+            WindowH = 768;
+            WindowW = 1024;
+            WindowY = 0.0;
+            WindowX = 0.0;
+
             // Default Settings
-            this.ShowConsole = false;
-            this.ShowConnector = true;
-            this.ConnectorType = ConnectorType.BEZIER;
-            this.FullscreenWatchShowing = true;
-            this.LengthUnit = DynamoLengthUnit.Meter;
-            this.AreaUnit = DynamoAreaUnit.SquareMeter;
-            this.VolumeUnit = DynamoVolumeUnit.CubicMeter;
+            IsFirstRun = true;
+            IsUsageReportingApproved = false;
+            LibraryWidth = 304;
+            ConsoleHeight = 0;
+            ShowConnector = true;
+            ConnectorType = ConnectorType.BEZIER;
+            FullscreenWatchShowing = true;
+            LengthUnit = LengthUnit.Meter;
+            AreaUnit = DynamoUnits.AreaUnit.SquareMeter;
+            VolumeUnit = VolumeUnit.CubicMeter;
+            PackageDirectoriesToUninstall = new List<string>();
+            NumberFormat = "f3";
+            UseHardwareAcceleration = true;
         }
 
         /// <summary>
@@ -80,29 +183,30 @@ namespace Dynamo
         {
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(PreferenceSettings));
-                FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-                serializer.Serialize(fs, this);
-                fs.Close(); // Release file lock
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
+                using (var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    serializer.Serialize(fs, this);
+                    fs.Close(); // Release file lock
+                }
                 return true;
             }
-            catch (Exception) { }
-            
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
+
             return false;
         }
-        
+
         /// <summary>
         /// Save PreferenceSettings in a default directory when no path is specified
         /// </summary>
         /// <returns>Whether file is saved or error occurred.</returns>
         public bool Save()
         {
-            if ( DYNAMO_TEST_PATH == null )
-                // Save in User Directory Path
-                return Save(GetSettingsFilePath());
-            else
-                // Support Testing
-                return Save(DYNAMO_TEST_PATH);
+            return Save(DynamoTestPath ?? GetSettingsFilePath());
         }
 
         /// <summary>
@@ -116,23 +220,25 @@ namespace Dynamo
         /// </returns>
         public static PreferenceSettings Load(string filePath)
         {
-            PreferenceSettings settings = new PreferenceSettings();
-            
+            var settings = new PreferenceSettings();
+
             if (string.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
                 return settings;
-            
+
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(PreferenceSettings));
-                FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
-                settings = serializer.Deserialize(fs) as PreferenceSettings;
-                fs.Close(); // Release file lock
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
+                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    settings = serializer.Deserialize(fs) as PreferenceSettings;
+                    fs.Close(); // Release file lock
+                }
             }
             catch (Exception) { }
-            
+
             return settings;
         }
-        
+
         /// <summary>
         /// Return PreferenceSettings from Default XML path
         /// </summary>
@@ -142,12 +248,7 @@ namespace Dynamo
         /// </returns>
         public static PreferenceSettings Load()
         {
-            if ( DYNAMO_TEST_PATH == null )
-                // Save in User Directory Path
-                return Load(GetSettingsFilePath());
-            else
-                // Support Testing
-                return Load(DYNAMO_TEST_PATH);
+            return Load(DynamoTestPath ?? GetSettingsFilePath());
         }
 
         /// <summary>
@@ -157,15 +258,7 @@ namespace Dynamo
         {
             try
             {
-                string appDataFolder = System.Environment.GetFolderPath(
-                    System.Environment.SpecialFolder.ApplicationData);
-
-                appDataFolder = Path.Combine(appDataFolder, DYNAMO_SETTINGS_DIRECTORY);
-                
-                if (Directory.Exists(appDataFolder) == false)
-                    Directory.CreateDirectory(appDataFolder);
-                
-                return (Path.Combine(appDataFolder, DYNAMO_SETTINGS_FILE));
+                return (Path.Combine(DynamoPathManager.Instance.AppData, DYNAMO_SETTINGS_FILE));
             }
             catch (Exception)
             {

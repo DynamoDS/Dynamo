@@ -1,20 +1,22 @@
-<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="678" y="262.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynSplitString type="Dynamo.Nodes.dynSplitString" guid="d36759fb-da7a-475a-a43a-9c85996ad55d" nickname="Split String" x="479" y="252.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="57967521-464c-43f2-ac49-5160fc06620f" nickname="String" x="337" y="416.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="0.7.4.3075" X="-312" Y="-28" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="678" y="262.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSVarArgFunction type="Dynamo.Nodes.DSVarArgFunction" guid="d36759fb-da7a-475a-a43a-9c85996ad55d" nickname="String.Split" x="479" y="252.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.String.Split@string,string[]" inputcount="2" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="57967521-464c-43f2-ac49-5160fc06620f" nickname="String" x="337" y="416.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="." />
-    </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="f0b48a0a-7005-4abf-b022-ab0e449a1f57" nickname="File Path" x="52" y="188.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\..\test\core\string\TestSplitString_fromFile.txt" />
-    </Dynamo.Nodes.dynStringFilename>
-    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="1e22484d-225d-461f-9eca-e32eac2bf159" nickname="Read Text File" x="310" y="230.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="d36759fb-da7a-475a-a43a-9c85996ad55d" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="57967521-464c-43f2-ac49-5160fc06620f" start_index="0" end="d36759fb-da7a-475a-a43a-9c85996ad55d" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="f0b48a0a-7005-4abf-b022-ab0e449a1f57" start_index="0" end="1e22484d-225d-461f-9eca-e32eac2bf159" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="1e22484d-225d-461f-9eca-e32eac2bf159" start_index="0" end="d36759fb-da7a-475a-a43a-9c85996ad55d" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </Dynamo.Nodes.StringInput>
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="f0b48a0a-7005-4abf-b022-ab0e449a1f57" nickname="File Path" x="52" y="188.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\string\TestSplitString_fromFile.txt</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1e22484d-225d-461f-9eca-e32eac2bf159" nickname="File.ReadText" x="310" y="290.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.IO.File.ReadText@var" />
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="cd3dbe8e-95f5-4069-82d5-d15a27bf7c96" nickname="File.FromPath" x="152" y="342.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d36759fb-da7a-475a-a43a-9c85996ad55d" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="57967521-464c-43f2-ac49-5160fc06620f" start_index="0" end="d36759fb-da7a-475a-a43a-9c85996ad55d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f0b48a0a-7005-4abf-b022-ab0e449a1f57" start_index="0" end="cd3dbe8e-95f5-4069-82d5-d15a27bf7c96" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1e22484d-225d-461f-9eca-e32eac2bf159" start_index="0" end="d36759fb-da7a-475a-a43a-9c85996ad55d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cd3dbe8e-95f5-4069-82d5-d15a27bf7c96" start_index="0" end="1e22484d-225d-461f-9eca-e32eac2bf159" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

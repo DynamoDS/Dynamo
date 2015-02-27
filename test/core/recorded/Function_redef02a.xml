@@ -1,0 +1,23 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="b89073ad-a39d-4cbb-ae88-c0e60f01c3fd" NodeName="Code Block" X="128" Y="281" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="b89073ad-a39d-4cbb-ae88-c0e60f01c3fd" Name="Code" Value="def foo(i:int)&#xA;{&#xA;g=g+1;&#xA;return =i;&#xA;};" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="c553dcff-09fa-4ff9-b1fb-04c95f1ce2d8" NodeName="Code Block" X="316" Y="323" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="c553dcff-09fa-4ff9-b1fb-04c95f1ce2d8" Name="Code" Value="g=0;&#xA;d=foo(1);" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="ed9c9950-a1dc-4487-b126-9a07d999d8a8" NodeName="Code Block" X="439" Y="349" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="ed9c9950-a1dc-4487-b126-9a07d999d8a8" Name="Code" Value="p=g" />
+  <MakeConnectionCommand NodeId="c553dcff-09fa-4ff9-b1fb-04c95f1ce2d8" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="ed9c9950-a1dc-4487-b126-9a07d999d8a8" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="c553dcff-09fa-4ff9-b1fb-04c95f1ce2d8" Name="Code" Value="g=0;&#xA;d=foo(3);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>

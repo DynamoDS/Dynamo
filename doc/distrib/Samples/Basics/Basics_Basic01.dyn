@@ -1,0 +1,23 @@
+<Workspace Version="0.7.0.42482" X="-3732.93901097413" Y="-827.405442288027" zoom="1.30071118175869" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a8d28be4-5b93-4b68-a182-6e7d09b6147e" nickname="Number" x="2898.69722477541" y="870.914556274731" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0d2e1e9d-21dc-4e5b-b105-e3bedca3b1f9" nickname="+" x="3345.38395751019" y="870.914556274731" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@," />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="89ef21b0-95e1-4b46-aabc-c02f16589b8d" nickname="Watch" x="3592.79738563383" y="870.914556274731" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="52048c47-73fb-4d5f-9221-e4c6b2b41126" nickname="Number" x="2898.69722477541" y="951.121650146262" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="6" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a8d28be4-5b93-4b68-a182-6e7d09b6147e" start_index="0" end="0d2e1e9d-21dc-4e5b-b105-e3bedca3b1f9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0d2e1e9d-21dc-4e5b-b105-e3bedca3b1f9" start_index="0" end="89ef21b0-95e1-4b46-aabc-c02f16589b8d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Basic functional inputs, like Numbers and Strings can be selected by either browsing or searching from the library on the left of the canvas.&#xD;&#xA;&#xD;&#xA;Operations to execute on data, like math or geometric transformations, are also found in the library" x="2898.69722477541" y="719.863361861887" />
+    <Dynamo.Models.NoteModel text="Dynamo is a Visual Programming language.  Like other languages it works by linking simple elements together to form more complex ideas" x="2898.69722477541" y="651.054850598851" />
+    <Dynamo.Models.NoteModel text="Pull a connector out of the &quot;&gt;&quot; port on the Number node and connect it to the &quot;y&quot; port on the + node, then push the &quot;Run&quot; button in the lower left corner of the application." x="3019.41135857941" y="945.489143900592" />
+    <Dynamo.Models.NoteModel text="Data Can be visualized by clicking on the Run button in the lower right of the application.  If you enable &quot;Run automatically&quot; the application will constantly update.&#xD;&#xA;&#xD;&#xA;You can see the data either by using a Watch node or clicking on the small sqare at the bottom of most nodes." x="3711.71399193364" y="874.778613476432" />
+    <Dynamo.Models.NoteModel text="More Sample files can be found in the Help menu, or close this file by clicking the &quot;X&quot; on the tab to return to the welcome page" x="2898.69722477541" y="1040.84161272577" />
+  </Notes>
+</Workspace>

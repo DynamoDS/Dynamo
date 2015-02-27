@@ -36,9 +36,9 @@
     <Dynamo.Nodes.dynDoubleSliderInput type="Dynamo.Nodes.dynDoubleSliderInput" guid="31c0a3f9-25da-4d5e-b341-5088c3f4808b" nickname="Number Slider" x="1054.61410652539" y="1326.87923089192" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="-3.76498800959146" min="-10" max="10" />
     </Dynamo.Nodes.dynDoubleSliderInput>
-    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="7f973adc-a898-4218-b559-2eb88f85f511" nickname="Boolean" x="1533.50299541428" y="1290.21256422525" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Boolean value="False" />
-    </Dynamo.Nodes.dynBoolSelector>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="7f973adc-a898-4218-b559-2eb88f85f511" nickname="Boolean" x="1533.50299541428" y="1290.21256422525" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.000" />
+    </Dynamo.Nodes.dynDoubleInput>
   </dynElements>
   <dynConnectors>
     <Dynamo.Models.dynConnectorModel start="dd7d0508-d5d4-4990-a6f7-6cfc02b0f2f4" start_index="0" end="25ee495f-2d8e-4fa5-8180-6d0e45eb4675" end_index="0" portType="0" />

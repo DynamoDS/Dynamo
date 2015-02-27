@@ -1,0 +1,14 @@
+<Workspace Version="0.7.0.23447" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCore.Replace type="DSCore.Replace" guid="13f697db-85b8-4b93-859c-63f2b66c6b72" nickname="List.Replace" x="436" y="206.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="e2561c5e-6cd0-4c5a-befb-1cde064b051d" nickname="Code Block" x="127" y="128" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{0, null, 2, null, null, 5};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="6fdcc34c-138f-4b3f-bea8-0e31a995ec61" nickname="Code Block" x="209" y="226" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;no value&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="37593b8b-347a-460f-9315-bb0a1ccc9643" nickname="Object.IsNull" x="208" y="349.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.Object.IsNull@var" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e2561c5e-6cd0-4c5a-befb-1cde064b051d" start_index="0" end="13f697db-85b8-4b93-859c-63f2b66c6b72" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6fdcc34c-138f-4b3f-bea8-0e31a995ec61" start_index="0" end="13f697db-85b8-4b93-859c-63f2b66c6b72" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="37593b8b-347a-460f-9315-bb0a1ccc9643" start_index="0" end="13f697db-85b8-4b93-859c-63f2b66c6b72" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

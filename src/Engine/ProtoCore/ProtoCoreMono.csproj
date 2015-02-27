@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ProtoCore</RootNamespace>
+    <AssemblyName>ProtoCore</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">..\..\bin\$(Platform)\$(Configuration)</OutputPath>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\VS2010\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <DefineConstants>_USE_FREE_LIST</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>ProtoCore.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="..\..\AssemblyVersionInfo.cs">
+      <Link>Properties\AssemblyVersionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="AssociativeGraph.cs" />
+    <Compile Include="AttributeEntry.cs" />
+    <Compile Include="BuildStatus.cs" />
+    <Compile Include="CodeBlock.cs" />
+    <Compile Include="CodeGen.cs" />
+    <Compile Include="CodeFile.cs" />
+    <Compile Include="CodeGenDS.cs" />
+    <Compile Include="CodePoint.cs" />
+    <Compile Include="CompilerOptions.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="ClassTable.cs" />
+    <Compile Include="CallsiteExecutionState\CallsiteExecutionState.cs" />
+    <Compile Include="DSASM\FunctionCounter.cs" />
+    <Compile Include="DSASM\DSAsmDefs.cs" />
+    <Compile Include="DSASM\Interpreter.cs" />
+    <Compile Include="DSASM\Executable.cs" />
+    <Compile Include="DSASM\Executive.cs" />
+    <Compile Include="DSASM\Heap.cs" />
+    <Compile Include="DSASM\IExecutive.cs" />
+    <Compile Include="DSASM\InstructionSet.cs" />
+    <Compile Include="DSASM\Mirror\DSASMMirror.cs" />
+    <Compile Include="DSASM\Mirror\ExecutionMirror.cs" />
+    <Compile Include="Exceptions\CompilerInternalException.cs" />
+    <Compile Include="Exceptions\ExceptionHandling.cs" />
+    <Compile Include="Exceptions\ReplicationException.cs" />
+    <Compile Include="FFI\ContextData.cs" />
+    <Compile Include="FFI\ContextDataManager.cs" />
+    <Compile Include="FFI\ExtensionAppLoader.cs" />
+    <Compile Include="FFI\FFIExecutionManager.cs" />
+    <Compile Include="FFI\FFIPropertyChangedMonitor.cs" />
+    <Compile Include="FunctionPointerTable.cs" />
+    <Compile Include="Lang\BuiltInFunctionEndPoint.cs" />
+    <Compile Include="Lang\BuiltInMethods.cs" />
+    <Compile Include="Lang\ContinuationStructure.cs" />
+    <Compile Include="Lang\FunctionPointerEvaluator.cs" />
+    <Compile Include="Lang\Replication\ReplicationInstruction.cs" />
+    <Compile Include="Lang\Replication\Replicator.cs" />
+    <Compile Include="ParserUtils.cs" />
+    <Compile Include="Reflection\GraphicDataProvider.cs" />
+    <Compile Include="Reflection\Mirror.cs" />
+    <Compile Include="Reflection\MirrorData.cs" />
+    <Compile Include="Reflection\Reflection.cs" />
+    <Compile Include="RuntimeContext.cs" />
+    <Compile Include="RuntimeMemory.cs" />
+    <Compile Include="RuntimeStatus.cs" />
+    <Compile Include="DSDefinitions.cs" />
+    <Compile Include="DynamicFunctionTable.cs" />
+    <Compile Include="Exceptions\DebugHalting.cs" />
+    <Compile Include="FFI\CLRFFIFunctionPointer.cs" />
+    <Compile Include="FFI\CLRObjectMarshler.cs" />
+    <Compile Include="FFI\ImportModuleHandler.cs" />
+    <Compile Include="Lang\CSFFIFunctionEndPoint.cs" />
+    <Compile Include="Parser\AssociativeAST.cs" />
+    <Compile Include="Parser\AST.cs" />
+    <Compile Include="Parser\DependencyTracker.cs" />
+    <Compile Include="Parser\ImperativeAST.cs" />
+    <Compile Include="Parser\Parser.cs" />
+    <Compile Include="Parser\Scanner.cs" />
+    <Compile Include="ProcedureTable.cs" />
+    <Compile Include="DSASM\Stack.cs" />
+    <Compile Include="Exceptions\CompileErrorsOccured.cs" />
+    <Compile Include="Executive.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="FFI\CLRDLLModule.cs" />
+    <Compile Include="FFI\FFICppFunction.cs" />
+    <Compile Include="FFI\FFIHandler.cs" />
+    <Compile Include="FFI\PInvokeFFI.cs" />
+    <Compile Include="LangVerify.cs" />
+    <Compile Include="Lang\FFIFunctionEndPoint.cs" />
+    <Compile Include="Lang\FunctionTable.cs" />
+    <Compile Include="Lang\JILFunctionEndPoint.cs" />
+    <Compile Include="Lang\Obj.cs" />
+    <Compile Include="Lang\Type.cs" />
+    <Compile Include="Lang\CallSite.cs" />
+    <Compile Include="Lang\FunctionEndPoint.cs" />
+    <Compile Include="Lang\FunctionGroup.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringTable.cs" />
+    <Compile Include="Utils\ArrayUtils.cs" />
+    <Compile Include="Utils\ClassUtils.cs" />
+    <Compile Include="Utils\CoreUtils.cs" />
+    <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\GCUtils.cs" />
+    <Compile Include="Utils\HeapUtils.cs" />
+    <Compile Include="Utils\MathUtils.cs" />
+    <Compile Include="Utils\LegacyUtils.cs" />
+    <Compile Include="Utils\LexUtils.cs" />
+    <Compile Include="SymbolTable.cs" />
+    <Compile Include="Utils\NodeUtils.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
+    <Compile Include="Utils\Validity.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Parser\atg\Associative.atg" />
+    <None Include="Parser\atg\End.atg" />
+    <None Include="Parser\atg\Imperative.atg" />
+    <None Include="Parser\atg\Start.atg" />
+    <None Include="Parser\GenerateParser.bat" />
+    <None Include="Parser\Parser.frame" />
+    <None Include="Parser\Scanner.frame" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ProtoInterface\ProtoInterfaceMono.csproj">
+      <Project>{9EC0521F-84DA-4196-B0BC-34E4049E50BD}</Project>
+      <Name>ProtoInterfaceMono</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

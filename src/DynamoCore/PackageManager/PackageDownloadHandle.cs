@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Dynamo.Utilities;
-using Greg.Requests;
+
+using Dynamo.Core;
+using Dynamo.Models;
+
+using DynamoUtilities;
+
 using Greg.Responses;
-using Microsoft.Practices.Prism.ViewModel;
-using RestSharp;
 
 namespace Dynamo.PackageManager
 {
@@ -43,21 +41,11 @@ namespace Dynamo.PackageManager
         private string _versionName;
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
-        private PackageDownloadHandle()
-        {
-            
-        }
-
-        public PackageDownloadHandle(Greg.Responses.PackageHeader header, string version)
+        public PackageDownloadHandle(Greg.Responses.PackageHeader header, PackageVersion version)
         {
             this.Header = header;
             this.DownloadPath = "";
-            this.VersionName = version;
-        }
-
-        public void Start()
-        {
-            dynSettings.PackageManagerClient.DownloadAndInstall(this);
+            this.VersionName = version.version;
         }
 
         public void Error(string errorString)
@@ -65,8 +53,8 @@ namespace Dynamo.PackageManager
             this.DownloadState = State.Error;
             this.ErrorString = errorString;
         }
-        
-        public void Done( string filePath )
+
+        public void Done(string filePath)
         {
             this.DownloadState = State.Downloaded;
             this.DownloadPath = filePath;
@@ -74,26 +62,21 @@ namespace Dynamo.PackageManager
 
         private string BuildInstallDirectoryString()
         {
-            // assembly_path/dynamo_packages/package_name
-
-            Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
-            string location = Path.GetDirectoryName(dynamoAssembly.Location);
-            return Path.Combine(location, "dynamo_packages") + @"\" + this.Name.Replace("/","_").Replace(@"\","_");
-
+            // <user>/appdata/roaming/packages/package_name
+            return DynamoPathManager.Instance.Packages + @"\" + this.Name.Replace("/", "_").Replace(@"\", "_");
         }
 
-        public bool Extract( out Package pkg )
+        public bool Extract(DynamoModel dynamoModel, out Package pkg)
         {
-
             this.DownloadState = State.Installing;
 
             // unzip, place files
             var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
             if (!Directory.Exists(unzipPath))
             {
-                throw new Exception("The package was found to be empty and was not installed.");
+                throw new Exception(Properties.Resources.PackageEmpty);
             }
-            
+
             var installedPath = BuildInstallDirectoryString();
             Directory.CreateDirectory(installedPath);
 
@@ -106,7 +89,7 @@ namespace Dynamo.PackageManager
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
             // provide handle to installed package 
-            pkg = new Package(installedPath, Header.name, VersionName);
+            pkg = new Package(installedPath, Header.name, VersionName, Header.license);
 
             return true;
         }

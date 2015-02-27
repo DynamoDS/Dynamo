@@ -1,0 +1,12 @@
+def dc_sqrt : double (val : double )
+{
+    return = val/2.0;
+}
+def dc_factorial : int (val : int )
+{
+    return = val * val ;
+}
+def dc_sin : double (val : double)
+{
+    return = val + val;
+}

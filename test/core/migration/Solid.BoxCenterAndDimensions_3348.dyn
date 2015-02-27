@@ -1,0 +1,12 @@
+<Workspace Version="0.6.3.7993" X="-4.40691379687502" Y="-205.067486265625" zoom="1.545620359375" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.SolidBoxByCenterAndDimensions type="Dynamo.Nodes.SolidBoxByCenterAndDimensions" guid="f39e0e76-dba6-4de6-858a-d9d5cc7639f5" nickname="Box by Center and Dimensions" x="32.3742520031626" y="174.15170972056" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+      <PortInfo index="3" default="True" />
+    </Dynamo.Nodes.SolidBoxByCenterAndDimensions>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

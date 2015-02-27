@@ -1,0 +1,6 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="4b2b7966-a24c-44fe-b2f0-9aed54b72319" NodeName="Code Block" X="189" Y="267" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="4b2b7966-a24c-44fe-b2f0-9aed54b72319" Name="Code" Value="1.25;&#xD;&#xA;1.26;//this line should have output port;" />
+</Commands>

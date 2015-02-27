@@ -1,0 +1,39 @@
+<Workspace Version="0.7.4.3131" X="165.987262188659" Y="323.251817816088" zoom="0.730641143418573" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="56de5d01-00db-4d7f-a9c6-bcae8b758937" nickname="Code Block" x="-331.178784139822" y="-168.651341890818" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(-5,0);&#xA;Point.Origin();&#xA;Point.ByCoordinates(0,5);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="be028256-7186-4e96-9977-38981feed66b" nickname="Curve.Extend" x="529.824894217903" y="-306.246814703138" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.Extend@double,Autodesk.DesignScript.Geometry.Point" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e09faec4-65c4-4d1f-b769-ceb5e10c47a0" nickname="Curve.ExtendEnd" x="526.357651577553" y="-118.699284613605" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.ExtendEnd@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1da11460-3a04-4d1a-beb8-a434c0fd206c" nickname="Curve.ExtendStart" x="526.390730170133" y="28.0759064419599" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.ExtendStart@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="d1008632-a2d6-410c-9498-e9d3bb4cccee" nickname="Double Slider" x="202.412088477167" y="116.886149376866" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>0</System.Double>
+      <Range min="0" max="5" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="0cd25749-5f49-4e2c-82f7-ac278e35ac7f" nickname="Code Block" x="-31.1391634303948" y="-108.008445980281" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="NurbsCurve.ByPoints({p1,p2,p3});" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="03bc507f-55bf-451e-ab08-f07894e085a9" nickname="Curve.Length" x="778.591104602503" y="13.0117172272486" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.Length" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="340740f4-d583-4938-971c-49936543a66b" nickname="Curve.Length" x="753.80922242272" y="-117.506195586278" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.Length" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="68406cf8-a3c1-4aca-93bb-0a83ca044d65" nickname="Curve.Length" x="752.690280791211" y="-303.475447635079" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.Length" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="56de5d01-00db-4d7f-a9c6-bcae8b758937" start_index="0" end="0cd25749-5f49-4e2c-82f7-ac278e35ac7f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="56de5d01-00db-4d7f-a9c6-bcae8b758937" start_index="0" end="be028256-7186-4e96-9977-38981feed66b" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="56de5d01-00db-4d7f-a9c6-bcae8b758937" start_index="1" end="0cd25749-5f49-4e2c-82f7-ac278e35ac7f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="56de5d01-00db-4d7f-a9c6-bcae8b758937" start_index="2" end="0cd25749-5f49-4e2c-82f7-ac278e35ac7f" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="be028256-7186-4e96-9977-38981feed66b" start_index="0" end="68406cf8-a3c1-4aca-93bb-0a83ca044d65" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e09faec4-65c4-4d1f-b769-ceb5e10c47a0" start_index="0" end="340740f4-d583-4938-971c-49936543a66b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1da11460-3a04-4d1a-beb8-a434c0fd206c" start_index="0" end="03bc507f-55bf-451e-ab08-f07894e085a9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d1008632-a2d6-410c-9498-e9d3bb4cccee" start_index="0" end="be028256-7186-4e96-9977-38981feed66b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d1008632-a2d6-410c-9498-e9d3bb4cccee" start_index="0" end="e09faec4-65c4-4d1f-b769-ceb5e10c47a0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d1008632-a2d6-410c-9498-e9d3bb4cccee" start_index="0" end="1da11460-3a04-4d1a-beb8-a434c0fd206c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0cd25749-5f49-4e2c-82f7-ac278e35ac7f" start_index="0" end="be028256-7186-4e96-9977-38981feed66b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0cd25749-5f49-4e2c-82f7-ac278e35ac7f" start_index="0" end="e09faec4-65c4-4d1f-b769-ceb5e10c47a0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0cd25749-5f49-4e2c-82f7-ac278e35ac7f" start_index="0" end="1da11460-3a04-4d1a-beb8-a434c0fd206c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Extend nodes" x="539.465353460753" y="-359.393219961253" />
+    <Dynamo.Models.NoteModel text="Trouble with distance = 0 for NurbsCurves" x="132.167868595625" y="80.0736512497384" />
+  </Notes>
+</Workspace>

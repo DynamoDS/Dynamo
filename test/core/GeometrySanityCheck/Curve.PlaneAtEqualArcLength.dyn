@@ -1,0 +1,11 @@
+<Workspace Version="0.6.3.12415" X="-1493.46254345802" Y="-1488.90984080398" zoom="1.4517389755498" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="7feb6568-e2f3-440a-b0e9-6b0a8617f03e" nickname="Code Block" x="1169.99730788929" y="1079.13297438524" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="point1              = Point.ByCoordinates(0,0,0);&#xA;point2              = Point.ByCoordinates(0,10,0);&#xA;curve               = Line.ByStartPointEndPoint(point1, point2);&#xA;numberOfPlane       = 3;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="5f6476bf-ad81-425c-b41b-75d5d4ba6341" nickname="Curve.PlanesAtEqualArcLength" x="1716.28863341305" y="1167.06584329759" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Curve.PlanesAtEqualArcLength@int" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7feb6568-e2f3-440a-b0e9-6b0a8617f03e" start_index="2" end="5f6476bf-ad81-425c-b41b-75d5d4ba6341" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7feb6568-e2f3-440a-b0e9-6b0a8617f03e" start_index="3" end="5f6476bf-ad81-425c-b41b-75d5d4ba6341" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

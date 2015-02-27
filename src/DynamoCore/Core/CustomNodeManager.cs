@@ -1,198 +1,292 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Xml;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
-using System.IO;
-using Dynamo.FSchemeInterop.Node;
-using Dynamo.FSchemeInterop;
-using Dynamo.ViewModels;
-using NUnit.Framework;
-using Enum = System.Enum;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using Dynamo.Utilities;
+using ProtoCore.Namespace;
+using Symbol = Dynamo.Nodes.Symbol;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Core
 {
-    /// <summary>
-    /// A simple class to keep track of custom nodes.
-    /// </summary>
-    public class CustomNodeInfo
-    {
-        public CustomNodeInfo(Guid guid, string name, string category, string description, string path)
-        {
-            this.Guid = guid;
-            this.Name = name;
-            this.Category = category;
-            this.Description = description;
-            this.Path = path;
-        }
-
-        public Guid Guid { get; set; }
-        public string Name { get; set; }
-        public string Category { get; set; }
-        public string Description { get; set; }
-        public string Path { get; set; }
-    }
-
-    public delegate void DefinitionLoadHandler(FunctionDefinition def);
-
     /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
     /// </summary>
-    public class CustomNodeManager
+    public class CustomNodeManager : LogSourceBase, ICustomNodeSource
     {
+        public CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager)
+        {
+            this.nodeFactory = nodeFactory;
+            this.migrationManager = migrationManager;
+        }
 
         #region Fields and properties
 
+        private readonly OrderedSet<Guid> loadOrder = new OrderedSet<Guid>();
+
+        private readonly Dictionary<Guid, CustomNodeDefinition> loadedCustomNodes =
+            new Dictionary<Guid, CustomNodeDefinition>();
+
+        private readonly Dictionary<Guid, CustomNodeWorkspaceModel> loadedWorkspaceModels =
+            new Dictionary<Guid, CustomNodeWorkspaceModel>();
+
+        private readonly NodeFactory nodeFactory;
+        private readonly MigrationManager migrationManager;
+
         /// <summary>
-        /// An event that is fired when a definition is loaded (e.g. when the node is placed)
+        ///     CustomNodeDefinitions for all loaded custom nodes, in load order.
         /// </summary>
-        public event DefinitionLoadHandler DefinitionLoaded;
-
-        public Dictionary<Guid, FunctionDefinition> LoadedCustomNodes = new Dictionary<Guid, FunctionDefinition>();
-
-        /// <summary>
-        /// NodeNames </summary>
-        /// <value>Maps function names to function ids.</value>
-        public ObservableDictionary<Guid, CustomNodeInfo> NodeInfos
+        public IEnumerable<CustomNodeDefinition> LoadedDefinitions
         {
-            get;
-            private set;
+            get { return loadOrder.Select(id => loadedCustomNodes[id]); }
         }
 
         /// <summary>
-        /// SearchPath property </summary>
-        /// <value>This is a list of directories where this object will 
-        /// search for dyf files.</value>
-        public ObservableCollection<string> SearchPath { get; private set; }
+        ///     Registry of all NodeInfos corresponding to discovered custom nodes. These
+        ///     custom nodes are not all necessarily initialized.
+        /// </summary>
+        public readonly Dictionary<Guid, CustomNodeInfo> NodeInfos = new Dictionary<Guid, CustomNodeInfo>();
+
+        /// <summary>
+        ///     All loaded custom node workspaces.
+        /// </summary>
+        public IEnumerable<CustomNodeWorkspaceModel> LoadedWorkspaces
+        {
+            get { return loadedWorkspaceModels.Values; }
+        }
 
         #endregion
 
         /// <summary>
-        ///     Class Constructor
+        ///     An event that is fired when a definition is updated
         /// </summary>
-        /// <param name="searchPath">The path to search for definitions</param>
-        public CustomNodeManager(string searchPath)
+        public event Action<CustomNodeDefinition> DefinitionUpdated;
+        protected virtual void OnDefinitionUpdated(CustomNodeDefinition obj)
         {
-            SearchPath = new ObservableCollection<string>();
-            SearchPath.Add(searchPath);
-
-            NodeInfos = new ObservableDictionary<Guid, CustomNodeInfo>();
-
+            var handler = DefinitionUpdated;
+            if (handler != null) handler(obj);
         }
+
+        /// <summary>
+        ///     An event that is fired when new or updated info is available for
+        ///     a custom node.
+        /// </summary>
+        public event Action<CustomNodeInfo> InfoUpdated;
+        protected virtual void OnInfoUpdated(CustomNodeInfo obj)
+        {
+            var handler = InfoUpdated;
+            if (handler != null) handler(obj);
+        }
+
+        /// <summary>
+        ///     An event that is fired when a custom node is removed from Dynamo.
+        /// </summary>
+        public event Action<Guid> CustomNodeRemoved;
+        protected virtual void OnCustomNodeRemoved(Guid functionId)
+        {
+            var handler = CustomNodeRemoved;
+            if (handler != null) handler(functionId);
+        }
+
+        /// <summary>
+        ///     Creates a new Custom Node Instance.
+        /// </summary>
+        /// <param name="id">Identifier referring to a custom node definition.</param>
+        /// <param name="nickname">
+        ///     Nickname for the custom node to be instantiated, used for error recovery if
+        ///     the given id could not be found.
+        /// </param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        public Function CreateCustomNodeInstance(
+            Guid id, string nickname = null, bool isTestMode = false)
+        {
+            CustomNodeWorkspaceModel workspace;
+            CustomNodeDefinition def;
+            CustomNodeInfo info;
+            // Try to get the definition, initializing the custom node if necessary
+            if (TryGetFunctionDefinition(id, isTestMode, out def))
+            {
+                // Got the definition, proceed as planned.
+                info = NodeInfos[id];
+            }
+            else
+            {
+                // Couldn't get the workspace with the given ID, try a nickname lookup instead.
+                if (nickname != null && TryGetNodeInfo(nickname, out info))
+                    return CreateCustomNodeInstance(info.FunctionId, nickname, isTestMode);
+                
+                // Couldn't find the workspace at all, prepare for a late initialization.
+                Log(
+                    Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
+                    WarningLevel.Moderate);
+                info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
+            }
+
+            if (def == null)
+            {
+                def = CustomNodeDefinition.MakeProxy(id, info.Name);
+            }
+
+            var node = new Function(def, info.Name, info.Description, info.Category);
+            if (loadedWorkspaceModels.TryGetValue(id, out workspace))
+                RegisterCustomNodeInstanceForUpdates(node, workspace);
+            else
+                RegisterCustomNodeInstanceForLateInitialization(node, id, nickname, isTestMode);
+
+            return node;
+        }
+
+        private void RegisterCustomNodeInstanceForLateInitialization(Function node, Guid id, string nickname, bool isTestMode)
+        {
+            var disposed = false;
+            Action<CustomNodeInfo> infoUpdatedHandler = null;
+            infoUpdatedHandler = newInfo =>
+            {
+                if (newInfo.FunctionId == id || newInfo.Name == nickname)
+                {
+                    CustomNodeWorkspaceModel foundWorkspace;
+                    if (TryGetFunctionWorkspace(newInfo.FunctionId, isTestMode, out foundWorkspace))
+                    {
+                        node.ResyncWithDefinition(foundWorkspace.CustomNodeDefinition);
+                        RegisterCustomNodeInstanceForUpdates(node, foundWorkspace);
+                        InfoUpdated -= infoUpdatedHandler;
+                        disposed = true;
+                    }
+                }
+            };
+            InfoUpdated += infoUpdatedHandler;
+            node.Disposed += () =>
+            {
+                if (!disposed)
+                    InfoUpdated -= infoUpdatedHandler;
+            };
+        }
+
+        private static void RegisterCustomNodeInstanceForUpdates(Function node, CustomNodeWorkspaceModel workspace)
+        {
+            Action defUpdatedHandler = () =>
+            {
+                node.ResyncWithDefinition(workspace.CustomNodeDefinition);
+            };
+            workspace.DefinitionUpdated += defUpdatedHandler;
+
+            Action infoChangedHandler = () =>
+            {
+                var info = workspace.CustomNodeInfo;
+                node.NickName = info.Name;
+                node.Description = info.Description;
+                node.Category = info.Category;
+            };
+            workspace.InfoChanged += infoChangedHandler;
+            node.Disposed += () =>
+            {
+                workspace.DefinitionUpdated -= defUpdatedHandler;
+                workspace.InfoChanged -= infoChangedHandler;
+            };
+        }
+
         /// <summary> 
-        /// Get a function id from a guid assuming that the file is already loaded.
+        ///     Get a function id from a guid assuming that the file is already loaded.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
         public Guid GuidFromPath(string path)
         {
-            var pair = this.NodeInfos.FirstOrDefault(x => x.Value.Path == path);
+            var pair = NodeInfos.FirstOrDefault(x => x.Value.Path == path);
             return pair.Key;
         }
 
-        /// <summary>
-        ///     Enumerates all of the loaded custom node defs
-        /// </summary>
-        /// <returns>A list of the current loaded custom node defs</returns>
-        public IEnumerable<FunctionDefinition> GetLoadedDefinitions()
+        private void SetFunctionDefinition(CustomNodeDefinition def)
         {
-            return LoadedCustomNodes.Values;
+            var id = def.FunctionId;
+            loadedCustomNodes[id] = def;
+            loadOrder.Add(id);
+        }
+        
+        private void SetPreloadFunctionDefinition(Guid id)
+        {
+            loadedCustomNodes[id] = null;
         }
 
-        /// <summary>
-        ///     Manually add the FunctionDefinition to LoadedNodes, overwriting the existing FunctionDefinition
-        /// </summary>
-        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public void AddFunctionDefinition(Guid id, FunctionDefinition def)
-        {
-            this.LoadedCustomNodes[id] = def;
-        }
 
         /// <summary>
         ///     Import a dyf file for eventual initialization.  
         /// </summary>
-        /// <returns>null if we failed to get data from the path, otherwise the CustomNodeInfo object for the </returns>
-        public CustomNodeInfo AddFileToPath(string file)
+        /// <param name="file">Path to a custom node file on disk.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="info">
+        ///     If the info was successfully processed, this parameter will be set to
+        ///     it. Otherwise, it will be set to null.
+        /// </param>
+        /// <returns>True on success, false if the file could not be read properly.</returns>
+        public bool AddUninitializedCustomNode(string file, bool isTestMode, out CustomNodeInfo info)
         {
-            Guid guid;
-            string name;
-            string category;
-            string description;
-            if (!GetHeaderFromPath(file, out guid, out name, out category, out description))
+            if (TryGetInfoFromPath(file, isTestMode, out info))
             {
-                return null;
+                SetNodeInfo(info);
+                return true;
             }
-
-            // the node has already been loaded
-            // from somewhere else
-            if (this.Contains(guid))
-            {
-                return GetNodeInfo(guid);
-            }
-
-            var info = new CustomNodeInfo(guid, name, category, description, file);
-            this.SetNodeInfo(info);
-
-            return info;
-        }
-
-        public List<CustomNodeInfo> GetInfosFromFolder(string dir)
-        {
-            return Directory.Exists(dir) ? Directory.EnumerateFiles(dir, "*.dyf")
-                     .Select( AddFileToPath )
-                     .Where(x => x != null)
-                     .ToList() : new List<CustomNodeInfo>();
-
-        } 
-
-        /// <summary>
-        ///     Removes the custom nodes loaded from a particular folder.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public bool RemoveTypesLoadedFromFolder(string path)
-        {
-
-            var guidsToRemove = GetInfosFromFolder(path).Select(x => x.Guid);
-            guidsToRemove.ToList().ForEach(this.RemoveFromDynamo);
-
-            return guidsToRemove.Any();
-
-        }
-
-        public CustomNodeInfo Remove(Guid guid)
-        {
-            var nodeInfo = GetNodeInfo(guid);
-
-            if (LoadedCustomNodes.ContainsKey(guid))
-                LoadedCustomNodes.Remove(guid);
-
-            if (NodeInfos.ContainsKey(guid))
-                NodeInfos.Remove(guid);
-
-            return nodeInfo;
+            return false;
         }
 
         /// <summary>
         ///     Attempts to remove all traces of a particular custom node from Dynamo, assuming the node is not in a loaded workspace.
         /// </summary>
-        /// <param name="guid"></param>
-        public void RemoveFromDynamo(Guid guid)
+        /// <param name="guid">Custom node identifier.</param>
+        public void Remove(Guid guid)
         {
-            var nodeInfo = this.Remove(guid);
+            Uninitialize(guid);
+            NodeInfos.Remove(guid);
+            OnCustomNodeRemoved(guid);
+        }
 
-            // remove from search
-            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
-            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
+        /// <summary>
+        ///     Uninitialized a custom node. The information for the node is still retained, but the next time
+        ///     the node is queried for it's workspace / definition / an instace it will be re-initialized from
+        ///     disk.
+        /// </summary>
+        /// <param name="guid">Custom node identifier.</param>
+        public bool Uninitialize(Guid guid)
+        {
+            CustomNodeWorkspaceModel ws;
+            if (loadedWorkspaceModels.TryGetValue(guid, out ws))
+            {
+                ws.Dispose();
+                loadedWorkspaceModels.Remove(guid);
+                loadedCustomNodes.Remove(guid);
+                loadOrder.Remove(guid);
+                return true;
+            }
+            return false;
+        }
 
-            // remove from fscheme environment
-            dynSettings.Controller.FSchemeEnvironment.RemoveSymbol(guid.ToString());
+        /// <summary>
+        ///     Scans the given path for custom node files, retaining their information in the manager for later
+        ///     potential initialization.
+        /// </summary>
+        /// <param name="path">Path on disk to scan for custom nodes.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <returns></returns>
+        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode)
+        {
+            var result = new List<CustomNodeInfo>();
+            foreach (var info in ScanNodeHeadersInDirectory(path, isTestMode))
+            {
+                SetNodeInfo(info);
+                result.Add(info);
+            }
+            return result;
         }
 
         /// <summary>
@@ -200,126 +294,78 @@ namespace Dynamo.Utilities
         ///     Does not instantiate the nodes.
         /// </summary>
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public List<CustomNodeInfo> UpdateSearchPath()
-        {
-            return SearchPath.Select(ScanNodeHeadersInDirectory)
-                             .SelectMany(x => x).ToList();
-        }
-
-        /// <summary>
-        ///     Enumerates all of the files in the search path and get's their guids.
-        ///     Does not instantiate the nodes.
-        /// </summary>
-        /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        public IEnumerable<CustomNodeInfo> ScanNodeHeadersInDirectory(string dir)
+        private IEnumerable<CustomNodeInfo> ScanNodeHeadersInDirectory(string dir, bool isTestMode)
         {
             if (!Directory.Exists(dir))
-            {
-                return new List<CustomNodeInfo>();
-            }
+                yield break;
 
-            return Directory.EnumerateFiles(dir, "*.dyf")
-                            .Select(AddFileToPath)
-                            .Where(nodeInfo => nodeInfo != null).ToList();
-        }
-
-        /// <summary>
-        ///     Update a FunctionDefinition amongst the loaded FunctionDefinitions, without
-        ///     settings its path
-        /// </summary>
-        /// <param name="guid">The custom node id</param>
-        /// <param name="def">The definition for the function</param>
-        public void SetFunctionDefinition(Guid guid, FunctionDefinition def)
-        {
-            if (this.LoadedCustomNodes.ContainsKey(guid))
+            foreach (var file in Directory.EnumerateFiles(dir, "*.dyf"))
             {
-                this.LoadedCustomNodes.Remove(guid);
+                CustomNodeInfo info;
+                if (TryGetInfoFromPath(file, isTestMode, out info))
+                    yield return info;
             }
-            this.LoadedCustomNodes.Add(guid, def);
         }
 
         /// <summary>
         /// Stores the path and function definition without initializing a node.  Overwrites
         /// the existing NodeInfo if necessary
         /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
-        /// <param name="path">The path for the node.</param>
-        public void SetNodeInfo(CustomNodeInfo newInfo)
+        private void SetNodeInfo(CustomNodeInfo newInfo)
         {
-            var nodeInfo = GetNodeInfo(newInfo.Guid);
-            if (nodeInfo == null)
-            {
-                NodeInfos.Add(newInfo.Guid, newInfo);
-            }
-            else
-            {
-                NodeInfos[newInfo.Guid] = newInfo;
-            }
+            NodeInfos[newInfo.FunctionId] = newInfo;
+            OnInfoUpdated(newInfo);
         }
 
         /// <summary>
-        ///     Stores the path and function definition without initializing node
-        /// </summary>
-        /// <param name="guid">The unique id for the node.</param>
-        /// <param name="path">The path for the node.</param>
-        public void SetNodePath(Guid id, string path)
-        {
-            var nodeInfo = GetNodeInfo(id);
-            if (nodeInfo != null)
-            {
-                nodeInfo.Path = path;
-            }
-        }
-
-        /// <summary>
-        ///     Stores the path and function definition without initializing node
+        ///     Get the function workspace from a guid
         /// </summary>
         /// <param name="id">The unique id for the node.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="ws"></param>
         /// <returns>The path to the node or null if it wasn't found.</returns>
-        public string GetNodePath(Guid id)
+        public bool TryGetFunctionWorkspace(Guid id, bool isTestMode, out CustomNodeWorkspaceModel ws)
         {
-            var nodeInfo = GetNodeInfo(id);
-            if (nodeInfo != null)
+            if (Contains(id))
             {
-                return nodeInfo.Path;
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// Return the default search path
-        /// </summary>
-        /// <returns>A string representing a path</returns>
-        public string GetDefaultSearchPath()
-        {
-            return SearchPath[0];
-        }
-
-        /// <summary>
-        ///     Get the function definition from a guid
-        /// </summary>
-        /// <param name="id">The unique id for the node.</param>
-        /// <returns>The path to the node or null if it wasn't found.</returns>
-        public FunctionDefinition GetFunctionDefinition(Guid id)
-        {
-            if (!this.Contains(id))
-                return null;
-
-            if (this.IsInitialized(id))
-            {
-                return LoadedCustomNodes[id];
-            }
-            else
-            {
-                FunctionDefinition def;
-                if (this.GetDefinitionFromPath(id, out def))
+                if (!loadedWorkspaceModels.TryGetValue(id, out ws))
                 {
-                    return def;
+                    if (InitializeCustomNode(id, isTestMode, out ws))
+                        return true;
+                }
+                else
+                    return true;
+            }
+            ws = null;
+            return false;
+        }
+
+        /// <summary>
+        ///     Get the function definition from a guid.
+        /// </summary>
+        /// <param name="id">Custom node identifier.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="definition"></param>
+        /// <returns></returns>
+        public bool TryGetFunctionDefinition(Guid id, bool isTestMode, out CustomNodeDefinition definition)
+        {
+            if (Contains(id))
+            {
+                CustomNodeWorkspaceModel ws;
+                if (IsInitialized(id) || InitializeCustomNode(id, isTestMode, out ws))
+                {
+                    definition = loadedCustomNodes[id];
+                    return true;
                 }
             }
-            return null;
+            definition = null;
+            return false;
         }
-
+        
         /// <summary>
         ///     Tells whether the custom node's unique identifier is inside of the manager (initialized or not)
         /// </summary>
@@ -335,7 +381,8 @@ namespace Dynamo.Utilities
         /// <param name="name">The name of the custom node.</param>
         public bool Contains(string name)
         {
-            return IsInitialized(name) || GetNodeInfo(name) != null;
+            CustomNodeInfo info;
+            return TryGetNodeInfo(name, out info);
         }
 
         /// <summary>
@@ -345,16 +392,8 @@ namespace Dynamo.Utilities
         /// <returns>The name of the </returns>
         public bool IsInitialized(string name)
         {
-            var info = GetNodeInfo(name);
-           
-            if ( info != null )
-            {
-                return this.IsInitialized(info.Guid);
-            }
-            else
-            {
-                return false;
-            }
+            CustomNodeInfo info;
+            return TryGetNodeInfo(name, out info) && IsInitialized(info.FunctionId);
         }
 
         /// <summary>
@@ -363,519 +402,215 @@ namespace Dynamo.Utilities
         /// <param name="guid">Whether the definition is stored with the manager.</param>
         public bool IsInitialized(Guid guid)
         {
-            return LoadedCustomNodes.ContainsKey(guid);
-        }
-
-        /// <summary>
-        ///     Get the guid from a name.
-        /// </summary>
-        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
-        /// <returns>False if the name doesn't exist in this</returns>
-        public Guid GetGuidFromName(string name)
-        {
-            if (!this.Contains(name))
-            {
-                return Guid.Empty;
-            }
-
-            return GetNodeInfo(name).Guid;
-        }
-
-        /// <summary>
-        ///     Get a guid from the name of a node.  If it doesn't exist, returns Guid.Empty.
-        /// </summary>
-        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
-        public bool GetNodeInstance(DynamoController controller, string name, out Function result)
-        {
-            if (!this.Contains(name))
-            {
-                result = null;
-                return false;
-            }
-
-            return this.GetNodeInstance(GetGuidFromName(name), out result);
-
-        }
-
-        /// <summary>
-        ///     Get a dynFunction from a guid, also stores type internally info for future instantiation.
-        ///     And add the compiled node to the enviro
-        ///     As a side effect, any of its dependent nodes are also initialized.
-        /// </summary>
-        /// <param name="environment">The environment from which to get the </param>
-        /// <param name="guid">Open a definition from a path, without instantiating the nodes or dependents</param>
-        public bool GetNodeInstance(Guid guid, out Function result)
-        {
-            var controller = dynSettings.Controller;
-
-            if (!this.Contains(guid))
-            {
-                result = null;
-                return false;
-            }
-
-            FunctionDefinition def = null;
-            if (!this.IsInitialized(guid))
-            {
-                if (!GetDefinitionFromPath(guid, out def))
-                {
-                    result = null;
-                    return false;
-                }
-            }
-            else
-            {
-                def = this.LoadedCustomNodes[guid];
-            }
-
-            WorkspaceModel ws = def.WorkspaceModel;
-
-            IEnumerable<string> inputs =
-                ws.Nodes.Where(e => e is Symbol)
-                    .Select(s => (s as Symbol).InputSymbol);
-
-            IEnumerable<string> outputs =
-                ws.Nodes.Where(e => e is Output)
-                    .Select(o => (o as Output).Symbol);
-
-            if (!outputs.Any())
-            {
-                var topMost = new List<Tuple<int, NodeModel>>();
-
-                IEnumerable<NodeModel> topMostNodes = ws.GetTopMostNodes();
-
-                foreach (NodeModel topNode in topMostNodes)
-                {
-                    foreach (int output in Enumerable.Range(0, topNode.OutPortData.Count))
-                    {
-                        if (!topNode.HasOutput(output))
-                            topMost.Add(Tuple.Create(output, topNode));
-                    }
-                }
-
-                outputs = topMost.Select(x => x.Item2.OutPortData[x.Item1].NickName);
-            }
-
-            result = controller.DynamoViewModel.CreateFunction(inputs, outputs, def);
-            result.NickName = ws.Name;
-
-            return true;
+            return loadedCustomNodes.ContainsKey(guid);
         }
 
         /// <summary>
         ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="info"></param>
         /// <returns>The custom node info object - null if we failed</returns>
-        public static CustomNodeInfo GetHeaderFromPath(string path)
+        public bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
-            string name, category, description;
-            Guid id;
-            if (CustomNodeManager.GetHeaderFromPath(path, out id, out name, out category, out description))
-            {
-                return new CustomNodeInfo(id, Path.GetFileNameWithoutExtension(path), category, description, path);
-            }
-            else
-            {
-                return null;
-            }
-            
-        }
-        /// <summary>
-        ///     Get a guid from a specific path, internally this first calls GetDefinitionFromPath
-        /// </summary>
-        /// <param name="path">The path from which to get the guid</param>
-        /// <param name="guid">A reference to the guid (OUT) Guid.Empty if function returns false. </param>
-        /// <returns>Whether we successfully obtained the guid or not.  </returns>
-        public static bool GetHeaderFromPath(string path, out Guid guid, out string name, out string category, out string description)
-        {
-
             try
             {
-                var funName = "";
-                var id = "";
-                var cat = "";
-                var des = "";
-
-                #region Get xml document and parse
-
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(path);
 
-                // load the header
-                // handle legacy workspace nodes called dynWorkspace
-                // and new workspaces without the dyn prefix
-                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName("Workspace");
-                if (workspaceNodes.Count == 0)
-                    workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
-
-                foreach (XmlNode node in workspaceNodes)
+                WorkspaceInfo header;
+                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
                 {
-                    foreach (XmlAttribute att in node.Attributes)
-                    {
-                        if (att.Name.Equals("Name"))
-                            funName = att.Value;
-                        else if (att.Name.Equals("ID"))
-                        {
-                            id = att.Value;
-                        }
-                        else if (att.Name.Equals("Category"))
-                        {
-                            cat = att.Value;
-                        }
-                        else if (att.Name.Equals("Description"))
-                        {
-                            des = att.Value;
-                        }
-                    }
+                    Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
+                    info = null;
+                    return false;
                 }
-
-                #endregion
-
-                // we have a dyf and it lacks an ID field, we need to assign it
-                // a deterministic guid based on its name.  By doing it deterministically,
-                // files remain compatible
-                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName))
-                {
-                    guid = GuidUtility.Create(GuidUtility.UrlNamespace, funName);
-                }
-                else
-                {
-                    guid = Guid.Parse(id);
-                }
-
-                name = funName;
-                category = cat;
-                description = des;
+                info = new CustomNodeInfo(
+                    Guid.Parse(header.ID),
+                    header.Name,
+                    header.Category,
+                    header.Description, 
+                    path);
                 return true;
-
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("ERROR: The header for the custom node at " + path + " failed to load.  It will be left out of search.");
-                DynamoLogger.Instance.Log(e.ToString());
-                category = "";
-                guid = Guid.Empty;
-                name = "";
-                description = "";
+                Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
+                Log(e.ToString());
+                info = null;
                 return false;
             }
-
         }
 
         /// <summary>
-        ///     Get a FunctionDefinition from a workspace.  Assumes the FunctionDefinition is already loaded.
-        ///     Use IsInitialized to figure out if the FunctionDef is loaded.
+        ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceInfo.
         /// </summary>
-        /// <param name="workspace">The workspace which you'd like to find the Definition for</param>
-        /// <returns>A valid function definition if the FunctionDefinition is already loaded, otherwise null. </returns>
-        public FunctionDefinition GetDefinitionFromWorkspace(WorkspaceModel workspace)
+        /// <param name="xmlDoc">XmlDocument representing the parsed custom node file.</param>
+        /// <param name="workspaceInfo">Workspace header describing the custom node file.</param>
+        /// <param name="isTestMode">
+        ///     Flag specifying whether or not this should operate in "test mode".
+        /// </param>
+        /// <param name="workspace"></param>
+        /// <returns></returns>
+        public bool OpenCustomNodeWorkspace(
+            XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, bool isTestMode, out WorkspaceModel workspace)
         {
-            return this.LoadedCustomNodes.Values.FirstOrDefault((def) => def.WorkspaceModel == workspace);
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (InitializeCustomNode(
+                workspaceInfo,
+                xmlDoc,
+                out customNodeWorkspace))
+            {
+                workspace = customNodeWorkspace;
+                return true;
+            }
+            workspace = null;
+            return false;
+        }
+
+        private bool InitializeCustomNode(
+            WorkspaceInfo workspaceInfo,
+            XmlDocument xmlDoc, out CustomNodeWorkspaceModel workspace)
+        {
+            // Add custom node definition firstly so that a recursive
+            // custom node won't recursively load itself.
+            SetPreloadFunctionDefinition(Guid.Parse(workspaceInfo.ID));
+ 
+            var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
+           
+            var newWorkspace = new CustomNodeWorkspaceModel(
+                nodeFactory,
+                nodeGraph.Nodes,
+                nodeGraph.Notes,
+                workspaceInfo,
+                nodeGraph.ElementResolver);
+            
+            RegisterCustomNodeWorkspace(newWorkspace);
+
+            workspace = newWorkspace;
+            return true;
+        }
+
+        private void RegisterCustomNodeWorkspace(CustomNodeWorkspaceModel newWorkspace)
+        {
+            RegisterCustomNodeWorkspace(
+                newWorkspace,
+                newWorkspace.CustomNodeInfo,
+                newWorkspace.CustomNodeDefinition);
+        }
+
+        private void RegisterCustomNodeWorkspace(
+            CustomNodeWorkspaceModel newWorkspace, CustomNodeInfo info, CustomNodeDefinition definition)
+        {
+            loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
+
+            SetFunctionDefinition(definition);
+            OnDefinitionUpdated(definition);
+            newWorkspace.DefinitionUpdated += () =>
+            {
+                var newDef = newWorkspace.CustomNodeDefinition;
+                SetFunctionDefinition(newDef);
+                OnDefinitionUpdated(newDef);
+            };
+
+            SetNodeInfo(info);
+            newWorkspace.InfoChanged += () =>
+            {
+                var newInfo = newWorkspace.CustomNodeInfo;
+                SetNodeInfo(newInfo);
+                OnInfoUpdated(newInfo);
+            };
+
+            newWorkspace.FunctionIdChanged += oldGuid =>
+            {
+                Uninitialize(oldGuid);
+                loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
+            };
         }
 
         /// <summary>
         ///     Deserialize a function definition from a given path.  A side effect of this function is that
         ///     the node is added to the dictionary of loadedNodes.  
         /// </summary>
-        /// <param name="funcDefGuid">The function guid we're currently loading</param>
-        /// <param name="controller">Reference to the calling controller</param>
-        /// <param name="def">The resultant function definition</param>
+        /// <param name="functionId">The function guid we're currently loading</param>
+        /// <param name="isTestMode"></param>
+        /// <param name="workspace">The resultant function definition</param>
         /// <returns></returns>
-        private bool GetDefinitionFromPath(Guid funcDefGuid, out FunctionDefinition def)
+        private bool InitializeCustomNode(Guid functionId, bool isTestMode, out CustomNodeWorkspaceModel workspace)
         {
-            var controller = dynSettings.Controller;
-
             try
             {
-                var xmlPath = GetNodePath(funcDefGuid);
+                var customNodeInfo = NodeInfos[functionId];
 
-                #region read xml file
+                var xmlPath = customNodeInfo.Path;
+
+                Log(String.Format(Properties.Resources.LoadingNodeDefinition, customNodeInfo, xmlPath));
 
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
 
-                string funName = null;
-                string category = "";
-                double cx = 0;
-                double cy = 0;
-                string description = "";
-                string version = "";
-
-                double zoom = 1.0;
-                string id = "";
-
-                // load the header
-
-                // handle legacy workspace nodes called dynWorkspace
-                // and new workspaces without the dyn prefix
-                XmlNodeList workspaceNodes = xmlDoc.GetElementsByTagName("Workspace");
-                if(workspaceNodes.Count == 0)
-                    workspaceNodes = xmlDoc.GetElementsByTagName("dynWorkspace");
-
-                foreach (XmlNode node in workspaceNodes)
+                WorkspaceInfo info;
+                if (WorkspaceInfo.FromXmlDocument(
+                    xmlDoc,
+                    xmlPath,
+                    isTestMode,
+                    AsLogger(),
+                    out info) && info.IsCustomNodeWorkspace)
                 {
-                    foreach (XmlAttribute att in node.Attributes)
+                    info.ID = functionId.ToString();
+                    if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
                     {
-                        if (att.Name.Equals("X"))
-                            cx = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("Y"))
-                            cy = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("zoom"))
-                            zoom = double.Parse(att.Value, CultureInfo.InvariantCulture);
-                        else if (att.Name.Equals("Name"))
-                            funName = att.Value;
-                        else if (att.Name.Equals("Category"))
-                            category = att.Value;
-                        else if (att.Name.Equals("Description"))
-                            description = att.Value;
-                        else if (att.Name.Equals("ID"))
-                            id = att.Value;
-                        else if (att.Name.Equals("Version"))
-                            version = att.Value;
+                        return InitializeCustomNode(info, xmlDoc, out workspace);
                     }
                 }
-
-                // we have a dyf and it lacks an ID field, we need to assign it
-                // a deterministic guid based on its name.  By doing it deterministically,
-                // files remain compatible
-                if (string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(funName))
-                {
-                    id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
-                }
-
-                #endregion
-
-                //DynamoCommands.WriteToLogCmd.Execute("Loading node definition for \"" + funName + "\" from: " + xmlPath);
-                dynSettings.Controller.DynamoModel.WriteToLog("Loading node definition for \"" + funName + "\" from: " + xmlPath);
-
-                var ws = new CustomNodeWorkspaceModel(
-                    funName, category.Length > 0
-                    ? category
-                    : "Custom Nodes", description, cx, cy)
-                {
-                    WatchChanges = false,
-                    FileName = xmlPath,
-                    Zoom = zoom
-                };
-
-                def = new FunctionDefinition(Guid.Parse(id))
-                {
-                    WorkspaceModel = ws
-                };
-
-                // load a dummy version, so any nodes depending on this node
-                // will find an (empty) identifier on compilation
-                FScheme.Expression dummyExpression = FScheme.Expression.NewNumber_E(0);
-                controller.FSchemeEnvironment.DefineSymbol(def.FunctionId.ToString(), dummyExpression);
-
-                // set the node as loaded
-                this.LoadedCustomNodes.Add(def.FunctionId, def);
-
-                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
-                XmlNodeList cNodes = xmlDoc.GetElementsByTagName("Connectors");
-                XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Notes");
-
-                if (elNodes.Count == 0)
-                    elNodes = xmlDoc.GetElementsByTagName("dynElements");
-                if (cNodes.Count == 0)
-                    cNodes = xmlDoc.GetElementsByTagName("dynConnectors");
-                if (nNodes.Count == 0)
-                    nNodes = xmlDoc.GetElementsByTagName("dynNotes");
-
-                XmlNode elNodesList = elNodes[0];
-                XmlNode cNodesList = cNodes[0];
-                XmlNode nNodesList = nNodes[0];
-
-                #region instantiate nodes
-
-                var badNodes = new List<Guid>();
-
-                foreach (XmlNode elNode in elNodesList.ChildNodes)
-                {
-                    XmlAttribute typeAttrib = elNode.Attributes["type"];
-                    XmlAttribute guidAttrib = elNode.Attributes["guid"];
-                    XmlAttribute nicknameAttrib = elNode.Attributes["nickname"];
-                    XmlAttribute xAttrib = elNode.Attributes["x"];
-                    XmlAttribute yAttrib = elNode.Attributes["y"];
-                    XmlAttribute lacingAttrib = elNode.Attributes["lacing"];
-                    XmlAttribute isVisAttrib = elNode.Attributes["isVisible"];
-                    XmlAttribute isUpstreamVisAttrib = elNode.Attributes["isUpstreamVisible"];
-
-                    string typeName = typeAttrib.Value;
-
-                    //test the GUID to confirm that it is non-zero
-                    //if it is zero, then we have to fix it
-                    //this will break the connectors, but it won't keep
-                    //propagating bad GUIDs
-                    var guid = new Guid(guidAttrib.Value);
-                    if (guid == Guid.Empty)
-                    {
-                        guid = Guid.NewGuid();
-                    }
-
-                    string nickname = nicknameAttrib.Value;
-
-                    double x = double.Parse(xAttrib.Value, CultureInfo.InvariantCulture);
-                    double y = double.Parse(yAttrib.Value, CultureInfo.InvariantCulture);
-
-                    bool isVisible = true;
-                    if (isVisAttrib != null)
-                        isVisible = isVisAttrib.Value == "true" ? true : false;
-
-                    bool isUpstreamVisible = true;
-                    if (isUpstreamVisAttrib != null)
-                        isUpstreamVisible = isUpstreamVisAttrib.Value == "true" ? true : false;
-
-                    typeName = Dynamo.Nodes.Utilities.PreprocessTypeName(typeName);
-                    System.Type type = Dynamo.Nodes.Utilities.ResolveType(typeName);
-                    if (null == type)
-                    {
-                        badNodes.Add(guid);
-                        continue;
-                    }
-
-                    NodeModel el = dynSettings.Controller.DynamoModel.CreateNodeInstance(type, nickname, guid);
-
-                    if (lacingAttrib != null)
-                    {
-                        LacingStrategy lacing = LacingStrategy.First;
-                        Enum.TryParse(lacingAttrib.Value, out lacing);
-                        el.ArgumentLacing = lacing;
-                    }
-
-                    el.IsVisible = isVisible;
-                    el.IsUpstreamVisible = isUpstreamVisible;
-
-                    ws.Nodes.Add(el);
-                    el.WorkSpace = ws;
-                    var node = el;
-
-                    node.X = x;
-                    node.Y = y;
-
-                    if (el == null)
-                        return false;
-
-                    el.DisableReporting();
-
-                    el.Load(
-                        elNode,
-                        string.IsNullOrEmpty(version)
-                            ? new Version(0, 0, 0, 0) 
-                            : new Version(version));
-                }
-
-                #endregion
-
-                #region instantiate connectors
-
-                foreach (XmlNode connector in cNodesList.ChildNodes)
-                {
-                    XmlAttribute guidStartAttrib = connector.Attributes[0];
-                    XmlAttribute intStartAttrib = connector.Attributes[1];
-                    XmlAttribute guidEndAttrib = connector.Attributes[2];
-                    XmlAttribute intEndAttrib = connector.Attributes[3];
-                    XmlAttribute portTypeAttrib = connector.Attributes[4];
-
-                    var guidStart = new Guid(guidStartAttrib.Value);
-                    var guidEnd = new Guid(guidEndAttrib.Value);
-                    int startIndex = Convert.ToInt16(intStartAttrib.Value);
-                    int endIndex = Convert.ToInt16(intEndAttrib.Value);
-                    PortType portType = ((PortType)Convert.ToInt16(portTypeAttrib.Value));
-
-                    //find the elements to connect
-                    NodeModel start = null;
-                    NodeModel end = null;
-
-                    if (badNodes.Contains(guidStart) || badNodes.Contains(guidEnd))
-                        continue;
-
-                    foreach (NodeModel e in ws.Nodes)
-                    {
-                        if (e.GUID == guidStart)
-                        {
-                            start = e;
-                        }
-                        else if (e.GUID == guidEnd)
-                        {
-                            end = e;
-                        }
-                        if (start != null && end != null)
-                        {
-                            break;
-                        }
-                    }
-
-                    try
-                    {
-                        var newConnector = ConnectorModel.Make(
-                            start, end,
-                            startIndex, endIndex,
-                            portType);
-                        if (newConnector != null)
-                            ws.Connectors.Add(newConnector);
-                    }
-                    catch
-                    {
-                        //DynamoCommands.WriteToLogCmd.Execute(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
-                        dynSettings.Controller.DynamoModel.WriteToLog(string.Format("ERROR : Could not create connector between {0} and {1}.", start.NickName, end.NickName));
-                    }
-                }
-
-                #endregion
-
-                #region instantiate notes
-
-                if (nNodesList != null)
-                {
-                    foreach (XmlNode note in nNodesList.ChildNodes)
-                    {
-                        XmlAttribute textAttrib = note.Attributes[0];
-                        XmlAttribute xAttrib = note.Attributes[1];
-                        XmlAttribute yAttrib = note.Attributes[2];
-
-                        string text = textAttrib.Value;
-                        double x = Convert.ToDouble(xAttrib.Value, CultureInfo.InvariantCulture);
-                        double y = Convert.ToDouble(yAttrib.Value, CultureInfo.InvariantCulture);
-
-                        Guid guid = Guid.NewGuid();
-                        var command = new DynCmd.CreateNoteCommand(guid, text, x, y, false);
-                        dynSettings.Controller.DynamoModel.AddNoteInternal(command, ws);
-                    }
-                }
-
-                #endregion
-
-                foreach (var e in ws.Nodes)
-                    e.EnableReporting();
-
-                def.CompileAndAddToEnvironment(controller.FSchemeEnvironment); 
-
-                ws.WatchChanges = true;
-
-                this.OnGetDefinitionFromPath(def);
-
+                Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
+                workspace = null;
+                return false;
             }
             catch (Exception ex)
             {
-                dynSettings.Controller.DynamoModel.WriteToLog("There was an error opening the workbench.");
-                dynSettings.Controller.DynamoModel.WriteToLog(ex);
+                Log(Properties.Resources.OpenWorkspaceError);
+                Log(ex);
 
-                if (controller.Testing)
-                    Assert.Fail(ex.Message);
+                if (isTestMode)
+                    throw; // Rethrow for NUnit.
 
-                def = null;
+                workspace = null;
                 return false;
             }
-
-            return true;
         }
 
-        public void OnGetDefinitionFromPath(FunctionDefinition def)
+        /// <summary>
+        ///     Creates a new Custom Node in the manager.
+        /// </summary>
+        /// <param name="name">Name of the custom node.</param>
+        /// <param name="category">Category for the custom node.</param>
+        /// <param name="description">Description of the custom node.</param>
+        /// <param name="functionId">
+        ///     Optional identifier to be used for the custom node. By default, will make a new unique one.
+        /// </param>
+        /// <returns>Newly created Custom Node Workspace.</returns>
+        public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
-            if (DefinitionLoaded != null && def != null)
-                DefinitionLoaded(def);
+            var newId = functionId ?? Guid.NewGuid();
+
+            var info = new WorkspaceInfo()
+            {
+                Name = name,
+                Category = category,
+                Description = description,
+                X = 0,
+                Y = 0,
+                ID = newId.ToString(), 
+                FileName = string.Empty
+            };
+            var workspace = new CustomNodeWorkspaceModel(info, nodeFactory, new ElementResolver());
+
+            RegisterCustomNodeWorkspace(workspace);
+            return workspace;
         }
 
         internal static string RemoveChars(string s, IEnumerable<string> chars)
@@ -884,86 +619,484 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Adds a directory to the search path without adding a duplicates.
+        ///     Attempts to retrieve information for the given custom node identifier.
         /// </summary>
-        /// <param name="p">The absolute path of the directory to add</param>
-        /// <returns>False if the directory does not exist or it already exists in the 
-        /// search path. </returns>
-        internal bool AddDirectoryToSearchPath(string p)
+        /// <param name="id">Custom node identifier.</param>
+        /// <param name="info"></param>
+        /// <returns>Success or failure.</returns>
+        public bool TryGetNodeInfo(Guid id, out CustomNodeInfo info)
         {
-            if (!Directory.Exists(p) || SearchPath.Contains(p)) return false;
-            SearchPath.Add(p);
-            return true;
-        }
-
-        internal CustomNodeInfo GetNodeInfo(Guid x)
-        {
-            if (NodeInfos.ContainsKey(x))
-            {
-                return NodeInfos[x];
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        internal CustomNodeInfo GetNodeInfo(string name)
-        {
-            return NodeInfos.FirstOrDefault(x => x.Value.Name == name).Value;
-        }
-
-
-        public void Refactor(CustomNodeInfo nodeInfo)
-        {
-            this.Refactor(nodeInfo.Guid, nodeInfo.Name, nodeInfo.Category, nodeInfo.Description);
+            return NodeInfos.TryGetValue(id, out info);
         }
 
         /// <summary>
-        /// Refactor a custom node, including updating search
+        ///     Attempts to retrieve information for the given custom node name. If there are multiple
+        ///     custom nodes matching the given name, this method will return any one of them.
         /// </summary>
-        /// <returns> Returns false if it fails.</returns>
-        internal bool Refactor(Guid guid, string newName, string newCategory, string newDescription)
+        /// <param name="name">Name of a custom node.</param>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public bool TryGetNodeInfo(string name, out CustomNodeInfo info)
         {
-            var nodeInfo = GetNodeInfo(guid);
-
-            if (nodeInfo == null) return false;
-
-            // rename the existing nodes - should be replaced with a proper binding
-            dynSettings.Controller.DynamoModel.AllNodes
-                       .Where(x => x is Function)
-                       .Cast<Function>()
-                       .Where(x => x.Definition.FunctionId == guid)
-                       .ToList()
-                       .ForEach(x =>
-                           {
-                               x.Name = newName;
-                               x.NickName = newName;
-                           });
-
-            dynSettings.Controller.SearchViewModel.RemoveNodeAndEmptyParentCategory(nodeInfo.Guid);
-
-            nodeInfo.Name = newName;
-            nodeInfo.Category = newCategory;
-            nodeInfo.Description = newDescription;
-
-            this.SetNodeInfo(nodeInfo);
-
-            dynSettings.Controller.SearchViewModel.Add(nodeInfo);
-            dynSettings.Controller.SearchViewModel.SearchAndUpdateResults();
-
-            return true;
+            info = NodeInfos.Values.FirstOrDefault(x => x.Name == name);
+            return info != null;
         }
 
-        // this is a terrible hack
-        internal ObservableDictionary<string, Guid> GetAllNodeNames()
+        /// <summary>
+        ///     Collapse a set of nodes in a given workspace.
+        /// </summary>
+        /// <param name="selectedNodes"> The function definition for the user-defined node </param>
+        /// <param name="currentWorkspace"> The workspace where</param>
+        /// <param name="isTestMode"></param>
+        /// <param name="args"></param>
+        public CustomNodeWorkspaceModel Collapse(
+            IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
+            bool isTestMode, FunctionNamePromptEventArgs args)
         {
-            var dict = new ObservableDictionary<string, Guid>();
-            this.NodeInfos.Select(info => new KeyValuePair<string, Guid>(info.Value.Name, info.Value.Guid))
-                .ToList()
-                .ForEach(dict.Add);
-            return dict;
+            var selectedNodeSet = new HashSet<NodeModel>(selectedNodes);
+            // Note that undoable actions are only recorded for the "currentWorkspace", 
+            // the nodes which get moved into "newNodeWorkspace" are not recorded for undo,
+            // even in the new workspace. Their creations will simply be treated as part of
+            // the opening of that new workspace (i.e. when a user opens a file, she will 
+            // not expect the nodes that show up to be undoable).
+            // 
+            // After local nodes are moved into "newNodeWorkspace" as the result of 
+            // conversion, if user performs an undo, new set of nodes will be created in 
+            // "currentWorkspace" (not moving those nodes in the "newNodeWorkspace" back 
+            // into "currentWorkspace"). In another word, undo recording is on a per-
+            // workspace basis, it does not work across different workspaces.
+            // 
+            UndoRedoRecorder undoRecorder = currentWorkspace.UndoRecorder;
+
+            CustomNodeWorkspaceModel newWorkspace;
+
+            using (undoRecorder.BeginActionGroup())
+            {
+                #region Determine Inputs and Outputs
+
+                //Step 1: determine which nodes will be inputs to the new node
+                var inputs =
+                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
+                        selectedNodeSet.SelectMany(
+                            node =>
+                                Enumerable.Range(0, node.InPortData.Count)
+                                .Where(node.HasConnectedInput)
+                                .Select(data => Tuple.Create(node, data, node.Inputs[data]))
+                                .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
+
+                var outputs =
+                    new HashSet<Tuple<NodeModel, int, Tuple<int, NodeModel>>>(
+                        selectedNodeSet.SelectMany(
+                            node =>
+                                Enumerable.Range(0, node.OutPortData.Count)
+                                .Where(node.HasOutput)
+                                .SelectMany(
+                                    data =>
+                                        node.Outputs[data].Where(
+                                            output => !selectedNodeSet.Contains(output.Item2))
+                                        .Select(output => Tuple.Create(node, data, output)))));
+
+                #endregion
+
+                #region Detect 1-node holes (higher-order function extraction)
+
+                Log(Properties.Resources.CouldNotRepairOneNodeHoles, WarningLevel.Mild);
+                // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
+
+                //var curriedNodeArgs =
+                //    new HashSet<NodeModel>(
+                //        inputs.Select(x => x.Item3.Item2)
+                //            .Intersect(outputs.Select(x => x.Item3.Item2))).Select(
+                //                outerNode =>
+                //                {
+                //                    //var node = new Apply1();
+                //                    var node = newNodeWorkspace.AddNode<Apply1>();
+                //                    node.SetNickNameFromAttribute();
+
+                //                    node.DisableReporting();
+
+                //                    node.X = outerNode.X;
+                //                    node.Y = outerNode.Y;
+
+                //                    //Fetch all input ports
+                //                    // in order
+                //                    // that have inputs
+                //                    // and whose input comes from an inner node
+                //                    List<int> inPortsConnected =
+                //                        Enumerable.Range(0, outerNode.InPortData.Count)
+                //                            .Where(
+                //                                x =>
+                //                                    outerNode.HasInput(x)
+                //                                        && selectedNodeSet.Contains(
+                //                                            outerNode.Inputs[x].Item2))
+                //                            .ToList();
+
+                //                    var nodeInputs =
+                //                        outputs.Where(output => output.Item3.Item2 == outerNode)
+                //                            .Select(
+                //                                output =>
+                //                                    new
+                //                                    {
+                //                                        InnerNodeInputSender = output.Item1,
+                //                                        OuterNodeInPortData = output.Item3.Item1
+                //                                    })
+                //                            .ToList();
+
+                //                    nodeInputs.ForEach(_ => node.AddInput());
+
+                //                    node.RegisterAllPorts();
+
+                //                    return
+                //                        new
+                //                        {
+                //                            OuterNode = outerNode,
+                //                            InnerNode = node,
+                //                            Outputs =
+                //                                inputs.Where(
+                //                                    input => input.Item3.Item2 == outerNode)
+                //                                    .Select(input => input.Item3.Item1),
+                //                            Inputs = nodeInputs,
+                //                            OuterNodePortDataList = inPortsConnected
+                //                        };
+                //                }).ToList();
+
+                #endregion
+
+                #region UI Positioning Calculations
+
+                double avgX = selectedNodeSet.Average(node => node.X);
+                double avgY = selectedNodeSet.Average(node => node.Y);
+
+                double leftMost = selectedNodeSet.Min(node => node.X);
+                double topMost = selectedNodeSet.Min(node => node.Y);
+                double rightMost = selectedNodeSet.Max(node => node.X + node.Width);
+
+                double leftShift = leftMost - 250;
+
+                #endregion
+
+                #region Handle full selected connectors
+
+                // Step 2: Determine all the connectors whose start/end owners are 
+                // both in the selection set, and then move them from the current 
+                // workspace into the new workspace.
+
+                var fullySelectedConns = new HashSet<ConnectorModel>(
+                    currentWorkspace.Connectors.Where(
+                        conn =>
+                        {
+                            bool startSelected = selectedNodeSet.Contains(conn.Start.Owner);
+                            bool endSelected = selectedNodeSet.Contains(conn.End.Owner);
+                            return startSelected && endSelected;
+                        }));
+
+                foreach (var connector in fullySelectedConns)
+                {
+                    undoRecorder.RecordDeletionForUndo(connector);
+                    connector.Delete();
+                }
+
+                #endregion
+
+                #region Handle partially selected connectors
+
+                // Step 3: Partially selected connectors (either one of its start 
+                // and end owners is in the selection) are to be destroyed.
+
+                var partiallySelectedConns =
+                    currentWorkspace.Connectors.Where(
+                        conn =>
+                            selectedNodeSet.Contains(conn.Start.Owner)
+                                || selectedNodeSet.Contains(conn.End.Owner)).ToList();
+
+                foreach (var connector in partiallySelectedConns)
+                {
+                    undoRecorder.RecordDeletionForUndo(connector);
+                    connector.Delete();
+                }
+
+                #endregion
+
+                #region Transfer nodes and connectors to new workspace
+
+                var newNodes = new List<NodeModel>();
+
+                // Step 4: move all nodes to new workspace remove from old
+                // PB: This could be more efficiently handled by a copy paste, but we
+                // are preservering the node 
+                foreach (var node in selectedNodeSet)
+                {
+                    undoRecorder.RecordDeletionForUndo(node);
+                    currentWorkspace.RemoveNode(node);
+
+                    // Assign a new guid to this node, otherwise when node is
+                    // compiled to AST, literally it is still in global scope
+                    // instead of in function scope.
+                    node.GUID = Guid.NewGuid();
+                    node.RenderPackages.Clear();
+
+                    // shit nodes
+                    node.X = node.X - leftShift;
+                    node.Y = node.Y - topMost;
+
+                    newNodes.Add(node);
+                }
+
+                foreach (var conn in fullySelectedConns)
+                {
+                    ConnectorModel.Make(conn.Start.Owner, conn.End.Owner, conn.Start.Index, conn.End.Index);
+                }
+
+                #endregion
+
+                #region Process inputs
+
+                var inConnectors = new List<Tuple<NodeModel, int>>();
+                var uniqueInputSenders = new Dictionary<Tuple<NodeModel, int>, Symbol>();
+
+                //Step 3: insert variables (reference step 1)
+                foreach (var input in Enumerable.Range(0, inputs.Count).Zip(inputs, Tuple.Create))
+                {
+                    int inputIndex = input.Item1;
+
+                    NodeModel inputReceiverNode = input.Item2.Item1;
+                    int inputReceiverData = input.Item2.Item2;
+
+                    NodeModel inputNode = input.Item2.Item3.Item2;
+                    int inputData = input.Item2.Item3.Item1;
+
+                    Symbol node;
+
+                    var key = Tuple.Create(inputNode, inputData);
+                    if (uniqueInputSenders.ContainsKey(key))
+                    {
+                        node = uniqueInputSenders[key];
+                    }
+                    else
+                    {
+                        inConnectors.Add(Tuple.Create(inputNode, inputData));
+
+                        node = new Symbol
+                        {
+                            InputSymbol = inputReceiverNode.InPortData[inputReceiverData].NickName,
+                            X = 0
+                        };
+
+                        // Try to figure out the type of input of custom node 
+                        // from the type of input of selected node. There are
+                        // two kinds of nodes whose input type are available:
+                        // function node and custom node. 
+                        List<Library.TypedParameter> parameters = null;
+                        if (inputReceiverNode is Function) 
+                        {
+                            var func = inputReceiverNode as Function; 
+                            parameters =  func.Controller.Definition.Parameters.ToList(); 
+                        }
+                        else if (inputReceiverNode is DSFunctionBase)
+                        {
+                            var dsFunc = inputReceiverNode as DSFunctionBase;
+                            parameters = dsFunc.Controller.Definition.Parameters.ToList(); 
+                        }
+
+                        // so the input of custom node has format 
+                        //    input_var_name : type
+                        if (parameters != null && parameters.Count() > inputReceiverData)
+                        {
+                            var typeName = parameters[inputReceiverData].DisplayTypeName;
+                            if (!string.IsNullOrEmpty(typeName))
+                            {
+                                node.InputSymbol += " : " + typeName;
+                            }
+                        }
+
+                        node.SetNickNameFromAttribute();
+                        node.Y = inputIndex*(50 + node.Height);
+
+                        uniqueInputSenders[key] = node;
+
+                        newNodes.Add(node);
+                    }
+
+                    //var curriedNode = curriedNodeArgs.FirstOrDefault(x => x.OuterNode == inputNode);
+
+                    //if (curriedNode == null)
+                    //{
+                    ConnectorModel.Make(node, inputReceiverNode, 0, inputReceiverData);
+                    //}
+                    //else
+                    //{
+                    //    //Connect it to the applier
+                    //    newNodeWorkspace.AddConnection(node, curriedNode.InnerNode, 0, 0);
+
+                    //    //Connect applier to the inner input receive
+                    //    newNodeWorkspace.AddConnection(
+                    //        curriedNode.InnerNode,
+                    //        inputReceiverNode,
+                    //        0,
+                    //        inputReceiverData);
+                    //}
+                }
+
+                #endregion
+
+                #region Process outputs
+
+                //List of all inner nodes to connect an output. Unique.
+                var outportList = new List<Tuple<NodeModel, int>>();
+
+                var outConnectors = new List<Tuple<NodeModel, int, int>>();
+
+                int i = 0;
+                if (outputs.Any())
+                {
+                    foreach (var output in outputs)
+                    {
+                        if (outportList.All(x => !(x.Item1 == output.Item1 && x.Item2 == output.Item2)))
+                        {
+                            NodeModel outputSenderNode = output.Item1;
+                            int outputSenderData = output.Item2;
+
+                            //NodeModel outputReceiverNode = output.Item3.Item2;
+
+                            //if (curriedNodeArgs.Any(x => x.OuterNode == outputReceiverNode))
+                            //    continue;
+
+                            outportList.Add(Tuple.Create(outputSenderNode, outputSenderData));
+
+                            //Create Symbol Node
+                            var node = new Output
+                            {
+                                Symbol = outputSenderNode.OutPortData[outputSenderData].NickName,
+                                X = rightMost + 75 - leftShift
+                            };
+
+                            node.Y = i*(50 + node.Height);
+
+                            node.SetNickNameFromAttribute();
+
+                            newNodes.Add(node);
+                            ConnectorModel.Make(outputSenderNode, node, outputSenderData, 0);
+
+                            i++;
+                        }
+                    }
+
+                    //Connect outputs to new node
+                    outConnectors.AddRange(
+                        from output in outputs
+                        let outputSenderNode = output.Item1
+                        let outputSenderData = output.Item2
+                        let outputReceiverData = output.Item3.Item1
+                        let outputReceiverNode = output.Item3.Item2
+                        select
+                            Tuple.Create(
+                                outputReceiverNode,
+                                outportList.FindIndex(
+                                    x => x.Item1 == outputSenderNode && x.Item2 == outputSenderData),
+                                outputReceiverData));
+                }
+                else
+                {
+                    foreach (var hanging in
+                        selectedNodeSet.SelectMany(
+                            node =>
+                                Enumerable.Range(0, node.OutPortData.Count)
+                                .Where(port => !node.HasOutput(port))
+                                .Select(port => new { node, port })).Distinct())
+                    {
+                        //Create Symbol Node
+                        var node = new Output
+                        {
+                            Symbol = hanging.node.OutPortData[hanging.port].NickName,
+                            X = rightMost + 75 - leftShift
+                        };
+                        node.Y = i*(50 + node.Height);
+                        node.SetNickNameFromAttribute();
+
+                        newNodes.Add(node);
+                        ConnectorModel.Make(hanging.node, node, hanging.port, 0);
+
+                        i++;
+                    }
+                }
+
+                #endregion
+
+                var newId = Guid.NewGuid();
+                newWorkspace = new CustomNodeWorkspaceModel(
+                    nodeFactory,
+                    newNodes,
+                    Enumerable.Empty<NoteModel>(),
+                    new WorkspaceInfo()
+                    {
+                        X = 0,
+                        Y = 0,
+                        Name = args.Name,
+                        Category = args.Category,
+                        Description = args.Description,
+                        ID = newId.ToString(),
+                        FileName = string.Empty
+                    },
+                    currentWorkspace.ElementResolver);
+
+                newWorkspace.HasUnsavedChanges = true;
+
+                RegisterCustomNodeWorkspace(newWorkspace);
+
+                var collapsedNode = CreateCustomNodeInstance(newId, isTestMode: isTestMode);
+                collapsedNode.X = avgX;
+                collapsedNode.Y = avgY;
+                currentWorkspace.AddNode(collapsedNode, centered: false);
+                undoRecorder.RecordCreationForUndo(collapsedNode);
+
+                foreach (var connector in
+                    inConnectors.Select((x, idx) => new { node = x.Item1, from = x.Item2, to = idx })
+                        .Select(
+                            nodeTuple =>
+                                ConnectorModel.Make(
+                                    nodeTuple.node,
+                                    collapsedNode,
+                                    nodeTuple.@from,
+                                    nodeTuple.to))
+                        .Where(connector => connector != null))
+                {
+                    undoRecorder.RecordCreationForUndo(connector);
+                }
+
+                foreach (var connector in
+                    outConnectors.Select(
+                        nodeTuple =>
+                            ConnectorModel.Make(
+                                collapsedNode,
+                                nodeTuple.Item1,
+                                nodeTuple.Item2,
+                                nodeTuple.Item3)).Where(connector => connector != null))
+                {
+                    undoRecorder.RecordCreationForUndo(connector);
+                }
+            }
+            return newWorkspace;
         }
 
+        internal IEnumerable<Guid> GetAllDependenciesGuids(CustomNodeDefinition def)
+        {
+            var idSet = new HashSet<Guid>();
+            idSet.Add(def.FunctionId);
+
+            while (true)
+            {
+                bool isUpdated = false;
+                foreach (var d in this.LoadedDefinitions)
+                {
+                    if (d.Dependencies.Any(x => idSet.Contains(x.FunctionId)))
+                        isUpdated = isUpdated || idSet.Add(d.FunctionId);
+                }
+
+                if (!isUpdated)
+                    break;
+            }
+
+            return idSet;
+        }
     }
 }

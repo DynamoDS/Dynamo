@@ -1,19 +1,52 @@
 ﻿using System;
-using System.Windows;
 using System.Xml;
+
+using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Selection;
-using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Utilities;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
     public enum SaveContext { File, Copy, Undo };
 
-    public abstract class ModelBase : NotificationObject, ISelectable, ILocatable
+    /// <summary>
+    /// This class encapsulates the input parameters that need to be passed into nodes
+    /// when they are updated in the UI.
+    /// </summary>
+    public class UpdateValueParams
     {
-        private Guid _guid;
-        private bool _isSelected = false;
-        private double x = 0.0;
-        private double y = 0.0;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName">Name of the property whose value is to be updated.
+        /// This parameter cannot be empty or null.</param>
+        /// <param name="propertyValue">Value of the named property whose value is to be 
+        /// updated. This parameter can either be null or empty if the targeted property 
+        /// allows such values.This value comes directly
+        /// from DynamoTextBox after user commits it. Overridden methods then use 
+        /// a specific IValueConverter to turn this string into another data type 
+        /// that it expects</param>
+        /// <param name="elementResolver">responsible for resolving class namespaces</param>
+        public UpdateValueParams(string propertyName, string propertyValue, ElementResolver elementResolver = null)
+        {
+            ElementResolver = elementResolver;
+            PropertyName = propertyName;
+            PropertyValue = propertyValue;
+        }
+
+        public string PropertyName { get; private set; }
+        public string PropertyValue { get; private set; }
+        public ElementResolver ElementResolver { get; private set; }
+    }
+
+    public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
+    {
+        private Guid guid;
+        private bool isSelected;
+        private double x;
+        private double y;
         private double height = 100;
         private double width = 100;
         
@@ -21,7 +54,7 @@ namespace Dynamo.Models
         {
             get { return X + Width / 2; }
             set { 
-                this.X = value - this.Width/2;
+                X = value - Width/2;
             }
         }
 
@@ -30,7 +63,7 @@ namespace Dynamo.Models
             get { return Y + Height / 2; }
             set
             {
-                this.Y = value - this.Height / 2;
+                Y = value - Height / 2;
             }
         }
 
@@ -65,9 +98,9 @@ namespace Dynamo.Models
         /// Used for notification in situations where you don't
         /// want to have property notifications for X and Y
         /// </summary>
-        public Point Position
+        public Point2D Position
         {
-            get{return new Point(x,y);}
+            get{return new Point2D(x,y);}
         }
 
         /// <summary>
@@ -97,9 +130,9 @@ namespace Dynamo.Models
             }
         }
 
-        public Rect Rect
+        public Rect2D Rect
         {
-            get{return new Rect(x,y,width,height);}
+            get{return new Rect2D(x,y,width,height);}
         }
 
         public event EventHandler Updated; 
@@ -111,10 +144,10 @@ namespace Dynamo.Models
 
         public bool IsSelected
         {
-            get { return _isSelected; }
+            get { return isSelected; }
             set
             {
-                _isSelected = value;
+                isSelected = value;
                 RaisePropertyChanged("IsSelected");
             }
         }
@@ -123,15 +156,15 @@ namespace Dynamo.Models
         {
             get
             {
-                if (_guid == null)
+                if (guid == null)
                 {
                     throw new Exception("GUID on model must never be null");
                 }
-                return _guid;
+                return guid;
             }
             set
             {
-                _guid = value;
+                guid = value;
                 RaisePropertyChanged("GUID");
             }
         }
@@ -171,9 +204,23 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        public bool UpdateValue(string name, string value)
+        public bool UpdateValue(UpdateValueParams updateValueParams)
         {
-            return this.UpdateValueCore(name, value);
+            return UpdateValueCore(updateValueParams);
+        }
+
+        /// <summary>
+        /// This method is currently used as a way to send an event to ModelBase 
+        /// derived objects. Its primary use is in DynamoNodeButton class, which 
+        /// sends this event when clicked.
+        /// </summary>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="recorder"></param>
+        /// <returns>Returns true if the call has been handled, or false otherwise.
+        /// </returns>
+        public bool HandleModelEvent(string eventName, UndoRedoRecorder recorder)
+        {
+            return HandleModelEventCore(eventName, recorder);
         }
 
         /// <summary>
@@ -185,15 +232,15 @@ namespace Dynamo.Models
         /// method takes only string input (the way they appear in DynamoTextBox),
         /// which overridden method can use for value conversion.
         /// </summary>
-        /// <param name="name">The name of a property/value to update.</param>
-        /// <param name="value">The new value to be set. This value comes directly
-        /// from DynamoTextBox after user commits it. Overridden methods then use 
-        /// a specific IValueConverter to turn this string into another data type 
-        /// that it expects.</param>
+        /// <param name="updateValueParams">Please see UpdateValueParams for details.</param>
         /// <returns>Returns true if the call has been handled, or false otherwise.
         /// </returns>
-        /// 
-        protected virtual bool UpdateValueCore(string name, string value)
+        protected virtual bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            return false; // Base class does not handle this.
+        }
+
+        protected virtual bool HandleModelEventCore(string eventName, UndoRedoRecorder recorder)
         {
             return false; // Base class does not handle this.
         }
@@ -204,20 +251,54 @@ namespace Dynamo.Models
 
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
-            string typeName = this.GetType().ToString();
-            XmlElement element = xmlDocument.CreateElement(typeName);
-            this.SerializeCore(element, context);
+            var element = CreateElement(xmlDocument, context);
+            SerializeCore(element, context);
             return element;
         }
 
         public void Deserialize(XmlElement element, SaveContext context)
         {
-            this.DeserializeCore(element, context);
+            DeserializeCore(element, context);
         }
 
+        protected virtual XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
+        {
+            string typeName = GetType().ToString();
+            XmlElement element = xmlDocument.CreateElement(typeName);
+            return element;
+        }
+        
         protected abstract void SerializeCore(XmlElement element, SaveContext context);
-        protected abstract void DeserializeCore(XmlElement element, SaveContext context);
+        protected abstract void DeserializeCore(XmlElement nodeElement, SaveContext context);
 
+        #endregion
+
+        #region ILogSource implementation
+        public event Action<ILogMessage> MessageLogged;
+
+        protected void Log(ILogMessage obj)
+        {
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
+        }
+
+        protected void Log(string msg)
+        {
+            Log(LogMessage.Info(msg));
+        }
+
+        protected void Log(string msg, WarningLevel severity)
+        {
+            switch (severity)
+            {
+                case WarningLevel.Error:
+                    Log(LogMessage.Error(msg));
+                    break;
+                default:
+                    Log(LogMessage.Warning(msg, severity));
+                    break;
+            }
+        }
         #endregion
     }
 
@@ -227,7 +308,7 @@ namespace Dynamo.Models
         double Y { get; set; }
         double Width { get; set; }
         double Height { get; set; }
-        Rect Rect { get; }
+        Rect2D Rect { get; }
         double CenterX { get; set; }
         double CenterY { get; set; }
         void ReportPosition();

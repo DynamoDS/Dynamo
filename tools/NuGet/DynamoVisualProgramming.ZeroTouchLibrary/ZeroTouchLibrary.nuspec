@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DynamoVisualProgramming.ZeroTouchLibrary</id>
+    <version>0.7.5.2</version>
+    <authors>Autodesk</authors>
+    <owners>Autodesk</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Build zero touch node libraries for Dynamo.</description>
+    <summary>This package contains all that is required to get up and running building zero touch libraries for the Dynamo Visual Programming language.</summary>
+    <copyright>Copyright Autodesk 2014</copyright>
+  </metadata>
+</package>

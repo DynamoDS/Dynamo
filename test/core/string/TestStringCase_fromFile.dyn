@@ -1,20 +1,22 @@
-<dynWorkspace X="0" Y="0" zoom="0.9" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="848" y="190.908888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringCase type="Dynamo.Nodes.dynStringCase" guid="294a2376-6751-43c3-a8b1-5492fa942dbe" nickname="String Case" x="581.103174603174" y="194.950317460318" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="6a99d2d2-1827-4259-8a2a-6b8b41ab19d6" nickname="Boolean" x="333.325396825397" y="337.17253968254" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Boolean value="True" />
-    </Dynamo.Nodes.dynBoolSelector>
-    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="74ce9e96-4a0f-4146-9b51-eb1ad8f286fa" nickname="File Path" x="86.65873015873" y="141.616984126984" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\..\test\core\string\TestStringCase_fromFile.txt" />
-    </Dynamo.Nodes.dynStringFilename>
-    <Dynamo.Nodes.dynFileReader type="Dynamo.Nodes.dynFileReader" guid="8b40f7dd-2525-4de6-a73e-db9597cf22ca" nickname="Read Text File" x="352.214285714286" y="198.283650793651" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="294a2376-6751-43c3-a8b1-5492fa942dbe" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="6a99d2d2-1827-4259-8a2a-6b8b41ab19d6" start_index="0" end="294a2376-6751-43c3-a8b1-5492fa942dbe" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="74ce9e96-4a0f-4146-9b51-eb1ad8f286fa" start_index="0" end="8b40f7dd-2525-4de6-a73e-db9597cf22ca" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="8b40f7dd-2525-4de6-a73e-db9597cf22ca" start_index="0" end="294a2376-6751-43c3-a8b1-5492fa942dbe" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+<Workspace Version="0.7.4.3075" X="-390" Y="-4" zoom="0.9" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="848" y="190.908888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="294a2376-6751-43c3-a8b1-5492fa942dbe" nickname="String.ChangeCase" x="581.103174603174" y="194.950317460318" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.String.ChangeCase@string,bool" />
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="6a99d2d2-1827-4259-8a2a-6b8b41ab19d6" nickname="Boolean" x="333.325396825397" y="337.17253968254" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="74ce9e96-4a0f-4146-9b51-eb1ad8f286fa" nickname="File Path" x="86.65873015873" y="84.9503174603174" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\string\TestStringCase_fromFile.txt</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="8b40f7dd-2525-4de6-a73e-db9597cf22ca" nickname="File.ReadText" x="352.214285714286" y="198.283650793651" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.IO.File.ReadText@var" />
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="98b9fced-5954-4492-ad07-41dc79ad74b8" nickname="File.FromPath" x="225.555555555556" y="230.555555555556" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="294a2376-6751-43c3-a8b1-5492fa942dbe" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6a99d2d2-1827-4259-8a2a-6b8b41ab19d6" start_index="0" end="294a2376-6751-43c3-a8b1-5492fa942dbe" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="74ce9e96-4a0f-4146-9b51-eb1ad8f286fa" start_index="0" end="98b9fced-5954-4492-ad07-41dc79ad74b8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8b40f7dd-2525-4de6-a73e-db9597cf22ca" start_index="0" end="294a2376-6751-43c3-a8b1-5492fa942dbe" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="98b9fced-5954-4492-ad07-41dc79ad74b8" start_index="0" end="8b40f7dd-2525-4de6-a73e-db9597cf22ca" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,10 @@
+<Workspace Version="0.6.3.7993" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.SolidBoxByTwoCorners type="Dynamo.Nodes.SolidBoxByTwoCorners" guid="4eef4dd1-3a16-42c7-a331-599d1c552a11" nickname="Box by Two Corners" x="200" y="217.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SolidBoxByTwoCorners>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

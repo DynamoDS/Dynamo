@@ -1,0 +1,11 @@
+<Workspace Version="0.6.3.7993" X="-93.7824108738861" Y="-171.858094164474" zoom="0.662759780568406" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.ImageFileReader type="Dynamo.Nodes.ImageFileReader" guid="2742acc3-e637-46e3-a3e0-da1394a9fd2d" nickname="Read Image File" x="602.096568628419" y="1015.19979673381" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FileReader type="Dynamo.Nodes.FileReader" guid="443a3eee-ddf3-4d89-977a-3834129efea1" nickname="Read Text File" x="262.4892076286" y="763.638788585794" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ListToCsv type="Dynamo.Nodes.ListToCsv" guid="28eefe27-0492-4e1e-a44b-2fc8bea765f1" nickname="Write CSV File" x="262.4892076286" y="649.388164051905" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FileWriter type="Dynamo.Nodes.FileWriter" guid="d3e52cf7-6563-4d24-a161-025a70782b06" nickname="Write File" x="262.4892076286" y="869.504046181417" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ImageFileWriter type="Dynamo.Nodes.ImageFileWriter" guid="fbf8709e-8906-476e-b715-f25dfede6d3e" nickname="Write Image File" x="262.4892076286" y="1095.90895351463" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

@@ -1,0 +1,18 @@
+<Workspace Version="0.7.1.25902" X="579.375995225635" Y="-278.55354709338" zoom="1.02422008887429" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="88dbcaf6-3ba6-4ea9-b481-543825f1e6e3" nickname="Code Block" x="-486.939329663838" y="419.27662347061" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = 1;&#xA;b = a;&#xA;c = b;&#xA;m = a + b + c;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="586b07d7-d332-415e-a4e5-85d239e05ff8" nickname="Code Block" x="-126.939404672594" y="427.336293142527" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="n = m;" ShouldFocus="false" />
+    <DSCoreNodesUI.Formula type="DSCoreNodesUI.Formula" guid="60979b20-8089-4d5a-93bf-2cf829f74060" nickname="Formula" x="-264.452468180311" y="426.354664345205" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <FormulaText>a+b+c</FormulaText>
+    </DSCoreNodesUI.Formula>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="41daa2cb-f79b-46d5-9563-fc4dd5c0e531" nickname="Watch" x="-114.036041063631" y="564.948436855911" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="88dbcaf6-3ba6-4ea9-b481-543825f1e6e3" start_index="0" end="60979b20-8089-4d5a-93bf-2cf829f74060" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="88dbcaf6-3ba6-4ea9-b481-543825f1e6e3" start_index="1" end="60979b20-8089-4d5a-93bf-2cf829f74060" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="88dbcaf6-3ba6-4ea9-b481-543825f1e6e3" start_index="2" end="60979b20-8089-4d5a-93bf-2cf829f74060" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="586b07d7-d332-415e-a4e5-85d239e05ff8" start_index="0" end="41daa2cb-f79b-46d5-9563-fc4dd5c0e531" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="60979b20-8089-4d5a-93bf-2cf829f74060" start_index="0" end="586b07d7-d332-415e-a4e5-85d239e05ff8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

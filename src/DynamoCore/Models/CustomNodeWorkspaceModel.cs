@@ -3,173 +3,228 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
-using String = System.String;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
     public class CustomNodeWorkspaceModel : WorkspaceModel
     {
+        public Guid CustomNodeId
+        {
+            get { return customNodeId; }
+            private set
+            {
+                if (value == customNodeId) 
+                    return;
+
+                var oldId = customNodeId;
+                customNodeId = value;
+                OnFunctionIdChanged(oldId);
+                OnDefinitionUpdated();
+                OnInfoChanged();
+                RaisePropertyChanged("CustomNodeId");
+            }
+        }
+        private Guid customNodeId;
+
         #region Contructors
 
-        public CustomNodeWorkspaceModel()
-            : this("", "", "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
-        {
-        }
+        public CustomNodeWorkspaceModel( 
+            WorkspaceInfo info, 
+            NodeFactory factory, 
+            ElementResolver elementResolver)
+            : this(
+                factory,
+                Enumerable.Empty<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
+                info,
+                elementResolver) { }
 
-        public CustomNodeWorkspaceModel(String name, String category)
-            : this(name, category, "", new List<NodeModel>(), new List<ConnectorModel>(), 0, 0)
+        public CustomNodeWorkspaceModel( 
+            NodeFactory factory, 
+            IEnumerable<NodeModel> e, 
+            IEnumerable<NoteModel> n, 
+            WorkspaceInfo info,
+            ElementResolver elementResolver) 
+            : base(e, n, info, factory, elementResolver)
         {
-        }
-
-        public CustomNodeWorkspaceModel(String name, String category, string description, double x, double y)
-            : this(name, category, description, new List<NodeModel>(), new List<ConnectorModel>(), x, y)
-        {
-        }
-
-        public CustomNodeWorkspaceModel(
-            String name, String category, string description, IEnumerable<NodeModel> e, IEnumerable<ConnectorModel> c, double x, double y)
-            : base(name, e, c, x, y)
-        {
-            WatchChanges = true;
             HasUnsavedChanges = false;
-            Category = category;
-            Description = description;
+
+            CustomNodeId = Guid.Parse(info.ID);
+            Category = info.Category;
+            Description = info.Description;
 
             PropertyChanged += OnPropertyChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
-            if (args.PropertyName == "Name" || args.PropertyName == "Category" || args.PropertyName == "Description")
+            if (args.PropertyName == "Name")
+                OnInfoChanged();
+
+            if (args.PropertyName == "Category" || args.PropertyName == "Description")
             {
-                this.HasUnsavedChanges = true;
+                HasUnsavedChanges = true;
+                OnInfoChanged();
             }
         }
 
         #endregion
 
-        public FunctionDefinition FunctionDefinition
+        /// <summary>
+        ///     All CustomNodeDefinitions which this Custom Node depends on.
+        /// </summary>
+        public IEnumerable<CustomNodeDefinition> CustomNodeDependencies
         {
-            get { return dynSettings.Controller.CustomNodeManager.GetDefinitionFromWorkspace(this); }
-        }
-
-        public override void Modified()
-        {
-            base.Modified();
-
-            if (this.FunctionDefinition == null) return;
-            this.FunctionDefinition.RequiresRecalc = true;
-            this.FunctionDefinition.SyncWithWorkspace(false, true);
-        }
-
-        public List<Function> GetExistingNodes()
-        {
-            return dynSettings.Controller.DynamoModel.AllNodes
-                .OfType<Function>()
-                .Where(el => el.Definition == this.FunctionDefinition)
-                .ToList();
-        }
-
-        public override bool SaveAs(string newPath)
-        {
-            var originalPath = this.FileName;
-            var originalGuid = this.FunctionDefinition.FunctionId;
-            var newGuid = Guid.NewGuid();
-            var doRefactor = originalPath != newPath && originalPath != null;
-
-            this.Name = Path.GetFileNameWithoutExtension(newPath);
-
-            // need to do change the function id temporarily so saved file is correct
-            if (doRefactor)
+            get
             {
-                this.FunctionDefinition.FunctionId = newGuid;
+                return Nodes
+                    .OfType<Function>()
+                    .Select(node => node.Definition)
+                    .Where(def => def.FunctionId != CustomNodeId)
+                    .Distinct();
             }
+        }
 
-            if (!base.SaveAs(newPath))
+        /// <summary>
+        ///     The definition of this custom node, based on the current state of this workspace.
+        /// </summary>
+        public CustomNodeDefinition CustomNodeDefinition
+        {
+            get
             {
+                return new CustomNodeDefinition(CustomNodeId, Name, Nodes);
+            }
+        }
+
+        /// <summary>
+        ///     The information about this custom node, based on the current state of this workspace.
+        /// </summary>
+        public CustomNodeInfo CustomNodeInfo
+        {
+            get
+            {
+                return new CustomNodeInfo(CustomNodeId, Name, Category, Description, FileName);
+            }
+        }
+
+        public void SetInfo(string newName = null, string newCategory = null, string newDescription = null, string newFilename = null)
+        {
+            PropertyChanged -= OnPropertyChanged;
+            
+            Name = newName??Name;
+            Category = newCategory??Category;
+            Description = newDescription??Description;
+            FileName = newFilename??FileName;
+            
+            PropertyChanged += OnPropertyChanged;
+            
+            if (newName != null || newCategory != null || newDescription != null || newFilename != null)
+                OnInfoChanged();
+        }
+
+        /// <summary>
+        ///     Search category for this workspace, if it is a Custom Node.
+        /// </summary>
+        public string Category
+        {
+            get { return category; }
+            set
+            {
+                category = value;
+                RaisePropertyChanged("Category");
+            }
+        }
+        private string category;
+
+        /// <summary>
+        ///     A description of the workspace
+        /// </summary>
+        public string Description
+        {
+            get { return description; }
+            set
+            {
+                description = value;
+                RaisePropertyChanged("Description");
+            }
+        }
+        private string description;
+
+        public override void OnNodesModified()
+        {
+            base.OnNodesModified();
+            HasUnsavedChanges = true;
+            OnDefinitionUpdated();
+        }
+
+        public event Action InfoChanged;
+        protected virtual void OnInfoChanged()
+        {
+            Action handler = InfoChanged;
+            if (handler != null) handler();
+        }
+
+        public event Action DefinitionUpdated;
+        protected virtual void OnDefinitionUpdated()
+        {
+            var handler = DefinitionUpdated;
+            if (handler != null) handler();
+        }
+
+        public event Action<Guid> FunctionIdChanged;
+        protected virtual void OnFunctionIdChanged(Guid oldId)
+        {
+            var handler = FunctionIdChanged;
+            if (handler != null) handler(oldId);
+        }
+
+        public override bool SaveAs(string newPath, ProtoCore.Core core)
+        {
+            var originalPath = FileName;
+
+            if (!base.SaveAs(newPath, core))
                 return false;
-            }
-
-            if (doRefactor)
-            {
-                this.FunctionDefinition.FunctionId = originalGuid;
-            }
-
-            if (originalPath == null)
-            {
-                this.FunctionDefinition.AddToSearch();
-                dynSettings.Controller.SearchViewModel.SearchAndUpdateResultsSync();
-                this.FunctionDefinition.UpdateCustomNodeManager();
-            }
 
             // A SaveAs to an existing function id prompts the creation of a new 
             // custom node with a new function id
-            if ( doRefactor )
+            if (originalPath != newPath)
             {
-                // if the original path does not exist
-                if ( !File.Exists(originalPath) )
-                {
-                    this.FunctionDefinition.FunctionId = newGuid;
-                    this.FunctionDefinition.SyncWithWorkspace(true, true);
-                    return false;
-                }
+                // If it is a newly created node, no need to generate a new guid
+                if (!string.IsNullOrEmpty(originalPath))
+                    CustomNodeId = Guid.NewGuid();
 
-                var newDef = this.FunctionDefinition;
-
-                // reload the original funcdef from its path
-                dynSettings.CustomNodeManager.Remove(originalGuid);
-                dynSettings.CustomNodeManager.AddFileToPath(originalPath);
-                var origDef = dynSettings.CustomNodeManager.GetFunctionDefinition(originalGuid);
-                if (origDef == null)
-                {
-                    return false;
-                }
-
-                // reassign existing nodes to point to newly deserialized function def
-                dynSettings.Controller.DynamoModel.AllNodes
-                        .OfType<Function>()
-                        .Where(el => el.Definition.FunctionId == originalGuid)
-                        .ToList()
-                        .ForEach(node =>
-                            {
-                                node.Definition = origDef;
-                            });
-
-                // update this workspace with its new id
-                newDef.FunctionId = newGuid;
-                newDef.SyncWithWorkspace(true, true);
+                // This comes after updating the Id, as if to associate the new name
+                // with the new Id.
+                SetInfo(Path.GetFileNameWithoutExtension(newPath));
             }
 
             return true;
         }
 
-        public override void OnDisplayed()
+        protected override bool PopulateXmlDocument(XmlDocument document)
         {
+            if (!base.PopulateXmlDocument(document))
+                return false;
 
+            var root = document.DocumentElement;
+            if (root == null)
+                return false;
+            
+            var guid = CustomNodeDefinition != null ? CustomNodeDefinition.FunctionId : Guid.NewGuid();
+            root.SetAttribute("ID", guid.ToString());
+            root.SetAttribute("Description", Description);
+            root.SetAttribute("Category", Category);
+            
+            return true;
         }
 
-        public override XmlDocument GetXml()
+        protected override void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
         {
-            var doc = base.GetXml();
-
-            Guid guid;
-            if (this.FunctionDefinition != null)
-            {
-                guid = this.FunctionDefinition.FunctionId;
-            }
-            else
-            {
-                guid = Guid.NewGuid();
-            }
-
-            var root = doc.DocumentElement;
-            root.SetAttribute("ID", guid.ToString());
-
-            return doc;
+            // Since custom workspace does not have any runtime data to persist,
+            // do not allow base class to serialize any session data.
         }
     }
 }

@@ -1,0 +1,10 @@
+<Workspace Version="0.7.4.3131" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <TestUINodes.NodeWithFailingASTOutput type="TestUINodes.NodeWithFailingASTOutput" guid="c0e4b4ef-49f2-4bbc-9cbe-a8cc651ac17e" nickname="NodeWithFailingASTOutput" x="235" y="200.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="857b947b-4807-4539-8eb8-b4c255106285" nickname="Code Block" x="60" y="166" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="3;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="857b947b-4807-4539-8eb8-b4c255106285" start_index="0" end="c0e4b4ef-49f2-4bbc-9cbe-a8cc651ac17e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

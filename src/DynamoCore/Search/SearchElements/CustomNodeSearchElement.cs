@@ -1,94 +1,120 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Dynamo.Selection;
-using Dynamo.UI.Commands;
-using Dynamo.Utilities;
-using DynCmd = Dynamo.ViewModels.DynamoViewModel;
+using System.Xml;
+using Dynamo.Interfaces;
+using Dynamo.Models;
 
 namespace Dynamo.Search.SearchElements
 {
-    public class CustomNodeSearchElement : NodeSearchElement, IEquatable<CustomNodeSearchElement>
+    /// <summary>
+    ///     Search element for custom nodes.
+    /// </summary>
+    public class CustomNodeSearchElement : NodeSearchElement
     {
-        public DelegateCommand EditCommand { get; set; }
+        private readonly ICustomNodeSource customNodeManager;
+        public Guid ID { get; private set; }
+        private string path;
 
-        public Guid Guid { get; internal set; }
-
-        private string _path;
+        /// <summary>
+        ///     Path to this custom node in disk, used in the Edit context menu.
+        /// </summary>
         public string Path
         {
-            get { return _path; }
-            set { 
-                _path = value; 
-                RaisePropertyChanged("Path"); 
-            }
-        }
-
-        public override string Type { get { return "Custom Node"; } }
-
-        public CustomNodeSearchElement(CustomNodeInfo info) : base(info.Name, info.Description, new List<string>())
-        {
-            this.Node = null;
-            this.FullCategoryName = info.Category;
-            this.Guid = info.Guid;
-            this._path = info.Path;
-            this.EditCommand = new DelegateCommand(Edit);
-        }
-
-        public override NodeSearchElement Copy()
-        {
-            return
-                new CustomNodeSearchElement(new CustomNodeInfo(this.Guid, this.Name, this.FullCategoryName,
-                                                               this.Description, this.Path));
-        }
-
-        public void Edit(object _)
-        {
-            dynSettings.Controller.DynamoViewModel.GoToWorkspaceCommand.Execute(this.Guid);
-        }
-
-        public override void Execute()
-        {
-            string name = this.Guid.ToString();
-
-            // create node
-            var guid = Guid.NewGuid();
-            dynSettings.Controller.DynamoViewModel.ExecuteCommand(
-                new DynCmd.CreateNodeCommand(guid, name, 0, 0, true, true));
-
-            // select node
-            var placedNode = dynSettings.Controller.DynamoViewModel.Model.Nodes.Find((node) => node.GUID == guid);
-            if (placedNode != null)
+            get { return path; }
+            private set
             {
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(placedNode);
+                if (value == path) return;
+                path = value;
+                OnPropertyChanged("Path");
             }
         }
 
-        public override bool Equals(object obj)
+        public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
-            if (obj == null || GetType() != obj.GetType())
+            this.customNodeManager = customNodeManager;
+            inputParameters = new List<Tuple<string, string>>();
+            outputParameters = new List<string>();
+            SyncWithCustomNodeInfo(info);
+        }
+
+        /// <summary>
+        ///     Updates the properties of this search element.
+        /// </summary>
+        /// <param name="info"></param>        
+        public void SyncWithCustomNodeInfo(CustomNodeInfo info)
+        {
+            ID = info.FunctionId;
+            Name = info.Name;
+            FullCategoryName = info.Category;
+            Description = info.Description;
+            Path = info.Path;
+        }
+
+        protected override NodeModel ConstructNewNodeModel()
+        {
+            return customNodeManager.CreateCustomNodeInstance(ID);
+        }
+
+        private void TryLoadDocumentation()
+        {
+            if (inputParameters.Any() || outputParameters.Any())
+                return;
+
+            try
             {
-                return false;
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.Load(Path);
+                XmlNodeList elNodes = xmlDoc.GetElementsByTagName("Elements");
+
+                if (elNodes.Count == 0)
+                    elNodes = xmlDoc.GetElementsByTagName("dynElements");
+
+                XmlNode elNodesList = elNodes[0];
+
+                foreach (XmlNode elNode in elNodesList.ChildNodes)
+                {
+                    foreach (var subNode in
+                        elNode.ChildNodes.Cast<XmlNode>()
+                            .Where(subNode => (subNode.Name == "Symbol")))
+                    {
+                        var parameter = subNode.Attributes[0].Value;
+                        if (parameter != string.Empty)
+                        {
+                            if ((subNode.ParentNode.Name == "Dynamo.Nodes.Symbol") ||
+                                (subNode.ParentNode.Name == "Dynamo.Nodes.dynSymbol"))
+                                inputParameters.Add(Tuple.Create(parameter, ""));
+
+                            if ((subNode.ParentNode.Name == "Dynamo.Nodes.Output") ||
+                                (subNode.ParentNode.Name == "Dynamo.Nodes.dynOutput"))
+                                outputParameters.Add(parameter);
+                        }
+                    }
+                }
             }
-
-            return this.Equals(obj as NodeSearchElement);
+            catch
+            {
+            }
         }
 
-        public override int GetHashCode()
+        protected override List<Tuple<string, string>> GenerateInputParameters()
         {
-            return this.Guid.GetHashCode() + this.Type.GetHashCode() + this.Name.GetHashCode() + this.Description.GetHashCode();
+            TryLoadDocumentation();
+
+            if (!inputParameters.Any())
+                inputParameters.Add(Tuple.Create("", "none"));
+
+            return inputParameters;
         }
 
-        public bool Equals(CustomNodeSearchElement other)
+        protected override List<string> GenerateOutputParameters()
         {
-            return other.Guid == this.Guid;
-        }
+            TryLoadDocumentation();
 
-        public new bool Equals(NodeSearchElement other)
-        {
-            return other is CustomNodeSearchElement && this.Equals(other as CustomNodeSearchElement);
+            if (!outputParameters.Any())
+                outputParameters.Add("none");
+
+            return outputParameters;
         }
     }
 }

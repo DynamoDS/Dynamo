@@ -1,0 +1,17 @@
+<Workspace Version="0.6.3.27769" X="58.3977693099254" Y="173.560914792667" zoom="1.17131835730765" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="532f8b75-4957-460e-bfff-8247f285e14a" nickname="Code Block" x="1.8595621133635" y="77.5603572279534" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="WCS = CoordinateSystem.Identity();&#xA;&#xA;//======Establish the context for creating Solid================&#xA;firstSolid      = Cylinder.ByRadiusHeight(WCS.Translate&#xA;                                        (15, 15, 0), 2.5, 50);&#xA;ArrayOfSolids   =&#xA;{&#xA;    firstSolid,&#xA;    firstSolid.Translate(-30, 0, 0),&#xA;    firstSolid.Translate(-30, -30, 0),&#xA;    firstSolid.Translate(0, -30, 0)&#xA;};&#xA;secondSolid     = Cuboid.ByLengths(WCS, 30, 30, 30);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="824707aa-3c5f-4fc3-a183-a21ff7804932" nickname="Solid.Union" x="707.698954775303" y="121.592429832398" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Solid.Union@Solid[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0ef5c7c7-4fa5-4542-a6bc-b45a041bf9f6" nickname="Solid.Union" x="718.000095560657" y="452.143540086233" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Solid.Union@Solid" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="532f8b75-4957-460e-bfff-8247f285e14a" start_index="1" end="0ef5c7c7-4fa5-4542-a6bc-b45a041bf9f6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="532f8b75-4957-460e-bfff-8247f285e14a" start_index="2" end="824707aa-3c5f-4fc3-a183-a21ff7804932" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="532f8b75-4957-460e-bfff-8247f285e14a" start_index="3" end="824707aa-3c5f-4fc3-a183-a21ff7804932" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="532f8b75-4957-460e-bfff-8247f285e14a" start_index="3" end="0ef5c7c7-4fa5-4542-a6bc-b45a041bf9f6" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Input single solid, Union is working." x="720.664974838382" y="404.208222723656" />
+    <Dynamo.Models.NoteModel text="Input ArrayOfSolids, Union failed." x="710.296042555358" y="66.6418717318969" />
+  </Notes>
+</Workspace>

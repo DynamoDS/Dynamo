@@ -1,0 +1,55 @@
+import("ProtoGeometry.dll");
+import("Experimental.dll");
+
+// best viewed in X-ray display mode
+WCS = CoordinateSystem.WCS;
+// import a sat file created in Formit and ...
+// use DesignScript non-manifold topology to further model one building
+
+buildingBlocks = Geometry.ImportFromSAT("17_import_building_block_models.sat").SetColor(Color.White);
+
+// select one block to be the main building
+mainBuilding = buildingBlocks[4].SetColor(Color.Cyan);
+
+// establish a base plane
+basePlane = Plane.ByOriginNormal(WCS.Origin, WCS.ZAxis, 50.0);
+
+numFloors = 5; // how many floors?
+floorPlanes = basePlane.Offset(30..100..#numFloors);
+
+//slice up the block into floor (volumes)
+
+iCount = 1000;
+atriumXrange = 320..600..#iCount;
+atriumYrange = 70..260..#iCount;
+atriumBase = -1;
+atriumHeight = 151;
+atriumBaseRadius = 50.0;
+atrirumTopRadius = 40.0;
+
+atrium;
+floorToHighLight;
+floorVolumes;
+[Imperative]
+{
+    for (index in (0..(iCount-1)))
+    {
+        atriumX = atriumXrange[index];
+        atriumY = atriumYrange[index];
+        
+        atriumControlPoints = Point.ByCoordinates(atriumX, atriumY, { atriumBase, atriumHeight });
+        
+        atrium = Cone.ByStartPointEndPointRadius(atriumControlPoints[0], atriumControlPoints[1], atriumBaseRadius, atrirumTopRadius).SetColor(Color.Red);
+        floorVolumes = mainBuilding.Slice(floorPlanes, false).SetColor(Color.Cyan);
+        floorVolumes = floorVolumes.Impose(atrium).SetColor(Color.Cyan);
+        
+        // highlight one particular floor
+        //floorToHighLight = floorVolumes.Cells[2]._ExtractGeometry(Color.Yellow);
+        
+        //floorVolumeCount = Count(floorVolumes.Cells); // so actually six floor volumes
+        // create atrium
+        
+        //Geometry.UpdateDisplay();
+        // Sleep(5);
+    }
+}

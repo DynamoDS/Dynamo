@@ -1,0 +1,136 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+import("RoofFunctions.ds");
+
+WCS = CoordinateSystem.Identity();
+
+angRange = -45..345..5;
+
+
+pt1 = Point.ByCoordinates(angRange, -5 * Math.Sin(3 * angRange), 0);
+c1 = BSplineCurve.ByControlVertices(pt1, 3);
+center = Point.ByCoordinates(-45, 50, 0);
+cir1 = Arc.ByCenterPointStartPointSweepAngle(center, c1.StartPoint, 180, WCS.XAxis);
+cir3 = Arc.ByCenterPointStartPointSweepAngle(center.Translate(c1.EndPoint.X - c1.StartPoint.X, 0, 0), c1.EndPoint, 180, WCS.XAxis);
+sur1 = Surface.Sweep(c1, cir1);
+c2 = sur1.Intersect({ Plane.ByOriginNormal(center, WCS.ZAxis) });
+neglect = Hide(c2);
+
+c2 : BSplineCurve = c2[0][0];
+axis = Line.ByStartPointEndPoint(center, center.Translate(c1.EndPoint.X - c1.StartPoint.X, 0, 0));
+
+neglect = Hide({ pt1, c1, c2, cir1, cir3, sur1, axis, center });
+
+l1 = Line.ByStartPointEndPoint(c1.StartPoint, c2.StartPoint);
+l2 = Line.ByStartPointEndPoint(c1.EndPoint, c2.EndPoint);
+
+curve1 = Curve.Composite({ l1, c2 });
+curve2 = Curve.Composite({ l2, c1 });
+curve3 = Curve.Composite({ l1, c1 });
+curve4 = Curve.Composite({ l2, c2 });
+neglect = Hide({ l1, l2, curve1, curve2, curve3, curve4 });
+
+u = 0..curve1.Length..#100;
+v = 1..Count(u) - 2..1;
+
+pts1 = Point.AtDistance(curve1, u);
+pts2 = Point.AtDistance(curve2, u);
+pts3 = Point.AtDistance(curve3, u);
+pts4 = Point.AtDistance(curve4, u);
+
+lines1 = Line.ByStartPointEndPoint(pts1[v], pts2[v]);
+lines2 = Line.ByStartPointEndPoint(pts3[v], pts4[v]);
+geomarr = { pts1, pts2, pts3, pts4, lines1, lines2 };
+geomarr.Visible = false;
+
+surfLines1 : BSplineCurve[] = Flatten(lines1.Project(sur1, WCS.ZAxis));
+surfLines2 : BSplineCurve[] = Flatten(lines2.Project(sur1, WCS.ZAxis));
+neglect = Hide({ surfLines1, surfLines2 });
+
+thickness = 0.3;
+
+cirCenters1 = surfLines1.EndPoint;
+smallCir1 = Circle.ByCenterPointRadius(cirCenters1, thickness, surfLines1.EndTangent);
+tubes1 = Solid.Sweep(smallCir1, surfLines1);
+
+cirCenters2 = surfLines2.EndPoint;
+smallCir2 = Circle.ByCenterPointRadius(cirCenters2, thickness);
+tubes2 = Solid.Sweep(smallCir2, surfLines2);
+
+d1 : BSplineCurve = c1.Translate(0, -2.5 * thickness, 0);
+cir2 = Arc.ByCenterPointStartPointSweepAngle(center, d1.StartPoint, 180, WCS.XAxis);
+sur2 = Surface.Sweep(d1, cir2);
+
+neg = Hide({ cir2, d1 });
+
+isoline : BSplineCurve[] = Flatten(isoLines(sur2, 13));
+rect = Rectangle.Rectangle(isoline.StartPoint, isoline.EndTangent.Normalize(), 0.5, 1);
+neg = Hide(sur2);
+
+midRibs = Solid.Sweep(rect.tempcurve, isoline);
+neg = Hide(isoline);
+
+
+sideBottomPts1 = Point.AtParameter(l1, 1..0..#15);
+sideTopPts1 = sideBottomPts1.Project(cir1, Vector.ByCoordinates(0, 1, 2));
+sideTopPts2 = sideBottomPts1.Project(cir1, Vector.ByCoordinates(0, -1, 2));
+sideLines1 = Line.ByStartPointEndPoint(sideBottomPts1[1..Count(sideBottomPts1) - 2], sideTopPts1[1..Count(sideTopPts1) - 2]);
+sideLines2 = Line.ByStartPointEndPoint(sideBottomPts1[1..Count(sideBottomPts1) - 2], sideTopPts2[1..Count(sideTopPts2) - 2]);
+sideBars1 = Cone.ByCenterLineRadius({ sideLines1, sideLines2 }, thickness / 2, thickness / 2);
+
+
+sideBottomPts2 = Point.AtParameter(l2, 1..0..#15);
+sideTopPts3 = sideBottomPts2.Project(cir3, Vector.ByCoordinates(0, 1, 2));
+sideTopPts4 = sideBottomPts2.Project(cir3, Vector.ByCoordinates(0, -1, 2));
+sideLines3 = Line.ByStartPointEndPoint(sideBottomPts2[1..Count(sideBottomPts2) - 2], sideTopPts3[1..Count(sideTopPts3) - 2]);
+sideLines4 = Line.ByStartPointEndPoint(sideBottomPts2[1..Count(sideBottomPts2) - 2], sideTopPts4[1..Count(sideTopPts4) - 2]);
+sideBars2 = Cone.ByCenterLineRadius({ sideLines3, sideLines4 }, thickness / 2, thickness / 2);
+
+ribLength = 1;
+
+acrossPts = Point.AtParameter(c1.Translate(0, -4 * thickness - ribLength / 2, 0), 1 / 30..1 - 1 / 30..#30);
+acrossCenters = acrossPts.Project(axis, WCS.YAxis);
+acrossArc = Arc.ByCenterPointStartPointSweepAngle(acrossCenters, acrossPts, 180, WCS.XAxis);
+acrossRect = Rectangle.Rectangle(acrossArc.StartPoint, WCS.ZAxis, 3, 0.25);
+acrossBars = Solid.Sweep(acrossRect.tempcurve, acrossArc);
+
+
+sideRibRect = Rectangle.Rectangle(cir1.StartPoint, WCS.ZAxis, 1.5, 3);
+sideRib1 = Solid.Sweep(sideRibRect.tempcurve, cir1);
+sideRib2 = Solid.Sweep(sideRibRect.tempcurve, cir3);
+
+baseRectangle = Rectangle.Rectangle(c1.StartPoint, WCS.XAxis, 4, 4);
+baseBuilding = Solid.Sweep(baseRectangle.tempcurve, Curve.Composite({ c1, l2, c2, l1 }));
+
+s1_point1 = cir1.StartPoint.Translate(0, 0, (center.Y - c1.StartPoint.Y) / 8..7 * (center.Y - c1.StartPoint.Y) / 8..#6);
+s1_propoi1 = s1_point1.Project(cir1, WCS.YAxis);
+
+s1_point2 = s1_point1.Translate(0, cir1.Radius * 2, 0);
+s1_propoi2 = s1_point2.Project(cir1, Vector.ByCoordinates(0, -1, 0));
+HorLines1 = Line.ByStartPointEndPoint(s1_propoi1, s1_propoi2);
+horiBars1 = Cone.ByCenterLineRadius(HorLines1, thickness / 2, thickness / 2);
+
+//s2_point1 = cir3.StartPoint.Translate(0, 0, (center.Y - c1.StartPoint.Y) / 8..7 * (center.Y - c1.StartPoint.Y) / 8..#6);
+//s2_propoi1 = s2_point1.Project(cir3, Vector.ByCoordinates(0, 1, 0));
+
+//s2_point2 = s2_point1.Translate(0, cir3.Radius * 2, 0);
+//s2_propoi2 = s2_point2.Project(cir3, Vector.ByCoordinates(0, -1, 0));
+//HorLines2 = Line.ByStartPointEndPoint(s2_propoi1, s2_propoi2);
+//horiBars2 = Cone.ByCenterLineRadius(HorLines2, thickness / 2, thickness / 2);
+
+//sideGlass1 = Surface.CreateFromCurve(Curve.Composite({ cir1, l1 }));
+//sideGlass2 = Surface.CreateFromCurve(Curve.Composite({ cir3, l2 }));
+
+//floor = Surface.CreateFromCurve(Curve.Composite({ c1, l1, c2, l2 }));
+//flooractual = floor.Thicken(2, true);
+//m = 0..Count(acrossPts)-2..1;
+//ceilLines = Line.ByStartPointEndPoint(acrossPts[m], acrossPts[m + 1]);
+//ceiling = Surface.Sweep(ceilLines, acrossArc);
+//ceilLinesFront = Line.ByStartPointEndPoint(acrossPts[0], c1.StartPoint.Translate(0, -4 * thickness - ribLength / 2, 0));
+//ceilLinesBack = Line.ByStartPointEndPoint(acrossPts[Count(acrossPts)-1], c1.EndPoint.Translate(0, -4 * thickness - ribLength / 2, 0));
+//ceilPatch1 = Surface.Sweep(ceilLinesFront, acrossArc[0]);
+//ceilPatch2 = Surface.Sweep(ceilLinesBack, acrossArc[Count(acrossArc) - 1]);
+
+//coverSolid = ceiling.Thicken(1, true);
+//coverSolid1 = ceilPatch1.Thicken(1, true);
+//coverSolid2 = ceilPatch2.Thicken(1, true);

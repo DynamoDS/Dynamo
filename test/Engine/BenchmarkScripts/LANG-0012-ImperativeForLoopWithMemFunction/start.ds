@@ -1,0 +1,16 @@
+class Test
+{
+    def foo()
+    {
+        return = null;
+    }
+}
+
+[Imperative]
+{
+    a = Test();
+    for (i in 0..500000)
+    {  
+        t = a.foo();
+    }
+}

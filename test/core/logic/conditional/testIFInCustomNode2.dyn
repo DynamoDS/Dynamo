@@ -1,0 +1,33 @@
+<Workspace Version="0.7.1.26709" X="-1205.54481556096" Y="-576.333025589902" zoom="0.925685857810692" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="2569020c-9952-46c5-8962-02bbf8c9f027" nickname="PassNothingBelow1" x="1621.71032860148" y="672.965516255503" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="6b8abde9-b443-4435-83d7-b51983c3813c" />
+      <Name value="PassNothingBelow1" />
+      <Description value="Takes inputs and only passes 1 or values above 1" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="ret" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="5e661a38-2520-4fc4-9024-00262b9a52ca" nickname="Code Block" x="1393.17679955446" y="665.965516255503" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="-5;" ShouldFocus="false" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="4cda88e3-b54e-46c1-9c80-2647de6e3468" nickname="PassNothingBelow1" x="1621.71032860148" y="821.007669571165" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="6b8abde9-b443-4435-83d7-b51983c3813c" />
+      <Name value="PassNothingBelow1" />
+      <Description value="Takes inputs and only passes 1 or values above 1" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="ret" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f23be87f-8485-4583-924a-c3e390bc1c97" nickname="Code Block" x="1393.17679955446" y="814.007669571165" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="5;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5e661a38-2520-4fc4-9024-00262b9a52ca" start_index="0" end="2569020c-9952-46c5-8962-02bbf8c9f027" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f23be87f-8485-4583-924a-c3e390bc1c97" start_index="0" end="4cda88e3-b54e-46c1-9c80-2647de6e3468" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

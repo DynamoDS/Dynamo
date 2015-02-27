@@ -1,0 +1,8 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <OpenFileCommand XmlFilePath=".\magn_2160_whileLoop.dyn" />
+  <PausePlaybackCommand Tag="BeforeRun" PauseDurationInMs="50" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="AfterRun" PauseDurationInMs="200" />
+  <RunCancelCommand ShowErrors="false" CancelRun="true" />
+  <PausePlaybackCommand Tag="AfterCancel" PauseDurationInMs="200" />
+</Commands>

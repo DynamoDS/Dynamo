@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Product Id="A0A6A915-F284-4CB4-90D3-C1356052D456"
+           Name="Dynamo 0.7.6"
+           Language="1033"
+           Version="0.7.6"
+           Manufacturer="Dynamo"
+           UpgradeCode="733f1d21-d745-47aa-bbb5-4a39b5996e4e">
+
+    <Package InstallerVersion="200"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Platform="x64"/>
+
+    <MajorUpgrade
+      Schedule="afterInstallInitialize"
+      DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Binary Id="DynamoInstallActions.CA.dll"
+            src="$(var.base)\src\DynamoInstallActions\bin\$(var.Configuration)\DynamoInstallActions.CA.dll" />
+
+    <CustomAction Id="UninstallDynamo07"
+                Return="check"
+                Execute="immediate"
+                BinaryKey="DynamoInstallActions.CA.dll"
+                DllEntry="UninstallDynamo07" >
+    </CustomAction>
+
+    <InstallExecuteSequence>
+      <Custom Action="UninstallDynamo07" Before="CostInitialize">NOT Installed</Custom>
+    </InstallExecuteSequence>
+
+    <Property Id='ARPNOMODIFY'>1</Property>
+    
+    <!--<UIRef Id="WixUI_FeatureTree"/>
+    <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
+
+    <Property Id='DYNAMO_INSTALLDIR'></Property>
+    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo 0.7" After="LaunchConditions"></SetProperty>
+
+    <Feature Id="DYNAMO_CORE_FEATURE"
+             Title="Dynamo Core"
+             Level="1">
+      <ComponentGroupRef Id="RELEASE"/>
+      <ComponentGroupRef Id="DEFINITIONS"/>
+      <ComponentRef Id="ApplicationShortcut" />
+      <Feature Id="DYNAMO_CORE_SAMPLES"
+             Title="Sample Content"
+             Level="1" >
+        <ComponentGroupRef Id="SAMPLES"/>
+      </Feature>
+    </Feature>
+
+    <Icon Id="DynamoInstaller.ico" SourceFile="$(var.base)\tools\install\Extra\DynamoInstaller.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="DynamoInstaller.ico" />
+
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Dynamo"/>
+      </Directory>
+      <Directory Id="DYNAMO_INSTALLDIR"/>
+      <Directory Id="CommonAppDataFolder">
+        <Directory Id="ADESK_DATA" Name="Autodesk">
+        </Directory>
+        <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
+          <Directory Id="PROGDATA_07" Name="0.7"/>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <!-- Install a shortcut in the Start menu -->
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10" Win64="yes">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="Dynamo 0.7"
+                  Description="Dynamo Sandbox"
+                  Target="[DYNAMO_INSTALLDIR]\DynamoSandbox.exe"
+                  WorkingDirectory="DYNAMO_INSTALLDIR"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\Dynamo_07" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RegistryKey Root="HKLM"
+                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]"
+              Action="createAndRemoveOnUninstall">
+          <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
+          <RegistryValue Name="DisplayName" Value="[ProductName]" Type="string"/>
+          <RegistryValue Name="DisplayVersion" Value="[ProductVersion]" Type="string"/>
+        </RegistryKey>
+        
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+  
+</Wix>

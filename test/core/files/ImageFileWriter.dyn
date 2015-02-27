@@ -1,0 +1,20 @@
+<Workspace Version="0.7.4.3075" X="142.666620392657" Y="166.542150968933" zoom="0.770516848202245" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="c77eb0b4-8c14-4fc1-9f27-0149f85ad2e4" nickname="String" x="89" y="194.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="test.png" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="0aaae6d6-f84b-4e61-888b-14936343d80a" nickname="String" x="-198.94856715832" y="300.417411916058" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="..\..\..\test\core\files\ImageFile.png" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="85b51fb0-1070-46c9-9de0-50292062ea92" nickname="Image.ReadFromFile" x="124.54458154042" y="376.895411744293" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.Image.ReadFromFile@var" />
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="785d67e5-d572-4930-ab10-b7d2cb0b6cc6" nickname="File.FromPath" x="-34.5648204010803" y="407.662423169445" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="7d84e03a-61af-43e7-9445-dbfddb2713c4" nickname="Image.WriteToFile" x="394.38885207309" y="254.426689253478" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.Image.WriteToFile@string,var" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c77eb0b4-8c14-4fc1-9f27-0149f85ad2e4" start_index="0" end="7d84e03a-61af-43e7-9445-dbfddb2713c4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0aaae6d6-f84b-4e61-888b-14936343d80a" start_index="0" end="785d67e5-d572-4930-ab10-b7d2cb0b6cc6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="85b51fb0-1070-46c9-9de0-50292062ea92" start_index="0" end="7d84e03a-61af-43e7-9445-dbfddb2713c4" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="785d67e5-d572-4930-ab10-b7d2cb0b6cc6" start_index="0" end="85b51fb0-1070-46c9-9de0-50292062ea92" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

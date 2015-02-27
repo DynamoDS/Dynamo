@@ -4,319 +4,438 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
+
+using Dynamo.Core;
+using Dynamo.DSEngine;
+using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Greg.Requests;
-using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
+
 using Newtonsoft.Json;
 using String = System.String;
 
 namespace Dynamo.PackageManager
 {
-
-    public class Package : NotificationObject
+    public class PackageAssembly
     {
+        public bool IsNodeLibrary { get; set; }
+        public Assembly Assembly { get; set; }
+
+        public string Name
+        {
+            get { return Assembly.GetName().Name; }
+        }
+    }
+
+    public class Package : NotificationObject, ILogSource
+    {
+        #region Properties/Fields
 
         public string Name { get; set; }
 
         public string CustomNodeDirectory
         {
-            get { return Path.Combine(this.RootDirectory, "dyf"); }
+            get { return Path.Combine(RootDirectory, "dyf"); }
         }
 
         public string BinaryDirectory
         {
-            get { return Path.Combine(this.RootDirectory, "bin"); }
+            get { return Path.Combine(RootDirectory, "bin"); }
         }
 
         public string ExtraDirectory
         {
-            get { return Path.Combine(this.RootDirectory, "extra"); }
+            get { return Path.Combine(RootDirectory, "extra"); }
         }
 
-        public bool Loaded { get; set; }
+        public bool Loaded { get; private set; }
 
-        private bool _typesVisibleInManager;
-        public bool TypesVisibleInManager { get { return _typesVisibleInManager; } set { _typesVisibleInManager = value; RaisePropertyChanged("TypesVisibleInManager"); } }
+        private bool typesVisibleInManager;
+        public bool TypesVisibleInManager
+        {
+            get
+            {
+                return typesVisibleInManager;
+            }
+            set
+            {
+                // this implies the user would like to rescan additional files
+                EnumerateAdditionalFiles();
+                typesVisibleInManager = value;
+                RaisePropertyChanged("TypesVisibleInManager");
+            }
+        }
 
-        private string _rootDirectory;
-        public string RootDirectory { get { return _rootDirectory; } set { _rootDirectory = value; RaisePropertyChanged("RootDirectory"); } }
+        private string rootDirectory;
+        public string RootDirectory { get { return rootDirectory; } set { rootDirectory = value; RaisePropertyChanged("RootDirectory"); } }
 
-        private string _description = "";
-        public string Description { get { return _description; } set { _description = value; RaisePropertyChanged("Description"); } }
+        private string description = "";
+        public string Description { get { return description; } set { description = value; RaisePropertyChanged("Description"); } }
 
-        private string _versionName = "";
-        public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
+        private string versionName = "";
+        public string VersionName { get { return versionName; } set { versionName = value; RaisePropertyChanged("VersionName"); } }
 
-        private string _engineVersion = "";
-        public string EngineVersion { get { return _engineVersion; } set { _engineVersion = value; RaisePropertyChanged("EngineVersion"); } }
+        private string engineVersion = "";
+        public string EngineVersion { get { return engineVersion; } set { engineVersion = value; RaisePropertyChanged("EngineVersion"); } }
 
-        private string _license = "";
-        public string License { get { return _license; } set { _license = value; RaisePropertyChanged("License"); } }
+        private string license = "";
+        public string License { get { return license; } set { license = value; RaisePropertyChanged("License"); } }
 
-        private string _contents = "";
-        public string Contents { get { return _contents; } set { _contents = value; RaisePropertyChanged("Contents"); } }
+        private string contents = "";
+        public string Contents { get { return contents; } set { contents = value; RaisePropertyChanged("Contents"); } }
 
         private IEnumerable<string> _keywords = new List<string>();
         public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
 
+        private bool markedForUninstall;
+        public bool MarkedForUninstall
+        {
+            get { return markedForUninstall; }
+            private set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+        }
+
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
 
-        public PackageUploadRequestBody Header { get { return PackageUploadBuilder.NewPackageHeader(this);  } }
 
-        public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
-        public DelegateCommand GetLatestVersionCommand { get; set; }
-        public DelegateCommand PublishNewPackageVersionCommand { get; set; }
-        public DelegateCommand UninstallCommand { get; set; }
-        public DelegateCommand PublishNewPackageCommand { get; set; }
-        public DelegateCommand DeprecateCommand { get; set; }
-        public DelegateCommand UndeprecateCommand { get; set; }
-
-        public ObservableCollection<Type> LoadedTypes { get; set; }
-        public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; set; }
-        public ObservableCollection<PackageDependency> Dependencies { get; set; }
-
-        public Package(string directory, string name, string versionName)
+        /// <summary>
+        ///     Determines if there are binaries in the package
+        /// </summary>
+        internal bool ContainsBinaries
         {
-            this.Loaded = false;
-            this.RootDirectory = directory;
-            this.Name = name;
-            this.VersionName = versionName;
-            this.LoadedTypes = new ObservableCollection<Type>();
-            this.Dependencies = new ObservableCollection<PackageDependency>();
-            this.LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
-
-            ToggleTypesVisibleInManagerCommand = new DelegateCommand(ToggleTypesVisibleInManager, CanToggleTypesVisibleInManager);
-            GetLatestVersionCommand = new DelegateCommand(GetLatestVersion, CanGetLatestVersion);
-            PublishNewPackageVersionCommand = new DelegateCommand(PublishNewPackageVersion, CanPublishNewPackageVersion);
-            PublishNewPackageCommand = new DelegateCommand(PublishNewPackage, CanPublishNewPackage);
-            UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
-            DeprecateCommand = new DelegateCommand(this.Deprecate, CanDeprecate);
-            UndeprecateCommand = new DelegateCommand(this.Undeprecate, CanUndeprecate);
-
-            dynSettings.Controller.DynamoModel.NodeAdded += (node) => UninstallCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoModel.NodeDeleted += (node) => UninstallCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoModel.WorkspaceHidden += (ws) => UninstallCommand.RaiseCanExecuteChanged();
-            dynSettings.Controller.DynamoModel.Workspaces.CollectionChanged += (sender, args) => UninstallCommand.RaiseCanExecuteChanged();
+            get { return LoadedAssemblies.Any(); }
         }
 
-        public static Package FromDirectory(string rootPath)
+        /// <summary>
+        ///     List the LoadedAssemblies whose IsNodeLibrary attribute is true
+        /// </summary>
+        internal IEnumerable<Assembly> NodeLibraries
         {
-            return Package.FromJson(Path.Combine(rootPath, "pkg.json"));
-        }
-      
-        public static Package FromJson(string headerPath)
-        {
+            get { return LoadedAssemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly); }
+        } 
 
+        public String SiteUrl { get; set; }
+        public String RepositoryUrl { get; set; }
+
+        public ObservableCollection<Type> LoadedTypes { get; private set; }
+        public ObservableCollection<PackageAssembly> LoadedAssemblies { get; private set; }
+        public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; private set; }
+        public ObservableCollection<PackageDependency> Dependencies { get; private set; }
+        public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
+
+        /// <summary>
+        ///     A header used to create the package, this data does not reflect runtime
+        ///     changes to the package, but instead reflects how the package was formed.
+        /// </summary>
+        public PackageUploadRequestBody Header { get; internal set; }
+
+        #endregion
+
+        public Package(string directory, string name, string versionName, string license)
+        {
+            RootDirectory = directory;
+            Name = name;
+            License = license;
+            VersionName = versionName;
+            LoadedTypes = new ObservableCollection<Type>();
+            LoadedAssemblies = new ObservableCollection<PackageAssembly>();
+            Dependencies = new ObservableCollection<PackageDependency>();
+            LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
+            AdditionalFiles = new ObservableCollection<PackageFileInfo>();
+            Header = PackageUploadBuilder.NewPackageHeader(this);
+        }
+
+        public static Package FromDirectory(string rootPath, ILogger logger)
+        {
+            return FromJson(Path.Combine(rootPath, "pkg.json"), logger);
+        }
+
+        public static Package FromJson(string headerPath, ILogger logger)
+        {
             try
             {
                 var pkgHeader = File.ReadAllText(headerPath);
                 var body = JsonConvert.DeserializeObject<PackageUploadRequestBody>(pkgHeader);
 
                 if (body.name == null || body.version == null)
-                {
                     throw new Exception("The header is missing a name or version field.");
-                }
 
-                var pkg = new Package(Path.GetDirectoryName(headerPath), body.name, body.version);
-                pkg.Group = body.group;
-                pkg.Description = body.description;
-                pkg.Keywords = body.keywords;
-                pkg.VersionName = body.version;
-                pkg.License = body.license;
-                pkg.EngineVersion = body.engine_version;
-                pkg.Contents = body.contents;
-                body.dependencies.ToList().ForEach(pkg.Dependencies.Add);
+                var pkg = new Package(
+                    Path.GetDirectoryName(headerPath),
+                    body.name,
+                    body.version,
+                    body.license)
+                {
+                    Group = body.@group,
+                    Description = body.description,
+                    Keywords = body.keywords,
+                    VersionName = body.version,
+                    EngineVersion = body.engine_version,
+                    Contents = body.contents,
+                    SiteUrl = body.site_url,
+                    RepositoryUrl = body.repository_url,
+                    Header = body
+                };
+                
+                foreach (var dep in body.dependencies)
+                    pkg.Dependencies.Add(dep);
 
                 return pkg;
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("Failed to form package from json header.");
-                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
+                logger.Log("Failed to form package from json header.");
+                logger.Log(e.GetType() + ": " + e.Message);
                 return null;
             }
 
         }
 
-        public void Load()
+        /// <summary>
+        /// Load the Package into Dynamo.  
+        /// </summary>
+        /// <param name="loader"></param>
+        /// <param name="logger"></param>
+        /// <param name="libraryServices"></param>
+        /// <param name="context"></param>
+        /// <param name="isTestMode"></param>
+        /// <param name="customNodeManager"></param>
+        public void LoadIntoDynamo(
+            DynamoLoader loader, ILogger logger, LibraryServices libraryServices, string context,
+            bool isTestMode, CustomNodeManager customNodeManager)
         {
+            // Prevent duplicate loads
+            if (Loaded) return;
 
             try
             {
-                GetAssemblies().Select(DynamoLoader.LoadNodesFromAssembly).SelectMany(x => x).ToList().ForEach(x => LoadedTypes.Add(x));
-                DynamoLoader.LoadCustomNodes(CustomNodeDirectory).ForEach(x => LoadedCustomNodes.Add(x));
-
+                LoadAssembliesIntoDynamo(loader, libraryServices, context);
+                LoadCustomNodesIntoDynamo(customNodeManager, isTestMode);
+                EnumerateAdditionalFiles();
                 Loaded = true;
             }
             catch (Exception e)
             {
-                DynamoLogger.Instance.Log("Exception when attempting to load package " + this.Name + " from " + this.RootDirectory);
-                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
+                Log("Exception when attempting to load package " + Name + " from " + RootDirectory);
+                Log(e.GetType() + ": " + e.Message);
+            }
+        }
+
+        public void EnumerateAdditionalFiles()
+        {
+            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return;
+
+            var nonDyfDllFiles = Directory.EnumerateFiles(
+                RootDirectory,
+                "*",
+                SearchOption.AllDirectories)
+                .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll") && !x.ToLower().EndsWith("pkg.json") && !x.ToLower().EndsWith(".backup"))
+                .Select(x => new PackageFileInfo(RootDirectory, x));
+
+            AdditionalFiles.Clear();
+            AdditionalFiles.AddRange(nonDyfDllFiles);
+        }
+
+        public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
+        {
+            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) 
+                return new List<string>();
+
+            return Directory.EnumerateFiles(RootDirectory, "*.dll", SearchOption.AllDirectories);
+        }
+
+        private void LoadCustomNodesIntoDynamo(CustomNodeManager loader, bool isTestMode)
+        {
+            foreach (var info in loader.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
+                LoadedCustomNodes.Add(info);
+        }
+
+        private void LoadAssembliesIntoDynamo(DynamoLoader loader, LibraryServices libraryServices, string context)
+        {
+            var assemblies = LoadAssembliesInBinDirectory();
+
+            // filter the assemblies
+            var zeroTouchAssemblies = new List<Assembly>();
+            var nodeModelAssemblies = new List<Assembly>();
+
+            // categorize the assemblies to load, skipping the ones that are not identified as node libraries
+            foreach (var assem in assemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly))
+            {
+                if (loader.ContainsNodeModelSubType(assem))
+                    nodeModelAssemblies.Add(assem);
+                else
+                    zeroTouchAssemblies.Add(assem);
             }
 
+            // load the zero touch assemblies
+            foreach (var zeroTouchAssem in zeroTouchAssemblies)
+                libraryServices.ImportLibrary(zeroTouchAssem.Location);
+
+            // load the node model assemblies
+            var nodes = nodeModelAssemblies.SelectMany(
+                assem =>
+                {
+                    var assemblyNodes = new List<TypeLoadData>();
+                    loader.LoadNodesFromAssembly(assem, context, assemblyNodes, new List<TypeLoadData>());
+                    return assemblyNodes;
+                });
+
+            foreach (var node in nodes)
+                LoadedTypes.Add(node.Type);
         }
 
-        public List<Assembly> GetAssemblies()
+        /// <summary>
+        ///     Add assemblies at runtime to the package.  Does not load the assembly into the node library.
+        ///     If the package is already present in LoadedAssemblies, this will mutate it's IsNodeLibrary property.
+        /// </summary>
+        /// <param name="assems">A list of assemblies</param>
+        internal void AddAssemblies(IEnumerable<PackageAssembly> assems)
         {
-            if (!Directory.Exists(BinaryDirectory)) 
-                return new List<Assembly>();
-
-            return
-                (new DirectoryInfo(BinaryDirectory))
-                    .EnumerateFiles("*.dll")
-                    .Select((fileInfo) => Assembly.LoadFrom(fileInfo.FullName)).ToList();
+            foreach (var assem in assems)
+            {
+                var existingAssem = LoadedAssemblies.FirstOrDefault(x => x.Assembly.FullName == assem.Assembly.FullName);
+                if (existingAssem != null)
+                {
+                    existingAssem.IsNodeLibrary = assem.IsNodeLibrary;
+                }
+                else
+                {
+                    LoadedAssemblies.Add(assem);
+                }
+            }
         }
 
-        public bool ContainsFile(string path)
+        /// <summary>
+        /// Loads all possible assemblies in node library and returns the list of loaded node library assemblies
+        /// </summary>
+        /// <returns>The list of all node library assemblies</returns>
+        private IEnumerable<PackageAssembly> LoadAssembliesInBinDirectory()
+        {
+            var assemblies = new List<PackageAssembly>();
+
+            if (!Directory.Exists(BinaryDirectory))
+                return assemblies;
+
+            // use the pkg header to determine which assemblies to load
+            var nodeLibraries = Header.node_libraries;
+
+            foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
+            {
+                Assembly assem;
+
+                // dll files may be un-managed, skip those
+                var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                if (result)
+                {
+                    assemblies.Add(new PackageAssembly()
+                    {
+                        Assembly = assem,
+                        IsNodeLibrary = (nodeLibraries == null || nodeLibraries.Contains(assem.FullName))
+                    });
+                }
+            }
+
+            foreach (var assem in assemblies)
+            {
+                LoadedAssemblies.Add( assem );
+            }
+
+            return assemblies;
+        }
+
+        internal bool ContainsFile(string path)
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return false;
             return Directory.EnumerateFiles(RootDirectory, "*", SearchOption.AllDirectories).Any(s => s == path);
         }
 
-        public bool InUse()
+        internal bool InUse(DynamoModel dynamoModel)
         {
-            return (LoadedTypes.Any() || WorkspaceOpen() || CustomNodeInWorkspace() ) && Loaded;
+            return (LoadedAssemblies.Any() || IsWorkspaceFromPackageOpen(dynamoModel) || IsCustomNodeFromPackageInUse(dynamoModel)) && Loaded;
         }
 
-        public bool CustomNodeInWorkspace()
+        private bool IsCustomNodeFromPackageInUse(DynamoModel dynamoModel)
         {
             // get all of the function ids from the custom nodes in this package
-            var guids = LoadedCustomNodes.Select(x => x.Guid);
+            var guids = LoadedCustomNodes.Select(x => x.FunctionId);
 
             // check if any of the custom nodes is in a workspace
-            return dynSettings.Controller.DynamoModel.AllNodes.Where(x => x is Function)
-                                   .Cast<Function>()
-                                   .Any(x => guids.Contains(x.Definition.FunctionId));
+            return
+                dynamoModel.Workspaces.SelectMany(ws => ws.Nodes.OfType<Function>())
+                    .Any(x => guids.Contains(x.Definition.FunctionId));
 
         }
 
-        public bool WorkspaceOpen()
+        private bool IsWorkspaceFromPackageOpen(DynamoModel dynamoModel)
         {
             // get all of the function ids from the custom nodes in this package
-            var guids = LoadedCustomNodes.Select(x => x.Guid);
+            var guids = new HashSet<Guid>(LoadedCustomNodes.Select(x => x.FunctionId));
 
             return
-                dynSettings.Controller.DynamoModel.Workspaces.Any(
-                    x =>
-                        {
-                            var def = dynSettings.CustomNodeManager.GetDefinitionFromWorkspace(x);
-                            return def != null && guids.Contains(def.FunctionId);
-                        });
+                dynamoModel.Workspaces.OfType<CustomNodeWorkspaceModel>()
+                    .Select(x => x.CustomNodeId)
+                    .Any(guids.Contains);
         }
 
-        private void Uninstall()
+        internal void MarkForUninstall(IPreferences prefs)
         {
+            MarkedForUninstall = true;
 
-            var res = MessageBox.Show("Are you sure you want to uninstall " + this.Name + "?  This will delete the packages root directory.\n\n You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
+            {
+                prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
+            }
+        }
 
-            if (res == MessageBoxResult.No) return;
+        internal void UnmarkForUninstall(IPreferences prefs)
+        {
+            MarkedForUninstall = false;
+            prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
+        }
+
+        internal void UninstallCore(CustomNodeManager customNodeManager, PackageLoader packageLoader, IPreferences prefs)
+        {
+            if (LoadedAssemblies.Any())
+            {
+                MarkForUninstall(prefs);
+                return;
+            }
 
             try
             {
-                LoadedCustomNodes.ToList().ForEach(x => dynSettings.CustomNodeManager.RemoveFromDynamo(x.Guid));
-                dynSettings.PackageLoader.LocalPackages.Remove(this);
-                Directory.Delete(this.RootDirectory, true);
+                LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
+                packageLoader.LocalPackages.Remove(this);
+                Directory.Delete(RootDirectory, true);
             }
-            catch( Exception e )
+            catch (Exception e)
             {
-                MessageBox.Show("Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
-                DynamoLogger.Instance.Log("Exception when attempting to uninstall the package " + this.Name + " from " + this.RootDirectory);
-                DynamoLogger.Instance.Log(e.GetType() + ": " + e.Message);
+                Log("Exception when attempting to uninstall the package " + Name + " from " + RootDirectory);
+                Log(e.GetType() + ": " + e.Message);
+                throw;
             }
-            
         }
 
-        private bool CanUninstall()
+        internal void RefreshCustomNodesFromDirectory(CustomNodeManager customNodeManager, bool isTestMode)
         {
-            return !InUse();
+            LoadedCustomNodes.Clear();
+
+            foreach (var x in customNodeManager.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
+                LoadedCustomNodes.Add(x);
         }
 
-        private void Deprecate()
+        public event Action<ILogMessage> MessageLogged;
+
+        protected virtual void Log(ILogMessage obj)
         {
-            var res = MessageBox.Show("Are you sure you want to deprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.  \n\n You can always undeprecate the package.", "Deprecating Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (res == MessageBoxResult.No) return;
-
-            dynSettings.PackageManagerClient.Deprecate(this.Name);
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
         }
 
-        private bool CanDeprecate()
+        protected virtual void Log(string s)
         {
-            return true;
+            Log(LogMessage.Info(s));
         }
-
-        private void Undeprecate()
-        {
-            var res = MessageBox.Show("Are you sure you want to undeprecate " + this.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.  \n\n You can always re-deprecate the package.", "Removing Package Deprecation", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (res == MessageBoxResult.No) return;
-
-            dynSettings.PackageManagerClient.Undeprecate(this.Name);
-        }
-
-        private bool CanUndeprecate()
-        {
-            return true;
-        }
-
-        private void RefreshCustomNodesFromDirectory()
-        {
-            this.LoadedCustomNodes.Clear();
-            dynSettings.CustomNodeManager
-                        .GetInfosFromFolder(this.CustomNodeDirectory)
-                        .ToList()
-                        .ForEach(x => this.LoadedCustomNodes.Add(x));
-        }
-
-        private void PublishNewPackageVersion()
-        {
-            this.RefreshCustomNodesFromDirectory();
-            var vm = PublishPackageViewModel.FromLocalPackage(this);
-            vm.IsNewVersion = true;
-
-            dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
-        }
-
-        private bool CanPublishNewPackageVersion()
-        {
-            return true;
-        }
-
-        private void PublishNewPackage()
-        {
-            this.RefreshCustomNodesFromDirectory();
-            var vm = PublishPackageViewModel.FromLocalPackage(this);
-            vm.IsNewVersion = false;
-
-            dynSettings.Controller.DynamoViewModel.OnRequestPackagePublishDialog(vm);
-        }
-
-        private bool CanPublishNewPackage()
-        {
-            return true;
-        }
-
-        private void GetLatestVersion()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool CanGetLatestVersion()
-        {
-            return false;
-        }
-
-        private void ToggleTypesVisibleInManager()
-        {
-            this.TypesVisibleInManager = !this.TypesVisibleInManager;
-        }
-
-        private bool CanToggleTypesVisibleInManager()
-        {
-            return true;
-        }
-        
     }
 }

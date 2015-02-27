@@ -1,28 +1,25 @@
-<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="8825d5f9-0250-46f6-8150-686a0fab2f22" nickname="Formula" x="235" y="65.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">3*(10/2)+4</Dynamo.Nodes.Formula>
-    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="6d4611f3-acf1-4f1b-a4cc-3c13ad5725c4" nickname="Formula" x="237" y="164.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">x*(10/y)+4</Dynamo.Nodes.Formula>
-    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="5ce81ee5-cb97-46c5-a20f-76f00a04ee10" nickname="Formula" x="238" y="269.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">x*f(10,y)+4</Dynamo.Nodes.Formula>
+<Workspace Version="0.7.1.23670" X="36" Y="1" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCoreNodesUI.Formula type="DSCoreNodesUI.Formula" guid="8825d5f9-0250-46f6-8150-686a0fab2f22" nickname="Formula" x="235" y="65.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>3*(10/2)+4</FormulaText>
+    </DSCoreNodesUI.Formula>
+    <DSCoreNodesUI.Formula type="DSCoreNodesUI.Formula" guid="6d4611f3-acf1-4f1b-a4cc-3c13ad5725c4" nickname="Formula" x="237" y="164.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x*(10/y)+4</FormulaText>
+    </DSCoreNodesUI.Formula>
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="2a8f6086-dd36-49f6-b9c1-dfd5dbc683ea" nickname="Watch" x="479" y="65.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="226f0d3a-7578-46f8-9f60-9fc24dd82c48" nickname="Watch" x="480" y="161.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8" nickname="Watch" x="481" y="265.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="5b9550b2-0d3b-4ffd-ad51-7b87bff71450" nickname="Number" x="16" y="153.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="3" />
     </Dynamo.Nodes.DoubleInput>
     <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="2cddb2c0-26a9-46e7-b782-b9814e5bee99" nickname="Number" x="17" y="228.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="2" />
     </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="9f41d3e7-2334-4a4b-a985-d7d06a8e89af" nickname="Divide" x="15" y="315.52" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-  </dynElements>
-  <dynConnectors>
+  </Elements>
+  <Connectors>
     <Dynamo.Models.ConnectorModel start="8825d5f9-0250-46f6-8150-686a0fab2f22" start_index="0" end="2a8f6086-dd36-49f6-b9c1-dfd5dbc683ea" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="6d4611f3-acf1-4f1b-a4cc-3c13ad5725c4" start_index="0" end="226f0d3a-7578-46f8-9f60-9fc24dd82c48" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="5ce81ee5-cb97-46c5-a20f-76f00a04ee10" start_index="0" end="af0ccd4f-9fae-4f66-85eb-e5d58eb15fd8" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="5b9550b2-0d3b-4ffd-ad51-7b87bff71450" start_index="0" end="5ce81ee5-cb97-46c5-a20f-76f00a04ee10" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="5b9550b2-0d3b-4ffd-ad51-7b87bff71450" start_index="0" end="6d4611f3-acf1-4f1b-a4cc-3c13ad5725c4" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="2cddb2c0-26a9-46e7-b782-b9814e5bee99" start_index="0" end="5ce81ee5-cb97-46c5-a20f-76f00a04ee10" end_index="2" portType="0" />
     <Dynamo.Models.ConnectorModel start="2cddb2c0-26a9-46e7-b782-b9814e5bee99" start_index="0" end="6d4611f3-acf1-4f1b-a4cc-3c13ad5725c4" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="9f41d3e7-2334-4a4b-a985-d7d06a8e89af" start_index="0" end="5ce81ee5-cb97-46c5-a20f-76f00a04ee10" end_index="1" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,34 @@
+<Workspace Version="0.7.0.22524" X="255.659909048697" Y="104.215544284241" zoom="1.02988563947099" Description="This node represents an upgrade of 0.6.3 TransformOriginVectors to 0.7.0" Category="Migration" Name="TransformOriginVectors" ID="9a89dcea-3f52-48bc-ae41-b5a3ed1fd1bb">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b01099f8-3db2-4b17-97c2-9d974cd9022d" nickname="Vector.Reverse" x="457.151226563687" y="313.760660448558" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Vector.Reverse" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="fb275cab-9b97-43ca-bd30-290e5ff2b483" nickname="Vector.Cross" x="285.988286529758" y="313.858589608245" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Vector.Cross@Autodesk.DesignScript.Geometry.Vector" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="46db1f12-5214-4d6c-ada6-273e683bb6dc" nickname="CoordinateSystem.ByOriginVectors" x="633.722185236422" y="286.871239921093" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b1253008-4190-4909-b1cf-ac01f5e783d3" nickname="Point.AsVector" x="133.20747636955" y="231.992153568141" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.AsVector" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="70e6cb90-41cb-41da-a136-4b7a849f0bd4" nickname="Point.AsVector" x="94.5645995062931" y="405.789414217055" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.AsVector" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7912fdf7-f921-40d1-bff7-cbd9bc4b8630" nickname="Input" x="-30.1004294184775" y="249.54226969512" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="up" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="844a7eec-07c1-491b-9ca7-1a428bbef092" nickname="Input" x="-30.1004294184775" y="399.54226969512" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="forward" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="51e439b8-02fe-4227-b015-361c8fa897d3" nickname="Output" x="911.534700600378" y="294.207423025764" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="CoordinateSystem" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="36e93590-451c-4f67-9e34-595ab364e436" nickname="Input" x="306.853132350946" y="123.644616630229" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="origin" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b01099f8-3db2-4b17-97c2-9d974cd9022d" start_index="0" end="46db1f12-5214-4d6c-ada6-273e683bb6dc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb275cab-9b97-43ca-bd30-290e5ff2b483" start_index="0" end="b01099f8-3db2-4b17-97c2-9d974cd9022d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="46db1f12-5214-4d6c-ada6-273e683bb6dc" start_index="0" end="51e439b8-02fe-4227-b015-361c8fa897d3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1253008-4190-4909-b1cf-ac01f5e783d3" start_index="0" end="fb275cab-9b97-43ca-bd30-290e5ff2b483" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1253008-4190-4909-b1cf-ac01f5e783d3" start_index="0" end="46db1f12-5214-4d6c-ada6-273e683bb6dc" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="70e6cb90-41cb-41da-a136-4b7a849f0bd4" start_index="0" end="fb275cab-9b97-43ca-bd30-290e5ff2b483" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="70e6cb90-41cb-41da-a136-4b7a849f0bd4" start_index="0" end="46db1f12-5214-4d6c-ada6-273e683bb6dc" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7912fdf7-f921-40d1-bff7-cbd9bc4b8630" start_index="0" end="b1253008-4190-4909-b1cf-ac01f5e783d3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="844a7eec-07c1-491b-9ca7-1a428bbef092" start_index="0" end="70e6cb90-41cb-41da-a136-4b7a849f0bd4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="36e93590-451c-4f67-9e34-595ab364e436" start_index="0" end="46db1f12-5214-4d6c-ada6-273e683bb6dc" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

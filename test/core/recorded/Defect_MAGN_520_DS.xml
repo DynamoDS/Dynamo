@@ -1,0 +1,21 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="03107ea4-75db-4826-a12d-9ebf4f23f65c" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="70c28589-855c-45cf-9ec3-bbf25d478a0d" NodeName="-@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="bdb376ca-a02d-4c6e-94fd-67142a0361e0" NodeName="*@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="1253416f-3a9f-4519-a4a3-8c5b4a2f8cf8" NodeName="/@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="70c28589-855c-45cf-9ec3-bbf25d478a0d" Modifiers="0" />
+  <DragSelectionCommand X="285" Y="240" DragOperation="0" />
+  <DragSelectionCommand X="525" Y="207" DragOperation="1" />
+  <SelectModelCommand ModelGuid="bdb376ca-a02d-4c6e-94fd-67142a0361e0" Modifiers="0" />
+  <DragSelectionCommand X="375" Y="265" DragOperation="0" />
+  <DragSelectionCommand X="268" Y="409" DragOperation="1" />
+  <SelectModelCommand ModelGuid="1253416f-3a9f-4519-a4a3-8c5b4a2f8cf8" Modifiers="0" />
+  <DragSelectionCommand X="357" Y="287" DragOperation="0" />
+  <DragSelectionCommand X="576" Y="423" DragOperation="1" />
+  <SelectModelCommand ModelGuid="03107ea4-75db-4826-a12d-9ebf4f23f65c" Modifiers="0" />
+  <DragSelectionCommand X="298" Y="219" DragOperation="0" />
+  <DragSelectionCommand X="241" Y="208" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="151" Y="355" Width="640" Height="191" IsCrossSelection="false" />
+  <DeleteModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" />
+</Commands>

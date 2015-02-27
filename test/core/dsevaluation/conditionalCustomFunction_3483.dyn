@@ -1,0 +1,25 @@
+<Workspace Version="0.7.1.17276" X="-1033.45476446442" Y="-474.76447155371" zoom="0.987978939506987" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="1c03f57e-e0dc-45b1-933f-62ec41bc907f" nickname="Double Slider" x="1138.15542205569" y="714.376587582202" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>2.647</System.Double>
+      <Range min="-5" max="5" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="46f484ed-eecd-45cd-9904-0020a3c98999" nickname="Watch" x="1962.67622381809" y="723.045956371493" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="03b28456-d885-4a69-8873-34c7cc679446" nickname="Pass Nothing Below 1" x="1485.6232112771" y="724.437191119677" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f6533d2f-8a68-4957-865d-eeceda9da281" />
+      <Name value="Pass Nothing Below 1" />
+      <Description value="Takes inputs and only passes 1 or values above 1" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="result" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1c03f57e-e0dc-45b1-933f-62ec41bc907f" start_index="0" end="03b28456-d885-4a69-8873-34c7cc679446" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="03b28456-d885-4a69-8873-34c7cc679446" start_index="0" end="46f484ed-eecd-45cd-9904-0020a3c98999" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

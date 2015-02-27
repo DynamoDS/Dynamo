@@ -1,0 +1,19 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="28029adc-b19d-414c-996c-545572aa9efc" NodeName="Code Block" X="195" Y="198" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="28029adc-b19d-414c-996c-545572aa9efc" Name="Code" Value="def add(x:int)&#xD;&#xA;{&#xD;&#xA;return = x+x;&#xD;&#xA;};&#xD;&#xA;add(x);" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="3f0a08ea-f6c7-4c2f-8373-4ce61defae2c" NodeName="Code Block" X="-46" Y="195" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="3f0a08ea-f6c7-4c2f-8373-4ce61defae2c" Name="Code" Value="4" />
+  <MakeConnectionCommand NodeId="3f0a08ea-f6c7-4c2f-8373-4ce61defae2c" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="28029adc-b19d-414c-996c-545572aa9efc" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="28029adc-b19d-414c-996c-545572aa9efc" Modifiers="0" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="28029adc-b19d-414c-996c-545572aa9efc" Name="Code" Value="def add(x:int)&#xA;{&#xA;return = x+x;&#xA;};" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="LastRun" PauseDurationInMs="20" />
+</Commands>

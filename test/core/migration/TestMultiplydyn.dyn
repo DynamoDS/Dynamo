@@ -1,0 +1,37 @@
+<Workspace Version="0.6.2.29585" X="144" Y="-68" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" nickname="Number" x="4" y="102.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="22dd6b7f-8b45-4351-8018-3a1ed4663179" nickname="Number" x="6" y="186.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c2a6381a-a01c-42a9-99b7-d59317ec226a" nickname="Number" x="6" y="281.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="d12b7a47-e40f-4851-b325-39df14d9b41e" nickname="Number" x="8" y="365.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2.5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="d2311f8d-2bf8-4aed-bf4b-708b993171ac" nickname="Divide" x="216" y="95.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="802d27f8-9259-4050-bd7c-214ff83fa98a" nickname="Divide" x="214" y="203.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="5c498c26-1536-4b51-8d0f-f613fc025896" nickname="Divide" x="215" y="334.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="1737dfb3-f470-4a32-bac9-34aa4c18606b" nickname="Divide" x="219" y="447.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b2bbba88-3469-4457-8afd-75a8ed1af413" nickname="Number" x="11" y="439.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="9b902150-dc32-4e00-8ba6-1819887528ae" nickname="Divide" x="222" y="567.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="d2311f8d-2bf8-4aed-bf4b-708b993171ac" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="802d27f8-9259-4050-bd7c-214ff83fa98a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="5c498c26-1536-4b51-8d0f-f613fc025896" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="1737dfb3-f470-4a32-bac9-34aa4c18606b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6db6b29b-31f5-4ac7-8825-ea7efa23a7ff" start_index="0" end="9b902150-dc32-4e00-8ba6-1819887528ae" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22dd6b7f-8b45-4351-8018-3a1ed4663179" start_index="0" end="d2311f8d-2bf8-4aed-bf4b-708b993171ac" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2a6381a-a01c-42a9-99b7-d59317ec226a" start_index="0" end="802d27f8-9259-4050-bd7c-214ff83fa98a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d12b7a47-e40f-4851-b325-39df14d9b41e" start_index="0" end="5c498c26-1536-4b51-8d0f-f613fc025896" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2bbba88-3469-4457-8afd-75a8ed1af413" start_index="0" end="1737dfb3-f470-4a32-bac9-34aa4c18606b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2bbba88-3469-4457-8afd-75a8ed1af413" start_index="0" end="9b902150-dc32-4e00-8ba6-1819887528ae" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

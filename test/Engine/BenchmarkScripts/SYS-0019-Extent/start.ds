@@ -1,0 +1,68 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+import("Tree_Tools_5.ds");
+
+xArray = 0..20..2;
+yArray = 0..30..2;
+zHeight = 2;
+baseGrid = Point.ByCoordinates(xArray<1>, yArray<2>, 0).SetVisibility(false);
+
+xControl = 15;
+yControl = 12;
+
+domeThreshold = 12;
+treeThreshold = 4.0;
+
+controlPointRed;
+controlPointGreen;
+pointGrid;
+diaGrid;
+tree;
+
+extent = -7;
+redX = { 30, 16, extent, extent, 15, 15, extent, extent, 4,  4 };
+redY = {  8,  8,   8,  10, 10, 20,  20,  20, 10, 40 };
+redZ = { -6, -6,  -6,   8,  8,  8,   8,  -6, -6, -6 };
+redControlVertices = Point.ByCoordinates(redX, redY,redZ).SetVisibility(false); // .SetColor(Color.Red);
+
+redCurve = BSplineCurve.ByControlVertices(redControlVertices, 2).SetVisibility(false); // .SetColor(Color.Red);
+
+greenX = { 6, 6, 16, 16 };
+greenY = {-10, 18, 22, 40 };
+greenControlVertices = Point.ByCoordinates(greenX, greenY, -6.0).SetVisibility(false); //.SetColor(Color.Green);
+
+greenCurve = BSplineCurve.ByControlVertices(greenControlVertices, 2).SetVisibility(false); // .SetColor(Color.Green);
+
+zArray;
+
+LOD = 0;
+
+[Imperative]
+{
+    for(i in(0.0..1.0..#100)) // ({ 0.5})
+    {
+        [Associative]
+        {
+            controlPointRed = redCurve.PointAtParameter(i).SetVisibility(false); // .SetColor(Color.Cyan);;
+            controlPointGreen = greenCurve.PointAtParameter(i).SetVisibility(false); //.SetColor(Color.Yellow);
+            controlPoints = { controlPointRed, controlPointGreen };
+    
+            heightOffsets = HeightDisplacementFromDistance(controlPoints<1>, baseGrid<2><3>, domeThreshold, zHeight);
+            
+            iCount = Count(heightOffsets);
+            
+            zArray = CombineArrays(heightOffsets);
+            
+            pointGrid = Point.ByCoordinates(xArray<1>, yArray<2>, zArray<1><2>).SetVisibility(false); // .SetColor(Color.Cyan);//.SetVisibility(false); //
+            radius = 0.1;
+        
+            diaGrid = CrossBar.ByQuadPoints(QuadPoints(pointGrid), radius, LOD, Color.White);
+            
+            // tree = Axis.ByBasePointRoof(controlPointGreen, threshold, 0.0, 0.0, pointGrid);
+            tree = Tree.ByBasePointRoof(controlPoints, treeThreshold, pointGrid, 0.5, 1.5, 1.5, 0.3, 0.2, 0.1, false);
+        } 
+        
+        Geometry.UpdateDisplay();
+    }
+} 
+

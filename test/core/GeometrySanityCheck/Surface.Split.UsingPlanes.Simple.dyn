@@ -1,0 +1,11 @@
+<Workspace Version="0.6.3.27769" X="3.14750000000004" Y="-150.595" zoom="1.1575" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="90322e1a-3143-4925-9e1e-401b7ad5bdb8" nickname="Code Block" x="64" y="161" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="WCS = CoordinateSystem.Identity();&#xA;points          = Point.ByCoordinates(4, 0, 0..7); &#xA;points[1]       = points[1].Translate(-1, 0, 0); &#xA;points[5]       = points[5].Translate(1, 0, 0); &#xA;curve           = NurbsCurve.ByPoints(points); &#xA;axisOrigin      = Point.ByCoordinates(0, 0, 0); &#xA;axis            = Vector.ByCoordinates(0, 0, 1); &#xA;surfacetoSplit  = Surface.Revolve(curve, axisOrigin, axis, 10, 350);&#xA;splitting       = Plane.ByOriginNormal(Point.ByCoordinates(0, 2, 4), WCS.XAxis);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="aea005b1-6c9e-4090-a1ad-785bd29969f0" nickname="Surface.Split" x="754.285097192225" y="268.27969762419" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Surface.Split@Plane" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="90322e1a-3143-4925-9e1e-401b7ad5bdb8" start_index="5" end="aea005b1-6c9e-4090-a1ad-785bd29969f0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="90322e1a-3143-4925-9e1e-401b7ad5bdb8" start_index="6" end="aea005b1-6c9e-4090-a1ad-785bd29969f0" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

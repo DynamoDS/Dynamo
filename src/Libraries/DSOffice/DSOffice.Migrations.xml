@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<migrations>
+  <priorNameHint>
+    <oldName>DSOffice.Excel.Write</oldName>
+    <newName>DSOffice.Excel.WriteToFile</newName>
+  </priorNameHint>
+</migrations>

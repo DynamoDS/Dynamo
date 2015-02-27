@@ -1,0 +1,18 @@
+<Workspace Version="0.7.4.3075" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="48c04164-6435-4124-9fe6-b3319ef177da" nickname="Watch" x="517" y="154.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="84693240-90f3-45f3-9cb3-88207499f0bc" nickname="String" x="89" y="125.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value=".\filewriter.txt" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="c77eb0b4-8c14-4fc1-9f27-0149f85ad2e4" nickname="String" x="102" y="198.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="test" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3499c7da-1045-4a3f-8a49-f0f996a757b3" nickname="File.WriteText" x="281" y="126.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.File.WriteText@string,string" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="84693240-90f3-45f3-9cb3-88207499f0bc" start_index="0" end="3499c7da-1045-4a3f-8a49-f0f996a757b3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c77eb0b4-8c14-4fc1-9f27-0149f85ad2e4" start_index="0" end="3499c7da-1045-4a3f-8a49-f0f996a757b3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3499c7da-1045-4a3f-8a49-f0f996a757b3" start_index="0" end="48c04164-6435-4124-9fe6-b3319ef177da" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

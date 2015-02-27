@@ -1,36 +1,20 @@
-<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
-  <CreateNodeCommand NodeId="2ba65a2e-c3dd-4d27-9d18-9bf123835fb8" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="2279f845-4ba9-4300-a6c3-a566cd8b4a32" NodeName="Number Slider" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="d33abcb6-50fd-4d18-ac89-87adb2d28053" NodeName="String" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="540fffbb-4f5b-4496-9231-eba5b04e388c" NodeName="Formula" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="0a60f132-25a0-4b7c-85f2-3c31f39ef9da" NodeName="Build Sublists" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <SelectModelCommand ModelGuid="2ba65a2e-c3dd-4d27-9d18-9bf123835fb8" Modifiers="0" />
-  <DragSelectionCommand X="263" Y="216" DragOperation="0" />
-  <DragSelectionCommand X="84" Y="58" DragOperation="1" />
-  <SelectModelCommand ModelGuid="2279f845-4ba9-4300-a6c3-a566cd8b4a32" Modifiers="0" />
-  <DragSelectionCommand X="303" Y="237" DragOperation="0" />
-  <DragSelectionCommand X="102" Y="144" DragOperation="1" />
-  <SelectModelCommand ModelGuid="d33abcb6-50fd-4d18-ac89-87adb2d28053" Modifiers="0" />
-  <DragSelectionCommand X="297" Y="261" DragOperation="0" />
-  <DragSelectionCommand X="76" Y="231" DragOperation="1" />
-  <SelectModelCommand ModelGuid="540fffbb-4f5b-4496-9231-eba5b04e388c" Modifiers="0" />
-  <DragSelectionCommand X="329" Y="283" DragOperation="0" />
-  <DragSelectionCommand X="86" Y="314" DragOperation="1" />
-  <SelectModelCommand ModelGuid="0a60f132-25a0-4b7c-85f2-3c31f39ef9da" Modifiers="0" />
-  <DragSelectionCommand X="364" Y="309" DragOperation="0" />
-  <DragSelectionCommand X="286" Y="311" DragOperation="1" />
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="1000">
+  <CreateNodeCommand NodeId="31f48bb5-4bdf-4066-b343-5df0f6f4337f" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="ff4d4e43-8932-4588-95ed-f41c7f322ad0" NodeName="Integer Slider" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="2ba65a2e-c3dd-4d27-9d18-9bf123835fb8" Name="Value" Value="12.34" />
+  <CreateNodeCommand NodeId="d7e88a85-d32f-416c-b449-b22f099c5471" NodeName="Code Block" X="304" Y="395" DefaultPosition="false" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="2279f845-4ba9-4300-a6c3-a566cd8b4a32" Name="Min" Value="23.45" />
+  <UpdateModelValueCommand ModelGuid="d7e88a85-d32f-416c-b449-b22f099c5471" Name="Code" Value="a+b" />
+  <SelectModelCommand ModelGuid="ff4d4e43-8932-4588-95ed-f41c7f322ad0" Modifiers="0" />
+  <DragSelectionCommand X="377" Y="242" DragOperation="0" />
+  <DragSelectionCommand X="37" Y="280" DragOperation="1" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="2279f845-4ba9-4300-a6c3-a566cd8b4a32" Name="Value" Value="34.56" />
+  <UpdateModelValueCommand ModelGuid="ff4d4e43-8932-4588-95ed-f41c7f322ad0" Name="Value" Value="70" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="2279f845-4ba9-4300-a6c3-a566cd8b4a32" Name="Max" Value="45.67" />
+  <UpdateModelValueCommand ModelGuid="31f48bb5-4bdf-4066-b343-5df0f6f4337f" Name="Value" Value="10" />
+  <MakeConnectionCommand NodeId="31f48bb5-4bdf-4066-b343-5df0f6f4337f" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d7e88a85-d32f-416c-b449-b22f099c5471" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="ff4d4e43-8932-4588-95ed-f41c7f322ad0" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d7e88a85-d32f-416c-b449-b22f099c5471" PortIndex="1" Type="0" ConnectionMode="1" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="d33abcb6-50fd-4d18-ac89-87adb2d28053" Name="Value" Value="Test String Input" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="540fffbb-4f5b-4496-9231-eba5b04e388c" Name="FormulaString" Value="a+b+c" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="0a60f132-25a0-4b7c-85f2-3c31f39ef9da" Name="Value" Value="d" />
 </Commands>

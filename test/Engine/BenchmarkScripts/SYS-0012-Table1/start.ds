@@ -1,0 +1,74 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+
+class rectangle
+{
+    shape : BSplineCurve;
+    
+    constructor makeNew(TCS : CoordinateSystem, width : double, length : double)
+    {
+        p1 = Point.ByCartesianCoordinates(TCS, length / 2, width / 2, 0);
+        p2 = Point.ByCartesianCoordinates(TCS, length / 2, -width / 2, 0);
+        p3 = Point.ByCartesianCoordinates(TCS, -length / 2, -width / 2, 0);
+        p4 = Point.ByCartesianCoordinates(TCS, -length / 2, width / 2, 0);
+        
+        shape = BSplineCurve.ByControlVertices({ p1, p2, p3, p4 }, 1, true);
+    }
+}
+
+def makeCS: CoordinateSystem (point:Point,  angle : double)
+{
+    TCSOrigin = point;
+    TCSXAxisPoint = Point.ByCoordinates(Math.Cos(angle), Math.Sin(angle), 0);
+    TCSYAxisPoint = Point.ByCoordinates(Math.Cos(angle+90), Math.Sin(angle+90), 0);
+    
+    newCS = CoordinateSystem.ByThreePoints(TCSOrigin, TCSXAxisPoint, TCSYAxisPoint);
+    return = newCS;
+}
+
+origin = Point.ByCoordinates(0, 0, 0);
+WCS = CoordinateSystem.Identity();
+cirTop = Circle.ByCenterPointRadius(origin, 40);
+cirMid1 = Circle.ByCenterPointRadius(origin.Translate(0, 0, -20), 20);
+cirMid2 = Circle.ByCenterPointRadius(origin.Translate(0, 0, -40), 40);
+cirMid3 = Circle.ByCenterPointRadius(origin.Translate(0, 0, -60), 10);
+cirBot = Circle.ByCenterPointRadius(origin.Translate(0, 0, -100), 40);
+
+len = 50;   number = 15;
+
+u = 0..(number - 1) / number..#number;
+angle = 0..(number-1)/number*360..#number;
+
+cirTopPts = Point.AtParameter(cirTop, u);
+cirBotPts = Point.AtParameter(cirBot, u);
+cirMid1Pts = Point.AtParameter(cirMid1, u);
+cirMid2Pts = Point.AtParameter(cirMid2, u);
+cirMid3Pts = Point.AtParameter(cirMid3, u);
+
+coordSys = makeCS(cirTopPts, angle);
+
+rectTop = rectangle.makeNew(coordSys, len, len/8);
+rectBot = rectangle.makeNew(coordSys.Translate(0, 0, 100), len * 1.5, len * 1.5 / 8);
+
+path = { };
+[Imperative]
+{
+    for(i in 0..Count(u)-1)
+        path[i] = BSplineCurve.ByPoints({ cirTopPts[i], cirMid3Pts[i], cirBotPts[i] });
+    
+}
+
+surface = { };
+
+[Imperative]
+{
+    for(i in 0..Count(u)-1)
+        surface[i] = Surface.LoftFromCrossSectionsPath({ rectTop[i].shape, rectBot[i].shape }, path[i]);
+}
+
+solid = surface.Thicken(1, false);
+planeTop = Plane.ByOriginNormal(origin, WCS.ZAxis);
+solid = solid.Trim(planeTop, Point.ByCoordinates(0, 0, 1));
+
+tableTopCir = Circle.ByCenterPointRadius(origin, 80);
+tableTop = Surface.CreateFromCurve(tableTopCir).Thicken(1, false);

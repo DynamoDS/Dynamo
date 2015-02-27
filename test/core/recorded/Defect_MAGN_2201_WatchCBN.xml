@@ -1,0 +1,20 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="3390e95a-df44-4379-baa6-27096cc50f09" NodeName="Code Block" X="176" Y="250" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="3390e95a-df44-4379-baa6-27096cc50f09" Name="Code" Value="1..5" />
+  <CreateNodeCommand NodeId="c091cfbc-5dbe-46ed-8fda-673ff4fb74c1" NodeName="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <MakeConnectionCommand NodeId="3390e95a-df44-4379-baa6-27096cc50f09" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="c091cfbc-5dbe-46ed-8fda-673ff4fb74c1" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="3390e95a-df44-4379-baa6-27096cc50f09" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="c091cfbc-5dbe-46ed-8fda-673ff4fb74c1" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="3390e95a-df44-4379-baa6-27096cc50f09" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="c091cfbc-5dbe-46ed-8fda-673ff4fb74c1" PortIndex="2" Type="0" ConnectionMode="1" />
+  <CreateNodeCommand NodeId="4a824f64-2ddd-4442-acb8-b6f797567a03" NodeName="Watch" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="4a824f64-2ddd-4442-acb8-b6f797567a03" Modifiers="0" />
+  <DragSelectionCommand X="328" Y="264" DragOperation="0" />
+  <DragSelectionCommand X="528" Y="267" DragOperation="1" />
+  <MakeConnectionCommand NodeId="c091cfbc-5dbe-46ed-8fda-673ff4fb74c1" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="4a824f64-2ddd-4442-acb8-b6f797567a03" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>

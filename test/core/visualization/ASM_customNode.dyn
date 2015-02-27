@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.22221" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.6.0" X="-64.3763166149828" Y="-68.2968076536918" zoom="0.954042924882813" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="db6660f8-b8a7-4447-b91b-09cd774ec3db" nickname="Points" x="473" y="267.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <ID value="29a3cd04-d452-4c02-a0a6-1796527e008f" />
@@ -11,10 +11,15 @@
         <Output value="xyz" />
       </Outputs>
     </Dynamo.Nodes.Function>
-    <Dynamo.Nodes.DoubleSliderInput type="Dynamo.Nodes.DoubleSliderInput" guid="d615b2c1-c88c-4b3e-975c-6da26dee231e" nickname="Number Slider" x="71" y="296.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="9.78417266187051" min="0" max="20" />
-    </Dynamo.Nodes.DoubleSliderInput>
-    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="fb3ea512-63f6-4e50-9cb2-344d1fc33b30" nickname="Watch 3D" x="769" y="189.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="d615b2c1-c88c-4b3e-975c-6da26dee231e" nickname="Number Slider" x="71" y="296.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>9.784</System.Double>
+      <Range min="0" max="20" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="fb3ea512-63f6-4e50-9cb2-344d1fc33b30" nickname="Watch 3D" x="769" y="189.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="210" height="257">
+        <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="db6660f8-b8a7-4447-b91b-09cd774ec3db" start_index="0" end="fb3ea512-63f6-4e50-9cb2-344d1fc33b30" end_index="0" portType="0" />

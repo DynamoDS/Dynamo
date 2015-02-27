@@ -1,0 +1,12 @@
+[Imperative]
+{
+    i = 0; 
+    while (i < 1000000)
+    {
+        [Associative]
+        {
+        }
+
+        i = i + 1;
+    }
+}

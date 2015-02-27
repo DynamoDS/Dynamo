@@ -1,20 +1,22 @@
-<Workspace Version="0.7.0.17491" X="-115.600133599175" Y="15.5231111111108" zoom="0.7" Description="" Category="" Name="Home">
+<Workspace Version="0.7.4.3075" X="-115.600133599175" Y="15.5231111111108" zoom="0.7" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="06189b89-84bf-413c-91a1-9d6629810394" nickname="File Path" x="50.8571428571429" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\..\test\core\excel\mixedNumbersAndStrings.xlsx" />
-    </Dynamo.Nodes.StringFilename>
-    <Dynamo.Nodes.ReadExcelFile type="Dynamo.Nodes.ReadExcelFile" guid="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" nickname="Open Excel Workbook" x="360.143047998821" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="06189b89-84bf-413c-91a1-9d6629810394" nickname="File Path" x="50.8571428571429" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\excel\mixedNumbersAndStrings.xlsx</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" nickname="Excel.ReadExcelFile" x="438.71447657025" y="52.9485714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSOffice.dll" function="DSOffice.Excel.ReadExcelFile@var" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="83b11652-871a-4ae3-9532-efea852b78b2" nickname="Watch" x="910.143047998821" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.GetExcelWorksheetByName type="Dynamo.Nodes.GetExcelWorksheetByName" guid="c7a60986-5d4f-4bc1-8ce2-b733ba56d434" nickname="Get Excel Worksheet By Name" x="612.285905141678" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="94cbb00c-36f1-4579-a381-39ed8d2bdfb0" nickname="String" x="410.857333713107" y="206.150317460318" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c7a60986-5d4f-4bc1-8ce2-b733ba56d434" nickname="Excel.GetExcelWorksheetByName" x="612.285905141678" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSOffice.dll" function="DSOffice.Excel.GetExcelWorksheetByName@DSOffice.WorkBook,string" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="94cbb00c-36f1-4579-a381-39ed8d2bdfb0" nickname="String" x="513.71447657025" y="254.721746031747" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="NotAWorksheet" />
     </Dynamo.Nodes.StringInput>
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="32f756be-23b8-42f6-ada5-70bd09426a46" nickname="File.FromPath" x="375.143047998821" y="167.109841269842" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="06189b89-84bf-413c-91a1-9d6629810394" start_index="0" end="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="06189b89-84bf-413c-91a1-9d6629810394" start_index="0" end="32f756be-23b8-42f6-ada5-70bd09426a46" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" start_index="0" end="c7a60986-5d4f-4bc1-8ce2-b733ba56d434" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="c7a60986-5d4f-4bc1-8ce2-b733ba56d434" start_index="0" end="83b11652-871a-4ae3-9532-efea852b78b2" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="94cbb00c-36f1-4579-a381-39ed8d2bdfb0" start_index="0" end="c7a60986-5d4f-4bc1-8ce2-b733ba56d434" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="32f756be-23b8-42f6-ada5-70bd09426a46" start_index="0" end="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" end_index="0" portType="0" />
   </Connectors>
   <Notes />
 </Workspace>

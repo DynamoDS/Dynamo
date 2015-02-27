@@ -1,0 +1,24 @@
+<Workspace Version="0.7.0.30500" X="-1328.92251420838" Y="-518.031955537399" zoom="0.92568585781069" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="38eff61a-25be-4740-b298-cb48d253dc73" nickname="PassNothingBelow1" x="1591.64802058907" y="779.393459234952" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="6b8abde9-b443-4435-83d7-b51983c3813c" />
+      <Name value="PassNothingBelow1" />
+      <Description value="Takes inputs and only passes 1 or values above 1" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="ret" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="02b12cb7-0a1c-4d32-b597-f71195d8ad75" nickname="Code Block" x="1596" y="960" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="-3..3;" ShouldFocus="false" />
+    <DSCore.Map type="DSCore.Map" guid="bb5928fe-56ac-43e1-b3d4-96ea3ee4580f" nickname="List.Map" x="1844.87832849339" y="827.114672274671" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="5e9d6150-223a-47b9-bfe2-7aecf33fc90d" nickname="Watch" x="2039.61166557483" y="838.660127042345" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="38eff61a-25be-4740-b298-cb48d253dc73" start_index="0" end="bb5928fe-56ac-43e1-b3d4-96ea3ee4580f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="02b12cb7-0a1c-4d32-b597-f71195d8ad75" start_index="0" end="bb5928fe-56ac-43e1-b3d4-96ea3ee4580f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bb5928fe-56ac-43e1-b3d4-96ea3ee4580f" start_index="0" end="5e9d6150-223a-47b9-bfe2-7aecf33fc90d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

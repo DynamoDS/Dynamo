@@ -1,0 +1,14 @@
+# override specific installer exes#
+###################
+!Extra/fsharp_redist.exe
+!Extra/IronPython*.msi
+!Extra/InstallASMForDynamo.exe
+!Extra/DynamoAddinGenerator.exe
+!Extra/RevitInstallDetective.exe
+!Extra/RevitAddinUtility.dll
+/bin
+/definitions
+/sample
+/Installers
+/Extra/README.txt
+/Extra/README.md

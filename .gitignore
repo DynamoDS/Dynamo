@@ -50,5 +50,21 @@ Thumbs.db
 ###############
 *.pyc
 
+# RESHARPER #
+###############
+*_ReSharper*
+
 #documentation files
 doc/html/
+Dynamo.sln.DotSettings
+*.opensdf
+*.sdf
+*.backup
+
+#ASM
+extern/DynamoAsm/
+extern/ASM/
+
+/src/DynamoIcons/*.resources
+tools/CBNLanguageComparisonTests/GenerateTests.cs
+src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs

@@ -1,0 +1,12 @@
+<Workspace Version="0.6.3.27769" X="263.874850425547" Y="-122.959759937897" zoom="1.05429821501133" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ef69907c-e270-4aea-84ec-cfa62111d2c9" nickname="Code Block" x="257" y="216" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="WCS = CoordinateSystem.Identity();&#xA;cs = CoordinateSystem.ByThreePoints(Point.ByCoordinates(0, 0, 0),&#xA; Point.ByCoordinates(0, 1, 0), Point.ByCoordinates(1, 0, 0));&#xA;cylinder = Cylinder.ByRadiusHeight(cs, 2, 10);&#xA;cone = Cone.ByRadiusHeight(cs.Translate(10, 0, 0), 1, 2, 10);&#xA;sphere = Sphere.ByCenterPointRadius(Point.ByCoordinates(20, 0, 0), 2);&#xA;cuboid = Cuboid.ByLengths(cs.Translate(30, 0, 0), 4, 4, 4);&#xA;arrayOfSolids = { cylinder, cone, sphere, cuboid };&#xA;surface1 = Line.ByStartPointEndPoint(Point.ByCoordinates(-5, -7.5, 0),&#xA;Point.ByCoordinates(50, -7.5, 0)).Extrude(15, Vector.ByCoordinates(0, 1, 0));&#xA;surface2 = Line.ByStartPointEndPoint(Point.ByCoordinates(-5, 0, -7),&#xA;Point.ByCoordinates(50, 0, -7)).Extrude(15, Vector.ByCoordinates(0, 0, 1));&#xA;arrayOfSurface      = { surface1, surface2 };&#xA;pickPoint           = Point.ByCoordinates(0, -2, 2);&#xA;anotherPickPoint    = Point.ByCoordinates(0, 2, -2);" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="98314521-8bfd-40c8-b175-e9d1bf5c6b08" nickname="Solid.Trim" x="902.349200359171" y="476.500287778208" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="ProtoGeometry.dll" function="Solid.Trim@Surface[],Point" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ef69907c-e270-4aea-84ec-cfa62111d2c9" start_index="2" end="98314521-8bfd-40c8-b175-e9d1bf5c6b08" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ef69907c-e270-4aea-84ec-cfa62111d2c9" start_index="9" end="98314521-8bfd-40c8-b175-e9d1bf5c6b08" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ef69907c-e270-4aea-84ec-cfa62111d2c9" start_index="11" end="98314521-8bfd-40c8-b175-e9d1bf5c6b08" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

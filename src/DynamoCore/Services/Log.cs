@@ -6,7 +6,6 @@
  */
 
 using System;
-using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Net;
@@ -150,10 +149,9 @@ namespace net.riversofdata.dhlogger
         System.Diagnostics.Stopwatch sw;
 
         private Thread uploaderThread;
-        private const int EMPTY_DELAY_MS = 1000;
+        private const int EMPTY_DELAY_MS = 500;
         private const int ERROR_DELAY_MS = 10000;
         private const int DELAY_MS = 10;
-
 
         #region Public API
 
@@ -180,7 +178,7 @@ namespace net.riversofdata.dhlogger
                 sw.Start();
 
 
-                uploaderThread = new Thread(new ThreadStart(UploaderExec));
+                uploaderThread = new Thread(UploaderExec);
                 uploaderThread.IsBackground = true;
                 uploaderThread.Start();
             }
@@ -247,9 +245,6 @@ namespace net.riversofdata.dhlogger
         /// <param name="text"></param>
         private void PrepAndPushItem(string tag, string priority, string text)
         {
-
-
-
             //We don't need to validate the content of text as it's going to get base64
             //encoded
             if (this.EnableDiagnosticsOutput)
@@ -282,28 +277,25 @@ namespace net.riversofdata.dhlogger
             byte[] byteRepresentation = System.Text.Encoding.UTF8.GetBytes(text);
             string safeStr = System.Convert.ToBase64String(byteRepresentation);
 
-
             //Destroy the original representations to ensure runtime errors if used later in this method
             text = null;
-
 
             string dateTime = DateTime.Now.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss");
             string microTime = sw.ElapsedMilliseconds.ToString();
 
-            Dictionary<String, String> item = new Dictionary<String, String>();
-
-            item.Add("Tag", tag);
-            item.Add("Priority", priority);
-            item.Add("AppIdent", AppName);
-            item.Add("UserID", UserID);
-            item.Add("SessionID", SessionID);
-            item.Add("DateTime", dateTime);
-            item.Add("MicroTime", microTime);
-
-            item.Add("Data", safeStr);
+            var item = new Dictionary<string, string>
+            {
+                { "Tag", tag },
+                { "Priority", priority },
+                { "AppIdent", AppName },
+                { "UserID", UserID },
+                { "SessionID", SessionID },
+                { "DateTime", dateTime },
+                { "MicroTime", microTime },
+                { "Data", safeStr }
+            };
 
             PushItem(item);
-
         }
 
         /// <summary>
@@ -364,7 +356,6 @@ namespace net.riversofdata.dhlogger
                     
                 }
             }
-
             catch (Exception e)
             {
                 LastResortFailure(e);

@@ -1,0 +1,608 @@
+class _FunctionObject
+{
+    def DoEvaluation(param:var[]..[])
+    {
+        return = null;
+    }
+}
+
+class _SingleFunctionObject extends _FunctionObject
+{
+    __functionPointers : function;
+    __argumtNumber : int;
+    __params : var[]..[];
+    __hasParamAt : bool[];
+    __unpackParams: bool;
+    
+    constructor _SingleFunctionObject(fptr : function, 
+                                      argNumber: int, 
+                                      paramPositions : int[], 
+                                      params : var[]..[],
+                                      unpackParams: bool)
+    {
+        __functionPointers = fptr;
+        __argumtNumber = argNumber;
+        
+        __hasParamAt[0..__argumtNumber - 1] = false;
+        __hasParamAt[paramPositions] = true;
+        
+        __params = params;
+        __unpackParams = unpackParams;
+    }
+    
+    private def GetNextEmptyParamPos(hasParamAt : bool[])
+    {
+        return = [Imperative]
+        {
+            for(_i in 0..Count(hasParamAt) - 1)
+            {
+                if (!hasParamAt[_i])
+                    return = _i;
+            }
+            return = -1;
+        }
+    }
+    
+    private def DoEvaluationImp(fptr : function, 
+                              params : var[]..[], 
+                              unpackParams: bool)
+    {
+        return = Evaluate(fptr, params, unpackParams);
+    }
+    
+    def DoEvaluation(param: var[]..[])
+    {      
+        return = [Imperative]
+        {           
+            _nextParamPosition = GetNextEmptyParamPos(__hasParamAt);
+            
+            if (_nextParamPosition < 0)
+            {
+                return = null;
+            }
+            else
+            {
+                _params = __params;
+                _hasParamAt = __hasParamAt;
+                
+                _params[_nextParamPosition] = param;
+                _hasParamAt[_nextParamPosition] = true;
+                
+                _nextParamPosition = GetNextEmptyParamPos(_hasParamAt);
+                if (_nextParamPosition < 0)
+                {
+                    return = DoEvaluationImp(__functionPointers, _params, __unpackParams);
+                }
+                else
+                {
+                    _paramPositions = { };
+                    for (_i in 0..__argumtNumber - 1)
+                    {
+                        if (_hasParamAt[_i])
+                        {
+                            _paramPositions = Concat(_paramPositions, { _i });
+                        }
+                    }
+                
+                    return = _SingleFunctionObject._SingleFunctionObject(
+                                                __functionPointers,
+                                                __argumtNumber,
+                                                _paramPositions,
+                                                _params,
+                                                __unpackParams);
+                }
+            }
+        }  
+    }
+}
+
+class _ComposedFunctionObject extends _FunctionObject
+{
+    __funcs : _FunctionObject[];
+    
+    constructor _ComposedFunctionObject(funcs : _FunctionObject[])
+    {
+        __funcs = funcs;
+    }
+    
+    def DoEvaluation(param:var[]..[])
+    {
+        return = [Imperative]
+        {
+            _count = Count(__funcs);
+            _v = param;
+            
+            for(_i in (_count - 1).. 0)
+            {
+                _f = __funcs[_i];
+                _v = _f.DoEvaluation(_v);
+            }
+            return = _v;
+        }
+    }
+}
+
+def __Apply(functionObject: _FunctionObject, param: var[]..[])
+{
+    return = functionObject.DoEvaluation(param);
+}
+
+def __ApplyList(functionObject: _FunctionObject, params: var[]..[])
+{
+    return = [Imperative]
+    {
+        _result = functionObject;
+        for(p in params)
+        {
+            _result = __Apply(_result, p);
+        }
+        return = _result;
+    }
+}
+
+def __GetOutput(outputs: var[]..[], key: var)
+{
+    return = outputs[key];
+}
+
+def __Compose(funcs : _FunctionObject[])
+{
+    return = _ComposedFunctionObject(funcs);
+}
+
+def __ComposeBuffered(funcs: _FunctionObject[], amt: int, arg: var[]..[])
+{
+    return = [Imperative]
+    {
+        if (amt <= 1)
+        {
+            return = __Apply(_ComposedFunctionObject(funcs), arg);
+        }
+        else
+        {
+            i = Count(funcs)-1;
+            first = funcs[i];
+            funcs[i] = __Apply(first, arg);
+            return = _SingleFunctionObject(__ComposeBuffered, 3, { 0, 1 }, { funcs, amt-1, null }, true);
+        }
+    };
+}
+
+def MinimumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        _count = Count(list);
+        _keys = { };
+        
+        if (_count == 0)
+        {
+            return = _keys;
+        }
+
+        for (_index in 0..(_count - 1))
+        {
+            _keys[_index] = __Apply(keyProjector, list[_index]);
+        }
+        return = Sorting.minByKey(list, _keys);
+    }
+}
+
+def MaximumItemByKey(list: var[]..[], keyProjector: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        _count = Count(list);
+        _keys = { };
+        
+        if (_count == 0)
+        {
+            return = _keys;
+        }
+
+        for (_index in 0..(_count - 1))
+        {
+            _keys[_index] = __Apply(keyProjector, list[_index]);
+        }
+        return = Sorting.maxByKey(list, _keys);
+    }
+}
+
+def __Replace(list: var, with: var, predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (__Apply(predicate, list))
+        {
+            return = with;
+        }
+        else
+        {
+            return = list;
+        }
+    };
+}
+
+def __Filter(list: var[]..[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = {};
+        }
+
+        _filteredList = {};
+        _currentIn = 0;
+
+        _filteredOutList = {};
+        _currentOut = 0;
+
+        for (_index in 0..(_count - 1))
+        {
+            _value = list[_index];
+            if (__Apply(predicate, _value))
+            {
+                _filteredList[_currentIn] = _value;
+                _currentIn = _currentIn + 1;
+            }
+            else
+            {
+                _filteredOutList[_currentOut] = _value;
+                _currentOut = _currentOut + 1;
+            }
+        }
+
+        return = { _filteredList, _filteredOutList };
+    };
+}
+
+def __Combine(func : _FunctionObject, lists : var[]..[])
+{
+    argList = Transpose(lists);
+    return = [Imperative]
+    {
+        result = { };
+        for(args in argList)
+        {
+            result[Count(result)] = __ApplyList(func, args);
+        }
+        return = result;
+    };
+}
+
+def __Map(func : _FunctionObject, arg : var[]..[])
+{
+    return = __Combine(func, { arg });
+}
+
+def __LaceShortest(func : _FunctionObject, lists : var[]..[])
+{
+    return = [Imperative]
+    {
+        shortestLen = -1;
+        for(item in lists)
+        {
+            count = Count(item);
+            if (shortestLen < 0 || count < shortestLen)
+            {
+                shortestLen = count;
+            }
+        }
+        shortenedLists = { };
+        for(item in lists)
+        {
+            if (shortestLen == 1)
+            {
+                shortenedLists[Count(shortenedLists)] = { item[0] };
+            }
+            else
+            {
+                shortenedLists[Count(shortenedLists)] = item[0..shortestLen - 1];
+            }
+        }
+        return = __Combine(func, shortenedLists);
+    };
+}
+
+def __LaceLongest(func : _FunctionObject, lists : var[]..[])
+{
+    return = [Imperative]
+    {
+        longestLen = 0;
+        for(item in lists)
+        {
+            count = Count(item);
+            if (count > longestLen)
+            {
+                longestLen = count;
+            }
+        }
+        stretchedLists = { };
+        for(item in lists)
+        {
+            count = Count(item);
+            last = item[count-1];
+            amtToAdd = longestLen - count;
+            if (amtToAdd == 0)
+            {
+                stretchedLists[Count(stretchedLists)] = item[0..count - 1];
+            }
+            else
+            {
+                repeated = { };
+                repeated[0..amtToAdd-1] = last;
+                stretchedLists[Count(stretchedLists)] = Concat(item, repeated);
+            }
+        }
+        return = __Combine(func, stretchedLists);
+    };
+}
+
+def __ApplyNested(fs: var[]..[], xs: var[]..[], amt: int)
+{
+    return = [Imperative]
+    {
+        result = { };
+        if (amt == 0)
+        {
+            for(x in xs)
+            {
+                result[Count(result)] = __Apply(fs, x);
+            }
+        }
+        else
+        {
+            for(f in fs)
+            {
+                result[Count(result)] = __ApplyNested(f, xs, amt-1);
+            }
+        }
+        return = result;
+    };
+}
+
+def __CartesianProduct(func : _FunctionObject, lists : var[]..[])
+{
+    return = [Imperative]
+    {
+        count = Count(lists);
+        if (count == 0)
+        {
+            return = lists;
+        }
+
+        results = func;
+        nesting = 0;
+
+        for(list in lists)
+        {
+            results = __ApplyNested(results, list, nesting);
+            nesting = nesting + 1;
+        }
+
+        return = results;
+    };
+}
+
+def __Scan(accumulator: _FunctionObject, seed: var[]..[], lists: var[]..[])
+{
+    return = [Imperative]
+    {
+        if (lists == null)
+        {
+            return = seed;
+        }
+
+        //HACK: Transpose({{}}) returns { { null } }
+
+        noEmpties = { };
+        for (list in lists)
+        {
+            if (Count(list) > 0)
+                noEmpties[Count(noEmpties)] = list;
+        }
+        lists = noEmpties;
+
+        argLists = Transpose(lists);
+        _acc = seed;
+        
+        result = { _acc };
+
+        for(argList in argLists)
+        {
+            argList[Count(argList)] = _acc;
+            _acc = __ApplyList(accumulator, argList);
+            result[Count(result)] = _acc;
+        }
+        
+        return = result;
+    };
+}
+
+def __Reduce(accumulator : _FunctionObject, seed: var[]..[], lists : var[]..[])
+{
+    return = [Imperative]
+    {
+        if (lists == null)
+        {
+            return = seed;
+        }
+
+        //HACK: Transpose({{}}) returns { { null } }
+
+        noEmpties = { };
+        for (list in lists)
+        {
+            if (Count(list) > 0)
+                noEmpties[Count(noEmpties)] = list;
+        }
+        lists = noEmpties;
+
+        argLists = Transpose(lists);
+        _acc = seed;
+        
+        for(argList in argLists)
+        {
+            argList[Count(argList)] = _acc;
+            _acc = __ApplyList(accumulator, argList);
+        }
+        
+        return = _acc;
+    };
+}
+
+def SortByKey(list : var[]..[], keyProjector:_FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null)
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        _keys = { };
+
+        if (_count == 0)
+        {
+            return = _keys;
+        }
+
+        for (_index in 0..(_count - 1))
+        {
+            _keys[_index] = __Apply(keyProjector, list[_index]);
+        }
+        return = Sorting.sortByKey(list, _keys);
+    };
+}
+
+def GroupByKey(list : var[]..[], keyProjector: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null)
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        _keys = { };
+
+        if (_count == 0)
+        {
+            return = _keys;
+        }
+
+        for (_index in 0..(_count - 1))
+        {
+            _keys[_index] = __Apply(keyProjector, list[_index]);
+        }
+        return = Sorting.groupByKey(list, _keys);
+    };
+}
+
+def TrueForAll(list: var[]..[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = true;
+        }
+
+        _index = 0;
+
+        for (_index in 0..(_count - 1))
+        {
+            _value = list[_index];
+            if (!__Apply(predicate, _value))
+            {
+                return = false;
+            }
+        }
+
+        return = true;
+    };
+}
+
+def TrueForAny(list: var[]..[], predicate: _FunctionObject)
+{
+    return = [Imperative]
+    {
+        if (list == null) 
+        {
+            return = null;
+        }
+
+        _count = Count(list);
+        if (_count == 0)
+        {
+            return = true;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = list[_i];
+            if (__Apply(predicate, _value))
+            {
+                return = true;
+            }
+        }
+
+        return = false;
+    };
+}
+
+def __ForEach(functionObject: _FunctionObject, lists: var[]..[])
+{
+    [Imperative]
+    {
+        if (lists == null) 
+        {
+            return = null;
+        }
+
+        argLists = Transpose(lists);
+
+        _count = Count(argLists);
+        if (_count == 0)
+        {
+            return = null;
+        }
+
+        _index = 0;
+
+        for (_i in 0..(_count - 1))
+        {
+            _value = argLists[_i];
+            __ApplyList(functionObject, _value);
+        }
+    };
+}
+
+def LoopWhile(init: var[]..[], continueWhile: _FunctionObject, loopBody: _FunctionObject)
+{
+	return = [Imperative]
+	{
+		while (__Apply(continueWhile, init))
+		{
+			init = __Apply(loopBody, init);
+		}
+		return = init;
+	};
+}

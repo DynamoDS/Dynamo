@@ -1,0 +1,34 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="ff465a31-efd6-425f-96d5-3b593f3324a1" NodeName="Code Block" X="270" Y="237" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="ff465a31-efd6-425f-96d5-3b593f3324a1" Name="Code" Value="a" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="45ca2de3-1c15-4c9f-96d8-fdace2368eda" NodeName="Code Block" X="192" Y="367" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="45ca2de3-1c15-4c9f-96d8-fdace2368eda" Name="Code" Value="1" />
+  <CreateNodeCommand NodeId="3d9904f8-8a44-4eea-b629-2849b7571a89" NodeName="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <MakeConnectionCommand NodeId="ff465a31-efd6-425f-96d5-3b593f3324a1" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3d9904f8-8a44-4eea-b629-2849b7571a89" PortIndex="2" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="3d9904f8-8a44-4eea-b629-2849b7571a89" PortIndex="1" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="45ca2de3-1c15-4c9f-96d8-fdace2368eda" PortIndex="0" Type="1" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="45ca2de3-1c15-4c9f-96d8-fdace2368eda" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3d9904f8-8a44-4eea-b629-2849b7571a89" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="WithWrongInput" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="1b160663-a133-473f-8c55-d4042d84c0dc" NodeName="Code Block" X="60" Y="227" DefaultPosition="false" TransformCoordinates="true" />
+  <UpdateModelValueCommand ModelGuid="1b160663-a133-473f-8c55-d4042d84c0dc" Name="Code" Value="2" />
+  <SelectModelCommand ModelGuid="1b160663-a133-473f-8c55-d4042d84c0dc" Modifiers="0" />
+  <DragSelectionCommand X="33" Y="219" DragOperation="0" />
+  <DragSelectionCommand X="130" Y="234" DragOperation="1" />
+  <MakeConnectionCommand NodeId="1b160663-a133-473f-8c55-d4042d84c0dc" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="ff465a31-efd6-425f-96d5-3b593f3324a1" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="WithCorrectInput" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="3d9904f8-8a44-4eea-b629-2849b7571a89" Modifiers="0" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="ff465a31-efd6-425f-96d5-3b593f3324a1" Modifiers="0" />
+  <DragSelectionCommand X="202" Y="232" DragOperation="0" />
+  <DragSelectionCommand X="191" Y="187" DragOperation="1" />
+</Commands>

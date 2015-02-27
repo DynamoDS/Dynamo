@@ -1,0 +1,22 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="97411827-5cc5-49fb-ba3a-b07a1e5ee31b" NodeName="Code Block" X="200" Y="250" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="97411827-5cc5-49fb-ba3a-b07a1e5ee31b" Name="Code" Value="def foo(i:int)&#xA;{&#xA;g=g+1;&#xA;return =i;&#xA;};" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="0ce2353c-e5d6-445f-83b7-2db7e3861ce0" NodeName="Code Block" X="355" Y="282" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="0ce2353c-e5d6-445f-83b7-2db7e3861ce0" Name="Code" Value="g=0;&#xA;d=foo(1);" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="c9827e41-8556-47f6-8e9d-6c600a2e45ee" NodeName="Code Block" X="457" Y="306" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="c9827e41-8556-47f6-8e9d-6c600a2e45ee" Name="Code" Value="p" />
+  <SelectModelCommand ModelGuid="c9827e41-8556-47f6-8e9d-6c600a2e45ee" Modifiers="0" />
+  <DragSelectionCommand X="400" Y="292" DragOperation="0" />
+  <DragSelectionCommand X="450" Y="289" DragOperation="1" />
+  <MakeConnectionCommand NodeId="0ce2353c-e5d6-445f-83b7-2db7e3861ce0" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="c9827e41-8556-47f6-8e9d-6c600a2e45ee" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>

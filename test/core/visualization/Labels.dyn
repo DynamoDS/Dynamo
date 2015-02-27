@@ -1,14 +1,10 @@
-<Workspace Version="0.6.2.18287" X="-98" Y="68" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.16336" X="-109.907074832804" Y="45.8403257029835" zoom="1.00600419002725" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="f9dd3ecd-3b7e-4956-8a28-078b238fa12f" nickname="Number" x="235" y="161" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0..3" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.Point3DNode type="Dynamo.Nodes.Point3DNode" guid="f12e7ac8-db12-4ff7-85e8-fc2bf24bff06" nickname="Point" x="390" y="154" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f9dd3ecd-3b7e-4956-8a28-078b238fa12f" nickname="Code Block" x="187" y="151" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..3;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="fdec3b9b-56ae-4d01-85c2-47b8425e3130" nickname="Code Block" x="360" y="97" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(a&lt;1&gt;,a&lt;2&gt;,a&lt;3&gt;);" ShouldFocus="false" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="f9dd3ecd-3b7e-4956-8a28-078b238fa12f" start_index="0" end="f12e7ac8-db12-4ff7-85e8-fc2bf24bff06" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="f9dd3ecd-3b7e-4956-8a28-078b238fa12f" start_index="0" end="f12e7ac8-db12-4ff7-85e8-fc2bf24bff06" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="f9dd3ecd-3b7e-4956-8a28-078b238fa12f" start_index="0" end="f12e7ac8-db12-4ff7-85e8-fc2bf24bff06" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f9dd3ecd-3b7e-4956-8a28-078b238fa12f" start_index="0" end="fdec3b9b-56ae-4d01-85c2-47b8425e3130" end_index="0" portType="0" />
   </Connectors>
   <Notes />
 </Workspace>

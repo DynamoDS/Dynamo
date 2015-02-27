@@ -1,0 +1,236 @@
+﻿<UserControl x:Class="Dynamo.Search.SearchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+             xmlns:views="clr-namespace:Dynamo.UI.Views"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:search="clr-namespace:Dynamo.Search;assembly=DynamoCore"
+             xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements;assembly=DynamoCore"
+             xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             d:DataContext="{d:DesignInstance ViewModels:SearchViewModel, IsDesignTimeCreatable=False}"
+             mc:Ignorable="d"
+             Visibility="Visible"
+             d:DesignWidth="300"
+             d:DesignHeight="300"
+             x:Name="SearchControl">
+    <UserControl.MaxHeight>
+        <Binding Path="ActualHeight"
+                 RelativeSource="{RelativeSource FindAncestor, 
+                                                 AncestorLevel=1, 
+                                                 AncestorType={x:Type Grid}}" />
+    </UserControl.MaxHeight>
+    <UserControl.Width>
+        <Binding Path="ActualWidth"
+                 RelativeSource="{RelativeSource FindAncestor, 
+                                                 AncestorLevel=1, 
+                                                 AncestorType={x:Type Grid}}" />
+    </UserControl.Width>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="{StaticResource DynamoWindowBrush}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Name="buttonGrid"
+              Background="{StaticResource WorkspaceBackgroundBrush}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Grid.Column="0"
+                   FontWeight="Normal"
+                   Margin="0"
+                   Padding="16,0,0,0"
+                   Foreground="#AAAAAA"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Stretch"
+                   Content="{x:Static p:Resources.LibraryViewTitle}" />
+            <Button Mouse.MouseEnter="OnLibraryExpanderMouseEnter"
+                    Mouse.MouseLeave="OnLibraryExpanderMouseLeave"
+                    Click="OnLibraryExpanderClick"
+                    Template="{DynamicResource BackgroundButton}"
+                    Grid.Column="1"
+                    VerticalAlignment="Center">
+                <Button.Resources>
+                    <ControlTemplate x:Key="BackgroundButton"
+                                     TargetType="Button">
+                        <Border Name="border"
+                                BorderThickness="0"
+                                BorderBrush="Black"
+                                Background="{StaticResource WorkspaceBackgroundBrush}"
+                                Height="20"
+                                Margin="0,0,-1,0">
+                            <ContentPresenter HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Resources>
+                <Button.Content>
+                    <Image Source="/DynamoCoreWpf;component/UI/Images/expand_normal.png"
+                           Width="20"
+                           Height="20"
+                           RenderTransformOrigin="0.5, 0.5">
+                        <Image.RenderTransform>
+                            <RotateTransform Angle="180" />
+                        </Image.RenderTransform>
+                    </Image>
+                </Button.Content>
+            </Button>
+        </Grid>
+
+        <Border BorderThickness="0,1,0,1"
+                BorderBrush="#555555"
+                Grid.Row="1">
+            <Grid Name="SearchTextBoxGrid"
+                  Height="25"
+                  VerticalAlignment="Center"
+                  MouseEnter="OnSearchTextBoxGridMouseEnter"
+                  MouseLeave="OnSearchTextBoxGridMouseLeave"
+                  Background="#444444">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Name="SearchIconAndTextBlockGrid"
+                            Grid.ColumnSpan="2"
+                            Width="Auto"
+                            Orientation="Horizontal">
+                    <StackPanel.HorizontalAlignment>
+                        <Binding Path="SearchIconAlignment" />
+                    </StackPanel.HorizontalAlignment>
+
+
+                    <Image x:Name="SearchIcon"
+                           Source="/DynamoCoreWpf;component/UI/Images/search_normal.png"
+                           Width="25"
+                           Height="26"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left" />
+
+                    <TextBlock Name="SearchTextBlock"
+                               FontSize="14"
+                               IsHitTestVisible="False"
+                               Foreground="#AAAAAA"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding Path=SearchText, 
+                                                    Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                               HorizontalAlignment="Center"
+                               Height="18"
+                               Margin="3,0,0,0">
+                        SEARCH LIBRARY
+                    </TextBlock>
+                </StackPanel>
+
+                <TextBox Name="SearchTextBox"
+                         KeyboardNavigation.TabIndex="0"
+                         Foreground="#CCCCCC"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         FontSize="14"
+                         IsEnabled="True"
+                         TextChanged="OnSearchTextBoxTextChanged"
+                         GotKeyboardFocus="TextBoxGotKeyboardFocus"
+                         LostKeyboardFocus="TextBoxLostKeyboardFocus"
+                         VerticalAlignment="Center"
+                         Text="{Binding Path=SearchText,Mode=TwoWay}"
+                         MinWidth="280"
+                         CaretBrush="#CCCCCC"
+                         Margin="26,0,0,-1"
+                         Grid.ColumnSpan="3" />
+
+                <Button Name="SearchCancelButton"
+                        Grid.Column="2"
+                        Click="OnSearchCancelButtonClick"
+                        VerticalAlignment="Center">
+                    <Button.Visibility>
+                        <Binding Path="SearchText"
+                                 Converter="{StaticResource EmptyStringToCollapsedConverter}" />
+                    </Button.Visibility>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Image Name="SearchCancelImage"
+                                               Source="/DynamoCoreWpf;component/UI/Images/searchcancel_normal.png"
+                                               Width="20"
+                                               Height="20" />
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter TargetName="SearchCancelImage"
+                                                        Property="Source"
+                                                        Value="/DynamoCoreWpf;component/UI/Images/searchcancel_hover.png" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="False">
+                                                <Setter TargetName="SearchCancelImage"
+                                                        Property="Source"
+                                                        Value="/DynamoCoreWpf;component/UI/Images/searchcancel_normal.png" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- LIBRARY VIEW -->
+        <views:LibraryView x:Name="libraryView"
+                           Grid.Row="2"
+                           VerticalAlignment="Stretch"
+                           HorizontalAlignment="Stretch"
+                           DataContext="{Binding}"
+                           PreviewKeyDown="OnLibraryViewPreviewKeyDown">
+            <views:LibraryView.Visibility>
+                <Binding Path="CurrentMode"
+                         Converter="{StaticResource ViewModeToVisibilityConverter}"
+                         ConverterParameter="LibraryView" />
+            </views:LibraryView.Visibility>
+        </views:LibraryView>
+
+        <!-- LIBRARYSEARCH VIEW -->
+        <views:LibrarySearchView Grid.Row="2"
+                                 DataContext="{Binding}"
+                                 PreviewKeyDown="OnLibraryViewPreviewKeyDown"
+                                 x:Name="librarySearchView">
+            <views:LibrarySearchView.Visibility>
+                <Binding Path="CurrentMode"
+                         Converter="{StaticResource ViewModeToVisibilityConverter}"
+                         ConverterParameter="LibrarySearchView" />
+            </views:LibrarySearchView.Visibility>
+        </views:LibrarySearchView>
+
+    </Grid>
+
+</UserControl>

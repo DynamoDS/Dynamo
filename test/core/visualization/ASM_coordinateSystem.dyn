@@ -1,31 +1,18 @@
-<Workspace Version="0.7.0.34783" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.7.0.38786" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.CoordinateSystemNode type="Dynamo.Nodes.CoordinateSystemNode" guid="47683541-0d40-4144-858c-0c181aee1d4f" nickname="CoordinateSystem" x="443" y="218.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.Point3DNode type="Dynamo.Nodes.Point3DNode" guid="568c92e3-a00d-4929-a879-c6a3e290f20d" nickname="Point" x="230" y="64.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.VectorNode type="Dynamo.Nodes.VectorNode" guid="541ea41b-5876-4c91-b79c-09046b89e96b" nickname="Vector" x="228" y="218.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.VectorNode type="Dynamo.Nodes.VectorNode" guid="4e67d187-49af-4b1c-aedb-13e7884c3872" nickname="Vector" x="230" y="370.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="d31e253f-ee86-473f-9438-90f32e8b25ae" nickname="Number" x="64" y="164.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="728e2157-b95c-46c8-9904-fbc8a455c373" nickname="Number" x="64" y="297.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="1" />
-    </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="b922333a-116e-4d77-8ec3-a7329155e1cd" nickname="Watch 3D" x="769.5" y="133.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="d31e253f-ee86-473f-9438-90f32e8b25ae" nickname="Code Block" x="64" y="164.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="728e2157-b95c-46c8-9904-fbc8a455c373" nickname="Code Block" x="64" y="297.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="b922333a-116e-4d77-8ec3-a7329155e1cd" nickname="Watch 3D" x="769.5" y="133.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="210" height="257">
+        <camera pos_x="20.6975697527233" pos_y="20.6975697527233" pos_z="20.6965697527233" look_x="-20.6975697527233" look_y="-20.6975697527233" look_z="-20.6975697527233" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="5cfd2daa-86e1-4ee1-88bc-65dfc345beeb" nickname="CoordinateSystem.ByOrigin" x="256" y="206" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@double,double,double" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="47683541-0d40-4144-858c-0c181aee1d4f" start_index="0" end="b922333a-116e-4d77-8ec3-a7329155e1cd" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="568c92e3-a00d-4929-a879-c6a3e290f20d" start_index="0" end="47683541-0d40-4144-858c-0c181aee1d4f" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="541ea41b-5876-4c91-b79c-09046b89e96b" start_index="0" end="47683541-0d40-4144-858c-0c181aee1d4f" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="4e67d187-49af-4b1c-aedb-13e7884c3872" start_index="0" end="47683541-0d40-4144-858c-0c181aee1d4f" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="d31e253f-ee86-473f-9438-90f32e8b25ae" start_index="0" end="568c92e3-a00d-4929-a879-c6a3e290f20d" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="d31e253f-ee86-473f-9438-90f32e8b25ae" start_index="0" end="568c92e3-a00d-4929-a879-c6a3e290f20d" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="d31e253f-ee86-473f-9438-90f32e8b25ae" start_index="0" end="568c92e3-a00d-4929-a879-c6a3e290f20d" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="d31e253f-ee86-473f-9438-90f32e8b25ae" start_index="0" end="541ea41b-5876-4c91-b79c-09046b89e96b" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="d31e253f-ee86-473f-9438-90f32e8b25ae" start_index="0" end="541ea41b-5876-4c91-b79c-09046b89e96b" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="d31e253f-ee86-473f-9438-90f32e8b25ae" start_index="0" end="4e67d187-49af-4b1c-aedb-13e7884c3872" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="d31e253f-ee86-473f-9438-90f32e8b25ae" start_index="0" end="4e67d187-49af-4b1c-aedb-13e7884c3872" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="728e2157-b95c-46c8-9904-fbc8a455c373" start_index="0" end="541ea41b-5876-4c91-b79c-09046b89e96b" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="728e2157-b95c-46c8-9904-fbc8a455c373" start_index="0" end="4e67d187-49af-4b1c-aedb-13e7884c3872" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d31e253f-ee86-473f-9438-90f32e8b25ae" start_index="0" end="5cfd2daa-86e1-4ee1-88bc-65dfc345beeb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="728e2157-b95c-46c8-9904-fbc8a455c373" start_index="0" end="5cfd2daa-86e1-4ee1-88bc-65dfc345beeb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="728e2157-b95c-46c8-9904-fbc8a455c373" start_index="0" end="5cfd2daa-86e1-4ee1-88bc-65dfc345beeb" end_index="2" portType="0" />
   </Connectors>
   <Notes />
 </Workspace>

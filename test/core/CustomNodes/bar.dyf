@@ -1,0 +1,26 @@
+<Workspace Version="0.7.0.32119" X="0" Y="0" zoom="1" Description="" Category="Dyfs" Name="bar" ID="8c81a098-663a-4c0d-8582-39e7e7efaf22">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5b906522-aad9-4e24-8ce9-1cded5324865" nickname="Input" x="72" y="145.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="4a562844-3e52-4abb-b7cf-c67187671e5c" nickname="foo" x="232" y="93.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f334adb3-084c-42ca-9085-ce6cf7401c4e" />
+      <Name value="foo" />
+      <Description value="" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="r" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9c686856-b82d-46ca-900d-a84553c1c1d1" nickname="Output" x="428" y="187.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5b906522-aad9-4e24-8ce9-1cded5324865" start_index="0" end="4a562844-3e52-4abb-b7cf-c67187671e5c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4a562844-3e52-4abb-b7cf-c67187671e5c" start_index="0" end="9c686856-b82d-46ca-900d-a84553c1c1d1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

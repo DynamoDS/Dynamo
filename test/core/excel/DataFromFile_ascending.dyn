@@ -1,20 +1,22 @@
-<Workspace Version="0.7.0.17491" X="42.3998664008251" Y="7.52311111111084" zoom="0.7" Description="" Category="" Name="Home">
+<Workspace Version="0.7.4.3075" X="42.3998664008251" Y="7.52311111111084" zoom="0.7" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="06189b89-84bf-413c-91a1-9d6629810394" nickname="File Path" x="50.8571428571429" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="..\..\..\test\core\excel\ascending.xlsx" />
-    </Dynamo.Nodes.StringFilename>
-    <Dynamo.Nodes.ReadExcelFile type="Dynamo.Nodes.ReadExcelFile" guid="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" nickname="Open Excel Workbook" x="360.143047998821" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.GetWorksheetsFromExcelWorkbook type="Dynamo.Nodes.GetWorksheetsFromExcelWorkbook" guid="38db63c6-b7a6-4126-bfc8-3ef033f620ac" nickname="Get Worksheets From Excel Workbook" x="587.285905141679" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.GetDataFromExcelWorksheet type="Dynamo.Nodes.GetDataFromExcelWorksheet" guid="dc73aff5-5aea-4773-935e-76f1ef4797e7" nickname="Get Data From Excel Worksheet" x="1034.42876228454" y="78.2931746031752" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="6443a127-f214-4d16-b2cf-78da1d307052" nickname="First of List" x="860.143047998821" y="76.8646031746036" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="06189b89-84bf-413c-91a1-9d6629810394" nickname="File Path" x="50.8571428571429" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>..\..\..\test\core\excel\ascending.xlsx</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" nickname="Excel.ReadExcelFile" x="360.143047998821" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSOffice.dll" function="DSOffice.Excel.ReadExcelFile@var" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="38db63c6-b7a6-4126-bfc8-3ef033f620ac" nickname="Excel.GetWorksheetsFromExcelWorkbook" x="587.285905141679" y="77.2342857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSOffice.dll" function="DSOffice.Excel.GetWorksheetsFromExcelWorkbook@DSOffice.WorkBook" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="dc73aff5-5aea-4773-935e-76f1ef4797e7" nickname="Excel.GetDataFromExcelWorksheet" x="1034.42876228454" y="78.2931746031752" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSOffice.dll" function="DSOffice.Excel.GetDataFromExcelWorksheet@DSOffice.WorkSheet" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6443a127-f214-4d16-b2cf-78da1d307052" nickname="List.FirstItem" x="860.143047998821" y="76.8646031746036" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.List.FirstItem@var[]..[]" />
     <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="adbe558b-ea65-42b7-b90c-1af0d608e1e7" nickname="Watch" x="1318.71447657025" y="75.4360317460322" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="a4dc030b-7fce-4fdd-b05d-be03352fc083" nickname="File.FromPath" x="256.571619427393" y="175.68126984127" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="06189b89-84bf-413c-91a1-9d6629810394" start_index="0" end="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="06189b89-84bf-413c-91a1-9d6629810394" start_index="0" end="a4dc030b-7fce-4fdd-b05d-be03352fc083" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" start_index="0" end="38db63c6-b7a6-4126-bfc8-3ef033f620ac" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="38db63c6-b7a6-4126-bfc8-3ef033f620ac" start_index="0" end="6443a127-f214-4d16-b2cf-78da1d307052" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="dc73aff5-5aea-4773-935e-76f1ef4797e7" start_index="0" end="adbe558b-ea65-42b7-b90c-1af0d608e1e7" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="6443a127-f214-4d16-b2cf-78da1d307052" start_index="0" end="dc73aff5-5aea-4773-935e-76f1ef4797e7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a4dc030b-7fce-4fdd-b05d-be03352fc083" start_index="0" end="0fbd0d3c-f64f-438e-ab99-7bfd36ebdfd1" end_index="0" portType="0" />
   </Connectors>
   <Notes />
 </Workspace>

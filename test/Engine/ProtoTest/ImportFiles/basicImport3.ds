@@ -1,0 +1,16 @@
+def Scale (arr : double[], scalingFactor : double)
+{
+    scaledArr = [Imperative]
+    {
+        counter = 0;
+        for(val in arr)
+        {
+            arr[counter] = scalingFactor * val;
+            counter = counter + 1;
+        }
+        return = arr;
+    }
+    return = scaledArr * 2;
+}
+
+a = 3;

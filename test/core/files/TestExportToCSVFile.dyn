@@ -1,0 +1,14 @@
+<Workspace Version="0.7.4.3075" X="-16" Y="-6" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="c5f2a750-5ec0-4a67-9b80-c7500d4cf07d" nickname="File Path" x="139.5" y="156.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>No file selected.</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ae537c41-c7c9-4690-ab1d-b1d87a5cb626" nickname="Code Block" x="83" y="299" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{{1,2,3,4,5},{-2,2.6,9},{0}};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c729169a-9945-4dcd-8fa7-7d5b4c5ae0f0" nickname="CSV.WriteToFile" x="401" y="156.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.CSV.WriteToFile@string,var[][]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c5f2a750-5ec0-4a67-9b80-c7500d4cf07d" start_index="0" end="c729169a-9945-4dcd-8fa7-7d5b4c5ae0f0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ae537c41-c7c9-4690-ab1d-b1d87a5cb626" start_index="0" end="c729169a-9945-4dcd-8fa7-7d5b4c5ae0f0" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

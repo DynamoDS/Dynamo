@@ -1,0 +1,4 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="aeed3ffe-7294-43a9-8a05-83b5ff05f527" NodeName="DSCoreNodesUI.HigherOrder.ApplyFunction" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>

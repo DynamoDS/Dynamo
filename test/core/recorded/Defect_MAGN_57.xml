@@ -1,10 +1,10 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
-  <CreateNodeCommand NodeId="352fce2a-1da6-4ab2-9bbf-88820771425d" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="56a48246-9c19-46b8-b128-7a3d2aa5a8bf" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="8d2cd321-832d-4f55-848e-6be8120ed337" NodeName="Add" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="1764d612-9951-4cb7-87f3-10b1355fc124" NodeName="Map" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="12a4a87f-f887-4fb6-b368-10485ce67e3a" NodeName="String" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="5cafbfcc-ce28-4578-bff5-b06223a4c2e6" NodeName="Watch" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="352fce2a-1da6-4ab2-9bbf-88820771425d" NodeName="Dynamo.Nodes.DoubleInput" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="56a48246-9c19-46b8-b128-7a3d2aa5a8bf" NodeName="Dynamo.Nodes.DoubleInput" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="8d2cd321-832d-4f55-848e-6be8120ed337" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="1764d612-9951-4cb7-87f3-10b1355fc124" NodeName="Map@double,double,double" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="12a4a87f-f887-4fb6-b368-10485ce67e3a" NodeName="Dynamo.Nodes.StringInput" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="5cafbfcc-ce28-4578-bff5-b06223a4c2e6" NodeName="Dynamo.Nodes.Watch" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="5cafbfcc-ce28-4578-bff5-b06223a4c2e6" Modifiers="0" />
   <DragSelectionCommand X="717.13878918639" Y="418.518285721846" DragOperation="0" />
   <DragSelectionCommand X="1069.77036813376" Y="466.413022563951" DragOperation="1" />
@@ -36,7 +36,7 @@
   <DragSelectionCommand X="646.086157607443" Y="612.202496248162" DragOperation="1" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <UpdateModelValueCommand ModelGuid="352fce2a-1da6-4ab2-9bbf-88820771425d" Name="Value" Value="2" />
-  <CreateNodeCommand NodeId="8fe12f0a-d144-4379-9fdb-9e49644e7079" NodeName="List" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <CreateNodeCommand NodeId="8fe12f0a-d144-4379-9fdb-9e49644e7079" NodeName="DSCoreNodesUI.CreateList" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="8fe12f0a-d144-4379-9fdb-9e49644e7079" Modifiers="0" />
   <DragSelectionCommand X="829.244052344285" Y="434.83407519553" DragOperation="0" />
   <DragSelectionCommand X="822.401947081127" Y="606.939338353425" DragOperation="1" />

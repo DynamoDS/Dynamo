@@ -1,0 +1,51 @@
+<Workspace Version="0.6.3.7993" X="572" Y="213" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="d0729686-fc2a-44e2-89c6-486e5184a2c9" nickname="Python Script" x="120" y="433.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+
+#Assign your output to the OUT variable
+OUT = 0</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.PythonString type="Dynamo.Nodes.PythonString" guid="d4461bf9-60cb-4b96-9352-4c3f0e357755" nickname="Python Script From String" x="120" y="102.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="277a1d33-a1e9-4e53-b14b-d0e9b8faee63" nickname="Python Script With Variable Number of Inputs" x="120" y="268" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="1">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+dataEnteringNode = IN0
+
+#Assign your output to the OUT variable
+OUT = 0</Script>
+    </Dynamo.Nodes.PythonVarIn>
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

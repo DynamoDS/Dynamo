@@ -1,0 +1,24 @@
+<Workspace Version="0.6.3.7993" X="86.7777953283443" Y="0.678032794974172" zoom="0.510464166593696" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.ImageFileReader type="Dynamo.Nodes.ImageFileReader" guid="1682ef9c-8161-4697-8048-cc0cee54bbdf" nickname="Read Image File" x="154.057318379267" y="320.016839698947" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="a934f1d2-0aa9-4d09-8d86-fe5b69c121b7" nickname="File Path" x="-91.5945269728118" y="249.650231029676" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="D:\FromF\DynamoProject\Graphs\MigrationDYN\StandAlone\MAGN-2649.png" />
+    </Dynamo.Nodes.StringFilename>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="5dba839f-38b7-4afa-b6f1-8a36c4bf03de" nickname="Number" x="16.7564321459056" y="347.79421573866" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ee2524cf-0fcc-4e3b-b1c3-2b92b19f09fd" nickname="Number" x="20.6821915342649" y="412.961821585424" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="20ef9c45-f8da-4694-80d4-2121278b37f8" nickname="List Length" x="639.199554192802" y="268.694221700368" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="4a66e987-7231-41be-8536-6fb4f20809a0" nickname="Watch" x="833.233255839393" y="363.711008465235" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1682ef9c-8161-4697-8048-cc0cee54bbdf" start_index="0" end="20ef9c45-f8da-4694-80d4-2121278b37f8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a934f1d2-0aa9-4d09-8d86-fe5b69c121b7" start_index="0" end="1682ef9c-8161-4697-8048-cc0cee54bbdf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5dba839f-38b7-4afa-b6f1-8a36c4bf03de" start_index="0" end="1682ef9c-8161-4697-8048-cc0cee54bbdf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ee2524cf-0fcc-4e3b-b1c3-2b92b19f09fd" start_index="0" end="1682ef9c-8161-4697-8048-cc0cee54bbdf" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="20ef9c45-f8da-4694-80d4-2121278b37f8" start_index="0" end="4a66e987-7231-41be-8536-6fb4f20809a0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,27 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="583bad43-e7ea-4fe2-ba24-5a44b1edd723" NodeName="Code Block" X="189" Y="265" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="583bad43-e7ea-4fe2-ba24-5a44b1edd723" Name="Code" Value="def foo(i:int) &#xA;{&#xA;c=c+1;&#xA;return = i;&#xA;};" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="f34e01e2-25e4-4634-9eb8-e815e8ee580d" NodeName="Code Block" X="332" Y="344" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="f34e01e2-25e4-4634-9eb8-e815e8ee580d" Name="Code" Value="c=0;&#xA;d=foo(1);" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="844d52d7-9054-4bee-9b67-f53824f4b270" NodeName="Code Block" X="437" Y="365" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="844d52d7-9054-4bee-9b67-f53824f4b270" Name="Code" Value="e;" />
+  <SelectModelCommand ModelGuid="844d52d7-9054-4bee-9b67-f53824f4b270" Modifiers="0" />
+  <DragSelectionCommand X="389" Y="355" DragOperation="0" />
+  <DragSelectionCommand X="461" Y="352" DragOperation="1" />
+  <MakeConnectionCommand NodeId="f34e01e2-25e4-4634-9eb8-e815e8ee580d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="844d52d7-9054-4bee-9b67-f53824f4b270" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="583bad43-e7ea-4fe2-ba24-5a44b1edd723" Name="Code" Value="def foo(i:int) &#xA;{&#xD;&#xA;&#xA;c=c+1;&#xA;return = i;&#xA;};" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>

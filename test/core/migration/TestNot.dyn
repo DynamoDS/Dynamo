@@ -1,0 +1,17 @@
+<Workspace Version="0.6.2.29585" X="131" Y="75" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Not type="Dynamo.Nodes.Not" guid="4efaa4dd-00d7-4478-8619-364dd5528637" nickname="Not" x="244" y="64.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Not type="Dynamo.Nodes.Not" guid="6ceae932-650f-409e-a836-009c5e0b9707" nickname="Not" x="242" y="161.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="3327c732-5d76-4a79-939c-ec5d8d2b3c9a" nickname="Boolean" x="35" y="50.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean value="False" />
+    </Dynamo.Nodes.BoolSelector>
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="1cfa7e56-823f-422c-8d94-1140be04f9fe" nickname="Boolean" x="37" y="149.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean value="True" />
+    </Dynamo.Nodes.BoolSelector>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3327c732-5d76-4a79-939c-ec5d8d2b3c9a" start_index="0" end="4efaa4dd-00d7-4478-8619-364dd5528637" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1cfa7e56-823f-422c-8d94-1140be04f9fe" start_index="0" end="6ceae932-650f-409e-a836-009c5e0b9707" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

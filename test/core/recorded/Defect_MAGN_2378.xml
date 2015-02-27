@@ -1,0 +1,15 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="300" Y="228" Width="1" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand NodeId="45d600d2-3b29-4c9f-898f-d51683534557" NodeName="Code Block" X="301" Y="228" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="45d600d2-3b29-4c9f-898f-d51683534557" Name="Code" Value="Point.ByCoordinates(0,0,0);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <UpdateModelValueCommand ModelGuid="45d600d2-3b29-4c9f-898f-d51683534557" Name="Code" Value="Point.ByCoordinates(,0,0);" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="WithWarning" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="WithoutWarning" PauseDurationInMs="20" />
+</Commands>

@@ -1,0 +1,14 @@
+<Workspace Version="0.6.3.7993" X="580" Y="-84" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.And type="Dynamo.Nodes.And" guid="abd4fd69-8ba7-492d-abc5-a03bb51a7595" nickname="And" x="37" y="239.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="32bd09f9-198e-479c-a8b2-e6e0e3c32be0" nickname="If" x="37" y="753.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Not type="Dynamo.Nodes.Not" guid="f2fde6ed-c1fe-4faa-aba9-4f96f853918e" nickname="Not" x="37" y="368" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Or type="Dynamo.Nodes.Or" guid="cef06dd7-44d6-4ef5-98c3-8e926feaffbb" nickname="Or" x="37" y="496.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Xor type="Dynamo.Nodes.Xor" guid="0596c384-86cd-449b-b9f8-1a80abda9a18" nickname="Xor" x="37" y="625" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

@@ -1,0 +1,39 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="200">
+  <CreateNodeCommand NodeId="2be171fb-2f81-4244-88ec-a8827a77e150" NodeName="DSCoreNodesUI.CreateList" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="cb746dda-aed3-4c85-8bc1-bcb93e622be7" NodeName="Code Block" X="126" Y="248" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="cb746dda-aed3-4c85-8bc1-bcb93e622be7" Name="Code" Value="5" />
+  <MakeConnectionCommand NodeId="cb746dda-aed3-4c85-8bc1-bcb93e622be7" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="2be171fb-2f81-4244-88ec-a8827a77e150" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="FirstRun" PauseDurationInMs="20" />
+  <ModelEventCommand ModelGuid="2be171fb-2f81-4244-88ec-a8827a77e150" EventName="AddInPort" />
+  <ModelEventCommand ModelGuid="2be171fb-2f81-4244-88ec-a8827a77e150" EventName="AddInPort" />
+  <MakeConnectionCommand NodeId="cb746dda-aed3-4c85-8bc1-bcb93e622be7" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="2be171fb-2f81-4244-88ec-a8827a77e150" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="cb746dda-aed3-4c85-8bc1-bcb93e622be7" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="2be171fb-2f81-4244-88ec-a8827a77e150" PortIndex="2" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="SecondRun" PauseDurationInMs="20" />
+  <ModelEventCommand ModelGuid="2be171fb-2f81-4244-88ec-a8827a77e150" EventName="AddInPort" />
+  <ModelEventCommand ModelGuid="2be171fb-2f81-4244-88ec-a8827a77e150" EventName="AddInPort" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="98222b75-6b71-42f1-82a0-181bda3e2ebd" NodeName="Code Block" X="100" Y="367" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="98222b75-6b71-42f1-82a0-181bda3e2ebd" Name="Code" Value="6" />
+  <SelectInRegionCommand X="113" Y="462" Width="1" Height="0" IsCrossSelection="false" />
+  <MakeConnectionCommand NodeId="98222b75-6b71-42f1-82a0-181bda3e2ebd" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="2be171fb-2f81-4244-88ec-a8827a77e150" PortIndex="3" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="89955766-f740-4b24-8fea-fc907475d25d" NodeName="Code Block" X="73" Y="443" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="89955766-f740-4b24-8fea-fc907475d25d" Name="Code" Value="7" />
+  <MakeConnectionCommand NodeId="89955766-f740-4b24-8fea-fc907475d25d" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="2be171fb-2f81-4244-88ec-a8827a77e150" PortIndex="4" Type="0" ConnectionMode="1" />
+  <PausePlaybackCommand Tag="ThirdRun" PauseDurationInMs="20" />
+  <ModelEventCommand ModelGuid="2be171fb-2f81-4244-88ec-a8827a77e150" EventName="RemoveInPort" />
+  <PausePlaybackCommand Tag="FourthRun" PauseDurationInMs="20" />
+  <ModelEventCommand ModelGuid="2be171fb-2f81-4244-88ec-a8827a77e150" EventName="RemoveInPort" />
+  <PausePlaybackCommand Tag="LastRun" PauseDurationInMs="20" />
+</Commands>

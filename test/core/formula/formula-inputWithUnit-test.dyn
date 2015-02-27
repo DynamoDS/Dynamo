@@ -1,0 +1,17 @@
+<Workspace Version="0.7.0.18481" X="191.304250280454" Y="82.1927461347992" zoom="1.2198072017255" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCoreNodesUI.Formula type="DSCoreNodesUI.Formula" guid="b35a80a7-39e1-4c73-946f-8716fef8c751" nickname="Formula" x="224.596063471818" y="84.4920971824796" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
+      <FormulaText>x/y</FormulaText>
+    </DSCoreNodesUI.Formula>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="152a2a64-8c73-4e8c-a418-06ceb4ac0637" nickname="Watch" x="364.722806163692" y="91.4643629182714" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="39dd975f-4f7d-437f-a380-411365ac8584" nickname="Code Block" x="-122.077164075154" y="88.0218443525118" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="fa87f11e-a8df-4eaf-9894-8d91da156c5a" nickname="Length.FromDouble" x="10.4238026542307" y="91.2656799657945" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DynamoUnits.dll" function="DynamoUnits.Length.FromDouble@double" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b35a80a7-39e1-4c73-946f-8716fef8c751" start_index="0" end="152a2a64-8c73-4e8c-a418-06ceb4ac0637" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="39dd975f-4f7d-437f-a380-411365ac8584" start_index="0" end="fa87f11e-a8df-4eaf-9894-8d91da156c5a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fa87f11e-a8df-4eaf-9894-8d91da156c5a" start_index="0" end="b35a80a7-39e1-4c73-946f-8716fef8c751" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fa87f11e-a8df-4eaf-9894-8d91da156c5a" start_index="0" end="b35a80a7-39e1-4c73-946f-8716fef8c751" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

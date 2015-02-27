@@ -1,0 +1,978 @@
+
+
+using NodeList = System.Collections.Generic.List<ProtoImperative.AST.Node>;
+using ProtoImperative.AST;
+
+COMPILER DSImperative
+
+	public override ProtoCore.NodeBase codeblock {get;set;}
+	private int localVarCount = 0;
+	private bool isGlobalScope = true;
+
+	public Parser()
+	{
+	}
+
+	//====================================
+	// LL(k) utils
+	//====================================
+	private bool isArrayAccess()
+	{
+		Token pt = la;
+		if( _ident == pt.kind ) 
+		{
+			pt = scanner.Peek();
+            scanner.ResetPeek();
+			if( _openbracket == pt.kind ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private bool isFunctionCall()
+	{
+		Token pt = la;
+		if( _ident == pt.kind ) 
+		{
+			pt = scanner.Peek();
+			scanner.ResetPeek();
+			if( _openparen == pt.kind ) {
+				return true;
+			}
+		}
+		return false;
+	}
+   
+	private bool hasReturnType()
+    {
+        Token pt = la;
+        if( _ident == pt.kind ) 
+        {
+            pt = scanner.Peek();
+            scanner.ResetPeek();
+            if( _ident == pt.kind ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+	private bool isVariableDecl()
+    {
+        Token pt = la;
+        if( _ident == pt.kind ) 
+        {
+            pt = scanner.Peek();
+            scanner.ResetPeek();
+            if( _ident == pt.kind ) {
+                return true;
+            }
+        }
+
+        if (_kw_heap_alloc == pt.kind)
+        {
+            pt = scanner.Peek();
+            if (_ident == pt.kind)
+            {
+                pt = scanner.Peek();
+                if (_ident == pt.kind)
+                {
+                    scanner.ResetPeek();
+                    return true;
+                }
+            }
+        }
+        scanner.ResetPeek();
+        return false;
+    }
+
+    private void ParseLanguageBlockNode(LanguageBlockNode langblock)
+    {     
+        if (!core.langverify.Verify(langblock.codeblock))
+        {
+            return;
+        }
+
+        ProtoCore.ParserBase parser = null;
+        System.IO.MemoryStream memstream = new System.IO.MemoryStream(System.Text.Encoding.UTF8.GetBytes(langblock.codeblock.body));
+
+        if (langblock.codeblock.language ==  ProtoCore.Language.kImperative) 
+        {
+            parser = new Imperative.Parser(new Imperative.Scanner(memstream), core);
+        }
+        else if (langblock.codeblock.language == ProtoCore.Language.kAssociative) 
+        {
+            parser = new Associative.Parser(new Associative.Scanner(memstream), core);
+        }
+
+        try
+        {
+            parser.errorStream = new System.IO.StringWriter();
+            parser.Parse();
+
+            if (parser.errorStream.ToString() != String.Empty)
+                core.BuildStatus.LogSyntaxError(parser.errorStream.ToString());
+            core.BuildStatus.errorCount += parser.errorCount;  
+
+            langblock.codeBlockNode = parser.codeblock;
+        }
+        catch (ProtoCore.BuildHaltException e)
+        {
+            System.Console.WriteLine(e.errorMsg);
+        }  
+    }
+
+CHARACTERS
+	letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".
+	digit = "0123456789".
+	cr  = '\r'.
+	lf  = '\n'.
+	tab = '\t'.
+	anyExcludingQuote = ANY - '"'.
+	anyExcludingSingleQuote = ANY - '\''.
+	//anyExcludingDollar = ANY - '$'.
+	anychar = ANY.
+
+TOKENS
+	ident  = ( letter | '_' ){letter | digit | '_'}.
+	number = digit {digit}.
+	float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+	textstring = '"' {anyExcludingQuote} '"'.
+	char = '\''{anyExcludingSingleQuote}'\''.
+
+	openbracket = '['.
+	closebracket = ']'.	  	 
+	openparen = '('.
+	closeparen = ')'.	  
+	rel_gt = '>'. 
+	rel_lt = '<'. 
+	rel_ge = ">=". 
+	rel_le = "<=". 
+	rel_eq = "==". 
+	rel_nq = "!=".	
+	endline = ';'.
+	rangeop = "..".
+	
+	kw_funcdef = "def".
+	//kw_return = "return". 
+    kw_if = "if".
+    kw_elseif = "elseif".
+    kw_else = "else".
+    kw_while = "while".
+	kw_for = "for".
+
+    //kw_class = "class".		// no longer supporting classes in Imperative language block
+    kw_constructor = "constructor".
+	
+    kw_heap_alloc = "__heap".
+	langblocktrail = "<#" {anychar} "#>".
+
+    
+    // TODO (Jun/Ayush): link the followign literal token with the definitions in DSasmdefs
+    literal_true = "true".
+    literal_false = "false".
+    literal_null = "null".
+
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO cr lf
+
+IGNORE cr + lf + tab
+
+
+PRODUCTIONS
+
+DSImperative 
+=	
+							(. 
+								Node node = null; 
+								codeblock = new CodeBlockNode();
+							.)								
+    {
+	    (
+			(
+				stmt<out node>
+			)
+			|
+			(
+				functiondecl<out node>
+			)			
+		)
+							(.	if (null != node)	
+									(codeblock as CodeBlockNode).Body.Add(node); 
+							.)
+    }
+.
+
+languageblock<out Node node>			
+=										
+										(. 
+											node = null; 
+											LanguageBlockNode langblock = new LanguageBlockNode(); 
+										.)	
+	openbracket
+	ident
+										(.
+											if( 0 == t.val.CompareTo("Imperative")) {
+												langblock.codeblock.language = ProtoCore.Language.kImperative;
+											}
+											else if( 0 == t.val.CompareTo("Associative")) {
+												langblock.codeblock.language = ProtoCore.Language.kAssociative; 
+											}
+										.)
+	{
+		','									(. string key; .)			
+		ident								(. key = t.val; .)
+		'='			
+		textstring							(.	
+												if ("fingerprint" == key)
+												{
+													langblock.codeblock.fingerprint = t.val; 
+													langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(0,1); 
+													langblock.codeblock.fingerprint = langblock.codeblock.fingerprint.Remove(langblock.codeblock.fingerprint.Length-1,1); 
+												}
+												else if ("version" == key)
+												{
+													langblock.codeblock.version = t.val; 
+													langblock.codeblock.version = langblock.codeblock.version.Remove(0,1); 
+													langblock.codeblock.version = langblock.codeblock.version.Remove(langblock.codeblock.version.Length-1,1);
+												}
+											 .)			
+	}
+	
+	closebracket						
+	langblocktrail						(. 
+											langblock.codeblock.body = t.val.Substring(2,t.val.Length-4); 											
+											node = langblock;
+                                            ParseLanguageBlockNode(langblock);
+										.)		
+.    	
+
+stmt<out Node node>
+=
+								(. node = null; .)
+	(
+		( IF( isFunctionCall()) 
+			functioncall<out node> 
+			endline
+		)
+		|
+		assignstmt<out node>
+        /*|
+        returnstmt<out node>
+        */
+        |
+        ifstmt<out node>
+        |
+        whilestmt<out node>
+		|
+		forloop<out node>
+		|
+		languageblock<out node>		
+		|
+		endline	
+	)	
+.
+
+stmtlist<out NodeList nodelist> 
+=
+					(. nodelist = new NodeList(); .)
+{ 
+					(. Node node = null; .)
+	stmt<out node>	(. nodelist.Add(node); .)
+}
+.
+
+assignstmt<out Node node> 		
+                        (. node = null; .)
+= 
+						(. Node lhsNode = null; .)					
+	(		
+		( IF( isArrayAccess())							                                       
+			arrayident<out lhsNode>				
+		|                       	                 
+			ident		(. 
+                            int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
+                            lhsNode = new ProtoImperative.AST.IdentifierNode() 
+                            { 
+		                       Value = t.val,
+                               type = ltype,
+                               datatype = (ProtoCore.PrimitiveType)ltype
+                            }; 
+                        .)						
+		)
+	)
+ 
+	'=' 	
+						        (. Node rhsNode; .)
+    (	
+        (
+	        expr<out rhsNode> 		
+						        (.
+							        BinaryExpressionNode bNode = new BinaryExpressionNode();
+							        bNode.LeftNode = lhsNode;
+							        bNode.RightNode = rhsNode;
+							        bNode.Optr = Operator.assign;
+							        node = bNode;		
+						        .)					
+	        endline						
+        )
+        |
+        (
+	        languageblock<out rhsNode> 		
+						        (.
+							        BinaryExpressionNode bNode = new BinaryExpressionNode();
+							        bNode.LeftNode = lhsNode;
+							        bNode.RightNode = rhsNode;
+							        bNode.Optr = Operator.assign;
+							        node = bNode;		
+						        .)										
+        )
+    )
+.
+
+
+//returnstmt<out Node node>
+//=
+							//(. node = null; .)
+    //kw_return	
+    //[
+        //expr<out node>
+    //]
+							//(. 
+								//ReturnNode retNode = new ReturnNode(); 
+								//retNode.ReturnExpr = node;
+								//node = retNode; 
+							//.)	
+    //endline
+//.
+
+
+ifstmt<out Node node>  
+= 
+									(. IfStmtNode ifStmtNode = new IfStmtNode(); .)
+									(. NodeList body = null; .)
+    kw_if 
+	'(' 
+		expr<out node>				(. ifStmtNode.IfExprNode = node; .)					
+	')'   
+	(           
+		(							(. Node singleStmt; .)
+			stmt<out singleStmt>	(. ifStmtNode.IfBody.Add(singleStmt); .)
+		)
+		|
+		(
+			'{' 						
+				stmtlist<out body>			(. ifStmtNode.IfBody = body; .)	
+			'}'
+		)
+	)
+     
+    { 
+                                    (. ElseIfBlock elseifBlock = new ElseIfBlock(); .)
+        kw_elseif 
+		'(' 
+			expr<out node>			(. elseifBlock.Expr = node; .)	
+		')'  
+		(
+			(						(. Node singleStmt = null; .)
+				stmt<out singleStmt>(. elseifBlock.Body.Add(singleStmt); .)
+			)
+			|
+			(    
+				'{' 
+					stmtlist<out body>		(. elseifBlock.Body = body; .)	        
+				'}' 
+			)
+		)
+                                    (. ifStmtNode.ElseIfList.Add(elseifBlock); .)
+    } 
+
+    [ 
+        kw_else
+		(
+			(								(. Node singleStmt = null; .)
+				stmt<out singleStmt>		(. ifStmtNode.ElseBody.Add(singleStmt); .)
+			)
+			|
+			( 
+				'{'
+					stmtlist<out body>		(. ifStmtNode.ElseBody = body; .)	              
+				'}' 
+			)
+		)
+    ]    
+                                    (. node = ifStmtNode; .)	                    
+.
+
+whilestmt<out Node node>  
+= 
+									(. WhileStmtNode whileStmtNode = new WhileStmtNode(); .)
+									(. NodeList body = null; .)
+        kw_while 	 
+        '(' 
+		    expr<out node>		    (. whileStmtNode.Expr = node; .)					
+	    ')'  
+        '{'
+			stmtlist<out body>		(. whileStmtNode.Body = body; .)	              
+        '}' 
+                                    (. node = whileStmtNode; .)	                    
+.
+forloop<out Node forloop>
+=
+										(. 
+											Node node;
+											ForLoopNode loopNode = new ForLoopNode();
+											NodeList body = null;   
+										.)
+		kw_for
+		'('
+			arrayident<out node>				(. loopNode.id = node; .)	
+		"in"
+			expr<out node>				(. loopNode.expression = node; .)
+		')'
+		(
+			(								(. Node singleStmt = null; .)
+				stmt<out singleStmt>		(. loopNode.body.Add(singleStmt); .)
+			)
+			|
+			(
+				'{'										
+					stmtlist<out body>			(. loopNode.body = body; .)
+				'}'
+			)
+		)		
+										(. forloop = loopNode; .)
+.
+
+
+expr<out Node node>   		
+=						(. node = null; .)	
+	(
+		unaryexpr<out node>
+		|
+		binexpr<out node>							
+	)
+	{
+		TernaryOp<ref node>
+	}
+.
+
+TernaryOp<ref Node node>
+=
+											(. InlineConditionalNode inlineConNode = new InlineConditionalNode(); .)
+		"?"									(. inlineConNode.ConditionExpression = node; node = null; .)
+		expr<out node>						(. inlineConNode.TrueExpression = node; .)
+		":"									(. node = null; .)
+		expr<out node>					    (. inlineConNode.FalseExpression = node; .)
+											(. node = inlineConNode; .)
+.
+
+identifierList<out Node node>
+=										(. node = null; .)
+	NameReference<out node>		
+	{
+		'.'								(. Node rnode = null; .)				
+		NameReference<out rnode>
+										(.
+											IdentifierListNode bnode = new IdentifierListNode(); 
+											bnode.LeftNode = node; 
+											bnode.Optr = Operator.dot; 
+											bnode.RightNode = rnode; 
+											node = bnode; 
+										.)
+	}										
+.	
+
+NameReference<out Node node>
+=
+									(. node = null; .)
+	( IF(isFunctionCall())
+		functioncall<out node>
+		|
+		arrayident<out node>
+	)	
+.
+
+unaryexpr<out Node node>
+=						(. node = null; .)
+						(. UnaryOperator op; .)
+						(. Node exprNode; .)
+	unaryop<out op>		
+	expr<out exprNode>	
+						(. 
+							UnaryExpressionNode unary = new UnaryExpressionNode(); 
+							unary.Operator = op;
+							unary.Expression = exprNode;
+							node = unary;
+						.)
+.
+
+binexpr<out Node node>   		
+=							
+								(. node = null;.)								
+	logicalexpr<out node>  
+	{ 		
+								(. Operator op; .)
+		logicalop<out op>
+								(. Node rhsNode = null; .)	
+		expr<out rhsNode>	
+								(. 
+									BinaryExpressionNode bNode = new BinaryExpressionNode();
+									bNode.LeftNode = node;
+									bNode.RightNode = rhsNode;
+									bNode.Optr = op;
+									node = bNode;
+								.)					
+	}
+.
+
+logicalexpr<out Node node>   		
+=							
+								(. node = null;.)								
+	RangeExpr<out node>  
+	{ 		
+								(. Operator op; .)
+		relop<out op>
+								(. Node rhsNode = null; .)	
+		RangeExpr<out rhsNode>	
+								(. 
+									BinaryExpressionNode bNode = new BinaryExpressionNode();
+									bNode.LeftNode = node;
+									bNode.RightNode = rhsNode;
+									bNode.Optr = op;
+									node = bNode;
+								.)					
+	}
+.
+
+RangeExpr<out Node node>
+=
+rel<out node>
+[
+									(.	RangeExprNode rnode = new RangeExprNode(); 
+										rnode.FromNode = node;
+									.)
+	rangeop	
+	rel<out node>			(. rnode.ToNode = node; .)
+	[						(. RangeStepOperator op; .)
+		rangeop				
+		rangeStepOperator<out op>	(. rnode.stepoperator = op; .)	
+		rel<out node> (. rnode.StepNode = node; .)
+	]
+									(. node = rnode; .)
+]
+.
+
+rel<out Node node>  		
+=		
+								(. node = null;.)								
+	term<out node>			
+	{ 		
+								(. Operator op; .)
+		addop<out op>
+								(. Node rhsNode; .)	
+		term<out rhsNode>	
+								(. 
+									BinaryExpressionNode bNode = new BinaryExpressionNode();
+									bNode.LeftNode = node;
+									bNode.RightNode = rhsNode;
+									bNode.Optr = op;
+									node = bNode;
+								.)					
+	}
+.
+
+term<out Node node> 		
+=			
+								(. node = null;.)				
+	interimfactor<out node> 
+	{ 
+								(. Operator op; .)
+		mulop<out op>
+								(. Node rhsNode; .)	
+		interimfactor<out rhsNode>					
+		
+								(. 
+									BinaryExpressionNode bNode = new BinaryExpressionNode();
+									bNode.LeftNode = node;
+									bNode.RightNode = rhsNode;
+									bNode.Optr = op;
+									node = bNode;
+								.)
+				
+	}
+.
+
+interimfactor<out Node node>
+=
+							(. node = null;.)				
+	factor<out node> 
+	{ 
+								(. Operator op; .)
+		bitop<out op>
+								(. Node rhsNode; .)	
+		factor<out rhsNode>					
+		
+								(. 
+									BinaryExpressionNode bNode = new BinaryExpressionNode();
+									bNode.LeftNode = node;
+									bNode.RightNode = rhsNode;
+									bNode.Optr = op;
+									node = bNode;
+								.)
+				
+	}
+.
+
+factor<out Node node>  	
+					(. node = null; .)
+= 	
+	num<out node>						
+	|
+	(		
+		( IF( isFunctionCall())										                             
+			functioncall<out node> 
+		)
+	)	
+    |
+    (
+        ( IF( isArrayAccess())							                                       
+			arrayident<out node>				
+		//|                       	                 
+		//	ident	(. node = new IdentifierNode() { Value = t.val, type = (int)ProtoCore.PrimitiveType.kTypeVar, datatype = ProtoCore.PrimitiveType.kTypeVar }; .)						
+		)
+    ) 
+    |
+		(
+			literal_true			(. node = new BooleanNode() { value = ProtoCore.DSASM.Literal.True }; .)		
+		)
+		|
+		(
+			literal_false			(. node = new BooleanNode() { value = ProtoCore.DSASM.Literal.False }; .)	
+		)	
+        |
+        (
+            literal_null	        (. node = new NullNode(); .)
+        )
+    |
+    (
+        '{'							(. ExprListNode exprlist = new ExprListNode(); .)
+			[
+                                    
+				expr<out node>          (. exprlist.list.Add(node); .)
+				{
+					','
+					expr<out node>      (. exprlist.list.Add(node); .)
+				}
+         
+			]
+        '}'							(. node = exprlist; .)
+    )
+	|
+	(
+		'(' 
+			expr<out node> 
+		')'
+	)
+	|
+	(
+		identifierList<out node>
+	)	
+.
+
+functioncall<out Node node> 	
+= 								
+	ident							(. IdentifierNode function = new IdentifierNode() { Value = t.val, Name = t.val }; .)
+									(. NodeList arglist = new NodeList(); .)																
+	'(' 
+		[
+									(. Node argNode; .)
+			expr<out argNode>		(. arglist.Add(argNode); .)			
+			{ 
+				',' 
+				expr<out argNode>	(. arglist.Add(argNode); .)		
+			}
+		] 
+	')' 
+									(.
+										FunctionCallNode funcNode = new FunctionCallNode(); 
+										funcNode.Function = function;
+										funcNode.FormalArguments = arglist;
+										node = funcNode; 
+									.)
+.
+
+Ident<out Node node> 
+=
+	ident	(. 
+				int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
+				IdentifierNode var = new IdentifierNode() 
+				{
+					// TODO Jun: Move the primitive types into a class table 
+					Value = t.val, 
+					Name = t.val, 
+					type = ltype,
+					datatype = (ProtoCore.PrimitiveType)ltype 
+				}; 
+				node = var;
+			.)
+.
+
+arrayident<out Node node> 
+= 
+	Ident<out node>	
+	[
+	openbracket                  
+								(. IdentifierNode var = node as IdentifierNode; .)     
+                                (. node = null; .)
+		[                        
+			expr<out node>	
+		]
+            	                (. 
+                                    ArrayNode array = new ArrayNode();
+                                    array.Expr = node; 
+                                    array.Type = null;
+                                    var.ArrayDimensions = array; 
+                                .)
+
+	closebracket 
+	{ 
+                                
+		openbracket
+                                (. node = null; .)
+		[
+			expr<out node>  
+		]
+                                (.
+                                    ArrayNode array2 = new ArrayNode();
+                                    array2.Expr = node; 
+                                    array2.Type = null;
+                                    array.Type = array2;
+                                    array = array2;
+                                .)
+		closebracket
+	}					
+								(. node = var; .)
+	]
+                                
+.
+
+ArgDecl<out Node node>	
+= 
+							        (.
+                                        IdentifierNode tNode = null; 
+                                        VarDeclNode varDeclNode = new ProtoImperative.AST.VarDeclNode(); 
+                                        varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
+                                    .)
+
+    [
+        kw_heap_alloc               (. varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemHeap; .)
+    ]
+
+	( IF( isArrayAccess())	                                        
+		arrayident<out node>	    (. 
+                                        tNode = node as IdentifierNode; 
+                                        varDeclNode.NameNode = tNode;
+                                    .)	
+		|
+		ident					    (. 
+                                        tNode = new IdentifierNode() 
+                                        { 
+                                            Value = t.val, 
+                                            Name = t.val, 
+                                            type = (int)ProtoCore.PrimitiveType.kTypeVar, 
+                                            datatype = ProtoCore.PrimitiveType.kTypeVar 
+                                        }; 
+                                        varDeclNode.NameNode = tNode;
+                                    .)	
+	)
+										(. ProtoCore.Type argtype = new ProtoCore.Type(); argtype.Name = "var"; argtype.rank = 0; argtype.UID = 0; .)
+	[
+		':'
+		ident					        (. argtype.Name = t.val; .)
+		[								(. argtype.IsIndexable = true; .)
+			openbracket closebracket	(. argtype.rank = 1; .)
+			[
+				( ".." openbracket closebracket )	(. argtype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
+				|
+				( 
+					{
+						openbracket closebracket	(. argtype.rank++; .)
+					} 
+				)
+			]
+		]
+	]
+									(. varDeclNode.ArgumentType = argtype; .)
+
+    [
+        '=' 
+						            (. Node rhsNode; .)		
+        expr<out rhsNode> 		
+						            (.
+							            BinaryExpressionNode bNode = new BinaryExpressionNode();
+							            bNode.LeftNode = tNode;
+							            bNode.RightNode = rhsNode;
+							            bNode.Optr = Operator.assign;
+							            varDeclNode.NameNode = bNode;		
+						            .)	
+    ]	
+
+								    (. 
+								        node = varDeclNode; 
+								        if(!isGlobalScope) {
+								            localVarCount++;
+								        }
+								    .)
+
+.
+
+
+functiondecl<out Node node>	
+= 							
+										    (. FunctionDefinitionNode funcDecl = new FunctionDefinitionNode(); .)
+											(. ProtoCore.Type rtype = new ProtoCore.Type(); rtype.Name = "var"; rtype.UID = 0; .)
+	kw_funcdef	   
+	
+	ident									(. funcDecl.Name = t.val; .)
+	[									    
+		':'										
+		ReturnType<out rtype>				    
+	]
+											(. funcDecl.ReturnType = rtype; .)					    
+
+	'('  
+		[
+										    (. ArgumentSignatureNode args = new ArgumentSignatureNode(); .)
+										    (. Node argdecl; .) 
+			ArgDecl<out argdecl>            
+										    (. args.AddArgument(argdecl as VarDeclNode); .) 	              
+										                  
+			{ 
+				','						    
+				ArgDecl<out argdecl>	    
+										    (. args.AddArgument(argdecl as VarDeclNode); .) 		
+			} 
+                                            (. funcDecl.Signature = args; .)
+		]
+	')'								
+	
+                                            (. isGlobalScope = false; .)
+	'{' 			
+											(. 
+												funcDecl.FunctionBody = new CodeBlockNode(); 
+												NodeList body = new NodeList();
+											.)
+		stmtlist<out body> 
+	'}'                                 
+											(. 
+                                                funcDecl.localVars = localVarCount;
+												funcDecl.FunctionBody.Body = body;
+												node = funcDecl; 
+
+                                                isGlobalScope = true;
+                                                localVarCount=  0;
+											.)
+.
+
+ReturnType<out ProtoCore.Type type>
+=												(. ProtoCore.Type rtype = new ProtoCore.Type(); .)
+  ident											(. rtype.Name = t.val; rtype.rank = 0; .)
+  [												(. rtype.IsIndexable = true; .)
+		openbracket closebracket				(. rtype.rank = 1; .)
+		[
+			( ".." openbracket closebracket )	(. rtype.rank = ProtoCore.DSASM.Constants.nDimensionArrayRank; .)
+			|
+			( 
+				{
+					openbracket closebracket	(. rtype.rank++; .)
+				} 
+			)
+		]
+	]
+												(. type = rtype; .)
+.
+
+num<out Node node>			
+			(. node = null; String localvalue = String.Empty; .)			
+=
+	[
+		'-'	(. localvalue = "-"; .)
+	]
+	(
+		number	(. node = new IntNode() { value = localvalue + t.val }; .)
+		| 
+		float	(. node = new DoubleNode() { value = localvalue + t.val }; .)
+	)
+.
+
+mulop<out Operator op>		
+			(. op = Operator.none; .)	
+= 						
+	'*'		(. op = Operator.mul; .)
+	| 
+	'/'		(. op = Operator.div; .)
+.
+
+bitop<out Operator op>		
+			(. op = Operator.none; .)	
+= 						
+	'&'		(. op = Operator.bitwiseand; .)
+	| 
+	'|'		(. op = Operator.bitwiseor; .)
+	|
+	'^'		(. op = Operator.bitwisexor; .)
+.
+
+logicalop<out Operator op>		
+			(. op = Operator.none; .)	
+= 						
+	"&&"		(. op = Operator.and; .)
+	| 
+	"||"		(. op = Operator.or; .)
+.
+
+addop<out Operator op>		
+			(. op = Operator.none; .)	
+= 							
+	'+'		(. op = Operator.add; .)
+	|	
+	'-'		(. op = Operator.sub; .)
+.
+
+relop<out Operator op>	
+			(. op = Operator.none; .)	
+ =			
+
+	rel_gt	(. op = Operator.gt; .)
+	| 
+	rel_lt	(. op = Operator.lt; .)
+	| 
+	rel_ge	(. op = Operator.ge; .)
+	| 
+	rel_le	(. op = Operator.le; .)
+	| 
+	rel_eq	(. op = Operator.eq; .)
+	| 
+	rel_nq	(. op = Operator.nq; .)
+.
+
+unaryop<out UnaryOperator op>		
+			(. op = UnaryOperator.None; .)	
+= 							
+	'!'		(. op = UnaryOperator.Not; .)
+	|	
+	'~'		(. op = UnaryOperator.Negate; .)
+.
+
+rangeStepOperator<out RangeStepOperator op>
+						(. op = RangeStepOperator.stepsize; .)
+= 
+	[
+		'#'				(. op = RangeStepOperator.num; .)
+		| '~'			(. op = RangeStepOperator.approxsize; .)
+	]
+.
+
+END DSImperative.

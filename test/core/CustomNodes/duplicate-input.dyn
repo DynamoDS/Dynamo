@@ -1,0 +1,22 @@
+<Workspace Version="0.7.2.2921" X="138" Y="-21" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="d67d6abd-b942-4dce-bdf0-dfd516c463dc" nickname="duplicate-input" x="239" y="252.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="9769c246-6db3-434c-b6ed-14a5975fe5c1" />
+      <Name value="test" />
+      <Description value="" />
+      <Inputs>
+        <Input value="x" />
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="325fbb0c-338c-4c6c-93fc-5bb619fffcab" nickname="Code Block" x="43" y="268" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;&#xA;2;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="325fbb0c-338c-4c6c-93fc-5bb619fffcab" start_index="0" end="d67d6abd-b942-4dce-bdf0-dfd516c463dc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="325fbb0c-338c-4c6c-93fc-5bb619fffcab" start_index="1" end="d67d6abd-b942-4dce-bdf0-dfd516c463dc" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

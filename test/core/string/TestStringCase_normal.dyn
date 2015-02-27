@@ -1,29 +1,29 @@
-<dynWorkspace X="0" Y="0" zoom="0.9" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" nickname="Watch" x="848" y="190.908888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringCase type="Dynamo.Nodes.dynStringCase" guid="294a2376-6751-43c3-a8b1-5492fa942dbe" nickname="String Case" x="581.103174603174" y="194.950317460318" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="6a99d2d2-1827-4259-8a2a-6b8b41ab19d6" nickname="Boolean" x="286.65873015873" y="254.950317460318" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="0.6.3.7993" X="-52.5138895662936" Y="15.7123177892534" zoom="0.954042924882813" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="b76f25c3-56dd-43d0-8c38-726ff505686f" nickname="String" x="121" y="103.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Rainy Day" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="84a72085-b5c1-45d8-9bb7-364fd473575f" nickname="String" x="133" y="318.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Rainy Day" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="d4b52267-8449-4231-8d61-1f1bb40f6b6a" nickname="Boolean" x="124" y="180.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Boolean value="True" />
-    </Dynamo.Nodes.dynBoolSelector>
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="60d5c44f-6572-492f-bbf7-57e8f601b36d" nickname="String" x="289.992063492063" y="152.728095238095" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="Rainy Day" />
-    </Dynamo.Nodes.dynStringInput>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="77a8c84b-b5bb-46f1-a550-7b3d5441c0a1" nickname="Watch" x="855.777777777778" y="388.686666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringCase type="Dynamo.Nodes.dynStringCase" guid="e84da371-3060-42a2-af0d-949c121b6c15" nickname="String Case" x="588.880952380952" y="392.728095238095" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="8fb50d87-acc7-4d42-b3b5-9390915ec517" nickname="Boolean" x="294.436507936508" y="452.728095238096" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    </Dynamo.Nodes.BoolSelector>
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="9109cc96-aeba-4d9a-b831-cc75740817f6" nickname="Boolean" x="138" y="390.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Boolean value="False" />
-    </Dynamo.Nodes.dynBoolSelector>
-    <Dynamo.Nodes.dynStringInput type="Dynamo.Nodes.dynStringInput" guid="b7254bdd-b43a-419c-8a7e-f7832ec21aa1" nickname="String" x="297.769841269841" y="350.505873015873" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="Rainy Day" />
-    </Dynamo.Nodes.dynStringInput>
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="294a2376-6751-43c3-a8b1-5492fa942dbe" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="6a99d2d2-1827-4259-8a2a-6b8b41ab19d6" start_index="0" end="294a2376-6751-43c3-a8b1-5492fa942dbe" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="60d5c44f-6572-492f-bbf7-57e8f601b36d" start_index="0" end="294a2376-6751-43c3-a8b1-5492fa942dbe" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="e84da371-3060-42a2-af0d-949c121b6c15" start_index="0" end="77a8c84b-b5bb-46f1-a550-7b3d5441c0a1" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="8fb50d87-acc7-4d42-b3b5-9390915ec517" start_index="0" end="e84da371-3060-42a2-af0d-949c121b6c15" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="b7254bdd-b43a-419c-8a7e-f7832ec21aa1" start_index="0" end="e84da371-3060-42a2-af0d-949c121b6c15" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </Dynamo.Nodes.BoolSelector>
+    <Dynamo.Nodes.StringCase type="Dynamo.Nodes.StringCase" guid="c5b88685-0318-4db1-80b4-a1baf8724c83" nickname="String Case" x="292" y="334.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringCase type="Dynamo.Nodes.StringCase" guid="7805c2b9-d353-40c6-b9a6-bd430543cd33" nickname="String Case" x="283" y="124.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="430374df-3b6e-47c4-8507-4d73f90480a3" nickname="Watch" x="423" y="122.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="0bb9db6e-0e41-4740-92a2-7fa5dca3b632" nickname="Watch" x="437" y="336.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b76f25c3-56dd-43d0-8c38-726ff505686f" start_index="0" end="7805c2b9-d353-40c6-b9a6-bd430543cd33" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="84a72085-b5c1-45d8-9bb7-364fd473575f" start_index="0" end="c5b88685-0318-4db1-80b4-a1baf8724c83" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4b52267-8449-4231-8d61-1f1bb40f6b6a" start_index="0" end="7805c2b9-d353-40c6-b9a6-bd430543cd33" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9109cc96-aeba-4d9a-b831-cc75740817f6" start_index="0" end="c5b88685-0318-4db1-80b4-a1baf8724c83" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c5b88685-0318-4db1-80b4-a1baf8724c83" start_index="0" end="0bb9db6e-0e41-4740-92a2-7fa5dca3b632" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7805c2b9-d353-40c6-b9a6-bd430543cd33" start_index="0" end="430374df-3b6e-47c4-8507-4d73f90480a3" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

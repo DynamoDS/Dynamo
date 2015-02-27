@@ -1,21 +1,28 @@
-<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
-  <dynElements>
-    <Dynamo.Nodes.dynImageFileReader type="Dynamo.Nodes.dynImageFileReader" guid="4e759b92-78b8-484e-aa26-11b1009cbd7b" nickname="Read Image File" x="435" y="158.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynStringFilename type="Dynamo.Nodes.dynStringFilename" guid="cc2f1fae-9ddd-441a-b8bd-6ddc46a84a03" nickname="File Path" x="173" y="145.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String value="No file selected." />
-    </Dynamo.Nodes.dynStringFilename>
-    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="bcf2d10b-6a50-41ed-a993-2d897a464327" nickname="Number" x="190.5" y="259.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+<Workspace Version="0.7.4.3075" X="-10.5136476370263" Y="145.53444163027" zoom="0.579373994271777" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="bcf2d10b-6a50-41ed-a993-2d897a464327" nickname="Number" x="221.5" y="229.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="5" />
-    </Dynamo.Nodes.dynDoubleInput>
-    <Dynamo.Nodes.dynWatch type="Dynamo.Nodes.dynWatch" guid="4744f516-c6b5-421c-b7f1-1731610667bb" nickname="Watch" x="1068.5" y="152.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.dynLength type="Dynamo.Nodes.dynLength" guid="eef02839-a7b7-491c-af70-467751fa3480" nickname="List Length" x="890" y="151.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </dynElements>
-  <dynConnectors>
-    <Dynamo.Models.dynConnectorModel start="4e759b92-78b8-484e-aa26-11b1009cbd7b" start_index="0" end="eef02839-a7b7-491c-af70-467751fa3480" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="cc2f1fae-9ddd-441a-b8bd-6ddc46a84a03" start_index="0" end="4e759b92-78b8-484e-aa26-11b1009cbd7b" end_index="0" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="bcf2d10b-6a50-41ed-a993-2d897a464327" start_index="0" end="4e759b92-78b8-484e-aa26-11b1009cbd7b" end_index="1" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="bcf2d10b-6a50-41ed-a993-2d897a464327" start_index="0" end="4e759b92-78b8-484e-aa26-11b1009cbd7b" end_index="2" portType="0" />
-    <Dynamo.Models.dynConnectorModel start="eef02839-a7b7-491c-af70-467751fa3480" start_index="0" end="4744f516-c6b5-421c-b7f1-1731610667bb" end_index="0" portType="0" />
-  </dynConnectors>
-  <dynNotes />
-</dynWorkspace>
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="4744f516-c6b5-421c-b7f1-1731610667bb" nickname="Watch" x="1103.02001677282" y="150.293999161359" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="eef02839-a7b7-491c-af70-467751fa3480" nickname="List.Count" x="984.930046125267" y="151.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.List.Count@var[]..[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="d9ab99fe-95c4-4769-8f59-79eab70dee8d" nickname="Image.ReadFromFile" x="463.712010063694" y="116.981922006367" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.Image.ReadFromFile@var" />
+    <DSCore.File.FileObject type="DSCore.File.FileObject" guid="b8e6baf1-1a8d-47bf-8565-c8977ea85384" nickname="File.FromPath" x="340.712010063694" y="117.981922006367" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="749c2cb0-9def-40c8-a1aa-82ed0d2a0155" nickname="Image.Pixels" x="648.643994968153" y="148.772060382168" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.Image.Pixels@var,int,int" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1ecb0e61-adcb-4b64-95ea-9fbbe1e3cb7a" nickname="Flatten" x="837.643994968153" y="148.772060382168" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Flatten@var[]..[]" />
+    <DSCore.File.Filename type="DSCore.File.Filename" guid="65161e5a-5cab-4345-8fd8-7fefdf4730e7" nickname="File Path" x="182" y="136.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>
+      </System.String>
+    </DSCore.File.Filename>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="bcf2d10b-6a50-41ed-a993-2d897a464327" start_index="0" end="749c2cb0-9def-40c8-a1aa-82ed0d2a0155" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bcf2d10b-6a50-41ed-a993-2d897a464327" start_index="0" end="749c2cb0-9def-40c8-a1aa-82ed0d2a0155" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eef02839-a7b7-491c-af70-467751fa3480" start_index="0" end="4744f516-c6b5-421c-b7f1-1731610667bb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d9ab99fe-95c4-4769-8f59-79eab70dee8d" start_index="0" end="749c2cb0-9def-40c8-a1aa-82ed0d2a0155" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8e6baf1-1a8d-47bf-8565-c8977ea85384" start_index="0" end="d9ab99fe-95c4-4769-8f59-79eab70dee8d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="749c2cb0-9def-40c8-a1aa-82ed0d2a0155" start_index="0" end="1ecb0e61-adcb-4b64-95ea-9fbbe1e3cb7a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1ecb0e61-adcb-4b64-95ea-9fbbe1e3cb7a" start_index="0" end="eef02839-a7b7-491c-af70-467751fa3480" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="65161e5a-5cab-4345-8fd8-7fefdf4730e7" start_index="0" end="b8e6baf1-1a8d-47bf-8565-c8977ea85384" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

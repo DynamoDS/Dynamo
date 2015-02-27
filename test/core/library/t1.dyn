@@ -1,0 +1,10 @@
+<Workspace Version="0.6.3.30864" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="5610c960-4910-4b95-87a6-19a7462f52d0" nickname="bar" x="144" y="212.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly=".\Test.ds" function="bar" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="2cacc70a-23a8-4fe0-92d1-9b72ae3db10b" nickname="Code Block" x="228" y="283" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = x + 1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5610c960-4910-4b95-87a6-19a7462f52d0" start_index="0" end="2cacc70a-23a8-4fe0-92d1-9b72ae3db10b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

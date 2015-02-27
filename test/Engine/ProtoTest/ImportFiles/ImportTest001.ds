@@ -1,0 +1,8 @@
+import("import001.ds");
+import("import002.ds");
+
+a = 10;
+b = 20;
+
+c = add(a, b);
+d = mul(a, b);

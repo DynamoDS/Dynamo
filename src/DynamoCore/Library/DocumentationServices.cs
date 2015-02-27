@@ -1,0 +1,78 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Xml.Linq;
+using DynamoUtilities;
+
+namespace Dynamo.DSEngine
+{
+    public static class DocumentationServices
+    {
+        private static Dictionary<string, bool> _triedPaths = new Dictionary<string, bool>();
+
+        private static Dictionary<string, XDocument> _cached =
+            new Dictionary<string, XDocument>(StringComparer.OrdinalIgnoreCase);
+
+        public static void DestroyCachedData()
+        {
+            if (_triedPaths != null) // Release references for collection.
+                _triedPaths.Clear();
+
+            if (_cached != null) // Release references for collection.
+                _cached.Clear();
+        }
+
+        public static XDocument GetForAssembly(string assemblyPath)
+        {
+            if (_triedPaths.ContainsKey(assemblyPath))
+            {
+                return _triedPaths[assemblyPath] ? _cached[assemblyPath] : null;
+            }
+
+            var documentationPath = "";
+            if (ResolveForAssembly(assemblyPath, ref documentationPath))
+            {
+                var c = XDocument.Load(documentationPath);
+                _triedPaths.Add(assemblyPath, true);
+                _cached.Add(assemblyPath, c);
+                return c;
+            }
+            else
+            {
+                _triedPaths.Add(assemblyPath, false);
+                return null;
+            }
+        }
+
+        public static bool ResolveForAssembly(string assemblyLocation, ref string documentationPath)
+        {
+            DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation);
+
+            if (!File.Exists(assemblyLocation))
+            {
+                return false;
+            }
+
+            var assemblyPath = Path.GetFullPath(assemblyLocation);
+
+            var baseDir = Path.GetDirectoryName(assemblyPath);
+            var xmlFileName = Path.GetFileNameWithoutExtension(assemblyPath) + ".xml";
+
+            var language = System.Threading.Thread.CurrentThread.CurrentUICulture.ToString();
+            var localizedResPath = Path.Combine(baseDir, language);
+            documentationPath = Path.Combine(localizedResPath, xmlFileName);
+
+            if (File.Exists(documentationPath))
+                return true;
+
+            localizedResPath = Path.Combine(baseDir, UI.Configurations.FallbackUiCulture);
+            documentationPath = Path.Combine(localizedResPath, xmlFileName);
+            if (File.Exists(documentationPath))
+                return true;
+
+            documentationPath = Path.Combine(baseDir, xmlFileName);
+            return File.Exists(documentationPath);
+        }
+    }
+
+}

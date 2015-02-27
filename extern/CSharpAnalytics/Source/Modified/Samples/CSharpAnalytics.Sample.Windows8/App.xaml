@@ -1,0 +1,14 @@
+﻿<Application
+    x:Class="CSharpAnalytics.Sample.Windows8.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Common/StandardStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <x:String x:Key="AppName">CSharpAnalytics sample for Windows 8 apps</x:String>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

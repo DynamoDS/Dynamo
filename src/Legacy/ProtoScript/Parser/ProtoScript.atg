@@ -1,0 +1,99 @@
+
+
+COMPILER ProtoScript
+	
+	public ProtoCore.Script script{ get; set; }
+
+	public Parser()
+	{
+	}
+
+
+//================================================
+// Coco-defined Language agnostic
+//================================================
+
+CHARACTERS
+	letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".
+	digit = "0123456789".
+	opchar = '|' + '+' + '-' + '*' + '/' + '=' + '&' + '>' + '<' + '~'.
+	cr  = '\r'.
+	lf  = '\n'.
+	tab = '\t'.
+	anyExcludingQuote = ANY - '"'.
+	anyExcludingSingleQuote = ANY - '\''.
+	//anyExcludingDollar = ANY - '$'.
+	anychar = ANY.
+
+TOKENS
+	ident  = letter {letter | digit}.
+	number = digit {digit}.
+	float = digit {digit} '.' digit {digit} [('E' | 'e') ['+'|'-'] digit {digit}].
+	textstring = '"' {anyExcludingQuote} '"'.
+	char = '\''{anyExcludingSingleQuote}'\''.
+
+	langblocktrail = "<#" {anychar} "#>".
+
+	openbracket = '['.
+	closebracket = ']'.	  
+	
+    
+COMMENTS FROM "/*" TO "*/" NESTED
+COMMENTS FROM "//" TO cr lf
+
+IGNORE cr + lf + tab
+
+
+PRODUCTIONS
+
+ProtoScript 			
+=											(. script = new ProtoCore.Script(); .)
+    {			
+											(. ProtoCore.LanguageCodeBlock codeblock = new ProtoCore.LanguageCodeBlock(); .)												
+		openbracket
+		ident
+											(.
+												if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.imperative)) {
+													codeblock.language = ProtoCore.Language.kImperative;
+												}
+												else if( 0 == t.val.CompareTo(ProtoCore.DSASM.kw.associative)) {
+													codeblock.language = ProtoCore.Language.kAssociative;
+												}
+											.)
+		{
+			','									(. string key; .)
+			ident								(. key = t.val; .)
+			'='			
+			textstring							(. 
+													if ("fingerprint" == key)
+													{	
+														codeblock.fingerprint = t.val; 
+														codeblock.fingerprint = codeblock.fingerprint.Remove(0,1); 
+														codeblock.fingerprint = codeblock.fingerprint.Remove(codeblock.fingerprint.Length-1,1); 
+													}
+													else if ("version" == key)
+													{
+														codeblock.version = t.val; 
+														codeblock.version = codeblock.version.Remove(0,1); 
+														codeblock.version = codeblock.version.Remove(codeblock.version.Length-1,1); 
+													}
+												 .)
+			
+			
+		}
+		
+		closebracket
+		langblocktrail						(. 
+												codeblock.body = t.val; 
+												codeblock.body = codeblock.body.Remove(0, 2);
+												codeblock.body = codeblock.body.Remove(codeblock.body.Length - 2, 2);
+											.)
+											(.  script.codeblockList.Add(codeblock); .)
+    }					
+.
+
+END ProtoScript.
+
+
+
+

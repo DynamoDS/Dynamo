@@ -1,0 +1,7 @@
+<Workspace Version="0.6.2.34722" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="6887a0c6-fdde-4b00-8a89-4d088b5167c8" nickname="Code Block" x="168" y="292" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a;" ShouldFocus="false" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

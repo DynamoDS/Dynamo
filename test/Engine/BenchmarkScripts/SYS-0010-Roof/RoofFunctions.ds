@@ -1,0 +1,89 @@
+import("ProtoGeometry.dll");
+
+def Hide(geom : Geometry)
+    { return = geom.SetVisibility(false); }
+
+def isoLines(surf : Surface, linesNo: int)
+{
+    patch= surf.Patches;
+    isou = 0..1..#linesNo;
+    tempIso = patch.IsoCurve(1, isou);
+    neg = Hide(patch);
+    return = tempIso;
+}
+
+class Rectangle
+{
+    p1 : Point;
+    p2 : Point;
+    p3 : Point;
+    p4 : Point;
+    tempcurve : Curve;
+    length : double;
+    width : double;
+    NCS : CoordinateSystem;
+    //normal : Vector;
+    zAng : double;
+    constructor Rectangle(point : Point, norm : Vector, leng: double, wid: double)
+    {
+        length = leng; width = wid;
+       
+		zAng = Math.Acos(norm.Dot(WCS.ZAxis));
+       
+        
+        p1 = Point.ByCoordinates(point.X + length / 2, point.Y - width / 2, point.Z+ length / 2);
+        p2 = Point.ByCoordinates(point.X + length / 2, point.Y + width / 2, point.Z+ length / 2);        
+        p3 = Point.ByCoordinates(point.X - length / 2, point.Y - width / 2, point.Z- length / 2);
+        p4 = Point.ByCoordinates(point.X - length / 2, point.Y + width / 2, point.Z - length / 2);
+
+        NCS = CoordinateSystem.Identity();
+
+        
+        [Imperative]
+        {
+            if (norm.Equals(NCS.ZAxis))
+            {
+		        p1 = Point.ByCoordinates(point.X + length / 2, point.Y - width / 2, point.Z);
+        		p2 = Point.ByCoordinates(point.X + length / 2, point.Y + width / 2, point.Z);        
+			    p3 = Point.ByCoordinates(point.X - length / 2, point.Y - width / 2, point.Z);
+		        p4 = Point.ByCoordinates(point.X - length / 2, point.Y + width / 2, point.Z);
+        
+        		lin1 = Line.ByStartPointEndPoint(p1, p3);
+		        lin2 = Line.ByStartPointEndPoint(p3, p4);
+		        lin3 = Line.ByStartPointEndPoint(p4, p2);
+		        lin4 = Line.ByStartPointEndPoint(p2, p1);
+        
+        
+                tempcurve = Curve.Composite({ lin1, lin2, lin3, lin4 });
+
+
+            }
+            
+            else if (norm.Equals(NCS.XAxis))
+            {
+		        p1 = Point.ByCoordinates(point.X, point.Y + length / 2, point.Z- width / 2);
+        		p2 = Point.ByCoordinates(point.X, point.Y + length / 2, point.Z+ width / 2);        
+			    p3 = Point.ByCoordinates(point.X, point.Y - length / 2, point.Z- width / 2);
+		        p4 = Point.ByCoordinates(point.X, point.Y - length / 2, point.Z+ width / 2);
+        
+
+
+            }
+            
+        }
+        
+        		lin1 = Line.ByStartPointEndPoint(p1, p3);
+		        lin2 = Line.ByStartPointEndPoint(p3, p4);
+		        lin3 = Line.ByStartPointEndPoint(p4, p2);
+		        lin4 = Line.ByStartPointEndPoint(p2, p1);
+        
+        
+                tempcurve = Curve.Composite({ lin1, lin2, lin3, lin4 });
+
+        //neglect = Hide({ p1, p2, p3, p4, lin1, lin2, lin3, lin4, tempcurve });
+
+    }
+    
+}
+
+

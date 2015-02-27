@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
+  <Identity Name="CSharpAnalytics.Sample.Windows8" Publisher="CN=Attack Pattern" Version="1.2.0.0" />
+  <Properties>
+    <DisplayName>CSharpAnalytics.Sample.Windows8</DisplayName>
+    <PublisherDisplayName>Attack Pattern</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>6.2.1</OSMinVersion>
+    <OSMaxVersionTested>6.2.1</OSMaxVersionTested>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="CSharpAnalytics.Sample.Windows8.App">
+      <VisualElements DisplayName="CSharpAnalytics.Sample.Windows8" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="CSharpAnalytics sample Windows 8 application." ForegroundText="light" BackgroundColor="#464646">
+        <DefaultTile ShowName="logoOnly" />
+        <SplashScreen Image="Assets\SplashScreen.png" />
+      </VisualElements>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+</Package>

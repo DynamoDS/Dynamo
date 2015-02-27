@@ -1,0 +1,189 @@
+import("Math.dll");
+
+class NBodySystem 
+{
+    bodies: Body[];
+
+    constructor NBodySystem() 
+    {
+        bodies = { Body.sun(), Body.jupiter(), Body.saturn(), Body.uranus(), Body.neptune()};
+
+        px = 0.0;
+        py = 0.0;
+        pz = 0.0;
+
+        [Imperative]
+        {
+            for (body in bodies)
+            {
+                px = px + body.vx * body.mass;
+                py = py + body.vy * body.mass;
+                pz = pz + body.vz * body.mass;
+            }
+        }
+        r = bodies[0].offsetMomentum(px,py,pz);
+    }
+
+    def advance(dt:double) 
+    {
+        [Imperative]
+        {
+            bodiesCount = Count(bodies);
+            for (i in 0..(bodiesCount - 1)..1)
+            {
+                ibody = bodies[i];
+                for (j in (i + 1)..(bodiesCount - 1)..1)
+                {
+                    jbody = bodies[j];
+
+                    dx = ibody.x - jbody.x;
+                    dy = ibody.y - jbody.y;
+                    dz = ibody.z - jbody.z;
+
+                    dsquared = dx * dx + dy * dy + dz * dz;
+                    distance = Math.Sqrt(dsquared);
+                    mag = dt / (dsquared * distance);
+
+                    ibody.vx = ibody.vx - dx * jbody.mass * mag;
+                    ibody.vy = ibody.vy - dy * jbody.mass * mag;
+                    ibody.vz = ibody.vz - dz * jbody.mass * mag;
+
+                    jbody.vx = jbody.vx + dx * ibody.mass * mag;
+                    jbody.vy = jbody.vy + dy * ibody.mass * mag;
+                    jbody.vz = jbody.vz + dz * ibody.mass * mag;
+                }
+            }
+            
+            for (body in bodies) {
+                body.x = body.x + dt * body.vx;
+                body.y = body.y + dt * body.vy;
+                body.z = body.z + dt * body.vz;
+            }
+        }
+        return = null;
+    }
+
+    def energy:double()
+    {
+        e = 0.0;
+        [Imperative]
+        {
+            bodiesCount = Count(bodies);
+            for (i in 0..(bodiesCount - 1)..1)
+            {
+                ibody = bodies[i];
+                e = e + 0.5 * ibody.mass * (ibody.vx * ibody.vx + ibody.vy * ibody.vy + ibody.vz * ibody.vz);
+
+                for (j in (i + 1)..(bodiesCount - 1)..1)
+                {
+                    jbody = bodies[j];
+                    dx = ibody.x - jbody.x;
+                    dy = ibody.y - jbody.y;
+                    dz = ibody.z - jbody.z;
+
+                    distance = Math.Sqrt(dx * dx + dy * dy + dz * dz);
+                    e = e - (ibody.mass * jbody.mass) / distance;
+                }
+            }
+        }
+        return = e;
+    }
+}
+
+class Body 
+{
+    static PI:double = 3.141592653589793;
+    static SOLAR_MASS:double = 4 * PI * PI;
+    static DAYS_PER_YEAR:double = 365.24;
+
+    x:double = 0.0;
+    y:double = 0.0;
+    z:double = 0.0;
+    vx:double = 0.0;
+    vy:double = 0.0;
+    vz:double = 0.0;
+    mass:double = 0.0;
+
+    constructor Body()
+    {
+    }
+
+    static def jupiter:Body(){
+        p = Body.Body();
+        p.x = 4.84143144246472090e+00;
+        p.y = -1.16032004402742839e+00;
+        p.z = -1.03622044471123109e-01;
+        p.vx = 1.66007664274403694e-03 * DAYS_PER_YEAR;
+        p.vy = 7.69901118419740425e-03 * DAYS_PER_YEAR;
+        p.vz = -6.90460016972063023e-05 * DAYS_PER_YEAR;
+        p.mass = 9.54791938424326609e-04 * SOLAR_MASS;
+        return = p;
+    }
+
+    static def saturn:Body(){
+        p = Body.Body();
+        p.x = 8.34336671824457987e+00;
+        p.y = 4.12479856412430479e+00;
+        p.z = -4.03523417114321381e-01;
+        p.vx = -2.76742510726862411e-03 * DAYS_PER_YEAR;
+        p.vy = 4.99852801234917238e-03 * DAYS_PER_YEAR;
+        p.vz = 2.30417297573763929e-05 * DAYS_PER_YEAR;
+        p.mass = 2.85885980666130812e-04 * SOLAR_MASS;
+        return = p;
+    }
+
+    static def uranus:Body(){
+        p = Body.Body();
+        p.x = 1.28943695621391310e+01;
+        p.y = -1.51111514016986312e+01;
+        p.z = -2.23307578892655734e-01;
+        p.vx = 2.96460137564761618e-03 * DAYS_PER_YEAR;
+        p.vy = 2.37847173959480950e-03 * DAYS_PER_YEAR;
+        p.vz = -2.96589568540237556e-05 * DAYS_PER_YEAR;
+        p.mass = 4.36624404335156298e-05 * SOLAR_MASS;
+        return = p;
+    }
+
+    static def neptune:Body(){
+        p = Body.Body();
+        p.x = 1.53796971148509165e+01;
+        p.y = -2.59193146099879641e+01;
+        p.z = 1.79258772950371181e-01;
+        p.vx = 2.68067772490389322e-03 * DAYS_PER_YEAR;
+        p.vy = 1.62824170038242295e-03 * DAYS_PER_YEAR;
+        p.vz = -9.51592254519715870e-05 * DAYS_PER_YEAR;
+        p.mass = 5.15138902046611451e-05 * SOLAR_MASS;
+        return = p;
+    }
+
+    static def sun:Body(){
+        p = Body.Body();
+        p.mass = SOLAR_MASS;
+        return = p;
+    }
+
+    def offsetMomentum(px:double, py:double, pz:double){
+        vx = -px / SOLAR_MASS;
+        vy = -py / SOLAR_MASS;
+        vz = -pz / SOLAR_MASS;
+        return = null;
+    }
+}
+
+nbody = NBodySystem.NBodySystem();
+[Imperative]
+{
+    n = 1000;
+    // expected output:
+    // -0.169075164
+    r = Print(nbody.energy());
+    for(i in 1..n)
+    {
+        r = nbody.advance(0.01);
+    }
+    // -0.169087605
+    r = Print(nbody.energy());
+    Print("Score: " + n);
+}
+
+

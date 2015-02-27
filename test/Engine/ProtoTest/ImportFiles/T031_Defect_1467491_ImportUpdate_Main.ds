@@ -1,0 +1,4 @@
+import("T031_Defect_1467491_ImportUpdate_Sub.ds");
+
+t = 5;
+z = a.x;

@@ -1,4 +1,4 @@
-<Workspace Version="0.7.0.32432" X="21.4788556123922" Y="159.08674911848" zoom="0.688873248118927" Description="" Category="" Name="Home">
+<Workspace Version="0.6.3.32432" X="21.4788556123922" Y="159.08674911848" zoom="0.688873248118927" Description="" Category="" Name="Home">
   <Elements>
     <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="f02a4d31-8830-4399-ad98-bba06139e07c" nickname="File Path" x="58.8223515694026" y="68.8984000809244" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.String value="C:\Users\boyerp\Dropbox\Github\Autodesk\Dynamo\test\core\excel\Hammersmith_Copy.csv" />

@@ -1,0 +1,11 @@
+<Workspace Version="0.6.3.7993" X="665" Y="236" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Equal type="Dynamo.Nodes.Equal" guid="87a4f6cc-9733-48b0-8eaa-de822166253e" nickname="Equal" x="-5" y="-10.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GreaterThan type="Dynamo.Nodes.GreaterThan" guid="7a966a4e-4920-48b7-9dc1-2cf3b66094fc" nickname="Greater Than" x="-5" y="106" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GreaterThanEquals type="Dynamo.Nodes.GreaterThanEquals" guid="dc2b1a19-7a2d-410e-abe4-64891c589f8f" nickname="Greater Than Or Equal" x="-5" y="222.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.LessThan type="Dynamo.Nodes.LessThan" guid="e81da84a-80bf-4f0f-a2a8-7dfb83bed745" nickname="Less Than" x="-5" y="339" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.LessThanEquals type="Dynamo.Nodes.LessThanEquals" guid="b65f9b0a-c3d4-4d71-93b5-5b2f48203c9b" nickname="Less Than Or Equal" x="-5" y="455.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

@@ -1,0 +1,20 @@
+<Workspace Version="0.6.2.32178" X="-70.6909090909092" Y="-104.133333333334" zoom="1.4" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="23051190-8894-4a0b-a774-57dc8a75fb81" nickname="Number" x="96.5887445887447" y="147.285714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c8e30669-0265-4a8e-89a1-a2f5b2c346f2" nickname="Number" x="94.7792207792209" y="265.452380952381" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1..10" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="6f6e8f94-d3f6-41ac-a559-426cd0ab47de" nickname="Code Block" x="230.493506493506" y="161.880952380952" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a = 1;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="fd3c7a64-a488-4706-9368-d508294abce1" nickname="Code Block" x="224.779220779221" y="289.02380952381" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x = b;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9d94a1d5-19c2-49e1-8f49-247bed003d90" nickname="Math.Cos" x="386.207792207792" y="361.880952380952" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Dynamo.DSEngine.FunctionItem Assembly="Math.dll" Category="Math.Math" ClassName="Math" Name="Cos" DisplayName="Math.Cos" Type="StaticMethod" Arguments="value" ReturnKeys="" />
+    </Dynamo.Nodes.DSFunction>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c8e30669-0265-4a8e-89a1-a2f5b2c346f2" start_index="0" end="fd3c7a64-a488-4706-9368-d508294abce1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd3c7a64-a488-4706-9368-d508294abce1" start_index="0" end="9d94a1d5-19c2-49e1-8f49-247bed003d90" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

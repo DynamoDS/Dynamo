@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="Dynamo.Controls.InfoBubbleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:core="clr-namespace:Dynamo.Core"
+             mc:Ignorable="d"
+             Name="InfoBubbleWindowUserControl"
+             Loaded="InfoBubbleWindowUserControl_Loaded">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Storyboard x:Key="fadeInStoryBoard" Name="fadeInStoryBoard" TargetName="mainGrid" Storyboard.TargetProperty="Opacity">
+                <DoubleAnimation Name ="countUpDoubleAnimation" From="0" To="0.95" Duration="0:0:.25" FillBehavior="HoldEnd" Completed="CountUpDoubleAnimation_Completed"/>
+            </Storyboard>
+            <Storyboard x:Key="fadeOutStoryBoard" Name="fadeOutStoryBoard" TargetName="mainGrid" Storyboard.TargetProperty="Opacity">
+                <DoubleAnimation Name ="countDownDoubleAnimation" From="0.95" To="0" Duration="0:0:.25" FillBehavior="HoldEnd" Completed="CountDownDoubleAnimation_Completed"/>
+            </Storyboard>
+        </ResourceDictionary>
+        
+    </UserControl.Resources>
+
+    <Grid x:Name="mainGrid" Background="Transparent" HorizontalAlignment="Left" VerticalAlignment="Top"
+           MouseLeave="InfoBubble_MouseLeave" MouseMove="MainGrid_MouseMove" MouseWheel="InfoBubble_MouseWheel">
+
+        <Polygon Name="backgroundPolygon" Margin="0, 0, 0, 0" 
+                 MouseEnter="InfoBubble_MouseEnter"
+                 RenderOptions.EdgeMode="Aliased">
+        </Polygon>
+
+        <StackPanel Name="ContentContainer" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                    MouseEnter="ContentContainer_MouseEnter">
+            <StackPanel.Resources>
+                <Style x:Key="{x:Type ScrollBar}" TargetType="{x:Type ScrollBar}">
+                    <Setter Property="Stylus.IsFlicksEnabled" Value="false" />
+                    <Setter Property="Foreground" Value="Gray" />
+                    <Setter Property="Background" Value="WhiteSmoke" />
+                    <Setter Property="Width" Value="5" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                <Grid x:Name="GridRoot" Width="5" Background="{TemplateBinding Background}">
+                                    <Track x:Name="PART_Track" Grid.Row="0" IsDirectionReversed="true" Focusable="false">
+                                        <Track.Thumb>
+                                            <Thumb x:Name="Thumb" Background="{TemplateBinding Foreground}" Style="{DynamicResource ScrollThumbs}" />
+                                        </Track.Thumb>
+                                        <Track.IncreaseRepeatButton>
+                                            <RepeatButton x:Name="PageUp" Command="ScrollBar.PageDownCommand" Opacity="0" Focusable="false" />
+                                        </Track.IncreaseRepeatButton>
+                                        <Track.DecreaseRepeatButton>
+                                            <RepeatButton x:Name="PageDown" Command="ScrollBar.PageUpCommand" Opacity="0" Focusable="false" />
+                                        </Track.DecreaseRepeatButton>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style x:Key="ScrollThumbs" TargetType="{x:Type Thumb}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Thumb}">
+                                <Grid x:Name="Grid">
+                                    <Rectangle HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" Fill="Transparent" />
+                                    <Border x:Name="Rectangle1" CornerRadius="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto"  Background="{TemplateBinding Background}" />
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="Tag" Value="Horizontal">
+                                        <Setter TargetName="Rectangle1" Property="Width" Value="Auto" />
+                                        <Setter TargetName="Rectangle1" Property="Height" Value="7" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </StackPanel.Resources>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

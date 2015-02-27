@@ -1,0 +1,19 @@
+<Workspace Version="0.7.0.26148" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCoreNodesUI.Formula type="DSCoreNodesUI.Formula" guid="d9b9d0a9-1fec-4b20-82c4-2d1665306509" nickname="Formula" x="266" y="104.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>a+b</FormulaText>
+    </DSCoreNodesUI.Formula>
+    <DSCoreNodesUI.Formula type="DSCoreNodesUI.Formula" guid="c35f1c6d-b955-4638-802f-208f93112078" nickname="Formula" x="255" y="328.5" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct">
+      <FormulaText>a+b</FormulaText>
+    </DSCoreNodesUI.Formula>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="80e073c1-0a2f-44d3-b42c-685eb65ecaa3" nickname="Code Block" x="48" y="161" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..2;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="4bc4547f-cf32-42d2-baeb-400be833b327" nickname="Code Block" x="64" y="308" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="3..5;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="80e073c1-0a2f-44d3-b42c-685eb65ecaa3" start_index="0" end="d9b9d0a9-1fec-4b20-82c4-2d1665306509" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="80e073c1-0a2f-44d3-b42c-685eb65ecaa3" start_index="0" end="c35f1c6d-b955-4638-802f-208f93112078" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4bc4547f-cf32-42d2-baeb-400be833b327" start_index="0" end="c35f1c6d-b955-4638-802f-208f93112078" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4bc4547f-cf32-42d2-baeb-400be833b327" start_index="0" end="d9b9d0a9-1fec-4b20-82c4-2d1665306509" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

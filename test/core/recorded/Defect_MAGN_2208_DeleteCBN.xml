@@ -1,0 +1,9 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="a543936b-36c4-4391-bfc4-7704328763ca" NodeName="Code Block" X="299" Y="283" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="a543936b-36c4-4391-bfc4-7704328763ca" Name="Code" Value="a=Point.ByCoordinates(0,0,0)" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="a543936b-36c4-4391-bfc4-7704328763ca" Modifiers="0" />
+  <DeleteModelCommand ModelGuid="a543936b-36c4-4391-bfc4-7704328763ca" />
+</Commands>

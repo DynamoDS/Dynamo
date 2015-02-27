@@ -1,0 +1,12 @@
+import ("Math.dll");
+
+[Imperative]
+{
+    i = 0;
+    while (i < 1000000)
+    {
+	x = Math.Rand();
+        i = i + 1;
+    }
+    Print("Done");
+}

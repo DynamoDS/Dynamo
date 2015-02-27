@@ -1,0 +1,22 @@
+<Workspace Version="0.7.1.17276" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="a42b67eb-bd7d-4a76-9b9b-d53e575bd97a" nickname="Code Block" x="14" y="167" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f2b979b2-7824-428c-a960-5e7ca8cac1f1" nickname="SingleIFRecursion" x="239" y="244.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="d499ca4d-0f70-42b2-ad81-5debe8cc6430" />
+      <Name value="SingleIFRecursion" />
+      <Description value="" />
+      <Inputs>
+        <Input value="a" />
+      </Inputs>
+      <Outputs>
+        <Output value="result" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="f7f34898-2eb3-48fb-9a65-6084446dfbd0" nickname="Watch" x="463" y="253.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a42b67eb-bd7d-4a76-9b9b-d53e575bd97a" start_index="0" end="f2b979b2-7824-428c-a960-5e7ca8cac1f1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f2b979b2-7824-428c-a960-5e7ca8cac1f1" start_index="0" end="f7f34898-2eb3-48fb-9a65-6084446dfbd0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,62 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+
+
+WCS = CoordinateSystem.Identity();
+
+x=0..200..1;
+y=0..25..1; 
+
+radtodeg=57.2957795;
+pi=3.14159265;
+
+def pifunc: double (i: int, j: int)
+{
+	temp1=(21*j*pi/250)*radtodeg;
+	temp2=(i*pi/20)*radtodeg;
+	return = (0.7 + 0.2 * Math.Sin(temp1)) * Math.Cos(temp2);
+}
+
+def thetafunc: double (i:int, j: int)
+{
+	temp1=(21*j*pi/250)*radtodeg;
+	temp2=-1*(i*pi/20)*radtodeg;
+	return = (0.7 + 0.2 * Math.Sin(temp1)) * Math.Sin(temp2);
+}
+
+def kfunc: double (i: int, j: int)
+{
+	temp1=(j*pi/50)*radtodeg;
+	temp2=39*i/1000;
+	return = (temp2 + 1.5 * Math.Sin(temp1));
+}
+
+pastaPoints={};
+pastaSurface={};
+[Imperative]
+{
+	
+for(i in x)
+		for(j in y)
+		{	
+			ptx=pifunc(i,j);
+			pty=thetafunc(i,j);
+			ptz=kfunc(i,j);
+	
+			pastaPoints[i][j]=Point.ByCoordinates(ptx*100, pty*100, ptz*100);
+		}
+
+}
+
+sur=BSplineSurface.ByPoints(pastaPoints,3,3);
+
+solidPasta=sur.Thicken(10, true);
+
+z=pastaPoints[0][0].Z;
+
+
+testCylinder = Cylinder.ByRadiusHeight(WCS,120,40);
+testCylinder = testCylinder.Translate(0,0,z+20);
+
+baseCylinder = Cylinder.ByRadiusHeight(WCS, 100, 40);
+baseCylinder = baseCylinder.Translate(0,0,z+60);

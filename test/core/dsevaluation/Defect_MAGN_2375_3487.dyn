@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.7993" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="5a7f7549-fbef-4c3f-8578-c67471eaa87f" nickname="Split String" x="250" y="200" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SplitString>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="cbbac593-6132-4db7-b18b-c762b1470933" nickname="String" x="100" y="275" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="." />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="b6999e96-7e63-419e-bfaa-db033ba005cc" nickname="String" x="100" y="200" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Dynamo.DS" />
+    </Dynamo.Nodes.StringInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="cbbac593-6132-4db7-b18b-c762b1470933" start_index="0" end="5a7f7549-fbef-4c3f-8578-c67471eaa87f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b6999e96-7e63-419e-bfaa-db033ba005cc" start_index="0" end="5a7f7549-fbef-4c3f-8578-c67471eaa87f" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

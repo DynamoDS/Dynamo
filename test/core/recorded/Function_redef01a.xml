@@ -1,0 +1,27 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="2ea8d3f1-0591-49c7-9b8f-28e0fbcb3840" NodeName="Code Block" X="176" Y="271" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="2ea8d3f1-0591-49c7-9b8f-28e0fbcb3840" Name="Code" Value="def foo(i:int)&#xA;{&#xA;g=g+1;&#xA;return =1;&#xA;};" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="babc4816-96e6-495c-8489-7a650d1bfb25" NodeName="Code Block" X="332" Y="302" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="babc4816-96e6-495c-8489-7a650d1bfb25" Name="Code" Value="g=0;&#xA;e=foo(1);" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="d4d53e20-1514-4349-83e1-7cb5c533a3e0" NodeName="Code Block" X="440" Y="314" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="d4d53e20-1514-4349-83e1-7cb5c533a3e0" Name="Code" Value="p;" />
+  <SelectModelCommand ModelGuid="d4d53e20-1514-4349-83e1-7cb5c533a3e0" Modifiers="0" />
+  <DragSelectionCommand X="374" Y="297" DragOperation="0" />
+  <DragSelectionCommand X="458" Y="294" DragOperation="1" />
+  <MakeConnectionCommand NodeId="babc4816-96e6-495c-8489-7a650d1bfb25" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d4d53e20-1514-4349-83e1-7cb5c533a3e0" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="babc4816-96e6-495c-8489-7a650d1bfb25" Modifiers="0" />
+  <DragSelectionCommand X="299" Y="287" DragOperation="0" />
+  <DragSelectionCommand X="296" Y="268" DragOperation="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="2ea8d3f1-0591-49c7-9b8f-28e0fbcb3840" Name="Code" Value="def foo(i:int)&#xA;{&#xA;g=g+1;&#xA;return =i+2;&#xA;};" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+</Commands>

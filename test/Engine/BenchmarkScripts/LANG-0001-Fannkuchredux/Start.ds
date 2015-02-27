@@ -1,0 +1,70 @@
+def fannkuch_redux(n)
+{
+   
+    pm = 1..n;
+    c = 0..0..#n;
+    i = 1;
+    pmCount = 0;
+    flips = 0;
+    checksum = 0;
+
+    [Imperative]
+    {
+        // Tompkins_Paige algorithm 
+        while (i < n)
+        {
+            head = pm[0];
+            pm[0..(i - 1)] = pm[1..i];
+            pm[i] = head;
+
+            if (c[i] < i)
+            {
+                c[i] = c[i] + 1;
+                i = 1;
+                pmCount = pmCount + 1;
+
+                // take the first element K and reverse the first K elements
+                // repeat until the first element is 1
+                //     count the number of flip;
+                //     checksum = checksum + (flip number) % 2 == 0 ? 1 : -1;
+                
+                tpm = pm;
+                flipCount = 0;
+                k = tpm[0];
+
+                while (k != 1) 
+                {
+                    tpm[0..(k - 1)] = Reverse(tpm[0..(k - 1)]);
+                    flipCount = flipCount + 1;
+                    k = tpm[0];
+                }
+
+                if (flipCount > flips)
+                {
+                    flips = flipCount;
+                }
+
+                if (pmCount % 2 == 0)
+                {
+                    checksum = checksum + flipCount;
+                }
+                else
+                {
+                    checksum = checksum - flipCount;
+                }
+            }
+            else
+            {
+                c[i] = 0;
+                i = i + 1;
+            }
+        }
+    }
+    return = {checksum, flips};
+}
+
+// Expect value:
+// fannkuch_redux(7) = {228, 16}
+result = fannkuch_redux(7);
+r = Print(result);
+Print("Score: " + 7);

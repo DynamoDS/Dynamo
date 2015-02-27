@@ -1,0 +1,14 @@
+<Workspace Version="0.7.4.3075" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="e3e02c82-e9f0-403c-8c2a-e2041ebf1785" nickname="String" x="124" y="196.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="an\\invalid/path//" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="287bbb93-b5fd-4ab6-87a5-eff7368f9d47" nickname="Code Block" x="168" y="313" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{{1}};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0c057f65-f204-4e20-b80b-2f611902a251" nickname="CSV.WriteToFile" x="378" y="247.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.CSV.WriteToFile@string,var[][]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e3e02c82-e9f0-403c-8c2a-e2041ebf1785" start_index="0" end="0c057f65-f204-4e20-b80b-2f611902a251" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="287bbb93-b5fd-4ab6-87a5-eff7368f9d47" start_index="0" end="0c057f65-f204-4e20-b80b-2f611902a251" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

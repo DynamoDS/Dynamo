@@ -1,0 +1,32 @@
+<Workspace Version="0.6.2.29585" X="158" Y="41" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="13ef1ac4-c179-4656-bca7-773765487459" nickname="Number" x="-2" y="95.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="abf6bf3e-d871-4ce2-868b-47de903f7a06" nickname="Number" x="2" y="199.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c82a5ad7-6a2c-437c-86ee-969e268dbcef" nickname="Number" x="0" y="290.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="674d8244-acbc-4ccb-82a4-4556b650e714" nickname="Number" x="4" y="376.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-0.4" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="0dfe38ec-e69e-4ee1-94d5-b76f861adb53" nickname="Number" x="1" y="450.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Asin type="Dynamo.Nodes.Asin" guid="041a0818-393a-4d47-a534-3471774adfe5" nickname="Inverse Sine" x="201" y="54.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Asin type="Dynamo.Nodes.Asin" guid="9e267757-8a43-45e6-93c1-84f37fc52e82" nickname="Inverse Sine" x="205" y="154.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Asin type="Dynamo.Nodes.Asin" guid="1bf23e76-f4b4-4b31-a7bf-cd84f87c56ed" nickname="Inverse Sine" x="203" y="253.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Asin type="Dynamo.Nodes.Asin" guid="6b28ac3e-509f-459f-bd8b-99b550efeb56" nickname="Inverse Sine" x="215" y="343.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Asin type="Dynamo.Nodes.Asin" guid="ecb6438c-ed36-4f16-b6e5-ea9c6481d234" nickname="Inverse Sine" x="214" y="459.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="13ef1ac4-c179-4656-bca7-773765487459" start_index="0" end="041a0818-393a-4d47-a534-3471774adfe5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="abf6bf3e-d871-4ce2-868b-47de903f7a06" start_index="0" end="9e267757-8a43-45e6-93c1-84f37fc52e82" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c82a5ad7-6a2c-437c-86ee-969e268dbcef" start_index="0" end="1bf23e76-f4b4-4b31-a7bf-cd84f87c56ed" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="674d8244-acbc-4ccb-82a4-4556b650e714" start_index="0" end="6b28ac3e-509f-459f-bd8b-99b550efeb56" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0dfe38ec-e69e-4ee1-94d5-b76f861adb53" start_index="0" end="ecb6438c-ed36-4f16-b6e5-ea9c6481d234" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

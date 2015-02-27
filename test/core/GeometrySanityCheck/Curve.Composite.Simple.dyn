@@ -1,0 +1,10 @@
+<Workspace Version="0.6.3.12415" X="-274.375650304597" Y="-1357.17717517809" zoom="1.17260257552697" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="fe37af5c-d4e7-4fc5-9f27-8b5c7a450ffa" nickname="Code Block" x="288" y="1214" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="point1          = Point.ByCoordinates(0, 0, 0);&#xA;point2          = Point.ByCoordinates(10, 0, 0);&#xA;centerPoint     = Point.ByCoordinates(9, 6, 0);&#xA;myArc           = Arc.ByCenterPointRadiusAngle(centerPoint, 3, -90, 180, Vector.ByCoordinates(0, 0, 1));&#xA;arrayOfPoints   = { point1, point1.Translate(3, 3, 0), point1.Translate(6, 0, 0), point1.Translate(9, 3, 0) };&#xA;mySpline        = NurbsCurve.ByPoints(arrayOfPoints);&#xA;startPoint1     = myArc.EndPoint;&#xA;myLine1         = Line.ByStartPointDirectionLength(&#xA;                                startPoint1, Vector.ByCoordinates(-1, 0, 0),9);&#xA;startPoint2     = myLine1.EndPoint;&#xA;myLine2         = Line.ByStartPointDirectionLength(startPoint2, Vector.ByCoordinates(0, -1, 0),9);&#xA;&#xA;arrayCurve = {myArc, mySpline, myLine1, myLine2};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="6156debc-13ac-4b29-abae-7096f97a6cba" nickname="Code Block" x="1035" y="1373" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="compositeCurve = Curve.Composite(arayCurve);" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="fe37af5c-d4e7-4fc5-9f27-8b5c7a450ffa" start_index="10" end="6156debc-13ac-4b29-abae-7096f97a6cba" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

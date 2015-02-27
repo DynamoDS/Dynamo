@@ -1,17 +1,6 @@
-<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
-  <CreateNodeCommand NodeId="2e1e5f33-52fc-4cc9-9d4a-33e46ec64a53" NodeName="Number" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <CreateNodeCommand NodeId="a4ba7320-3cb8-4524-bc8c-8688d7abc599" NodeName="String" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
-  <SelectModelCommand ModelGuid="a4ba7320-3cb8-4524-bc8c-8688d7abc599" Modifiers="0" />
-  <DragSelectionCommand X="748" Y="447" DragOperation="0" />
-  <DragSelectionCommand X="829" Y="541" DragOperation="1" />
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="200">
+  <CreateNodeCommand NodeId="56e07af9-6a16-4f61-a673-54e33a8556d8" NodeName="Dynamo.Nodes.DoubleInput" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="a4ba7320-3cb8-4524-bc8c-8688d7abc599" Name="Value" Value="ritesh" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="2e1e5f33-52fc-4cc9-9d4a-33e46ec64a53" Name="Value" Value="10" />
+  <UpdateModelValueCommand ModelGuid="56e07af9-6a16-4f61-a673-54e33a8556d8" Name="Value" Value="1" />
   <UndoRedoCommand CmdOperation="0" />
-  <UndoRedoCommand CmdOperation="0" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="a4ba7320-3cb8-4524-bc8c-8688d7abc599" Name="Value" Value="Dynamo" />
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand ModelGuid="2e1e5f33-52fc-4cc9-9d4a-33e46ec64a53" Name="Value" Value="30" />
 </Commands>

@@ -1,0 +1,16 @@
+<Workspace Version="0.7.0.26857" X="112.451826837582" Y="-213.559401558052" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="8684070b-00b1-4d68-a72f-797140166a0a" nickname="Code Block" x="78.9141770939702" y="523.847983825013" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;text&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="861b854d-5ac0-4c38-9c81-0b590a0b448c" nickname="Code Block" x="-31.951826837582" y="330.001364848651" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;A String object's string content can be replaced by another string.&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="36774b24-e6dd-41b1-889b-3847aa0ad6ee" nickname="Watch" x="-2.72998633028942" y="623.117438267454" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6b6593df-5c71-4472-a91b-7fc69feb14d4" nickname="String.Replace" x="217.590492083103" y="458.093474232076" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Replace@string,string,string" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f237f2b4-1a8a-4705-882f-ed2618176100" nickname="Code Block" x="70.6197270815205" y="435.60281333756" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;&quot;;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8684070b-00b1-4d68-a72f-797140166a0a" start_index="0" end="6b6593df-5c71-4472-a91b-7fc69feb14d4" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="861b854d-5ac0-4c38-9c81-0b590a0b448c" start_index="0" end="6b6593df-5c71-4472-a91b-7fc69feb14d4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6b6593df-5c71-4472-a91b-7fc69feb14d4" start_index="0" end="36774b24-e6dd-41b1-889b-3847aa0ad6ee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f237f2b4-1a8a-4705-882f-ed2618176100" start_index="0" end="6b6593df-5c71-4472-a91b-7fc69feb14d4" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

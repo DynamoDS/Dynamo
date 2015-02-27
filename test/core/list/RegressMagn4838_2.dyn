@@ -1,0 +1,14 @@
+<Workspace Version="0.7.2.37186" X="-5190.02803235239" Y="421.66276145711" zoom="0.966063035510368" Description="" Category="" Name="Home">
+  <Elements>
+    <DSCore.Map type="DSCore.Map" guid="451474ea-4d14-44ff-9977-0661b911e732" nickname="List.Map" x="6235.68250327227" y="-26.4322617994978" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="667abc2a-a5af-4ae5-8336-c8ca3bfadeeb" nickname="PolyCurve.ByPoints" x="5959.15744334425" y="-127.081836790587" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="a2d72f71-befd-435f-99a2-647f357f78f4" nickname="List.Create" x="6012.98415867089" y="74.7683456842894" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="667abc2a-a5af-4ae5-8336-c8ca3bfadeeb" start_index="0" end="451474ea-4d14-44ff-9977-0661b911e732" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a2d72f71-befd-435f-99a2-647f357f78f4" start_index="0" end="451474ea-4d14-44ff-9977-0661b911e732" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

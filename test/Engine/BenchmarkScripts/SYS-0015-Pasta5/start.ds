@@ -1,0 +1,30 @@
+import("ProtoGeometry.dll");
+import("Math.dll");
+
+//Parameters
+i = 0..200;
+j = 0..25;
+
+def Eta(i, j)
+{
+    return = 6 * Math.Cos(Math.RadiansToDegrees(((3 * i + 10) * Math.PI) / 100)) *
+        Math.Cos(Math.RadiansToDegrees( j * Math.PI / 25));
+}
+
+def Theta(i, j)
+{
+    return = 6 * Math.Sin(Math.RadiansToDegrees(((3 * i + 10) * Math.PI) / 100)) *
+        Math.Cos(Math.RadiansToDegrees( j * Math.PI / 25));
+}
+
+def Kappa(i, j)
+{
+    return = 3*i/20 + 2.5 * Math.Cos(Math.RadiansToDegrees( (j + 12.5) * Math.PI / 25));
+}
+//Eta, Theta, Kappa
+
+eta = Eta(i<1>, j<2>);
+theta = Theta(i<1>, j<2>);
+kappa = Kappa(i<1>, j<2>);
+pts = Point.ByCoordinates(eta, theta, kappa);
+surf = BSplineSurface.ByPoints(pts);

@@ -1,0 +1,30 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <CreateNodeCommand NodeId="0c1e98c3-290f-4286-9ebe-398574b87d56" NodeName="Code Block" X="144" Y="201" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="0c1e98c3-290f-4286-9ebe-398574b87d56" Name="Code" Value="a=10;" />
+  <CreateNodeCommand NodeId="02f05317-609e-4650-a1b9-a342828d2c09" NodeName="Code Block" X="94" Y="355" DefaultPosition="false" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="02f05317-609e-4650-a1b9-a342828d2c09" Name="Code" Value="b=10;" />
+  <CreateNodeCommand NodeId="d476a993-8e98-4b56-b349-83e810578ecd" NodeName="+@," X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <SelectModelCommand ModelGuid="02f05317-609e-4650-a1b9-a342828d2c09" Modifiers="0" />
+  <DragSelectionCommand X="80" Y="338" DragOperation="0" />
+  <DragSelectionCommand X="142" Y="331" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <MakeConnectionCommand NodeId="02f05317-609e-4650-a1b9-a342828d2c09" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d476a993-8e98-4b56-b349-83e810578ecd" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="0c1e98c3-290f-4286-9ebe-398574b87d56" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d476a993-8e98-4b56-b349-83e810578ecd" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="0c1e98c3-290f-4286-9ebe-398574b87d56" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d476a993-8e98-4b56-b349-83e810578ecd" PortIndex="1" Type="0" ConnectionMode="1" />
+  <UndoRedoCommand CmdOperation="0" />
+  <MakeConnectionCommand NodeId="0c1e98c3-290f-4286-9ebe-398574b87d56" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d476a993-8e98-4b56-b349-83e810578ecd" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="0c1e98c3-290f-4286-9ebe-398574b87d56" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d476a993-8e98-4b56-b349-83e810578ecd" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="d476a993-8e98-4b56-b349-83e810578ecd" PortIndex="0" Type="0" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="d476a993-8e98-4b56-b349-83e810578ecd" PortIndex="1" Type="0" ConnectionMode="1" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+  <UndoRedoCommand CmdOperation="0" />
+</Commands>

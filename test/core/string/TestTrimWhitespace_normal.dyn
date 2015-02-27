@@ -1,0 +1,24 @@
+<Workspace Version="0.7.0.26857" X="73.7995972328644" Y="-88.1090258652767" zoom="0.931811528498331" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="6a6a3d81-57bc-44ae-af37-9dabcf25b8e4" nickname="String.TrimWhitespace" x="243.438549357803" y="184.571661229123" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.TrimWhitespace@string" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="d798548c-f401-4874-90cd-3ea14c819075" nickname="Code Block" x="-20.4861826931109" y="337.769697322981" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;123abc   &quot;;&#xA;&quot;   abc234   &quot;;&#xA;&quot;   345abc&quot;;&#xA;&quot;   456   abc789   &quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ea921cad-afe6-4869-b0a7-b84f7c30ae17" nickname="String.TrimWhitespace" x="241.014582173028" y="303.366648273873" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.TrimWhitespace@string" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0ed057a9-3c63-4653-88e3-19f921b064dc" nickname="String.TrimWhitespace" x="240.847236277509" y="423.755939366634" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.TrimWhitespace@string" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="19b82503-f830-4508-a353-744003961f95" nickname="String.TrimWhitespace" x="242.943578012076" y="541.000717857544" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.TrimWhitespace@string" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="6a233902-f291-4cd3-aa46-de4fa36ecac7" nickname="Watch" x="442.492702160517" y="184.739007124642" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="cc4c02a1-1438-4d7d-b62c-08d4b31f9a77" nickname="Watch" x="440.40342676678" y="301.058865149618" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="bd08fd1e-7b3b-4a27-a7aa-38f3b30ae5f2" nickname="Watch" x="440.570772662299" y="422.998364796218" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="9bd75396-03b6-4ded-8695-eb64510c4ab4" nickname="Watch" x="432.185405724032" y="542.128043632007" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6a6a3d81-57bc-44ae-af37-9dabcf25b8e4" start_index="0" end="6a233902-f291-4cd3-aa46-de4fa36ecac7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d798548c-f401-4874-90cd-3ea14c819075" start_index="0" end="6a6a3d81-57bc-44ae-af37-9dabcf25b8e4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d798548c-f401-4874-90cd-3ea14c819075" start_index="1" end="ea921cad-afe6-4869-b0a7-b84f7c30ae17" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d798548c-f401-4874-90cd-3ea14c819075" start_index="2" end="0ed057a9-3c63-4653-88e3-19f921b064dc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d798548c-f401-4874-90cd-3ea14c819075" start_index="3" end="19b82503-f830-4508-a353-744003961f95" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ea921cad-afe6-4869-b0a7-b84f7c30ae17" start_index="0" end="cc4c02a1-1438-4d7d-b62c-08d4b31f9a77" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0ed057a9-3c63-4653-88e3-19f921b064dc" start_index="0" end="bd08fd1e-7b3b-4a27-a7aa-38f3b30ae5f2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="19b82503-f830-4508-a353-744003961f95" start_index="0" end="9bd75396-03b6-4ded-8695-eb64510c4ab4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

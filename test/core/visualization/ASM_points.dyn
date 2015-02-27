@@ -1,16 +1,23 @@
-<Workspace Version="0.7.0.17876" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+<Workspace Version="0.7.2.2921" X="-97.8144430967362" Y="-1.73878213148438" zoom="0.954042924882813" Description="" Category="" Name="Home">
   <Elements>
-    <Dynamo.Nodes.Point3DNode type="Dynamo.Nodes.Point3DNode" guid="354ddfd4-76dc-4dca-a622-bac6418393cb" nickname="Point" x="359" y="174.3" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="cbc582bf-1040-4184-9b28-2d8d5419e411" nickname="Number" x="239" y="196.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="92545790-dda1-4361-ad4c-608da00d868f" nickname="Watch 3D" x="550" y="161.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <view width="220" height="320">
+        <camera pos_x="10.6991613340824" pos_y="10.6991613340824" pos_z="10.6981613340824" look_x="-10.6991613340824" look_y="-10.6991613340824" look_z="-10.6991613340824" />
+      </view>
+    </Dynamo.Nodes.Watch3D>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0b472626-e18f-404a-bec4-d84ad7f33011" nickname="Point.ByCoordinates" x="348.5" y="212" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="25f91426-8394-4006-8338-9df263856ed0" nickname="Number" x="221.5" y="287" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="29245b09-8767-4f3a-9e1d-9a24c261f60b" nickname="Number" x="212" y="199.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="0..5" />
     </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.Watch3D type="Dynamo.Nodes.Watch3D" guid="92545790-dda1-4361-ad4c-608da00d868f" nickname="Watch 3D" x="550" y="161.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
-    <Dynamo.Models.ConnectorModel start="354ddfd4-76dc-4dca-a622-bac6418393cb" start_index="0" end="92545790-dda1-4361-ad4c-608da00d868f" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="cbc582bf-1040-4184-9b28-2d8d5419e411" start_index="0" end="354ddfd4-76dc-4dca-a622-bac6418393cb" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="cbc582bf-1040-4184-9b28-2d8d5419e411" start_index="0" end="354ddfd4-76dc-4dca-a622-bac6418393cb" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="cbc582bf-1040-4184-9b28-2d8d5419e411" start_index="0" end="354ddfd4-76dc-4dca-a622-bac6418393cb" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b472626-e18f-404a-bec4-d84ad7f33011" start_index="0" end="92545790-dda1-4361-ad4c-608da00d868f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="25f91426-8394-4006-8338-9df263856ed0" start_index="0" end="0b472626-e18f-404a-bec4-d84ad7f33011" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="25f91426-8394-4006-8338-9df263856ed0" start_index="0" end="0b472626-e18f-404a-bec4-d84ad7f33011" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="29245b09-8767-4f3a-9e1d-9a24c261f60b" start_index="0" end="0b472626-e18f-404a-bec4-d84ad7f33011" end_index="0" portType="0" />
   </Connectors>
   <Notes />
 </Workspace>

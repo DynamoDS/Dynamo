@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Xml;
 
 namespace Dynamo.Utilities
@@ -81,8 +78,11 @@ namespace Dynamo.Utilities
         {
             double result = defaultValue;
             XmlAttribute attrib = internalElement.Attributes[attribName];
-            if (null == attrib || (!double.TryParse(attrib.Value, out result)))
+            if (null == attrib
+                || (!double.TryParse(attrib.Value, NumberStyles.Any, CultureInfo.InvariantCulture, out result)))
+            {
                 return defaultValue;
+            }
 
             return result;
         }
@@ -156,3 +156,4 @@ namespace Dynamo.Utilities
         #endregion
     }
 }
+

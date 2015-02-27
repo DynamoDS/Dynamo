@@ -1,0 +1,11 @@
+<Workspace Version="0.7.0.26731" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="2b7eecb4-ba43-46b2-86ee-0f1e77d2de8c" nickname="Thread.Pause" x="292" y="128.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.Thread.Pause@var,int" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="5ac804a0-fdf6-42d7-91f2-4fd3e895da94" nickname="Code Block" x="85" y="123" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="null;&#xA;500;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5ac804a0-fdf6-42d7-91f2-4fd3e895da94" start_index="0" end="2b7eecb4-ba43-46b2-86ee-0f1e77d2de8c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ac804a0-fdf6-42d7-91f2-4fd3e895da94" start_index="1" end="2b7eecb4-ba43-46b2-86ee-0f1e77d2de8c" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

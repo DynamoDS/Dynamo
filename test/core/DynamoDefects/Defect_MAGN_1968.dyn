@@ -1,0 +1,15 @@
+<Workspace Version="0.7.2.24402" X="30" Y="153.56607495069" zoom="1.85404339250493" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="3edf343f-aa92-4b5d-b058-76e754b38a7c" nickname="Code Block" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0;&#xA;{1,2};" ShouldFocus="false" />
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="969e3058-c336-4f43-83bb-37ff295dca23" nickname="List.Create" x="179" y="65" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="522e092c-4493-4959-9b89-a02d045070cc" nickname="List.Flatten" x="405" y="65" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Flatten@var[]..[],int" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="a5c71a5c-d854-4ba9-b1d5-bb3ff9275224" nickname="Code Block" x="0" y="142" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3edf343f-aa92-4b5d-b058-76e754b38a7c" start_index="0" end="969e3058-c336-4f43-83bb-37ff295dca23" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3edf343f-aa92-4b5d-b058-76e754b38a7c" start_index="1" end="969e3058-c336-4f43-83bb-37ff295dca23" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="969e3058-c336-4f43-83bb-37ff295dca23" start_index="0" end="522e092c-4493-4959-9b89-a02d045070cc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a5c71a5c-d854-4ba9-b1d5-bb3ff9275224" start_index="0" end="522e092c-4493-4959-9b89-a02d045070cc" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

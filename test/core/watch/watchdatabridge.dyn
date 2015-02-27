@@ -1,0 +1,22 @@
+<Workspace Version="0.7.1.22649" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="732ca9d4-3327-4bcd-85d3-622dd31431d4" nickname="watchtest" x="320" y="192.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="fb724798-ad6c-4ba0-b329-9b6ad960c6cb" />
+      <Name value="watchtest" />
+      <Description value="" />
+      <Inputs>
+        <Input value="x" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="e53bb778-ad33-4ede-82cf-cc7afb4c23cf" nickname="Code Block" x="199" y="186" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="10;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="bcb2f570-acae-4874-a396-3bc1d74d5f41" nickname="Watch" x="463" y="196.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="732ca9d4-3327-4bcd-85d3-622dd31431d4" start_index="0" end="bcb2f570-acae-4874-a396-3bc1d74d5f41" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e53bb778-ad33-4ede-82cf-cc7afb4c23cf" start_index="0" end="732ca9d4-3327-4bcd-85d3-622dd31431d4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

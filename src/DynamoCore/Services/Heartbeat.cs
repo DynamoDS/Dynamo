@@ -1,47 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using Dynamo.Models;
-using Dynamo.Properties;
-using Dynamo.Utilities;
 
 namespace Dynamo.Services
 {
     /// <summary>
     /// Class to automatically report various metrics of the application usage
     /// </summary>
-    public class Heartbeat
+    internal class Heartbeat
     {
         private static Heartbeat instance;
         private const int WARMUP_DELAY_MS = 5000;
         private const int HEARTBEAT_INTERVAL_MS = 60 * 1000;
-        private DateTime startTime;
+        private readonly DateTime startTime;
         private Thread heartbeatThread;
+        private readonly DynamoModel dynamoModel;
 
+        private readonly AutoResetEvent shutdownEvent = new AutoResetEvent(false);
 
-        private Heartbeat()
+        private Heartbeat(DynamoModel dynamoModel)
         {
+            // KILLDYNSETTINGS - this is provisional - but we need to enforce that Hearbeat is 
+            // not referencing multiple DynamoModels
+            this.dynamoModel = dynamoModel;
+
+            StabilityCookie.Startup();
+
             startTime = DateTime.Now;
             heartbeatThread = new Thread(this.ExecThread);
             heartbeatThread.IsBackground = true;
             heartbeatThread.Start();
         }
 
-        public static Heartbeat GetInstance()
+        private void DestroyInternal()
+        {
+            //Are we shutting down clean if so write 'nice shutdown' cookie
+            if (DynamoModel.IsCrashing)
+                StabilityCookie.WriteCrashingShutdown();
+            else
+                StabilityCookie.WriteCleanShutdown();
+
+            System.Diagnostics.Debug.WriteLine("Heartbeat Destory Internal called");
+
+            shutdownEvent.Set(); // Signal the shutdown event... 
+
+            // TODO: Temporary comment out this Join statement. It currently 
+            // causes Dynamo to go into a deadlock when it is shutdown for the 
+            // second time on Revit (that's when the HeartbeatThread is trying 
+            // to call 'GetStringRepOfWorkspaceSync' below (the method has no 
+            // chance of executing, and therefore, will never return due to the
+            // main thread being held up here waiting for the heartbeat thread 
+            // to end).
+            // 
+            // heartbeatThread.Join(); // ... wait for thread to end.
+
+            heartbeatThread = null;
+        }
+
+        public static Heartbeat GetInstance(DynamoModel dynModel)
         {
             lock (typeof(Heartbeat))
             {
                 if (instance == null)
-                    instance = new Heartbeat();
+                    instance = new Heartbeat(dynModel);
             }
 
             return instance;
         }
 
+        public static void DestroyInstance()
+        {
+            lock (typeof(Heartbeat))
+            {
+                if (instance != null)
+                {
+                    instance.DestroyInternal();
+                    instance = null;
+                }
+            }
+        }
 
         private void ExecThread()
         {
@@ -51,28 +92,58 @@ namespace Dynamo.Services
             {
                 try
                 {
+                    StabilityCookie.WriteUptimeBeat(DateTime.Now.Subtract(startTime));
 
-                    InstrumentationLogger.LogInfo("Heartbeat-Uptime-s",
-                                                  DateTime.Now.Subtract(startTime)
-                                                          .TotalSeconds.ToString(CultureInfo.InvariantCulture));
+                    //Disable heartbeat to avoid 150 event/session limit
+                    //InstrumentationLogger.LogAnonymousEvent("Heartbeat", "ApplicationLifeCycle", GetVersionString());
 
                     String usage = PackFrequencyDict(ComputeNodeFrequencies());
                     String errors = PackFrequencyDict(ComputeErrorFrequencies());
 
+                    InstrumentationLogger.LogPiiInfo("Node-usage", usage);
+                    InstrumentationLogger.LogPiiInfo("Nodes-with-errors", errors);
 
-                    InstrumentationLogger.LogInfo("Node-usage", usage);
-                    InstrumentationLogger.LogInfo("Nodes-with-errors", errors);
+                    DynamoModel.OnRequestDispatcherInvoke(
+                        () =>
+                        {
+                            string workspace =
+                                dynamoModel.CurrentWorkspace
+                                    .GetStringRepOfWorkspace();
+                            InstrumentationLogger.LogPiiInfo("Workspace", workspace);
+                        });
+
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine("Exception in Heartbeat " + e);
                 }
-                Thread.Sleep(HEARTBEAT_INTERVAL_MS);
 
-
+                // The following call will return "true" if the event is 
+                // signaled, which can only happen when "DestroyInternal" 
+                // is called as the application is shutting down. Otherwise,
+                // when the wait time ellapsed, the loop continues to log 
+                // the next set of information.
+                // 
+                if (shutdownEvent.WaitOne(HEARTBEAT_INTERVAL_MS))
+                    break;
             }
-
         }
+
+        private string GetVersionString()
+        {
+            try
+            {
+                string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(executingAssemblyPathName);
+                return myFileVersionInfo.FileVersion;
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
+
 
         /// <summary>
         /// Turn a frequency dictionary into a string that can be sent
@@ -81,6 +152,7 @@ namespace Dynamo.Services
         /// <returns></returns>
         private string PackFrequencyDict(Dictionary<String, int> frequencies)
         {
+            //@TODO(Luke): Merge with ComputeNodeFrequencies http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3842
             StringBuilder sb = new StringBuilder();
 
             foreach (String key in frequencies.Keys)
@@ -98,16 +170,16 @@ namespace Dynamo.Services
 
         private Dictionary<String, int> ComputeNodeFrequencies()
         {
+            //@TODO(Luke): Merge with ComputeNodeFrequencies http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3842
 
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
-                dynSettings.Controller.DynamoModel.AllNodes == null)
+            if (dynamoModel == null)
                 return ret;
 
-            foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
+            foreach (var node in dynamoModel.Workspaces.SelectMany(ws => ws.Nodes))
             {
-                string fullName = node.GetType().FullName;
+                string fullName = node.NickName;
                 if (!ret.ContainsKey(fullName))
                     ret[fullName] = 0;
 
@@ -122,16 +194,15 @@ namespace Dynamo.Services
         {
             Dictionary<String, int> ret = new Dictionary<string, int>();
 
-            if (dynSettings.Controller == null || dynSettings.Controller.DynamoModel == null ||
-                dynSettings.Controller.DynamoModel.AllNodes == null)
+            if (dynamoModel == null)
                 return ret;
 
-            foreach (var node in dynSettings.Controller.DynamoModel.AllNodes)
+            foreach (var node in dynamoModel.Workspaces.SelectMany(ws => ws.Nodes))
             {
-                if (node.State != ElementState.ERROR)
+                if (node.State != ElementState.Error)
                     continue;
 
-                string fullName = node.GetType().FullName;
+                string fullName = node.NickName;
                 if (!ret.ContainsKey(fullName))
                     ret[fullName] = 0;
                 

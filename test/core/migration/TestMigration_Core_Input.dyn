@@ -1,0 +1,43 @@
+<Workspace Version="0.6.3.7993" X="649" Y="195" zoom="1" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.AngleInput type="Dynamo.Nodes.AngleInput" guid="d96a0c49-861b-4e3c-9745-896d8ee68319" nickname="Angle" x="126" y="75.8333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.AngleInput>
+    <Dynamo.Nodes.AreaInput type="Dynamo.Nodes.AreaInput" guid="ac02b6ac-c8c4-4ba3-8c01-cf41c8facd19" nickname="Area" x="126" y="176.166666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.AreaInput>
+    <Dynamo.Nodes.AreaFromNumber type="Dynamo.Nodes.AreaFromNumber" guid="b4ff1f45-21a4-477d-823a-b35783cc6a6f" nickname="Area from Number" x="-278" y="317.785714285714" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="653c7d5c-cd39-4345-9b2a-d644ceb36167" nickname="Boolean" x="-278" y="574.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean value="False" />
+    </Dynamo.Nodes.BoolSelector>
+    <Dynamo.Nodes.StringDirectory type="Dynamo.Nodes.StringDirectory" guid="9dc38b64-74d3-47c4-a190-78ef48d76a8d" nickname="Directory" x="-278" y="146.642857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="No file selected." />
+    </Dynamo.Nodes.StringDirectory>
+    <Dynamo.Nodes.StringFilename type="Dynamo.Nodes.StringFilename" guid="f376e807-e927-445e-a477-5ab1467a7718" nickname="File Path" x="-278" y="403.357142857143" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="No file selected." />
+    </Dynamo.Nodes.StringFilename>
+    <Dynamo.Nodes.IntegerSliderInput type="Dynamo.Nodes.IntegerSliderInput" guid="7311ecff-3bd2-459e-8074-0e5114d8ee19" nickname="Integer Slider" x="-278" y="61.0714285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Int32 value="50" min="0" max="100" />
+    </Dynamo.Nodes.IntegerSliderInput>
+    <Dynamo.Nodes.LengthInput type="Dynamo.Nodes.LengthInput" guid="d45e9baa-9b57-4e79-89ab-b46c5d61c04f" nickname="Length" x="126" y="276.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.LengthInput>
+    <Dynamo.Nodes.LengthFromNumber type="Dynamo.Nodes.LengthFromNumber" guid="08e79404-9c89-40fa-a9ce-9d8138667a48" nickname="Length from Number" x="126" y="477.166666666667" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6a43faad-22ad-42bb-8537-58524ff3a6a6" nickname="Number" x="-278" y="232.214285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleSliderInput type="Dynamo.Nodes.DoubleSliderInput" guid="cd440b0a-f843-4922-bdad-0b05d9d534c8" nickname="Number Slider" x="-278" y="-24.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="50" min="0" max="100" />
+    </Dynamo.Nodes.DoubleSliderInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="32ae2541-04ac-4d30-82ed-16b76052e111" nickname="String" x="-273" y="488.928571428571" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.VolumeInput type="Dynamo.Nodes.VolumeInput" guid="9c4c462f-3d4e-49db-95b5-d010234fe343" nickname="Volume" x="126" y="-24.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.VolumeInput>
+    <Dynamo.Nodes.VolumeFromNumber type="Dynamo.Nodes.VolumeFromNumber" guid="f27b2d11-d2a3-473a-9f74-d348a43c36ca" nickname="Volume from Number" x="126" y="376.833333333333" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.IsNull type="Dynamo.Nodes.IsNull" guid="c0f9bf2d-92fc-4ce4-956a-8ddf639f384f" nickname="Is Null?" x="133" y="577.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>
