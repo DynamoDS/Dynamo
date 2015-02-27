@@ -532,4 +532,7 @@ value: bool = false</value>
   <data name="NoDescriptionAvailable" xml:space="preserve">
     <value>No description available</value>
   </data>
+  <data name="TopResult" xml:space="preserve">
+    <value>Top Result</value>
+  </data>
 </root>

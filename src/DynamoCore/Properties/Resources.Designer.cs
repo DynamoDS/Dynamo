@@ -1091,6 +1091,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Top Result.
+        /// </summary>
+        public static string TopResult {
+            get {
+                return ResourceManager.GetString("TopResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to create instance of custom node with id: \&quot;.
         /// </summary>
         public static string UnableToCreateCustomNodeID {
