@@ -70,6 +70,8 @@ namespace ProtoCore
 
         public ContextDataManager ContextDataMngr { get; set; }
 
+        public Dictionary<string, object> Configurations { get; set; }
+
  #endregion
 
         

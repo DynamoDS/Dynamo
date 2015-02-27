@@ -91,7 +91,7 @@ namespace ProtoTestFx
 
             core = new ProtoCore.Core(options);
 
-            core.__TempCoreHostForRefactoring.Configurations.Add(ConfigurationKeys.GeometryXmlProperties, true);
+            core.Configurations.Add(ConfigurationKeys.GeometryXmlProperties, true);
             //core.Configurations.Add(ConfigurationKeys.GeometryFactory, geometryFactory);
             //core.Configurations.Add(ConfigurationKeys.PersistentManager, persistentManager);
 

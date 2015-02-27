@@ -51,8 +51,8 @@ namespace ProtoTestFx.TD
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
 
-            testCore.__TempCoreHostForRefactoring.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
-            testCore.__TempCoreHostForRefactoring.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
+            testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
+            testCore.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
             testCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(testCore));
             testCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(testCore));
 

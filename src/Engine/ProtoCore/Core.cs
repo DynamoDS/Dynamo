@@ -240,6 +240,8 @@ namespace ProtoCore
         /// </summary>
         public RuntimeCore __TempCoreHostForRefactoring { get; set; }
 
+        public Dictionary<string, object> Configurations { get; set; }
+
         /// <summary>
         /// Properties in under COMPILER_GENERATED_TO_RUNTIME_DATA, are generated at compile time, and passed to RuntimeData/Exe
         /// Only Core can initialize these
@@ -578,6 +580,7 @@ namespace ProtoCore
         {
             Heap = new Heap();
             //Rmem = new RuntimeMemory(Heap);
+            Configurations = new Dictionary<string, object>();
 
             ResetRuntimeCore();
 
@@ -967,6 +970,7 @@ namespace ProtoCore
             RuntimeData.DynamicFuncTable = DynamicFunctionTable;
             RuntimeData.FuncPointerTable = FunctionPointerTable;
             RuntimeData.ContextDataMngr = ContextDataManager;
+            RuntimeData.Configurations = Configurations;
             return RuntimeData;
         }
 
