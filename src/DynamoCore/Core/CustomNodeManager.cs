@@ -596,6 +596,7 @@ namespace Dynamo.Core
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
+
             var info = new WorkspaceInfo()
             {
                 Name = name,
@@ -607,6 +608,7 @@ namespace Dynamo.Core
                 FileName = string.Empty
             };
             var workspace = new CustomNodeWorkspaceModel(info, nodeFactory, new ElementResolver());
+
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
