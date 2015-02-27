@@ -20,8 +20,8 @@ namespace DSCoreNodesUI
         private object selectedMetricConversion;
         private bool isSelectionFromBoxEnabled;
         private string selectionFromBoxToolTip;
-
         private object selectedFromConversionSource;
+        private object selectedToConversionSource;
 
         public object SelectedFromConversionSource
         {
@@ -32,8 +32,7 @@ namespace DSCoreNodesUI
                 RaisePropertyChanged("SelectedFromConversionSource");
             }
         }
-
-        private object selectedToConversionSource;
+        
         public object SelectedToConversionSource
         {
             get { return selectedToConversionSource; }
@@ -63,7 +62,6 @@ namespace DSCoreNodesUI
                 }      
             }
         }
-
 
         public virtual object SelectedFromConversion
         {
@@ -114,7 +112,6 @@ namespace DSCoreNodesUI
                 RaisePropertyChanged("SelectionFromBoxToolTip");
             }
         }
-
       
         public DynamoConvert()
         {           
