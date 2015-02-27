@@ -260,68 +260,174 @@ namespace DynamoUnits
         /// </summary>
         /// <param name="value"></param>
         public abstract void SetValueFromString(string value);
-
+        /// <summary>
+        /// add
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public abstract SIUnit Add(SIUnit x);
+        /// <summary>
+        /// add
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public abstract SIUnit Add(double x);
+        /// <summary>
+        /// subtract
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public abstract SIUnit Subtract(SIUnit x);
+        /// <summary>
+        /// subtract
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public abstract SIUnit Subtract(double x);
+        /// <summary>
+        /// multiply
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public abstract SIUnit Multiply(SIUnit x);
+        /// <summary>
+        /// multiply
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public abstract SIUnit Multiply(double x);
+        /// <summary>
+        /// divide
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public abstract dynamic Divide(SIUnit x);
+        /// <summary>
+        /// divide
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public abstract SIUnit Divide(double x);
         public abstract SIUnit Modulo(SIUnit x);
+        /// <summary>
+        /// modulo
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
         public abstract SIUnit Modulo(double x);
+        /// <summary>
+        /// Rounds a value to the nearest SIUnit.
+        /// </summary>
+        /// <returns></returns>
         public abstract SIUnit Round();
+        /// <summary>
+        /// Returns the smallest SIUnit greater than or equal to the specified SIUnit.
+        /// </summary>
+        /// <returns></returns>
         public abstract SIUnit Ceiling();
+        /// <summary>
+        /// Returns the largest SIUnit less than or equal to the specified SIUnit.
+        /// </summary>
+        /// <returns></returns>
         public abstract SIUnit Floor();
 
         #region operator overloads
-
+        /// <summary>
+        /// add
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x+y</returns>
         public static SIUnit operator +(SIUnit x, SIUnit y)
         {
             return x.Add(y);
         }
-
+        /// <summary>
+        /// add
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">double y</param>
+        /// <returns>x+y</returns>
         public static SIUnit operator +(SIUnit x, double y)
         {
             return x.Add(y);
         }
-
+        /// <summary>
+        /// add
+        /// </summary>
+        /// <param name="x">double x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x+y</returns>
         public static double operator +(double x, SIUnit y)
         {
             return x + y.Value;
         }
-
+        /// <summary>
+        /// subtract
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public static SIUnit operator -(SIUnit x, SIUnit y)
         {
             return x.Subtract(y);
         }
-
+        /// <summary>
+        /// subtract
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">double y</param>
+        /// <returns>x-y</returns>
         public static SIUnit operator -(SIUnit x, double y)
         {
             return x.Subtract(y);
         }
-
+        /// <summary>
+        /// subtract
+        /// </summary>
+        /// <param name="x">double x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x-y</returns>
         public static double operator -(double x, SIUnit y)
         {
             return x - y.Value;
         }
-
+        /// <summary>
+        /// multiply
+        /// </summary>
+        /// <param name="x">SIUnit</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x * y</returns>
         public static SIUnit operator *(SIUnit x, SIUnit y)
         {
             return x.Multiply(y);
         }
-
+        /// <summary>
+        /// multiply
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">double y</param>
+        /// <returns>x * y</returns>
         public static SIUnit operator *(SIUnit x, double y)
         {
             return x.Multiply(y);
         }
-
+        /// <summary>
+        /// multiply
+        /// </summary>
+        /// <param name="x">double x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x * y</returns>
         public static SIUnit operator *(double x, SIUnit y)
         {
             return y.Multiply(x);
         }
-
+        /// <summary>
+        /// divide
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x / y</returns>
         public static dynamic operator /(SIUnit x, SIUnit y)
         {
             //units will cancel
@@ -332,101 +438,190 @@ namespace DynamoUnits
 
             return x.Divide(y);
         }
-
+        /// <summary>
+        /// divide
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">double y</param>
+        /// <returns>x / y</returns>
         public static SIUnit operator /(SIUnit x, double y)
         {
             return x.Divide(y);
         }
-
+        /// <summary>
+        /// modulo
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x % y</returns>
         public static SIUnit operator %(SIUnit x, SIUnit y)
         {
             return x.Modulo(y);
         }
-
+        /// <summary>
+        /// modulo
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">double y</param>
+        /// <returns>x % y</returns>
         public static SIUnit operator %(SIUnit x, double y)
         {
             return x.Modulo(y);
         }
-
+        /// <summary>
+        /// modulo
+        /// </summary>
+        /// <param name="x">double x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x % y</returns>
         public static double operator %(double x, SIUnit y)
         {
             return x % y.Value;
         }
-
+        /// <summary>
+        /// larger than
+        /// </summary>
+        /// <param name="x">double x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x > y</returns>
         public static bool operator >(double x, SIUnit y)
         {
             return x > y.Value;
         }
-
+        /// <summary>
+        /// larger than 
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">double y</param>
+        /// <returns>x > y</returns>
         public static bool operator >(SIUnit x, double y)
         {
             return x.Value > y;
         }
-
+        /// <summary>
+        /// larger than
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns>x > y</returns>
         public static bool operator >(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value > y.Value;
         }
-
+        /// <summary>
+        /// less than 
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns></returns>
         public static bool operator <(double x, SIUnit y)
         {
             return x < y.Value;
         }
-
+        /// <summary>
+        /// less than 
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">double y</param>
+        /// <returns></returns>
         public static bool operator <(SIUnit x, double y)
         {
             return x.Value < y;
         }
-
+        /// <summary>
+        /// less than 
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns></returns>
         public static bool operator <(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value < y.Value;
         }
-
+        /// <summary>
+        /// larger than or equal
+        /// </summary>
+        /// <param name="x">dobule x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns></returns>
         public static bool operator >=(double x, SIUnit y)
         {
             return x >= y.Value;
         }
-
+        /// <summary>
+        /// larger than or equal
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">dobule y</param>
+        /// <returns></returns>
         public static bool operator >=(SIUnit x, double y)
         {
             return x.Value >= y;
         }
-
+        /// <summary>
+        /// larger than or equal
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns></returns>
         public static bool operator >=(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value >= y.Value;
         }
-
+        /// <summary>
+        /// smaller than or equal
+        /// </summary>
+        /// <param name="x">double x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns></returns>
         public static bool operator <=(double x, SIUnit y)
         {
             return x <= y.Value;
         }
-
+        /// <summary>
+        /// larger than or equal
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">double y</param>
+        /// <returns></returns>
         public static bool operator <=(SIUnit x, double y)
         {
             return x.Value <= y;
         }
-
+        /// <summary>
+        /// larger than or equal
+        /// </summary>
+        /// <param name="x">SIUnit x</param>
+        /// <param name="y">SIUnit y</param>
+        /// <returns></returns>
         public static bool operator <=(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value <= y.Value;
         }
-
+        /// <summary>
+        /// Construct an SIUnit object with a value.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static SIUnit ToSIUnit(object value)
         {
             return value as SIUnit;
         }
 
         #endregion
-
+        /// <summary>
+        /// Conversions
+        /// </summary>
         public static Dictionary<string, double> Conversions {
             get
             {
                 return new Dictionary<string,double>();
             }
         }
- 
+        /// <summary>
+        /// Convert SIUnit to Host Units.
+        /// </summary>
+        /// <returns></returns>
         public abstract double ConvertToHostUnits();
     }
 
@@ -446,44 +641,64 @@ namespace DynamoUnits
         public const string CENTIMETERS = "cm";
         public const string INCHES = "in";
         public const string FEET = "ft";
-
+        /// <summary>
+        /// Meter to Millimeter: 1000mm;
+        /// </summary>
         public static double ToMillimeter
         {
             get { return METER_TO_MILLIMETER; }
         }
-
+        /// <summary>
+        /// Meter To Centimeter: 100cm;
+        /// </summary>
         public static double ToCentimeter
         {
             get { return METER_TO_CENTIMETER; }
         }
-
+        /// <summary>
+        /// Meter: 1.0m;
+        /// </summary>
         public static double ToMeter
         {
             get { return 1.0; }
         }
-
+        /// <summary>
+        /// Meter to Inch: 39.37007874in;
+        /// </summary>
         public static double ToInch
         {
             get { return METER_TO_INCH; }
         }
-
+        /// <summary>
+        /// Meter to foot: 3.280839895ft;
+        /// </summary>
         public static double ToFoot
         {
             get { return METER_TO_FOOT; }
         }
 
         internal Length(double value):base(value){}
-
+        /// <summary>
+        /// Generates length by providing a double type of value
+        /// </summary>
+        /// <param name="value">value type is double</param>
+        /// <returns>return length</returns>
         public static Length FromDouble(double value)
         {
             return new Length(value);
         }
-
+        /// <summary>
+        /// Calculates length by feet
+        /// </summary>
+        /// <param name="value">value type is double</param>
+        /// <returns>return length</returns>
         public static Length FromFeet(double value)
         {
             return new Length(value/ToFoot);
         }
-
+        /// <summary>
+        /// Conversions
+        /// </summary>
         public new static Dictionary<string,double> Conversions
         {
             get
@@ -746,34 +961,50 @@ namespace DynamoUnits
         public const string SQUARE_CENTIMETERS = "cm²";
         public const string SQUARE_INCHES = "in²";
         public const string SQUARE_FEET = "ft²";
-
+        /// <summary>
+        /// Square Meters to Square Millimeters: 1000000
+        /// </summary>
         public static double ToSquareMillimeters
         {
             get { return SQUARE_METERS_TO_SQUARE_MILLIMETERS; }
         }
-
+        /// <summary>
+        /// Square Meters to Square Centimeters: 10000
+        /// </summary>
         public static double ToSquareCentimeters
         {
             get { return SQUARE_METERS_TO_SQUARE_CENTIMETERS; }
         }
-
+        /// <summary>
+        /// Square Meters to Square Inch: 1550.0031
+        /// </summary>
         public static double ToSquareInch
         {
             get { return SQUARE_METERS_TO_SQUARE_INCH; }
         }
-
+        /// <summary>
+        /// Square Meters to Square Foot: 10.763910417
+        /// </summary>
         public static double ToSquareFoot
         {
             get { return SQUARE_METERS_TO_SQUARE_FOOT; }
         }
 
         internal Area(double value):base(value){}
-
+        /// <summary>
+        /// Assign area by value
+        /// </summary>
+        /// <param name="value">Value type is double</param>
+        /// <returns>Return Area</returns>
         public static Area FromDouble(double value)
         {
             return new Area(value);
         }
-
+        /// <summary>
+        /// Generate area by square feet
+        /// </summary>
+        /// <param name="value">Value type is double</param>
+        /// <returns>Return area</returns>
         public static Area FromSquareFeet(double value)
         {
             return new Area(value / ToSquareFoot);
@@ -880,7 +1111,9 @@ namespace DynamoUnits
             double round = Math.Floor(val);
             return new Area(round / UiAreaConversion);
         }
-
+        /// <summary>
+        /// Conversions
+        /// </summary>
         public new static Dictionary<string, double> Conversions
         {
             get
@@ -1034,34 +1267,50 @@ namespace DynamoUnits
         public const string CUBIC_CENTIMETERS = "cm³";
         public const string CUBIC_INCHES = "in³";
         public const string CUBIC_FEET = "ft³";
-
+        /// <summary>
+        /// cubic meters to cubic millimeters: 1000000000.
+        /// </summary>
         public static double ToCubicMillimeter
         {
             get { return CUBIC_METERS_TO_CUBIC_MILLIMETERS; }
         }
-
+        /// <summary>
+        /// cubic meters to cubic centimeters: 1000000.
+        /// </summary>
         public static double ToCubicCentimeter
         {
             get { return CUBIC_METERS_TO_CUBIC_CENTIMETERS; }
         }
-
+        /// <summary>
+        /// cubic meters to cubic inches:  61023.744095.
+        /// </summary>
         public static double ToCubicInch
         {
             get { return CUBIC_METERS_TO_CUBIC_INCHES; }
         }
-
+        /// <summary>
+        /// cubic meters to cubic feet: 35.3147.
+        /// </summary>
         public static double ToCubicFoot
         {
             get { return CUBIC_METERS_TO_CUBIC_FEET; }
         }
 
         internal Volume(double value) : base(value){}
-
+        /// <summary>
+        /// Generates volume by double type of value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Volume FromDouble(double value)
         {
             return new Volume(value);
         }
-
+        /// <summary>
+        /// Create a volume from cubic feet
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Volume FromCubicFeet(double value)
         {
             return new Volume(value / ToCubicFoot);
@@ -1159,7 +1408,9 @@ namespace DynamoUnits
             double round = Math.Floor(val);
             return new Volume(round / UiVolumeConversion);
         }
-
+        /// <summary>
+        /// Conversions
+        /// </summary>
         public new static Dictionary<string, double> Conversions
         {
             get
@@ -1309,17 +1560,25 @@ namespace DynamoUnits
         public const string WATT_HOURS_PER_SQUARE_METER = "Wh/m²";
         public const string KILLOWATT_HOURS_PER_SQUARE_METER = "kWh/m²";
         public const string BTU_PER_SQUARE_FOOT = "BTU/ft²";
-
+        /// <summary>
+        /// Wh/m² to "kWh/m²: 0.001.
+        /// </summary>
         public static double ToKwhMeter2
         {
             get { return WHM2_TO_KWHM2; }
         }
-
+        /// <summary>
+        /// Wh/m² to BTU/ft²: 0.3170
+        /// </summary>
         public static double ToBTUFoot2
         {
             get { return WHM2_TO_BT_UFT2; }
         }
-
+        /// <summary>
+        /// Generate insolation by double type of value
+        /// </summary>
+        /// <param name="value">value type is double</param>
+        /// <returns>return insolation</returns>
         public static Insolation FromDouble(double value)
         {
             return new Insolation(value);
@@ -1400,12 +1659,14 @@ namespace DynamoUnits
         {
             return new Insolation(Math.Ceiling(_value));
         }
-
+        
         public override SIUnit Floor()
         {
             return new Insolation(Math.Floor(_value));
         }
-
+        /// <summary>
+        /// Conversions
+        /// </summary>
         public new static Dictionary<string, double> Conversions
         {
             get
@@ -1424,7 +1685,15 @@ namespace DynamoUnits
         {
             return Value;
         }
-
+        /// <summary>
+        /// Compares two insolations, insolation and object.
+        /// Object type should be insolation. 
+        /// if the value of insolation is larger than the value of object, then return 1;
+        /// if the value of insolation is smaller than the value of object, then return -1;
+        /// if two values are equal, then return 0;
+        /// </summary>
+        /// <param name="obj">obj should be insolation</param>
+        /// <returns>return integer</returns>
         public int CompareTo(object obj)
         {
             if (obj == null) return 1;
@@ -1435,7 +1704,13 @@ namespace DynamoUnits
             else
                 throw new ArgumentException("Object is not an Insolation.");
         }
-
+        /// <summary>
+        /// Defines whether two insolations are equal.
+        /// if two insolations are equal, return true.
+        /// else return false
+        /// </summary>
+        /// <param name="other">other type is insolation</param>
+        /// <returns>return boolean</returns>
         public bool Equals(Insolation other)
         {
             if (other == null)
