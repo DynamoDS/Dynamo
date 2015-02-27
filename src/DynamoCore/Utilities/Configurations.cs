@@ -204,9 +204,9 @@ namespace Dynamo.UI
         public const double MinWidthLibraryView = 204;
 
         public const string TopResult = Resources.TopResult;
-        public const string CategoryGroupCreate = "Create";
-        public const string CategoryGroupAction = "Actions";
-        public const string CategoryGroupQuery = "Query";
+        public const string CategoryGroupCreate = Resources.CategoryGroupCreate;
+        public const string CategoryGroupAction = Resources.CategoryGroupAction;
+        public const string CategoryGroupQuery = Resources.CategoryGroupQuery;
         public const char CategoryDelimiter = '.';
         public const char ShortenedCategoryDelimiter = '-';
 

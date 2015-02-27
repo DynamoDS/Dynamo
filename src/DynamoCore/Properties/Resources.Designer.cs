@@ -151,6 +151,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Actions.
+        /// </summary>
+        public static string CategoryGroupAction {
+            get {
+                return ResourceManager.GetString("CategoryGroupAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string CategoryGroupCreate {
+            get {
+                return ResourceManager.GetString("CategoryGroupCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Query.
+        /// </summary>
+        public static string CategoryGroupQuery {
+            get {
+                return ResourceManager.GetString("CategoryGroupQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clearing workflow....
         /// </summary>
         public static string ClearingWorkflow {
