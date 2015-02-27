@@ -64,7 +64,7 @@ namespace Dynamo.Search
         }
 
         private bool showAllMembers = false;
-        private string delimiter = string.Format(" {0} ", Configurations.ShortenedCategoryDelimiterString);
+        private string delimiter = Configurations.CategoryDelimiterWithSpaces;
 
         internal SearchMemberGroup(string fullyQualifiedName, NodeCategoryViewModel category = null)
         {
