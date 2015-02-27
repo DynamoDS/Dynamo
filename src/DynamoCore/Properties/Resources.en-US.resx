@@ -547,6 +547,18 @@ value: bool = false</value>
   <data name="CategoryGroupQuery" xml:space="preserve">
     <value>Query</value>
   </data>
+  <data name="HeaderAction" xml:space="preserve">
+    <value>ACTIONS</value>
+  </data>
+  <data name="HeaderCreate" xml:space="preserve">
+    <value>CREATE</value>
+  </data>
+  <data name="HeaderQuery" xml:space="preserve">
+    <value>QUERY</value>
+  </data>
+  <data name="MoreButtonTextFormat" xml:space="preserve">
+    <value>SHOW MORE ({0})</value>
+  </data>
   <data name="NoDescriptionAvailable" xml:space="preserve">
     <value>No description available</value>
   </data>

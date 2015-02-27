@@ -569,6 +569,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ACTIONS.
+        /// </summary>
+        public static string HeaderAction {
+            get {
+                return ResourceManager.GetString("HeaderAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CREATE.
+        /// </summary>
+        public static string HeaderCreate {
+            get {
+                return ResourceManager.GetString("HeaderCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to QUERY.
+        /// </summary>
+        public static string HeaderQuery {
+            get {
+                return ResourceManager.GetString("HeaderQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No identifiers found..
         /// </summary>
         public static string IdentifiersNotFound {
@@ -682,6 +709,15 @@ namespace Dynamo.Properties {
         public static string MalformedHeaderPackage {
             get {
                 return ResourceManager.GetString("MalformedHeaderPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SHOW MORE ({0}).
+        /// </summary>
+        public static string MoreButtonTextFormat {
+            get {
+                return ResourceManager.GetString("MoreButtonTextFormat", resourceCulture);
             }
         }
         
