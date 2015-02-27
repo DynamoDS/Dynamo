@@ -22,6 +22,7 @@
                 Width="100"   
                 Margin="1,0,0,0"  
                 ToolTip="{Binding SelectionFromBoxToolTip}"
+                ToolTipService.ShowOnDisabled="True" 
                 IsEnabled="{Binding IsSelectionFromBoxEnabled}"
                 SelectedItem="{Binding SelectedFromConversion}"/>
 
