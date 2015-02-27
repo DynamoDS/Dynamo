@@ -850,6 +850,8 @@ namespace Dynamo.Tests
                     "x : bool"));
 
             customInstance.ResyncWithDefinition(customWorkspace.CustomNodeDefinition);
+
+            Assert.AreEqual("x", customInstance.InPorts.First().PortName);
             Assert.AreEqual("bool", customInstance.InPorts.First().ToolTipContent);
         }
     }
