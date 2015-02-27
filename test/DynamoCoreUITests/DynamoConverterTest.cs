@@ -51,71 +51,71 @@ namespace DynamoCoreUITests
         [Test]
         public void SetConverterValues()
         {
-            var converter = new DynamoConverter() {SelectedMetricConversion = "Mass"};
+            var converter = new DynamoConverter() {SelectedMetricConversion = "Area"};
             Assert.NotNull(converter);
 
-            Assert.AreEqual("Mass", converter.SelectedMetricConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedFromConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedToConversion.ToString());
+            Assert.AreEqual("Area", converter.SelectedMetricConversion.ToString());
+            Assert.AreEqual("SquareMeter", converter.SelectedFromConversion.ToString());
+            Assert.AreEqual("SquareMeter", converter.SelectedToConversion.ToString());
         }
 
         [Test]
         public void ConverterItemSourceCount()
         {
-            var converter = new DynamoConverter() { SelectedMetricConversion = "Mass" };
+            var converter = new DynamoConverter() { SelectedMetricConversion = "Volume" };
             Assert.NotNull(converter);
 
-            Assert.AreEqual("2", ((dynamic)converter.SelectedFromConversionSource).Count.ToString());
-            Assert.AreEqual("2", ((dynamic)converter.SelectedToConversionSource).Count.ToString());
+            Assert.AreEqual("8", ((dynamic)converter.SelectedFromConversionSource).Count.ToString());
+            Assert.AreEqual("8", ((dynamic)converter.SelectedToConversionSource).Count.ToString());
         }
 
         [Test]
         public void ConvertSetConversionFromValue()
         {
-            var converter = new DynamoConverter() { SelectedMetricConversion = "Mass" }; 
+            var converter = new DynamoConverter() { SelectedMetricConversion = "Length" }; 
             Assert.NotNull(converter);
 
-            Assert.AreEqual("Mass", converter.SelectedMetricConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedFromConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedToConversion.ToString());
+            Assert.AreEqual("Length", converter.SelectedMetricConversion.ToString());
+            Assert.AreEqual("Meters", converter.SelectedFromConversion.ToString());
+            Assert.AreEqual("Meters", converter.SelectedToConversion.ToString());
 
-            converter.SelectedFromConversion = "Pounds";
-            Assert.AreEqual("Pounds", converter.SelectedFromConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedToConversion.ToString());
+            converter.SelectedFromConversion = "Feet";
+            Assert.AreEqual("Feet", converter.SelectedFromConversion.ToString());
+            Assert.AreEqual("Meters", converter.SelectedToConversion.ToString());
         }
 
         [Test]
         public void ConvertSetConversionToValue()
         {
-            var converter = new DynamoConverter() { SelectedMetricConversion = "Mass" };
+            var converter = new DynamoConverter() { SelectedMetricConversion = "Volume" };
             Assert.NotNull(converter);
 
-            Assert.AreEqual("Mass", converter.SelectedMetricConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedFromConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedToConversion.ToString());
+            Assert.AreEqual("Volume", converter.SelectedMetricConversion.ToString());
+            Assert.AreEqual("CubicMeters", converter.SelectedFromConversion.ToString());
+            Assert.AreEqual("CubicMeters", converter.SelectedToConversion.ToString());
 
-            converter.SelectedToConversion = "Pounds";
-            Assert.AreEqual("Kilograms", converter.SelectedFromConversion.ToString());
-            Assert.AreEqual("Pounds", converter.SelectedToConversion.ToString());
+            converter.SelectedToConversion = "CubicInches";
+            Assert.AreEqual("CubicMeters", converter.SelectedFromConversion.ToString());
+            Assert.AreEqual("CubicInches", converter.SelectedToConversion.ToString());
         }
 
         [Test]
         public void ConverterTestToggleState()
         {
-            var converter = new DynamoConverter() { SelectedMetricConversion = "Mass" };
+            var converter = new DynamoConverter() { SelectedMetricConversion = "Length" };
             Assert.NotNull(converter);
 
-            Assert.AreEqual("Mass", converter.SelectedMetricConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedFromConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedToConversion.ToString());
+            Assert.AreEqual("Length", converter.SelectedMetricConversion.ToString());
+            Assert.AreEqual("Meters", converter.SelectedFromConversion.ToString());
+            Assert.AreEqual("Meters", converter.SelectedToConversion.ToString());
 
-            converter.SelectedFromConversion = "Pounds";
-            Assert.AreEqual("Pounds", converter.SelectedFromConversion.ToString());
-            Assert.AreEqual("Kilograms", converter.SelectedToConversion.ToString());
+            converter.SelectedFromConversion = "Feet";
+            Assert.AreEqual("Feet", converter.SelectedFromConversion.ToString());
+            Assert.AreEqual("Meters", converter.SelectedToConversion.ToString());
 
             converter.ToggleDropdownValues();
-            Assert.AreEqual("Kilograms", converter.SelectedFromConversion.ToString());
-            Assert.AreEqual("Pounds", converter.SelectedToConversion.ToString());
+            Assert.AreEqual("Meters", converter.SelectedFromConversion.ToString());
+            Assert.AreEqual("Feet", converter.SelectedToConversion.ToString());
         }
     }
 }

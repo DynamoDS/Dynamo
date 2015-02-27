@@ -24,8 +24,7 @@ namespace Dynamo.Wpf
             get { return dynamoConvertModel.SelectedMetricConversion; }
             set
             {
-                dynamoConvertModel.SelectedMetricConversion = value;                 
-                RaisePropertyChanged("SelectedMetricConversion");
+                dynamoConvertModel.SelectedMetricConversion = value;                                
             }
         }
 
@@ -34,8 +33,7 @@ namespace Dynamo.Wpf
             get { return dynamoConvertModel.SelectedFromConversion; }
             set
             {
-                dynamoConvertModel.SelectedFromConversion = value;               
-                RaisePropertyChanged("SelectedFromConversion");
+                dynamoConvertModel.SelectedFromConversion = value;                             
             }
         }
 
@@ -44,8 +42,7 @@ namespace Dynamo.Wpf
             get { return dynamoConvertModel.SelectedToConversion; }
             set
             {
-                dynamoConvertModel.SelectedToConversion = value;                
-                RaisePropertyChanged("SelectedToConversion");
+                dynamoConvertModel.SelectedToConversion = value;                            
             }
         }
 
@@ -54,8 +51,7 @@ namespace Dynamo.Wpf
             get { return dynamoConvertModel.SelectedFromConversionSource; }
             set
             {
-                dynamoConvertModel.SelectedFromConversionSource = value;
-                RaisePropertyChanged("SelectedFromConversionSource");
+                dynamoConvertModel.SelectedFromConversionSource = value;               
             }
         }
 
@@ -64,8 +60,7 @@ namespace Dynamo.Wpf
             get { return dynamoConvertModel.SelectedToConversionSource; }
             set
             {
-                dynamoConvertModel.SelectedFromConversionSource = value;
-                RaisePropertyChanged("SelectedToConversionSource");
+                dynamoConvertModel.SelectedFromConversionSource = value;             
             }
         }
 
@@ -74,8 +69,16 @@ namespace Dynamo.Wpf
             get { return dynamoConvertModel.IsSelectionFromBoxEnabled; }
             set
             {
-                dynamoConvertModel.IsSelectionFromBoxEnabled = value;
-                RaisePropertyChanged("IsSelectionFromBoxEnabled");
+                dynamoConvertModel.IsSelectionFromBoxEnabled = value;                
+            }
+        }
+
+        public string SelectionFromBoxToolTip
+        {
+            get { return dynamoConvertModel.SelectionFromBoxToolTip; }
+            set
+            {
+                dynamoConvertModel.SelectionFromBoxToolTip = value;                
             }
         }
 
@@ -109,6 +112,9 @@ namespace Dynamo.Wpf
                     break;
                 case "IsSelectionFromBoxEnabled":
                     RaisePropertyChanged("IsSelectionFromBoxEnabled");
+                    break;
+                case "SelectionFromBoxToolTip":
+                    RaisePropertyChanged("SelectionFromBoxToolTip");
                     break;
             }
         }

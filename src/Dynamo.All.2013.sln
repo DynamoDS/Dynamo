@@ -34,8 +34,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodes", "Libraries\Core
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModels", "Libraries\CoreNodeModels\CoreNodeModels.csproj", "{D8262D40-4880-41E4-91E4-AF8F480C8637}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2} = {C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreNodeModelsWpf", "Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj", "{F5932F7D-8E34-4787-80B8-E7F9D996EDFF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2} = {C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino", "Libraries\DynamoArduino\Arduino.csproj", "{9589D7A5-12BE-446B-BBFF-B8C4951EDB13}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -191,9 +197,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServicesTests", "..\t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XmlDocumentationsUtility", "Tools\XmlDocumentationsUtility\XmlDocumentationsUtility.csproj", "{4CAB9005-0001-4B03-BBA0-57070ED105F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoShapeManager", "Tools\DynamoShapeManager\DynamoShapeManager.csproj", "{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoConversions", "Libraries\DynamoConversions\DynamoConversions.csproj", "{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoShapeManager", "Tools\DynamoShapeManager\DynamoShapeManager.csproj", "{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -413,14 +419,14 @@ Global
 		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CAB9005-0001-4B03-BBA0-57070ED105F1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{263FA9C1-F81E-4A8E-95E0-8CDAE20F177B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

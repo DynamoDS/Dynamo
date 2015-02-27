@@ -19,6 +19,7 @@ namespace DSCoreNodesUI
         private object selectedToConversion;
         private object selectedMetricConversion;
         private bool isSelectionFromBoxEnabled;
+        private string selectionFromBoxToolTip;
 
         private object selectedFromConversionSource;
 
@@ -70,10 +71,12 @@ namespace DSCoreNodesUI
             set
             {
                 if (value != null)
+                {
                     selectedFromConversion = (ConversionUnit) Enum.Parse(typeof (ConversionUnit), value.ToString());
+                    RaisePropertyChanged("SelectedFromConversion");
+                }
                 else
                     selectedFromConversion = null;
-                RaisePropertyChanged("SelectedFromConversion");
             }
         }
 
@@ -83,10 +86,12 @@ namespace DSCoreNodesUI
             set
             {
                 if (value != null)
-                    selectedToConversion = (ConversionUnit)Enum.Parse(typeof(ConversionUnit), value.ToString());
+                {
+                    selectedToConversion = (ConversionUnit) Enum.Parse(typeof (ConversionUnit), value.ToString());
+                    RaisePropertyChanged("SelectedToConversion");                    
+                }
                 else
                     selectedToConversion = null;
-                RaisePropertyChanged("SelectedToConversion");
             }
         }
 
@@ -100,11 +105,20 @@ namespace DSCoreNodesUI
             }
         }
 
+        public string SelectionFromBoxToolTip
+        {
+            get { return selectionFromBoxToolTip; }
+            set
+            {
+                selectionFromBoxToolTip = value;
+                RaisePropertyChanged("SelectionFromBoxToolTip");
+            }
+        }
+
       
         public DynamoConvert()
         {           
-            SelectedMetricConversion = ConversionMetricUnit.Length;
-           
+            SelectedMetricConversion = ConversionMetricUnit.Length;           
             InPortData.Add(new PortData("", "A numeric value for conversion."));
             OutPortData.Add(new PortData("", "A converted numeric value."));
 
@@ -116,7 +130,7 @@ namespace DSCoreNodesUI
         public DynamoConvert(string value)
         {
             SelectedMetricConversion = ConversionMetricUnit.Length;
-
+            SelectionFromBoxToolTip = "This is your Revit display unit settings";
             InPortData.Add(new PortData("", "A numeric value for conversion."));
             OutPortData.Add(new PortData("", "A converted numeric value."));
 

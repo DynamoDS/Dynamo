@@ -20,8 +20,8 @@
             <ComboBox Name="SelectConversionFrom"                
                 ItemsSource="{Binding SelectedFromConversionSource}"                   
                 Width="100"   
-                Margin="1,0,0,0"   
-                SelectedIndex="1"                
+                Margin="1,0,0,0"  
+                ToolTip="{Binding SelectionFromBoxToolTip}"
                 IsEnabled="{Binding IsSelectionFromBoxEnabled}"
                 SelectedItem="{Binding SelectedFromConversion}"/>
 
@@ -33,8 +33,7 @@
             <ComboBox x:Name="SelectConversionTo"        	
         	ItemsSource="{Binding SelectedToConversionSource}"
         	Width="100"  
-            Margin="1,0,0,0"   
-            SelectedIndex="1"
+            Margin="1,0,0,0"              
         	SelectedItem="{Binding SelectedToConversion}"/>
 
         </StackPanel>
