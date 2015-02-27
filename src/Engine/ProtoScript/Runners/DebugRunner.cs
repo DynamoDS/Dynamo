@@ -168,7 +168,7 @@ namespace ProtoScript.Runners
                 runtimeCore.DebugProps.RunMode = ProtoCore.Runmode.StepOut;
                 runtimeCore.DebugProps.AllbreakPoints = allbreakPoints;
 
-                runtimeCore.DebugProps.StepOutReturnPC = (int)core.Rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
+                runtimeCore.DebugProps.StepOutReturnPC = (int)runtimeCore.RuntimeMemory.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
 
                 List<Instruction> instructions = new List<Instruction>();
                 foreach (Breakpoint bp in RegisteredBreakpoints)
@@ -449,7 +449,7 @@ namespace ProtoScript.Runners
 
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
                 core.GenerateExecutable();
-                core.Rmem.PushFrameForGlobals(core.GlobOffset);
+                runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
 
             }
             catch (Exception ex)

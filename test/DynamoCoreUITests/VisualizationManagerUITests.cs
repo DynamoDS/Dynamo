@@ -33,7 +33,11 @@ namespace DynamoCoreUITests
         public void Setup()
         {
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-            ws.DynamicRunEnabled = false;
+
+            // These tests were not written to assume run automatically.
+            // As such, they exhibit flaky behavior when running in that mode.
+            // Run them manually instead.
+            ws.RunSettings.RunType = RunType.Manually;
         }
 
         [Test]

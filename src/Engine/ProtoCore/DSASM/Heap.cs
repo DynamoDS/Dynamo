@@ -174,9 +174,10 @@ namespace ProtoCore.DSASM
 
         public int GetHashCode(StackValue value)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (value.IsString)
             {
-                string s = core.Heap.GetString(value);
+                string s = runtimeCore.Heap.GetString(value);
                 return s.GetHashCode();
             }
             else

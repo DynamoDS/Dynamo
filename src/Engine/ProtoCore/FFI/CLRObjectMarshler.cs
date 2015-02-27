@@ -503,12 +503,12 @@ namespace ProtoFFI
         public override StackValue Marshal(object obj, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type type)
         {
             string str = (string)obj;
-            return dsi.runtime.Core.Heap.AllocateString(str);
+            return dsi.runtime.rmem.Heap.AllocateString(str);
         }
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            return dsi.runtime.Core.Heap.GetString(dsObject);
+            return dsi.runtime.rmem.Heap.GetString(dsObject);
         }
     }
 
@@ -976,8 +976,8 @@ namespace ProtoFFI
         private StackValue CreateDSObject(object obj, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
             //We are here, because we want to create DS object of user defined type.
-            var core = dsi.runtime.Core;
-            var classTable = core.DSExecutable.classTable;
+            var runtimeCore = dsi.runtime.RuntimeCore;
+            var classTable = runtimeCore.DSExecutable.classTable;
             Type objType = GetPublicType(obj.GetType());
             int type = classTable.IndexOf(GetTypeName(objType));
             //Recursively get the base class type if available.
@@ -990,7 +990,7 @@ namespace ProtoFFI
 
             MetaData metadata;
             metadata.type = type;
-            StackValue retval = core.Heap.AllocatePointer(classTable.ClassNodes[type].size, metadata);
+            StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].size, metadata);
             BindObjects(obj, retval);
             dsi.runtime.Core.FFIPropertyChangedMonitor.AddFFIObject(obj);
             return retval;
@@ -1012,7 +1012,7 @@ namespace ProtoFFI
                 return;
 
             var core = dsi.runtime.Core;
-            StackValue[] svs = core.Heap.GetHeapElement(dsObject).Stack;
+            StackValue[] svs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject).Stack;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 SymbolNode symbol = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix];
