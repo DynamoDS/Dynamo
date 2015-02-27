@@ -150,7 +150,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <Grid Grid.Row="5"
+            <!--<Grid Grid.Row="5"
                   Grid.ColumnSpan="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
@@ -212,7 +212,7 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                </StackPanel>
+                </StackPanel>-->
 
                 <!--<TextBlock Grid.Row="3"
                                Grid.Column="0"
@@ -240,7 +240,7 @@
                             Web Reference
                         </Hyperlink>
                     </TextBlock>-->
-            </Grid>
+            <!--</Grid>-->
         </Grid>
     </Border>
 </UserControl>
