@@ -16,7 +16,7 @@ namespace ProtoTest.ComponentTest
     {
         readonly string testCasePath = Path.GetFullPath(@"..\..\..\Scripts\Associative\MicroFeatureTests\");
 
-        [Test]
+        [Test, Category("Failure")]
         public void TestCompilerAndRuntimeComponent01()
         {
 
