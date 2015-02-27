@@ -13,7 +13,7 @@ using ProtoFFI;
 namespace ProtoTest.FFITests
 {
     [TestFixture]
-    public class TestCSharpAttribute : ProtoTestBase 
+    class TestCSharpAttribute : ProtoTestBase 
     {
         [Test]
         public void BasicClassAttributeTest()
