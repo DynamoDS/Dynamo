@@ -529,15 +529,6 @@ value: bool = false</value>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
     <value>Custom node definition is not loaded!</value>
   </data>
-  <data name="CategoryGroupAction" xml:space="preserve">
-    <value>Actions</value>
-  </data>
-  <data name="CategoryGroupCreate" xml:space="preserve">
-    <value>Create</value>
-  </data>
-  <data name="CategoryGroupQuery" xml:space="preserve">
-    <value>Query</value>
-  </data>
   <data name="HeaderAction" xml:space="preserve">
     <value>ACTIONS</value>
   </data>

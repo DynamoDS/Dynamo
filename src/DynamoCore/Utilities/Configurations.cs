@@ -205,10 +205,10 @@ namespace Dynamo.UI
 
         public const double MinWidthLibraryView = 204;
 
-        public const string TopResult = Resources.TopResult;
-        public const string CategoryGroupCreate = Resources.CategoryGroupCreate;
-        public const string CategoryGroupAction = Resources.CategoryGroupAction;
-        public const string CategoryGroupQuery = Resources.CategoryGroupQuery;
+        public static string TopResult = Resources.TopResult;
+        public const string CategoryGroupCreate = "Create";
+        public const string CategoryGroupAction = "Actions";
+        public const string CategoryGroupQuery = "Query";
         public const string CategoryDelimiterString = ".";
         public const string ShortenedCategoryDelimiterString = "-";
 
@@ -222,10 +222,10 @@ namespace Dynamo.UI
 
         #region StandardPanel
 
-        public const string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
-        public const string HeaderCreate = Resources.HeaderCreate;
-        public const string HeaderAction = Resources.HeaderAction;
-        public const string HeaderQuery = Resources.HeaderQuery;
+        public static string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
+        public static string HeaderCreate = Resources.HeaderCreate;
+        public static string HeaderAction = Resources.HeaderAction;
+        public static string HeaderQuery = Resources.HeaderQuery;
 
         #endregion
     }

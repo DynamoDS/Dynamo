@@ -229,7 +229,7 @@ namespace Dynamo.Nodes
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)
             {
-                var s = catName.Split(Configurations.ShortenedCategoryDelimiterString).Select(x => x.Trim()).ToList();
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiterString.ToCharArray()).Select(x => x.Trim()).ToList();
                 if (s.Count() > 4)
                 {
                     s = new List<string>()
