@@ -7,12 +7,19 @@ using Dynamo.Utilities;
 
 namespace Dynamo.Models
 {
-    public class WorkspaceHeader
+    public class WorkspaceInfo
     {
-        private WorkspaceHeader() { }
+        public WorkspaceInfo()
+        {
+            Zoom = 1.0;
+            X = 0; 
+            Y = 0;
+            RunType = RunType.Automatically;
+            RunPeriod = 100;
+        }
 
         public static bool FromXmlDocument(
-            XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceHeader workspaceInfo)
+            XmlDocument xmlDoc, string path, bool isTestMode, ILogger logger, out WorkspaceInfo workspaceInfo)
         {
             try
             {
@@ -24,6 +31,8 @@ namespace Dynamo.Models
                 string category = "";
                 string description = "";
                 string version = "";
+                var runType = Models.RunType.Manually;
+                int runPeriod = 100;
 
                 var topNode = xmlDoc.GetElementsByTagName("Workspace");
 
@@ -54,6 +63,15 @@ namespace Dynamo.Models
                             description = att.Value;
                         else if (att.Name.Equals("Version"))
                             version = att.Value;
+                        else if (att.Name.Equals("RunType"))
+                        {
+                            if (!Enum.TryParse(att.Value, false, out runType))
+                            {
+                                runType = RunType.Manually;
+                            }
+                        }
+                        else if (att.Name.Equals("RunPeriod"))
+                            runPeriod = Int32.Parse(att.Value);
                     }
                 }
 
@@ -65,7 +83,7 @@ namespace Dynamo.Models
                     id = GuidUtility.Create(GuidUtility.UrlNamespace, funName).ToString();
                 }
 
-                workspaceInfo = new WorkspaceHeader
+                workspaceInfo = new WorkspaceInfo
                 {
                     ID = id,
                     Name = funName,
@@ -75,7 +93,9 @@ namespace Dynamo.Models
                     FileName = path,
                     Category = category,
                     Description = description,
-                    Version = version
+                    Version = version,
+                    RunType  = runType,
+                    RunPeriod = runPeriod
                 };
                 return true;
             }
@@ -94,16 +114,17 @@ namespace Dynamo.Models
             }
         }
 
-        public string Version { get; private set; }
-        public string Description { get; private set; }
-        public string Category { get; private set; }
-        public double X { get; private set; }
-        public double Y { get; private set; }
-        public double Zoom { get; private set; }
-        public string Name { get; private set; }
-        public string ID { get; private set; }
-        public string FileName { get; private set; }
-
+        public string Version { get; internal set; }
+        public string Description { get; internal set; }
+        public string Category { get; internal set; }
+        public double X { get; internal set; }
+        public double Y { get; internal set; }
+        public double Zoom { get; internal set; }
+        public string Name { get; internal set; }
+        public string ID { get; internal set; }
+        public string FileName { get; internal set; }
+        public RunType RunType { get; internal set; }
+        public int RunPeriod { get; internal set; }
         public bool IsCustomNodeWorkspace
         {
             get { return !string.IsNullOrEmpty(ID); }

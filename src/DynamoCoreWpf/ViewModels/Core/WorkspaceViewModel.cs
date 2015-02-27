@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 
@@ -14,6 +16,7 @@ using Dynamo.Utilities;
 
 using System.Windows.Input;
 using Dynamo.Core;
+using Dynamo.Wpf.ViewModels;
 
 using Function = Dynamo.Nodes.Function;
 
@@ -237,6 +240,8 @@ namespace Dynamo.ViewModels
 
         public Action FindNodesFromElements { get; set; }
 
+        public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -278,6 +283,15 @@ namespace Dynamo.ViewModels
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
+        }
+
+        void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // If any property changes on the run settings object
+            // Raise a property change notification for the RunSettingsViewModel
+            // property
+            Debug.WriteLine(string.Format("{0} property change handled on the WorkspaceViewModel object.", e.PropertyName));
+            RaisePropertyChanged("RunSettingsViewModel");
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -359,9 +373,18 @@ namespace Dynamo.ViewModels
                     }
                     break;
             }
+
+            if (RunSettingsViewModel == null) return;
+
+            CheckAndSetPeriodicRunCapability();
         }
 
-        
+        protected void CheckAndSetPeriodicRunCapability()
+        {
+            var periodUpdateAvailable = Model.Nodes.Any(n => n.EnablePeriodicUpdate);
+            RunSettingsViewModel.ToggleRunTypeEnabled(RunType.Periodically, periodUpdateAvailable);
+        }
+
         /// <summary>
         /// Handles the port snapping on Mouse Enter.
         /// </summary>
