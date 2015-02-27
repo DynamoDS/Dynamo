@@ -529,4 +529,7 @@ value: bool = false</value>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
     <value>Custom node definition is not loaded!</value>
   </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>No description available</value>
+  </data>
 </root>

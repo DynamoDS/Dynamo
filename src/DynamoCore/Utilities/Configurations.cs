@@ -129,7 +129,7 @@ namespace Dynamo.UI
         public static double NodeButtonHeight = 32; // Height of node button.
         public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
         public static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
-        public static string NoDescriptionAvailable = "No description available";
+        public static string NoDescriptionAvailable = Dynamo.Properties.Resources.NoDescriptionAvailable;
 
         #endregion
 

@@ -538,4 +538,7 @@ value: bool = false</value>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
     <value>Run at the specified interval.</value>
   </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>No description available</value>
+  </data>
 </root>

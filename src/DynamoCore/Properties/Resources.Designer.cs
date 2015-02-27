@@ -677,6 +677,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No description available.
+        /// </summary>
+        public static string NoDescriptionAvailable {
+            get {
+                return ResourceManager.GetString("NoDescriptionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} contains a package without a header.  Ignoring it..
         /// </summary>
         public static string NoHeaderPackage {
