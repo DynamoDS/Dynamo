@@ -18,10 +18,11 @@ namespace ProtoTestFx
         public static void CompareDebugAndRunResults(string code, string defectID = "")
         {
             Core runCore = null;
-
+            RuntimeCore runtimeCore = null;
             try
             {
                 runCore = TestRunnerRunOnly(code);
+                runtimeCore = runCore.__TempCoreHostForRefactoring;
             }
             catch (Exception e)
             {
@@ -30,23 +31,26 @@ namespace ProtoTestFx
 
             {
                 Core debugRunCore = DebugRunnerRunOnly(code);
-                CompareCores(runCore, debugRunCore, defectID);
-                debugRunCore.__TempCoreHostForRefactoring.Cleanup();
+                RuntimeCore debugRuntimeCore = debugRunCore.__TempCoreHostForRefactoring;
+                CompareCores(runtimeCore, debugRuntimeCore, defectID);
+                debugRuntimeCore.Cleanup();
             }
 
             {
                 Core stepOverCore = DebugRunnerStepOver(code);
-                CompareCores(runCore, stepOverCore, defectID);
-                stepOverCore.__TempCoreHostForRefactoring.Cleanup();
+                RuntimeCore stepOverRuntimeCore = stepOverCore.__TempCoreHostForRefactoring;
+                CompareCores(runtimeCore, stepOverRuntimeCore, defectID);
+                stepOverRuntimeCore.Cleanup();
             }
 
             {
                 Core stepInCore = DebugRunerStepIn(code);
-                CompareCores(runCore, stepInCore, defectID);
-                stepInCore.__TempCoreHostForRefactoring.Cleanup();
+                RuntimeCore stepInRuntimeCore = stepInCore.__TempCoreHostForRefactoring;
+                CompareCores(runtimeCore, stepInRuntimeCore, defectID);
+                stepInRuntimeCore.Cleanup();
             }
 
-            runCore.__TempCoreHostForRefactoring.Cleanup();
+            runtimeCore.Cleanup();
 
         }
 
@@ -202,23 +206,18 @@ namespace ProtoTestFx
 
         }
 
-        internal static void CompareCores(Core c1, Core c2, string defectID = "")
+        internal static void CompareCores(RuntimeCore rtcore1, RuntimeCore rtcore2, string defectID = "")
         {
-            RuntimeCore rtcore1 = c1.__TempCoreHostForRefactoring;
-            RuntimeCore rtcore2 = c2.__TempCoreHostForRefactoring;
-
-            Assert.AreEqual(c1.DSExecutable.runtimeSymbols.Length, c2.DSExecutable.runtimeSymbols.Length, defectID);
+            Assert.AreEqual(rtcore1.DSExecutable.runtimeSymbols.Length, rtcore1.DSExecutable.runtimeSymbols.Length, defectID);
 
 
-            for (int symTableIndex = 0; symTableIndex < c1.DSExecutable.runtimeSymbols.Length; symTableIndex++)
+            for (int symTableIndex = 0; symTableIndex < rtcore1.DSExecutable.runtimeSymbols.Length; symTableIndex++)
             {
-                foreach (SymbolNode symNode in c1.DSExecutable.runtimeSymbols[symTableIndex].symbolList.Values)
+                foreach (SymbolNode symNode in rtcore1.DSExecutable.runtimeSymbols[symTableIndex].symbolList.Values)
                 {
 
-                    ExecutionMirror runExecMirror = new ExecutionMirror(c1.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec,
-                                                                        c1.__TempCoreHostForRefactoring);
-                    ExecutionMirror debugExecMirror =
-                        new ExecutionMirror(c2.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec, c2.__TempCoreHostForRefactoring);
+                    ExecutionMirror runExecMirror = new ExecutionMirror(rtcore1.CurrentExecutive.CurrentDSASMExec,rtcore1);
+                    ExecutionMirror debugExecMirror = new ExecutionMirror(rtcore2.CurrentExecutive.CurrentDSASMExec, rtcore2);
 
                     bool lookupOk = false;
                     StackValue runValue = StackValue.Null;
