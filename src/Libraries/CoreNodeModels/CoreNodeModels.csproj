@@ -95,11 +95,6 @@
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DynamoConversions\DynamoConversions.csproj">
-      <Project>{c5adc05b-34e8-47bf-8e78-9c7bf96418c2}</Project>
-      <Name>DynamoConversions</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -114,6 +109,10 @@
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
+      <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
+      <Name>DynamoConversions</Name>
     </ProjectReference>
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>

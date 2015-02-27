@@ -495,6 +495,8 @@ namespace Dynamo.Models
         {
             Log(Resources.ClearingWorkSpace);
 
+            DynamoSelection.Instance.ClearSelection();
+
             foreach (NodeModel el in Nodes)
             {
                 el.Dispose();
@@ -516,6 +518,10 @@ namespace Dynamo.Models
 
             ClearUndoRecorder();
             ResetWorkspace();
+
+            X = 0.0;
+            Y = 0.0;
+            Zoom = 1.0;
         }
 
         /// <summary>
