@@ -50,8 +50,9 @@ namespace ProtoTestFx.TD
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
-            testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
-            testCore.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
+
+            testCore.__TempCoreHostForRefactoring.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
+            testCore.__TempCoreHostForRefactoring.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
             testCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(testCore));
             testCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(testCore));
 
@@ -634,7 +635,7 @@ namespace ProtoTestFx.TD
         string GetFFIObjectStringValue(string dsVariable, int startBlock = 1, int arrayIndex = -1)
         {
             var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
-            var marshaller = helper.GetMarshaller(TestFrameWork.testCore);
+            var marshaller = helper.GetMarshaller(TestFrameWork.testCore.__TempCoreHostForRefactoring);
             Obj val = testMirror.GetFirstValue(dsVariable, startBlock);
             StackValue sv;
 
@@ -755,7 +756,7 @@ namespace ProtoTestFx.TD
         {
             if (testCore != null)
             {
-                testCore.Cleanup();
+                testCore.__TempCoreHostForRefactoring.Cleanup();
                 testCore = null;
             }
         }

@@ -109,8 +109,8 @@ namespace ProtoScript.Runners
                 Core.GenerateExprExeInstructions(blockId);
                 
                 //a3. Record the old running block
-                int restoreBlock = Core.RunningBlock;
-                Core.RunningBlock = blockId;
+                int restoreBlock = runtimeCore.RunningBlock;
+                runtimeCore.RunningBlock = blockId;
 
                 //a4. Record the old debug entry PC and stack size of FileFepChosen
                 int oldDebugEntryPC = runtimeCore.DebugProps.DebugEntryPC;
@@ -148,7 +148,7 @@ namespace ProtoScript.Runners
                 runtimeCore.DebugProps.DebugEntryPC = oldDebugEntryPC;
 
                 //r3. Restore the running block 
-                Core.RunningBlock = restoreBlock;
+                runtimeCore.RunningBlock = restoreBlock;
 
                 //r2. Restore the instructions in Core.ExprInterpreterExe
                 int from = Core.startPC;
