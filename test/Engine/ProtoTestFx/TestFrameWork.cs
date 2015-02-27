@@ -569,7 +569,7 @@ namespace ProtoTestFx.TD
 
         public void Verify(string dsVariable, object expectedValue, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, GetTestRuntimeCore());
             AssertValue(mirror.GetData(), expectedValue);
             //Verify(testMirror, dsVariable, expectedValue, startBlock);
         }
@@ -678,14 +678,14 @@ namespace ProtoTestFx.TD
 
         public static void AssertInfinity(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore.__TempCoreHostForRefactoring);
             MirrorData data = mirror.GetData();
             Assert.IsTrue( Double.IsInfinity(Convert.ToDouble(data.Data)));
         }
 
         public static void AssertNan(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore.__TempCoreHostForRefactoring);
             MirrorData data = mirror.GetData();
             Assert.IsTrue(Double.IsNaN(Convert.ToDouble(data.Data)));
         }
@@ -748,7 +748,7 @@ namespace ProtoTestFx.TD
 
         public void AssertPointer(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore.__TempCoreHostForRefactoring);
             Assert.IsTrue(mirror.GetData().IsPointer);
         }
 

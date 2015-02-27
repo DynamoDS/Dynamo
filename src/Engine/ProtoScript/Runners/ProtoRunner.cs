@@ -149,7 +149,7 @@ namespace ProtoScript.Runners
                 }
                 ProtoCore.Lang.Obj objExecVal = mirror.GetWatchValue();
 
-                ProtoCore.Mirror.RuntimeMirror runtimeMirror = new ProtoCore.Mirror.RuntimeMirror(new ProtoCore.Mirror.MirrorData(core, objExecVal.DsasmValue), core, core);
+                ProtoCore.Mirror.RuntimeMirror runtimeMirror = new ProtoCore.Mirror.RuntimeMirror(new ProtoCore.Mirror.MirrorData(core, objExecVal.DsasmValue), runtimeCore, core);
                 Validity.Assert(runtimeMirror != null);
 
                 return runtimeMirror;

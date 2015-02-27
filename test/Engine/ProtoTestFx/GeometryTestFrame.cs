@@ -131,7 +131,7 @@ namespace ProtoTestFx
             InjectionExecutive.ExpressionMap.Clear();
             ExecutionMirror mirror;
             Core core = TestRunnerRunOnly(includePath, code, map, "ManagedAsmGeometry.dll", "ManagedAsmPersistentManager.dll", out mirror);
-
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             try
             {
                 //XML Result
@@ -167,13 +167,13 @@ namespace ProtoTestFx
             }
             catch (NUnit.Framework.AssertionException e)
             {
-                core.__TempCoreHostForRefactoring.Cleanup();
+                runtimeCore.Cleanup();
                 Assert.Fail(e.Message);
                 return;
             }
             catch (Exception e)
             {
-                core.__TempCoreHostForRefactoring.Cleanup();
+                runtimeCore.Cleanup();
                 Assert.Fail("Error: an exception is thrown!\n\n\t" + e.Message );
                 return;
             }
@@ -181,7 +181,7 @@ namespace ProtoTestFx
             //Ensure no memory leak
             //sw.Close();
 
-            core.__TempCoreHostForRefactoring.Cleanup();
+            runtimeCore.Cleanup();
         }
 
         public static bool RunAndCompareNoAssert(string scriptFile)
