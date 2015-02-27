@@ -128,10 +128,14 @@ namespace ProtoScript.Runners
         /// <param name="runtimeContext"></param>
         public void Execute(ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
         {
+            //========================Generate runtimecore here===============================//
+
             ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+
             // Move these core setup to runtime core 
             runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
             runtimeCore.RunningBlock = runningBlock;
+            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
 
             try
             {

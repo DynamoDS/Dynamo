@@ -81,7 +81,6 @@ namespace ProtoTestFx
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
 
-            core.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             //Run
 
             fsr.Execute(code, core);

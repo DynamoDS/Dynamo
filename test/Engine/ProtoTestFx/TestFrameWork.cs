@@ -61,8 +61,7 @@ namespace ProtoTestFx.TD
             testCore.Options.Verbose = false;
 
             testCore.__TempCoreHostForRefactoring.SetProperties(testCore.Options, null);
-            testCore.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = testCore.BuildStatus.MessageHandler;
-            
+
             //FFI registration and cleanup
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
