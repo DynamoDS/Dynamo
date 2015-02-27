@@ -801,7 +801,7 @@ b = c[w][x][y][z];";
         {
             if (libraryServicesCore != null)
             {
-                libraryServicesCore.Cleanup();
+                libraryServicesCore.__TempCoreHostForRefactoring.Cleanup();
                 libraryServicesCore = null;
             }
         }
@@ -1040,7 +1040,7 @@ b = c[w][x][y][z];";
             {
                 Assert.AreEqual(functionName, overload.Text);
             }
-            Assert.AreEqual("Count : int (array : [])", overloads.ElementAt(0).Stub);
+            Assert.AreEqual("Count : int (list : [])", overloads.ElementAt(0).Stub);
 
         }
 

@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 using Dynamo.DSEngine;
@@ -21,6 +20,8 @@ using Dynamo.UpdateManager;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.UI;
+using Dynamo.Wpf.ViewModels.Core;
+
 using DynamoUnits;
 
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
@@ -35,11 +36,7 @@ namespace Dynamo.ViewModels
         #region properties
 
         private readonly DynamoModel model;
-
         private System.Windows.Point transformOrigin;
-        private bool runEnabled = true;
-        protected bool canRunDynamically = true;
-        protected bool debug = false;
         private bool canNavigateBackground = false;
         private bool showStartPage = false;
         private bool watchEscapeIsDown = false;
@@ -78,45 +75,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool RunEnabled
-        {
-            get { return model.RunEnabled; }
-        }
-
-        public virtual bool CanRunDynamically
-        {
-            get
-            {
-                //we don't want to be able to run
-                //dynamically if we're in debug mode
-                return !debug;
-            }
-            set
-            {
-                canRunDynamically = value;
-                RaisePropertyChanged("CanRunDynamically");
-            }
-        }
-
-        public bool DynamicRunEnabled
-        {
-            get
-            {
-                return HomeSpace.DynamicRunEnabled; //selecting debug now toggles this on/off
-            }
-            set
-            {
-                HomeSpace.DynamicRunEnabled = value;
-                RaisePropertyChanged("DynamicRunEnabled");
-            }
-        }
-
         public bool ViewingHomespace
         {
             get { return model.CurrentWorkspace == HomeSpace; }
         }
 
-        public bool IsAbleToGoHome { get; set; }
+        public bool IsAbleToGoHome
+        {
+            get { return !(model.CurrentWorkspace is HomeWorkspaceModel); }
+        }
 
         public HomeWorkspaceModel HomeSpace
         {
@@ -124,6 +91,11 @@ namespace Dynamo.ViewModels
             {
                 return model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
             }
+        }
+
+        public WorkspaceViewModel HomeSpaceViewModel
+        {
+            get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
         }
 
         public EngineController EngineController { get { return Model.EngineController; } }
@@ -140,7 +112,8 @@ namespace Dynamo.ViewModels
         {
             WorkspaceActualWidth = width;
             WorkspaceActualHeight = height;
-            RaisePropertyChanged("WorkspaceActualSize");
+            RaisePropertyChanged("WorkspaceActualHeight");
+            RaisePropertyChanged("WorkspaceActualWidth");
         }
 
         private WorkspaceViewModel currentWorkspaceViewModel;
@@ -179,7 +152,8 @@ namespace Dynamo.ViewModels
                     currentWorkspaceViewModel = viewModel;
 
                     // Keep DynamoModel.CurrentWorkspace update-to-date
-                    model.CurrentWorkspace = currentWorkspaceViewModel.Model;
+                    int modelIndex = model.Workspaces.IndexOf(currentWorkspaceViewModel.Model);
+                    this.ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
                 }
             }
         }
@@ -523,8 +497,9 @@ namespace Dynamo.ViewModels
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
-            var homespace = new WorkspaceViewModel(model.CurrentWorkspace, this);
-            workspaces.Add(homespace);
+            var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
+            workspaces.Add(homespaceViewModel);
+            currentWorkspaceViewModel = homespaceViewModel;
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -716,32 +691,9 @@ namespace Dynamo.ViewModels
             //VisualizationManager.ClearRenderables();
         }
 
-        public void CancelRunCmd(object parameter)
-        {
-            var command = new DynamoModel.RunCancelCommand(false, true);
-            this.ExecuteCommand(command);
-        }
-
-        internal bool CanCancelRunCmd(object parameter)
-        {
-            return true;
-        }
-
         public void ReturnFocusToSearch()
         {
             this.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
-        }
-
-        internal void RunExprCmd(object parameters)
-        {
-            bool displayErrors = Convert.ToBoolean(parameters);
-            var command = new DynamoModel.RunCancelCommand(displayErrors, false);
-            this.ExecuteCommand(command);
-        }
-
-        internal bool CanRunExprCmd(object parameters)
-        {
-            return true;
         }
 
         internal void ForceRunExprCmd(object parameters)
@@ -812,7 +764,7 @@ namespace Dynamo.ViewModels
                 shutdownHost: true, allowCancellation: true));
         }
 
-        void CollectInfoManager_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void CollectInfoManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -829,17 +781,7 @@ namespace Dynamo.ViewModels
             DeleteCommand.RaiseCanExecuteChanged();
         }
 
-        void Controller_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "IsUILocked":
-                    RaisePropertyChanged("IsUILocked");
-                    break;
-            }
-        }
-
-        void Instance_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
 
             switch (e.PropertyName)
@@ -852,12 +794,11 @@ namespace Dynamo.ViewModels
 
         }
 
-        void _model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void _model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case "CurrentWorkspace":
-                    IsAbleToGoHome = !(model.CurrentWorkspace is HomeWorkspaceModel);
                     RaisePropertyChanged("IsAbleToGoHome");
                     RaisePropertyChanged("CurrentSpace");
                     RaisePropertyChanged("BackgroundColor");
@@ -867,13 +808,24 @@ namespace Dynamo.ViewModels
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
-                    RaisePropertyChanged("RunEnabled");
-                    break;
-                case "RunEnabled":
-                    RaisePropertyChanged("RunEnabled");
+                    //RaisePropertyChanged("RunEnabled");
                     break;
             }
         }
+
+        // TODO(Sriram): This method is currently not used, but it should really 
+        // be. It watches property change notifications coming from the current 
+        // WorkspaceModel, and then enables/disables 'set timer' button on the UI.
+        // 
+        //void CurrentWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        //{
+        //    switch (e.PropertyName)
+        //    {
+        //        case "RunEnabled":
+        //            RaisePropertyChanged(e.PropertyName);
+        //            break;
+        //    }
+        //}
 
         private void CleanUp(DynamoModel dynamoModel)
         {
@@ -937,16 +889,26 @@ namespace Dynamo.ViewModels
 
         private void WorkspaceAdded(WorkspaceModel item)
         {
-            var newVm = new WorkspaceViewModel(item, this);
             if (item is HomeWorkspaceModel)
             {
+                var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
                 Model.RemoveWorkspace(HomeSpace);
                 Model.ResetEngine();
                 workspaces.Insert(0, newVm);
-                RaisePropertyChanged("DynamicRunEnabled");
+
+                // The RunSettings control is a child of the DynamoView, 
+                // but has its DataContext set to the RunSettingsViewModel 
+                // on the HomeWorkspaceViewModel. When the home workspace is changed,
+                // we need to raise a property change notification for the 
+                // homespace view model, so the RunSettingsControl's bindings
+                // get updated.
+                RaisePropertyChanged("HomeSpaceViewModel");
             }
             else
+            {
+                var newVm = new WorkspaceViewModel(item, this);
                 workspaces.Add(newVm);
+            }
         }
 
         private void WorkspaceRemoved(WorkspaceModel item)
@@ -955,9 +917,6 @@ namespace Dynamo.ViewModels
             if (currentWorkspaceViewModel == viewModel)
                 currentWorkspaceViewModel = null;
             workspaces.Remove(viewModel);
-
-            // Update the ViewModel property to reflect change in WorkspaceModel
-            RaisePropertyChanged("DynamicRunEnabled");
         }
 
         internal void AddToRecentFiles(string path)
@@ -1017,14 +976,6 @@ namespace Dynamo.ViewModels
             {
                 var xmlFilePath = parameters as string;
                 ExecuteCommand(new DynamoModel.OpenFileCommand(xmlFilePath));
-
-                if (UIDispatcher != null)
-                {
-                    // Dispatch a fit view command after all non-idle operations
-                    // are completed. This is to ensure the view's ready for it.
-                    UIDispatcher.BeginInvoke(DispatcherPriority.Background,
-                        (Action)(() => { if (CanFitView(null)) FitView(null); }));
-                }
             }
             catch (Exception e)
             {
@@ -1144,25 +1095,6 @@ namespace Dynamo.ViewModels
             Model.CurrentWorkspace.SaveAs(path, EngineController.LiveRunnerCore);
         }
 
-        public virtual bool RunInDebug
-        {
-
-            get { return debug; }
-            set
-            {
-                debug = value;
-
-                //toggle off dynamic run
-                CanRunDynamically = !debug;
-
-                if (debug)
-                    DynamicRunEnabled = false;
-
-                RaisePropertyChanged("RunInDebug");
-            }
-
-        }
-
         /// <summary>
         ///     Attempts to save a given workspace.  Shows a save as dialog if the 
         ///     workspace does not already have a path associated with it
@@ -1244,7 +1176,7 @@ namespace Dynamo.ViewModels
 
         internal void ShowElement(NodeModel e)
         {
-            if (DynamicRunEnabled)
+            if (HomeSpace.RunSettings.RunType == RunType.Automatically)
                 return;
 
             if (!model.CurrentWorkspace.Nodes.Contains(e))
@@ -1507,8 +1439,6 @@ namespace Dynamo.ViewModels
 
                 model.ClearCurrentWorkspace();
 
-                // Update the ViewModel property to reflect change in WorkspaceModel
-                RaisePropertyChanged("DynamicRunEnabled");
                 return true;
             }
 

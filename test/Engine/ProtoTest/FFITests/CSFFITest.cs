@@ -50,7 +50,7 @@ namespace ProtoFFITests
             nErrors = core.BuildStatus.ErrorCount;
             if (data == null)
             {
-                core.Cleanup();
+                core.__TempCoreHostForRefactoring.Cleanup();
                 return nWarnings + nErrors;
             }
             TestFrameWork thisTest = new TestFrameWork();
@@ -66,7 +66,7 @@ namespace ProtoFFITests
                     TestFrameWork.Verify(mirror, item.ValueName, item.ExpectedValue, item.BlockIndex);
                 }
             }
-            core.Cleanup();
+            core.__TempCoreHostForRefactoring.Cleanup();
             return nWarnings + nErrors;
         }
     }

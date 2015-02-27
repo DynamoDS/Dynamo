@@ -90,7 +90,8 @@ namespace ProtoTestFx
             TextOutputStream fs = new TextOutputStream(map);
 
             core = new ProtoCore.Core(options);
-            core.Configurations.Add(ConfigurationKeys.GeometryXmlProperties, true);
+
+            core.__TempCoreHostForRefactoring.Configurations.Add(ConfigurationKeys.GeometryXmlProperties, true);
             //core.Configurations.Add(ConfigurationKeys.GeometryFactory, geometryFactory);
             //core.Configurations.Add(ConfigurationKeys.PersistentManager, persistentManager);
 
@@ -166,13 +167,13 @@ namespace ProtoTestFx
             }
             catch (NUnit.Framework.AssertionException e)
             {
-                core.Cleanup();
+                core.__TempCoreHostForRefactoring.Cleanup();
                 Assert.Fail(e.Message);
                 return;
             }
             catch (Exception e)
             {
-                core.Cleanup();
+                core.__TempCoreHostForRefactoring.Cleanup();
                 Assert.Fail("Error: an exception is thrown!\n\n\t" + e.Message );
                 return;
             }
@@ -180,7 +181,7 @@ namespace ProtoTestFx
             //Ensure no memory leak
             //sw.Close();
 
-            core.Cleanup();
+            core.__TempCoreHostForRefactoring.Cleanup();
         }
 
         public static bool RunAndCompareNoAssert(string scriptFile)

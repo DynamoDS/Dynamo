@@ -98,7 +98,7 @@ namespace Dynamo.TestInfrastructure
 
                         DynamoViewModel.ExecuteCommand(runCancel);
                     }));
-                    while (!DynamoViewModel.HomeSpace.RunEnabled)
+                    while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
                     {
                         Thread.Sleep(10);
                     }

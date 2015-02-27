@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="Dynamo.Wpf.Controls.RunSettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:viewModels="clr-namespace:Dynamo.Wpf.ViewModels"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="300">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <ObjectDataProvider MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}"
+                        x:Key="RunTypes">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="models:RunType" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            
+            <viewModels:RunPeriodConverter x:Key="RunPeriodConverter"/>
+            
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+
+            <Button Name="RunButton"
+                                Width="100"
+                                Content="{x:Static p:Resources.DynamoViewRunButton}"
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                Click="RunButton_OnClick"
+                                Command="{Binding RunExpressionCommand}"
+                                CommandParameter="{Binding Path=RunInDebug}"
+                                ToolTip="{Binding RunButtonToolTip}"
+                                ToolTipService.ShowOnDisabled="True"
+                                IsEnabled="{Binding Path=RunButtonEnabled}"
+                                Focusable="False" Margin="0,0,2.5,0"/>
+
+            <ComboBox Name="RunTypesComboBox"
+                      ItemsSource="{Binding RunTypeItems}"
+                      SelectedItem="{Binding SelectedRunTypeItem}"
+                      Width ="Auto" 
+                      VerticalContentAlignment="Center"
+                      HorizontalContentAlignment="Left"
+                      Style="{DynamicResource ResourceKey=SComboBox}" 
+                      Foreground="#bbbbbb" 
+                      FontSize="14px" Margin="2.5,0,2.5,0">
+                <ComboBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ComboBoxItem}">
+                        <Setter Property="IsEnabled" Value="{Binding Enabled}"/>
+                    </Style>
+                </ComboBox.ItemContainerStyle>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding Name}" 
+                               IsEnabled="{Binding Enabled}" 
+                               Foreground="#bbbbbb" 
+                               ToolTip="{Binding ToolTipText}"
+                               ToolTipService.ShowOnDisabled="True" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <TextBox Name="RunPeriodTextBox" 
+                    Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, UpdateSourceTrigger=Explicit}"
+                     VerticalContentAlignment="Center"
+                     Visibility="{Binding RunPeriodInputVisibility}"
+                     Width="80" FontSize="14px"
+                     Style="{DynamicResource ResourceKey=SDarkTextBox}" Foreground="#bbbbbb" 
+                     KeyDown="UIElement_OnKeyDown" Margin="2.5,0,0,0"/>
+
+            <!--<Button Name="cancelButton"
+                                Width="100"
+                                Content="{x:Static p:Resources.CancelButton}"
+                                Focusable="False"
+                                Style="{DynamicResource ResourceKey=STextButton}"
+                                ToolTip="{x:Static p:Resources.DynamoViewCancelButtonTooltip}"
+                                Command="{Binding CancelRunCommand}"
+                                Margin="5" />-->
+
+            <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
+                      FontSize="11" VerticalAlignment="Center" Foreground="Gray"
+                      IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
+                      Content="Debug" 
+                      VerticalContentAlignment="Center"/>
+            
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

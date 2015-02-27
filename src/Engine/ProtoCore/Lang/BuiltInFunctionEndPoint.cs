@@ -32,6 +32,7 @@ namespace ProtoCore.Lang
         public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
         {
             RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core);
             StackValue ret;
 
@@ -303,8 +304,8 @@ namespace ProtoCore.Lang
                         int blockId = (1 == (int)svCondition.opdata) ? (int)svTrue.opdata : (int)svFalse.opdata;
 
                         ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-                        int oldRunningBlockId = core.RunningBlock;
-                        core.RunningBlock = blockId;
+                        int oldRunningBlockId = runtimeCore.RunningBlock;
+                        runtimeCore.RunningBlock = blockId;
 
                         int returnAddr = stackFrame.ReturnPC;
 
@@ -323,7 +324,7 @@ namespace ProtoCore.Lang
                         int blockCaller = oldRunningBlockId;
                         StackFrameType type = StackFrameType.kTypeLanguage;
                         int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
-                        int framePointer = core.Rmem.FramePointer;
+                        int framePointer = rmem.FramePointer;
                         List<StackValue> registers = new List<StackValue>();
 
                         // Comment Jun: Calling convention data is stored on the TX register
@@ -341,7 +342,7 @@ namespace ProtoCore.Lang
 
                         ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, core.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
-                        core.RunningBlock = oldRunningBlockId;
+                        runtimeCore.RunningBlock = oldRunningBlockId;
                         break;
                     }
 
@@ -403,7 +404,7 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.kToString:
                 case BuiltInMethods.MethodID.kToStringFromObject:
                 case BuiltInMethods.MethodID.kToStringFromArray:
-                    ret = StringUtils.ConvertToString(formalParameters[0], core, core.Rmem);
+                    ret = StringUtils.ConvertToString(formalParameters[0], core, rmem);
                     break;
                 case BuiltInMethods.MethodID.kImportData:
                     ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], core, interpreter, c);
@@ -425,7 +426,7 @@ namespace ProtoCore.Lang
                         }
                         else
                         {
-                            ret = core.Heap.AllocateArray(result, null);
+                            ret = rmem.Heap.AllocateArray(result, null);
                         }
                         break;
                     }
@@ -439,7 +440,7 @@ namespace ProtoCore.Lang
                         else
                         {
                             var result = ArrayUtils.GetValues(array, core);
-                            ret = core.Heap.AllocateArray(result, null);
+                            ret = rmem.Heap.AllocateArray(result, null);
                         }
                         break;
                     }
@@ -626,7 +627,7 @@ namespace ProtoCore.Lang
                                                stackFrame.StackFrameType,
                                                StackFrameType.kTypeFunction, 
                                                0,
-                                               core.Rmem.FramePointer, 
+                                               rmem.FramePointer, 
                                                stackFrame.GetRegisters(), 
                                                null);
 
@@ -634,8 +635,8 @@ namespace ProtoCore.Lang
                 runtimeData.ExecutingGraphnode, 
                 thisObjectType, 
                 functionName, 
-                runtime.exe, 
-                core.RunningBlock, 
+                runtime.exe,
+                runtimeCore.RunningBlock, 
                 core.Options, 
                 runtimeCore.RuntimeStatus);
             Validity.Assert(null != callsite);
@@ -683,7 +684,7 @@ namespace ProtoCore.Lang
             IContextDataProvider provider = ContextDataManager.GetInstance(core).GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
-            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(core);
+            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(core.__TempCoreHostForRefactoring);
 
             Dictionary<string, Object> parameters = new Dictionary<string,object>();
             if (!svConnectionParameters.IsArray)
@@ -787,7 +788,7 @@ namespace ProtoCore.Lang
             if (!st.IsString) 
                 return result;
 
-            result = runtime.runtime.Core.Heap.GetString(st);
+            result = runtime.runtime.rmem.Heap.GetString(st);
             result.Replace("\\\\", "\\");
             return result;
         }
@@ -898,7 +899,7 @@ namespace ProtoCore.Lang
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.Core);
-            string result = mirror.GetStringValue(msg, runtime.runtime.Core.Heap, 0, true);
+            string result = mirror.GetStringValue(msg, runtime.runtime.rmem.Heap, 0, true);
             //For Console output
             Console.WriteLine(result);
             //For IDE output
@@ -1173,7 +1174,7 @@ namespace ProtoCore.Lang
                         }
                 }
             }
-            return range == null ? StackValue.Null : core.Heap.AllocateArray(range, null);
+            return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range, null);
         }
     }
     internal class ArrayUtilsForBuiltIns
@@ -1210,7 +1211,7 @@ namespace ProtoCore.Lang
 
             List<StackValue> newElements = new List<DSASM.StackValue>();
             GetFlattenedArrayElements(sv, runtime, ref newElements);
-            return runtime.runtime.Core.Heap.AllocateArray(newElements, null);
+            return runtime.runtime.rmem.Heap.AllocateArray(newElements, null);
         }
 
         internal static StackValue Concat(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
@@ -2095,7 +2096,7 @@ namespace ProtoCore.Lang
             //Convert list to Operand
             if (svList.Count >= 0)
             {
-                return runtime.runtime.Core.Heap.AllocateArray(svList, null);
+                return runtime.runtime.rmem.Heap.AllocateArray(svList, null);
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -2104,7 +2105,7 @@ namespace ProtoCore.Lang
         {
             for (; countBraces > 0; countBraces--)
             {
-                sv = runtime.runtime.Core.Heap.AllocateArray(new StackValue[] { sv }, null);
+                sv = runtime.runtime.rmem.Heap.AllocateArray(new StackValue[] { sv }, null);
             }
             return sv;
         }
