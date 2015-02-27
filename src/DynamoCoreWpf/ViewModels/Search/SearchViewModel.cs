@@ -601,7 +601,7 @@ namespace Dynamo.ViewModels
         private static string MakeFullyQualifiedName(string path, string addition)
         {
             return string.IsNullOrEmpty(path) ? addition :
-                path + Configurations.CategoryDelimiter + addition;
+                path + Configurations.CategoryDelimiterString + addition;
         }
 
         internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)

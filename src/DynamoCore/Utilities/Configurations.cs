@@ -207,8 +207,8 @@ namespace Dynamo.UI
         public const string CategoryGroupCreate = Resources.CategoryGroupCreate;
         public const string CategoryGroupAction = Resources.CategoryGroupAction;
         public const string CategoryGroupQuery = Resources.CategoryGroupQuery;
-        public const char CategoryDelimiter = '.';
-        public const char ShortenedCategoryDelimiter = '-';
+        public const string CategoryDelimiterString = ".";
+        public const string ShortenedCategoryDelimiterString = "-";
 
         public const string ClassesDefaultName = "Classes";
 
