@@ -335,6 +335,8 @@ namespace ProtoCore.DSASM
         //this method compares the values of the stack variables passed
         public static bool CompareStackValues(StackValue sv1, StackValue sv2, Core c1, Core c2, ProtoCore.Runtime.Context context = null)
         {
+            RuntimeCore rtCore1 = c1.__TempCoreHostForRefactoring;
+            RuntimeCore rtCore2 = c2.__TempCoreHostForRefactoring;
             if (sv1.optype != sv2.optype)
                 return false;
             switch (sv1.optype)
@@ -358,8 +360,8 @@ namespace ProtoCore.DSASM
                 case AddressType.String:
                     if (Object.ReferenceEquals(c1,c2) && sv1.opdata == sv2.opdata) 
                         return true;
-                    string s1 = c1.Heap.GetString(sv1);
-                    string s2 = c2.Heap.GetString(sv2);
+                    string s1 = rtCore1.RuntimeMemory.Heap.GetString(sv1);
+                    string s2 = rtCore1.RuntimeMemory.Heap.GetString(sv2);
                     return s1.Equals(s2);
                 case AddressType.Pointer:
                     if (sv1.metaData.type != sv2.metaData.type) //if the type of class is different, then stack values can never be equal
@@ -370,8 +372,8 @@ namespace ProtoCore.DSASM
                     if (classnode.IsImportedClass)
                     {
                         var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                        var marshaller1 = helper.GetMarshaller(c1);
-                        var marshaller2 = helper.GetMarshaller(c2);
+                        var marshaller1 = helper.GetMarshaller(rtCore1);
+                        var marshaller2 = helper.GetMarshaller(rtCore2);
                         try
                         {
                             //the interpreter is passed as null as it is not expected to be sued while unmarshalling in this scenario

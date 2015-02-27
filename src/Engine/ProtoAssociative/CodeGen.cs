@@ -3863,9 +3863,9 @@ namespace ProtoAssociative
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 // Save the current scope for the expression interpreter
-                globalClassIndex = core.watchClassScope = core.Rmem.CurrentStackFrame.ClassScope;
-                globalProcIndex = core.watchFunctionScope = core.Rmem.CurrentStackFrame.FunctionScope;
-                int functionBlock = core.Rmem.CurrentStackFrame.FunctionBlock;
+                globalClassIndex = core.watchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
+                globalProcIndex = core.watchFunctionScope = context.MemoryState.CurrentStackFrame.FunctionScope;
+                int functionBlock = context.MemoryState.CurrentStackFrame.FunctionBlock;
 
                 if (globalClassIndex != -1)
                     localProcedure = core.ClassTable.ClassNodes[globalClassIndex].vtable.procList[globalProcIndex];

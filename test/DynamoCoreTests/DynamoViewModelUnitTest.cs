@@ -15,6 +15,12 @@ using System.IO;
 
 namespace Dynamo.Tests
 {
+    /// <summary>
+    /// The DynamoViewModelUnitTests constructs the DynamoModel
+    /// and the DynamoViewModel, but does not construct the view.
+    /// You can use this class to create tests which ensure that the 
+    /// ViewModel and the Model are communicating properly.
+    /// </summary>
     public class DynamoViewModelUnitTest : UnitTestBase
     {
         protected DynamoViewModel ViewModel;

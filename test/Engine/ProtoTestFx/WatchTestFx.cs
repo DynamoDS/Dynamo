@@ -57,7 +57,7 @@ namespace ProtoTestFx
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
             ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(this, Core);
-            string result = mirror.GetStringValue(sv, Core.Heap, 0, true);
+            string result = mirror.GetStringValue(sv, RuntimeCore.RuntimeMemory.Heap, 0, true);
 
             TextOutputStream tStream = Core.BuildStatus.MessageHandler as TextOutputStream;
             if (tStream != null)
@@ -385,7 +385,7 @@ namespace ProtoTestFx
             Mirror = fsr.Execute(code, core);
 
             //sw.Close();
-            core.Cleanup();
+            core.__TempCoreHostForRefactoring.Cleanup();
         }
 
         internal static void DebugRunnerStepIn(string includePath, string code, /*string logFile*/Dictionary<int, List<string>> map, 
@@ -488,7 +488,7 @@ namespace ProtoTestFx
                 }
                 //isPrevBreakAtPop = false;
             }
-            core.Cleanup();
+            core.__TempCoreHostForRefactoring.Cleanup();
         }
 
         /*internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core, StreamReader log,
@@ -572,7 +572,8 @@ namespace ProtoTestFx
             // verify that the LHS identifier name equals 'symbolName'
             // pass the LHS string to GetWatchValue() and inspect it
             // verify the watch values with the log output
-            
+
+            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (!map.ContainsKey(lineAtPrevBreak))
                 return;
 
@@ -606,7 +607,7 @@ namespace ProtoTestFx
                     {
                         // Cheat by peeking into heap etc. to dump output string
                         // match string with map output to verify
-                        string result = mirror.GetStringValue(obj.DsasmValue, core.Heap, 0, true);
+                        string result = mirror.GetStringValue(obj.DsasmValue, runtimeCore.RuntimeMemory.Heap, 0, true);
 
                         Expression expr = new Expression(lineAtPrevBreak, exp, ci);
                         if (!InjectionExecutive.ExpressionMap.ContainsKey(expr))

@@ -32,7 +32,7 @@ namespace ProtoTest.DSASM
         [TearDown]
         public void CleanUp()
         {
-            testCore.Cleanup();
+            testCore.__TempCoreHostForRefactoring.Cleanup();
         }
 
         /// <summary>
