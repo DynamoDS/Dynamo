@@ -526,9 +526,18 @@
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
-                                  Focusable="False" />
-
-                        <MenuItem Focusable="False"
+                                  Focusable="False"/>
+                        
+                        <!--<MenuItem Focusable="False" 
+                                  Name="ShowNodeExecution" 
+                                  IsCheckable="True" 
+                                  IsChecked="{Binding ShowRunPreview}" 
+                                  Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
+                                  ToolTipService.ShowOnDisabled="True" 
+                                  ToolTip="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
+                                  IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>-->
+                        
+                        <!--<MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuLengthUnits}"
                                   Name="LengthUnitsMenu">
                             <MenuItem Focusable="False"
@@ -658,7 +667,8 @@
                                       Command="{Binding SetVolumeUnitCommand}"
                                       CommandParameter="SquareMeter"
                                       Header="{x:Static p:Resources.DynamoViewSettingMenuCubicMeter}" />
-                        </MenuItem>
+                        </MenuItem>-->
+                        
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}"
                                   Name="NumberFormat">

@@ -241,8 +241,8 @@ namespace DynamoUnits
         /// </summary>
         public double Value
         {
-            get { return _value; }
-            set { _value = value; }
+            get { return _value * UiLengthConversion; }
+            set { _value = value / UiLengthConversion; }
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace DynamoUnits
         public abstract SIUnit Ceiling();
         public abstract SIUnit Floor();
 
-        #region operator overloads
+        #region operator overloads;
 
         public static SIUnit operator +(SIUnit x, SIUnit y)
         {
@@ -328,7 +328,7 @@ namespace DynamoUnits
             if (x.GetType() == y.GetType())
             {
                 return x.Value / y.Value;
-            }    
+            }
 
             return x.Divide(y);
         }
@@ -431,7 +431,8 @@ namespace DynamoUnits
     }
 
     /// <summary>
-    /// A length stored in meters.
+    /// A length stored in meters. This length can represent any unit type, but internally this 
+    /// is stored as meters to make algorithms simpler.
     /// </summary>
     public class Length : SIUnit, IComparable, IEquatable<Length>
     {
@@ -504,7 +505,7 @@ namespace DynamoUnits
 
         public override SIUnit Add(SIUnit x)
         {
-            if(x is Length)
+            if (x is Length)
                 return new Length(_value + x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -517,7 +518,7 @@ namespace DynamoUnits
 
         public override SIUnit Subtract(SIUnit x)
         {
-            if(x is Length)
+            if (x is Length)
                 return new Length(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -552,7 +553,7 @@ namespace DynamoUnits
         {
             if (x is Length)
             {
-                return _value/x.Value;
+                return _value / x.Value;
             }
 
             throw new UnitsException(GetType(), x.GetType());
@@ -565,7 +566,7 @@ namespace DynamoUnits
 
         public override SIUnit Modulo(SIUnit x)
         {
-            if(x is Length)
+            if (x is Length)
                 return new Length(_value % x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -627,6 +628,11 @@ namespace DynamoUnits
             double fractionalInch = 0.0;
             double feet, inch, m, cm, mm, numerator, denominator;
             Utils.ParseLengthFromString(value, out feet, out inch, out m, out cm, out mm, out numerator, out denominator);
+
+            if (m != 0 || cm != 0 || mm != 0)
+                LengthUnit = LengthUnit.Meter;
+            else
+                LengthUnit = LengthUnit.DecimalFoot;
 
             if (denominator != 0)
                 fractionalInch = numerator / denominator;
@@ -783,7 +789,7 @@ namespace DynamoUnits
 
         public override SIUnit Add(SIUnit x)
         {
-            if(x is Area)
+            if (x is Area)
                 return new Area(_value + x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -796,7 +802,7 @@ namespace DynamoUnits
 
         public override SIUnit Subtract(SIUnit x)
         {
-            if(x is Area)
+            if (x is Area)
                 return new Area(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -828,13 +834,13 @@ namespace DynamoUnits
             if (x is Area)
             {
                 //return a double
-                return _value/x.Value;
+                return _value / x.Value;
             }
 
             if (x is Length)
             {
                 //return length
-                return new Length(_value/x.Value);
+                return new Length(_value / x.Value);
             }
 
             throw new UnitsException(GetType(), x.GetType());
@@ -842,7 +848,7 @@ namespace DynamoUnits
 
         public override SIUnit Divide(double x)
         {
-            return new Area(_value/x);
+            return new Area(_value / x);
         }
 
         public override SIUnit Modulo(SIUnit x)
@@ -851,7 +857,7 @@ namespace DynamoUnits
             {
                 return new Area(_value % x.Value);
             }
-            
+
             throw new UnitsException(GetType(), x.GetType());
         }
 
@@ -927,6 +933,11 @@ namespace DynamoUnits
 
             double sq_mm, sq_cm, sq_m, sq_in, sq_ft;
             Utils.ParseAreaFromString(value, out sq_in, out sq_ft, out sq_mm, out sq_cm, out sq_m);
+
+            if (sq_mm != 0 || sq_cm != 0 || sq_m != 0)
+                AreaUnit = AreaUnit.SquareMeter;
+            else
+                AreaUnit = AreaUnit.SquareFoot;
 
             total += sq_mm / ToSquareMillimeters;
             total += sq_cm / ToSquareCentimeters;
@@ -1071,7 +1082,7 @@ namespace DynamoUnits
 
         public override SIUnit Add(SIUnit x)
         {
-            if(x is Volume)
+            if (x is Volume)
                 return new Volume(_value + x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -1084,7 +1095,7 @@ namespace DynamoUnits
 
         public override SIUnit Subtract(SIUnit x)
         {
-            if(x is Volume)
+            if (x is Volume)
                 return new Volume(_value - x.Value);
 
             throw new UnitsException(GetType(), x.GetType());
@@ -1109,11 +1120,11 @@ namespace DynamoUnits
         {
             if (x is Length)
             {
-                return new Area(_value/x.Value);
+                return new Area(_value / x.Value);
             }
             else if (x is Area)
             {
-                return new Length(_value/x.Value);
+                return new Length(_value / x.Value);
             }
 
             throw new UnitsException(GetType(), x.GetType());
@@ -1121,7 +1132,7 @@ namespace DynamoUnits
 
         public override SIUnit Divide(double x)
         {
-            return new Volume(_value/x);
+            return new Volume(_value / x);
         }
 
         public override SIUnit Modulo(SIUnit x)
@@ -1130,7 +1141,7 @@ namespace DynamoUnits
             {
                 return new Volume(_value % x.Value);
             }
-            
+
             throw new UnitsException(GetType(), x.GetType());
         }
 
@@ -1206,6 +1217,11 @@ namespace DynamoUnits
 
             double cu_mm, cu_cm, cu_m, cu_in, cu_ft;
             Utils.ParseVolumeFromString(value, out cu_in, out cu_ft, out cu_mm, out cu_cm, out cu_m);
+
+            if (cu_mm != 0 || cu_cm != 0 || cu_m != 0)
+                VolumeUnit = VolumeUnit.CubicMeter;
+            else
+                VolumeUnit = VolumeUnit.CubicFoot;
 
             total += cu_mm / ToCubicMillimeter;
             total += cu_cm / ToCubicCentimeter;
