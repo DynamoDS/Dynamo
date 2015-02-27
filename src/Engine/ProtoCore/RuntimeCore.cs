@@ -64,8 +64,14 @@ namespace ProtoCore
     /// </summary>
     public class RuntimeCore
     {
-        public RuntimeCore()
+        public RuntimeCore(Heap heap)
         {
+            // The heap is initialized by the core and is used to allocate strings
+            // Use the that heap for runtime
+            Validity.Assert(heap != null);
+            this.Heap = heap;
+            RuntimeMemory = new RuntimeMemory(Heap);
+
             InterpreterProps = new Stack<InterpreterProperties>();
             ReplicationGuides = new List<List<ReplicationGuide>>();
         }
@@ -83,9 +89,10 @@ namespace ProtoCore
         public Options Options { get; private set; }
         public RuntimeStatus RuntimeStatus { get; set; }
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
-
-        public RuntimeMemory RuntimeMemory { get; set; }
         public ProtoCore.Runtime.Context Context { get; set; }
+
+        public Heap Heap { get; set; }
+        public RuntimeMemory RuntimeMemory { get; set; }
 
         /// <summary>
         /// RuntimeExpressionUID is used by the associative engine at runtime to determine the current expression ID being executed

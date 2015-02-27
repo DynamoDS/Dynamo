@@ -364,12 +364,13 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static HeapElement GetHeapElement(StackValue heapObject, Core core)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (!heapObject.IsArray && !heapObject.IsPointer)
             {
                 return null;
             }
 
-            return core.Heap.GetHeapElement(heapObject);
+            return runtimeCore.RuntimeMemory.Heap.GetHeapElement(heapObject);
         }
 
         public static bool IsUniform(StackValue sv, Core core)
@@ -392,12 +393,13 @@ namespace ProtoCore.Utils
         /// <returns> true if the element was found </returns>
         public static bool GetFirstNonArrayStackValue(StackValue svArray, ref StackValue sv, Core core)
         {
+            RuntimeMemory rmem = core.__TempCoreHostForRefactoring.RuntimeMemory;
             if (!svArray.IsArray)
             {
                 return false;
             }
 
-            HeapElement he = core.Heap.GetHeapElement(svArray);
+            HeapElement he = rmem.Heap.GetHeapElement(svArray);
             if (null == he.Stack || he.Stack.Length == 0)
             {
                 return false;
@@ -405,7 +407,7 @@ namespace ProtoCore.Utils
 
             while (he.Stack[0].IsArray)
             {
-                he = core.Heap.GetHeapElement(he.Stack[0]);
+                he = rmem.Heap.GetHeapElement(he.Stack[0]);
 
                 // Handle the case where the array is valid but empty
                 if (he.Stack.Length == 0)
@@ -609,6 +611,7 @@ namespace ProtoCore.Utils
         public static StackValue SetValueForIndices(StackValue array, StackValue[] indices, StackValue value, Core core)
         {
             Validity.Assert(array.IsArray);
+            RuntimeMemory rmem = core.__TempCoreHostForRefactoring.RuntimeMemory;
 
             for (int i = 0; i < indices.Length - 1; ++i)
             {
@@ -631,7 +634,7 @@ namespace ProtoCore.Utils
                 // auto-promotion
                 if (!subArray.IsArray)
                 {
-                    subArray = core.Heap.AllocateArray(new StackValue[] { subArray }, null);
+                    subArray = rmem.Heap.AllocateArray(new StackValue[] { subArray }, null);
                     SetValueForIndex(array, index, subArray, core);
                 }
 
@@ -653,6 +656,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static StackValue SetValueForIndices(StackValue array, List<StackValue> indices, StackValue value, Type t, Core core)
         {
+            RuntimeMemory rmem = core.__TempCoreHostForRefactoring.RuntimeMemory;
             StackValue[][] zippedIndices = ArrayUtils.GetZippedIndices(indices, core);
             if (zippedIndices == null || zippedIndices.Length == 0)
             {
@@ -684,7 +688,7 @@ namespace ProtoCore.Utils
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return core.Heap.AllocateArray(oldValues, null);
+                return rmem.Heap.AllocateArray(oldValues, null);
             }
             else
             {
@@ -699,7 +703,7 @@ namespace ProtoCore.Utils
                 }
 
                 // The returned old values shouldn't have any key-value pairs
-                return core.Heap.AllocateArray(oldValues, null);
+                return rmem.Heap.AllocateArray(oldValues, null);
             }
         }
 
@@ -713,10 +717,11 @@ namespace ProtoCore.Utils
         public static StackValue GetValueFromIndex(StackValue array, int index, Core core)
         {
             Validity.Assert(array.IsArray || array.IsString);
+            RuntimeMemory rmem = core.__TempCoreHostForRefactoring.RuntimeMemory;
 
             if (array.IsString)
             {
-                string str = core.Heap.GetString(array);
+                string str = rmem.Heap.GetString(array);
                 if (str == null)
                     return StackValue.Null;
 
@@ -731,7 +736,7 @@ namespace ProtoCore.Utils
                     return StackValue.Null;
                 }
 
-                return core.Heap.AllocateString(str.Substring(index, 1));
+                return rmem.Heap.AllocateString(str.Substring(index, 1));
             }
             else
             {
@@ -885,12 +890,12 @@ namespace ProtoCore.Utils
             {
                 if (array.IsString)
                 {
-                    string result = string.Join(string.Empty, values.Select(v => core.Heap.GetString(v)));
-                    return core.Heap.AllocateString(result);
+                    string result = string.Join(string.Empty, values.Select(v => runtimeCore.RuntimeMemory.Heap.GetString(v)));
+                    return runtimeCore.RuntimeMemory.Heap.AllocateString(result);
                 }
                 else
                 {
-                    return core.Heap.AllocateArray(values, null);
+                    return runtimeCore.RuntimeMemory.Heap.AllocateArray(values, null);
                 }
             }
             else
@@ -921,6 +926,7 @@ namespace ProtoCore.Utils
         public static StackValue CopyArray(StackValue array, Type type, Core core)
         {
             Validity.Assert(array.IsArray);
+            RuntimeMemory rmem = core.__TempCoreHostForRefactoring.RuntimeMemory;
             if (!array.IsArray)
             {
                 return StackValue.Null;
@@ -951,7 +957,7 @@ namespace ProtoCore.Utils
                 }
             }
 
-            return core.Heap.AllocateArray(elements, dict);
+            return rmem.Heap.AllocateArray(elements, dict);
         }
 
         /// <summary>
@@ -1151,6 +1157,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static bool TryGetValueFromNestedDictionaries(StackValue array, StackValue key, out StackValue value, Core core)
         {
+            RuntimeMemory rmem = core.__TempCoreHostForRefactoring.RuntimeMemory;
             if (!array.IsArray)
             {
                 value = StackValue.Null;
@@ -1177,7 +1184,7 @@ namespace ProtoCore.Utils
 
             if (hasValue)
             {
-                value = core.Heap.AllocateArray(values, null);
+                value = rmem.Heap.AllocateArray(values, null);
                 return true;
             }
             else
