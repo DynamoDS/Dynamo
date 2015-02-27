@@ -95,7 +95,7 @@
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DynamoConversions\DynamoConversions.csproj">
+    <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
       <Project>{c5adc05b-34e8-47bf-8e78-9c7bf96418c2}</Project>
       <Name>DynamoConversions</Name>
       <Private>False</Private>
