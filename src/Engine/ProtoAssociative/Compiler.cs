@@ -92,9 +92,8 @@ namespace ProtoAssociative
                         ProtoCore.DSASM.CodeBlock oldCodeBlock = core.assocCodegen.codeBlock;
                         if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                         {
-                            int tempBlockId = core.GetCurrentBlockId();
-
-                            ProtoCore.DSASM.CodeBlock tempCodeBlock = core.GetCodeBlock(core.CodeBlockList, tempBlockId);
+                            int tempBlockId = callContext.CurrentBlockId;
+                            ProtoCore.DSASM.CodeBlock tempCodeBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, tempBlockId);
                             while (null != tempCodeBlock && tempCodeBlock.blockType != ProtoCore.DSASM.CodeBlockType.kLanguage)
                             {
                                 tempCodeBlock = tempCodeBlock.parent;

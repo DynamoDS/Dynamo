@@ -271,7 +271,7 @@ namespace DynamoCoreUITests
             string name = randomizer.Next().ToString();
             string value = randomizer.Next().ToString();
 
-            var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuid, name, value);
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, modelGuid, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
@@ -295,7 +295,7 @@ namespace DynamoCoreUITests
             string name = randomizer.Next().ToString();
             string value = randomizer.Next().ToString();
 
-            var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuids, name, value);
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, modelGuids, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
             Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
@@ -412,11 +412,11 @@ namespace DynamoCoreUITests
                 //So the process is separated into two steps. At the second step. the button status is checked.
                 if (commandTag == "OpenFile")
                 {
-                    ViewModel.HomeSpace.RunEnabled = false;
+                    ViewModel.HomeSpace.RunSettings.RunEnabled = false;
                 }
                 else if (commandTag == "CheckButtonIsDisabled")
                 {
-                    Assert.IsFalse(dynamoView.RunButton.IsEnabled);
+                    Assert.IsFalse(dynamoView.RunSettingsControl.RunButton.IsEnabled);
                 }
             });
         }
@@ -527,7 +527,7 @@ namespace DynamoCoreUITests
         {
             var cmdOne = new DynamoModel.SwitchTabCommand(randomizer.Next());
             var cmdTwo = DuplicateAndCompare(cmdOne);
-            Assert.AreEqual(cmdOne.TabIndex, cmdTwo.TabIndex);
+            Assert.AreEqual(cmdOne.WorkspaceModelIndex, cmdTwo.WorkspaceModelIndex);
         }
 
         #endregion
@@ -698,7 +698,9 @@ namespace DynamoCoreUITests
                     DynamoModel = model
                 });
 
-            this.ViewModel.DynamicRunEnabled = autoRun;
+            ViewModel.HomeSpace.RunSettings.RunType = autoRun ? 
+                RunType.Automatically : 
+                RunType.Manually;
 
             // Load all custom nodes if there is any specified for this test.
             if (this.customNodesToBeLoaded != null)
@@ -2977,12 +2979,12 @@ namespace DynamoCoreUITests
                 {
                     AssertNullValues();
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
                 {
@@ -3007,12 +3009,12 @@ namespace DynamoCoreUITests
                 {
                     AssertNullValues();
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
                     Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
                 {

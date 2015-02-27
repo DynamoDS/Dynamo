@@ -321,6 +321,10 @@ namespace ProtoCore
                 StackRestorer.Restore();
             }
 
+            /// <summary>
+            /// Push the block ID of the block that will be executed
+            /// </summary>
+            /// <param name="id"></param>
             public void PushConstructBlockId(int id)
             {
                 ConstructBlockIds.Add(id);

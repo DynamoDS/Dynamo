@@ -17,6 +17,8 @@ namespace ProtoCore
             public Dictionary<string, bool> execFlagList { get; private set; }
             public Dictionary<int, bool> exprExecutionFlags { get; set; }
             public SymbolTable symbolTable { get; set; }
+            public int CurrentBlockId { get; private set; }
+
 
             /// <summary>
             /// This flag controls whether we want a full codeblock to apply SSA Transform.
@@ -33,15 +35,17 @@ namespace ProtoCore
                 symbolTable = null;
                 exprExecutionFlags = new Dictionary<int, bool>();
                 applySSATransform = true;
+                CurrentBlockId = Constants.kInvalidIndex;
             }
-            
-            public void SetData(string source, Dictionary<string, Object> context, Dictionary<string, bool> flagList)
+
+            public void SetData(string source, Dictionary<string, Object> context, Dictionary<string, bool> flagList, int currentBlockID)
             {
                 SourceCode = source;
                 GlobalVarList = context;
                 execFlagList = flagList;
                 exprExecutionFlags = new Dictionary<int, bool>();
                 applySSATransform = true;
+                CurrentBlockId = currentBlockID;
             }
 
             public Context(string source, Dictionary<string, Object> context = null, Dictionary<string, bool> flagList = null)

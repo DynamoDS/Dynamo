@@ -4,10 +4,9 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
-    [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public class Types
     {
-        [IsVisibleInDynamoLibrary(false)]
         public static Type FindTypeByNameInAssembly(string typeName, string assemblyName)
         {
             var found = AppDomain.CurrentDomain.GetAssemblies()

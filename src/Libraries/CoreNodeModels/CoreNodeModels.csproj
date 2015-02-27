@@ -34,10 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DynamoConversions">
-      <HintPath>..\..\..\bin\AnyCPU\Debug\DynamoConversions.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="NCalc">
       <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
       <Private>True</Private>
@@ -99,6 +95,11 @@
     <Compile Include="WebRequest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DynamoConversions\DynamoConversions.csproj">
+      <Project>{c5adc05b-34e8-47bf-8e78-9c7bf96418c2}</Project>
+      <Name>DynamoConversions</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>

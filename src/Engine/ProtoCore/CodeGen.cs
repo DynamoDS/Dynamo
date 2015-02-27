@@ -1214,8 +1214,8 @@ namespace ProtoCore
             CodeBlock currentCodeBlock = codeBlock;
             if (core.Options.RunMode == DSASM.InterpreterMode.kExpressionInterpreter)
             {
-                int tempBlockId = core.GetCurrentBlockId();
-                currentCodeBlock = core.GetCodeBlock(core.CodeBlockList, tempBlockId);
+                int tempBlockId = context.CurrentBlockId;
+                currentCodeBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, tempBlockId);
             }
 
             if (classScope != Constants.kGlobalScope)
@@ -1419,7 +1419,7 @@ namespace ProtoCore
 
                 //Fix IDE-448
                 //Search current running block as well.
-                searchBlock = core.GetCodeBlock(core.CodeBlockList, 0);
+                searchBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, 0);
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
                 if (symbolIndex != Constants.kInvalidIndex)
                 {
@@ -2231,7 +2231,7 @@ namespace ProtoCore
             String value = Encoding.UTF8.GetString(utf8bytes);
             if (value.Length > 1)
             {
-                buildStatus.LogSyntaxError(Resources.tooManyCharacters, null, node.line, node.col);
+                buildStatus.LogSyntaxError(Resources.TooManyCharacters, null, node.line, node.col);
             }
   
             String strValue = "'" + value + "'";
@@ -2611,7 +2611,7 @@ namespace ProtoCore
                 localProcedure.isConstructor &&
                 core.IsFunctionCodeBlock(codeBlock))
             {
-                buildStatus.LogSemanticError(Resources.returnStatementIsNotAllowedInConstructor, 
+                buildStatus.LogSemanticError(Resources.ReturnStatementIsNotAllowedInConstructor, 
                                              core.CurrentDSFileName, 
                                              node.line, 
                                              node.col);
@@ -2966,7 +2966,7 @@ namespace ProtoCore
             int cix = core.ClassTable.IndexOf(string.Format("{0}Attribute", anode.Function.Name));
             if (cix == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
-                buildStatus.LogSemanticError(string.Format(Resources.unknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resources.UnknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
             }
             ProtoCore.DSASM.AttributeEntry attribute = new ProtoCore.DSASM.AttributeEntry();
             attribute.ClassIndex = cix;
@@ -2975,7 +2975,7 @@ namespace ProtoCore
             {
                 if (!IsConstantExpression(attr))
                 {
-                    buildStatus.LogSemanticError(Resources.attributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
+                    buildStatus.LogSemanticError(Resources.AttributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
                     return null;
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);
@@ -2993,7 +2993,7 @@ namespace ProtoCore
             }
             if (!hasMatchedConstructor)
             {
-                buildStatus.LogSemanticError(string.Format(Resources.noConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resources.NoConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
                 return null;
             }
             
