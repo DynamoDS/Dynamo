@@ -144,7 +144,13 @@ namespace Dynamo.DSEngine
 
         public void AddAdditionalElementsToNode(string functionSignature, XmlElement nodeElement)
         {
-            // TODO: implement
+            var upgradeHint = priorNameHints[functionSignature];
+
+            foreach (XmlElement elem in upgradeHint.AdditionalElements)
+            {
+                XmlNode newNode = nodeElement.OwnerDocument.ImportNode(elem, true);
+                nodeElement.AppendChild(newNode);
+            }
         }
 
         public string NicknameFromFunctionSignatureHint(string functionSignature)
@@ -418,52 +424,75 @@ namespace Dynamo.DSEngine
             {
                 using (var reader = XmlReader.Create(migrationsXMLFile))
                 {
-                    while (reader.Read())
+
+                    var doc = new XmlDocument();
+                    doc.Load(reader);
+                    XmlElement migrationsElement = doc.DocumentElement;
+
+                    var names = new List<string>();
+
+                    foreach (XmlNode subNode in migrationsElement.ChildNodes)
                     {
-                        reader.ReadToFollowing("priorNameHint");
+                        if (subNode.Name != "priorNameHint")
+                            throw new Exception("Invalid XML");
 
-                        if (!reader.Read())
-                            break;
-
-                        reader.ReadToFollowing("oldName");
-                        string oldName = reader.ReadElementContentAsString();
-                        reader.ReadToFollowing("newName");
-                        string newName = reader.ReadElementContentAsString();
+                        names.Add(subNode.Name);
 
                         var upgradeHint = new UpgradeHint();
-                        upgradeHint.UpgradeName = newName;
 
-                        foundPriorNameHints[oldName] = upgradeHint;
+                        string oldName = null;
 
-                        if (reader.ReadToFollowing("additionalAttributes"))
+                        foreach (XmlNode hintSubNode in subNode.ChildNodes)
                         {
-                            while (true)
+                            names.Add(hintSubNode.Name);
+
+                            switch (hintSubNode.Name)
                             {
-                                attributeSubtree.ReadToFollowing("name");
-
-                                if (!attributeSubtree.Read())
+                                case "oldName":
+                                    oldName = hintSubNode.InnerText;
                                     break;
+                                case "newName":
+                                    upgradeHint.UpgradeName = hintSubNode.InnerText;
+                                    break;
+                                case "additionalAttributes":
+                                    foreach (XmlNode attributesSubNode in hintSubNode.ChildNodes)
+                                    {
+                                        string attributeName = null;
+                                        string attributeValue = null;
 
-                                string paramName = reader.Value;
-                                attributeSubtree.ReadToFollowing("value");
-                                attributeSubtree.Read();
-                                string paramValue = reader.Value;
+                                        switch (attributesSubNode.Name)
+                                        {
+                                            case "attribute":
+                                                foreach (XmlNode attributeSubNode in attributesSubNode.ChildNodes)
+                                                {
+                                                    switch (attributeSubNode.Name)
+                                                    {
+                                                        case "name":
+                                                            attributeName = attributeSubNode.InnerText;
+                                                            break;
+                                                        case "value":
+                                                            attributeValue = attributeSubNode.InnerText;
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                        upgradeHint.AdditionalAttributes[attributeName] = attributeValue;
+                                    }
+                                    break;
+                                case "additionalElements":
+                                    foreach (XmlNode elementsSubnode in hintSubNode.ChildNodes)
+                                    {
+                                        XmlElement elem = elementsSubnode as XmlElement;
 
-                                foundPriorNameHints[oldName].AdditionalAttributes[paramName] =
-                                    paramValue;
+                                        if (elem != null)
+                                            upgradeHint.AdditionalElements.Add(elem);
+                                    }
+                                    break;
                             }
                         }
 
-                        //if (elementSubtree.ReadToFollowing("additionalElements"))
-                        //{
-                        //    var elementSubSubtree = elementSubtree.ReadSubtree();
-
-                        //    while (elementSubSubtree.Read())
-                        //    {
-                        //        var name = elementSubtree.Name;
-                        //        Console.WriteLine(name);
-                        //    }
-                        //}
+                        foundPriorNameHints[oldName] = upgradeHint;
                     }
                 }
             }

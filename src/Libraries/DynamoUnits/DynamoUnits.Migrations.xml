@@ -259,11 +259,15 @@
 
   <priorNameHint>
     <oldName>DynamoUnits.Length.FromFeet@double</oldName>
-    <newName>DSRevitNodesUI.RevitConvert</newName>
+    <newName>DSRevitNodesUI.DynamoConvert</newName>
     <additionalAttributes>
       <attribute>
         <name>assembly</name>
-        <value>DSRevitNodesUI</value>
+        <value>DSCoreNodesUI</value>
+      </attribute>
+      <attribute>
+        <name>type</name>
+        <value>DSCoreNodesUI.DynamoConvert</value>
       </attribute>
     </additionalAttributes>
     <additionalElements>
@@ -272,11 +276,15 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DynamoUnits.Length.FromDouble@double</oldName>
-    <newName>DSRevitNodesUI.RevitConvert</newName>
+    <newName>DSCoreNodesUI.DynamoConvert</newName>
     <additionalAttributes>
       <attribute>
         <name>assembly</name>
-        <value>DSRevitNodesUI</value>
+        <value>DSCoreNodesUI</value>
+      </attribute>
+      <attribute>
+        <name>type</name>
+        <value>DSCoreNodesUI.DynamoConvert</value>
       </attribute>
     </additionalAttributes>
     <additionalElements>
@@ -285,11 +293,15 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DynamoUnits.Area.FromSquareFeet@double</oldName>
-    <newName>DSRevitNodesUI.RevitConvert</newName>
+    <newName>DSCoreNodesUI.DynamoConvert</newName>
     <additionalAttributes>
       <attribute>
         <name>assembly</name>
-        <value>DSRevitNodesUI</value>
+        <value>DSCoreNodesUI</value>
+      </attribute>
+      <attribute>
+        <name>type</name>
+        <value>DSCoreNodesUI.DynamoConvert</value>
       </attribute>
     </additionalAttributes>
     <additionalElements>
@@ -298,11 +310,15 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DynamoUnits.Area.FromDouble@double</oldName>
-    <newName>DSRevitNodesUI.RevitConvert</newName>
+    <newName>DSCoreNodesUI.DynamoConvert</newName>
     <additionalAttributes>
       <attribute>
         <name>assembly</name>
-        <value>DSRevitNodesUI</value>
+        <value>DSCoreNodesUI</value>
+      </attribute>
+      <attribute>
+        <name>type</name>
+        <value>DSCoreNodesUI.DynamoConvert</value>
       </attribute>
     </additionalAttributes>
     <additionalElements>
@@ -311,11 +327,15 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DynamoUnits.Volume.FromCubicFeet@double</oldName>
-    <newName>DSRevitNodesUI.RevitConvert</newName>
+    <newName>DSCoreNodesUI.DynamoConvert</newName>
     <additionalAttributes>
       <attribute>
         <name>assembly</name>
-        <value>DSRevitNodesUI</value>
+        <value>DSCoreNodesUI</value>
+      </attribute>
+      <attribute>
+        <name>type</name>
+        <value>DSCoreNodesUI.DynamoConvert</value>
       </attribute>
     </additionalAttributes>
     <additionalElements>
@@ -324,11 +344,15 @@
   </priorNameHint>
   <priorNameHint>
     <oldName>DynamoUnits.Volume.FromDouble@double</oldName>
-    <newName>DSRevitNodesUI.RevitConvert</newName>
+    <newName>DSCoreNodesUI.DynamoConvert</newName>
     <additionalAttributes>
       <attribute>
         <name>assembly</name>
-        <value>DSRevitNodesUI</value>
+        <value>DSCoreNodesUI</value>
+      </attribute>
+      <attribute>
+        <name>type</name>
+        <value>DSCoreNodesUI.DynamoConvert</value>
       </attribute>
     </additionalAttributes>
     <additionalElements>
@@ -336,3 +360,4 @@
     </additionalElements>
   </priorNameHint>
 </migrations>
+ 
