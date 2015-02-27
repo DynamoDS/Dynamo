@@ -22,8 +22,14 @@ namespace Dynamo.Core.Threading
             : base(scheduler)
         {
         }
+        
+        internal DelegateBasedAsyncTask(IScheduler scheduler, Action action)
+            : base(scheduler)
+        {
+            this.Initialize(action);
+        }
 
-        internal void Initialize(Action action)
+        private void Initialize(Action action)
         {
             if (action == null)
                 throw new ArgumentNullException("action");
