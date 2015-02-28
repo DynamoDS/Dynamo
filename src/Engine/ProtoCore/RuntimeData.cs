@@ -64,6 +64,9 @@ namespace ProtoCore
         public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
         public List<AssociativeNode> CachedSSANodes { get; set; }
 
+        public DynamicVariableTable DynamicVarTable { get; set; }
+        public DynamicFunctionTable DynamicFuncTable { get; set; }
+
  #endregion
 
         

@@ -79,6 +79,13 @@ namespace ProtoCore
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
             Configurations = new Dictionary<string, object>();
             FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
+
+            ContinuationStruct = new ContinuationStructure();
+
+
+            watchStack = new List<StackValue>();
+            watchFramePointer = Constants.kInvalidIndex;
+            WatchSymbolList = new List<SymbolNode>();
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
@@ -108,6 +115,7 @@ namespace ProtoCore
         public Dictionary<string, object> Configurations { get; set; }
         public FFIPropertyChangedMonitor FFIPropertyChangedMonitor { get; private set; }
 
+        //public Executive CurrentExecutive { get; private set; }
 
         /// <summary>
         /// The currently executing blockID
@@ -126,6 +134,19 @@ namespace ProtoCore
 #region DEBUGGER_PROPERTIES
         public DebugProperties DebugProps { get; set; }
         public List<Instruction> Breakpoints { get; set; }
+
+        // Continuation properties used for Serial mode execution and Debugging of Replicated calls
+        public ContinuationStructure ContinuationStruct { get; set; }
+        /// <summary>
+        /// Gets the reason why the execution was last suspended
+        /// </summary>
+        public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
+
+
+        public List<StackValue> watchStack { get; set; }
+        public int watchFramePointer { get; set; }
+
+        public List<SymbolNode> WatchSymbolList { get; set; }
 #endregion 
         
         public void ResetForDeltaExecution()

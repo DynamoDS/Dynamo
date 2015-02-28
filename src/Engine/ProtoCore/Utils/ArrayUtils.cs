@@ -332,12 +332,13 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static bool ContainsDoubleElement(StackValue sv, Core core)
         {
+            Executable exe = core.__TempCoreHostForRefactoring.DSExecutable;
             if (!sv.IsArray)
-                return core.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
+                return exe.TypeSystem.GetType(sv) == (int)PrimitiveType.kTypeDouble;
 
             return ArrayUtils.GetValues(sv, core).Any(
                         v => (v.IsArray && ContainsDoubleElement(v, core)) ||
-                             (core.TypeSystem.GetType(v) == (int)PrimitiveType.kTypeDouble));
+                             (exe.TypeSystem.GetType(v) == (int)PrimitiveType.kTypeDouble));
         }
 
         /// <summary>
