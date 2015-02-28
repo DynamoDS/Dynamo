@@ -162,10 +162,17 @@ namespace Dynamo.Wpf.ViewModels
                 debug = value;
 
                 if (debug)
+                {
                     Model.RunType = RunType.Manually;
-
-                ToggleRunTypeEnabled(RunType.Automatically, !debug);
-                ToggleRunTypeEnabled(RunType.Periodically, !debug);
+                    ToggleRunTypeEnabled(RunType.Automatically, false);
+                    ToggleRunTypeEnabled(RunType.Periodically, false);
+                }
+                else
+                {
+                    ToggleRunTypeEnabled(RunType.Automatically, true);
+                    ToggleRunTypeEnabled(RunType.Periodically, true);
+                    workspaceViewModel.CheckAndSetPeriodicRunCapability();
+                }
 
                 RaisePropertyChanged("RunInDebug");
             }

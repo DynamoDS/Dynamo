@@ -379,7 +379,7 @@ namespace Dynamo.ViewModels
             CheckAndSetPeriodicRunCapability();
         }
 
-        protected void CheckAndSetPeriodicRunCapability()
+        internal void CheckAndSetPeriodicRunCapability()
         {
             var periodUpdateAvailable = Model.Nodes.Any(n => n.EnablePeriodicUpdate);
             RunSettingsViewModel.ToggleRunTypeEnabled(RunType.Periodically, periodUpdateAvailable);
