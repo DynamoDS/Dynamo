@@ -391,13 +391,6 @@ namespace ProtoCore
         /// </summary>
         public DebugProperties DebuggerProperties;
 
-        // Continuation properties used for Serial mode execution and Debugging of Replicated calls
-        public ContinuationStructure ContinuationStruct { get; set; }
-
-        /// <summary>
-        /// Gets the reason why the execution was last suspended
-        /// </summary>
-        public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
 
         public bool builtInsLoaded { get; set; }
         public List<string> LoadedDLLs = new List<string>();
@@ -618,10 +611,8 @@ namespace ProtoCore
 
             watchClassScope = Constants.kInvalidIndex;
             watchFunctionScope = Constants.kInvalidIndex;
-            watchBaseOffset = 0;
-            watchStack = new List<StackValue>();
             watchSymbolList = new List<SymbolNode>();
-            watchFramePointer = Constants.kInvalidIndex;
+            watchBaseOffset = 0;
 
 
             GlobOffset = 0;
@@ -687,7 +678,6 @@ namespace ProtoCore
 
             ExecutiveProvider = new ExecutiveProvider();
 
-            ContinuationStruct = new ContinuationStructure();
             ParsingMode = ParseMode.Normal;
             
             IsParsingPreloadedAssembly = false;
@@ -742,12 +732,10 @@ namespace ProtoCore
         //           It must be moved to its own core, whre each core is an instance of a compiler+interpreter
         //
         public Executable ExprInterpreterExe { get; set; }
-        public List<SymbolNode> watchSymbolList { get; set; }
         public int watchClassScope { get; set; }
         public int watchFunctionScope { get; set; }
         public int watchBaseOffset { get; set; }
-        public List<StackValue> watchStack { get; set; }
-        public int watchFramePointer { get; set; }
+        public List<SymbolNode> watchSymbolList { get; set; }
 
         public CodeGen assocCodegen { get; set; }
 
@@ -909,34 +897,6 @@ namespace ProtoCore
             return false;
         }
 
-        public ProcedureNode GetFirstVisibleProcedure(string name, List<Type> argTypeList, CodeBlock codeblock)
-        {
-            Validity.Assert(null != codeblock);
-            if (null == codeblock)
-            {
-                return null;
-            }
-
-            CodeBlock searchBlock = codeblock;
-            while (null != searchBlock)
-            {
-                if (null == searchBlock.procedureTable)
-                {
-                    searchBlock = searchBlock.parent;
-                    continue;
-                }
-
-                // The class table is passed just to check for coercion values
-                int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
-                if (Constants.kInvalidIndex != procIndex)
-                {
-                    return searchBlock.procedureTable.procList[procIndex];
-                }
-                searchBlock = searchBlock.parent;
-            }
-            return null;
-        }
-
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)
         {
             if (CodeBlockType.kLanguage == codeBlock.blockType
@@ -997,6 +957,12 @@ namespace ProtoCore
             ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
             ExprInterpreterExe.runtimeSymbols = DSExecutable.runtimeSymbols;
             ExprInterpreterExe.isSingleAssocBlock = DSExecutable.isSingleAssocBlock;
+
+            // Debug properties
+            // Move WatchSymbolList to runtimeData
+            __TempCoreHostForRefactoring.WatchSymbolList = watchSymbolList;
+
+            ExprInterpreterExe.TypeSystem = TypeSystem;
             
             // Copy all instruction streams
             // TODO Jun: What method to copy all? Use that
@@ -1033,6 +999,8 @@ namespace ProtoCore
         {
             Validity.Assert(RuntimeData != null);
             RuntimeData.FunctionTable = FunctionTable;
+            RuntimeData.DynamicVarTable = DynamicVariableTable;
+            RuntimeData.DynamicFuncTable = DynamicFunctionTable;
             return RuntimeData;
         }
 
@@ -1061,7 +1029,11 @@ namespace ProtoCore
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
+            // The TypeSystem is a record of all primitive and compiler generated types
+            DSExecutable.TypeSystem = TypeSystem;
+
             RuntimeTableIndex = CompleteCodeBlockList.Count;
+
 
             // Build the runtime symbols
             DSExecutable.runtimeSymbols = new SymbolTable[RuntimeTableIndex];
