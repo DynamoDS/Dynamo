@@ -21,7 +21,6 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DynamoTestPath = null;
-        const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
         private LengthUnit lengthUnit;
         private AreaUnit areaUnit;
         private VolumeUnit volumeUnit;
@@ -240,33 +239,6 @@ namespace Dynamo
             catch (Exception) { }
 
             return settings;
-        }
-
-        /// <summary>
-        /// Return PreferenceSettings from Default XML path
-        /// </summary>
-        /// <returns>
-        /// Stored PreferenceSettings from default xml file or
-        /// Default PreferenceSettings if default xml file is not found.
-        /// </returns>
-        public static PreferenceSettings Load()
-        {
-            return Load(DynamoTestPath ?? GetSettingsFilePath());
-        }
-
-        /// <summary>
-        /// Return PreferenceSettings Default XML File Path if possible
-        /// </summary>
-        public static string GetSettingsFilePath()
-        {
-            try
-            {
-                return (Path.Combine(DynamoPathManager.Instance.AppData, DYNAMO_SETTINGS_FILE));
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
         }
     }
 }

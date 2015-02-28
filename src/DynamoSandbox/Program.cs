@@ -28,8 +28,7 @@ namespace DynamoSandbox
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    GeometryFactoryPath = geometryFactoryPath,
-                    Preferences = PreferenceSettings.Load()
+                    GeometryFactoryPath = geometryFactoryPath
                 });
 
             viewModel = DynamoViewModel.Start(
