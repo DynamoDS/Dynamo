@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace DynamoUtilities
@@ -31,11 +30,6 @@ namespace DynamoUtilities
         {
             get { return preloadLibaries; }
         }
-
-        /// <summary>
-        /// The Dynamo folder in AppData
-        /// </summary>
-        public string AppData { get; private set;}
 
         /// <summary>
         /// Additional paths that should be searched during
@@ -73,8 +67,6 @@ namespace DynamoUtilities
                 throw new Exception(String.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
-            AppData = GetDynamoAppDataFolder(MainExecPath);
-
 #if DEBUG
             var sb = new StringBuilder();
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));            
@@ -98,24 +90,6 @@ namespace DynamoUtilities
             {
                 AddPreloadLibrary(lib);
             }
-        }
-
-        private static string GetDynamoAppDataFolder(string basePath)
-        {
-            var dynCore = Path.Combine(basePath, "DynamoCore.dll");
-
-            if (!File.Exists(dynCore))
-            {
-                throw new Exception("Dynamo's core path could not be found. If you are running Dynamo from a test, try specifying the Dynamo core location in the DynamoBasePath variable in TestServices.dll.config.");
-            }
-
-            var fvi = FileVersionInfo.GetVersionInfo(dynCore);
-            var dynVersion = String.Format("{0}.{1}", fvi.FileMajorPart, fvi.FileMinorPart);
-            var appData = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "Dynamo",
-                dynVersion);
-            return appData;
         }
 
         /// <summary>
