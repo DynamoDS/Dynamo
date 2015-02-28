@@ -403,11 +403,6 @@ namespace Dynamo.Models
                 configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
             }
 
-            if (configuration.Preferences == null)
-            {
-                configuration.Preferences = new PreferenceSettings();
-            }
-
             return new DynamoModel(configuration);
         }
 
@@ -417,7 +412,6 @@ namespace Dynamo.Models
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
             string context = config.Context;
-            IPreferences preferences = config.Preferences;
             string corePath = config.DynamoCorePath;
             bool testMode = config.StartInTestMode;
 
@@ -439,6 +433,7 @@ namespace Dynamo.Models
 
             geometryFactoryPath = config.GeometryFactoryPath;
 
+            IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
             var settings = preferences as PreferenceSettings;
             if (settings != null)
             {
@@ -725,6 +720,30 @@ namespace Dynamo.Models
         {
             if (IsTestMode == false)
                 InstrumentationLogger.Start(this);
+        }
+
+        private IPreferences CreateOrLoadPreferences(IPreferences preferences)
+        {
+            if (preferences != null) // If there is preference settings provided...
+                return preferences;
+
+            // Is order for test cases not to interfere with the regular preference 
+            // settings xml file, a test case usually specify a temporary xml file 
+            // path from where preference settings are to be loaded. If that value 
+            // is not set, then fall back to the file path specified in PathManager.
+            // 
+            var xmlFilePath = PreferenceSettings.DynamoTestPath;
+            if (string.IsNullOrEmpty(xmlFilePath))
+                xmlFilePath = pathManager.PreferenceFilePath;
+
+            if (File.Exists(xmlFilePath))
+            {
+                // If the specified xml file path exists, load it.
+                return PreferenceSettings.Load(xmlFilePath);
+            }
+
+            // Otherwise make a default preference settings object.
+            return new PreferenceSettings();
         }
 
         private static void InitializePreferences(IPreferences preferences)
