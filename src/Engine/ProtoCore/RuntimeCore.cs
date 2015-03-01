@@ -93,6 +93,8 @@ namespace ProtoCore
 
             ExecutionInstance = CurrentExecutive = new Executive(this);
             ExecutiveProvider = new ExecutiveProvider();
+
+            RuntimeStatus = new ProtoCore.RuntimeStatus(this);
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)

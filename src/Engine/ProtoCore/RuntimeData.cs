@@ -72,6 +72,9 @@ namespace ProtoCore
 
         public Dictionary<string, object> Configurations { get; set; }
 
+        public Dictionary<ulong, ulong> CodeToLocation { get; set; }
+        public string CurrentDSFileName { get; set; }
+
  #endregion
 
         
@@ -123,7 +126,8 @@ namespace ProtoCore
             CallsiteGuidMap = new Dictionary<Guid, int>();
 
             ContextDataMngr = null;
-
+            CodeToLocation = null;
+            CurrentDSFileName = string.Empty;
         }
 
         /// <summary>

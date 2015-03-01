@@ -573,7 +573,6 @@ namespace ProtoCore
         {
             RuntimeData = new ProtoCore.RuntimeData();
             __TempCoreHostForRefactoring = new RuntimeCore(Heap);
-            __TempCoreHostForRefactoring.RuntimeStatus = new ProtoCore.RuntimeStatus(this);
         }
 
         private void ResetAll(Options options)
@@ -971,6 +970,8 @@ namespace ProtoCore
             RuntimeData.FuncPointerTable = FunctionPointerTable;
             RuntimeData.ContextDataMngr = ContextDataManager;
             RuntimeData.Configurations = Configurations;
+            RuntimeData.CodeToLocation = codeToLocation;
+            RuntimeData.CurrentDSFileName = CurrentDSFileName;
             return RuntimeData;
         }
 
