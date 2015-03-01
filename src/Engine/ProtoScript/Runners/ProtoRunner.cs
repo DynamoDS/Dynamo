@@ -136,7 +136,7 @@ namespace ProtoScript.Runners
                 // TODO Jun: The expression interpreter must be integrated into the mirror
                 runtimeCore.RuntimeMemory.PushConstructBlockId(blockID);
                 runtimeCore.DebugProps.CurrentBlockId = blockID;
-                ProtoScript.Runners.ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ProtoScript.Runners.ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
 
                 List<ProtoCore.Core.CodeBlockCompilationSnapshot> snapShots = null;
                 if (core.Options.IsDeltaExecution)
