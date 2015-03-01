@@ -126,10 +126,10 @@ namespace ProtoScript.Runners
         /// <param name="runningBlock"></param>
         /// <param name="staticContext"></param>
         /// <param name="runtimeContext"></param>
-        public void Execute(ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
+        public ProtoCore.RuntimeCore Execute(
+            ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
         {
             //========================Generate runtimecore here===============================//
-
             ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             // Move these core setup to runtime core 
@@ -166,6 +166,7 @@ namespace ProtoScript.Runners
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
                 throw;
             }
+            return runtimeCore;
         }
         
 
@@ -180,7 +181,7 @@ namespace ProtoScript.Runners
         public ExecutionMirror Execute(ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext, ProtoCore.Core core, bool isTest = true)
         {
             Validity.Assert(null != staticContext.SourceCode && String.Empty != staticContext.SourceCode);
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.RuntimeCore runtimeCore = null; ;
 
             core.AddContextData(staticContext.GlobalVarList);
    
@@ -190,7 +191,7 @@ namespace ProtoScript.Runners
             {
                 core.GenerateExecutable();
                 Validity.Assert(null != runtimeContext);
-                Execute(core, blockId, staticContext, runtimeContext);
+                runtimeCore = Execute(core, blockId, staticContext, runtimeContext);
                 if (!isTest)
                 {
                     runtimeCore.RuntimeMemory.Heap.Free();
@@ -203,7 +204,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
 
             return null;
@@ -218,13 +219,13 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public ExecutionMirror Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
         {
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.RuntimeCore runtimeCore = null;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(astList, core, out blockId);
             if (succeeded)
             {
                 core.GenerateExecutable();
-                Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+                runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
                 if (!isTest) 
                 {
                     runtimeCore.RuntimeMemory.Heap.Free(); 
@@ -237,7 +238,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
 
             return null;
@@ -253,7 +254,7 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
         {
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.RuntimeCore runtimeCore = null;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(sourcecode, core, out blockId);
             if (succeeded)
@@ -261,7 +262,7 @@ namespace ProtoScript.Runners
                 core.GenerateExecutable();
                 try
                 {
-                    Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+                    runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
                 }
                 catch (ProtoCore.Exceptions.ExecutionCancelledException e)
                 {
@@ -280,7 +281,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
 
             return null;
@@ -317,7 +318,7 @@ namespace ProtoScript.Runners
             Execute(strSource, core);
 
             if (isTest && !core.Options.CompileToLib)
-                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             else
                 return null;
         }
