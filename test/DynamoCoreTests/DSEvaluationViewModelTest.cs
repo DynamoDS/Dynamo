@@ -16,22 +16,6 @@ namespace Dynamo.Tests
 {
     public class DSEvaluationViewModelUnitTest : DynamoViewModelUnitTest
     {
-        protected LibraryServices libraryServices = null;
-        protected ProtoCore.Core libraryServicesCore = null;
-
-        public override void Init()
-        {
-            base.Init();
-
-            var options = new ProtoCore.Options();
-            options.RootModulePathName = string.Empty;
-            libraryServicesCore = new ProtoCore.Core(options);
-            libraryServicesCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryServicesCore));
-            libraryServicesCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryServicesCore));
-
-            libraryServices = new LibraryServices(libraryServicesCore);
-        }
-
         public void OpenModel(string relativeFilePath)
         {
             string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
@@ -225,13 +209,6 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
-            if (libraryServicesCore != null)
-            {
-                libraryServicesCore.__TempCoreHostForRefactoring.Cleanup();
-                libraryServicesCore = null;
-            }
-            libraryServices = null;
-
             base.Cleanup();
             DynamoUtilities.DynamoPathManager.DestroyInstance();
         }
