@@ -252,7 +252,7 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
+        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCoreOut, bool isTest = true)
         {
             ProtoCore.RuntimeCore runtimeCore = null;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -279,12 +279,20 @@ namespace ProtoScript.Runners
                 throw new ProtoCore.Exceptions.CompileErrorsOccured();
             }
 
+            runtimeCoreOut = runtimeCore;
+
             if (isTest && !core.Options.CompileToLib)
             {
                 return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
 
             return null;
+        }
+
+        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
+        {
+            ProtoCore.RuntimeCore runtimeCore = null;
+            return Execute(sourcecode, core, out runtimeCore);
         }
 
         /// <summary>
@@ -306,7 +314,7 @@ namespace ProtoScript.Runners
                 throw new Exception("Cannot open file " + filename);
             }
 
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.RuntimeCore runtimeCore = null;
 
             string strSource = reader.ReadToEnd();
             reader.Dispose();
@@ -315,7 +323,7 @@ namespace ProtoScript.Runners
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;
-            Execute(strSource, core);
+            Execute(strSource, core, out runtimeCore);
 
             if (isTest && !core.Options.CompileToLib)
                 return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
