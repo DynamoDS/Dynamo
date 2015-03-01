@@ -958,6 +958,7 @@ namespace ProtoScript.Runners
     public interface ILiveRunner
     {
         ProtoCore.Core Core { get; }
+        ProtoCore.RuntimeCore RuntimeCore { get; }
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
