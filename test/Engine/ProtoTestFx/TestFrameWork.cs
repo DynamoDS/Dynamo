@@ -600,12 +600,12 @@ namespace ProtoTestFx.TD
 
         public static void VerifyRuntimeWarning(ProtoCore.Runtime.WarningID id)
         {
-            VerifyRuntimeWarning(testCore, id);
+            VerifyRuntimeWarning(testRuntimeCore, id);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.Runtime.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.RuntimeCore runtimeCore, ProtoCore.Runtime.WarningID id)
         {
-            Assert.IsTrue(core.__TempCoreHostForRefactoring.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
+            Assert.IsTrue(runtimeCore.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyRuntimeWarningCount(int count)

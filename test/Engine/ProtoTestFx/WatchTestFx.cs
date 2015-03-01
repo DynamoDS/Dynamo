@@ -382,11 +382,11 @@ namespace ProtoTestFx
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
             //Run
-
-            Mirror = fsr.Execute(code, core);
+            RuntimeCore runtimeCore = null;
+            Mirror = fsr.Execute(code, core, out runtimeCore);
 
             //sw.Close();
-            core.__TempCoreHostForRefactoring.Cleanup();
+            runtimeCore.Cleanup();
         }
 
         internal static void DebugRunnerStepIn(string includePath, string code, /*string logFile*/Dictionary<int, List<string>> map, 
@@ -487,7 +487,7 @@ namespace ProtoTestFx
                 }
                 //isPrevBreakAtPop = false;
             }
-            core.__TempCoreHostForRefactoring.Cleanup();
+            runtimeCore.Cleanup();
         }
 
         /*internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core, StreamReader log,

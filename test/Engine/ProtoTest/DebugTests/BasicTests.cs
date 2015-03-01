@@ -9639,7 +9639,7 @@ b = 2;";
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
             ExecutionMirror mirror = watchRunner.Execute(@"a");
             //TestFrameWork.Verify(mirror, "b", null, 0);
-            TestFrameWork.VerifyRuntimeWarning(core, ProtoCore.Runtime.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(fsr.runtimeCore, ProtoCore.Runtime.WarningID.kCyclicDependency);
 
         }
         [Test]
@@ -9677,7 +9677,8 @@ b = 2;";
             fsr.PreStart(src, runnerConfig);
             DebugRunner.VMState vms = fsr.Step();
             fsr.Run();
-            TestFrameWork.VerifyRuntimeWarning(core, ProtoCore.Runtime.WarningID.kCyclicDependency);
+            ProtoCore.RuntimeCore runtimeCore = fsr.runtimeCore;
+            TestFrameWork.VerifyRuntimeWarning(runtimeCore, ProtoCore.Runtime.WarningID.kCyclicDependency);
         }
         [Test]
         [Category("ExpressionInterpreterRunner")]
