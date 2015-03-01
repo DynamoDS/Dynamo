@@ -21,8 +21,7 @@ namespace ProtoTestFx
             RuntimeCore runtimeCore = null;
             try
             {
-                runCore = TestRunnerRunOnly(code);
-                runtimeCore = runCore.__TempCoreHostForRefactoring;
+                runCore = TestRunnerRunOnly(code, out runtimeCore);
             }
             catch (Exception e)
             {
@@ -30,22 +29,22 @@ namespace ProtoTestFx
             }
 
             {
-                Core debugRunCore = DebugRunnerRunOnly(code);
-                RuntimeCore debugRuntimeCore = debugRunCore.__TempCoreHostForRefactoring;
+                RuntimeCore debugRuntimeCore = null;
+                Core debugRunCore = DebugRunnerRunOnly(code, out debugRuntimeCore);
                 CompareCores(runtimeCore, debugRuntimeCore, defectID);
                 debugRuntimeCore.Cleanup();
             }
 
             {
-                Core stepOverCore = DebugRunnerStepOver(code);
-                RuntimeCore stepOverRuntimeCore = stepOverCore.__TempCoreHostForRefactoring;
+                RuntimeCore stepOverRuntimeCore = null;
+                Core stepOverCore = DebugRunnerStepOver(code, out stepOverRuntimeCore);
                 CompareCores(runtimeCore, stepOverRuntimeCore, defectID);
                 stepOverRuntimeCore.Cleanup();
             }
 
             {
-                Core stepInCore = DebugRunerStepIn(code);
-                RuntimeCore stepInRuntimeCore = stepInCore.__TempCoreHostForRefactoring;
+                RuntimeCore stepInRuntimeCore = null;
+                Core stepInCore = DebugRunerStepIn(code, out stepInRuntimeCore);
                 CompareCores(runtimeCore, stepInRuntimeCore, defectID);
                 stepInRuntimeCore.Cleanup();
             }
@@ -54,7 +53,7 @@ namespace ProtoTestFx
 
         }
 
-        internal static ProtoCore.Core TestRunnerRunOnly(string code)
+        internal static ProtoCore.Core TestRunnerRunOnly(string code, out RuntimeCore runtimeCore)
         {
             ProtoCore.Core core;
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
@@ -83,12 +82,12 @@ namespace ProtoTestFx
 
             //Run
 
-            fsr.Execute(code, core);
+            fsr.Execute(code, core, out runtimeCore);
 
             return core;
         }
 
-        internal  static ProtoCore.Core DebugRunnerRunOnly(string code)
+        internal  static ProtoCore.Core DebugRunnerRunOnly(string code, out RuntimeCore runtimeCore)
         {
             ProtoCore.Core core;
             DebugRunner fsr;
@@ -120,11 +119,11 @@ namespace ProtoTestFx
             DebugRunner.VMState vms = null;
 
             vms = fsr.Run();
-
+            runtimeCore = fsr.runtimeCore;
             return core;
         }
 
-        internal static ProtoCore.Core DebugRunnerStepOver(string code)
+        internal static ProtoCore.Core DebugRunnerStepOver(string code, out RuntimeCore runtimeCore)
         {
             //Internal setup
 
@@ -161,11 +160,12 @@ namespace ProtoTestFx
             while (!fsr.isEnded)
                 vms = fsr.StepOver();
 
+            runtimeCore = fsr.runtimeCore;
             return core;
 
         }
 
-        internal static ProtoCore.Core DebugRunerStepIn(string code)
+        internal static ProtoCore.Core DebugRunerStepIn(string code, out RuntimeCore runtimeCore)
         {
             //Internal setup
 
@@ -201,6 +201,7 @@ namespace ProtoTestFx
             while (!fsr.isEnded)
                 vms = fsr.Step();
 
+            runtimeCore = fsr.runtimeCore;
             return core;
 
         }

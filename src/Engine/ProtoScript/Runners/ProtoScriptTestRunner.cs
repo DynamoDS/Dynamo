@@ -178,10 +178,15 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror Execute(ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext, ProtoCore.Core core, bool isTest = true)
+        public ExecutionMirror Execute(
+            ProtoCore.CompileTime.Context staticContext, 
+            ProtoCore.Runtime.Context runtimeContext, 
+            ProtoCore.Core core, 
+            out ProtoCore.RuntimeCore runtimeCoreOut, 
+            bool isTest = true)
         {
             Validity.Assert(null != staticContext.SourceCode && String.Empty != staticContext.SourceCode);
-            ProtoCore.RuntimeCore runtimeCore = null; ;
+            ProtoCore.RuntimeCore runtimeCore = null;
 
             core.AddContextData(staticContext.GlobalVarList);
    
@@ -201,6 +206,7 @@ namespace ProtoScript.Runners
             {
                 throw new ProtoCore.Exceptions.CompileErrorsOccured();
             }
+            runtimeCoreOut = runtimeCore;
 
             if (isTest && !core.Options.CompileToLib)
             {

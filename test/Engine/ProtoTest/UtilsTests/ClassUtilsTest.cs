@@ -17,14 +17,14 @@ namespace ProtoTest.UtilsTests
             String code =
 @"class A {}class B extends A {}class C extends B {}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ProtoCore.RuntimeCore runtimeCore = null;
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             int idA = core.ClassTable.IndexOf("A");
             int idB = core.ClassTable.IndexOf("B");
             int idC = core.ClassTable.IndexOf("C");
             ClassNode cnA = core.ClassTable.ClassNodes[idA];
             ClassNode cnB = core.ClassTable.ClassNodes[idB];
             ClassNode cnC = core.ClassTable.ClassNodes[idC];
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             List<int> idsA = ClassUtils.GetClassUpcastChain(cnA, runtimeCore);
             List<int> idsB = ClassUtils.GetClassUpcastChain(cnB, runtimeCore);
             List<int> idsC = ClassUtils.GetClassUpcastChain(cnC, runtimeCore);
