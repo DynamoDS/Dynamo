@@ -302,7 +302,7 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, bool isTest = true)
+        public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCoreOut,  bool isTest = true)
         {
             System.IO.StreamReader reader = null;
             try
@@ -324,6 +324,8 @@ namespace ProtoScript.Runners
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;
             Execute(strSource, core, out runtimeCore);
+
+            runtimeCoreOut = runtimeCore;
 
             if (isTest && !core.Options.CompileToLib)
                 return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
