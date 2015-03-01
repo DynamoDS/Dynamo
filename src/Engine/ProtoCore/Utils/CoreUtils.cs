@@ -828,7 +828,6 @@ namespace ProtoCore.Utils
 
         public static ProcedureNode GetFirstVisibleProcedure(string name, List<Type> argTypeList, CodeBlock codeblock)
         {
-            Validity.Assert(null != codeblock);
             if (null == codeblock)
             {
                 return null;
