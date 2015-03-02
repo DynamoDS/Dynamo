@@ -141,6 +141,7 @@ namespace Dynamo.UI.Views
             {
                 if (wrapPanel.MakeOrClearSelection(selectedClass))
                 {
+                    // If class button was clicked, then handle, otherwise leave it.
                     e.Handled = selectedClass.SubCategories.Count == 0;
                     selectedElement.BringIntoView();
                 }
@@ -151,18 +152,26 @@ namespace Dynamo.UI.Views
             foreach (var category in categoryButton.Items)
             {
                 var catVM = category as NodeCategoryViewModel;
+                if (catVM == null) continue;
+
+                // If namespace was clicked, then do not collapse other namespaces.
+                // Leave it, wpf will collapse other namespaces by default.
                 if (selectedClass == catVM)
                 {
                     catVM.IsExpanded = !catVM.IsExpanded;
+                    // Accept situation, when root category was clicked.
                     if (selectedClass is RootNodeCategoryViewModel)
                         e.Handled = false;
                     else
                         e.Handled = true;
                     break;
                 }
+
+                // If class button was clicked.
+                // Ensure, that this class is not part of current category.
+                // Then collapse it.
                 var categoryClasses = catVM.Items.FirstOrDefault(x => x is ClassesNodeCategoryViewModel);
-                if (catVM != null)
-                    if (categoryClasses != null)
+                if (catVM != null && categoryClasses != null)
                         if (!(categoryClasses as ClassesNodeCategoryViewModel).Items.Contains(selectedClass)
                             && selectedClass != catVM)
                             catVM.IsExpanded = false;
