@@ -154,12 +154,12 @@ namespace Dynamo.UI.Views
                 var catVM = category as NodeCategoryViewModel;
                 if (catVM == null) continue;
 
-                // If namespace was clicked, then do not collapse other namespaces.
-                // Leave it, wpf will collapse other namespaces by default.
+                // If namespace was clicked, then open it or close, it depends on the previous state.
                 if (selectedClass == catVM)
                 {
                     catVM.IsExpanded = !catVM.IsExpanded;
                     // Accept situation, when root category was clicked.
+                    // Don't handle it, wpf will close it by default and unselect classes.
                     if (selectedClass is RootNodeCategoryViewModel)
                         e.Handled = false;
                     else
@@ -172,9 +172,9 @@ namespace Dynamo.UI.Views
                 // Then collapse it.
                 var categoryClasses = catVM.Items.FirstOrDefault(x => x is ClassesNodeCategoryViewModel);
                 if (catVM != null && categoryClasses != null)
-                        if (!(categoryClasses as ClassesNodeCategoryViewModel).Items.Contains(selectedClass)
-                            && selectedClass != catVM)
-                            catVM.IsExpanded = false;
+                    if (!(categoryClasses as ClassesNodeCategoryViewModel).Items.Contains(selectedClass)
+                        && selectedClass != catVM)
+                        catVM.IsExpanded = false;
             }
         }
 
