@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using DynamoConversions;
 using ProtoCore.AST.AssociativeAST;
 using System.Xml;
@@ -166,48 +167,29 @@ namespace DSCoreNodesUI
         {
             base.SerializeCore(element, context); // Base implementation must be called.
 
-            var xmlDocument = element.OwnerDocument;
-            var subNode = xmlDocument.CreateElement("Range");
-            subNode.SetAttribute("conversionMetric", SelectedMetricConversion.ToString());
-            subNode.SetAttribute("conversionFrom", SelectedFromConversion.ToString());
-            subNode.SetAttribute("conversionTo", SelectedToConversion.ToString());
-            
-            element.AppendChild(subNode);
+            var helper = new XmlElementHelper(element);
+            helper.SetAttribute("conversionMetric", SelectedMetricConversion.ToString());
+            helper.SetAttribute("conversionFrom", SelectedFromConversion.ToString());
+            helper.SetAttribute("conversionTo", SelectedToConversion.ToString());
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
+            var helper = new XmlElementHelper(element);
+            var metricConversion = helper.ReadString("conversionMetric");
+            var selectedMetricConversionFrom = helper.ReadString("conversionFrom");
+            var selectedMetricConversionTo = helper.ReadString("conversionTo");
 
-            foreach (XmlNode subNode in element.ChildNodes)
-            {            
-                if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
-                    continue;
+            SelectedMetricConversion = Enum.Parse(typeof(ConversionMetricUnit), metricConversion) is ConversionMetricUnit ?
+                                (ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), metricConversion) : ConversionMetricUnit.Length;
 
-                foreach (XmlAttribute attr in subNode.Attributes)
-                {
-                    switch (attr.Name)
-                    {
-                        case "conversionMetric":
-                            SelectedMetricConversion = Enum.Parse(typeof(ConversionMetricUnit), attr.Value) is ConversionMetricUnit ?
-                                (ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), attr.Value) : ConversionMetricUnit.Length;
-                            break;
-                        case "conversionFrom":
-                            SelectedFromConversion = Enum.Parse(typeof(ConversionUnit), attr.Value) is ConversionUnit ? 
-                                (ConversionUnit)Enum.Parse(typeof(ConversionUnit), attr.Value) : ConversionUnit.Meters;                               
-                            break;
-                        case "conversionTo":
-                            SelectedToConversion = Enum.Parse(typeof(ConversionUnit), attr.Value) is ConversionUnit ? 
-                                (ConversionUnit)Enum.Parse(typeof(ConversionUnit), attr.Value) : ConversionUnit.Meters;
-                            break;                       
-                        default:
-                            Log(string.Format("{0} attribute could not be deserialized for {1}", attr.Name, GetType()));
-                            break;
-                    }
-                }
+            SelectedFromConversion = Enum.Parse(typeof(ConversionUnit), selectedMetricConversionFrom) is ConversionUnit ?
+                             (ConversionUnit)Enum.Parse(typeof(ConversionUnit), selectedMetricConversionFrom) : ConversionUnit.Meters;
 
-                break;
-            }
+            SelectedToConversion = Enum.Parse(typeof(ConversionUnit), selectedMetricConversionTo) is ConversionUnit ?
+                                (ConversionUnit)Enum.Parse(typeof(ConversionUnit), selectedMetricConversionTo) : ConversionUnit.Meters;
+
         }
 
         #endregion
