@@ -131,8 +131,7 @@ namespace Dynamo.UI.Views
             var selectedElement = e.OriginalSource as FrameworkElement;
             var selectedClass = selectedElement.DataContext as NodeCategoryViewModel;
             // Continue work with real class: not null, not ClassInformationViewModel.
-            if (selectedClass == null || selectedClass is ClassInformationViewModel ||
-                selectedClass.SubCategories.Count > 0)
+            if (selectedClass == null || selectedClass is ClassInformationViewModel)
                 return;
 
             // Go through all available for current top category LibraryWrapPanel.
@@ -142,9 +141,31 @@ namespace Dynamo.UI.Views
             {
                 if (wrapPanel.MakeOrClearSelection(selectedClass))
                 {
-                    e.Handled = true;
+                    e.Handled = selectedClass.SubCategories.Count == 0;
                     selectedElement.BringIntoView();
                 }
+            }
+
+            // If class is at the same level as namespace.
+            // Close all open namespaces and select class.
+            foreach (var category in categoryButton.Items)
+            {
+                var catVM = category as NodeCategoryViewModel;
+                if (selectedClass == catVM)
+                {
+                    catVM.IsExpanded = !catVM.IsExpanded;
+                    if (selectedClass is RootNodeCategoryViewModel)
+                        e.Handled = false;
+                    else
+                        e.Handled = true;
+                    break;
+                }
+                var categoryClasses = catVM.Items.FirstOrDefault(x => x is ClassesNodeCategoryViewModel);
+                if (catVM != null)
+                    if (categoryClasses != null)
+                        if (!(categoryClasses as ClassesNodeCategoryViewModel).Items.Contains(selectedClass)
+                            && selectedClass != catVM)
+                            catVM.IsExpanded = false;
             }
         }
 
