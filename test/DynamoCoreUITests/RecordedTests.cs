@@ -3492,7 +3492,120 @@ namespace DynamoCoreUITests
 
             AssertPreviewValue("9182323d-a4fd-40eb-905b-8ec415d17926", 69.12);
         }
+        [Test]
+        public void TestScopeIf_6322()
+        {
+            // to test scope if 
+            RunCommandsFromFile("ScopeIf_6322.xml", true);
 
+            AssertPreviewValue("cd759105-3c6b-4f8e-81e7-73266e92f357", false);
+        }
+        [Test]
+        public void modifyCN_6191()
+        {
+
+            RunCommandsFromFile("modifyCN_6191.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "First")
+                {
+                    AssertPreviewValue("64fbab72-84ee-4bd1-9767-5eea9d751018", 3);
+
+                }
+                else if (commandTag == "Second")
+                {
+
+                    AssertPreviewValue("64fbab72-84ee-4bd1-9767-5eea9d751018", 6);
+
+                }
+            });
+
+        }
+        [Test]
+        public void recursion_6415()
+        {
+
+
+
+            RunCommandsFromFile("recursion_6415.xml", true);
+
+            AssertPreviewValue("3e30c7d3-6316-4fb6-aec7-13c3ca706621", 10);
+        }
+        [Test]
+        public void workspace_5919()
+        {
+
+            RunCommandsFromFile("workspace_5919.xml", true);
+
+            AssertPreviewValue("3f42da77-4fb9-4af0-ade0-444e81614133", 0);
+        }
+        [Test]
+        public void EmptyCBN_Save_5454()
+        {
+
+            RunCommandsFromFile("EmptyCBN_Save_5454.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(1, workspace.Nodes.Count); // assert that  CBN is created
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    Assert.AreEqual(0, workspace.Nodes.Count); // assert that  CBN is created                  
+                }
+            });
+        }
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Lacing_Deffect_5759()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2279
+
+            RunCommandsFromFile("Lacing_Deffect_5759.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // check for number of Nodes and Connectors
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                    AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
+                        new int[] { 2, 4, 6, 8, 9 });
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("333b1ad0-2330-41d9-9619-d064c5012ad2");
+
+                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                    AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
+                        new int[] { 2, 4, 6, 8 });
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("333b1ad0-2330-41d9-9619-d064c5012ad2");
+
+                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                    AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
+                        new int[][] { new int[] { 2, 3, 4, 5, 6 }, new int[] { 3, 4, 5, 6, 7 }, new int[] { 4, 5, 6, 7, 8 }, new int[] { 5, 6, 7, 8, 9 } });
+                }
+
+            });
+
+        }
         #endregion
     }
 
