@@ -199,7 +199,7 @@ namespace Dynamo.Controls
             this.DirectionalLightColor = SharpDX.Color.White;
             this.DirectionalLightDirection = new Vector3(-0.5f, -1, 0);
 
-            this.RenderTechnique = Techniques.RenderPhong;
+            this.RenderTechnique = Techniques.RenderBlinn;
             this.WhiteMaterial = PhongMaterials.White;
 
             this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);
@@ -211,10 +211,27 @@ namespace Dynamo.Controls
                 LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0)
             };
-            
+
             DrawGrid();
         }
 
+        private void DrawTestMesh()
+        {
+            var b1 = new MeshBuilder();
+            for (int x = 0; x < 20; x++)
+            {
+                for (int y = 0; y < 20; y++)
+                {
+                    for (int z = 0; z < 20; z++)
+                    {
+                        b1.AddBox(new Vector3(x, y, z), 0.5, 0.5, 0.5, BoxFaces.All);
+                        //b1.AddSphere(new Vector3(x, y, z), 0.25);
+                    }
+                }
+            }
+            Mesh = b1.ToMeshGeometry3D();
+            NotifyPropertyChanged("Mesh");
+        }
         #endregion
 
         #region event handlers
@@ -586,6 +603,8 @@ namespace Dynamo.Controls
                                    lines, 
                                    mesh, 
                                    text});
+
+            //DrawTestMesh();
         }
 
         private static LineGeometry3D InitLineGeometry()
