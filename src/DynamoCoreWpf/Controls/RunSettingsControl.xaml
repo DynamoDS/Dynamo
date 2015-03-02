@@ -101,7 +101,8 @@
                       IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" 
                       Focusable="False"
                       Content="Debug" 
-                      VerticalContentAlignment="Center">
+                      VerticalContentAlignment="Center"
+                      Visibility="{Binding DebugCheckBoxVisibility}">
             </CheckBox>
             
         </StackPanel>

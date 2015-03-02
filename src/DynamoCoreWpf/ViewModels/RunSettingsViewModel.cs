@@ -191,7 +191,20 @@ namespace Dynamo.Wpf.ViewModels
         public ObservableCollection<RunTypeItem> RunTypeItems { get; set; }
  
         public DelegateCommand RunExpressionCommand { get; private set; }
+
         public DelegateCommand CancelRunCommand { get; set; }
+
+        public Visibility DebugCheckBoxVisibility
+        {
+            get
+            {
+#if DEBUG
+                return Visibility.Visible;
+#else
+                return Visibility.Hidden;
+#endif
+            }
+        }
 
         #endregion
 
