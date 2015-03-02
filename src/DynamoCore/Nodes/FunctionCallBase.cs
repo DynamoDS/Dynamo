@@ -20,5 +20,16 @@ namespace Dynamo.Nodes
             Controller = controller;
             Controller.SyncNodeWithDefinition(this);
         }
+
+        /// <summary>
+        /// The unique name that was created the node by
+        /// </summary>
+        public override string CreationName
+        {
+            get
+            {
+                return this.Controller != null ? this.Controller.Definition.MangledName : this.Name;
+            }
+        }
     }
 }

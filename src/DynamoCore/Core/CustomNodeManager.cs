@@ -60,6 +60,16 @@ namespace Dynamo.Core
             get { return loadedWorkspaceModels.Values; }
         }
 
+        /// <summary>
+        /// Gets custom node workspace by a specified custom node ID
+        /// </summary>
+        /// <param name="customNodeId">Custom node ID of a requested workspace</param>
+        /// <returns>Custom node workspace by a specified ID</returns>
+        public CustomNodeWorkspaceModel GetWorkspaceById (Guid customNodeId)
+        {
+            return loadedWorkspaceModels.ContainsKey(customNodeId) ? loadedWorkspaceModels[customNodeId] : null;
+        }
+
         #endregion
 
         /// <summary>

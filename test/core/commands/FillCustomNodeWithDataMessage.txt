@@ -1,0 +1,175 @@
+{
+  "type":"RunCommandsMessage",
+  "Commands":
+  [
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"dd3dc1ad-9b3c-abbc-6184-bee63a5629d0",
+      "nodeName":"Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "x":4169, "y":4172.5,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"dd3dc1ad-9b3c-abbc-6184-bee63a5629d0",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"dd3dc1ad-9b3c-abbc-6184-bee63a5629d0",
+      "name":"UsingDefaultValue",
+      "value":"false;false;false"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"9814373c-bc23-0da9-407e-658da76862b8",
+      "nodeName":"Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "x":4463, "y":4329.5,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"9814373c-bc23-0da9-407e-658da76862b8",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"9814373c-bc23-0da9-407e-658da76862b8",
+      "name":"UsingDefaultValue",
+      "value":"true;false"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"0c41af5a-6a84-28e8-f59b-1822d75d6bf7",
+      "nodeName":"Input",
+      "x":4156, "y":4489.5,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"0c41af5a-6a84-28e8-f59b-1822d75d6bf7",
+      "name":"InputSymbol",
+      "value":"Radius"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"0c41af5a-6a84-28e8-f59b-1822d75d6bf7",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"0c41af5a-6a84-28e8-f59b-1822d75d6bf7",
+      "name":"UsingDefaultValue",
+      "value":""
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"2a4ff41b-0706-9756-338b-3edd2b1c2b23",
+      "nodeName":"Output",
+      "x":4924, "y":4283.5,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"2a4ff41b-0706-9756-338b-3edd2b1c2b23",
+      "name":"Symbol",
+      "value":"Filled circle"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"2a4ff41b-0706-9756-338b-3edd2b1c2b23",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"2a4ff41b-0706-9756-338b-3edd2b1c2b23",
+      "name":"UsingDefaultValue",
+      "value":"true"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+      "nodeId":"b2ef37f8-2edc-d4f7-3fa7-aaa853675a9c",
+      "nodeName":"Autodesk.DesignScript.Geometry.Surface.ByPatch@Autodesk.DesignScript.Geometry.Curve",
+      "x":4642, "y":4563.5,
+      "defaultPosition":false,
+      "transformCoordinates":false
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"b2ef37f8-2edc-d4f7-3fa7-aaa853675a9c",
+      "name":"ArgumentLacing",
+      "value":"Longest"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+      "modelGuid":"b2ef37f8-2edc-d4f7-3fa7-aaa853675a9c",
+      "name":"UsingDefaultValue",
+      "value":"true"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"dd3dc1ad-9b3c-abbc-6184-bee63a5629d0",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"9814373c-bc23-0da9-407e-658da76862b8",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"9814373c-bc23-0da9-407e-658da76862b8",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"b2ef37f8-2edc-d4f7-3fa7-aaa853675a9c",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"0c41af5a-6a84-28e8-f59b-1822d75d6bf7",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"9814373c-bc23-0da9-407e-658da76862b8",
+      "portIndex":1,
+      "portType":"INPUT",
+      "mode":"End"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"b2ef37f8-2edc-d4f7-3fa7-aaa853675a9c",
+      "portIndex":0,
+      "portType":"OUTPUT",
+      "mode":"Begin"
+    },
+    {
+      "$type":"Dynamo.Models.DynamoModel+MakeConnectionCommand, DynamoCore",
+      "nodeId":"2a4ff41b-0706-9756-338b-3edd2b1c2b23",
+      "portIndex":0,
+      "portType":"INPUT",
+      "mode":"End"
+    }
+  ],
+  "WorkspaceGuid":"0af1432e-397b-f756-a19c-c512d6e10933"
+}

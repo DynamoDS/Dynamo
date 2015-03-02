@@ -342,7 +342,6 @@ namespace DynamoUtilities
             host = null;
 
             string baseSearchDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Autodesk");
-
             DirectoryInfo root;
 
             try

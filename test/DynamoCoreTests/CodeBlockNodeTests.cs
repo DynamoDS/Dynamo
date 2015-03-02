@@ -198,6 +198,39 @@ b = c[w][x][y][z];";
         protected double tolerance = 1e-4;
 
         [Test]
+        [Category("UnitTests")]
+        public void TestDefenitionLineIndexMap()
+        {
+            var codeBlockNodeOne = CreateCodeBlockNode();
+
+            var indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
+
+            Assert.IsNotNull(indexMap);
+            Assert.IsEmpty(indexMap);
+
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0;");
+
+            indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
+            Assert.AreEqual("a", indexMap.ElementAt(0).Key);
+            Assert.AreEqual(1, indexMap.ElementAt(0).Value);
+
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n a = 1;");
+
+            indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
+            Assert.AreEqual("a", indexMap.ElementAt(0).Key);
+            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n b = 1; \n a = 2;");
+
+            indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
+            Assert.AreEqual("b", indexMap.ElementAt(0).Key);
+            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+            Assert.AreEqual("a", indexMap.ElementAt(1).Key);
+            Assert.AreEqual(3, indexMap.ElementAt(1).Value);
+
+        }
+
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_1045()
         {

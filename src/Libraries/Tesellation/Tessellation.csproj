@@ -13,6 +13,7 @@
     <AssemblyName>Tessellation</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,8 +32,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MIConvexHullPlugin">
+      <HintPath>..\..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoGeometry, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="ProtoInterface, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="MIConvexHullPlugin, Version=1.0.10.1021, Culture=neutral, PublicKeyToken=1fe011fefa5ec1ad, processorArchitecture=MSIL">
       <HintPath>..\..\..\extern\miconvexhull_3e3d8e61febb\lib\MIConvexHullPlugin.dll</HintPath>
     </Reference>

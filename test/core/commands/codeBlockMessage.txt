@@ -1,0 +1,19 @@
+{
+    "type":"RunCommandsMessage",
+    "Commands":
+    [{
+        "$type":"Dynamo.Models.DynamoModel+CreateNodeCommand, DynamoCore",
+        "nodeId":"1b7932f7-d840-be75-d9a0-0abae3282d25",
+        "nodeName":"Code Block",
+        "x":5083.281279773247,
+        "y":4347.966450016673,
+        "defaultPosition":false,
+        "transformCoordinates":false
+    },{
+        "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+        "modelGuid":"1b7932f7-d840-be75-d9a0-0abae3282d25",
+        "name":"Code",
+        "value":"A = B;\nC=1;"
+    }],
+    "WorkspaceGuid":"00000000-0000-0000-0000-000000000000"
+}

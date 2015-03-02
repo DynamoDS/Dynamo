@@ -1,0 +1,11 @@
+{
+    "type":"RunCommandsMessage",
+    "commands":
+    [{
+        "$type":"Dynamo.Models.DynamoModel+UpdateModelValueCommand, DynamoCore",
+        "modelGuid":"b43c1f0e-d88f-bfd7-8dd8-dc5536c18390",
+        "name":"Value",
+        "value":17.6
+    }],
+    "WorkspaceGuid":"00000000-0000-0000-0000-000000000000"
+}

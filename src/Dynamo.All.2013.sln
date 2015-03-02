@@ -185,6 +185,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTestServices", "..\te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleLibraryTests", "Libraries\Samples\SampleLibraryTests\SampleLibraryTests.csproj", "{933B8108-4E74-470A-86C7-4B7F633115B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoWebServer", "DynamoWebServer\DynamoWebServer.csproj", "{55636E8F-53B1-4E27-A0D7-68A00DA13C92}"
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpf", "DynamoCoreWpf\DynamoCoreWpf.csproj", "{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoServicesTests", "..\test\Libraries\NodeServicesTest\DynamoServicesTests.csproj", "{3E4278F7-60EC-491C-8094-B525C36A51A7}"
@@ -401,6 +402,10 @@ Global
 		{933B8108-4E74-470A-86C7-4B7F633115B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{933B8108-4E74-470A-86C7-4B7F633115B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{933B8108-4E74-470A-86C7-4B7F633115B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55636E8F-53B1-4E27-A0D7-68A00DA13C92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55636E8F-53B1-4E27-A0D7-68A00DA13C92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55636E8F-53B1-4E27-A0D7-68A00DA13C92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55636E8F-53B1-4E27-A0D7-68A00DA13C92}.Release|Any CPU.Build.0 = Release|Any CPU
 		{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}.Release|Any CPU.ActiveCfg = Release|Any CPU

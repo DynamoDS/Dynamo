@@ -8,6 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SamplesLibraryUI</RootNamespace>
+    <AssemblyName>SamplesLibraryUI</AssemblyName>
     <AssemblyName>SampleLibraryUI</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

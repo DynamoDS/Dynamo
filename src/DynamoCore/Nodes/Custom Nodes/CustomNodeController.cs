@@ -49,7 +49,7 @@ namespace Dynamo.Nodes
                 return AstFactory.BuildFunctionCall(Definition.FunctionName, inputAstNodes);
             }
 
-            var count = Definition.DisplayParameters.Count();
+            var count = Definition.DisplayParameters != null ? Definition.DisplayParameters.Count() : 0;
             return AstFactory.BuildFunctionObject(
                 Definition.FunctionName,
                 count,

@@ -1,0 +1,33 @@
+<Workspace Version="0.7.6.3454" X="-2949.28779069767" Y="-2914.96511627907" zoom="0.722868217054264" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b43c1f0e-d88f-bfd7-8dd8-dc5536c18390" nickname="Number" x="4396" y="4628" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="689ca71c-598f-f806-922d-49fe6a2d434c" nickname="Sphere.ByCenterPointRadius" x="5019" y="4550" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1935effc-c04c-8bbd-1969-22762f317056" nickname="Point.ByCoordinates" x="4680" y="4428" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="1b7932f7-d840-be75-d9a0-0abae3282d25" nickname="Code Block" x="4472" y="4358" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..10..3;" ShouldFocus="false" />
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="500a3b21-a4d2-c20e-9742-d41d9429bdad" nickname="Boolean" x="4450" y="4532" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <DSCoreNodesUI.Logic.If type="DSCoreNodesUI.Logic.If" guid="4b7124b7-bf60-2d9c-c178-a32f13c0e940" nickname="If" x="4678" y="4616" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+    </DSCoreNodesUI.Logic.If>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c0226614-6f26-c3dc-5959-c0558c1e9efe" nickname="Number" x="4396" y="4695" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b43c1f0e-d88f-bfd7-8dd8-dc5536c18390" start_index="0" end="4b7124b7-bf60-2d9c-c178-a32f13c0e940" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1935effc-c04c-8bbd-1969-22762f317056" start_index="0" end="689ca71c-598f-f806-922d-49fe6a2d434c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1b7932f7-d840-be75-d9a0-0abae3282d25" start_index="0" end="1935effc-c04c-8bbd-1969-22762f317056" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="500a3b21-a4d2-c20e-9742-d41d9429bdad" start_index="0" end="4b7124b7-bf60-2d9c-c178-a32f13c0e940" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4b7124b7-bf60-2d9c-c178-a32f13c0e940" start_index="0" end="689ca71c-598f-f806-922d-49fe6a2d434c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0226614-6f26-c3dc-5959-c0558c1e9efe" start_index="0" end="4b7124b7-bf60-2d9c-c178-a32f13c0e940" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

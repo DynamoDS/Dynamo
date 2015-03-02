@@ -23,6 +23,11 @@ namespace Dynamo.DSEngine
         string DisplayName { get; }
 
         /// <summary>
+        /// Name to create node
+        /// </summary>
+        string MangledName { get; }
+
+        /// <summary>
         ///     Return keys for multi-output functions.
         /// </summary>
         IEnumerable<string> ReturnKeys { get; }
