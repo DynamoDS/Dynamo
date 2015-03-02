@@ -116,11 +116,17 @@ namespace Dynamo.DSEngine
 
         public bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
         {
+            if (!priorNameHints.ContainsKey(functionSignature))
+                return false;
+
             return priorNameHints[functionSignature].AdditionalAttributes.Count > 0;
         }
 
         public bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
         {
+            if (!priorNameHints.ContainsKey(functionSignature))
+                return false;
+
             return priorNameHints[functionSignature].AdditionalElements.Count > 0;
         }
 
