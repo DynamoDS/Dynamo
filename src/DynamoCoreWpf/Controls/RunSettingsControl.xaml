@@ -36,18 +36,6 @@
     <Grid>
         <StackPanel Orientation="Horizontal">
 
-            <Button Name="RunButton"
-                                Width="100"
-                                Content="{x:Static p:Resources.DynamoViewRunButton}"
-                                Style="{StaticResource ResourceKey=STextButton}"
-                                Click="RunButton_OnClick"
-                                Command="{Binding RunExpressionCommand}"
-                                CommandParameter="{Binding Path=RunInDebug}"
-                                ToolTip="{Binding RunButtonToolTip}"
-                                ToolTipService.ShowOnDisabled="True"
-                                IsEnabled="{Binding Path=RunButtonEnabled}"
-                                Focusable="False" Margin="0,0,2.5,0"/>
-
             <ComboBox Name="RunTypesComboBox"
                       ItemsSource="{Binding RunTypeItems}"
                       SelectedItem="{Binding SelectedRunTypeItem}"
@@ -85,6 +73,19 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
+            <Button Name="RunButton"
+                                Width="100"
+                                Content="{x:Static p:Resources.DynamoViewRunButton}"
+                                Style="{StaticResource ResourceKey=STextButton}"
+                                Click="RunButton_OnClick"
+                                Command="{Binding RunExpressionCommand}"
+                                CommandParameter="{Binding Path=RunInDebug}"
+                                ToolTip="{Binding RunButtonToolTip}"
+                                ToolTipService.ShowOnDisabled="True"
+                                IsEnabled="{Binding Path=RunButtonEnabled}"
+                                Visibility="{Binding RunButtonVisibility}"
+                                Focusable="False" Margin="0,0,2.5,0"/>
+            
             <TextBox Name="RunPeriodTextBox" 
                     Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, UpdateSourceTrigger=Explicit}"
                      VerticalContentAlignment="Center"

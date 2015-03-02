@@ -206,6 +206,16 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        public Visibility RunButtonVisibility
+        {
+            get
+            {
+                return Model.RunType == RunType.Manually
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+        }
+
         #endregion
 
         #region constructors
@@ -258,6 +268,7 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunTypeItems");
                     RaisePropertyChanged("SelectedRunTypeItem");
+                    RaisePropertyChanged("RunButtonVisibility");
                     RunTypeChangedRun(null);
                     break;
             }
