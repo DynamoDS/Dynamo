@@ -1589,7 +1589,7 @@
                            Grid.Column="0"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch" 
-                           IsEnabled="{Binding IsAbleToGoHome, Converter={StaticResource InverseBooleanConverter}}">
+                           Visibility="{Binding IsAbleToGoHome, Converter={StaticResource InverseBoolToVisibilityConverter}}">
 
                         <controls1:RunSettingsControl x:Name="RunSettingsControl"
                                                     Margin="2.5,5,5,5" 
