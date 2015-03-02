@@ -169,7 +169,7 @@ namespace Dynamo.UI.Views
 
                 // If class button was clicked.
                 // Ensure, that this class is not part of current category.
-                // Then collapse it.
+                // Then collapse category.
                 var categoryClasses = catVM.Items.FirstOrDefault(x => x is ClassesNodeCategoryViewModel);
                 if (catVM != null && categoryClasses != null)
                     if (!(categoryClasses as ClassesNodeCategoryViewModel).Items.Contains(selectedClass)
