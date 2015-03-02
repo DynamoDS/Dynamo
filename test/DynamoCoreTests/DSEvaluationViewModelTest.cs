@@ -227,7 +227,7 @@ namespace Dynamo.Tests
         {
             if (libraryServicesCore != null)
             {
-                libraryServicesCore.Cleanup();
+                libraryServicesCore.__TempCoreHostForRefactoring.Cleanup();
                 libraryServicesCore = null;
             }
             libraryServices = null;

@@ -458,7 +458,7 @@ namespace ProtoCore
                     runtimeCore.DebugProps.InlineConditionOptions.endPc = FindEndPCForAssocGraphNode(pc, istream, fNode, exec.Properties.executingGraphNode, core.Options.ExecuteSSA);
 
 
-                    runtimeCore.DebugProps.InlineConditionOptions.instructionStream = core.RunningBlock;
+                    runtimeCore.DebugProps.InlineConditionOptions.instructionStream = runtimeCore.RunningBlock;
                     debugFrame.IsInlineConditional = true;
                 }
                 
@@ -612,7 +612,7 @@ namespace ProtoCore
             else
             {
                 pc = tempPC;
-                istream = runtimeCore.DSExecutable.instrStreamList[core.RunningBlock];
+                istream = runtimeCore.DSExecutable.instrStreamList[runtimeCore.RunningBlock];
                 if (istream.language == Language.kAssociative)
                 {
                     limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, runtimeCore.Options.ExecuteSSA);

@@ -697,7 +697,7 @@ namespace ProtoImperative
             // global function. 
             if ((procNode == null) && (procName != ProtoCore.DSASM.Constants.kFunctionPointerCall))
             {
-                procNode = core.GetFirstVisibleProcedure(procName, arglist, codeBlock);
+                procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeBlock);
                 if (null != procNode)
                 {
                     type = ProtoCore.DSASM.Constants.kGlobalScope;
@@ -1060,7 +1060,7 @@ namespace ProtoImperative
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
-                procNode = core.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
                 if (null != procNode)
                 {
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId)
@@ -2193,7 +2193,7 @@ namespace ProtoImperative
                         }
                         if (procNode == null)
                         {
-                            procNode = core.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                            procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
                         }
                         if (procNode != null)
                         {
