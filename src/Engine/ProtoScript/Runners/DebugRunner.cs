@@ -83,7 +83,7 @@ namespace ProtoScript.Runners
                 //core.runningBlock = blockId;
 
                 ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-                runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context);
+                runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context, core.ExprInterpreterExe);
                 core.__TempCoreHostForRefactoring = runtimeCore;
                 core.__TempCoreHostForRefactoring.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
 

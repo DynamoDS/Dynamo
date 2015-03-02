@@ -14,6 +14,7 @@ using Dynamo.Nodes;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoShapeManager;
 using NUnit.Framework;
 using Dynamo.UI;
 using DynamoUtilities;
@@ -33,6 +34,10 @@ namespace DynamoCoreUITests
         private IEnumerable<string> customNodesToBeLoaded = null;
         private CommandCallback commandCallback = null;
 
+        // Geometry preloading related members.
+        protected bool preloadGeometry;
+        protected Preloader preloader;
+
         // For access within test cases.
         protected DynamoView dynamoView = null;
         protected WorkspaceModel workspace = null;
@@ -46,8 +51,6 @@ namespace DynamoCoreUITests
             // to create our own copy of Controller here with command file path.
             DynamoPathManager.Instance.InitializeCore(
               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
         }
 
         [SetUp]
@@ -77,6 +80,8 @@ namespace DynamoCoreUITests
                 }
                 this.ViewModel = null;
             }
+
+            preloader = null; // Invalid preloader object for the test.
 
             GC.Collect();
         }
@@ -684,10 +689,22 @@ namespace DynamoCoreUITests
                 throw new InvalidOperationException(message);
             }
 
+            var geometryFactoryPath = string.Empty;
+            if (preloadGeometry && (preloader == null))
+            {
+                var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+                preloader.Preload();
+
+                geometryFactoryPath = preloader.GeometryFactoryPath;
+                preloadGeometry = false;
+            }
+
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = true,
+                    GeometryFactoryPath = geometryFactoryPath
                 });
 
             // Create the DynamoViewModel to control the view
@@ -1107,6 +1124,7 @@ namespace DynamoCoreUITests
         }
         
         [Test, RequiresSTA]
+        [Category("Failure")]
         public void ErrorInCBN_3872()
         {
             // add a new line of code in a CBN in warning stage and see if the warning persists
@@ -1343,6 +1361,7 @@ namespace DynamoCoreUITests
         [Category("RegressionTests")]
         public void Defect_MAGN_590()
         {
+            preloadGeometry = true;
             RunCommandsFromFile("Defect-MAGN-590.xml");
 
             //Check the nodes
@@ -1490,6 +1509,7 @@ namespace DynamoCoreUITests
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-590
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_590.xml");
 
             //Check the nodes and connectors count
@@ -1965,6 +1985,7 @@ namespace DynamoCoreUITests
             Guid callsiteGuidSecondCall = Guid.Empty;
             Guid FunctionCallNodeGuid = new Guid("22939bf5-50bc-4aa3-9c91-0dc5b5017252");
 
+            preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", false, (commandTag) =>
             {
                 ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
@@ -2022,6 +2043,7 @@ namespace DynamoCoreUITests
         {
             // This is a UI test to test for interaction crashes the application
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_1344_PythonEditor.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count());
@@ -2039,6 +2061,7 @@ namespace DynamoCoreUITests
         [Category("RegressionTests")]
         public void Defect_MAGN_2201_WatchCBN()
         {
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2201_WatchCBN.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
         }
@@ -2060,6 +2083,7 @@ namespace DynamoCoreUITests
             Guid callsiteGuidSecondCall = Guid.Empty;
             Guid FunctionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
 
+            preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", false, (commandTag) =>
             {
                 ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
@@ -2108,6 +2132,7 @@ namespace DynamoCoreUITests
 
         public void Defect_MAGN_2521()
         {
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2521.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2143,6 +2168,7 @@ namespace DynamoCoreUITests
             // this is using CBN. 
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2378.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2172,6 +2198,7 @@ namespace DynamoCoreUITests
             // this is using Point.ByCoordinates node.
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2378_Another.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2539,6 +2566,7 @@ namespace DynamoCoreUITests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2247
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2247.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2978,12 +3006,12 @@ namespace DynamoCoreUITests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
                     Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
                     Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
@@ -3008,12 +3036,12 @@ namespace DynamoCoreUITests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
                     Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
                     Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
@@ -3035,6 +3063,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_4710()
         {
@@ -3077,6 +3106,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_4659()
         {
@@ -3119,6 +3149,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("Failure")]
         [Category("RegressionTests")]
         public void RunAutomatically_On_5068()
         {
@@ -3465,7 +3496,120 @@ namespace DynamoCoreUITests
 
             AssertPreviewValue("9182323d-a4fd-40eb-905b-8ec415d17926", 69.12);
         }
+        [Test]
+        public void TestScopeIf_6322()
+        {
+            // to test scope if 
+            RunCommandsFromFile("ScopeIf_6322.xml", true);
 
+            AssertPreviewValue("cd759105-3c6b-4f8e-81e7-73266e92f357", false);
+        }
+        [Test]
+        public void modifyCN_6191()
+        {
+
+            RunCommandsFromFile("modifyCN_6191.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "First")
+                {
+                    AssertPreviewValue("64fbab72-84ee-4bd1-9767-5eea9d751018", 3);
+
+                }
+                else if (commandTag == "Second")
+                {
+
+                    AssertPreviewValue("64fbab72-84ee-4bd1-9767-5eea9d751018", 6);
+
+                }
+            });
+
+        }
+        [Test]
+        public void recursion_6415()
+        {
+
+
+
+            RunCommandsFromFile("recursion_6415.xml", true);
+
+            AssertPreviewValue("3e30c7d3-6316-4fb6-aec7-13c3ca706621", 10);
+        }
+        [Test]
+        public void workspace_5919()
+        {
+
+            RunCommandsFromFile("workspace_5919.xml", true);
+
+            AssertPreviewValue("3f42da77-4fb9-4af0-ade0-444e81614133", 0);
+        }
+        [Test]
+        public void EmptyCBN_Save_5454()
+        {
+
+            RunCommandsFromFile("EmptyCBN_Save_5454.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(1, workspace.Nodes.Count); // assert that  CBN is created
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    Assert.AreEqual(0, workspace.Nodes.Count); // assert that  CBN is created                  
+                }
+            });
+        }
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Lacing_Deffect_5759()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2279
+
+            RunCommandsFromFile("Lacing_Deffect_5759.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // check for number of Nodes and Connectors
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                    AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
+                        new int[] { 2, 4, 6, 8, 9 });
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("333b1ad0-2330-41d9-9619-d064c5012ad2");
+
+                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                    AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
+                        new int[] { 2, 4, 6, 8 });
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("333b1ad0-2330-41d9-9619-d064c5012ad2");
+
+                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                    AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
+                        new int[][] { new int[] { 2, 3, 4, 5, 6 }, new int[] { 3, 4, 5, 6, 7 }, new int[] { 4, 5, 6, 7, 8 }, new int[] { 5, 6, 7, 8, 9 } });
+                }
+
+            });
+
+        }
         #endregion
     }
 

@@ -471,9 +471,9 @@ namespace ProtoFFI
                 int classIndex = thisObject.metaData.type;
                 if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
-                    var core = dsi.runtime.Core;
-                    int idx = core.ClassTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
-                    StackValue oldValue = dsi.runtime.rmem.Heap.GetHeapElement(thisObject).GetValue(idx, core);
+                    var runtimeCore = dsi.runtime.RuntimeCore;
+                    int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
+                    StackValue oldValue = dsi.runtime.rmem.Heap.GetHeapElement(thisObject).GetValue(idx, runtimeCore);
                     if (!StackUtils.Equals(oldValue, propValue))
                     {
                         dsi.runtime.rmem.Heap.GetHeapElement(thisObject).SetValue(idx, propValue);

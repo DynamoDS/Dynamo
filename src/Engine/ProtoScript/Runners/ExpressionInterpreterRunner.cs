@@ -39,7 +39,7 @@ namespace ProtoScript.Runners
                 context.SetData(string.Empty, null, null, currentBlockID, runtimeCore.RuntimeMemory);
                 ProtoCore.Language id = globalBlock.language;
 
-                Core.ExprInterpreterExe.iStreamCanvas = new InstructionStream(globalBlock.language, Core);
+                runtimeCore.ExprInterpreterExe.iStreamCanvas = new InstructionStream(globalBlock.language, Core);
 
                 // Save the global offset and restore after compilation
                 int offsetRestore = Core.GlobOffset;
@@ -97,7 +97,7 @@ namespace ProtoScript.Runners
 
             //Record the old function call depth
             //Fix IDE-523: part of error for watching non-existing member
-            int oldFunctionCallDepth = Core.FunctionCallDepth;
+            int oldFunctionCallDepth = runtimeCore.FunctionCallDepth;
 
             //Record the old start PC
             int oldStartPC = Core.startPC;
@@ -105,7 +105,7 @@ namespace ProtoScript.Runners
             {
 
                 //a2. Record the old start PC for restore instructions
-                Core.startPC = Core.ExprInterpreterExe.instrStreamList[blockId].instrList.Count;
+                Core.startPC = runtimeCore.ExprInterpreterExe.instrStreamList[blockId].instrList.Count;
                 Core.GenerateExprExeInstructions(blockId);
                 
                 //a3. Record the old running block
@@ -152,15 +152,15 @@ namespace ProtoScript.Runners
 
                 //r2. Restore the instructions in Core.ExprInterpreterExe
                 int from = Core.startPC;
-                int elems = Core.ExprInterpreterExe.iStreamCanvas.instrList.Count;
-                Core.ExprInterpreterExe.instrStreamList[blockId].instrList.RemoveRange(from, elems);
+                int elems = runtimeCore.ExprInterpreterExe.iStreamCanvas.instrList.Count;
+                runtimeCore.ExprInterpreterExe.instrStreamList[blockId].instrList.RemoveRange(from, elems);
 
                 //Restore the start PC
                 Core.startPC = oldStartPC;
 
                 //Restore the function call depth
                 //Fix IDE-523: part of error for watching non-existing member
-                Core.FunctionCallDepth = oldFunctionCallDepth;
+                runtimeCore.FunctionCallDepth = oldFunctionCallDepth;
 
 
                 //Clear the watchSymbolList
@@ -179,7 +179,7 @@ namespace ProtoScript.Runners
 
                 //Restore the function call depth
                 //Fix IDE-523: part of error for watching non-existing member
-                Core.FunctionCallDepth = oldFunctionCallDepth;
+                runtimeCore.FunctionCallDepth = oldFunctionCallDepth;
 
                 //Clear the watchSymbolList
                 foreach (SymbolNode node in runtimeCore.WatchSymbolList)

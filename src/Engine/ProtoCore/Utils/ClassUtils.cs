@@ -15,12 +15,12 @@ namespace ProtoCore.Utils
         /// <param name="cn"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static List<int> GetClassUpcastChain(ClassNode cn, Core core)
+        public static List<int> GetClassUpcastChain(ClassNode cn, RuntimeCore runtimeCore)
         {
             List<int> ret = new List<int>();
 
             //@TODO: Replace this with an ID
-            ret.Add(core.ClassTable.ClassNodes.IndexOf(cn));
+            ret.Add(runtimeCore.DSExecutable.classTable.ClassNodes.IndexOf(cn));
 
             ClassNode target = cn;
             while (target.baseList.Count > 0)
@@ -28,7 +28,7 @@ namespace ProtoCore.Utils
                 Validity.Assert(target.baseList.Count == 1, "Multiple Inheritence not yet supported, {F5DDC58D-F721-4319-854A-622175AC43F8}");
                 ret.Add(target.baseList[0]);
 
-                target = core.ClassTable.ClassNodes[target.baseList[0]];
+                target = runtimeCore.DSExecutable.classTable.ClassNodes[target.baseList[0]];
             }
 
             if (!ret.Contains((int)(PrimitiveType.kTypeVar)))
@@ -45,11 +45,11 @@ namespace ProtoCore.Utils
         /// <param name="to"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static int GetUpcastCountTo(ClassNode from, ClassNode to, Core core)
+        public static int GetUpcastCountTo(ClassNode from, ClassNode to, RuntimeCore runtimeCore)
         {
-            int toID = core.ClassTable.ClassNodes.IndexOf(to);
+            int toID = runtimeCore.DSExecutable.classTable.ClassNodes.IndexOf(to);
 
-            List<int> upcastChain = GetClassUpcastChain(from, core);
+            List<int> upcastChain = GetClassUpcastChain(from, runtimeCore);
 
             if (!upcastChain.Contains(toID))
                 return int.MaxValue;
