@@ -1124,6 +1124,7 @@ namespace DynamoCoreUITests
         }
         
         [Test, RequiresSTA]
+        [Category("Failure")]
         public void ErrorInCBN_3872()
         {
             // add a new line of code in a CBN in warning stage and see if the warning persists
@@ -3062,6 +3063,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_4710()
         {
@@ -3104,6 +3106,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("Failure")]
         [Category("RegressionTests")]
         public void Defect_MAGN_4659()
         {
@@ -3146,6 +3149,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
+        [Category("Failure")]
         [Category("RegressionTests")]
         public void RunAutomatically_On_5068()
         {
