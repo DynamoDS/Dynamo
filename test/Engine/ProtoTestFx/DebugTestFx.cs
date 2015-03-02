@@ -204,6 +204,7 @@ namespace ProtoTestFx
         internal static void CompareCores(Core c1, Core c2, string defectID = "")
         {
             RuntimeCore rtcore1 = c1.__TempCoreHostForRefactoring;
+            RuntimeCore rtcore2 = c2.__TempCoreHostForRefactoring;
 
             Assert.AreEqual(c1.DSExecutable.runtimeSymbols.Length, c2.DSExecutable.runtimeSymbols.Length, defectID);
 
@@ -253,7 +254,7 @@ namespace ProtoTestFx
                     if (lookupOk)
                     {
                         StackValue debugValue = debugExecMirror.GetGlobalValue(symNode.name);
-                        if (!StackUtils.CompareStackValues(debugValue, runValue, c2, c1))
+                        if (!StackUtils.CompareStackValues(debugValue, runValue, rtcore2, rtcore1))
                         {
                             Assert.Fail(string.Format("\tThe value of variable \"{0}\" doesn't match in run mode and in debug mode.\nTracked by {1}", symNode.name, defectID));
                         }

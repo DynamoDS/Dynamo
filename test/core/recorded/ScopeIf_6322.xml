@@ -1,0 +1,19 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <OpenFileCommand XmlFilePath=".\Scopeif.dyn" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.Watch guid="cd759105-3c6b-4f8e-81e7-73266e92f357" type="Dynamo.Nodes.Watch" nickname="Watch" x="729.263999784052" y="178.36432519081" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="cd759105-3c6b-4f8e-81e7-73266e92f357" Modifiers="0" />
+  <DragSelectionCommand X="476.37476578199" Y="116.468650293373" DragOperation="0" />
+  <DragSelectionCommand X="758.68615298364" Y="201.90499115703" DragOperation="1" />
+  <MakeConnectionCommand NodeId="04dfe4af-56f9-4c12-8b42-9953f0923326" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="cd759105-3c6b-4f8e-81e7-73266e92f357" PortIndex="0" Type="0" ConnectionMode="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="825.937817973719" Y="315.466373248941" Width="0" Height="0" IsCrossSelection="false" />
+</Commands>

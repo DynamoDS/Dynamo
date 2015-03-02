@@ -5,7 +5,7 @@ using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
-
+using DynamoShapeManager;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
@@ -25,6 +25,7 @@ namespace Dynamo.Tests
     {
         protected DynamoViewModel ViewModel;
         protected DynamoModel Model;
+        private DynamoShapeManager.Preloader preloader;
 
         public override void Init()
         {
@@ -36,6 +37,7 @@ namespace Dynamo.Tests
         {
             try
             {
+                preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
                 var shutdownParams = new DynamoViewModel.ShutdownParams(
@@ -87,15 +89,18 @@ namespace Dynamo.Tests
 
         protected void StartDynamo()
         {
-            DynamoPathManager.Instance.InitializeCore(
-               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            var assemblyFolder = Path.GetDirectoryName(assemblyPath);
+            DynamoPathManager.Instance.InitializeCore(assemblyFolder);
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-            
+            preloader = new Preloader(assemblyFolder);
+            preloader.Preload();
+
             this.Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = true,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             this.ViewModel = DynamoViewModel.Start(

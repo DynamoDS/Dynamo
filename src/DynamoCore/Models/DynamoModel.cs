@@ -12,6 +12,7 @@ using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
+using Dynamo.Library;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
@@ -50,7 +51,7 @@ namespace Dynamo.Models
         //For caching of search elements
         List<LibraryItem> allLibraryItems;
 
-        private WorkspaceModel currentWorkspace;
+        private readonly string geometryFactoryPath;        private WorkspaceModel currentWorkspace;
         
         #endregion
 
@@ -367,6 +368,7 @@ namespace Dynamo.Models
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
+            public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public string PackageManagerAddress { get; set; }
         }
@@ -426,6 +428,8 @@ namespace Dynamo.Models
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
             Scheduler = new DynamoScheduler(thread, IsTestMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+
+            geometryFactoryPath = config.GeometryFactoryPath;
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
@@ -813,10 +817,9 @@ namespace Dynamo.Models
                 EngineController = null;
             }
 
-            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
             EngineController = new EngineController(
                 LibraryServices,
-                geomFactory,
+                geometryFactoryPath,
                 DebugSettings.VerboseLogging);
             EngineController.MessageLogged += LogMessage;
 

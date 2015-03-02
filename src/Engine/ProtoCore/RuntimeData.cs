@@ -66,6 +66,7 @@ namespace ProtoCore
 
         public DynamicVariableTable DynamicVarTable { get; set; }
         public DynamicFunctionTable DynamicFuncTable { get; set; }
+        public FunctionPointerTable FuncPointerTable { get; set; }
 
  #endregion
 
