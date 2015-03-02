@@ -26,7 +26,7 @@ namespace Analysis.DataTypes
         /// </summary>
         public Dictionary<string, IList<double>> Results { get; set; }
         /// <summary>
-        /// Gets result by a specified key
+        /// Gets results for the specified key from the specified surface analysis data
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -225,7 +225,7 @@ namespace Analysis.DataTypes
             return new VectorAnalysisData(points, results);
         }
         /// <summary>
-        /// Gets result by a specified key
+        /// Gets results for the specified key from the specified vector analysis data
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -313,7 +313,7 @@ namespace Analysis.DataTypes
             return new PointAnalysisData(points, results);
         }
         /// <summary>
-        /// Gets result by a specified key
+        /// Gets results for the specified key from the specified point analysis data
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
