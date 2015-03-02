@@ -31,6 +31,11 @@ namespace ProtoTest.DebugTests
             CLRModuleType.ClearTypes();
         }
 
+        public override void TearDown()
+        {
+            runtimeCore = fsr.runtimeCore;
+            base.TearDown();
+        }
 
         [Test] 
         [Category("ExpressionInterpreterRunner")]

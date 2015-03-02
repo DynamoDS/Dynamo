@@ -66,6 +66,13 @@ namespace ProtoTest.EventTests
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
+
+        public override void TearDown()
+        {
+            runtimeCore = runner.runtimeCore;
+            base.TearDown();
+        }
+
         private Obj GetWatchValue(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, string watchExpression)
         {
             ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
