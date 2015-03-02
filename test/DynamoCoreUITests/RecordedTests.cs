@@ -3005,12 +3005,12 @@ namespace DynamoCoreUITests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
                     Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
                     Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
@@ -3035,12 +3035,12 @@ namespace DynamoCoreUITests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
                     Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
                     Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")

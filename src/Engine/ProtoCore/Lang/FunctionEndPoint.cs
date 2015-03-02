@@ -61,6 +61,7 @@ namespace ProtoCore
 
         public bool DoesTypeDeepMatch(List<StackValue> formalParameters, Core core)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (formalParameters.Count != FormalParams.Length)
                 return false;
 
@@ -71,13 +72,13 @@ namespace ProtoCore
 
                 if (FormalParams[i].IsIndexable && formalParameters[i].IsArray)
                 {
-                    if (FormalParams[i].rank != ArrayUtils.GetMaxRankForArray(formalParameters[i], core)
+                    if (FormalParams[i].rank != ArrayUtils.GetMaxRankForArray(formalParameters[i], runtimeCore)
                         && FormalParams[i].rank != DSASM.Constants.kArbitraryRank)
                         return false;
 
 
                     Type typ = FormalParams[i];
-                    Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(formalParameters[i], core);
+                    Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(formalParameters[i], runtimeCore);
 
                     ClassNode cn = null;
 
@@ -95,7 +96,7 @@ namespace ProtoCore
                     }
                     else if (arrayTypes.Count > 1)
                     {
-                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(formalParameters[i], core);
+                        ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(formalParameters[i], runtimeCore);
 
                         if (commonBaseType == null)
                             throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported("Array with no common superclass not yet supported: {0C644179-14F5-4172-8EF8-A2F3739901B2}");
@@ -179,7 +180,7 @@ namespace ProtoCore
                         expectedType != ProtoCore.DSASM.Constants.kInvalidIndex)
                     {
                         currentCost += ClassUtils.GetUpcastCountTo(classTable.ClassNodes[rcvdType],
-                                                                   classTable.ClassNodes[expectedType], core);
+                                                                   classTable.ClassNodes[expectedType], core.__TempCoreHostForRefactoring);
                  
                     }
                     distance += currentCost;
@@ -199,7 +200,7 @@ namespace ProtoCore
         /// <returns></returns>
         public int ComputeTypeDistance(List<StackValue> args, ProtoCore.DSASM.ClassTable classTable, Core core, bool allowArrayPromotion = false)
         {
-
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             //Modified from proc Table, does not use quite the same arguments
                 
             int distance = (int)ProcedureDistance.kMaxDistance;
@@ -269,7 +270,7 @@ namespace ProtoCore
                             //In case of conversion from double to int, add a conversion score.
                             //There are overloaded methods and the difference is the parameter type between int and double.
                             //Add this to make it call the correct one. - Randy
-                            bool bContainsDouble = ArrayUtils.ContainsDoubleElement(args[i], core);
+                            bool bContainsDouble = ArrayUtils.ContainsDoubleElement(args[i], runtimeCore);
                             if (FormalParams[i].UID == (int)PrimitiveType.kTypeInt && bContainsDouble)
                             {
                                 currentScore = (int)ProcedureDistance.kCoerceDoubleToIntScore;
@@ -326,13 +327,14 @@ namespace ProtoCore
         /// <returns></returns>
         public List<StackValue> CoerceParameters(List<StackValue> formalParameters, Core core)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             List<StackValue> fixedUpVersions = new List<StackValue>();
             for (int i = 0; i < formalParameters.Count; i++)
             {
                 StackValue formalParam = formalParameters[i];
                 Type targetType = FormalParams[i];
 
-                StackValue coercedParam = TypeSystem.Coerce(formalParam, targetType, core);
+                StackValue coercedParam = TypeSystem.Coerce(formalParam, targetType, runtimeCore);
                 fixedUpVersions.Add(coercedParam);
             }
 

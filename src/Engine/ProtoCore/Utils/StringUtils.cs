@@ -10,15 +10,13 @@ namespace ProtoCore.Utils
 {
     public static class StringUtils
     {
-        public static int CompareString(StackValue s1, StackValue s2, Core core)
+        public static int CompareString(StackValue s1, StackValue s2, RuntimeCore runtimeCore)
         {
             if (!s1.IsString || !s2.IsString)
                 return Constants.kInvalidIndex;
 
             if (s1.Equals(s2))
                 return 0;
-
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             string str1 = runtimeCore.RuntimeMemory.Heap.GetString(s1);
             string str2 = runtimeCore.RuntimeMemory.Heap.GetString(s2);
@@ -42,9 +40,8 @@ namespace ProtoCore.Utils
             return returnSV;
         }
 
-        public static StackValue ConcatString(StackValue op1, StackValue op2, ProtoCore.Core core)
+        public static StackValue ConcatString(StackValue op1, StackValue op2, RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             var v1 = runtimeCore.RuntimeMemory.Heap.GetString(op1);
             var v2 = runtimeCore.RuntimeMemory.Heap.GetString(op2);
             return StackValue.BuildString(v1 + v2, runtimeCore.RuntimeMemory.Heap);
