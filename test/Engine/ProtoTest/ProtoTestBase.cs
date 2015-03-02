@@ -23,7 +23,7 @@ namespace ProtoTest
         [TearDown]
         public virtual void TearDown()
         {
-            core.Cleanup();
+            core.__TempCoreHostForRefactoring.Cleanup();
             thisTest.CleanUp();
         }
     }

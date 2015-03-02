@@ -49,6 +49,7 @@ namespace ProtoCore.DSASM
         public ProtoCore.DSASM.ClassTable classTable { get; set; }
         public ProtoCore.DSASM.ProcedureTable[] procedureTable { get; set; }
         public ProtoCore.DSASM.SymbolTable[] runtimeSymbols { get; set; }
+        public TypeSystem TypeSystem { get; set; }
 
         public List<CodeBlock> CodeBlocks { get; set; }
         public List<CodeBlock> CompleteCodeBlocks { get; set; }

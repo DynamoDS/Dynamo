@@ -315,11 +315,10 @@ namespace ProtoCore
         public int BaseOffset { get; set; }
         public int GraphNodeUID { get; set; }
 
-        public Heap Heap { get; set; }
-        public RuntimeMemory Rmem { get; set; }
+        public Heap Heap { get; private set; }
+        //public RuntimeMemory Rmem { get; set; }
 
         public int ClassIndex { get; set; }     // Holds the current class scope
-        public int RunningBlock { get; set; }
         public int CodeBlockIndex { get; set; }
         public int RuntimeTableIndex { get; set; }
 
@@ -356,14 +355,12 @@ namespace ProtoCore
 
         public IExecutiveProvider ExecutiveProvider { get; set; }
 
-        public Dictionary<string, object> Configurations { get; set; }
 
         //Manages injected context data.
         internal ContextDataManager ContextDataManager { get; set; }
 
         public ParseMode ParsingMode { get; set; }
 
-        public FFIPropertyChangedMonitor FFIPropertyChangedMonitor { get; private set; }
 
         /// <summary>
         /// 
@@ -394,20 +391,6 @@ namespace ProtoCore
         /// </summary>
         public DebugProperties DebuggerProperties;
 
-        // Continuation properties used for Serial mode execution and Debugging of Replicated calls
-        public ContinuationStructure ContinuationStruct { get; set; }
-
-        /// <summary>
-        /// Gets the reason why the execution was last suspended
-        /// </summary>
-        public ReasonForExecutionSuspend ReasonForExecutionSuspend { get; internal set; }
-
-
-        public delegate void DisposeDelegate(Core sender);
-        public event DisposeDelegate Dispose;
-        public event EventHandler<ExecutionStateEventArgs> ExecutionEvent;
-
-        public int ExecutionState { get; set; }
 
         public bool builtInsLoaded { get; set; }
         public List<string> LoadedDLLs = new List<string>();
@@ -489,32 +472,6 @@ namespace ProtoCore
             }
         }
 
-        public void NotifyExecutionEvent(ExecutionStateEventArgs.State state)
-        {
-            switch (state)
-            {
-                case ExecutionStateEventArgs.State.kExecutionBegin:
-                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kInvalid, "Invalid Execution state being notified.");
-                    break;
-                case ExecutionStateEventArgs.State.kExecutionEnd:
-                    if (ExecutionState == (int)ExecutionStateEventArgs.State.kInvalid) //execution never begun.
-                        return;
-                    break;
-                case ExecutionStateEventArgs.State.kExecutionBreak:
-                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionBegin || ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionResume, "Invalid Execution state being notified.");
-                    break;
-                case ExecutionStateEventArgs.State.kExecutionResume:
-                    Validity.Assert(ExecutionState == (int)ExecutionStateEventArgs.State.kExecutionBreak, "Invalid Execution state being notified.");
-                    break;
-                default:
-                    Validity.Assert(false, "Invalid Execution state being notified.");
-                    break;
-            }
-            ExecutionState = (int)state;
-            if (null != ExecutionEvent)
-                ExecutionEvent(this, new ExecutionStateEventArgs(state));
-        }
-
         public class CodeBlockCompilationSnapshot
         {
             public CodeBlockCompilationSnapshot(int codeBlocKId, int graphNodeCount, int endPC)
@@ -578,8 +535,6 @@ namespace ProtoCore
             Options.ApplyUpdate = false;
 
             Options.RunMode = InterpreterMode.kNormal;
-            ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
-            RunningBlock = 0;
 
             // The main codeblock never goes out of scope
             // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
@@ -633,12 +588,15 @@ namespace ProtoCore
         private void ResetRuntimeCore()
         {
             RuntimeData = new ProtoCore.RuntimeData();
-            __TempCoreHostForRefactoring = new RuntimeCore();
+            __TempCoreHostForRefactoring = new RuntimeCore(Heap);
             __TempCoreHostForRefactoring.RuntimeStatus = new ProtoCore.RuntimeStatus(this);
         }
 
         private void ResetAll(Options options)
         {
+            Heap = new Heap();
+            //Rmem = new RuntimeMemory(Heap);
+
             ResetRuntimeCore();
 
             Validity.AssertExpiry();
@@ -650,22 +608,17 @@ namespace ProtoCore
             FunctionTable = new FunctionTable(); 
             Langverify = new LangVerify();
 
-            Heap = new Heap();
-            Rmem = new RuntimeMemory(Heap);
 
             watchClassScope = Constants.kInvalidIndex;
             watchFunctionScope = Constants.kInvalidIndex;
-            watchBaseOffset = 0;
-            watchStack = new List<StackValue>();
             watchSymbolList = new List<SymbolNode>();
-            watchFramePointer = Constants.kInvalidIndex;
+            watchBaseOffset = 0;
 
 
             GlobOffset = 0;
             GlobHeapOffset = 0;
             BaseOffset = 0;
             GraphNodeUID = 0;
-            RunningBlock = 0;
             CodeBlockIndex = 0;
             RuntimeTableIndex = 0;
             CodeBlockList = new List<CodeBlock>();
@@ -716,19 +669,14 @@ namespace ProtoCore
             Options.RunMode = InterpreterMode.kNormal;
 
             assocCodegen = null;
-            FunctionCallDepth = 0;
 
             // Default execution log is Console.Out.
             ExecutionLog = Console.Out;
-            ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
 
             DebuggerProperties = new DebugProperties();
 
             ExecutiveProvider = new ExecutiveProvider();
 
-            Configurations = new Dictionary<string, object>();
-
-            ContinuationStruct = new ContinuationStructure();
             ParsingMode = ParseMode.Normal;
             
             IsParsingPreloadedAssembly = false;
@@ -737,7 +685,6 @@ namespace ProtoCore
 
             deltaCompileStartPC = 0;
             builtInsLoaded = false;
-            FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
 
 
             ForLoopBlockIndex = Constants.kInvalidIndex;
@@ -745,7 +692,6 @@ namespace ProtoCore
             GraphNodeCallList = new List<GraphNode>();
 
             newEntryPoint = Constants.kInvalidIndex;
-            cancellationPending = false;
         }
 
         // The unique subscript for SSA temporaries
@@ -765,14 +711,6 @@ namespace ProtoCore
         private int tempVarId = 0;
         private int tempLanguageId = 0;
 
-        private bool cancellationPending = false;
-        public bool CancellationPending
-        {
-            get
-            {
-                return cancellationPending;
-            }
-        }
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AssociativeNode AssocNode { get; set; }
@@ -784,36 +722,15 @@ namespace ProtoCore
         //           It must be moved to its own core, whre each core is an instance of a compiler+interpreter
         //
         public Executable ExprInterpreterExe { get; set; }
-        public List<SymbolNode> watchSymbolList { get; set; }
         public int watchClassScope { get; set; }
         public int watchFunctionScope { get; set; }
         public int watchBaseOffset { get; set; }
-        public List<StackValue> watchStack { get; set; }
-        public int watchFramePointer { get; set; }
+        public List<SymbolNode> watchSymbolList { get; set; }
 
         public CodeGen assocCodegen { get; set; }
 
-        // this one is to address the issue that when the execution control is in a language block
-        // which is further inside a function, the compiler feprun is false, 
-        // when inspecting value in that language block or the function, debugger will assume the function index is -1, 
-        // name look up will fail beacuse all the local variables inside 
-        // that language block and fucntion has non-zero function index 
-        public int FunctionCallDepth { get; set; }
+
         public TextWriter ExecutionLog { get; set; }
-
-        protected void OnDispose()
-        {
-            if (Dispose != null)
-            {
-                Dispose(this);
-            }
-        }
-
-        public void Cleanup()
-        {
-            OnDispose();
-            CLRModuleType.ClearTypes();
-        }
 
         public Core(Options options)
         {
@@ -965,34 +882,6 @@ namespace ProtoCore
             return false;
         }
 
-        public ProcedureNode GetFirstVisibleProcedure(string name, List<Type> argTypeList, CodeBlock codeblock)
-        {
-            Validity.Assert(null != codeblock);
-            if (null == codeblock)
-            {
-                return null;
-            }
-
-            CodeBlock searchBlock = codeblock;
-            while (null != searchBlock)
-            {
-                if (null == searchBlock.procedureTable)
-                {
-                    searchBlock = searchBlock.parent;
-                    continue;
-                }
-
-                // The class table is passed just to check for coercion values
-                int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
-                if (Constants.kInvalidIndex != procIndex)
-                {
-                    return searchBlock.procedureTable.procList[procIndex];
-                }
-                searchBlock = searchBlock.parent;
-            }
-            return null;
-        }
-
         private void BfsBuildSequenceTable(CodeBlock codeBlock, SymbolTable[] runtimeSymbols)
         {
             if (CodeBlockType.kLanguage == codeBlock.blockType
@@ -1053,6 +942,12 @@ namespace ProtoCore
             ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
             ExprInterpreterExe.runtimeSymbols = DSExecutable.runtimeSymbols;
             ExprInterpreterExe.isSingleAssocBlock = DSExecutable.isSingleAssocBlock;
+
+            // Debug properties
+            // Move WatchSymbolList to runtimeData
+            __TempCoreHostForRefactoring.WatchSymbolList = watchSymbolList;
+
+            ExprInterpreterExe.TypeSystem = TypeSystem;
             
             // Copy all instruction streams
             // TODO Jun: What method to copy all? Use that
@@ -1089,6 +984,9 @@ namespace ProtoCore
         {
             Validity.Assert(RuntimeData != null);
             RuntimeData.FunctionTable = FunctionTable;
+            RuntimeData.DynamicVarTable = DynamicVariableTable;
+            RuntimeData.DynamicFuncTable = DynamicFunctionTable;
+            RuntimeData.FuncPointerTable = FunctionPointerTable;
             return RuntimeData;
         }
 
@@ -1097,15 +995,13 @@ namespace ProtoCore
         /// </summary>
         private void SetupRuntimeCore()
         {
-            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
             DSExecutable.RuntimeData = GenerateRuntimeData();
+            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
         }
 
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
-
-            SetupRuntimeCore();
 
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
@@ -1117,7 +1013,11 @@ namespace ProtoCore
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
 
+            // The TypeSystem is a record of all primitive and compiler generated types
+            DSExecutable.TypeSystem = TypeSystem;
+
             RuntimeTableIndex = CompleteCodeBlockList.Count;
+
 
             // Build the runtime symbols
             DSExecutable.runtimeSymbols = new SymbolTable[RuntimeTableIndex];
@@ -1148,6 +1048,7 @@ namespace ProtoCore
                 DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
             }
             GenerateExprExe();
+            SetupRuntimeCore();
         }
 
 
@@ -1207,9 +1108,30 @@ namespace ProtoCore
             return ancestors;
         }
 
+        //public int GetCurrentBlockId()
+        //{
+        //    int constructBlockId = Rmem.CurrentConstructBlockId;
+        //    if (constructBlockId == Constants.kInvalidIndex)
+        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
+
+        //    CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
+        //    while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
+        //    {
+        //        constructBlock = constructBlock.parent;
+        //    }
+
+        //    if (null != constructBlock)
+        //        constructBlockId = constructBlock.codeBlockId;
+
+        //    if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
+        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
+        //    else
+        //        return Rmem.CurrentConstructBlockId;
+        //}
+
         public int GetCurrentBlockId()
         {
-            int constructBlockId = Rmem.CurrentConstructBlockId;
+            int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
             if (constructBlockId == Constants.kInvalidIndex)
                 return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
 
@@ -1225,7 +1147,7 @@ namespace ProtoCore
             if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
                 return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
             else
-                return Rmem.CurrentConstructBlockId;
+                return __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
         }
 
         public GraphNode GetExecutingGraphNode()
@@ -1242,16 +1164,6 @@ namespace ProtoCore
             SSASubscript_GUID = guid;
             SSASubscript = subscript;
         }
-
-        public void RequestCancellation()
-        {
-            if (cancellationPending)
-            {
-                var message = "Cancellation cannot be requested twice";
-                throw new InvalidOperationException(message);
-            }
-
-            cancellationPending = true;
-        }
+       
     }
 }

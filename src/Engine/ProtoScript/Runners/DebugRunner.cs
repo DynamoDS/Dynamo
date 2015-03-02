@@ -78,14 +78,14 @@ namespace ProtoScript.Runners
             if (Compile(out resumeBlockID))
             {
                 inited = true;
-                core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
 
                 //int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
                 //core.runningBlock = blockId;
 
                 ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-                runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context);
+                runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context, core.ExprInterpreterExe);
                 core.__TempCoreHostForRefactoring = runtimeCore;
+                core.__TempCoreHostForRefactoring.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
 
                 FirstExec();
                 diList = BuildReverseIndex();
@@ -168,7 +168,7 @@ namespace ProtoScript.Runners
                 runtimeCore.DebugProps.RunMode = ProtoCore.Runmode.StepOut;
                 runtimeCore.DebugProps.AllbreakPoints = allbreakPoints;
 
-                runtimeCore.DebugProps.StepOutReturnPC = (int)core.Rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
+                runtimeCore.DebugProps.StepOutReturnPC = (int)runtimeCore.RuntimeMemory.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
 
                 List<Instruction> instructions = new List<Instruction>();
                 foreach (Breakpoint bp in RegisteredBreakpoints)
@@ -213,13 +213,12 @@ namespace ProtoScript.Runners
         {
             //Get the next available location and set a break point
             //Unset the break point at the current location
-
             Instruction currentInstr = null; // will be instantialized when a proper breakpoint is reached
             VMState vms = null;
             try
             {
                 if (executionsuspended)
-                    core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionResume);
+                    runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionResume);
 
                 Execute(runtimeCore.DebugProps.DebugEntryPC, breakPoints);
                 isEnded = true; // the script has ended smoothly, 
@@ -229,7 +228,7 @@ namespace ProtoScript.Runners
                 if (core.CurrentExecutive == null) //This was before the VM was properly started
                     return null;
                 currentInstr = GetCurrentInstruction(); // set the current instruction to the current breakpoint instruction
-                core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBreak);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBreak);
                 executionsuspended = true;
             }
             catch (ProtoCore.Exceptions.EndOfScript)
@@ -270,7 +269,7 @@ namespace ProtoScript.Runners
             { }
 
             //Drop the VM state objects so they can be GCed
-            core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+            runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             lastState = null;
             core = null;
 
@@ -278,7 +277,7 @@ namespace ProtoScript.Runners
 
         private Instruction GetCurrentInstruction()
         {
-            return core.DSExecutable.instrStreamList[core.RunningBlock].instrList[runtimeCore.DebugProps.DebugEntryPC];
+            return core.DSExecutable.instrStreamList[runtimeCore.RunningBlock].instrList[runtimeCore.DebugProps.DebugEntryPC];
         }
 
         private ProtoCore.CodeModel.CodePoint InstructionToBeginCodePoint(Instruction instr)
@@ -449,7 +448,7 @@ namespace ProtoScript.Runners
 
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
                 core.GenerateExecutable();
-                core.Rmem.PushFrameForGlobals(core.GlobOffset);
+                runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
 
             }
             catch (Exception ex)
@@ -542,7 +541,7 @@ namespace ProtoScript.Runners
 
             ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
             runtimeCore.Breakpoints = breakpoints;
-            resumeBlockID = core.RunningBlock;
+            resumeBlockID = runtimeCore.RunningBlock;
 
 
             if (runtimeCore.DebugProps.FirstStackFrame != null)
