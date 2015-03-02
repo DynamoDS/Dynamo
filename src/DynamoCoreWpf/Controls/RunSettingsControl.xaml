@@ -94,15 +94,6 @@
                      Foreground="#bbbbbb" 
                      KeyDown="UIElement_OnKeyDown" Margin="2.5,0,0,0"/>
 
-            <!--<Button Name="cancelButton"
-                                Width="100"
-                                Content="{x:Static p:Resources.CancelButton}"
-                                Focusable="False"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                ToolTip="{x:Static p:Resources.DynamoViewCancelButtonTooltip}"
-                                Command="{Binding CancelRunCommand}"
-                                Margin="5" />-->
-
             <CheckBox Margin="10" x:FieldModifier="public" 
                       Name="debugCheckBox" 
                       FontSize="11" 
