@@ -203,7 +203,7 @@ namespace Dynamo.Tests
             input = "someInput";
             parameter = "inputParam";
             result = converter.Convert(input, null, parameter, null);
-            Assert.AreEqual(": someInput", result);
+            Assert.AreEqual(" : someInput", result);
 
             // 6 case
             input = "someInput";
