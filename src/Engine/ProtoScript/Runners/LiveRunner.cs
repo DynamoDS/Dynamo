@@ -1567,7 +1567,7 @@ namespace ProtoScript.Runners
 
             // ExecutionMirror mirror = new ExecutionMirror(runnerCore.CurrentExecutive.CurrentDSASMExec, runnerCore);
 
-            return new ProtoRunner.ProtoVMState(runnerCore);
+            return new ProtoRunner.ProtoVMState(runnerCore, runtimeCore);
         }
 
         private bool CompileAndExecute(string code)
