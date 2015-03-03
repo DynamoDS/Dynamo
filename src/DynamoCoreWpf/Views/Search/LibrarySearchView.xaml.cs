@@ -34,7 +34,11 @@ namespace Dynamo.UI.Views
         {
             viewModel = DataContext as SearchViewModel;
             viewModel.SearchTextChanged += OnSearchTextBoxKeyDown;
+
+            // RequestReturnFocusToSearch calls, when workspace was clicked.
+            // We should hide tooltip.
             viewModel.RequestReturnFocusToSearch += CloseTooltip;
+            // When workspace was changed, we should hide tooltip. 
             viewModel.WorkspaceChanged += CloseTooltip;
         }
 
