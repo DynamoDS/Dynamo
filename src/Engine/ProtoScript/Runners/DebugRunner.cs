@@ -65,8 +65,6 @@ namespace ProtoScript.Runners
 
             }
 
-            runtimeCore = core.__TempCoreHostForRefactoring;
-            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
 
             if (null != fileName)
             {
@@ -83,6 +81,9 @@ namespace ProtoScript.Runners
                 //core.runningBlock = blockId;
 
                 ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
+
+                runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
+                runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
                 runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context, core.ExprInterpreterExe);
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
 
