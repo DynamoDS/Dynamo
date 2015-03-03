@@ -373,6 +373,7 @@ namespace Dynamo.Models
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunSettings.RunEnabled = false; // Disable 'Run' button.
+                OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
             }
             else
