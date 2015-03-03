@@ -387,11 +387,11 @@ namespace ProtoFFI
 
         protected StackValue ToDSArray(IDictionary dictionary, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
         {
-            var core = dsi.runtime.Core;
+            var runtimeCore = dsi.runtime.RuntimeCore;
 
             var array = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
-            HeapElement ho = ArrayUtils.GetHeapElement(array, core);
-            ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(core));
+            HeapElement ho = ArrayUtils.GetHeapElement(array, runtimeCore);
+            ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
 
             foreach (var key in dictionary.Keys)
             {
@@ -417,7 +417,7 @@ namespace ProtoFFI
         /// <returns></returns>
         protected T[] UnMarshal<T>(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
-            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.Core);
+            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.RuntimeCore);
             var result = new List<T>();
             Type objType = typeof(T);
 
@@ -1011,11 +1011,11 @@ namespace ProtoFFI
             if (null == properties || properties.Count == 0)
                 return;
 
-            var core = dsi.runtime.Core;
+            var runtimeCore = dsi.runtime.RuntimeCore;
             StackValue[] svs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject).Stack;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
-                SymbolNode symbol = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix];
+                SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix];
                 object prop = null;
                 if (properties.TryGetValue(symbol.name, out prop) && null != prop)
                     svs[ix] = Marshal(prop, context, dsi, GetMarshaledType(prop.GetType()));

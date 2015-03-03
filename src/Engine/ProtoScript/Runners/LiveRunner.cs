@@ -271,7 +271,7 @@ namespace ProtoScript.Runners
             {
                 reachableNodes.AddRange(ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
                     executingNode,
-                    liveCore.CurrentExecutive.CurrentDSASMExec,
+                    liveCore.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec,
                     executingNode.exprUID,
                     executingNode.modBlkUID,
                     executingNode.IsSSANode(),
@@ -1313,8 +1313,8 @@ namespace ProtoScript.Runners
             // Traverse order:
             //  Exelist, Globals symbols
 
-            ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
-            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
+            ProtoCore.DSASM.Executive exec = runnerCore.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec;
+            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore.__TempCoreHostForRefactoring);
             Executable exe = exec.exe;
 
             // Only display symbols defined in the default top-most langauge block;

@@ -459,6 +459,7 @@ namespace Dynamo.ViewModels
                     var targetIsRoot = target == libraryRoot;
                     newTarget = targetIsRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
                     newTarget.FullCategoryName = fullyQualifiedCategoryName;
+                    newTarget.Assembly = entry.Assembly;
                     // Situation when we to add only one new category and item as it child.
                     // New category should be added to existing ClassesNodeCategoryViewModel.
                     // Make notice: ClassesNodeCategoryViewModel is always first item in 
@@ -540,6 +541,7 @@ namespace Dynamo.ViewModels
 
                 var cat = new NodeCategoryViewModel(name);
                 cat.FullCategoryName = path;
+                cat.Assembly = entry.Assembly;
                 return cat;
             }).ToList();
 
@@ -601,7 +603,7 @@ namespace Dynamo.ViewModels
         private static string MakeFullyQualifiedName(string path, string addition)
         {
             return string.IsNullOrEmpty(path) ? addition :
-                path + Configurations.CategoryDelimiter + addition;
+                path + Configurations.CategoryDelimiterString + addition;
         }
 
         internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)

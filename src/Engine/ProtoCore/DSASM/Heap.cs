@@ -160,21 +160,20 @@ namespace ProtoCore.DSASM
 
     public class StackValueComparer : IEqualityComparer<StackValue>
     {
-        private Core core;
+        private RuntimeCore runtimeCore;
 
-        public StackValueComparer(Core core)
+        public StackValueComparer(RuntimeCore runtimeCore)
         {
-            this.core = core;
+            this.runtimeCore = runtimeCore;
         }
 
         public bool Equals(StackValue x, StackValue y)
         {
-            return StackUtils.CompareStackValues(x, y, core, core);
+            return StackUtils.CompareStackValues(x, y, runtimeCore, runtimeCore);
         }
 
         public int GetHashCode(StackValue value)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (value.IsString)
             {
                 string s = runtimeCore.Heap.GetString(value);
@@ -505,7 +504,7 @@ namespace ProtoCore.DSASM
                 exe.rmem.Push(StackValue.BuildArrayDimension(0));
                 exe.rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
                 
-                ++exe.Core.FunctionCallDepth;
+                ++exe.RuntimeCore.FunctionCallDepth;
 
                 // TODO: Need to move IsExplicitCall to DebugProps and come up with a more elegant solution for this
                 // fix for IDE-963 - pratapa
@@ -515,7 +514,7 @@ namespace ProtoCore.DSASM
 
                 exe.IsExplicitCall = tempFlag;
 
-                --exe.Core.FunctionCallDepth;
+                --exe.RuntimeCore.FunctionCallDepth;
             }
         }
 

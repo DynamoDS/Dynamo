@@ -86,19 +86,32 @@ namespace ProtoCore
             watchStack = new List<StackValue>();
             watchFramePointer = Constants.kInvalidIndex;
             WatchSymbolList = new List<SymbolNode>();
+
+            FunctionCallDepth = 0;
+            cancellationPending = false;
+
+            watchClassScope = Constants.kInvalidIndex;
+
+            ExecutionInstance = CurrentExecutive = new Executive(this);
+            ExecutiveProvider = new ExecutiveProvider();
         }
 
-        public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null)
+        public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
         {
             this.Context = context;
             this.DSExecutable = executable;
             this.Options = runtimeOptions;
             this.DebugProps = debugProps;
+            this.ExprInterpreterExe = exprInterpreterExe;
         }
 
+        public IExecutiveProvider ExecutiveProvider { get; set; }
+        public Executive ExecutionInstance { get; private set; }
+        public Executive CurrentExecutive { get; private set; }
 
         // Execution properties
         public Executable DSExecutable { get; private set; }
+        public Executable ExprInterpreterExe { get; private set; }
         public Options Options { get; private set; }
         public RuntimeStatus RuntimeStatus { get; set; }
         public Stack<InterpreterProperties> InterpreterProps { get; set; }
@@ -115,7 +128,12 @@ namespace ProtoCore
         public Dictionary<string, object> Configurations { get; set; }
         public FFIPropertyChangedMonitor FFIPropertyChangedMonitor { get; private set; }
 
-        //public Executive CurrentExecutive { get; private set; }
+        // this one is to address the issue that when the execution control is in a language block
+        // which is further inside a function, the compiler feprun is false, 
+        // when inspecting value in that language block or the function, debugger will assume the function index is -1, 
+        // name look up will fail beacuse all the local variables inside 
+        // that language block and fucntion has non-zero function index 
+        public int FunctionCallDepth { get; set; }
 
         /// <summary>
         /// The currently executing blockID
@@ -131,7 +149,19 @@ namespace ProtoCore
         // TODO Jun: Store this in the dynamic table node
         public List<List<ReplicationGuide>> ReplicationGuides;
 
+        private bool cancellationPending = false;
+        public bool CancellationPending
+        {
+            get
+            {
+                return cancellationPending;
+            }
+        }
+
 #region DEBUGGER_PROPERTIES
+
+        public int watchClassScope { get; set; }
+
         public DebugProperties DebugProps { get; set; }
         public List<Instruction> Breakpoints { get; set; }
 
@@ -206,6 +236,51 @@ namespace ProtoCore
             }
 
             return false;
+        }
+
+        public void RequestCancellation()
+        {
+            if (cancellationPending)
+            {
+                var message = "Cancellation cannot be requested twice";
+                throw new InvalidOperationException(message);
+            }
+
+            cancellationPending = true;
+        }
+
+        public int GetCurrentBlockId()
+        {
+            int constructBlockId = RuntimeMemory.CurrentConstructBlockId;
+            if (constructBlockId == Constants.kInvalidIndex)
+                return DebugProps.CurrentBlockId;
+
+            CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(DSExecutable.CodeBlocks, constructBlockId);
+            while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
+            {
+                constructBlock = constructBlock.parent;
+            }
+
+            if (null != constructBlock)
+                constructBlockId = constructBlock.codeBlockId;
+
+            if (constructBlockId != DebugProps.CurrentBlockId)
+                return DebugProps.CurrentBlockId;
+            else
+                return RuntimeMemory.CurrentConstructBlockId;
+        }
+
+        //STop
+        public Stopwatch StopWatch;
+        public void StartTimer()
+        {
+            StopWatch = new Stopwatch();
+            StopWatch.Start();
+        }
+        public TimeSpan GetCurrentTime()
+        {
+            TimeSpan ts = StopWatch.Elapsed;
+            return ts;
         }
 
     }

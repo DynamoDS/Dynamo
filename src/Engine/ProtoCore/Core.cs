@@ -291,24 +291,8 @@ namespace ProtoCore
         public Dictionary<ulong, ulong> codeToLocation = new Dictionary<ulong, ulong>();
         public Dictionary<ulong, ErrorEntry> LocationErrorMap = new Dictionary<ulong, ErrorEntry>();
 
-        //STop
-        public Stopwatch StopWatch;
-        public void StartTimer()
-        {
-            StopWatch = new Stopwatch();
-            StopWatch.Start();
-        }
-        public TimeSpan GetCurrentTime()
-        {
-            TimeSpan ts = StopWatch.Elapsed;
-            return ts;
-        }
 
         public Dictionary<Language, Compiler> Compilers { get; private set; }
-        public Executive ExecutionInstance { get; private set; }
-
-        // This will be moved to RuntimeCore
-        public Executive CurrentExecutive { get; private set; }
 
         public int GlobOffset { get; set; }
         public int GlobHeapOffset { get; set; }
@@ -352,8 +336,6 @@ namespace ProtoCore
         //The dynamic string table and function table
         public DynamicVariableTable DynamicVariableTable { get; set; }
         public DynamicFunctionTable DynamicFunctionTable { get; set; }
-
-        public IExecutiveProvider ExecutiveProvider { get; set; }
 
 
         //Manages injected context data.
@@ -601,7 +583,7 @@ namespace ProtoCore
 
             Validity.AssertExpiry();
             Options = options;
-            ExecutionInstance = CurrentExecutive = new Executive(this);
+            
             Compilers = new Dictionary<Language, Compiler>();
             ClassIndex = Constants.kInvalidIndex;
 
@@ -609,7 +591,6 @@ namespace ProtoCore
             Langverify = new LangVerify();
 
 
-            watchClassScope = Constants.kInvalidIndex;
             watchFunctionScope = Constants.kInvalidIndex;
             watchSymbolList = new List<SymbolNode>();
             watchBaseOffset = 0;
@@ -669,14 +650,12 @@ namespace ProtoCore
             Options.RunMode = InterpreterMode.kNormal;
 
             assocCodegen = null;
-            FunctionCallDepth = 0;
 
             // Default execution log is Console.Out.
             ExecutionLog = Console.Out;
 
             DebuggerProperties = new DebugProperties();
 
-            ExecutiveProvider = new ExecutiveProvider();
 
             ParsingMode = ParseMode.Normal;
             
@@ -693,7 +672,6 @@ namespace ProtoCore
             GraphNodeCallList = new List<GraphNode>();
 
             newEntryPoint = Constants.kInvalidIndex;
-            cancellationPending = false;
         }
 
         // The unique subscript for SSA temporaries
@@ -713,14 +691,6 @@ namespace ProtoCore
         private int tempVarId = 0;
         private int tempLanguageId = 0;
 
-        private bool cancellationPending = false;
-        public bool CancellationPending
-        {
-            get
-            {
-                return cancellationPending;
-            }
-        }
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AssociativeNode AssocNode { get; set; }
@@ -732,19 +702,13 @@ namespace ProtoCore
         //           It must be moved to its own core, whre each core is an instance of a compiler+interpreter
         //
         public Executable ExprInterpreterExe { get; set; }
-        public int watchClassScope { get; set; }
         public int watchFunctionScope { get; set; }
         public int watchBaseOffset { get; set; }
         public List<SymbolNode> watchSymbolList { get; set; }
 
         public CodeGen assocCodegen { get; set; }
 
-        // this one is to address the issue that when the execution control is in a language block
-        // which is further inside a function, the compiler feprun is false, 
-        // when inspecting value in that language block or the function, debugger will assume the function index is -1, 
-        // name look up will fail beacuse all the local variables inside 
-        // that language block and fucntion has non-zero function index 
-        public int FunctionCallDepth { get; set; }
+
         public TextWriter ExecutionLog { get; set; }
 
         public Core(Options options)
@@ -1001,6 +965,8 @@ namespace ProtoCore
             RuntimeData.FunctionTable = FunctionTable;
             RuntimeData.DynamicVarTable = DynamicVariableTable;
             RuntimeData.DynamicFuncTable = DynamicFunctionTable;
+            RuntimeData.FuncPointerTable = FunctionPointerTable;
+            RuntimeData.ContextDataMngr = ContextDataManager;
             return RuntimeData;
         }
 
@@ -1009,15 +975,13 @@ namespace ProtoCore
         /// </summary>
         private void SetupRuntimeCore()
         {
-            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
             DSExecutable.RuntimeData = GenerateRuntimeData();
+            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
         }
 
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
-
-            SetupRuntimeCore();
 
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
@@ -1064,6 +1028,7 @@ namespace ProtoCore
                 DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
             }
             GenerateExprExe();
+            SetupRuntimeCore();
         }
 
 
@@ -1105,27 +1070,9 @@ namespace ProtoCore
             return modStateTemp;
         }
 
-        public List<int> GetAncestorBlockIdsOfBlock(int blockId)
-        {
-            if (blockId >= CompleteCodeBlockList.Count || blockId < 0)
-            {
-                return new List<int>();
-            }
-            CodeBlock thisBlock = CompleteCodeBlockList[blockId];
-
-            var ancestors = new List<int>();
-            CodeBlock codeBlock = thisBlock.parent;
-            while (codeBlock != null)
-            {
-                ancestors.Add(codeBlock.codeBlockId);
-                codeBlock = codeBlock.parent;
-            }
-            return ancestors;
-        }
-
         //public int GetCurrentBlockId()
         //{
-        //    int constructBlockId = Rmem.CurrentConstructBlockId;
+        //    int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
         //    if (constructBlockId == Constants.kInvalidIndex)
         //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
 
@@ -1141,29 +1088,8 @@ namespace ProtoCore
         //    if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
         //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
         //    else
-        //        return Rmem.CurrentConstructBlockId;
+        //        return __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
         //}
-
-        public int GetCurrentBlockId()
-        {
-            int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
-            if (constructBlockId == Constants.kInvalidIndex)
-                return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
-
-            CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
-            while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
-            {
-                constructBlock = constructBlock.parent;
-            }
-
-            if (null != constructBlock)
-                constructBlockId = constructBlock.codeBlockId;
-
-            if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
-                return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
-            else
-                return __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
-        }
 
         public GraphNode GetExecutingGraphNode()
         {
@@ -1179,16 +1105,6 @@ namespace ProtoCore
             SSASubscript_GUID = guid;
             SSASubscript = subscript;
         }
-
-        public void RequestCancellation()
-        {
-            if (cancellationPending)
-            {
-                var message = "Cancellation cannot be requested twice";
-                throw new InvalidOperationException(message);
-            }
-
-            cancellationPending = true;
-        }
+       
     }
 }

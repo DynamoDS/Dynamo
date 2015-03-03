@@ -18,7 +18,7 @@ namespace Dynamo.UI.Controls
 
         public void CopyIconMouseClick(object sender, MouseButtonEventArgs e)
         {
-            Clipboard.SetText(code.Text);
+            //Clipboard.SetText(code.Text);
         }
 
         private void RequestNavigate(object sender, RequestNavigateEventArgs e)
