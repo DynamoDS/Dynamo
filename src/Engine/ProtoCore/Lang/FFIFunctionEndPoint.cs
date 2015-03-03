@@ -45,7 +45,7 @@ namespace ProtoCore.Lang
             return true;
         }
 
-        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore)
         {   //  ensure there is no data race, function resolution and execution happens in parallel
             //  but for FFI we want it to be serial cause the code we are calling into may not cope
             //  with parallelism.
@@ -55,8 +55,7 @@ namespace ProtoCore.Lang
             //  
             lock (FFIHandlers)
             {
-                Interpreter interpreter = new Interpreter(core, true);
-                RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+                Interpreter interpreter = new Interpreter(runtimeCore, true);
 
                 // Setup the stack frame data
                 StackValue svThisPtr = stackFrame.ThisPtr;
@@ -74,7 +73,7 @@ namespace ProtoCore.Lang
                 string className = "";
                 if (activation.JILRecord.classIndex > 0)
                 {
-                    className = core.DSExecutable.classTable.ClassNodes[activation.JILRecord.classIndex].name;
+                    className = runtimeCore.DSExecutable.classTable.ClassNodes[activation.JILRecord.classIndex].name;
                 }
 
                 bool gcThisPtr = false;
@@ -128,7 +127,7 @@ namespace ProtoCore.Lang
                 {
 
                     interpreter.runtime.executingBlock = runtimeCore.RunningBlock;
-                    activation.JILRecord.globs = core.DSExecutable.runtimeSymbols[runtimeCore.RunningBlock].GetGlobalSize();
+                    activation.JILRecord.globs = runtimeCore.DSExecutable.runtimeSymbols[runtimeCore.RunningBlock].GetGlobalSize();
 
                     // Params
                     formalParameters.Reverse();

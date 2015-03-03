@@ -3863,7 +3863,7 @@ namespace ProtoAssociative
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 // Save the current scope for the expression interpreter
-                globalClassIndex = core.watchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
+                globalClassIndex = runtimeCore.watchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
                 globalProcIndex = core.watchFunctionScope = context.MemoryState.CurrentStackFrame.FunctionScope;
                 int functionBlock = context.MemoryState.CurrentStackFrame.FunctionBlock;
 

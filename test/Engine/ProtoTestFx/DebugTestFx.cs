@@ -77,6 +77,7 @@ namespace ProtoTestFx
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
 
+            core.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             //Run
 
             fsr.Execute(code, core);
@@ -214,10 +215,10 @@ namespace ProtoTestFx
                 foreach (SymbolNode symNode in c1.DSExecutable.runtimeSymbols[symTableIndex].symbolList.Values)
                 {
 
-                    ExecutionMirror runExecMirror = new ExecutionMirror(c1.CurrentExecutive.CurrentDSASMExec,
-                                                                        c1);
+                    ExecutionMirror runExecMirror = new ExecutionMirror(c1.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec,
+                                                                        c1.__TempCoreHostForRefactoring);
                     ExecutionMirror debugExecMirror =
-                        new ExecutionMirror(c2.CurrentExecutive.CurrentDSASMExec, c2);
+                        new ExecutionMirror(c2.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec, c2.__TempCoreHostForRefactoring);
 
                     bool lookupOk = false;
                     StackValue runValue = StackValue.Null;
