@@ -325,6 +325,7 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
+            Notifications.Instance.PostNotification("Run complete.", NotificationLevel.Mild);
 
             // This method is guaranteed to be called in the context of 
             // ISchedulerThread (for Revit's case, it is the idle thread).
@@ -373,6 +374,7 @@ namespace Dynamo.Models
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunSettings.RunEnabled = false; // Disable 'Run' button.
+                Notifications.Instance.PostNotification("Run started.", NotificationLevel.Mild);
                 scheduler.ScheduleForExecution(task);
             }
             else
