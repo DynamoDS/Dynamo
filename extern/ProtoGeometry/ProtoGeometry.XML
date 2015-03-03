@@ -205,7 +205,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT(System.IO.FileInfo)">
             <summary>
-            Imports a SAT file and returns an array of imported geometries
+            List of imported geometries
             </summary>
             <param name="file"></param>
             <returns></returns>
@@ -219,7 +219,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
              <summary>
-             Exports an array or single geometry to a SAT file
+             Exports the specified geometry to the given SAT file path
              </summary>
              <param name="filePath"></param>
              <returns></returns>
@@ -227,7 +227,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String)">
             <summary>
-            Exports an array or single geometry to a SAT file
+            Exports a list of specified geometry to the given SAT file path
             </summary>
             <param name="geometry"></param>
             <param name="filePath"></param>
@@ -235,20 +235,20 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB">
             <summary>
-            Serialize as SAB and returns an array of geometry.
+            Serializes the specified geometry into Standard ACIS Binary(SAB) format and returns serialized binary stream data
             </summary>
             <returns></returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>
-            Serialize as SAB and returns an array of geometry.
+            Serializes a list of specified geometry into Standard ACIS Binary(SAB) format and returns serialized binary stream data
             </summary>
             <param name="geometry"></param>
             <returns></returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DeserializeFromSAB(System.Byte[])">
             <summary>
-            Deserialize from SAB and returns an array of geometry.
+            Deserializes the specified Standard ACIS Binary(SAB) format data and returns a list of geometry
             </summary>
             <param name="buffer"></param>
             <returns></returns>
@@ -1364,14 +1364,12 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByCylindricalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>
-            Create a CoordinateSystem with a specified coordinate system,
-            radius, theta and height
+            Creates a CoordinateSystem at the specified cylindrical coordinate parameters with respect to the specified coordinate system
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>
-            Create a CoordinateSystem with a specified coordinate system,
-            radius, theta and phi
+            Creates a CoordinateSystem at the specified spherical coordinate parameters with respect to the specified coordinate system
             </summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Inverse">
