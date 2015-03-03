@@ -46,6 +46,7 @@ namespace Dynamo.Nodes
         public const string GEOMETRY = "Geometry";
 
         public const string GEOMETRY_CURVE_CREATE = "Geometry.Curve.Create";
+        public const string GEOMETRY_CURVE_ACTION = "Geometry.Curve.Actions";
         public const string GEOMETRY_CURVE_DIVIDE = "Geometry.Curve.Divide";
         public const string GEOMETRY_CURVE_PRIMITIVES = "Geometry.Curve.Primitives";
         public const string GEOMETRY_CURVE_QUERY = "Geometry.Curve.Query";
