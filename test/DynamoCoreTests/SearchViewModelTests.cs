@@ -68,17 +68,17 @@ namespace Dynamo.Tests
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("Category1", result);
 
-            categoryName = "Cat1 Cat" + Configurations.CategoryDelimiter + "Cat2 Cat" +
-                                    Configurations.CategoryDelimiter + "Cat3";
+            categoryName = "Cat1 Cat" + Configurations.CategoryDelimiterString + "Cat2 Cat" +
+                                    Configurations.CategoryDelimiterString + "Cat3";
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("Cat1 Cat " + Configurations.ShortenedCategoryDelimiter + " Cat2 Cat " +
                                       Configurations.ShortenedCategoryDelimiter + " Cat3", result);
 
-            categoryName = "TenSymbol" + Configurations.CategoryDelimiter +
-                           "TenSymbol" + Configurations.CategoryDelimiter +
-                           "TenSymbol" + Configurations.CategoryDelimiter +
-                           "TenSymbol" + Configurations.CategoryDelimiter +
-                           "TenSymbol" + Configurations.CategoryDelimiter +
+            categoryName = "TenSymbol" + Configurations.CategoryDelimiterString +
+                           "TenSymbol" + Configurations.CategoryDelimiterString +
+                           "TenSymbol" + Configurations.CategoryDelimiterString +
+                           "TenSymbol" + Configurations.CategoryDelimiterString +
+                           "TenSymbol" + Configurations.CategoryDelimiterString +
                            "MoreSymbols";
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("TenSymbol " + Configurations.ShortenedCategoryDelimiter +

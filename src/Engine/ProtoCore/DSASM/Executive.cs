@@ -5404,9 +5404,18 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (opdata1.IsInteger && opdata2.IsInteger)
+            if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
-                opdata2 = StackValue.BuildInt(opdata2.RawIntValue % opdata1.RawIntValue);
+                if (opdata1.IsInteger && opdata2.IsInteger)
+                {
+                    opdata2 = StackValue.BuildInt(opdata2.RawIntValue % opdata1.RawIntValue);
+                }
+                else
+                {
+                    double lhs = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                    double rhs = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                    opdata2 = StackValue.BuildDouble(lhs % rhs);
+                }
             }
             else
             {

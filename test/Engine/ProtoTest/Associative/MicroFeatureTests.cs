@@ -1716,6 +1716,14 @@ x4 = 0..#5..10;
         }
 
         [Test]
+        public void Modulo003()
+        {
+            string code = @"a = 5.2 % 2.3;";
+            var mirror = thisTest.RunScriptSource(code);
+            mirror.Verify("a", 0.6);
+        }
+
+        [Test]
         public void NegativeIndexOnCollection001()
         {
             String code =
