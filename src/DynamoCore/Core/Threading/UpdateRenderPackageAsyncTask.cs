@@ -121,40 +121,59 @@ namespace Dynamo.Core.Threading
                            select mirror.GetData();
 
             var labelMap = new List<string>();
+            var count = 0;
+
+            
             foreach (var mirrorData in data)
             {
                 AddToLabelMap(mirrorData, labelMap, previewIdentifierName);
+                GetRenderPackagesFromMirrorData(mirrorData, ref labelMap,  ref count);
+            }
+        }
+
+        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, ref List<string> labelMap, ref int count)
+        {
+            if (mirrorData.IsNull)
+            {
+                return;
             }
 
-            int count = 0;
-            foreach (var drawableId in drawableIds)
+            if (mirrorData.IsCollection)
             {
-                var graphItems = engineController.GetGraphicItems(drawableId);
-                if (graphItems == null)
-                    continue;
-
-                foreach (var graphicItem in graphItems)
+                foreach (var el in mirrorData.GetElements())
                 {
-                    var package = new RenderPackage(isNodeSelected, displayLabels)
-                    {
-                        Tag = labelMap.Count > count ? labelMap[count] : "?",
-                    };
-
-                    try
-                    {
-                        graphicItem.Tessellate(package, tol: -1.0,
-                            maxGridLines: maxTesselationDivisions);
-                    }
-                    catch (Exception e)
-                    {
-                        System.Diagnostics.Debug.WriteLine(
-                            "PushGraphicItemIntoPackage: " + e);
-                    }
-
-                    package.ItemsCount++;
-                    renderPackages.Add(package);
-                    count++;
+                    GetRenderPackagesFromMirrorData(el, ref labelMap, ref count);
                 }
+            }
+            else
+            {
+                var graphicItem = mirrorData.Data as IGraphicItem;
+                if (graphicItem == null)
+                {
+                    return;
+                }
+
+                var package = new RenderPackage(isNodeSelected, displayLabels)
+                {
+                    Tag = labelMap.Count > count ? labelMap[count] : "?",
+                };
+
+                try
+                {
+                    graphicItem.Tessellate(
+                        package,
+                        tol: -1.0,
+                        maxGridLines: maxTesselationDivisions);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "PushGraphicItemIntoPackage: " + e);
+                }
+
+                package.ItemsCount++;
+                renderPackages.Add(package);
+                count++;
             }
         }
 
