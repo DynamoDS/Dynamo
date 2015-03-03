@@ -1,8 +1,0 @@
-{
-    "type":"RunCommandsMessage",
-    "commands":
-    [{
-        "$type":"Dynamo.Models.DynamoModel+RunCancelCommand, DynamoCore"
-    }],
-    "WorkspaceGuid":"00000000-0000-0000-0000-000000000000"
-}

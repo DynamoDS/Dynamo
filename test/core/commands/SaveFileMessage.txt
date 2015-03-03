@@ -1,5 +1,0 @@
-{
-  "type":"SaveFileMessage",
-  "guid":"",
-  "filePath":""
-}
