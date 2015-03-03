@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Data;
 using System.Windows.Media;
 
@@ -65,13 +66,15 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
-            if (e.EvaluationSucceeded)
+            bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning);
+
+            if (!hasWarnings)
             {
                 SetCurrentWarning(NotificationLevel.Mild, "Run completed.");
             }
             else
             {
-                SetCurrentWarning(NotificationLevel.Moderate, "Run completed with errors."); 
+                SetCurrentWarning(NotificationLevel.Moderate, "Run completed with warnings."); 
             }
         }
 
