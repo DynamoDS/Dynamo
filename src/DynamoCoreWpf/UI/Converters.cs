@@ -2039,25 +2039,4 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
-
-    public class MultiBoolToBoolConverter : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            bool result = true;
-            foreach (var value in values)
-            {
-                bool boolValue = false;
-                if (value is bool) boolValue = (bool)value;
-
-                result = result && boolValue;
-            }
-            return result;
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
