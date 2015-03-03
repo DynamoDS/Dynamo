@@ -2514,7 +2514,7 @@ namespace ProtoCore.AST.AssociativeAST
                 case "Boolean":
                     return BuildBooleanNode(Convert.ToBoolean(value));
                 default:
-                    //Validity.Assert(false, "Invalide Input type to make AST node");
+                    Validity.Assert(false, "Invalide Input type to make AST node");
                     break;
             }
             return BuildNullNode();

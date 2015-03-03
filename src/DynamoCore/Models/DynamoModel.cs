@@ -47,12 +47,10 @@ namespace Dynamo.Models
         public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
 
         #region private members
-        
-        //For caching of search elements
-        List<LibraryItem> allLibraryItems;
 
-        private readonly string geometryFactoryPath;        private WorkspaceModel currentWorkspace;
-        
+        private readonly string geometryFactoryPath;
+        private WorkspaceModel currentWorkspace;
+
         #endregion
 
         #region events
@@ -1238,60 +1236,10 @@ namespace Dynamo.Models
 
             OnWorkspaceCleared(this, EventArgs.Empty);
         }
-
-        public IEnumerable<LibraryItem> GetAllLibraryItemsByCategory()
-        {
-            if (allLibraryItems == null || allLibraryItems.Count == 0)
-            {
-                allLibraryItems = new List<LibraryItem>();
-                foreach (var elem in this.SearchModel.SearchEntries)
-                {
-                    var libItem = new LibraryItem(elem);
-                    libItem.Keywords = SearchModel.GetTags(elem);
-                    SetPorts(libItem);
-                    allLibraryItems.Add(libItem);
-                }
-            }
-
-            return allLibraryItems;
-        }
         
         #endregion
 
         #region private methods
-
-        private void SetPorts(LibraryItem item)
-        {
-            var functionItem = LibraryServices.GetFunctionDescriptor(item.CreationName);
-            NodeModel newElement = null;
-            if (functionItem != null)
-            {
-                item.DisplayName = functionItem.DisplayName;
-                newElement = (functionItem.IsVarArg)
-                    ? new DSVarArgFunction(functionItem) as NodeModel
-                    : new DSFunction(functionItem);
-            }
-            // If that didn't work, let's try using the NodeFactory
-            else
-            {
-                NodeFactory.CreateNodeFromTypeName(item.CreationName, out newElement);
-            }
-
-            if (newElement == null)
-                throw new TypeLoadException("Unable to create instance of NodeModel element by CreationName");
-
-            item.Parameters = newElement.InPorts.Select(elem => new LibraryItem.PortInfo
-            {
-                Name = elem.PortName,
-                Type = elem.ToolTipContent.Split('.').Last(),
-                DefaultValue = newElement.InPortData[elem.Index].DefaultValue
-            });
-
-            item.ReturnKeys = newElement.OutPorts.Select(elem => new LibraryItem.PortInfo
-            {
-                Name = elem.PortName
-            });
-        }
 
         private void LogMessage(ILogMessage obj)
         {

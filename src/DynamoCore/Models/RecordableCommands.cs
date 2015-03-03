@@ -325,10 +325,10 @@ namespace Dynamo.Models
         [DataContract]
         public abstract class HasModelGuidCommand : RecordableCommand
         {
-            internal Guid ModelGuid { get; private set; }
+            public Guid ModelGuid { get; private set; }
 
             [DataMember]
-            internal string ModelGuidAsString
+            public string ModelGuidAsString
             {
                 get { return ModelGuid.ToString(); }
                 private set
@@ -1273,7 +1273,7 @@ namespace Dynamo.Models
             internal IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
 
             [DataMember]
-            internal string Name { get; private set; }
+            public string Name { get; private set; }
 
             [DataMember]
             internal string Value { get; private set; }
