@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="335"
@@ -75,7 +76,7 @@
                        Source="{Binding Path=LargeIcon}"
                        Visibility="{Binding Path=LargeIcon, Converter={StaticResource NullValueToCollapsedConverter}}" />
             </Grid>
-            <TextBlock Text="INPUT"
+            <TextBlock Text="{x:Static resx:Resources.InputLabel}"
                        Grid.Row="1"
                        FontSize="10"
                        Foreground="#50b5a3"
@@ -115,7 +116,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <TextBlock Text="OUTPUT"
+            <TextBlock Text="{x:Static resx:Resources.OutputLabel}"
                        Grid.Row="3"
                        FontSize="10"
                        Foreground="#50b5a3"

@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
@@ -629,7 +630,7 @@
                 Foreground="#666"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Center"
-                Content="No matches found"
+                Content="{x:Static resx:Resources.NoMatchesFound}"
                 Click="OnNoMatchFoundButtonClick">
             <Button.Visibility>
                 <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
