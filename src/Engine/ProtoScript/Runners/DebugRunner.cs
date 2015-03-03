@@ -48,6 +48,16 @@ namespace ProtoScript.Runners
             executionsuspended = false;
         }
 
+        private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core)
+        {
+            ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
+            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
+            runtimeCore.WatchSymbolList = core.watchSymbolList;
+            runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin); runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
+            runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, new ProtoCore.Runtime.Context(), core.ExprInterpreterExe);
+            return runtimeCore;
+        }
+
         /// <summary>
         /// Setup to run with customised launch options
         /// </summary>
@@ -76,16 +86,7 @@ namespace ProtoScript.Runners
             if (Compile(out resumeBlockID))
             {
                 inited = true;
-
-                //int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                //core.runningBlock = blockId;
-
-                ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-
-                runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
-                runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
-                runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context, core.ExprInterpreterExe);
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+                runtimeCore = CreateRuntimeCore(core);
 
                 FirstExec();
                 diList = BuildReverseIndex();
@@ -448,7 +449,6 @@ namespace ProtoScript.Runners
 
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
                 core.GenerateExecutable();
-                runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
 
             }
             catch (Exception ex)

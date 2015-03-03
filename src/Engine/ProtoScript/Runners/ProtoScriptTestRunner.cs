@@ -118,6 +118,17 @@ namespace ProtoScript.Runners
             return buildSucceeded;
         }
 
+        private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core, int runningBlock)
+        {
+            ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
+            runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
+            runtimeCore.RunningBlock = runningBlock;
+            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
+            runtimeCore.WatchSymbolList = core.watchSymbolList;
+            runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties);
+            return runtimeCore;
+        }
+
         /// <summary>
         /// Execute the data stored in core
         /// This is the entry point of all DS code to be executed
@@ -129,14 +140,7 @@ namespace ProtoScript.Runners
         public ProtoCore.RuntimeCore Execute(
             ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
         {
-            //========================Generate runtimecore here===============================//
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
-
-            // Move these core setup to runtime core 
-            runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
-            runtimeCore.RunningBlock = runningBlock;
-            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
-
+            ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core, runningBlock);
             try
             {
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);

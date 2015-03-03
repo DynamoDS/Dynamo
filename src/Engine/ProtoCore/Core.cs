@@ -569,19 +569,13 @@ namespace ProtoCore
             ForLoopBlockIndex = Constants.kInvalidIndex;
         }
 
-        private void ResetRuntimeCore()
-        {
-            RuntimeData = new ProtoCore.RuntimeData();
-            __TempCoreHostForRefactoring = new RuntimeCore(Heap);
-        }
-
         private void ResetAll(Options options)
         {
             Heap = new Heap();
             //Rmem = new RuntimeMemory(Heap);
             Configurations = new Dictionary<string, object>();
 
-            ResetRuntimeCore();
+            RuntimeData = new ProtoCore.RuntimeData();
 
             Validity.AssertExpiry();
             Options = options;
@@ -924,10 +918,6 @@ namespace ProtoCore
             ExprInterpreterExe.runtimeSymbols = DSExecutable.runtimeSymbols;
             ExprInterpreterExe.isSingleAssocBlock = DSExecutable.isSingleAssocBlock;
 
-            // Debug properties
-            // Move WatchSymbolList to runtimeData
-            __TempCoreHostForRefactoring.WatchSymbolList = watchSymbolList;
-
             ExprInterpreterExe.TypeSystem = TypeSystem;
             
             // Copy all instruction streams
@@ -973,15 +963,6 @@ namespace ProtoCore
             RuntimeData.CodeToLocation = codeToLocation;
             RuntimeData.CurrentDSFileName = CurrentDSFileName;
             return RuntimeData;
-        }
-
-        /// <summary>
-        /// Setup the runtime core and runtimedata
-        /// </summary>
-        private void SetupRuntimeCore()
-        {
-            DSExecutable.RuntimeData = GenerateRuntimeData();
-            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
         }
 
         public void GenerateExecutable()
@@ -1033,7 +1014,8 @@ namespace ProtoCore
                 DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
             }
             GenerateExprExe();
-            SetupRuntimeCore();
+
+            DSExecutable.RuntimeData = GenerateRuntimeData();
         }
 
 

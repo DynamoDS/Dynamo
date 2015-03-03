@@ -1194,6 +1194,7 @@ namespace ProtoScript.Runners
         {
             // the entry point of live execution is the global scope block
             runtimeCore.RunningBlock = 0;
+            runtimeCore.WatchSymbolList = runnerCore.watchSymbolList;
             runtimeCore.SetProperties(runnerCore.Options, runnerCore.DSExecutable, runnerCore.DebuggerProperties);
 
         }
