@@ -122,7 +122,6 @@ namespace Dynamo.Core.Threading
 
             var labelMap = new List<string>();
             var count = 0;
-
             
             foreach (var mirrorData in data)
             {
