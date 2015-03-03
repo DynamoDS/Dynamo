@@ -205,7 +205,6 @@ namespace Dynamo.UI.Views
             if (HighlightedItem != null)
             {
                 HighlightedItem.IsSelected = true;
-                (this.DataContext as SearchViewModel).ShowTooltipForTopResult = true;
                 ShowTooltip(HighlightedItem);
             }
         }
