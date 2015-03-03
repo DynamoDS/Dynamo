@@ -162,12 +162,13 @@ namespace ProtoCore
             //private List<string> GetArrayTypes(StackValue svData)
             private Dictionary<string, List<string>> GetArrayTypes(StackValue svData)
             {
+                RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
                 Dictionary<string, List<string>> asmTypes = new Dictionary<string, List<string>>();
                 //List<string> types = new List<string>();
 
                 Validity.Assert(svData.IsArray);
 
-                HeapElement hs = core.Heap.GetHeapElement(svData);
+                HeapElement hs = runtimeCore.RuntimeMemory.Heap.GetHeapElement(svData);
                 foreach (var sv in hs.VisibleItems)
                 {
                     if (sv.IsArray)

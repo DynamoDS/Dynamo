@@ -141,6 +141,7 @@ namespace ProtoCore.DSASM.Mirror
 
         public string GetStringValue(StackValue val, Heap heap, int langblock, int maxArraySize, int maxOutputDepth, bool forPrint = false)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (formatParams == null)
                 formatParams = new OutputFormatParameters(maxArraySize, maxOutputDepth);
 
@@ -163,7 +164,7 @@ namespace ProtoCore.DSASM.Mirror
                         return "{ " + arrTrace + " }";
                 case AddressType.FunctionPointer:
                     ProcedureNode procNode;
-                    if (core.FunctionPointerTable.TryGetFunction(val, core, out procNode))
+                    if (runtimeCore.DSExecutable.RuntimeData.FuncPointerTable.TryGetFunction(val, core, out procNode))
                     {
                         string className = String.Empty;
                         if (procNode.classScope != Constants.kGlobalScope)
@@ -212,6 +213,7 @@ namespace ProtoCore.DSASM.Mirror
             if (!formatParams.ContinueOutputTrace())
                 return "...";
 
+            RuntimeMemory rmem = MirrorTarget.rmem;
             Executable exe = MirrorTarget.exe;
             ClassTable classTable = MirrorTarget.Core.ClassTable;
 
@@ -226,7 +228,7 @@ namespace ProtoCore.DSASM.Mirror
             if (classnode.IsImportedClass)
             {
                 var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
-                var marshaller = helper.GetMarshaller(core);
+                var marshaller = helper.GetMarshaller(core.__TempCoreHostForRefactoring);
                 var strRep = marshaller.GetStringValue(val);
                 formatParams.RestoreOutputTraceDepth();
                 return strRep;
@@ -261,7 +263,7 @@ namespace ProtoCore.DSASM.Mirror
                         if (symbol.isStatic)
                         {
                             var staticSymbol = exe.runtimeSymbols[langblock].symbolList[symbol.symbolTableIndex];
-                            StackValue staticProp = core.Rmem.GetSymbolValue(staticSymbol);
+                            StackValue staticProp = rmem.GetSymbolValue(staticSymbol);
                             propValue = GetStringValue(staticProp, heap, langblock, forPrint);
                         }
                         else
@@ -497,6 +499,7 @@ namespace ProtoCore.DSASM.Mirror
 
         private int GetSymbolIndex(string name, out int ci, ref int block, out SymbolNode symbol)
         {
+            RuntimeMemory rmem = MirrorTarget.rmem;
             ProtoCore.DSASM.Executable exe = core.DSExecutable;
             RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
@@ -506,9 +509,9 @@ namespace ProtoCore.DSASM.Mirror
 
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
-                ci = core.watchClassScope = core.Rmem.CurrentStackFrame.ClassScope;
-                functionIndex = core.Rmem.CurrentStackFrame.FunctionScope;
-                functionBlock = core.Rmem.CurrentStackFrame.FunctionBlock;
+                ci = core.watchClassScope = rmem.CurrentStackFrame.ClassScope;
+                functionIndex = rmem.CurrentStackFrame.FunctionScope;
+                functionBlock = rmem.CurrentStackFrame.FunctionBlock;
             }
 
             // TODO Jun: 'block' is incremented only if there was no other block provided by the programmer
@@ -524,7 +527,7 @@ namespace ProtoCore.DSASM.Mirror
             {
                 ClassNode classnode = core.ClassTable.ClassNodes[ci];
 
-                if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex && functionBlock != core.RunningBlock)
+                if (functionIndex != ProtoCore.DSASM.Constants.kInvalidIndex && functionBlock != runtimeCore.RunningBlock)
                 {
                     index = exe.runtimeSymbols[block].IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
                 }
@@ -650,10 +653,10 @@ namespace ProtoCore.DSASM.Mirror
 
         public string GetType(string name)
         {
-            RuntimeMemory rmem = core.Rmem;
+            RuntimeMemory rmem = MirrorTarget.rmem;
 
             int classcope;
-            int block = core.RunningBlock;
+            int block = MirrorTarget.RuntimeCore.RunningBlock;
             SymbolNode symbol;
             int index = GetSymbolIndex(name, out classcope, ref block, out symbol);
 
@@ -725,22 +728,23 @@ namespace ProtoCore.DSASM.Mirror
 
         public Obj GetWatchValue()
         {
-            int count = MirrorTarget.Core.watchStack.Count;
-            int n = MirrorTarget.Core.watchSymbolList.FindIndex(x => { return string.Equals(x.name, Constants.kWatchResultVar); });
+            RuntimeCore runtimeCore = MirrorTarget.RuntimeCore;
+            int count = runtimeCore.watchStack.Count;
+            int n = runtimeCore.WatchSymbolList.FindIndex(x => { return string.Equals(x.name, Constants.kWatchResultVar); });
 
             if (n < 0 || n >= count)
             {
-                core.watchSymbolList.Clear();
+                runtimeCore.WatchSymbolList.Clear();
                 return new Obj { Payload = null };
             }
 
             Obj retVal = null;
             try
             {
-                StackValue sv = MirrorTarget.Core.watchStack[n];
+                StackValue sv = runtimeCore.watchStack[n];
                 if (!sv.IsInvalid)
                 {
-                    retVal = Unpack(MirrorTarget.Core.watchStack[n], MirrorTarget.rmem.Heap, core);
+                    retVal = Unpack(runtimeCore.watchStack[n], MirrorTarget.rmem.Heap, core);
                 }
                 else
                 {
@@ -753,7 +757,7 @@ namespace ProtoCore.DSASM.Mirror
             }
             finally
             {
-                core.watchSymbolList.Clear();
+                runtimeCore.WatchSymbolList.Clear();
             }
 
             return retVal;
@@ -879,7 +883,7 @@ namespace ProtoCore.DSASM.Mirror
             {
                 sv = StackValue.BuildInt((long)value);
             }
-            MirrorTarget.Core.Rmem.Stack[globalStackIndex] = sv;
+            MirrorTarget.rmem.Stack[globalStackIndex] = sv;
 
             // 4. Get all graphnpodes dependent on the symbol and mark them dirty
             const int outerBlock = 0;
@@ -965,8 +969,8 @@ namespace ProtoCore.DSASM.Mirror
         {
             int classcope;
             int block = core.GetCurrentBlockId();
-            
-            RuntimeMemory rmem = core.Rmem;
+
+            RuntimeMemory rmem = MirrorTarget.rmem;
             SymbolNode symbol;
             int index = GetSymbolIndex(name, out classcope, ref block, out symbol);
             StackValue sv;
@@ -984,13 +988,14 @@ namespace ProtoCore.DSASM.Mirror
         // traverse an class type object to get its property
         public Dictionary<string, Obj> GetProperties(Obj obj, bool excludeStatic = false)
         {
+            RuntimeMemory rmem = MirrorTarget.rmem;
             if (obj == null || !obj.DsasmValue.IsPointer)
                 return null;
 
             Dictionary<string, Obj> ret = new Dictionary<string, Obj>();
             int classIndex = obj.DsasmValue.metaData.type;
             IDictionary<int,SymbolNode> symbolList = core.ClassTable.ClassNodes[classIndex].symbols.symbolList;
-            StackValue[] svs = core.Heap.GetHeapElement(obj.DsasmValue).Stack;
+            StackValue[] svs = rmem.Heap.GetHeapElement(obj.DsasmValue).Stack;
             int index = 0;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
@@ -1002,7 +1007,7 @@ namespace ProtoCore.DSASM.Mirror
                 // check if the members are primitive type
                 if (val.IsPointer)
                 {
-                    var heapElement = core.Heap.GetHeapElement(val);
+                    var heapElement = rmem.Heap.GetHeapElement(val);
                     if (heapElement.Stack.Length == 1 &&
                         !heapElement.Stack[0].IsPointer &&
                         !heapElement.Stack[0].IsArray)
@@ -1026,7 +1031,7 @@ namespace ProtoCore.DSASM.Mirror
             List<string> ret = new List<string>();
             int classIndex = obj.DsasmValue.metaData.type;
 
-            StackValue[] svs = core.Heap.GetHeapElement(obj.DsasmValue).Stack;
+            StackValue[] svs = MirrorTarget.rmem.Heap.GetHeapElement(obj.DsasmValue).Stack;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
                 string propertyName = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix].name;
@@ -1042,7 +1047,7 @@ namespace ProtoCore.DSASM.Mirror
             if ( obj == null || !obj.DsasmValue.IsArray)
                 return null;
 
-            return core.Heap.GetHeapElement(obj.DsasmValue).Stack.Select(x => Unpack(x)).ToList();
+            return MirrorTarget.rmem.Heap.GetHeapElement(obj.DsasmValue).Stack.Select(x => Unpack(x)).ToList();
         }
 
         public StackValue GetGlobalValue(string name, int startBlock = 0)
@@ -1140,6 +1145,7 @@ namespace ProtoCore.DSASM.Mirror
         /// <returns></returns>
         public static Obj Unpack(StackValue val, Heap heap, Core core, int type = (int)PrimitiveType.kTypePointer) 
         {
+            Executable exe = core.__TempCoreHostForRefactoring.DSExecutable;
             switch (val.optype)
             {
                 case AddressType.ArrayPointer:
@@ -1163,9 +1169,9 @@ namespace ProtoCore.DSASM.Mirror
                         Obj retO = new Obj(val) 
                         { 
                             Payload = ret, 
-                            Type = core.TypeSystem.BuildTypeObject(
-                                        (ret.members.Length > 0) 
-                                        ? core.TypeSystem.GetType(ret.members[0].Type.Name) 
+                            Type = exe.TypeSystem.BuildTypeObject(
+                                        (ret.members.Length > 0)
+                                        ? exe.TypeSystem.GetType(ret.members[0].Type.Name) 
                                         : (int)ProtoCore.PrimitiveType.kTypeVoid, Constants.kArbitraryRank) 
                         };
 
@@ -1236,8 +1242,8 @@ namespace ProtoCore.DSASM.Mirror
                         Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
-                            Type = core.TypeSystem.BuildTypeObject(type, 0) 
+                            Payload = data,
+                            Type = exe.TypeSystem.BuildTypeObject(type, 0) 
                         };
                         return o;
                     }
@@ -1265,13 +1271,16 @@ namespace ProtoCore.DSASM.Mirror
 
         public static Obj Unpack(StackValue val, Core core)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
+            Executable exe = runtimeCore.DSExecutable;
             switch (val.optype)
             {
                 case AddressType.ArrayPointer:
                     {
                         //It was a pointer that we pulled, so the value lives on the heap
                         DsasmArray ret = new DsasmArray();
-                        HeapElement hs = core.Heap.GetHeapElement(val);
+                        HeapElement hs = rmem.Heap.GetHeapElement(val);
 
                         StackValue[] nodes = hs.Stack;
                         ret.members = new Obj[nodes.Length];
@@ -1283,8 +1292,8 @@ namespace ProtoCore.DSASM.Mirror
 
                         Obj retO = new Obj(val) 
                         { 
-                            Payload = ret, 
-                            Type = core.TypeSystem.BuildTypeObject((ret.members.Length > 0) ? core.TypeSystem.GetType(ret.members[0].Type.Name) : (int)ProtoCore.PrimitiveType.kTypeVar, Constants.kArbitraryRank)
+                            Payload = ret,
+                            Type = exe.TypeSystem.BuildTypeObject((ret.members.Length > 0) ? exe.TypeSystem.GetType(ret.members[0].Type.Name) : (int)ProtoCore.PrimitiveType.kTypeVar, Constants.kArbitraryRank)
                         };
 
                         return retO;
@@ -1342,8 +1351,8 @@ namespace ProtoCore.DSASM.Mirror
                         Int64 data = val.opdata;
                         Obj o = new Obj(val) 
                         { 
-                            Payload = data, 
-                            Type = core.TypeSystem.BuildTypeObject(val.metaData.type, 0) 
+                            Payload = data,
+                            Type = exe.TypeSystem.BuildTypeObject(val.metaData.type, 0) 
                         };
                         return o;
                     }

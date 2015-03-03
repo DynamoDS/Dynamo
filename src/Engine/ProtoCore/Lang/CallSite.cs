@@ -1347,6 +1347,7 @@ namespace ProtoCore
                                               StackFrame stackFrame, Core core, FunctionGroup funcGroup, 
             SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (core.Options.ExecutionMode == ExecutionMode.Parallel)
                 throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
 
@@ -1393,7 +1394,7 @@ namespace ProtoCore
                     StackValue[] subParameters = null;
                     if (formalParameters[repIndex].IsArray)
                     {
-                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], core).ToArray();
+                        subParameters = ArrayUtils.GetValues(formalParameters[repIndex], runtimeCore).ToArray();
                     }
                     else
                     {
@@ -1497,7 +1498,7 @@ namespace ProtoCore
 
                 }
 
-                StackValue ret = core.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
                 return ret;
             }
             else
@@ -1518,7 +1519,7 @@ namespace ProtoCore
                 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], core).ToArray();
+                    parameters = ArrayUtils.GetValues(formalParameters[cartIndex], runtimeCore).ToArray();
                     retSize = parameters.Length;
                 }
                 else
@@ -1662,7 +1663,7 @@ namespace ProtoCore
 #endif
                 }
 
-                StackValue ret = core.Heap.AllocateArray(retSVs, null);
+                StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);
                 return ret;
 
             }
@@ -1679,7 +1680,7 @@ namespace ProtoCore
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
             RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
-            if(core.CancellationPending)
+            if (runtimeCore.CancellationPending)
             {
                 throw new ExecutionCancelledException();               
             }
@@ -1806,7 +1807,7 @@ namespace ProtoCore
                                                                           providedRepGuides, Core core)
         {
             //return arguments; // no nothing for test validation
-
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             if (providedRepGuides.Count == 0)
                 return arguments;
@@ -1834,7 +1835,7 @@ namespace ProtoCore
                 
                 for (int p = 0; p < promotionsRequired; p++)
                 {
-                    StackValue newSV = core.Heap.AllocateArray( new StackValue[1] { oldSv } , null);
+                    StackValue newSV = runtimeCore.RuntimeMemory.Heap.AllocateArray(new StackValue[1] { oldSv }, null);
                     oldSv = newSV;
                 }
 
@@ -1849,6 +1850,7 @@ namespace ProtoCore
             Validity.Assert(procNode != null,
                             "Proc Node was null.... {976C039E-6FE4-4482-80BA-31850E708E79}");
 
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             //Now cast ret into the return type
             Type retType = procNode.returntype;
@@ -1861,7 +1863,7 @@ namespace ProtoCore
                 }
                 else
                 {
-                    StackValue coercedRet = TypeSystem.Coerce(ret, procNode.returntype, core);
+                    StackValue coercedRet = TypeSystem.Coerce(ret, procNode.returntype, runtimeCore);
                     return coercedRet;
                 }
             }
@@ -1873,7 +1875,7 @@ namespace ProtoCore
                 !ret.IsArray &&
                 retType.IsIndexable)
             {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
+                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
 
@@ -1884,7 +1886,7 @@ namespace ProtoCore
 
             if (ret.IsArray && procNode.returntype.IsIndexable)
             {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
+                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
 
@@ -1899,7 +1901,7 @@ namespace ProtoCore
             }
             else
             {
-                StackValue coercedRet = TypeSystem.Coerce(ret, retType, core);
+                StackValue coercedRet = TypeSystem.Coerce(ret, retType, runtimeCore);
                 return coercedRet;
             }
         }

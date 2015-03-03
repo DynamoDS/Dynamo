@@ -22,12 +22,13 @@ namespace ProtoCore.Lang
             Validity.Assert(pointer.IsFunctionPointer);
             interpreter = dsi;
             Core core = dsi.runtime.Core;
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             int fptr = (int)pointer.opdata;
             FunctionPointerNode fptrNode;
             int classScope = Constants.kGlobalScope;
 
-            if (core.FunctionPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
+            if (runtimeCore.DSExecutable.RuntimeData.FuncPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
             {
                 int blockId = fptrNode.blockId;
                 int procId = fptrNode.procId;
@@ -48,7 +49,7 @@ namespace ProtoCore.Lang
             int returnAddr = stackFrame.ReturnPC;
             int blockDecl = procNode.runtimeIndex;
             int blockCaller = stackFrame.FunctionCallerBlock;
-            int framePointer = core.Rmem.FramePointer;
+            int framePointer = runtimeCore.RuntimeMemory.FramePointer;
             StackValue thisPtr = StackValue.BuildPointer(Constants.kInvalidIndex);
 
             // Functoion has variable input parameter. This case only happen
@@ -69,7 +70,7 @@ namespace ProtoCore.Lang
                 var varParams = args.GetRange(paramCount - 1, varParamCount).ToArray();
                 args.RemoveRange(paramCount - 1, varParamCount);
 
-                var packedParams = interpreter.runtime.Core.Heap.AllocateArray(varParams, null);
+                var packedParams = interpreter.runtime.rmem.Heap.AllocateArray(varParams, null);
                 args.Add(packedParams);
             }
 
@@ -84,7 +85,7 @@ namespace ProtoCore.Lang
                 thisPtr = args[0];
                 if (thisPtr.IsArray)
                 {
-                    isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, core);
+                    isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, runtimeCore);
                 }
                 else
                 {

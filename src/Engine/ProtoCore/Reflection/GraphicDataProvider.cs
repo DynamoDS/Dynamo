@@ -160,7 +160,7 @@ namespace ProtoCore.Mirror
             {
                 ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, false);
                 var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                var marshaler = helper.GetMarshaller(core);
+                var marshaler = helper.GetMarshaller(core.__TempCoreHostForRefactoring);
                 return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
             }
             catch (System.Exception)
