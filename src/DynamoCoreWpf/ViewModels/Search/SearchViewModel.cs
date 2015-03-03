@@ -30,7 +30,7 @@ namespace Dynamo.ViewModels
         }
 
         public event EventHandler RequestReturnFocusToSearch;
-        public virtual void OnRequestReturnFocusToSearch(object sender, EventArgs e)
+        public void OnRequestReturnFocusToSearch(object sender, EventArgs e)
         {
             if (RequestReturnFocusToSearch != null)
                 RequestReturnFocusToSearch(this, e);
