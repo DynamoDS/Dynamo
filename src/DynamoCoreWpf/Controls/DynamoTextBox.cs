@@ -407,6 +407,7 @@ namespace Dynamo.UI.Controls
         private void OpenLibraryToolTipPopup(object sender, EventArgs e)
         {
             this.DataContext = nextDataContext;
+            IsOpen = true;
 
             // This line is needed to change position of Popup.
             // As position changed PlacementCallback is called and
@@ -422,7 +423,10 @@ namespace Dynamo.UI.Controls
         private void CloseLibraryToolTipPopup(object sender, EventArgs e)
         {
             if (!this.IsMouseOver)
+            {
                 this.DataContext = null;
+                IsOpen = false;
+            }
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
