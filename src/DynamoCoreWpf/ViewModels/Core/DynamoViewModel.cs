@@ -808,6 +808,7 @@ namespace Dynamo.ViewModels
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
+                    SearchViewModel.OnWorkspaceChanged(sender,e);
                     //RaisePropertyChanged("RunEnabled");
                     break;
             }

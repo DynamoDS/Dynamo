@@ -34,6 +34,7 @@ namespace Dynamo.UI.Views
         {
             viewModel = DataContext as SearchViewModel;
             viewModel.SearchTextChanged += OnSearchTextBoxKeyDown;
+            viewModel.WorkspaceChanged += CloseTooltip;
         }
 
         // Changing text content of the search box should always bring up the 
@@ -46,7 +47,7 @@ namespace Dynamo.UI.Views
             if (string.IsNullOrEmpty(viewModel.SearchText))
             {
                 UpdateHighlightedItem(null);
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseTooltip(true);
             }
         }
 
@@ -83,7 +84,7 @@ namespace Dynamo.UI.Views
             if (searchElement != null)
             {
                 searchElement.ClickedCommand.Execute(null);
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseTooltip(true);
             }
         }
 
@@ -162,13 +163,13 @@ namespace Dynamo.UI.Views
         private void OnPopupMouseLeave(object sender, MouseEventArgs e)
         {
             UpdateHighlightedItem(null);
-            libraryToolTipPopup.SetDataContext(null);
+            CloseTooltip();
         }
 
         private void OnListBoxItemLostFocus(object sender, RoutedEventArgs e)
         {
             // Hide tooltip immediately.
-            libraryToolTipPopup.SetDataContext(null, true);
+            CloseTooltip(true);
         }
 
         private void ShowTooltip(object sender)
@@ -177,7 +178,20 @@ namespace Dynamo.UI.Views
             if (fromSender == null) return;
 
             libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            if ((fromSender.DataContext as NodeSearchElementViewModel).Visibility)
+                libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            else
+                CloseTooltip();
+        }
+
+        private void CloseTooltip(bool closeImmediately = false)
+        {
+            libraryToolTipPopup.SetDataContext(null, closeImmediately);
+        }
+
+        private void CloseTooltip(object sender, EventArgs e)
+        {
+            libraryToolTipPopup.SetDataContext(null, true);
         }
 
         #endregion
@@ -631,7 +645,7 @@ namespace Dynamo.UI.Views
             // If we turn to regular view, we have to hide tooltip immediately.
             if (viewModel.CurrentMode != SearchViewModel.ViewMode.LibrarySearchView)
             {
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseTooltip(true);
                 UpdateHighlightedItem(null);
                 return;
             }
@@ -644,7 +658,7 @@ namespace Dynamo.UI.Views
             else
             {
                 // Or hide ToolTip if topResultListBox is empty.
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseTooltip(true);
                 UpdateHighlightedItem(null);
             }
         }
@@ -677,7 +691,7 @@ namespace Dynamo.UI.Views
         private void OnTopResultMouseLeave(object sender, MouseEventArgs e)
         {
             UpdateHighlightedItem(null);
-            libraryToolTipPopup.SetDataContext(null);
+            CloseTooltip();
         }
 
         // User collapsed a category. Function checks if HighlightedItem inside and deselect it.
@@ -694,7 +708,7 @@ namespace Dynamo.UI.Views
             if (categoryToCollapse.MemberGroups.Any(mg => mg.Members.Contains(element)))
             {
                 UpdateHighlightedItem(null);
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseTooltip(true);
             }
         }
 

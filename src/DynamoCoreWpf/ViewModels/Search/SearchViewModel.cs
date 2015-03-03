@@ -43,6 +43,13 @@ namespace Dynamo.ViewModels
                 SearchTextChanged(this, e);
         }
 
+        public event EventHandler WorkspaceChanged;
+        public void OnWorkspaceChanged(object sender, EventArgs e)
+        {
+            if (WorkspaceChanged != null)
+                WorkspaceChanged(this, e);
+        }
+
         #endregion
 
         #region Properties/Fields
@@ -225,19 +232,12 @@ namespace Dynamo.ViewModels
             };
             Model.EntryRemoved += RemoveEntry;
 
-            libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
 
             ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
-        }
-
-        private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            if (propertyChangedEventArgs.PropertyName == "Visibility")
-                SearchAndUpdateResults();
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
