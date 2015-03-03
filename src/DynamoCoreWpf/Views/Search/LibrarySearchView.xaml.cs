@@ -34,6 +34,7 @@ namespace Dynamo.UI.Views
         {
             viewModel = DataContext as SearchViewModel;
             viewModel.SearchTextChanged += OnSearchTextBoxKeyDown;
+            viewModel.RequestReturnFocusToSearch += CloseTooltip;
             viewModel.WorkspaceChanged += CloseTooltip;
         }
 
