@@ -148,14 +148,14 @@ namespace Dynamo.UI.Views
                 }
             }
 
-            IEnumerable<NodeCategoryViewModel> allExpanedCategories = categoryButton.Items.Cast<NodeCategoryViewModel>().
+            IEnumerable<NodeCategoryViewModel> allExpandedCategories = categoryButton.Items.Cast<NodeCategoryViewModel>().
                 Where(cat => !(cat is ClassesNodeCategoryViewModel) && cat.IsExpanded == true);
 
-            if (allExpanedCategories.Count() == 0) return;
+            if (allExpandedCategories.Count() == 0) return;
 
             // If class is at the same level as namespace.
             // Close all open namespaces and select class.
-            foreach (var category in allExpanedCategories)
+            foreach (var category in allExpandedCategories)
             {
                 // If namespace was clicked, then open it or close, it depends on the previous state.
                 if (selectedClass == category)
