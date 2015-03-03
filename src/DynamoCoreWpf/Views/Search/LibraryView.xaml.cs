@@ -152,7 +152,7 @@ namespace Dynamo.UI.Views
             foreach (var category in categoryButton.Items)
             {
                 var catVM = category as NodeCategoryViewModel;
-                if (catVM == null) continue;
+                if (catVM == null || catVM is ClassesNodeCategoryViewModel) continue;
 
                 // If namespace was clicked, then open it or close, it depends on the previous state.
                 if (selectedClass == catVM)
@@ -168,14 +168,22 @@ namespace Dynamo.UI.Views
                 }
 
                 // If class button was clicked.
-                // Ensure, that this class is not part of current category.
-                // Then collapse category.
-                var categoryClasses = catVM.Items.FirstOrDefault(x => x is ClassesNodeCategoryViewModel);
-                if (catVM != null && categoryClasses != null)
-                    if (!(categoryClasses as ClassesNodeCategoryViewModel).Items.Contains(selectedClass)
-                        && selectedClass != catVM)
-                        catVM.IsExpanded = false;
+                catVM.IsExpanded = ExpandClassElement(catVM, selectedClass);   
             }
+        }
+
+        private bool ExpandClassElement(NodeCategoryViewModel category, NodeCategoryViewModel selectedClass)
+        {
+            if (category == null || selectedClass == null)
+                return false;
+
+            var categoryClasses = category.Items[0] as ClassesNodeCategoryViewModel;
+            // Ensure, that this class is not part of current category.
+            if (categoryClasses != null)
+                if (!(categoryClasses).Items.Contains(selectedClass))
+                    return false;
+
+            return true;
         }
 
         private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
