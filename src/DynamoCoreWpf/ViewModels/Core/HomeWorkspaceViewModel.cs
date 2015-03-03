@@ -80,7 +80,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
         {
-            SetCurrentWarning(NotificationLevel.Mild, "Run completed...");
+            SetCurrentWarning(NotificationLevel.Mild, "Run started...");
         }
 
         private void SetCurrentWarning(NotificationLevel level, string message)
