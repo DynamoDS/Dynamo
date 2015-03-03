@@ -231,8 +231,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("BrowserRootCategories");
             };
             Model.EntryRemoved += RemoveEntry;
-            dynamoViewModel.PropertyChanged += OnDynamoVMPropertyChanged;
 
+            dynamoViewModel.PropertyChanged += OnDynamoVMPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
