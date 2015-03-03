@@ -734,13 +734,6 @@
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                         StaysOpen="True"
                                         AllowsTransparency="True"
-                                        MouseLeave="OnPopupMouseLeave">
-            <uicontrols:LibraryToolTipPopup.IsOpen>
-                <Binding ElementName="libraryToolTipPopup"
-                         Path="DataContext"
-                         Mode="OneWay"
-                         Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
-            </uicontrols:LibraryToolTipPopup.IsOpen>
-        </uicontrols:LibraryToolTipPopup>
+                                        MouseLeave="OnPopupMouseLeave" />
     </Grid>
 </UserControl>

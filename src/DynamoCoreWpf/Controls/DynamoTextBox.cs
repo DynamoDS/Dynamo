@@ -380,6 +380,7 @@ namespace Dynamo.UI.Controls
             mainDynamoWindow.Deactivated += (Sender, args) =>
             {
                 this.DataContext = null;
+                IsOpen = false;
             };
         }
 
