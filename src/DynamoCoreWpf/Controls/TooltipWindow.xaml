@@ -150,7 +150,8 @@
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <Grid Grid.Row="5"
+            <!--Here is code text and copy icon. Do not remove it. We may use it in future. -->
+            <!--<Grid Grid.Row="5"
                   Grid.ColumnSpan="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
@@ -212,9 +213,9 @@
                             </Style>
                         </Image.Style>
                     </Image>
-                </StackPanel>
+                </StackPanel>-->
 
-                <!--<TextBlock Grid.Row="3"
+            <!--<TextBlock Grid.Row="3"
                                Grid.Column="0"
                                FontSize="10"
                                Margin="0,0,0,10">
@@ -240,7 +241,7 @@
                             Web Reference
                         </Hyperlink>
                     </TextBlock>-->
-            </Grid>
+            <!--</Grid>-->
         </Grid>
     </Border>
 </UserControl>

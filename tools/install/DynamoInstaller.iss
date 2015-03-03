@@ -8,16 +8,16 @@ AppCopyright=
 AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=http://www.dynamobim.org
 AppUpdatesURL=http://www.dynamobim.org
-AppVersion=0.7.6
-VersionInfoVersion=0.7.6
+AppVersion=0.8.0
+VersionInfoVersion=0.8.0
 VersionInfoCompany=Dynamo 
-VersionInfoDescription=Dynamo 0.7.6
-VersionInfoTextVersion=Dynamo 0.7.6
+VersionInfoDescription=Dynamo 0.8.0
+VersionInfoTextVersion=Dynamo 0.8.0
 VersionInfoCopyright=
-DefaultDirName={pf64}\Dynamo 0.7
+DefaultDirName={pf64}\Dynamo
 DefaultGroupName=Dynamo
 OutputDir=Installers
-OutputBaseFilename=InstallDynamo0.7.6
+OutputBaseFilename=InstallDynamo0.8.0
 SetupIconFile=Extra\DynamoInstaller.ico
 Compression=lzma
 SolidCompression=true
@@ -27,7 +27,7 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\DynamoInstaller.ico
-UninstallDisplayName=Dynamo 0.7.6
+UninstallDisplayName=Dynamo 0.8.0
 UsePreviousAppDir=no
 
 [Dirs]
@@ -302,6 +302,11 @@ begin
 	  
 	  // Query for 0.7.6 MSI uninstall string.
       sUninstallString := GetUninstallStringForMSI('{A0A6A915-F284-4CB4-90D3-C1356052D456}');
+      if sUninstallString <> '' then
+        UnInstallOldMSI(sUninstallString);
+
+	  // Query for 0.8.0 MSI uninstall string.
+      sUninstallString := GetUninstallStringForMSI('{3594373A-F8C0-40DF-ACBD-D4AF085C4189}');
       if sUninstallString <> '' then
         UnInstallOldMSI(sUninstallString);
 
