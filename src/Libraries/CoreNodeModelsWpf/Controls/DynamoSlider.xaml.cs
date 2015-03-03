@@ -1,6 +1,5 @@
 ﻿using System;
 using System.CodeDom.Compiler;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -45,12 +44,7 @@ namespace Dynamo.Wpf.Controls
 
         private void Slider_OnDragCompleted(object sender, DragCompletedEventArgs e)
         {
-            nodeModel.MarkNodeAsModified(true);           
-            ui.ViewModel.DynamoViewModel.ExecuteCommand(
-               new DynamoModel.UpdateModelValueCommand(
-                    ui.ViewModel.WorkspaceViewModel.Model.Guid,
-                    ui.ViewModel.NodeModel.GUID, "SliderValue",
-                    this.slider.Value.ToString(CultureInfo.InvariantCulture)));
+            nodeModel.MarkNodeAsModified(true);
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
