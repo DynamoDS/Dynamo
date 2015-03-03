@@ -16,8 +16,6 @@ namespace Dynamo.UI.Controls
         public ToolTipWindow()
         {
             InitializeComponent();
-            input.Text = Configurations.InputLabel;
-            output.Text = Configurations.OutputLabel;
         }
 
         public void CopyIconMouseClick(object sender, MouseButtonEventArgs e)

@@ -224,12 +224,12 @@ namespace Dynamo.Nodes
             if (string.IsNullOrEmpty(fullCategoryName))
                 return string.Empty;
 
-            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiterString.ToString(), " " + Configurations.ShortenedCategoryDelimiterString + " ");
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiterString, " " + Configurations.ShortenedCategoryDelimiter + " ");
 
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)
             {
-                var s = catName.Split(Configurations.ShortenedCategoryDelimiterString.ToCharArray()).Select(x => x.Trim()).ToList();
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
                 if (s.Count() > 4)
                 {
                     s = new List<string>()
@@ -240,7 +240,7 @@ namespace Dynamo.Nodes
                                             s[s.Count - 2],
                                             s[s.Count - 1]
                                         };
-                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiterString + " ", s);
+                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
                 }
             }
 

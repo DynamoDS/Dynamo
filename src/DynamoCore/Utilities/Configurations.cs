@@ -131,8 +131,6 @@ namespace Dynamo.UI
         public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
         public static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
         public static string NoDescriptionAvailable = Resources.NoDescriptionAvailable;
-        public static string InputLabel = Resources.InputLabel;
-        public static string OutputLabel = Resources.OutputLabel;
 
         #endregion
 
@@ -210,7 +208,7 @@ namespace Dynamo.UI
         public const string CategoryGroupAction = "Actions";
         public const string CategoryGroupQuery = "Query";
         public const string CategoryDelimiterString = ".";
-        public const string ShortenedCategoryDelimiterString = "-";
+        public const char ShortenedCategoryDelimiter = '-';
         public const string CategoryDelimiterWithSpaces = " - ";
 
         public const string ClassesDefaultName = "Classes";
