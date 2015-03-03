@@ -24,7 +24,6 @@ namespace Dynamo.Tests
     public class DynamoViewModelUnitTest : UnitTestBase
     {
         protected DynamoViewModel ViewModel;
-        protected DynamoModel Model;
         private DynamoShapeManager.Preloader preloader;
 
         public override void Init()
@@ -96,7 +95,7 @@ namespace Dynamo.Tests
             preloader = new Preloader(assemblyFolder);
             preloader.Preload();
 
-            this.Model = DynamoModel.Start(
+            var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true,
@@ -106,7 +105,7 @@ namespace Dynamo.Tests
             this.ViewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
                 {
-                    DynamoModel = this.Model
+                    DynamoModel = model
                 });
 
             this.ViewModel.RequestUserSaveWorkflow += RequestUserSaveWorkflow;
