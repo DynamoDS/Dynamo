@@ -120,7 +120,7 @@ namespace DSCoreNodesUI
             InPortData.Add(new PortData("", "A numeric value for conversion."));
             OutPortData.Add(new PortData("", "A converted numeric value."));
 
-            ShouldDisplayPreviewCore = false;
+            ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
             RegisterAllPorts();
         }
@@ -132,7 +132,7 @@ namespace DSCoreNodesUI
             InPortData.Add(new PortData("", "A numeric value for conversion."));
             OutPortData.Add(new PortData("", "A converted numeric value."));
 
-            ShouldDisplayPreviewCore = false;
+            ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = false;
             RegisterAllPorts();
         }
