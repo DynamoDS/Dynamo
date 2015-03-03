@@ -1075,27 +1075,6 @@ namespace ProtoCore
             return modStateTemp;
         }
 
-        //public int GetCurrentBlockId()
-        //{
-        //    int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
-        //    if (constructBlockId == Constants.kInvalidIndex)
-        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
-
-        //    CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
-        //    while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
-        //    {
-        //        constructBlock = constructBlock.parent;
-        //    }
-
-        //    if (null != constructBlock)
-        //        constructBlockId = constructBlock.codeBlockId;
-
-        //    if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
-        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
-        //    else
-        //        return __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
-        //}
-
         public GraphNode GetExecutingGraphNode()
         {
             return ExecutingGraphnode;
@@ -1110,6 +1089,10 @@ namespace ProtoCore
             SSASubscript_GUID = guid;
             SSASubscript = subscript;
         }
-       
+
+        public void Cleanup()
+        {
+            CLRModuleType.ClearTypes();
+        }
     }
 }
