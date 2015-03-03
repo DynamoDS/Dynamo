@@ -3215,6 +3215,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run completed..
+        /// </summary>
+        public static string RunCompletedMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with warnings..
+        /// </summary>
+        public static string RunCompletedWithWarningsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run started....
+        /// </summary>
+        public static string RunStartedMessage {
+            get {
+                return ResourceManager.GetString("RunStartedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run whenever there is a change to the graph..
         /// </summary>
         public static string RunTypeToolTipAutomatically {

@@ -1541,4 +1541,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
     <value>Run at the specified interval.</value>
   </data>
+  <data name="RunCompletedMessage" xml:space="preserve">
+    <value>Run completed.</value>
+  </data>
+  <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
+    <value>Run completed with warnings.</value>
+  </data>
+  <data name="RunStartedMessage" xml:space="preserve">
+    <value>Run started...</value>
+  </data>
 </root>

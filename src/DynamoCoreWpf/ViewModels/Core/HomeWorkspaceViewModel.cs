@@ -70,17 +70,17 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             if (!hasWarnings)
             {
-                SetCurrentWarning(NotificationLevel.Mild, "Run completed.");
+                SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunCompletedMessage);
             }
             else
             {
-                SetCurrentWarning(NotificationLevel.Moderate, "Run completed with warnings."); 
+                SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage); 
             }
         }
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
         {
-            SetCurrentWarning(NotificationLevel.Mild, "Run started...");
+            SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunStartedMessage);
         }
 
         private void SetCurrentWarning(NotificationLevel level, string message)
