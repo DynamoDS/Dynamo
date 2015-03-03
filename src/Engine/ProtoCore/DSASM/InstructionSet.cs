@@ -478,7 +478,7 @@ namespace ProtoCore.DSASM
             value.optype = AddressType.ArrayKey;
             value.opdata = index;
 
-            Validity.Assert(array.IsArray);
+            Validity.Assert(array.IsArray || array.IsString);
             value.opdata_d = (int)array.opdata;
 
             return value;

@@ -4660,6 +4660,12 @@ namespace ProtoCore.DSASM
                     key = StackValue.Null;
                 }
             }
+            else if (svArrayToIterate.IsString)
+            {
+                var str = runtimeCore.RuntimeMemory.Heap.GetString(svArrayToIterate);
+                Validity.Assert(str != null);
+                key = str.Any() ? StackValue.BuildArrayKey(svArrayToIterate, 0) : StackValue.Null;
+            }
             else
             {
                 // Handle the case if svArrayToIterate is not an array

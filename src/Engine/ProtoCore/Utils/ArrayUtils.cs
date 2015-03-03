@@ -770,6 +770,11 @@ namespace ProtoCore.Utils
             else if (index.IsArrayKey)
             {
                 int fullIndex = (int)index.opdata;
+                if (array.IsString)
+                {
+                    return GetValueFromIndex(array, fullIndex, runtimeCore);
+                }
+
                 HeapElement he = GetHeapElement(array, runtimeCore);
 
                 if (he.VisibleSize > fullIndex)
