@@ -151,7 +151,7 @@ namespace Dynamo.UI.Views
 
             // If class is at the same level as namespace.
             // First, find all expanded categories.
-            IEnumerable<NodeCategoryViewModel> allExpandedCategories = categoryButton.Items.Cast<NodeCategoryViewModel>().
+            IEnumerable<NodeCategoryViewModel> allExpandedCategories = categoryButton.Items.OfType<NodeCategoryViewModel>().
                 Where(cat => (!(cat is ClassesNodeCategoryViewModel) && cat.IsExpanded == true) || cat == selectedClass);
 
             // If there is no expanded categories, leave it.
