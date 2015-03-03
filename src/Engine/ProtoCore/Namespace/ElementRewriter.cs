@@ -63,9 +63,11 @@ namespace ProtoCore.Namespace
                     }
                     else
                     {
-                        // Namespace conflict, class name could not be resolved.
-                        // This will be reported subsequently in the pre-compilation stage
-                        return;
+                        // Class name could not be resolved - Possible namespace conflict 
+                        // This will be reported subsequently in the pre-compilation stage if there's a conflict
+                        // Enter an empty resolved name to the list and continue
+                        resolvedNames.Enqueue(string.Empty);
+                        continue;
                     }
                 }
                 resolvedNames.Enqueue(resolvedName);
@@ -155,7 +157,7 @@ namespace ProtoCore.Namespace
                 }
                 if (resolvedNames.Any())
                 {
-                    astNode = RewriteIdentifierListNode(rightNode, resolvedNames);
+                    astNode = RewriteIdentifierListNode(identListNode, resolvedNames);
                 }
                 else
                 {
@@ -165,9 +167,13 @@ namespace ProtoCore.Namespace
 
         }
 
-        private static IdentifierListNode RewriteIdentifierListNode(AssociativeNode rightNode, Queue<string> resolvedNames)
+        private static IdentifierListNode RewriteIdentifierListNode(IdentifierListNode identListNode, Queue<string> resolvedNames)
         {
             var resolvedName = resolvedNames.Dequeue();
+
+            // if resolved name is null or empty, return the identifier list node as is
+            if (string.IsNullOrEmpty(resolvedName))
+                return identListNode;
 
             string[] strIdentList = resolvedName.Split('.');
             Validity.Assert(strIdentList.Length >= 2);
@@ -193,7 +199,7 @@ namespace ProtoCore.Namespace
             var lastIdentList = new IdentifierListNode
             {
                 LeftNode = newIdentList,
-                RightNode = rightNode,
+                RightNode = identListNode.RightNode,
                 Optr = Operator.dot
             };
 
