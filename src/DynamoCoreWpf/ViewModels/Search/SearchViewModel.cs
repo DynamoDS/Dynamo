@@ -36,18 +36,18 @@ namespace Dynamo.ViewModels
                 RequestReturnFocusToSearch(this, e);
         }
 
+        public event EventHandler RequestCloseSearchToolTip;
+        public void OnRequestCloseSearchToolTip(object sender, EventArgs e)
+        {
+            if (RequestCloseSearchToolTip != null)
+                RequestCloseSearchToolTip(this, e);
+        }
+
         public event EventHandler SearchTextChanged;
         public void OnSearchTextChanged(object sender, EventArgs e)
         {
             if (SearchTextChanged != null)
                 SearchTextChanged(this, e);
-        }
-
-        public event EventHandler WorkspaceChanged;
-        public void OnWorkspaceChanged(object sender, EventArgs e)
-        {
-            if (WorkspaceChanged != null)
-                WorkspaceChanged(this, e);
         }
 
         #endregion
@@ -231,6 +231,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("BrowserRootCategories");
             };
             Model.EntryRemoved += RemoveEntry;
+            dynamoViewModel.PropertyChanged += OnDynamoVMPropertyChanged;
 
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
@@ -238,6 +239,16 @@ namespace Dynamo.ViewModels
             InsertClassesIntoTree(LibraryRootCategories);
 
             ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
+        }
+
+        private void OnDynamoVMPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "CurrentSpace":
+                    OnRequestCloseSearchToolTip(sender, e);
+                    break;
+            }
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)

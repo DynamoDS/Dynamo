@@ -39,7 +39,7 @@ namespace Dynamo.UI.Views
             // We should hide tooltip.
             viewModel.RequestReturnFocusToSearch += CloseTooltip;
             // When workspace was changed, we should hide tooltip. 
-            viewModel.WorkspaceChanged += CloseTooltip;
+            viewModel.RequestCloseSearchToolTip += CloseTooltip;
         }
 
         // Changing text content of the search box should always bring up the 
