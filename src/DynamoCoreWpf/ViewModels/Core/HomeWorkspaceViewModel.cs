@@ -1,5 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Media;
 
 using Dynamo.Models;
 using Dynamo.UI.Commands;
@@ -9,12 +13,39 @@ namespace Dynamo.Wpf.ViewModels.Core
 {
     public class HomeWorkspaceViewModel : WorkspaceViewModel
     {
+        #region private members
+
+        private NotificationLevel curentNotificationLevel;
+        private string currentNotificationMessage;
+
+        #endregion
+
         #region commands
 
         public DelegateCommand StartPeriodicTimerCommand { get; set; }
         public DelegateCommand StopPeriodicTimerCommand { get; set; }
 
         #endregion
+
+        public NotificationLevel CurrentNotificationLevel
+        {
+            get { return curentNotificationLevel; }
+            set
+            {
+                curentNotificationLevel = value;
+                RaisePropertyChanged("CurrentNotificationLevel");
+            }
+        }
+
+        public string CurrentNotificationMessage
+        {
+            get { return currentNotificationMessage; }
+            set
+            {
+                currentNotificationMessage = value;
+                RaisePropertyChanged("CurrentNotificationMessage");
+            }
+        }
 
         public HomeWorkspaceViewModel(HomeWorkspaceModel model, DynamoViewModel dynamoViewModel)
             : base(model, dynamoViewModel)
@@ -26,6 +57,38 @@ namespace Dynamo.Wpf.ViewModels.Core
             StopPeriodicTimerCommand = new DelegateCommand(StopPeriodicTimer, CanStopPeriodicTimer);
 
             CheckAndSetPeriodicRunCapability();
+
+            var hwm = (HomeWorkspaceModel)Model;
+            hwm.EvaluationStarted += hwm_EvaluationStarted;
+            hwm.EvaluationCompleted += hwm_EvaluationCompleted;
+        }
+
+        void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        {
+            if (e.EvaluationSucceeded)
+            {
+                SetCurrentWarning(NotificationLevel.Mild, "Run completed.");
+            }
+            else
+            {
+                SetCurrentWarning(NotificationLevel.Moderate, "Run completed with errors."); 
+            }
+        }
+
+        void hwm_EvaluationStarted(object sender, EventArgs e)
+        {
+            SetCurrentWarning(NotificationLevel.Mild, "Run completed...");
+        }
+
+        private void SetCurrentWarning(NotificationLevel level, string message)
+        {
+            CurrentNotificationLevel = level;
+            CurrentNotificationMessage = message;
+        }
+
+        public void ClearWarning()
+        {
+            CurrentNotificationMessage = string.Empty;
         }
 
         private void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -63,6 +126,32 @@ namespace Dynamo.Wpf.ViewModels.Core
         private bool CanStopPeriodicTimer(object parameter)
         {
             return true;
+        }
+    }
+
+    public enum NotificationLevel { Mild, Moderate, Error }
+
+    public class NotificationLevelToColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var level = (NotificationLevel)value;
+            switch (level)
+            {
+                case NotificationLevel.Mild:
+                    return new SolidColorBrush(Colors.Gray);
+                case NotificationLevel.Moderate:
+                    return new SolidColorBrush(Colors.Gold);
+                case NotificationLevel.Error:
+                    return new SolidColorBrush(Colors.Tomato);
+                default:
+                    return new SolidColorBrush(Colors.Gray);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

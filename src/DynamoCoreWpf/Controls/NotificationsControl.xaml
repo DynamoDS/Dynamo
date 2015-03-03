@@ -3,20 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:vms="clr-namespace:Dynamo.Wpf.ViewModels"
+             xmlns:core="clr-namespace:Dynamo.Wpf.ViewModels.Core"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.DataContext>
-        <vms:NotificationsViewModel/>
-    </UserControl.DataContext>
-    
+
     <UserControl.Resources>
-        <vms:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></vms:NotificationLevelToColorConverter>
+        <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
     </UserControl.Resources>
     
     <Grid>
             <TextBlock
-                Text="{Binding Path=CurrentNotificationMessage}"
+                Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
                 FontStyle="Italic"
                 FontSize="12"
                 VerticalAlignment="Center"
@@ -24,7 +21,7 @@
                 TextAlignment="Right"
                 TextTrimming="WordEllipsis"
                 Margin="10"
-                Foreground="{Binding Path=CurrentNotificationLevel, 
+                Foreground="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
                             Converter={StaticResource NotificationLevelToColorConverter}}">
             <TextBlock.Triggers>
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">

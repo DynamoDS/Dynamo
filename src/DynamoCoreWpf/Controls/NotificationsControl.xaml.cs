@@ -1,8 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 using Dynamo.Controls;
-using Dynamo.Wpf.ViewModels;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.Wpf.Controls
 {
@@ -20,7 +23,7 @@ namespace Dynamo.Wpf.Controls
 
         void NotificationsControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var window = Dynamo.Utilities.WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            var window = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             window.PreviewMouseDown += window_PreviewMouseDown;
         }
 
@@ -30,10 +33,10 @@ namespace Dynamo.Wpf.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void window_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        void window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var vm = (NotificationsViewModel)DataContext;
-            vm.ClearWarning();
+            var hsvm = (HomeWorkspaceViewModel)((DynamoViewModel)DataContext).HomeSpaceViewModel;
+            hsvm.ClearWarning();
         }
     }
 }

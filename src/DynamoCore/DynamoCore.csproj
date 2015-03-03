@@ -109,7 +109,6 @@ limitations under the License.
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
-    <Compile Include="Core\Notifications.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
     <Compile Include="Models\RunSettings.cs" />
