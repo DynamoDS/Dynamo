@@ -1119,6 +1119,16 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             AssertPreviewValue("6a0207d9-78d7-4fd3-829f-d19644acdc1b", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
+
+        [Test]
+        public void TestMod()
+        {
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsfunction\modDoesntWork.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("77c95ace-e4f1-4119-87fc-7163f9b3b8b0", true);
+            AssertPreviewValue("21f58def-725d-41c9-abc7-063cc3642420", true);
+            AssertPreviewValue("dbd73c1b-0b40-4138-af69-4dd3da2de62d", true);
+        }
     }
 
     [Category("DSCustomNode")]

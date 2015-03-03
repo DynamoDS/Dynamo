@@ -196,6 +196,9 @@ namespace ProtoCore.Utils
             InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt, PrimitiveType.kTypeDouble);
             InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
             InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
+            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt);
+            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt, PrimitiveType.kTypeDouble);
+            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
 
             InsertBinaryOperationMethod(core, root, Operator.bitwiseand, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
             InsertBinaryOperationMethod(core, root, Operator.bitwiseand, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
