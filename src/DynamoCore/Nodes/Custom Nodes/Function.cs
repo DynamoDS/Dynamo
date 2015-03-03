@@ -215,6 +215,8 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             InputSymbol = String.Empty;
+
+            elementResolver = new ElementResolver();
         }
 
         public string InputSymbol
