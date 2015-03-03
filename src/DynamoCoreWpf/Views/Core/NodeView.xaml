@@ -88,6 +88,12 @@
                           IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
                           IsCheckable="True"
                           IsEnabled="{Binding Path=CanDisplayLabels}" />
+                <MenuItem Name="enablePeriodicUpdate"
+                          Header="Enable Periodic Update"
+                          IsCheckable="True"
+                          IsChecked="{Binding Path=EnablePeriodicUpdate, Mode=OneWay}" 
+                          Visibility="{Binding PeriodicUpdateVisibility}"
+                          IsEnabled="False"/>
                 <MenuItem Name="rename_cm"
                           Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
                           Command="{Binding Path=RenameCommand}" />

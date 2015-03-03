@@ -31,22 +31,22 @@ namespace ProtoTestFx
             {
                 Core debugRunCore = DebugRunnerRunOnly(code);
                 CompareCores(runCore, debugRunCore, defectID);
-                debugRunCore.Cleanup();
+                debugRunCore.__TempCoreHostForRefactoring.Cleanup();
             }
 
             {
                 Core stepOverCore = DebugRunnerStepOver(code);
                 CompareCores(runCore, stepOverCore, defectID);
-                stepOverCore.Cleanup();
+                stepOverCore.__TempCoreHostForRefactoring.Cleanup();
             }
 
             {
                 Core stepInCore = DebugRunerStepIn(code);
                 CompareCores(runCore, stepInCore, defectID);
-                stepInCore.Cleanup();
+                stepInCore.__TempCoreHostForRefactoring.Cleanup();
             }
 
-            runCore.Cleanup();
+            runCore.__TempCoreHostForRefactoring.Cleanup();
 
         }
 
@@ -77,6 +77,7 @@ namespace ProtoTestFx
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
 
+            core.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             //Run
 
             fsr.Execute(code, core);
@@ -203,6 +204,9 @@ namespace ProtoTestFx
 
         internal static void CompareCores(Core c1, Core c2, string defectID = "")
         {
+            RuntimeCore rtcore1 = c1.__TempCoreHostForRefactoring;
+            RuntimeCore rtcore2 = c2.__TempCoreHostForRefactoring;
+
             Assert.AreEqual(c1.DSExecutable.runtimeSymbols.Length, c2.DSExecutable.runtimeSymbols.Length, defectID);
 
 
@@ -211,10 +215,10 @@ namespace ProtoTestFx
                 foreach (SymbolNode symNode in c1.DSExecutable.runtimeSymbols[symTableIndex].symbolList.Values)
                 {
 
-                    ExecutionMirror runExecMirror = new ExecutionMirror(c1.CurrentExecutive.CurrentDSASMExec,
-                                                                        c1);
+                    ExecutionMirror runExecMirror = new ExecutionMirror(c1.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec,
+                                                                        c1.__TempCoreHostForRefactoring);
                     ExecutionMirror debugExecMirror =
-                        new ExecutionMirror(c2.CurrentExecutive.CurrentDSASMExec, c2);
+                        new ExecutionMirror(c2.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec, c2.__TempCoreHostForRefactoring);
 
                     bool lookupOk = false;
                     StackValue runValue = StackValue.Null;
@@ -235,7 +239,7 @@ namespace ProtoTestFx
                     catch (Exception ex)
                     {
                         if ((ex is ArgumentOutOfRangeException || ex is IndexOutOfRangeException) &&
-                            (c1.RunningBlock != symNode.runtimeTableIndex))
+                            (rtcore1.RunningBlock != symNode.runtimeTableIndex))
                         {
                             // Quite possible that variables defined in the inner
                             // language block have been garbage collected and 
@@ -251,7 +255,7 @@ namespace ProtoTestFx
                     if (lookupOk)
                     {
                         StackValue debugValue = debugExecMirror.GetGlobalValue(symNode.name);
-                        if (!StackUtils.CompareStackValues(debugValue, runValue, c2, c1))
+                        if (!StackUtils.CompareStackValues(debugValue, runValue, rtcore2, rtcore1))
                         {
                             Assert.Fail(string.Format("\tThe value of variable \"{0}\" doesn't match in run mode and in debug mode.\nTracked by {1}", symNode.name, defectID));
                         }

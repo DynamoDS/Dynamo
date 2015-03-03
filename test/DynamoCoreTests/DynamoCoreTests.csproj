@@ -102,6 +102,7 @@
     <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
+    <Compile Include="WorkspaceOpeningTests.cs" />
     <Compile Include="WorkspaceSaving.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />

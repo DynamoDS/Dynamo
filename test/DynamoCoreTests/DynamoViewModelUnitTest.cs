@@ -5,7 +5,7 @@ using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
-
+using DynamoShapeManager;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
@@ -15,9 +15,16 @@ using System.IO;
 
 namespace Dynamo.Tests
 {
+    /// <summary>
+    /// The DynamoViewModelUnitTests constructs the DynamoModel
+    /// and the DynamoViewModel, but does not construct the view.
+    /// You can use this class to create tests which ensure that the 
+    /// ViewModel and the Model are communicating properly.
+    /// </summary>
     public class DynamoViewModelUnitTest : UnitTestBase
     {
         protected DynamoViewModel ViewModel;
+        private DynamoShapeManager.Preloader preloader;
 
         public override void Init()
         {
@@ -29,6 +36,7 @@ namespace Dynamo.Tests
         {
             try
             {
+                preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
                 var shutdownParams = new DynamoViewModel.ShutdownParams(
@@ -80,15 +88,18 @@ namespace Dynamo.Tests
 
         protected void StartDynamo()
         {
-            DynamoPathManager.Instance.InitializeCore(
-               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            var assemblyFolder = Path.GetDirectoryName(assemblyPath);
+            DynamoPathManager.Instance.InitializeCore(assemblyFolder);
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-            
+            preloader = new Preloader(assemblyFolder);
+            preloader.Preload();
+
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = true,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             this.ViewModel = DynamoViewModel.Start(

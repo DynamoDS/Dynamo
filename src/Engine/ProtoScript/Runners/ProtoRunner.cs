@@ -133,7 +133,7 @@ namespace ProtoScript.Runners
             public ProtoCore.Mirror.RuntimeMirror LookupName(string name, int blockID)
             {
                 // TODO Jun: The expression interpreter must be integrated into the mirror
-                core.Rmem.PushConstructBlockId(blockID);
+                runtimeCore.RuntimeMemory.PushConstructBlockId(blockID);
                 runtimeCore.DebugProps.CurrentBlockId = blockID;
                 ProtoScript.Runners.ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
 

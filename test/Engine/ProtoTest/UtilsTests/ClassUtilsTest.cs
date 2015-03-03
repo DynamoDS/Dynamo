@@ -24,9 +24,10 @@ namespace ProtoTest.UtilsTests
             ClassNode cnA = core.ClassTable.ClassNodes[idA];
             ClassNode cnB = core.ClassTable.ClassNodes[idB];
             ClassNode cnC = core.ClassTable.ClassNodes[idC];
-            List<int> idsA = ClassUtils.GetClassUpcastChain(cnA, core);
-            List<int> idsB = ClassUtils.GetClassUpcastChain(cnB, core);
-            List<int> idsC = ClassUtils.GetClassUpcastChain(cnC, core);
+            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            List<int> idsA = ClassUtils.GetClassUpcastChain(cnA, runtimeCore);
+            List<int> idsB = ClassUtils.GetClassUpcastChain(cnB, runtimeCore);
+            List<int> idsC = ClassUtils.GetClassUpcastChain(cnC, runtimeCore);
             Assert.IsTrue(idsA.Count == 2);
             Assert.IsTrue(idsA.Contains(idA));
 

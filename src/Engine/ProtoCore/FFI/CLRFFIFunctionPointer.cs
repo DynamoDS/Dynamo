@@ -258,7 +258,7 @@ namespace ProtoFFI
             List<Object> parameters = new List<object>();
             List<StackValue> s = dsi.runtime.rmem.Stack;
             Object thisObject = null;
-            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.Core);
+            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
             if (!ReflectionInfo.IsStatic)
             {
                 try
@@ -429,7 +429,7 @@ namespace ProtoFFI
         {
             Object retVal = base.Execute(c, dsi);
             List<StackValue> s = dsi.runtime.rmem.Stack;
-            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.Core);
+            FFIObjectMarshler marshaller = Module.GetMarshaller(dsi.runtime.RuntimeCore);
             marshaller.OnDispose(s.Last(), c, dsi); //Notify marshler for dispose.
 
             return retVal;
@@ -471,12 +471,12 @@ namespace ProtoFFI
                 int classIndex = thisObject.metaData.type;
                 if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
-                    var core = dsi.runtime.Core;
-                    int idx = core.ClassTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
-                    StackValue oldValue = core.Heap.GetHeapElement(thisObject).GetValue(idx, core);
+                    var runtimeCore = dsi.runtime.RuntimeCore;
+                    int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.IndexOf(PropertyName);
+                    StackValue oldValue = dsi.runtime.rmem.Heap.GetHeapElement(thisObject).GetValue(idx, runtimeCore);
                     if (!StackUtils.Equals(oldValue, propValue))
                     {
-                        core.Heap.GetHeapElement(thisObject).SetValue(idx, propValue);
+                        dsi.runtime.rmem.Heap.GetHeapElement(thisObject).SetValue(idx, propValue);
                     }
                 }
             }

@@ -154,7 +154,7 @@ namespace ProtoCore
             }
 
             AssociativeGraph.GraphNode executingGraphNode = null;
-            var executive = core.CurrentExecutive.CurrentDSASMExec;
+            var executive = runtimeCore.CurrentExecutive.CurrentDSASMExec;
             if (executive != null)
             {
                 executingGraphNode = executive.Properties.executingGraphNode;
@@ -207,8 +207,8 @@ namespace ProtoCore
             int codeBlock = 0;
             if (core != null)
             {
-                pc = core.CurrentExecutive.CurrentDSASMExec.PC;
-                codeBlock = core.RunningBlock;
+                pc = runtimeCore.CurrentExecutive.CurrentDSASMExec.PC;
+                codeBlock = runtimeCore.RunningBlock;
 
                 if (String.IsNullOrEmpty(filePath))
                 {
@@ -353,8 +353,8 @@ namespace ProtoCore
                 string strOp = Op.GetOpSymbol(op);
                 message = String.Format(Resources.kMethodResolutionFailureForOperator,
                                         strOp,
-                                        core.TypeSystem.GetType(arguments[0].metaData.type),
-                                        core.TypeSystem.GetType(arguments[1].metaData.type));
+                                        runtimeCore.DSExecutable.TypeSystem.GetType(arguments[0].metaData.type),
+                                        runtimeCore.DSExecutable.TypeSystem.GetType(arguments[1].metaData.type));
             }
             else
             {
@@ -362,7 +362,7 @@ namespace ProtoCore
                 sb.Append("(");
                 foreach (StackValue sv in arguments)
                 {
-                    sb.Append(core.TypeSystem.GetType(sv.metaData.type));
+                    sb.Append(runtimeCore.DSExecutable.TypeSystem.GetType(sv.metaData.type));
                     sb.Append(",");
                 }
                 String outString = sb.ToString();

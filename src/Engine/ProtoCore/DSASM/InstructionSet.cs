@@ -732,7 +732,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
-        public StackValue ToBoolean(Core core)
+        public StackValue ToBoolean(RuntimeCore runtimeCore)
         {
             switch (optype)
             {
@@ -753,7 +753,7 @@ namespace ProtoCore.DSASM
                     return StackValue.BuildBoolean(true);
 
                 case AddressType.String:
-                    string str = core.Heap.GetString(this);
+                    string str = runtimeCore.RuntimeMemory.Heap.GetString(this);
                     return string.IsNullOrEmpty(str) ? StackValue.False : StackValue.True;
 
                 case AddressType.Char:

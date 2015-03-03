@@ -271,7 +271,7 @@ namespace ProtoScript.Runners
             {
                 reachableNodes.AddRange(ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
                     executingNode,
-                    liveCore.CurrentExecutive.CurrentDSASMExec,
+                    liveCore.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec,
                     executingNode.exprUID,
                     executingNode.modBlkUID,
                     executingNode.IsSSANode(),
@@ -1129,8 +1129,8 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
-                    runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
-                    runnerCore.Cleanup();
+                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
+                    runtimeCore.Cleanup();
                 }
 
                 terminating = true;
@@ -1161,13 +1161,15 @@ namespace ProtoScript.Runners
             runnerCore = new ProtoCore.Core(coreOptions);
             runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
             runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
-            runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
+
+            runtimeCore = runnerCore.__TempCoreHostForRefactoring;
+            runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
 
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
             foreach (var item in configuration.PassThroughConfiguration)
             {
-                runnerCore.Configurations[item.Key] = item.Value;
+                runtimeCore.Configurations[item.Key] = item.Value;
             }
 
             vmState = null;
@@ -1311,8 +1313,8 @@ namespace ProtoScript.Runners
             // Traverse order:
             //  Exelist, Globals symbols
 
-            ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
-            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
+            ProtoCore.DSASM.Executive exec = runnerCore.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec;
+            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore.__TempCoreHostForRefactoring);
             Executable exe = exec.exe;
 
             // Only display symbols defined in the default top-most langauge block;
@@ -1496,7 +1498,7 @@ namespace ProtoScript.Runners
         {
             Dictionary<string, bool> execFlagList = null;
 
-            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList, Constants.kInvalidIndex);
+            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList, Constants.kInvalidIndex, null);
 
             bool succeeded = runner.Compile(staticContext, runnerCore, out blockId);
             if (succeeded)
@@ -1540,7 +1542,7 @@ namespace ProtoScript.Runners
             //           as no symbols point to this memory location in the stack anyway
             if (newSymbols >= 0)
             {
-                runnerCore.Rmem.PushFrameForGlobals(newSymbols);
+                runtimeCore.RuntimeMemory.PushFrameForGlobals(newSymbols);
             }
 
             // Store the current number of global symbols
@@ -1553,11 +1555,10 @@ namespace ProtoScript.Runners
             try
             {
                 runner.Execute(runnerCore, 0, compileContext, runtimeContext);
-                runtimeCore = runnerCore.__TempCoreHostForRefactoring;
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
-                runnerCore.Cleanup();
+                runtimeCore.Cleanup();
                 ReInitializeLiveRunner();
             }
 
@@ -1573,7 +1574,7 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(code, out blockId);
             if (succeeded)
             {
-                runnerCore.RunningBlock = blockId;
+                runtimeCore.RunningBlock = blockId;
                 vmState = Execute();
             }
             return succeeded;
@@ -1586,7 +1587,7 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(astList, runnerCore, out blockId);
             if (succeeded)
             {
-                runnerCore.RunningBlock = blockId;
+                runtimeCore.RunningBlock = blockId;
                 vmState = Execute();
             }
             return succeeded;
@@ -1636,6 +1637,7 @@ namespace ProtoScript.Runners
         private void ResetForDeltaExecution()
         {
             runnerCore.ResetForDeltaExecution();
+            runtimeCore.ResetForDeltaExecution();
         }
 
         /// <summary>

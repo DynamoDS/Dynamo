@@ -1,8 +1,18 @@
-using DSCoreNodesUI;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml;
+﻿using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
+using Dynamo.Library;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
@@ -17,15 +27,6 @@ using DynamoUnits;
 using DynamoUtilities;
 using Greg; // Dynamo package manager
 using ProtoCore;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Xml;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.AST;
@@ -46,6 +47,8 @@ namespace Dynamo.Models
         public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
 
         #region private members
+
+        private readonly string geometryFactoryPath;
         private WorkspaceModel currentWorkspace;
         #endregion
 
@@ -98,8 +101,9 @@ namespace Dynamo.Models
         }
 
         #endregion
-        
+
         #region static properties
+
         /// <summary>
         /// Testing flag is used to defer calls to run in the idle thread
         /// with the assumption that the entire test will be wrapped in an
@@ -114,6 +118,7 @@ namespace Dynamo.Models
                 InstrumentationLogger.IsTestMode = value;
             }
         }
+
         private static bool isTestMode;
 
         /// <summary>
@@ -277,17 +282,6 @@ namespace Dynamo.Models
             }
         }
 
-        public bool RunEnabled
-        {
-            get 
-            { 
-                if (CurrentWorkspace == null)
-                    return false;
-                
-                return this.CurrentWorkspace.RunEnabled;
-            }
-        }
-
         /// <summary>
         ///     The private collection of visible workspaces in Dynamo
         /// </summary>
@@ -371,6 +365,7 @@ namespace Dynamo.Models
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
+            public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
             public string PackageManagerAddress { get; set; }
         }
@@ -430,6 +425,8 @@ namespace Dynamo.Models
             var thread = config.SchedulerThread ?? new DynamoSchedulerThread();
             Scheduler = new DynamoScheduler(thread, IsTestMode);
             Scheduler.TaskStateChanged += OnAsyncTaskStateChanged;
+
+            geometryFactoryPath = config.GeometryFactoryPath;
 
             var settings = preferences as PreferenceSettings;
             if (settings != null)
@@ -534,7 +531,7 @@ namespace Dynamo.Models
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
-                        Logger.Log(String.Format(Properties.Resources.EvaluationComleted, executionTimeSpan));
+                        Logger.Log(String.Format(Properties.Resources.EvaluationCompleted, executionTimeSpan));
                         ExecutionEvents.OnGraphPostExecution();
                     }
                     break;
@@ -548,7 +545,7 @@ namespace Dynamo.Models
         public void Dispose()
         {
             LibraryServices.Dispose();
-            LibraryServices.LibraryManagementCore.Cleanup();
+            LibraryServices.LibraryManagementCore.__TempCoreHostForRefactoring.Cleanup();
             Logger.Dispose();
 
             if (PreferenceSettings != null)
@@ -814,10 +811,9 @@ namespace Dynamo.Models
                 EngineController = null;
             }
 
-            var geomFactory = DynamoPathManager.Instance.GeometryFactory;
             EngineController = new EngineController(
                 LibraryServices,
-                geomFactory,
+                geometryFactoryPath,
                 DebugSettings.VerboseLogging);
             EngineController.MessageLogged += LogMessage;
 
@@ -850,8 +846,8 @@ namespace Dynamo.Models
             var xmlDoc = new XmlDocument();
             xmlDoc.Load(xmlPath);
 
-            WorkspaceHeader workspaceInfo;
-            if (WorkspaceHeader.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, Logger, out workspaceInfo))
+            WorkspaceInfo workspaceInfo;
+            if (WorkspaceInfo.FromXmlDocument(xmlDoc, xmlPath, IsTestMode, Logger, out workspaceInfo))
             {
                 if (MigrationManager.ProcessWorkspace(workspaceInfo, xmlDoc, IsTestMode, NodeFactory))
                 {
@@ -867,7 +863,7 @@ namespace Dynamo.Models
             Logger.LogError("Could not open workspace at: " + xmlPath);
         }
 
-        private bool OpenFile(WorkspaceHeader workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
+        private bool OpenFile(WorkspaceInfo workspaceInfo, XmlDocument xmlDoc, out WorkspaceModel workspace)
         {
             CustomNodeManager.AddUninitializedCustomNodesInPath(
                 Path.GetDirectoryName(workspaceInfo.FileName),
@@ -885,7 +881,7 @@ namespace Dynamo.Models
         }
 
         private bool OpenHomeWorkspace(
-            XmlDocument xmlDoc, WorkspaceHeader workspaceInfo, out WorkspaceModel workspace)
+            XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
@@ -896,17 +892,14 @@ namespace Dynamo.Models
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                workspaceInfo.X,
-                workspaceInfo.Y,
-                DebugSettings.VerboseLogging, IsTestMode, nodeGraph.ElementResolver, workspaceInfo.FileName);
+                workspaceInfo,
+                DebugSettings.VerboseLogging, 
+                IsTestMode, 
+                nodeGraph.ElementResolver
+               );
 
             RegisterHomeWorkspace(newWorkspace);
             
-            var currentHomeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
-            if (currentHomeWorkspace != null)
-            {
-                newWorkspace.DynamicRunEnabled = currentHomeWorkspace.DynamicRunEnabled;
-            }
             workspace = newWorkspace;
 
             return true;
