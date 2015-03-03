@@ -265,14 +265,15 @@ namespace ProtoCore.Utils
 
         public static void LogWarning(this Interpreter dsi, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
         {
-            ProtoCore.Core core = dsi.runtime.Core;
-            core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
+            ProtoCore.RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
+            runtimeCore.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
         }
 
         public static void LogSemanticError(this Interpreter dsi, string msg, string fileName = null, int line = -1, int col = -1)
         {
-            ProtoCore.Core core = dsi.runtime.Core;
-            core.BuildStatus.LogSemanticError(msg, fileName, line, col);
+            // Consider renaming this function as there is no such thing as a semantic error at runtime
+            ProtoCore.RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
+            runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, msg, fileName, line, col);
         }
 
         public static void LogWarning(this Core core, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
@@ -869,6 +870,33 @@ namespace ProtoCore.Utils
                 }
             }
             return codeblock;
+        }
+
+        public static ProcedureNode GetFirstVisibleProcedure(string name, List<Type> argTypeList, CodeBlock codeblock)
+        {
+            if (null == codeblock)
+            {
+                return null;
+            }
+
+            CodeBlock searchBlock = codeblock;
+            while (null != searchBlock)
+            {
+                if (null == searchBlock.procedureTable)
+                {
+                    searchBlock = searchBlock.parent;
+                    continue;
+                }
+
+                // The class table is passed just to check for coercion values
+                int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
+                if (Constants.kInvalidIndex != procIndex)
+                {
+                    return searchBlock.procedureTable.procList[procIndex];
+                }
+                searchBlock = searchBlock.parent;
+            }
+            return null;
         }
     }
 }

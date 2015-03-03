@@ -13,7 +13,7 @@ namespace ProtoTest.DSASM
     {
         private class TestExecutive : ProtoCore.DSASM.Executive
         {
-            public TestExecutive(Core core) : base(core)
+            public TestExecutive(RuntimeCore runtimeCore) : base(runtimeCore)
             {
             }
         }
@@ -26,13 +26,13 @@ namespace ProtoTest.DSASM
         public void SetUp()
         {
             testCore = thisTest.SetupTestCore();
-            testExecutive = new TestExecutive(testCore);
+            testExecutive = new TestExecutive(testCore.__TempCoreHostForRefactoring);
         }
 
         [TearDown]
         public void CleanUp()
         {
-            testCore.Cleanup();
+            testCore.__TempCoreHostForRefactoring.Cleanup();
         }
 
         /// <summary>

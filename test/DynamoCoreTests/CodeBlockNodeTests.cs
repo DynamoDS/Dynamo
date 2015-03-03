@@ -831,7 +831,7 @@ b = c[w][x][y][z];";
         {
             if (libraryServicesCore != null)
             {
-                libraryServicesCore.Cleanup();
+                libraryServicesCore.__TempCoreHostForRefactoring.Cleanup();
                 libraryServicesCore = null;
             }
         }

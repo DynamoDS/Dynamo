@@ -389,7 +389,7 @@ namespace ProtoCore
             }
         }
 
-        public void SetUpCallrForDebug(Core core, RuntimeCore runtimeCore, DSASM.Executive exec, ProcedureNode fNode, int pc, bool isBaseCall = false,
+        public void SetUpCallrForDebug(RuntimeCore runtimeCore, DSASM.Executive exec, ProcedureNode fNode, int pc, bool isBaseCall = false,
             CallSite callsite = null, List<StackValue> arguments = null, List<List<ReplicationGuide>> replicationGuides = null, StackFrame stackFrame = null,
             List<StackValue> dotCallDimensions = null, bool hasDebugInfo = false, bool isMember = false, StackValue? thisPtr = null)
         {
@@ -443,22 +443,22 @@ namespace ProtoCore
             }
 
             List<List<ReplicationInstruction>> replicationTrials;
-            bool willReplicate = callsite.WillCallReplicate(new Context(), arguments, replicationGuides, stackFrame, core, out replicationTrials);
+            bool willReplicate = callsite.WillCallReplicate(new Context(), arguments, replicationGuides, stackFrame, runtimeCore, out replicationTrials);
             
             // the inline conditional built-in is handled separately as 'WillCallReplicate' is always true in this case
             if(fNode.name.Equals(Constants.kInlineConditionalMethodName))
             {
                 // The inline conditional built-in is created only for associative blocks and needs to be handled separately as below
-                InstructionStream istream = core.DSExecutable.instrStreamList[CurrentBlockId];
+                InstructionStream istream = runtimeCore.DSExecutable.instrStreamList[CurrentBlockId];
                 Validity.Assert(istream.language == Language.kAssociative);
                 {
                     runtimeCore.DebugProps.InlineConditionOptions.isInlineConditional = true;
                     runtimeCore.DebugProps.InlineConditionOptions.startPc = pc;
 
-                    runtimeCore.DebugProps.InlineConditionOptions.endPc = FindEndPCForAssocGraphNode(pc, istream, fNode, exec.Properties.executingGraphNode, core.Options.ExecuteSSA);
+                    runtimeCore.DebugProps.InlineConditionOptions.endPc = FindEndPCForAssocGraphNode(pc, istream, fNode, exec.Properties.executingGraphNode, runtimeCore.Options.ExecuteSSA);
 
 
-                    runtimeCore.DebugProps.InlineConditionOptions.instructionStream = core.RunningBlock;
+                    runtimeCore.DebugProps.InlineConditionOptions.instructionStream = runtimeCore.RunningBlock;
                     debugFrame.IsInlineConditional = true;
                 }
                 
@@ -543,7 +543,7 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="fNode"></param>
         /// <param name="isReplicating"></param>
-        public void RestoreCallrForNoBreak(Core core, RuntimeCore runtimeCore, ProcedureNode fNode, bool isReplicating = false)
+        public void RestoreCallrForNoBreak(RuntimeCore runtimeCore, ProcedureNode fNode, bool isReplicating = false)
         {
             Validity.Assert(DebugStackFrame.Count > 0);
             
@@ -590,13 +590,13 @@ namespace ProtoCore
                     // if stepping over outermost function call
                     if (!DebugStackFrameContains(StackFrameFlagOptions.IsFunctionStepOver))
                     {
-                        SetUpStepOverFunctionCalls(core, runtimeCore, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
+                        SetUpStepOverFunctionCalls(runtimeCore, fNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
                     }
                 }
             }
         }
 
-        public void SetUpStepOverFunctionCalls(Core core, RuntimeCore runtimeCore, ProcedureNode fNode, GraphNode graphNode, bool hasDebugInfo)
+        public void SetUpStepOverFunctionCalls(RuntimeCore runtimeCore, ProcedureNode fNode, GraphNode graphNode, bool hasDebugInfo)
         {
             int tempPC = DebugEntryPC;
             int limit = 0;  // end pc of current expression
@@ -612,7 +612,7 @@ namespace ProtoCore
             else
             {
                 pc = tempPC;
-                istream = runtimeCore.DSExecutable.instrStreamList[core.RunningBlock];
+                istream = runtimeCore.DSExecutable.instrStreamList[runtimeCore.RunningBlock];
                 if (istream.language == Language.kAssociative)
                 {
                     limit = FindEndPCForAssocGraphNode(pc, istream, fNode, graphNode, runtimeCore.Options.ExecuteSSA);

@@ -131,11 +131,11 @@ namespace ProtoScript.Runners
             ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             // Move these core setup to runtime core 
             runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
-            core.RunningBlock = runningBlock;
+            runtimeCore.RunningBlock = runningBlock;
 
             try
             {
-                core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
                 foreach (ProtoCore.DSASM.CodeBlock codeblock in core.CodeBlockList)
                 {
                     // Comment Jun:
@@ -151,15 +151,15 @@ namespace ProtoScript.Runners
 
                     // Initialize the entry point interpreter
                     int locals = 0; // This is the global scope, there are no locals
-                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
-                    core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-                    core.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
                 }
-                core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
             catch 
             {
-                core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
                 throw;
             }
         }
@@ -199,7 +199,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             }
 
             return null;
@@ -233,7 +233,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             }
 
             return null;
@@ -276,7 +276,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             }
 
             return null;
@@ -301,19 +301,56 @@ namespace ProtoScript.Runners
                 throw new Exception("Cannot open file " + filename);
             }
 
+            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+
             string strSource = reader.ReadToEnd();
             reader.Dispose();
             //Start the timer       
-            core.StartTimer();
+            runtimeCore.StartTimer();
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;
             Execute(strSource, core);
 
             if (isTest && !core.Options.CompileToLib)
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
             else
                 return null;
         }
+
+        /// <summary>
+        /// The public method to compile DS code
+        /// </summary>
+        /// <param name="sourcecode"></param>
+        /// <param name="compileCore"></param>
+        /// <param name="dsExecutable"></param>
+        /// <returns></returns>
+        public bool CompileMe(string sourcecode, ProtoCore.Core compileCore, out Executable dsExecutable)
+        {
+            int blockID = 0;
+            bool succeeded = Compile(sourcecode, compileCore, out blockID);
+
+            compileCore.GenerateExecutable();
+            dsExecutable = compileCore.DSExecutable;
+
+            return succeeded;
+        }
+
+        public ExecutionMirror ExecuteMe(ProtoCore.RuntimeCore runtimeCore)
+        {
+            throw new NotImplementedException();
+
+            try
+            {
+                //Execute(runtimeCore, 0, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+            }
+            catch (ProtoCore.Exceptions.ExecutionCancelledException e)
+            {
+                Console.WriteLine("The execution has been cancelled!");
+            }
+             
+            //return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+        }
+
     }
 }

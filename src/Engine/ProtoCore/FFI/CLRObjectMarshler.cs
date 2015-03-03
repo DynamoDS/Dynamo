@@ -387,11 +387,11 @@ namespace ProtoFFI
 
         protected StackValue ToDSArray(IDictionary dictionary, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
         {
-            var core = dsi.runtime.Core;
+            var runtimeCore = dsi.runtime.RuntimeCore;
 
             var array = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
-            HeapElement ho = ArrayUtils.GetHeapElement(array, core);
-            ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(core));
+            HeapElement ho = ArrayUtils.GetHeapElement(array, runtimeCore);
+            ho.Dict = new Dictionary<StackValue, StackValue>(new StackValueComparer(runtimeCore));
 
             foreach (var key in dictionary.Keys)
             {
@@ -417,7 +417,7 @@ namespace ProtoFFI
         /// <returns></returns>
         protected T[] UnMarshal<T>(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi)
         {
-            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.Core);
+            var dsElements = ArrayUtils.GetValues(dsObject, dsi.runtime.RuntimeCore);
             var result = new List<T>();
             Type objType = typeof(T);
 
@@ -542,7 +542,7 @@ namespace ProtoFFI
         /// </summary>
         /// <param name="core">Core object.</param>
         /// <returns>CLRObjectMarshler</returns>
-        public static CLRObjectMarshler GetInstance(ProtoCore.Core core)
+        public static CLRObjectMarshler GetInstance(ProtoCore.RuntimeCore core)
         {
             CLRObjectMarshler marshaller = null;
             if (!mObjectMarshlers.TryGetValue(core, out marshaller))
@@ -918,7 +918,7 @@ namespace ProtoFFI
                 {
                     DSObjectMap.Remove(dsObject);
                     CLRObjectMap.Remove(clrobject);
-                    dsi.runtime.Core.FFIPropertyChangedMonitor.RemoveFFIObject(clrobject);
+                    dsi.runtime.RuntimeCore.FFIPropertyChangedMonitor.RemoveFFIObject(clrobject);
                 }
             }
         }
@@ -992,7 +992,7 @@ namespace ProtoFFI
             metadata.type = type;
             StackValue retval = runtimeCore.RuntimeMemory.Heap.AllocatePointer(classTable.ClassNodes[type].size, metadata);
             BindObjects(obj, retval);
-            dsi.runtime.Core.FFIPropertyChangedMonitor.AddFFIObject(obj);
+            dsi.runtime.RuntimeCore.FFIPropertyChangedMonitor.AddFFIObject(obj);
             return retval;
         }
 
@@ -1011,11 +1011,11 @@ namespace ProtoFFI
             if (null == properties || properties.Count == 0)
                 return;
 
-            var core = dsi.runtime.Core;
+            var runtimeCore = dsi.runtime.RuntimeCore;
             StackValue[] svs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject).Stack;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
-                SymbolNode symbol = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix];
+                SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix];
                 object prop = null;
                 if (properties.TryGetValue(symbol.name, out prop) && null != prop)
                     svs[ix] = Marshal(prop, context, dsi, GetMarshaledType(prop.GetType()));
@@ -1189,16 +1189,16 @@ namespace ProtoFFI
         /// Constructor.
         /// </summary>
         /// <param name="core">Core object for marshler.</param>
-        private CLRObjectMarshler(ProtoCore.Core core)
+        private CLRObjectMarshler(ProtoCore.RuntimeCore runtimeCore)
         {
-            core.Dispose += core_Dispose;
+            runtimeCore.Dispose += core_Dispose;
         }
 
         /// <summary>
         /// Dispose event handler.
         /// </summary>
         /// <param name="sender">Core object being disposed.</param>
-        void core_Dispose(ProtoCore.Core sender)
+        void core_Dispose(ProtoCore.RuntimeCore sender)
         {
             CLRObjectMarshler marshaller = null;
             if (!mObjectMarshlers.TryGetValue(sender, out marshaller))
@@ -1226,7 +1226,7 @@ namespace ProtoFFI
 
         private readonly Dictionary<StackValue, Object> DSObjectMap = new Dictionary<StackValue, object>(new PointerValueComparer());
         private readonly Dictionary<Object, StackValue> CLRObjectMap = new Dictionary<object, StackValue>(new ReferenceEqualityComparer());
-        private static readonly Dictionary<ProtoCore.Core, CLRObjectMarshler> mObjectMarshlers = new Dictionary<ProtoCore.Core, CLRObjectMarshler>();
+        private static readonly Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshler> mObjectMarshlers = new Dictionary<ProtoCore.RuntimeCore, CLRObjectMarshler>();
         private static List<IDisposable> mPendingDisposables = new List<IDisposable>();
         private static readonly Object syncroot = new Object();
         #endregion

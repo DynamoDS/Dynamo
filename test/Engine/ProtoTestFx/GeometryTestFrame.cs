@@ -90,14 +90,15 @@ namespace ProtoTestFx
             TextOutputStream fs = new TextOutputStream(map);
 
             core = new ProtoCore.Core(options);
-            core.Configurations.Add(ConfigurationKeys.GeometryXmlProperties, true);
+
+            core.__TempCoreHostForRefactoring.Configurations.Add(ConfigurationKeys.GeometryXmlProperties, true);
             //core.Configurations.Add(ConfigurationKeys.GeometryFactory, geometryFactory);
             //core.Configurations.Add(ConfigurationKeys.PersistentManager, persistentManager);
 
             // By specifying this option we inject a mock Executive ('InjectionExecutive')
             // that prints stackvalues at every assignment statement
             // by overriding the POP_handler instruction - pratapa
-            core.ExecutiveProvider = new InjectionExecutiveProvider();
+            //core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
 
@@ -166,13 +167,13 @@ namespace ProtoTestFx
             }
             catch (NUnit.Framework.AssertionException e)
             {
-                core.Cleanup();
+                core.__TempCoreHostForRefactoring.Cleanup();
                 Assert.Fail(e.Message);
                 return;
             }
             catch (Exception e)
             {
-                core.Cleanup();
+                core.__TempCoreHostForRefactoring.Cleanup();
                 Assert.Fail("Error: an exception is thrown!\n\n\t" + e.Message );
                 return;
             }
@@ -180,7 +181,7 @@ namespace ProtoTestFx
             //Ensure no memory leak
             //sw.Close();
 
-            core.Cleanup();
+            core.__TempCoreHostForRefactoring.Cleanup();
         }
 
         public static bool RunAndCompareNoAssert(string scriptFile)

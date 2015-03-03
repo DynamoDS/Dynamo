@@ -91,7 +91,7 @@ namespace Dynamo.Models
             }
         }
 
-        public string ToolTipContent { get; private set; }
+        public string ToolTipContent { get; internal set; }
 
         public string DefaultValueTip
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 
 using Dynamo;
@@ -10,7 +11,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -28,6 +29,7 @@ namespace SystemTestServices
     public abstract class SystemTestBase
     {
         protected string workingDirectory;
+        private Preloader preloader;
 
         #region protected properties
 
@@ -60,8 +62,6 @@ namespace SystemTestServices
                 workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             }
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
@@ -90,6 +90,7 @@ namespace SystemTestServices
 
             View = null;
             Model = null;
+            preloader = null;
 
             GC.Collect();
 
@@ -123,10 +124,15 @@ namespace SystemTestServices
 
         protected virtual void StartDynamo()
         {
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            preloader = new Preloader(Path.GetDirectoryName(exePath));
+            preloader.Preload();
+
             Model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
                     DynamoCorePath = DynamoPathManager.Instance.MainExecPath
                 });
 

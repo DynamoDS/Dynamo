@@ -35,19 +35,18 @@ namespace ProtoCore.Lang
             return true;
         }
 
-        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
-            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, true);
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, true);
             ProtoCore.DSASM.Executive oldDSASMExec = null;
-            if (core.CurrentExecutive != null)
+            if (runtimeCore.CurrentExecutive != null)
             {
-                oldDSASMExec = core.CurrentExecutive.CurrentDSASMExec;
-                core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                oldDSASMExec = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+                runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
             }
 
             // Assert for the block type
-            activation.globs = core.DSExecutable.runtimeSymbols[core.RunningBlock].GetGlobalSize();
+            activation.globs = runtimeCore.DSExecutable.runtimeSymbols[runtimeCore.RunningBlock].GetGlobalSize();
 
             //
             // Comment Jun:
@@ -88,8 +87,8 @@ namespace ProtoCore.Lang
 
             // Update the running block to tell the execution engine which set of instruction to execute
             // TODO(Jun/Jiong): Considering store the orig block id to stack frame
-            int origRunningBlock = core.RunningBlock;
-            core.RunningBlock = (int)svBlockDecl.opdata;
+            int origRunningBlock = runtimeCore.RunningBlock;
+            runtimeCore.RunningBlock = (int)svBlockDecl.opdata;
 
             // Set SX register 
             interpreter.runtime.SX = svBlockDecl;
@@ -142,13 +141,13 @@ namespace ProtoCore.Lang
             }
             else
             {
-                svRet = interpreter.Run(core.RunningBlock, activation.pc, Language.kInvalid, runtimeCore.Breakpoints);
-                core.RunningBlock = origRunningBlock;
+                svRet = interpreter.Run(runtimeCore.RunningBlock, activation.pc, Language.kInvalid, runtimeCore.Breakpoints);
+                runtimeCore.RunningBlock = origRunningBlock;
             }
 
-            if (core.CurrentExecutive != null)
+            if (runtimeCore.CurrentExecutive != null)
             {
-                core.CurrentExecutive.CurrentDSASMExec = oldDSASMExec;
+                runtimeCore.CurrentExecutive.CurrentDSASMExec = oldDSASMExec;
             }
             return svRet; //DSASM.Mirror.ExecutionMirror.Unpack(svRet, core.heap, core);
         }

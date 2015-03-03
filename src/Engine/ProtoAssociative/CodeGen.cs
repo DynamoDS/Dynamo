@@ -1491,7 +1491,7 @@ namespace ProtoAssociative
             // global function. 
             if ((procCallNode == null) && (procName != Constants.kFunctionPointerCall))
             {
-                procCallNode = core.GetFirstVisibleProcedure(procName, arglist, codeBlock);
+                procCallNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeBlock);
                 if (null != procCallNode)
                 {
                     type = Constants.kGlobalScope;
@@ -1539,7 +1539,7 @@ namespace ProtoAssociative
                     inferedType.UID = dotCallType.UID;
                 }
 
-                var procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
+                var procNode = CoreUtils.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
                 if (CoreUtils.IsGetter(procName))
                 {
                     EmitFunctionCall(depth, type, arglist, procNode, funcCall, true);
@@ -1580,7 +1580,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    var procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
+                    var procNode = CoreUtils.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
                     if (CoreUtils.IsSetter(procName))
                     {
                         EmitFunctionCall(depth, type, arglist, procNode, funcCall);
@@ -1796,7 +1796,7 @@ namespace ProtoAssociative
             // global function. 
             if ((procNode == null) && (procName != Constants.kFunctionPointerCall))
             {
-                procNode = core.GetFirstVisibleProcedure(procName, arglist, codeBlock);
+                procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeBlock);
                 if (null != procNode)
                 {
                     type = ProtoCore.DSASM.Constants.kGlobalScope;
@@ -3863,7 +3863,7 @@ namespace ProtoAssociative
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 // Save the current scope for the expression interpreter
-                globalClassIndex = core.watchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
+                globalClassIndex = runtimeCore.watchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
                 globalProcIndex = core.watchFunctionScope = context.MemoryState.CurrentStackFrame.FunctionScope;
                 int functionBlock = context.MemoryState.CurrentStackFrame.FunctionBlock;
 
@@ -4259,7 +4259,7 @@ namespace ProtoAssociative
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
-                procNode = core.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
                 if (null != procNode)
                 {
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId)
@@ -8363,7 +8363,7 @@ namespace ProtoAssociative
                         }
                         if (procNode == null)
                         {
-                            procNode = core.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                            procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
                         }
                         if (procNode != null)
                         {
