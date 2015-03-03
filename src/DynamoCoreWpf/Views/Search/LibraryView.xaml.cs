@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -147,17 +148,19 @@ namespace Dynamo.UI.Views
                 }
             }
 
+            IEnumerable<NodeCategoryViewModel> allExpanedCategories = categoryButton.Items.Cast<NodeCategoryViewModel>().
+                Where(cat => !(cat is ClassesNodeCategoryViewModel) && cat.IsExpanded == true);
+
+            if (allExpanedCategories.Count() == 0) return;
+
             // If class is at the same level as namespace.
             // Close all open namespaces and select class.
-            foreach (var category in categoryButton.Items)
+            foreach (var category in allExpanedCategories)
             {
-                var catVM = category as NodeCategoryViewModel;
-                if (catVM == null || catVM is ClassesNodeCategoryViewModel) continue;
-
                 // If namespace was clicked, then open it or close, it depends on the previous state.
-                if (selectedClass == catVM)
+                if (selectedClass == category)
                 {
-                    catVM.IsExpanded = !catVM.IsExpanded;
+                    category.IsExpanded = !category.IsExpanded;
                     // Accept situation, when root category was clicked.
                     // Don't handle it, wpf will close it by default and unselect classes.
                     if (selectedClass is RootNodeCategoryViewModel)
@@ -168,7 +171,7 @@ namespace Dynamo.UI.Views
                 }
 
                 // If class button was clicked.
-                catVM.IsExpanded = ExpandClassElement(catVM, selectedClass);   
+                category.IsExpanded = ExpandClassElement(category, selectedClass);
             }
         }
 
