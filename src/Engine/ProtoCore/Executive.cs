@@ -5,12 +5,12 @@ namespace ProtoCore
 {
 	public class Executive
 	{
-        protected Core core; 
+        protected RuntimeCore runtimeCore; 
 
-		public Executive (Core core)
+		public Executive (RuntimeCore runtimeCore)
 		{
-            System.Diagnostics.Debug.Assert(core != null);
-            this.core = core;
+            System.Diagnostics.Debug.Assert(runtimeCore != null);
+            this.runtimeCore = runtimeCore;
            
 		}
 
@@ -18,7 +18,7 @@ namespace ProtoCore
 
         public StackValue Execute(int codeblock, int entry, ProtoCore.Runtime.Context callContext, bool fepRun = false, System.Collections.Generic.List<Instruction> breakpoints = null)
         {
-            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, fepRun);
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, fepRun);
             CurrentDSASMExec = interpreter.runtime;
             return interpreter.Run(codeblock, entry, CurrentDSASMExec.executingLanguage, breakpoints);
         }

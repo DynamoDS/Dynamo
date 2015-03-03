@@ -29,11 +29,10 @@ namespace ProtoCore.Lang
         }
 
 
-        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             RuntimeMemory rmem = runtimeCore.RuntimeMemory;
-            ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core);
+            ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(runtimeCore);
             StackValue ret;
 
             switch (buildInMethodId)
@@ -116,7 +115,7 @@ namespace ProtoCore.Lang
                                                                 formalParameters[3],
                                                                 formalParameters[4],
                                                                 formalParameters[5],
-                                                                core);
+                                                                runtimeCore);
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kAllFalse:
                     {
@@ -294,7 +293,7 @@ namespace ProtoCore.Lang
                         // If run in delta execution environment, we don't 
                         // create language blocks for true and false branch, 
                         // so directly return the value.
-                        if (core.Options.IsDeltaExecution)
+                        if (runtimeCore.Options.IsDeltaExecution)
                         {
                             return svCondition.RawBooleanValue ? svTrue : svFalse;
                         }
@@ -340,7 +339,7 @@ namespace ProtoCore.Lang
                         blockCaller = runtimeCore.DebugProps.CurrentBlockId;
                         StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
 
-                        ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, core.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
+                        ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
                         runtimeCore.RunningBlock = oldRunningBlockId;
                         break;
@@ -404,10 +403,10 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.kToString:
                 case BuiltInMethods.MethodID.kToStringFromObject:
                 case BuiltInMethods.MethodID.kToStringFromArray:
-                    ret = StringUtils.ConvertToString(formalParameters[0], core, rmem);
+                    ret = StringUtils.ConvertToString(formalParameters[0], runtimeCore, rmem);
                     break;
                 case BuiltInMethods.MethodID.kImportData:
-                    ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], core, interpreter, c);
+                    ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], runtimeCore, interpreter, c);
                     break;
                 case BuiltInMethods.MethodID.kBreak:
                     {
@@ -481,7 +480,7 @@ namespace ProtoCore.Lang
                     break;
                 case BuiltInMethods.MethodID.kNodeAstFailed:
                     var nodeFullName = formalParameters[0];
-                    var fullName = StringUtils.GetStringValue(nodeFullName, core);
+                    var fullName = StringUtils.GetStringValue(nodeFullName, runtimeCore);
                     ret = StackValue.Null;
                     break;
                 default:
@@ -493,8 +492,7 @@ namespace ProtoCore.Lang
 
         private StackValue DotMethod(StackValue lhs, StackFrame stackFrame, DSASM.Executive runtime, Context context)
         {
-            var core = runtime.Core;
-            var runtimeCore = core.__TempCoreHostForRefactoring;
+            var runtimeCore = runtime.RuntimeCore;
             var rmem = runtime.rmem;
             var runtimeData = runtime.exe.RuntimeData;
 
@@ -636,19 +634,19 @@ namespace ProtoCore.Lang
                 thisObjectType, 
                 functionName, 
                 runtime.exe,
-                runtimeCore.RunningBlock, 
-                core.Options, 
+                runtimeCore.RunningBlock,
+                runtimeCore.Options, 
                 runtimeCore.RuntimeStatus);
             Validity.Assert(null != callsite);
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
-            if (core.Options.IDEDebugMode &&
+            if (runtimeCore.Options.IDEDebugMode &&
                 runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
-                runtimeCore.DebugProps.SetUpCallrForDebug(core,
+                runtimeCore.DebugProps.SetUpCallrForDebug(
                                                    runtimeCore,
-                                                   core.CurrentExecutive.CurrentDSASMExec,
+                                                   runtimeCore.CurrentExecutive.CurrentDSASMExec,
                                                    procNode,
                                                    stackFrame.ReturnPC - 1,
                                                    false, callsite,
@@ -661,14 +659,14 @@ namespace ProtoCore.Lang
                                                    thisObject);
             }
 
-            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, core);
+            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, runtimeCore);
 
             // Restore debug properties after returning from a CALL/CALLR
-            if (core.Options.IDEDebugMode &&
+            if (runtimeCore.Options.IDEDebugMode &&
                 runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
-                runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode);
+                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }
 
             return ret;
@@ -677,16 +675,16 @@ namespace ProtoCore.Lang
 
     internal class ContextDataBuiltIns
     {
-        internal static StackValue ImportData(StackValue svAppName, StackValue svConnectionParameters, Core core, Interpreter interpreter, ProtoCore.Runtime.Context c)
+        internal static StackValue ImportData(StackValue svAppName, StackValue svConnectionParameters, RuntimeCore runtimeCore, Interpreter interpreter, ProtoCore.Runtime.Context c)
         {
-            string appname = StringUtils.GetStringValue(svAppName, core);
+            string appname = StringUtils.GetStringValue(svAppName, runtimeCore);
 
-            IContextDataProvider provider = ContextDataManager.GetInstance(core).GetDataProvider(appname);
+            IContextDataProvider provider = runtimeCore.DSExecutable.RuntimeData.ContextDataMngr.GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
-            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(core.__TempCoreHostForRefactoring);
+            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(runtimeCore);
 
-            Dictionary<string, Object> parameters = new Dictionary<string,object>();
+            Dictionary<string, Object> parameters = new Dictionary<string, object>();
             if (!svConnectionParameters.IsArray)
             {
                 Object connectionParameters = marshaler.UnMarshal(svConnectionParameters, c, interpreter, typeof(Object));
@@ -695,12 +693,12 @@ namespace ProtoCore.Lang
             else
             {
                 StackValue[] svArray = ArrayUtils.GetValues(svConnectionParameters, interpreter.runtime.RuntimeCore).ToArray();
-                ProtoCore.Utils.Validity.Assert(svArray.Length%2 == 0, string.Format("Connection parameters for ImportData should be array of Parameter Name followed by value"));
+                ProtoCore.Utils.Validity.Assert(svArray.Length % 2 == 0, string.Format("Connection parameters for ImportData should be array of Parameter Name followed by value"));
                 int nParameters = svArray.Length / 2;
                 for (int i = 0; i < nParameters; ++i)
                 {
-                    string paramName = StringUtils.GetStringValue(svArray[2*i], core);
-                    Object paramData = marshaler.UnMarshal(svArray[2*i+1], c, interpreter, typeof(Object));
+                    string paramName = StringUtils.GetStringValue(svArray[2 * i], runtimeCore);
+                    Object paramData = marshaler.UnMarshal(svArray[2 * i + 1], c, interpreter, typeof(Object));
                     parameters.Add(paramName, paramData);
                 }
             }
@@ -733,7 +731,7 @@ namespace ProtoCore.Lang
         //return the number of milliseconds past from executing the program 
         internal static int GetElapsedTime(ProtoCore.DSASM.Interpreter runtime)
         {
-            TimeSpan ts = runtime.runtime.Core.GetCurrentTime();
+            TimeSpan ts = runtime.runtime.RuntimeCore.GetCurrentTime();
             int ms = ts.Milliseconds;
             return ms;
         }
@@ -743,9 +741,8 @@ namespace ProtoCore.Lang
         // set a breakpoint at the next breakable instruction
         internal static void Break(Interpreter interpreter, StackFrame stackFrame)
         {
-            Core core = interpreter.runtime.Core;
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
-            if (!core.Options.IDEDebugMode)
+            RuntimeCore runtimeCore = interpreter.runtime.RuntimeCore;
+            if (!runtimeCore.Options.IDEDebugMode)
                 return;
 
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
@@ -755,7 +752,7 @@ namespace ProtoCore.Lang
 
             int pc = stackFrame.ReturnPC;
             int blockId = stackFrame.FunctionCallerBlock;
-            List<Instruction> instructions = core.DSExecutable.instrStreamList[blockId].instrList;
+            List<Instruction> instructions = runtimeCore.DSExecutable.instrStreamList[blockId].instrList;
 
             // Search instructions from DebugEntryPC onwards for the next breakpoint and add it to current list of breakpoints
             // if there is a bounce, then jump to new lang block and continue searching
@@ -770,7 +767,7 @@ namespace ProtoCore.Lang
                 else if (instructions[pc].opCode == OpCode.BOUNCE)
                 {
                     blockId = (int)instructions[pc].op1.opdata;
-                    instructions = core.DSExecutable.instrStreamList[blockId].instrList;
+                    instructions = runtimeCore.DSExecutable.instrStreamList[blockId].instrList;
                     pc = 0;
                     continue;
                 }
@@ -898,14 +895,19 @@ namespace ProtoCore.Lang
         internal static StackValue Print(StackValue msg, ProtoCore.DSASM.Interpreter runtime)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.Core);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.RuntimeCore);
             string result = mirror.GetStringValue(msg, runtime.runtime.rmem.Heap, 0, true);
             //For Console output
             Console.WriteLine(result);
-            //For IDE output
-            ProtoCore.Core core = runtime.runtime.Core;
+            
+            ////For IDE output
+            //ProtoCore.Core core = runtime.runtime.Core;
+            //OutputMessage t_output = new OutputMessage(result);
+            //core.BuildStatus.MessageHandler.Write(t_output);
+            ProtoCore.RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             OutputMessage t_output = new OutputMessage(result);
-            core.BuildStatus.MessageHandler.Write(t_output);
+            runtimeCore.RuntimeStatus.MessageHandler.Write(t_output);
+
             return DSASM.StackValue.Null;
         }
     }
@@ -1020,9 +1022,8 @@ namespace ProtoCore.Lang
                                                    StackValue svOp,
                                                    StackValue svHasStep,
                                                    StackValue svHasAmountOp,
-                                                   ProtoCore.Core core)
+                                                   ProtoCore.RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
 
             if (!svStart.IsNumeric || !svEnd.IsNumeric)
             {

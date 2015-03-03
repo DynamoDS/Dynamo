@@ -28,6 +28,7 @@ namespace ProtoCore
             //      2. Do the data analysis of the MirrorData in the MirrorData class itself
             //
             private ProtoCore.Core core;
+            private ProtoCore.RuntimeCore runtimeCore;
 
             /// <summary>
             /// 
@@ -36,11 +37,22 @@ namespace ProtoCore
 
             /// <summary>
             /// Experimental constructor that takes in a core object
+            /// Takes a core object to read static data
             /// </summary>
             /// <param name="sv"></param>
             public MirrorData(ProtoCore.Core core, StackValue sv)
             {
                 this.core = core;
+                svData = sv;
+            }       
+            
+            /// <summary>
+            /// Takes a runtime core object to read runtime data
+            /// </summary>
+            /// <param name="sv"></param>
+            public MirrorData(ProtoCore.RuntimeCore runtimeCore, StackValue sv)
+            {
+                this.runtimeCore = runtimeCore;
                 svData = sv;
             }
 
@@ -62,7 +74,7 @@ namespace ProtoCore
                 List<IGraphicItem> graphicItems = new List<IGraphicItem>();
                 foreach (var sv in values)
                 {
-                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.core);
+                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.runtimeCore);
                     if (items != null && (items.Count > 0))
                         graphicItems.AddRange(items);
                 }
@@ -140,13 +152,13 @@ namespace ProtoCore
             /// else null.
             /// </summary>
             /// <returns>List of MirrorData represented by this data.</returns>
-            public List<MirrorData> GetElements()
+            public List<MirrorData> GetElements() 
             {
                 //This is not a collection
                 if (!this.IsCollection)
                     return null;
 
-                return ArrayUtils.GetValues(svData, core.__TempCoreHostForRefactoring).Select(x => new MirrorData(this.core, x)).ToList();
+                return ArrayUtils.GetValues(svData, runtimeCore).Select(x => new MirrorData(this.runtimeCore, x)).ToList();
             }
 
             /// <summary>
@@ -163,7 +175,7 @@ namespace ProtoCore
             /// <param name="sv">StackValue</param>
             /// <param name="core">ProtoCore.Core</param>
             /// <returns>System.Object</returns>
-            internal static object GetData(StackValue sv, Core core)
+            internal static object GetData(StackValue sv, RuntimeCore runtimeCore)
             {
                 switch (sv.optype)
                 {
@@ -176,9 +188,9 @@ namespace ProtoCore
                     case AddressType.Char:
                         return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(sv.opdata);
                     case AddressType.String:
-                        return StringUtils.GetStringValue(sv, core);
+                        return StringUtils.GetStringValue(sv, runtimeCore);
                     case AddressType.Pointer:
-                        return dataProvider.GetCLRObject(sv, core);
+                        return dataProvider.GetCLRObject(sv, runtimeCore);
                     default:
                         break;
                 }
@@ -222,7 +234,7 @@ namespace ProtoCore
                 get
                 {
                     if (null == clrdata)
-                        clrdata = GetData(svData, core);
+                        clrdata = GetData(svData, runtimeCore);
 
                     return clrdata;
                 }

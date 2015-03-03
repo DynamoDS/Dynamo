@@ -154,7 +154,7 @@ namespace ProtoCore
             }
 
             AssociativeGraph.GraphNode executingGraphNode = null;
-            var executive = core.CurrentExecutive.CurrentDSASMExec;
+            var executive = runtimeCore.CurrentExecutive.CurrentDSASMExec;
             if (executive != null)
             {
                 executingGraphNode = executive.Properties.executingGraphNode;
@@ -207,7 +207,7 @@ namespace ProtoCore
             int codeBlock = 0;
             if (core != null)
             {
-                pc = core.CurrentExecutive.CurrentDSASMExec.PC;
+                pc = runtimeCore.CurrentExecutive.CurrentDSASMExec.PC;
                 codeBlock = runtimeCore.RunningBlock;
 
                 if (String.IsNullOrEmpty(filePath))

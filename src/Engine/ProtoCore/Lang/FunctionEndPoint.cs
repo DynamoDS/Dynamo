@@ -59,9 +59,8 @@ namespace ProtoCore
             return true;
         }
 
-        public bool DoesTypeDeepMatch(List<StackValue> formalParameters, Core core)
+        public bool DoesTypeDeepMatch(List<StackValue> formalParameters, RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (formalParameters.Count != FormalParams.Length)
                 return false;
 
@@ -86,7 +85,7 @@ namespace ProtoCore
                     {
                         //This was an empty array
                         Validity.Assert(cn == null, "If it was an empty array, there shouldn't be a type node");
-                        cn = core.ClassTable.ClassNodes[(int)PrimitiveType.kTypeNull];
+                        cn = runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.kTypeNull];
                     }
                     else if (arrayTypes.Count == 1)
                     {
@@ -105,7 +104,7 @@ namespace ProtoCore
                     }
 
 
-                    ClassNode argTypeNode = core.ClassTable.ClassNodes[typ.UID];
+                    ClassNode argTypeNode = runtimeCore.DSExecutable.classTable.ClassNodes[typ.UID];
 
                     //cn now represents the class node of the argument
                     //argTypeNode represents the class node of the argument
@@ -113,7 +112,7 @@ namespace ProtoCore
                     //TODO(Jun)This is worrying test
 
                     //Disable var as exact match, otherwise resolution between double and var will fail
-                    if (cn != argTypeNode && cn != core.ClassTable.ClassNodes[(int)PrimitiveType.kTypeNull]  && argTypeNode != core.ClassTable.ClassNodes[(int)PrimitiveType.kTypeVar] )
+                    if (cn != argTypeNode && cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.kTypeNull]  && argTypeNode != runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.kTypeVar] )
                         return false;
 
                     //if (coersionScore != (int)ProcedureDistance.kExactMatchScore)
@@ -129,7 +128,7 @@ namespace ProtoCore
         }
 
 
-        internal int ComputeCastDistance(List<StackValue> args, ClassTable classTable, Core core)
+        internal int ComputeCastDistance(List<StackValue> args, ClassTable classTable, RuntimeCore runtimeCore)
         {
             //Compute the cost to migrate a class calls argument types to the coresponding base types
             //This cannot be used to determine whether a function can be called as it will ignore anything that doesn't
@@ -180,7 +179,7 @@ namespace ProtoCore
                         expectedType != ProtoCore.DSASM.Constants.kInvalidIndex)
                     {
                         currentCost += ClassUtils.GetUpcastCountTo(classTable.ClassNodes[rcvdType],
-                                                                   classTable.ClassNodes[expectedType], core.__TempCoreHostForRefactoring);
+                                                                   classTable.ClassNodes[expectedType], runtimeCore);
                  
                     }
                     distance += currentCost;
@@ -198,9 +197,8 @@ namespace ProtoCore
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        public int ComputeTypeDistance(List<StackValue> args, ProtoCore.DSASM.ClassTable classTable, Core core, bool allowArrayPromotion = false)
+        public int ComputeTypeDistance(List<StackValue> args, ProtoCore.DSASM.ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             //Modified from proc Table, does not use quite the same arguments
                 
             int distance = (int)ProcedureDistance.kMaxDistance;
@@ -304,13 +302,13 @@ namespace ProtoCore
             return distance;
         }
 
-        public int GetConversionDistance(List<StackValue> reducedParamSVs, ProtoCore.DSASM.ClassTable classTable, bool allowArrayPromotion, Core core)
+        public int GetConversionDistance(List<StackValue> reducedParamSVs, ProtoCore.DSASM.ClassTable classTable, bool allowArrayPromotion, RuntimeCore runtimeCore)
         {
 
-            int dist = ComputeTypeDistance(reducedParamSVs, classTable, core, allowArrayPromotion);
+            int dist = ComputeTypeDistance(reducedParamSVs, classTable, runtimeCore, allowArrayPromotion);
             if (dist >= 0 && dist != (int)ProcedureDistance.kMaxDistance) //Is it possible to convert to this type?
             {
-                if (!FunctionGroup.CheckInvalidArrayCoersion(this, reducedParamSVs, classTable, core, allowArrayPromotion))
+                if (!FunctionGroup.CheckInvalidArrayCoersion(this, reducedParamSVs, classTable, runtimeCore, allowArrayPromotion))
                     return dist;
             }
 
@@ -318,16 +316,15 @@ namespace ProtoCore
         }
 
         public abstract bool DoesPredicateMatch(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, List<ReplicationInstruction> replicationInstructions);
-        public abstract StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core);
+        public abstract StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore);
 
         /// <summary>
         /// Convert the parameters passed to the types specified in this fep
         /// </summary>
         /// <param name="formalParameters"></param>
         /// <returns></returns>
-        public List<StackValue> CoerceParameters(List<StackValue> formalParameters, Core core)
+        public List<StackValue> CoerceParameters(List<StackValue> formalParameters, RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             List<StackValue> fixedUpVersions = new List<StackValue>();
             for (int i = 0; i < formalParameters.Count; i++)
             {

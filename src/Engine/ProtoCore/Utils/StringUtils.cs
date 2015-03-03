@@ -23,19 +23,17 @@ namespace ProtoCore.Utils
             return string.Compare(str1, str2);
         }
 
-        public static string GetStringValue(StackValue sv, Core core)
+        public static string GetStringValue(StackValue sv, RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(core), core);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(runtimeCore), runtimeCore);
             return mirror.GetStringValue(sv, runtimeCore.RuntimeMemory.Heap, 0, true);
         }
 
-        public static StackValue ConvertToString(StackValue sv, Core core, ProtoCore.Runtime.RuntimeMemory rmem)
+        public static StackValue ConvertToString(StackValue sv, RuntimeCore runtimeCore, ProtoCore.Runtime.RuntimeMemory rmem)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             StackValue returnSV;
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(core), core);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(new ProtoCore.DSASM.Executive(runtimeCore), runtimeCore);
             returnSV = ProtoCore.DSASM.StackValue.BuildString(mirror.GetStringValue(sv, runtimeCore.RuntimeMemory.Heap, 0, true), runtimeCore.RuntimeMemory.Heap);
             return returnSV;
         }
