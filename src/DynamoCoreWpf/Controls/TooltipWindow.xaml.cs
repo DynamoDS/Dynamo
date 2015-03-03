@@ -3,8 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 
-using Dynamo.UI;
-
 namespace Dynamo.UI.Controls
 {
     /// <summary>
