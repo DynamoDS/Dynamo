@@ -196,7 +196,7 @@ namespace ProtoFFI
             object value = null;
             if (!this.configValues.TryGetValue(config, out value))
             {
-                runtimeCore.Configurations.TryGetValue(config, out value);
+                runtimeCore.DSExecutable.RuntimeData.Configurations.TryGetValue(config, out value);
             }
             return value;
         }

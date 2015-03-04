@@ -36,27 +36,15 @@
     <Grid>
         <StackPanel Orientation="Horizontal">
 
-            <Button Name="RunButton"
-                                Width="100"
-                                Content="{x:Static p:Resources.DynamoViewRunButton}"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                Click="RunButton_OnClick"
-                                Command="{Binding RunExpressionCommand}"
-                                CommandParameter="{Binding Path=RunInDebug}"
-                                ToolTip="{Binding RunButtonToolTip}"
-                                ToolTipService.ShowOnDisabled="True"
-                                IsEnabled="{Binding Path=RunButtonEnabled}"
-                                Focusable="False" Margin="0,0,2.5,0"/>
-
             <ComboBox Name="RunTypesComboBox"
                       ItemsSource="{Binding RunTypeItems}"
                       SelectedItem="{Binding SelectedRunTypeItem}"
                       Width ="Auto" 
                       VerticalContentAlignment="Center"
                       HorizontalContentAlignment="Left"
-                      Style="{DynamicResource ResourceKey=SComboBox}" 
-                      Foreground="#bbbbbb" 
-                      FontSize="14px" Margin="2.5,0,2.5,0">
+                      Style="{StaticResource ResourceKey=SComboBox}" 
+                      FontSize="14px" 
+                      Margin="2.5,0,2.5,0">
                 <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}">
                         <Setter Property="IsEnabled" Value="{Binding Enabled}"/>
@@ -66,35 +54,57 @@
                     <DataTemplate>
                         <Label Content="{Binding Name}" 
                                IsEnabled="{Binding Enabled}" 
-                               Foreground="#bbbbbb" 
                                ToolTip="{Binding ToolTipText}"
-                               ToolTipService.ShowOnDisabled="True" />
+                               ToolTipService.ShowOnDisabled="True">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Enabled}" Value="True">
+                                            <Setter Property="Foreground" Value="#bbbbbb"></Setter>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Enabled}" Value="False">
+                                            <Setter Property="Foreground" Value="#444444"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
+            <Button Name="RunButton"
+                                Width="100"
+                                Content="{x:Static p:Resources.DynamoViewRunButton}"
+                                Style="{StaticResource ResourceKey=STextButton}"
+                                Click="RunButton_OnClick"
+                                Command="{Binding RunExpressionCommand}"
+                                CommandParameter="{Binding Path=RunInDebug}"
+                                ToolTip="{Binding RunButtonToolTip}"
+                                ToolTipService.ShowOnDisabled="True"
+                                IsEnabled="{Binding Path=RunButtonEnabled}"
+                                Visibility="{Binding RunButtonVisibility}"
+                                Focusable="False" Margin="0,0,2.5,0"/>
+            
             <TextBox Name="RunPeriodTextBox" 
                     Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, UpdateSourceTrigger=Explicit}"
                      VerticalContentAlignment="Center"
                      Visibility="{Binding RunPeriodInputVisibility}"
                      Width="80" FontSize="14px"
-                     Style="{DynamicResource ResourceKey=SDarkTextBox}" Foreground="#bbbbbb" 
+                     Style="{DynamicResource ResourceKey=SDarkTextBox}" 
+                     Foreground="#bbbbbb" 
                      KeyDown="UIElement_OnKeyDown" Margin="2.5,0,0,0"/>
 
-            <!--<Button Name="cancelButton"
-                                Width="100"
-                                Content="{x:Static p:Resources.CancelButton}"
-                                Focusable="False"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                ToolTip="{x:Static p:Resources.DynamoViewCancelButtonTooltip}"
-                                Command="{Binding CancelRunCommand}"
-                                Margin="5" />-->
-
-            <CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
-                      FontSize="11" VerticalAlignment="Center" Foreground="Gray"
-                      IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
+            <CheckBox Margin="10" x:FieldModifier="public" 
+                      Name="debugCheckBox" 
+                      FontSize="11" 
+                      VerticalAlignment="Center"
+                      IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" 
+                      Focusable="False"
                       Content="Debug" 
-                      VerticalContentAlignment="Center"/>
+                      VerticalContentAlignment="Center"
+                      Visibility="{Binding DebugCheckBoxVisibility}">
+            </CheckBox>
             
         </StackPanel>
         

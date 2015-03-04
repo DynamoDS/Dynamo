@@ -972,7 +972,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run is disabled when the run type is set to Automatic or Periodic.
+        ///   Looks up a localized string similar to Run is not available when running Automatically or Periodically..
         /// </summary>
         public static string DynamoViewRunButtonToolTipDisabled {
             get {
@@ -3215,7 +3215,34 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run whenever an input to the graph is updated..
+        ///   Looks up a localized string similar to Run completed..
+        /// </summary>
+        public static string RunCompletedMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with warnings..
+        /// </summary>
+        public static string RunCompletedWithWarningsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run started....
+        /// </summary>
+        public static string RunStartedMessage {
+            get {
+                return ResourceManager.GetString("RunStartedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run whenever there is a change to the graph..
         /// </summary>
         public static string RunTypeToolTipAutomatically {
             get {
@@ -3224,7 +3251,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run when you click the Run button..
+        ///   Looks up a localized string similar to Run whenever you press the Run button..
         /// </summary>
         public static string RunTypeToolTipManually {
             get {
@@ -3233,7 +3260,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run Periodically is only available when there are nodes in the graph that support periodic update..
+        ///   Looks up a localized string similar to Periodic running is disabled when there are no nodes in your graph that support it..
         /// </summary>
         public static string RunTypeToolTipPeriodicallyDisabled {
             get {

@@ -96,7 +96,7 @@ namespace Dynamo.Tests
                 ? watch.AstIdentifierForPreview.Name
                 : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
-            var core = ViewModel.Model.EngineController.LiveRunnerCore;
+            var core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
             var watchHandler = ViewModel.WatchHandler;
 
             return watchHandler.GenerateWatchViewModelForData(
@@ -182,7 +182,7 @@ namespace Dynamo.Tests
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
                 watchNode.CachedValue,
-                ViewModel.Model.EngineController.LiveRunnerCore,
+                ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
             Assert.AreEqual("_SingleFunctionObject", watchVM.NodeLabel);
@@ -200,7 +200,7 @@ namespace Dynamo.Tests
             {
                 var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
                     watchNode.CachedValue,
-                    ViewModel.Model.EngineController.LiveRunnerCore,
+                    ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                     watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
                 Assert.IsTrue(watchVM.NodeLabel.StartsWith("function"));
             }
@@ -218,7 +218,7 @@ namespace Dynamo.Tests
             var watchNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Watch>();
             var watchVM = ViewModel.WatchHandler.GenerateWatchViewModelForData(
                 watchNode.CachedValue,
-               ViewModel.Model.EngineController.LiveRunnerCore,
+               ViewModel.Model.EngineController.LiveRunnerRuntimeCore,
                 watchNode.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name);
 
             Assert.AreEqual("_SingleFunctionObject", watchVM.NodeLabel);

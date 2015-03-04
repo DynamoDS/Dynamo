@@ -14,12 +14,16 @@ namespace Dynamo.Tests
     [TestFixture]
     class LibraryTests : DSEvaluationViewModelUnitTest
     {
+        private LibraryServices libraryServices;
+
         protected static bool LibraryLoaded { get; set; }
 
         [SetUp]
         public override void Init()
         {
             base.Init();
+
+            libraryServices = ViewModel.Model.LibraryServices;
             RegisterEvents();
         }
 

@@ -1906,7 +1906,8 @@ namespace Dynamo.Controls
             if (string.IsNullOrEmpty(incomingString))
                 throw new ArgumentException("value string should not be empty.");
 
-            var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
+            var c = Configurations.CategoryDelimiterString[0];
+            var numberOfPoints = incomingString.Count(x => x == c);
             if (numberOfPoints == 0)
                 return new Thickness(5, 0, 0, 0);
 

@@ -420,7 +420,7 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="executingGraphNode"></param>
         /// <param name="classScope"></param>
         /// <param name="functionScope"></param>
-        public static List<AssociativeGraph.GraphNode> GetRedefinedGraphNodes(Core core, AssociativeGraph.GraphNode executingGraphNode, List<AssociativeGraph.GraphNode> nodesInScope, int classScope, int functionScope)
+        public static List<AssociativeGraph.GraphNode> GetRedefinedGraphNodes(RuntimeCore runtimeCore, AssociativeGraph.GraphNode executingGraphNode, List<AssociativeGraph.GraphNode> nodesInScope, int classScope, int functionScope)
         {
             List<AssociativeGraph.GraphNode> redefinedNodes = new List<AssociativeGraph.GraphNode>();
             if (executingGraphNode != null)
@@ -428,7 +428,7 @@ namespace ProtoCore.AssociativeEngine
                 // Remove this condition when full SSA is enabled
                 bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
 
-                if (core.Options.ExecuteSSA)
+                if (runtimeCore.Options.ExecuteSSA)
                 {
                     isssa = executingGraphNode.IsSSANode();
                 }

@@ -35,15 +35,14 @@ namespace ProtoCore.Lang
             return true;
         }
 
-        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
-            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, true);
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, true);
             ProtoCore.DSASM.Executive oldDSASMExec = null;
-            if (core.CurrentExecutive != null)
+            if (runtimeCore.CurrentExecutive != null)
             {
-                oldDSASMExec = core.CurrentExecutive.CurrentDSASMExec;
-                core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                oldDSASMExec = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+                runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
             }
 
             // Assert for the block type
@@ -146,9 +145,9 @@ namespace ProtoCore.Lang
                 runtimeCore.RunningBlock = origRunningBlock;
             }
 
-            if (core.CurrentExecutive != null)
+            if (runtimeCore.CurrentExecutive != null)
             {
-                core.CurrentExecutive.CurrentDSASMExec = oldDSASMExec;
+                runtimeCore.CurrentExecutive.CurrentDSASMExec = oldDSASMExec;
             }
             return svRet; //DSASM.Mirror.ExecutionMirror.Unpack(svRet, core.heap, core);
         }

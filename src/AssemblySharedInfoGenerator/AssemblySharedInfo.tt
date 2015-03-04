@@ -68,7 +68,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("<#= this.MajorVersion #>.<#= this.MinorVersion #>.<#= this.BuildNumber #>.<#= this.RevisionNumber #>")]
 <#+
 int MajorVersion = 0;
-int MinorVersion = 7;
-int BuildNumber = 6;
-int RevisionNumber = ((int)(DateTime.UtcNow - new DateTime(2014,1,1)).TotalDays)*10+((int)DateTime.UtcNow.Hour)/3;
+int MinorVersion = 8;
+int BuildNumber = 0;
+int RevisionNumber = ((int)(DateTime.UtcNow - new DateTime(2015,1,1)).TotalDays)*10+((int)DateTime.UtcNow.Hour)/3;
 #>

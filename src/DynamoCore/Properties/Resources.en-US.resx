@@ -533,9 +533,45 @@ value: bool = false</value>
     <value>Run when you click the Run button.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
-    <value>Run Periodically is only available when there are nodes in the graph that support periodic update.</value>
+    <value>Run Periodic is only available when there are nodes in the graph that support periodic update.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
     <value>Run at the specified interval.</value>
+  </data>
+  <data name="HeaderAction" xml:space="preserve">
+    <value>ACTIONS</value>
+  </data>
+  <data name="HeaderCreate" xml:space="preserve">
+    <value>CREATE</value>
+  </data>
+  <data name="HeaderQuery" xml:space="preserve">
+    <value>QUERY</value>
+  </data>
+  <data name="InputLabel" xml:space="preserve">
+    <value>INPUT</value>
+  </data>
+  <data name="MoreButtonTextFormat" xml:space="preserve">
+    <value>SHOW MORE ({0})</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>No description available</value>
+  </data>
+  <data name="OutputLabel" xml:space="preserve">
+    <value>OUTPUT</value>
+  </data>
+  <data name="TopResult" xml:space="preserve">
+    <value>Top Result</value>
+  </data>
+  <data name="LocateInDisk" xml:space="preserve">
+    <value>Locate in Disk..</value>
+  </data>
+  <data name="MoveLabel" xml:space="preserve">
+    <value>Move</value>
+  </data>
+  <data name="NoMatchesFound" xml:space="preserve">
+    <value>No matches found</value>
+  </data>
+  <data name="RemoveLabel" xml:space="preserve">
+    <value>Remove</value>
   </data>
 </root>
