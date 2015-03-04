@@ -112,11 +112,10 @@ namespace Dynamo.Tests
 
         public void AssertClassName(string guid, string className)
         {
-            string varname = GetVarName(guid);
-            var mirror = GetRuntimeMirror(varname);
-            Assert.IsNotNull(mirror);
-            var classInfo = mirror.GetData().Class;
-            Assert.AreEqual(classInfo.ClassName, className);
+            var classMirror = GetClassMirror(className);
+            Assert.IsNotNull(classMirror);
+
+            Assert.AreEqual(classMirror.Name, className);
         }
 
         public void AssertPreviewCount(string guid, int count)

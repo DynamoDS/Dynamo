@@ -214,11 +214,28 @@ namespace Dynamo.Tests
 
         }
 
+        /// <summary>
+        /// Used to reflect on runtime data such as values of a variable
+        /// </summary>
+        /// <param name="varName"></param>
+        /// <returns></returns>
         protected RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(varName));
             return mirror;
+        }
+
+        /// <summary>
+        /// Used to reflect on static data such as classes and class members
+        /// </summary>
+        /// <param name="varName"></param>
+        /// <returns></returns>
+        protected ClassMirror GetClassMirror(string className)
+        {
+            ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
+            var classMirror = new ClassMirror(className, core);
+            return classMirror;
         }
 
     }
