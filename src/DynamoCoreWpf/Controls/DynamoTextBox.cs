@@ -387,6 +387,13 @@ namespace Dynamo.UI.Controls
 
         public void SetDataContext(object dataContext, bool closeImmediately = false)
         {
+            if (mainDynamoWindow == null)
+            {
+                mainDynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+                if (mainDynamoWindow == null)
+                    return;
+            }
+
             // If Dynamo window is not active, we should not show as well as hide tooltip or do any other staff.
             if (!mainDynamoWindow.IsActive) return;
 
