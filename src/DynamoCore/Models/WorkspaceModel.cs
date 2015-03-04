@@ -614,16 +614,15 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Removes a node from this workspace.
+        /// Removes a node from this workspace. 
+        /// This method does not raise a NodesModified event.
         /// </summary>
         /// <param name="model"></param>
         public void RemoveNode(NodeModel model)
         {
-            if (nodes.Remove(model))
-            {
-                DisposeNode(model);
-                OnNodesModified();
-            }
+            if (!nodes.Remove(model)) return;
+
+            DisposeNode(model);
         }
 
         protected void DisposeNode(NodeModel model)
@@ -1150,7 +1149,7 @@ namespace Dynamo.Models
                         // the Enumerator in this "foreach" to become invalid.
                         foreach (var conn in node.AllConnectors.ToList())
                         {
-                            conn.Delete();
+                            conn.Delete(true);
                             undoRecorder.RecordDeletionForUndo(conn);
                         }
 
@@ -1164,6 +1163,8 @@ namespace Dynamo.Models
                         undoRecorder.RecordDeletionForUndo(model);
                     }
                 }
+
+                OnNodesModified();
 
             } // Conclude the deletion.
         }
