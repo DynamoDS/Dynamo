@@ -42,6 +42,7 @@ namespace Dynamo.Search
             viewModel = searchViewModel;
             this.dynamoViewModel = dynamoViewModel;
 
+            DataContext = viewModel;
             InitializeComponent();
             Loaded += OnSearchViewLoaded;
             Unloaded += OnSearchViewUnloaded;
@@ -69,8 +70,6 @@ namespace Dynamo.Search
 
         private void OnSearchViewLoaded(object sender, RoutedEventArgs e)
         {
-            DataContext = viewModel;
-
             MouseEnter += OnSearchViewMouseEnter;
             MouseLeave += OnSearchViewMouseLeave;
 

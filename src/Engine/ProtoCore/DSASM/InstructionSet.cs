@@ -732,9 +732,8 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
-        public StackValue ToBoolean(Core core)
+        public StackValue ToBoolean(RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             switch (optype)
             {
                 case AddressType.Boolean:

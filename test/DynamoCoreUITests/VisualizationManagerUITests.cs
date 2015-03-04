@@ -36,7 +36,7 @@ namespace DynamoCoreUITests
             // These tests were not written to assume run automatically.
             // As such, they exhibit flaky behavior when running in that mode.
             // Run them manually instead.
-            ws.RunSettings.RunType = RunType.Manually;
+            ws.RunSettings.RunType = RunType.Manual;
         }
 
         [Test]
