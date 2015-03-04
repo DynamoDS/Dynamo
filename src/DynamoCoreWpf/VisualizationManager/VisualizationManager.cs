@@ -484,8 +484,6 @@ namespace Dynamo
 
         private void RegisterEventListeners()
         {
-            //dynamoModel.EvaluationCompleted += Update;
-            //dynamoModel.RequestsRedraw += Update;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
 
             foreach (var n in dynamoModel.CurrentWorkspace.Nodes)
@@ -494,8 +492,6 @@ namespace Dynamo
 
         private void UnregisterEventListeners()
         {
-            //dynamoModel.EvaluationCompleted -= Update;
-            //dynamoModel.RequestsRedraw -= Update;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
 
             foreach (var n in dynamoModel.CurrentWorkspace.Nodes)
