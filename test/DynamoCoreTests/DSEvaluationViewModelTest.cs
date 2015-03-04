@@ -1119,6 +1119,14 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             AssertPreviewValue("6a0207d9-78d7-4fd3-829f-d19644acdc1b", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
+
+        [Test]
+        public void TestListCombineRegress5561()
+        {
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\regress5561.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("4fb0a4ef-8151-4e5f-a2e6-9c3fcd2c1e8f", new object[] { "1foo", null });
+        }
     }
 
     [Category("DSCustomNode")]
