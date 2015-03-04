@@ -5413,7 +5413,7 @@ namespace ProtoCore.DSASM
                     long rhs = opdata1.RawIntValue;
                     if (rhs == 0)
                     {
-                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kReplicationWarning, Resources.ModuloByZero);
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kModuloByZero, Resources.ModuloByZero);
                         opdata2 = StackValue.Null;
                     }
                     else
