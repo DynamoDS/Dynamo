@@ -376,6 +376,7 @@ namespace Dynamo.Models
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunSettings.RunEnabled = false; // Disable 'Run' button.
+                unbuilt = false;
                 OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
             }
@@ -397,8 +398,6 @@ namespace Dynamo.Models
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
-            unbuilt = false;
-
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
         }
