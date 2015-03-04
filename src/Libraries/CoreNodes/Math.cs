@@ -526,62 +526,6 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Add two numbers together, returning their sum.
-        /// </summary>
-        /// <param name="value1">First number to add</param>
-        /// <param name="value2">Second number to add</param>
-        /// <returns name="sum">The sum of the values</returns>
-        /// <search>plus</search>
-        public static double Add(double value1, double value2)
-        {
-            return value1 + value2;
-        }
-
-        /// <summary>
-        ///     Subtract value2 from value1.
-        /// </summary>
-        /// <param name="value1">First number.</param>
-        /// <param name="value2">Second number, subtracted from the first.</param>
-        /// <returns name="result">The result of the subtraction.</returns>
-        public static double Subtract(double value1, double value2)
-        {
-            return value1 - value2;
-        }
-
-        /// <summary>
-        ///     Divide the divident from the divisor.
-        /// </summary>
-        /// <param name="dividend">The number to perform division on.</param>
-        /// <param name="divisor">The number to divide the dividend by.</param>
-        /// <returns name="result">The result of the division.</returns>
-        public static double Divide(double dividend, double divisor)
-        {
-            return dividend / divisor;
-        }
-
-        /// <summary>
-        ///     Multiply two numbers together.
-        /// </summary>
-        /// <param name="value1">The first number to multiply.</param>
-        /// <param name="value2">The amount to multiply the first number by.</param>
-        /// <returns name="result">The result of the multiplication.</returns>
-        public static double Multiply(double value1, double value2)
-        {
-            return value1*value2;
-        }
-
-        /// <summary>
-        ///     Returns the remainder after division between divident and divisor.
-        /// </summary>
-        /// <param name="dividend">The number perform division on.</param>
-        /// <param name="divisor">The number to divide the dividend by.</param>
-        /// <returns name="result">The remainder after division.</returns>
-        public static double Modulo(double dividend, double divisor)
-        {
-            return dividend % divisor;
-        }
-
-        /// <summary>
         ///     Finds the factorial result of a positive integer.
         /// </summary>
         /// <param name="number">A positive integer.</param>

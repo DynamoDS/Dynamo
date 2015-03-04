@@ -39,12 +39,6 @@ namespace Dynamo.Models.NodeLoaders
             }
             else
             {
-                var xmlAttribute = nodeElement.Attributes["assembly"];
-                if (xmlAttribute != null)
-                {
-                    assembly = Uri.UnescapeDataString(xmlAttribute.Value);
-                }
-
                 string xmlSignature = nodeElement.Attributes["function"].Value;
 
                 string hintedSigniture =
@@ -55,10 +49,23 @@ namespace Dynamo.Models.NodeLoaders
                     nodeElement.Attributes["nickname"].Value =
                         libraryServices.NicknameFromFunctionSignatureHint(xmlSignature);
                     function = hintedSigniture;
+
+                    // if the node needs additional parameters, add them here
+                    if (libraryServices.FunctionSignatureNeedsAdditionalAttributes(xmlSignature))
+                        libraryServices.AddAdditionalAttributesToNode(xmlSignature, nodeElement);
+
+                    if (libraryServices.FunctionSignatureNeedsAdditionalElements(xmlSignature))
+                        libraryServices.AddAdditionalElementsToNode(xmlSignature, nodeElement);
                 }
                 else
                 {
                     function = xmlSignature;
+                }
+
+                var xmlAttribute = nodeElement.Attributes["assembly"];
+                if (xmlAttribute != null)
+                {
+                    assembly = Uri.UnescapeDataString(xmlAttribute.Value);
                 }
             }
 
@@ -69,7 +76,7 @@ namespace Dynamo.Models.NodeLoaders
                 assembly = Nodes.Utilities.MakeAbsolutePath(docPath, assembly);
 
                 descriptor = libraryServices.IsLibraryLoaded(assembly) || libraryServices.ImportLibrary(assembly)
-                    ? libraryServices.GetFunctionDescriptor(function) // libraryServices.GetFunctionDescriptor(assembly, function)
+                    ? libraryServices.GetFunctionDescriptor(assembly, function)
                     : libraryServices.GetFunctionDescriptor(function);
             }
             else
