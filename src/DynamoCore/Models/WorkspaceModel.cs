@@ -594,6 +594,9 @@ namespace Dynamo.Models
             nodes.Add(node);
             OnNodeAdded(node);
             HasUnsavedChanges = true;
+
+            // Trigger an update of the graph.
+            OnNodesModified();
         }
 
         private void RegisterNode(NodeModel node)
