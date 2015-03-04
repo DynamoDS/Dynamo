@@ -82,7 +82,8 @@ namespace ProtoScript.Runners
             ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
 
             // TODO Jun: Implement as DebugRunner, where breakpoints are inserted here.
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = Runner.Execute(ExecutionContext, runtimeContext, RunnerCore);
+            ProtoCore.RuntimeCore runtimeCore = null;
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = Runner.Execute(ExecutionContext, runtimeContext, RunnerCore, out runtimeCore);
 
             return new ProtoVMState(RunnerCore);
         }
@@ -135,7 +136,7 @@ namespace ProtoScript.Runners
                 // TODO Jun: The expression interpreter must be integrated into the mirror
                 runtimeCore.RuntimeMemory.PushConstructBlockId(blockID);
                 runtimeCore.DebugProps.CurrentBlockId = blockID;
-                ProtoScript.Runners.ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                ProtoScript.Runners.ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
 
                 List<ProtoCore.Core.CodeBlockCompilationSnapshot> snapShots = null;
                 if (core.Options.IsDeltaExecution)
@@ -149,7 +150,7 @@ namespace ProtoScript.Runners
                 }
                 ProtoCore.Lang.Obj objExecVal = mirror.GetWatchValue();
 
-                ProtoCore.Mirror.RuntimeMirror runtimeMirror = new ProtoCore.Mirror.RuntimeMirror(new ProtoCore.Mirror.MirrorData(core, objExecVal.DsasmValue), core, core);
+                ProtoCore.Mirror.RuntimeMirror runtimeMirror = new ProtoCore.Mirror.RuntimeMirror(new ProtoCore.Mirror.MirrorData(core, objExecVal.DsasmValue), runtimeCore, core);
                 Validity.Assert(runtimeMirror != null);
 
                 return runtimeMirror;
