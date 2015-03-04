@@ -614,13 +614,13 @@
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
-                <uicontrols:AddonsTreeView Grid.Row="2"
+                <!--<uicontrols:AddonsTreeView Grid.Row="2"
                                            DataContext="{Binding}">
                     <uicontrols:AddonsTreeView.Visibility>
                         <Binding Path="SearchAddonsVisibility"
                                  Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                     </uicontrols:AddonsTreeView.Visibility>
-                </uicontrols:AddonsTreeView>
+                </uicontrols:AddonsTreeView>-->
             </Grid>
         </ScrollViewer>
 

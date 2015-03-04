@@ -42,6 +42,14 @@ namespace Dynamo.DSEngine
             }
         }
 
+        public ProtoCore.RuntimeCore RuntimeCore
+        {
+            get
+            {
+                return liveRunner.RuntimeCore;
+            }
+        }
+
 
         /// <summary>
         /// TPDP
