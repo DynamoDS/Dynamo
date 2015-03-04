@@ -1138,14 +1138,22 @@ namespace ProtoCore.Utils
                 return StackValue.Null;
             }
 
-            HeapElement he = GetHeapElement(array, runtimeCore);
-            if ((he.VisibleSize  > index + 1) ||
-                (he.Dict != null && he.Dict.Count + he.VisibleSize > index + 1))
+            int nextIndex = Constants.kInvalidIndex;
+            if (array.IsString)
             {
-                return StackValue.BuildArrayKey(array, index + 1);
+                var str = runtimeCore.Heap.GetString(array);
+                if (str.Length > index + 1)
+                    nextIndex = index + 1;
+            }
+            else
+            {
+                HeapElement he = GetHeapElement(array, runtimeCore);
+                if ((he.VisibleSize > index + 1) ||
+                    (he.Dict != null && he.Dict.Count + he.VisibleSize > index + 1))
+                    nextIndex = index + 1;
             }
 
-            return StackValue.Null;
+            return nextIndex == Constants.kInvalidIndex ? StackValue.Null : StackValue.BuildArrayKey(array, nextIndex);
         }
 
         /// <summary>

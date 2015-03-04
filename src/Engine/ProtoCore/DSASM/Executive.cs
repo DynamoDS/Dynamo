@@ -4653,10 +4653,10 @@ namespace ProtoCore.DSASM
                 if (arrayHasElement || dictionaryHasElement)
                 {
                     key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                    key.metaData = svArrayToIterate.metaData;
                 }
                 else
                 {
-                    // svArrayToIterate has no elements 
                     key = StackValue.Null;
                 }
             }
@@ -4664,7 +4664,15 @@ namespace ProtoCore.DSASM
             {
                 var str = runtimeCore.RuntimeMemory.Heap.GetString(svArrayToIterate);
                 Validity.Assert(str != null);
-                key = str.Any() ? StackValue.BuildArrayKey(svArrayToIterate, 0) : StackValue.Null;
+                if (str.Any())
+                {
+                    key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                    key.metaData = svArrayToIterate.metaData;
+                }
+                else
+                {
+                    key = StackValue.Null;
+                }
             }
             else
             {
