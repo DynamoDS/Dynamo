@@ -1138,7 +1138,8 @@ namespace ProtoScript.Runners
 
                 if (runtimeCore != null)
                 {
-                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
+                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -=
+                        FFIPropertyChanged;
                     runtimeCore.Cleanup();
                 }
 
@@ -1149,13 +1150,16 @@ namespace ProtoScript.Runners
                     taskQueue.Clear();
                 }
 
-                // waiting for thread to finish
-                if (workerThread.IsAlive)
+                if (workerThread != null)
                 {
-                    workerThread.Join();
-                }
+                    // waiting for thread to finish
+                    if (workerThread.IsAlive)
+                    {
+                        workerThread.Join();
+                    }
 
-                workerThread = null;
+                    workerThread = null;
+                }
             }
         }
 

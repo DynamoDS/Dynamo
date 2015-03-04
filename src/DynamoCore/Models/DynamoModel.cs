@@ -549,6 +549,9 @@ namespace Dynamo.Models
             LibraryServices.LibraryManagementCore.__TempCoreHostForRefactoring.Cleanup();
             Logger.Dispose();
 
+            EngineController.Dispose();
+            EngineController = null;
+
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
