@@ -44,9 +44,9 @@
     <PreBuildEvent>rd /s /q $(DYNAMO_HARVEST_PATH)
 robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD samples
 
-"%WIX%bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
-"%WIX%bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA_08 -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
-"%WIX%bin\heat.exe" dir $(DYNAMO_MIGRATION_NODES_PATH) -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA_08 -var var.definitions -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
+"%25WIX%25bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
+"%25WIX%25bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
+"%25WIX%25bin\heat.exe" dir $(DYNAMO_MIGRATION_NODES_PATH) -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA -var var.definitions -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
   </PropertyGroup>
   <!--
 	To modify your build process, add your task inside one of the targets below and uncomment it.
