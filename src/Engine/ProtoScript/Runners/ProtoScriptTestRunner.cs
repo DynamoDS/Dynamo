@@ -126,6 +126,7 @@ namespace ProtoScript.Runners
             runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             runtimeCore.WatchSymbolList = core.watchSymbolList;
             runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties);
+            runtimeCore.RegisterDllTypes(core.listDllTypesToLoad);
             return runtimeCore;
         }
 

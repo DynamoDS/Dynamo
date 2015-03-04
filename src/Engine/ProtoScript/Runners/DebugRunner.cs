@@ -55,6 +55,7 @@ namespace ProtoScript.Runners
             runtimeCore.WatchSymbolList = core.watchSymbolList;
             runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin); runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
             runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, new ProtoCore.Runtime.Context(), core.ExprInterpreterExe);
+            runtimeCore.RegisterDllTypes(core.listDllTypesToLoad);
             return runtimeCore;
         }
 

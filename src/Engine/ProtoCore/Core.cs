@@ -232,15 +232,14 @@ namespace ProtoCore
 
     public class Core
     {
-
-        /// <summary>
-        /// This is a temporary instance of RuntimeCore 
-        /// The purpose of this is to move core properties to runtime core in segments and to start using them within the runtime without having to break the exisiting APIs where Core is used.
-        /// Eventually, instances of Core will be removed from the runtime. This means replacing all instances of __TempCoreHostForRefactoring and Core with RuntimeCore.
-        /// </summary>
-        public RuntimeCore __TempCoreHostForRefactoring { get; set; }
-
         public Dictionary<string, object> Configurations { get; set; }
+        public List<System.Type> listDllTypesToLoad { get; private set; }
+
+        public void AddDLLExtensionAppType(System.Type type)
+        {
+            Validity.Assert(listDllTypesToLoad != null);
+            listDllTypesToLoad.Add(type);
+        }
 
         /// <summary>
         /// Properties in under COMPILER_GENERATED_TO_RUNTIME_DATA, are generated at compile time, and passed to RuntimeData/Exe
@@ -574,6 +573,7 @@ namespace ProtoCore
             Heap = new Heap();
             //Rmem = new RuntimeMemory(Heap);
             Configurations = new Dictionary<string, object>();
+            listDllTypesToLoad = new List<System.Type>();
 
             RuntimeData = new ProtoCore.RuntimeData();
 

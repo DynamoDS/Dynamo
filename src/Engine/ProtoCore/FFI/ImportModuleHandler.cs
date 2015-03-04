@@ -251,8 +251,7 @@ namespace ProtoFFI
                 Type type = dllModule.GetExtensionAppType();
                 if (type != null)
                 {
-                    ProtoCore.RuntimeCore runtimeCore = _coreObj.__TempCoreHostForRefactoring;
-                    FFIExecutionManager.Instance.RegisterExtensionApplicationType(runtimeCore, type);
+                    _coreObj.AddDLLExtensionAppType(type);
                 }
             }
             else if (extension == ".ds")

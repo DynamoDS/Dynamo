@@ -106,6 +106,19 @@ namespace ProtoCore
             this.ExprInterpreterExe = exprInterpreterExe;
         }
 
+        /// <summary>
+        /// Register imported dll types
+        /// These types are initialzed from Importing dlls
+        /// </summary>
+        /// <param name="dllTypes"></param>
+        public void RegisterDllTypes(List<System.Type> dllTypes)
+        {
+            foreach (System.Type type in dllTypes)
+            {
+                FFIExecutionManager.Instance.RegisterExtensionApplicationType(this, type);
+            }
+        }
+
         public IExecutiveProvider ExecutiveProvider { get; set; }
         public Executive ExecutionInstance { get; private set; }
         public Executive CurrentExecutive { get; private set; }
