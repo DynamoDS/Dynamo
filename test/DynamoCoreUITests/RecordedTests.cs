@@ -716,8 +716,8 @@ namespace DynamoCoreUITests
                 });
 
             ViewModel.HomeSpace.RunSettings.RunType = autoRun ? 
-                RunType.Automatically : 
-                RunType.Manually;
+                RunType.Automatic : 
+                RunType.Manual;
 
             // Load all custom nodes if there is any specified for this test.
             if (this.customNodesToBeLoaded != null)

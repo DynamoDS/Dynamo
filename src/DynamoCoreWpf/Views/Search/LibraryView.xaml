@@ -659,12 +659,12 @@
                     </TreeView.Template>
                 </TreeView>
                 <!-- Do not remove. Possibly Addons TreeView will be return later. -->
-                <uicontrols:AddonsTreeView Grid.Row="1"
+                <!--<uicontrols:AddonsTreeView Grid.Row="1"
                                            DataContext="{Binding}">
                     <uicontrols:AddonsTreeView.Visibility>
                         Collapsed
                     </uicontrols:AddonsTreeView.Visibility>
-                </uicontrols:AddonsTreeView>
+                </uicontrols:AddonsTreeView>-->
                 <Button Grid.Row="2"
                         Height="23"
                         HorizontalAlignment="Center"
@@ -734,13 +734,6 @@
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                         StaysOpen="True"
                                         AllowsTransparency="True"
-                                        MouseLeave="OnPopupMouseLeave">
-            <uicontrols:LibraryToolTipPopup.IsOpen>
-                <Binding ElementName="libraryToolTipPopup"
-                         Path="DataContext"
-                         Mode="OneWay"
-                         Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
-            </uicontrols:LibraryToolTipPopup.IsOpen>
-        </uicontrols:LibraryToolTipPopup>
+                                        MouseLeave="OnPopupMouseLeave" />
     </Grid>
 </UserControl>
