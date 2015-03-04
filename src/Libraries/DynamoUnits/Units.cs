@@ -234,6 +234,7 @@ namespace DynamoUnits
         }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public abstract class SIUnit : BaseUnit
     {
         /// <summary>
@@ -434,6 +435,7 @@ namespace DynamoUnits
     /// A length stored in meters. This length can represent any unit type, but internally this 
     /// is stored as meters to make algorithms simpler.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class Length : SIUnit, IComparable, IEquatable<Length>
     {
         //length conversions
@@ -745,6 +747,7 @@ namespace DynamoUnits
     /// <summary>
     /// An area stored in square meters.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class Area : SIUnit, IComparable, IEquatable<Area>
     {
         //area conversions
@@ -1038,6 +1041,7 @@ namespace DynamoUnits
     /// <summary>
     /// A volume stored in cubic meters.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class Volume : SIUnit, IComparable, IEquatable<Volume>
     {
         //volume conversions
@@ -1322,6 +1326,7 @@ namespace DynamoUnits
     /// <summary>
     /// An insolation stored in killowatt hours per meter squared.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class Insolation : SIUnit, IComparable, IEquatable<Insolation>
     {
         //insolation converstions
