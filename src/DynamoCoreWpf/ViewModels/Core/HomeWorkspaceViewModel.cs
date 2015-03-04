@@ -12,7 +12,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
-    public class HomeWorkspaceViewModel : WorkspaceViewModel
+    public class HomeWorkspaceViewModel : WorkspaceViewModel, IDisposable
     {
         #region private members
 
@@ -129,6 +129,13 @@ namespace Dynamo.Wpf.ViewModels.Core
         private bool CanStopPeriodicTimer(object parameter)
         {
             return true;
+        }
+
+        public void Dispose()
+        {
+            var hwm = (HomeWorkspaceModel)Model;
+            hwm.EvaluationStarted -= hwm_EvaluationStarted;
+            hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
         }
     }
 

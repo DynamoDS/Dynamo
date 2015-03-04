@@ -13,6 +13,11 @@ namespace Dynamo.UI.Controls
         public AddonsTreeView()
         {
             InitializeComponent();
+
+            // Invalidate the DataContext here because it will be set at a later 
+            // time through data binding expression. This way debugger will not 
+            // display warnings for missing properties.
+            this.DataContext = null;
         }
 
         private void OnPopupMouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
