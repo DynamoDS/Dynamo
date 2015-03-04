@@ -1043,7 +1043,7 @@ r = [Imperative]
 }
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
-            thisTest.Verify("r", "bar");
+            thisTest.Verify("r", "foobar");
         }
 
         [Test]
