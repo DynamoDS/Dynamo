@@ -19,6 +19,7 @@ namespace Dynamo.Models
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
+        private bool unbuilt = true;
 
         public RunSettings RunSettings { get; protected set; }
 
@@ -130,6 +131,8 @@ namespace Dynamo.Models
         public override void OnNodesModified()
         {
             base.OnNodesModified();
+
+            if (unbuilt) return;
 
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
@@ -386,6 +389,8 @@ namespace Dynamo.Models
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         protected virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
+            unbuilt = false;
+
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
         }
