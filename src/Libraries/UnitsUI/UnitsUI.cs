@@ -201,7 +201,7 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Length From String")]
+    [NodeName("Number from Feet and Inches")]
     [NodeCategory("Units.Length.Create")]
     [NodeDescription("LengthFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
