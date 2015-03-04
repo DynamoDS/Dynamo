@@ -1,4 +1,5 @@
-﻿using ProtoCore.AST.AssociativeAST;
+﻿using ProtoCore.AST;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Properties;
 using System;
@@ -361,25 +362,25 @@ namespace ProtoCore.Utils
             core.IsParsingCodeBlockNode = true;
             core.ParsingMode = ParseMode.AllowNonAssignment;
 
-            ProtoCore.AST.Node codeBlockNode = ProtoCore.Utils.ParserUtils.ParseWithCore(expression, core);
-            List<ProtoCore.AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
+            var codeBlockNode = ParserUtils.ParseWithCore(expression, core);
+            List<AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
             Validity.Assert(nodes != null);
 
             int index = 0;
             foreach (var node in nodes)
             {
-                ProtoCore.AST.AssociativeAST.AssociativeNode n = node as ProtoCore.AST.AssociativeAST.AssociativeNode;
-                ProtoCore.Utils.Validity.Assert(n != null);
+                var n = node as AssociativeNode;
+                Validity.Assert(n != null);
 
                 // Append the temporaries only if it is not a function def or class decl
                 bool isFunctionOrClassDef = n is FunctionDefinitionNode || n is ClassDeclNode;
 
                 // Handle non Binary expression nodes separately
-                if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
+                if (n is ModifierStackNode)
                 {
                     core.BuildStatus.LogSemanticError(Resources.ModifierBlockNotSupported);
                 }
-                else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
+                else if (n is ImportNode)
                 {
                     core.BuildStatus.LogSemanticError(Resources.ImportStatementNotSupported);
                 }
@@ -391,19 +392,19 @@ namespace ProtoCore.Utils
                 else
                 {
                     // Handle temporary naming for temporary Binary exp. nodes and non-assignment nodes
-                    BinaryExpressionNode ben = node as BinaryExpressionNode;
-                    if (ben != null && ben.Optr == ProtoCore.DSASM.Operator.assign)
+                    var ben = node as BinaryExpressionNode;
+                    if (ben != null && ben.Optr == Operator.assign)
                     {
-                        ModifierStackNode mNode = ben.RightNode as ModifierStackNode;
+                        var mNode = ben.RightNode as ModifierStackNode;
                         if (mNode != null)
                         {
                             core.BuildStatus.LogSemanticError(Resources.ModifierBlockNotSupported);
                         }
-                        IdentifierNode lNode = ben.LeftNode as IdentifierNode;
-                        if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
+                        var lNode = ben.LeftNode as IdentifierNode;
+                        if (lNode != null && lNode.Value == Constants.kTempProcLeftVar)
                         {
-                            string name = Constants.kTempVarForNonAssignment + index.ToString();
-                            BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), ben.RightNode);
+                            string name = Constants.kTempVarForNonAssignment + index;
+                            var newNode = new BinaryExpressionNode(new IdentifierNode(name), ben.RightNode);
                             astNodes.Add(newNode);
                             index++;
                         }
@@ -415,11 +416,22 @@ namespace ProtoCore.Utils
                     }
                     else
                     {
-                        // These nodes are non-assignment nodes
-                        string name = Constants.kTempVarForNonAssignment + index.ToString();
-                        BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), n);
-                        astNodes.Add(newNode);
-                        index++;
+                        if (node is TypedIdentifierNode)
+                        {
+                            var ident = new IdentifierNode(Constants.kTempVarForTypedIdentifier);
+                            NodeUtils.CopyNodeLocation(ident, node);
+                            var typedNode = new BinaryExpressionNode(node as TypedIdentifierNode, ident, Operator.assign);
+                            NodeUtils.CopyNodeLocation(typedNode, node);
+                            astNodes.Add(typedNode);
+                        }
+                        else
+                        {
+                            string name = Constants.kTempVarForNonAssignment + index;
+                            var newNode = new BinaryExpressionNode(new IdentifierNode(name), n);
+                            astNodes.Add(newNode);
+                            index++;
+                        }
+                        
                     }
                 }
             }
@@ -449,13 +461,21 @@ namespace ProtoCore.Utils
             {
                 // Only binary expression need warnings. 
                 // Function definition nodes do not have input and output ports
-                if (node is ProtoCore.AST.AssociativeAST.BinaryExpressionNode)
+                var bNode = node as BinaryExpressionNode;
+                if (bNode != null)
                 {
-                    List<VariableLine> variableLineList = new List<VariableLine>();
-                    foreach (var warning in warningVLList)
+                    var variableLineList = new List<VariableLine>();
+                    for (int i = 0; i < warningVLList.Count; ++i)
                     {
-                        if (warning.line >= node.line && warning.line <= node.endLine)
+                        var warning = warningVLList[i];
+                        if (warning.line >= bNode.line && warning.line <= bNode.endLine)
+                        {
+                            if (warning.variable == Constants.kTempVarForTypedIdentifier)
+                            {
+                                warning.variable = bNode.LeftNode.Name;
+                            }
                             variableLineList.Add(warning);
+                        }
                     }
 
                     if (variableLineList.Count > 0)
