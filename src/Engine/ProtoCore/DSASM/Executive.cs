@@ -99,7 +99,6 @@ namespace ProtoCore.DSASM
             fepRun = isFep;
             Properties = new InterpreterProperties();
 
-            //rmem = runtimeCore.RuntimeMemory;
             rmem = runtimeCore.RuntimeMemory;
 
             // Execute DS View VM Log
