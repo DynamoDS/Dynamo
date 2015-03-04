@@ -35,7 +35,7 @@ namespace ProtoCore.Namespace
             }
         }
 
-        private static void LookupResolvedNameAndRewriteAst(ClassTable classTable, ElementResolver elementResolver, 
+        internal static void LookupResolvedNameAndRewriteAst(ClassTable classTable, ElementResolver elementResolver, 
             ref AssociativeNode astNode)
         {
             Debug.Assert(elementResolver != null);
@@ -76,7 +76,7 @@ namespace ProtoCore.Namespace
             RewriteAstWithResolvedName(ref astNode, resolvedNames);
         }
 
-        private static IEnumerable<IdentifierListNode> GetClassIdentifiers(AssociativeNode astNode)
+        internal static IEnumerable<IdentifierListNode> GetClassIdentifiers(AssociativeNode astNode)
         {
             var classIdentifiers = new List<IdentifierListNode>();
             var resolvedNames = new Queue<string>();
