@@ -5,7 +5,10 @@ using Autodesk.DesignScript.Runtime;
 
 namespace DynamoConversions
 {
+    [IsVisibleInDynamoLibrary(false)]
     public enum ConversionDirection { To, From }
+
+    [IsVisibleInDynamoLibrary(false)]
     public enum ConversionUnit
     {
         Feet, Inches, Millimeters, Centimeters, Decimeters, Meters,
@@ -14,6 +17,7 @@ namespace DynamoConversions
         CubicMillimeter, Litres, USGallons
     }
 
+    [IsVisibleInDynamoLibrary(false)]
     public enum ConversionMetricUnit
     {
         Length,

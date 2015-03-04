@@ -16,15 +16,15 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     public class DynamoConvert : NodeModel
     {
-        private object selectedFromConversion;
-        private object selectedToConversion;
-        private object selectedMetricConversion;
+        private ConversionUnit selectedFromConversion;
+        private ConversionUnit selectedToConversion;
+        private ConversionMetricUnit selectedMetricConversion;
         private bool isSelectionFromBoxEnabled;
         private string selectionFromBoxToolTip;
-        private object selectedFromConversionSource;
-        private object selectedToConversionSource;
+        private List<ConversionUnit> selectedFromConversionSource;
+        private List<ConversionUnit> selectedToConversionSource;
 
-        public object SelectedFromConversionSource
+        public List<ConversionUnit> SelectedFromConversionSource
         {
             get { return selectedFromConversionSource; }
             set
@@ -33,8 +33,8 @@ namespace DSCoreNodesUI
                 RaisePropertyChanged("SelectedFromConversionSource");
             }
         }
-        
-        public object SelectedToConversionSource
+
+        public List<ConversionUnit> SelectedToConversionSource
         {
             get { return selectedToConversionSource; }
             set
@@ -43,54 +43,41 @@ namespace DSCoreNodesUI
                 RaisePropertyChanged("SelectedToConversionSource");
             }
         }
-      
-        public virtual object SelectedMetricConversion
+
+        public ConversionMetricUnit SelectedMetricConversion
         {
             get { return selectedMetricConversion; }
             set
             {
-                selectedMetricConversion = value;
-                if (value != null)
-                {
-                    SelectedFromConversionSource =
-                        Conversions.ConversionMetricLookup[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit),value.ToString())];
-                    SelectedToConversionSource =
-                        Conversions.ConversionMetricLookup[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
-                    SelectedFromConversion = Conversions.ConversionDefaults[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
-                    SelectedToConversion = Conversions.ConversionDefaults[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
+                selectedMetricConversion = (ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString()); ;               
+                SelectedFromConversionSource =
+                    Conversions.ConversionMetricLookup[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit),value.ToString())];
+                SelectedToConversionSource =
+                    Conversions.ConversionMetricLookup[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
+                SelectedFromConversion = Conversions.ConversionDefaults[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
+                SelectedToConversion = Conversions.ConversionDefaults[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
 
-                    RaisePropertyChanged("SelectedMetricConversion");
-                }      
+                 RaisePropertyChanged("SelectedMetricConversion");
             }
         }
 
-        public virtual object SelectedFromConversion
+        public ConversionUnit SelectedFromConversion
         {
             get { return selectedFromConversion; }
             set
             {
-                if (value != null)
-                {
-                    selectedFromConversion = (ConversionUnit) Enum.Parse(typeof (ConversionUnit), value.ToString());
-                    RaisePropertyChanged("SelectedFromConversion");
-                }
-                else
-                    selectedFromConversion = null;
+                selectedFromConversion = (ConversionUnit) Enum.Parse(typeof (ConversionUnit), value.ToString());
+                RaisePropertyChanged("SelectedFromConversion");
             }
         }
 
-        public virtual object SelectedToConversion
+        public ConversionUnit SelectedToConversion
         {
             get { return selectedToConversion; }
             set
             {
-                if (value != null)
-                {
-                    selectedToConversion = (ConversionUnit) Enum.Parse(typeof (ConversionUnit), value.ToString());
-                    RaisePropertyChanged("SelectedToConversion");                    
-                }
-                else
-                    selectedToConversion = null;
+                selectedToConversion = (ConversionUnit) Enum.Parse(typeof (ConversionUnit), value.ToString());
+                RaisePropertyChanged("SelectedToConversion");
             }
         }
 
@@ -124,19 +111,7 @@ namespace DSCoreNodesUI
             IsSelectionFromBoxEnabled = true;
             RegisterAllPorts();
         }
-
-        public DynamoConvert(string value)
-        {
-            SelectedMetricConversion = ConversionMetricUnit.Length;
-            SelectionFromBoxToolTip = Properties.Resources.SelectFromComboBoxToolTip;
-            InPortData.Add(new PortData("", "A numeric value for conversion."));
-            OutPortData.Add(new PortData("", "A converted numeric value."));
-
-            ShouldDisplayPreviewCore = true;
-            IsSelectionFromBoxEnabled = false;
-            RegisterAllPorts();
-        }
-
+      
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {       

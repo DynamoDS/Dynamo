@@ -110,6 +110,7 @@
     <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
       <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
       <Name>DynamoConversions</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>

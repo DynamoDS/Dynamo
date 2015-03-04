@@ -14,12 +14,12 @@ namespace Dynamo.Wpf
 {
     public class ConverterViewModel : NotificationObject
     {
-        private DynamoConvert dynamoConvertModel;
+        private readonly DynamoConvert dynamoConvertModel;
         public DelegateCommand ToggleButtonClick { get; set; }
-        private NodeViewModel nodeViewModel;
-        private NodeModel nodeModel;
+        private readonly NodeViewModel nodeViewModel;
+        private readonly NodeModel nodeModel;
 
-        public object SelectedMetricConversion
+        public ConversionMetricUnit SelectedMetricConversion
         {
             get { return dynamoConvertModel.SelectedMetricConversion; }
             set
@@ -28,7 +28,7 @@ namespace Dynamo.Wpf
             }
         }
 
-        public object SelectedFromConversion
+        public ConversionUnit SelectedFromConversion
         {
             get { return dynamoConvertModel.SelectedFromConversion; }
             set
@@ -37,7 +37,7 @@ namespace Dynamo.Wpf
             }
         }
 
-        public object SelectedToConversion
+        public ConversionUnit SelectedToConversion
         {
             get { return dynamoConvertModel.SelectedToConversion; }
             set
@@ -46,7 +46,7 @@ namespace Dynamo.Wpf
             }
         }
 
-        public object SelectedFromConversionSource
+        public List<ConversionUnit> SelectedFromConversionSource
         {
             get { return dynamoConvertModel.SelectedFromConversionSource; }
             set
@@ -55,7 +55,7 @@ namespace Dynamo.Wpf
             }
         }
 
-        public object SelectedToConversionSource
+        public List<ConversionUnit> SelectedToConversionSource
         {
             get { return dynamoConvertModel.SelectedToConversionSource; }
             set
