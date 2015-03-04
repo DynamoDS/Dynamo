@@ -1132,6 +1132,12 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
+                    runnerCore.__TempCoreHostForRefactoring.Cleanup();
+                    runnerCore = null;
+                }
+
+                if (runtimeCore != null)
+                {
                     runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
                     runtimeCore.Cleanup();
                 }
@@ -1148,6 +1154,8 @@ namespace ProtoScript.Runners
                 {
                     workerThread.Join();
                 }
+
+                workerThread = null;
             }
         }
 
@@ -1467,7 +1475,7 @@ namespace ProtoScript.Runners
 
                     }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         }
 

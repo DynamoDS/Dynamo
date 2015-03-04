@@ -471,8 +471,9 @@ namespace Dynamo.Models
             ResetEngineInternal();
 
             AddHomeWorkspace();
-            
-            UpdateManager.UpdateManager.CheckForProductUpdate();
+
+            if (!IsTestMode)
+                UpdateManager.UpdateManager.CheckForProductUpdate();
 
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
