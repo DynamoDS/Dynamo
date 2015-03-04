@@ -78,7 +78,7 @@ m = p.x;
             vms = fsr.StepOver();
 
             // Test the heap contains a cycle
-            var runtimeCore = thisTest.GetTestRuntimeCore();
+            var runtimeCore = fsr.runtimeCore;
             Assert.IsTrue(runtimeCore.Heap.IsHeapCyclic());
 
         }

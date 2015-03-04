@@ -77,7 +77,6 @@ namespace ProtoCore
 
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
-            Configurations = new Dictionary<string, object>();
             FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
 
             ContinuationStruct = new ContinuationStructure();
@@ -94,6 +93,8 @@ namespace ProtoCore
 
             ExecutionInstance = CurrentExecutive = new Executive(this);
             ExecutiveProvider = new ExecutiveProvider();
+
+            RuntimeStatus = new ProtoCore.RuntimeStatus(this);
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -125,7 +126,6 @@ namespace ProtoCore
         public event DisposeDelegate Dispose;
         public event EventHandler<ExecutionStateEventArgs> ExecutionEvent;
         public int ExecutionState { get; set; }
-        public Dictionary<string, object> Configurations { get; set; }
         public FFIPropertyChangedMonitor FFIPropertyChangedMonitor { get; private set; }
 
         // this one is to address the issue that when the execution control is in a language block

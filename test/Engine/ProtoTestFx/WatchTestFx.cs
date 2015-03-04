@@ -373,7 +373,6 @@ namespace ProtoTestFx
 //            core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
-            core.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
@@ -383,11 +382,11 @@ namespace ProtoTestFx
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             
             //Run
-
-            Mirror = fsr.Execute(code, core);
+            RuntimeCore runtimeCore = null;
+            Mirror = fsr.Execute(code, core, out runtimeCore);
 
             //sw.Close();
-            core.__TempCoreHostForRefactoring.Cleanup();
+            runtimeCore.Cleanup();
         }
 
         internal static void DebugRunnerStepIn(string includePath, string code, /*string logFile*/Dictionary<int, List<string>> map, 
@@ -419,11 +418,6 @@ namespace ProtoTestFx
             
             core = new ProtoCore.Core(options);
 
-            // Use the InjectionExecutive to overload POP and POPM
-            // as we still need the symbol names and line nos. in debug mode for comparisons
-            
-            //core.ExecutiveProvider = new InjectionExecutiveProvider();
-            core.__TempCoreHostForRefactoring.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
 
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
@@ -493,7 +487,7 @@ namespace ProtoTestFx
                 }
                 //isPrevBreakAtPop = false;
             }
-            core.__TempCoreHostForRefactoring.Cleanup();
+            runtimeCore.Cleanup();
         }
 
         /*internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core, StreamReader log,
@@ -604,7 +598,7 @@ namespace ProtoTestFx
                 }                            
                 if (lhsName.Equals(symbolName))
                 {
-                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+                    ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
                     ProtoCore.DSASM.Mirror.ExecutionMirror mirror = watchRunner.Execute(exp);
                     Obj obj = mirror.GetWatchValue();
                     

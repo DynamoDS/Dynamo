@@ -20,19 +20,24 @@ namespace ProtoTest.DSASM
 
         private readonly TestFrameWork thisTest = new TestFrameWork();
         private Core testCore;
+        private RuntimeCore testRuntimeCore;
         private TestExecutive testExecutive;
 
         [SetUp]
         public void SetUp()
         {
             testCore = thisTest.SetupTestCore();
-            testExecutive = new TestExecutive(testCore.__TempCoreHostForRefactoring);
+
+            testRuntimeCore = new RuntimeCore(testCore.Heap);
+            testRuntimeCore.SetProperties(testCore.Options, null);
+
+            testExecutive = new TestExecutive(testRuntimeCore);
         }
 
         [TearDown]
         public void CleanUp()
         {
-            testCore.__TempCoreHostForRefactoring.Cleanup();
+            testRuntimeCore.Cleanup();
         }
 
         /// <summary>

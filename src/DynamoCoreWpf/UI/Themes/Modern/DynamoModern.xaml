@@ -793,6 +793,16 @@
                                     Property="Visibility"
                                     Value="Visible" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="True">
+                            <Setter TargetName="contentPresent" 
+                                    Property="TextBlock.Foreground" 
+                                    Value="#bbbbbb"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="contentPresent" 
+                                    Property="TextBlock.Foreground" 
+                                    Value="#444444"/>
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

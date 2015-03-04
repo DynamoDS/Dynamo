@@ -232,7 +232,8 @@ namespace Dynamo.ViewModels
             };
             Model.EntryRemoved += RemoveEntry;
 
-            dynamoViewModel.PropertyChanged += OnDynamoVMPropertyChanged;
+            if (dynamoViewModel != null)
+                dynamoViewModel.PropertyChanged += OnDynamoViewModelPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
@@ -241,7 +242,7 @@ namespace Dynamo.ViewModels
             ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
 
-        private void OnDynamoVMPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnDynamoViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
