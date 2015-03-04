@@ -632,7 +632,13 @@ namespace DynamoUnits
             if (m != 0 || cm != 0 || mm != 0)
                 LengthUnit = LengthUnit.Meter;
             else
-                LengthUnit = LengthUnit.DecimalFoot;
+            {
+                if (value.Contains("'") || value.Contains("\""))
+                    LengthUnit = LengthUnit.FractionalFoot;
+                else
+                    LengthUnit = LengthUnit.DecimalFoot;
+            }
+                
 
             if (denominator != 0)
                 fractionalInch = numerator / denominator;

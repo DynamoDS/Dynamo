@@ -201,7 +201,7 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Length From String")]
+    [NodeName("Number from Feet and Inches")]
     [NodeCategory("Units.Length.Create")]
     [NodeDescription("LengthFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
@@ -254,6 +254,7 @@ namespace UnitsUI
     [NodeDescription("AreaFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("AreaFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [NodeDeprecatedAttribute]
     public class AreaFromString : MeasurementInputBase
     {
         public AreaFromString()
@@ -284,6 +285,7 @@ namespace UnitsUI
     [NodeDescription("VolumeFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("VolumeFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [NodeDeprecatedAttribute]
     public class VolumeFromString : MeasurementInputBase
     {
         public VolumeFromString()
