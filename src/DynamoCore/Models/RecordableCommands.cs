@@ -292,7 +292,7 @@ namespace Dynamo.Models
         /// Guid NodeId that causes the problems during deserialization
         /// </summary>
         [DataContract]
-        public abstract class HasNodeIDCommand : RecordableCommand
+        public abstract class NodeSpecificRecordableCommand : RecordableCommand
         {
             internal Guid NodeId { get; private set; }
 
@@ -307,12 +307,12 @@ namespace Dynamo.Models
                 }
             }
 
-            protected HasNodeIDCommand(string node)
+            protected NodeSpecificRecordableCommand(string node)
             {
                 NodeIdAsString = node;
             }
 
-            protected HasNodeIDCommand(Guid node)
+            protected NodeSpecificRecordableCommand(Guid node)
             {
                 NodeId = node;
             }
@@ -323,7 +323,7 @@ namespace Dynamo.Models
         /// Guid ModelGuid that causes the problems during deserialization
         /// </summary>
         [DataContract]
-        public abstract class HasModelGuidCommand : RecordableCommand
+        public abstract class ModelSpecificRecordableCommand : RecordableCommand
         {
             public Guid ModelGuid { get; private set; }
 
@@ -338,12 +338,12 @@ namespace Dynamo.Models
                 }
             }
 
-            protected HasModelGuidCommand(string node)
+            protected ModelSpecificRecordableCommand(string node)
             {
                 ModelGuidAsString = node;
             }
 
-            protected HasModelGuidCommand(Guid node)
+            protected ModelSpecificRecordableCommand(Guid node)
             {
                 ModelGuid = node;
             }
@@ -421,7 +421,7 @@ namespace Dynamo.Models
                 XmlFilePath = xmlFilePath;
             }
 
-            static string tryFindFile(string xmlFilePath, string uriString = null)
+            static string TryFindFile(string xmlFilePath, string uriString = null)
             {
                 if (File.Exists(xmlFilePath)) 
                     return xmlFilePath;
@@ -449,7 +449,7 @@ namespace Dynamo.Models
             internal static OpenFileCommand DeserializeCore(XmlElement element)
             {
                 XmlElementHelper helper = new XmlElementHelper(element);
-                string xmlFilePath = tryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
+                string xmlFilePath = TryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
                 return new OpenFileCommand(xmlFilePath);            }
 
             #endregion
@@ -550,11 +550,11 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class CreateNodeCommand : HasNodeIDCommand
+        public class CreateNodeCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
 
-            void setProperties(double x, double y, bool defaultPosition, bool transformCoordinates)            {
+            private void SetProperties(double x, double y, bool defaultPosition, bool transformCoordinates)            {
                 X = x;
                 Y = y;
                 DefaultPosition = defaultPosition;
@@ -566,7 +566,7 @@ namespace Dynamo.Models
                 : base(node != null ? node.GUID: Guid.Empty)
             {
                 Node = node;
-                setProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
             private CreateNodeCommand(
@@ -574,7 +574,7 @@ namespace Dynamo.Models
                 : base(Guid.Empty)
             {
                 NodeXml = node;
-                setProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
             public CreateNodeCommand(Guid nodeId, string nodeName,
@@ -582,7 +582,7 @@ namespace Dynamo.Models
                 : base(nodeId)
             {                
 			    Name = nodeName;
-                setProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
             [JsonConstructor]
@@ -591,7 +591,7 @@ namespace Dynamo.Models
                 : base(nodeId)
             {
                 Name = nodeName;
-                setProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates);
             }
             
             internal static CreateNodeCommand DeserializeCore(XmlElement element)
@@ -747,11 +747,11 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class CreateNoteCommand : HasNodeIDCommand
+        public class CreateNoteCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
 
-            void setProperties(string noteText,
+            private void SetProperties(string noteText,
                 double x, double y, bool defaultPosition)
             {
                 if (string.IsNullOrEmpty(noteText))
@@ -767,7 +767,7 @@ namespace Dynamo.Models
                 double x, double y, bool defaultPosition)
                 : base(nodeId)
             {
-                setProperties(noteText, x, y, defaultPosition);
+                SetProperties(noteText, x, y, defaultPosition);
             }
 
             [JsonConstructor]
@@ -775,7 +775,7 @@ namespace Dynamo.Models
                 double x, double y, bool defaultPosition)
                 : base(nodeId)
             {
-                setProperties(noteText, x, y, defaultPosition);
+                SetProperties(noteText, x, y, defaultPosition);
             }
 
 
@@ -830,7 +830,7 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class SelectModelCommand : HasModelGuidCommand
+        public class SelectModelCommand : ModelSpecificRecordableCommand
         {
             #region Public Class Methods
 
@@ -985,7 +985,7 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class MakeConnectionCommand : HasNodeIDCommand
+        public class MakeConnectionCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
 
@@ -1056,7 +1056,7 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class DeleteModelCommand : HasModelGuidCommand
+        public class DeleteModelCommand : ModelSpecificRecordableCommand
         {
             #region Public Class Methods
 
@@ -1135,7 +1135,7 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class ModelEventCommand : HasModelGuidCommand
+        public class ModelEventCommand : ModelSpecificRecordableCommand
         {
             #region Public Class Methods
 
@@ -1187,7 +1187,7 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class UpdateModelValueCommand : HasModelGuidCommand
+        public class UpdateModelValueCommand : ModelSpecificRecordableCommand
         {
             private readonly List<Guid> modelGuids;
 
@@ -1315,7 +1315,7 @@ namespace Dynamo.Models
 
         [DataContract]
         [Obsolete("Node to Code not enabled, API subject to change.")]
-        public class ConvertNodesToCodeCommand : HasNodeIDCommand
+        public class ConvertNodesToCodeCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
 
@@ -1350,11 +1350,11 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class CreateCustomNodeCommand : HasNodeIDCommand
+        public class CreateCustomNodeCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
 
-            void setProperties(string name,
+            private void SetProperties(string name,
                 string category, string description, bool makeCurrent)
             {
                 Name = name;
@@ -1368,14 +1368,14 @@ namespace Dynamo.Models
                 string category, string description, bool makeCurrent)
                 : base(nodeId)
             {
-                setProperties(name, category, description, makeCurrent);
+                SetProperties(name, category, description, makeCurrent);
             }
 
             internal CreateCustomNodeCommand(Guid nodeId, string name,
                 string category, string description, bool makeCurrent)
                 : base(nodeId)
             {
-                setProperties(name, category, description, makeCurrent);
+                SetProperties(name, category, description, makeCurrent);
             }
 
             internal static CreateCustomNodeCommand DeserializeCore(XmlElement element)

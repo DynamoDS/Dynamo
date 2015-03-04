@@ -51,80 +51,87 @@ namespace Dynamo.Models
 
         void CreateNodeImpl(CreateNodeCommand command)
         {
-            var node = command.Node;
+            var node = GetNodeFromCommand(command);
             if (node == null)
-            {
-                if (command.NodeXml != null)
-                {
-                    // command was deserialized, we must create the node directly
-                    node = NodeFactory.CreateNodeFromXml(command.NodeXml, SaveContext.File);
-                }
-                else
-                {
-                    // legacy command, hold on to your butts
-
-                    var name = command.Name;
-                    var nodeId = command.NodeId;
-
-                    // find nodes with of the same type with the same GUID
-                    var query = CurrentWorkspace.Nodes.Where(n => n.GUID.Equals(nodeId) && n.Name.Equals(name));
-
-                    // safely ignore a node of the same type with the same GUID
-                    if (query.Any())
-                    {
-                        node = query.First();
-                    }
-                    else
-                    {
-                        Guid customNodeId; // To be used in the event it's a custom node we're making.
-
-                        if (command is CreateProxyNodeCommand)
-                        {
-                            var proxyCommand = command as CreateProxyNodeCommand;
-
-                            node = NodeFactory.CreateProxyNodeInstance(nodeId, name, 
-                                proxyCommand.NickName, proxyCommand.Inputs, proxyCommand.Outputs);
-                        }
-                        else
-                        {
-                            // Then, we have to figure out what kind of node to make, based on the name.
-
-                            // First, we check for a DSFunction by looking for a FunctionDescriptor
-                            var functionItem = LibraryServices.GetFunctionDescriptor(name);
-                            if (functionItem != null)
-                            {
-                                node = (functionItem.IsVarArg)
-                                    ? new DSVarArgFunction(functionItem) as NodeModel
-                                    : new DSFunction(functionItem);
-                                node.GUID = nodeId;
-                            }
-                            // If that didn't work, let's try using the NodeFactory
-                            else if (NodeFactory.CreateNodeFromTypeName(name, out node))
-                            {
-                                node.GUID = nodeId;
-                            }
-                            // And if that didn't work, then it must be a custom node.
-                            else if (Guid.TryParse(name, out customNodeId))
-                            {
-                                node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
-                                node.GUID = nodeId;
-                            }
-                            // We're out of ideas, log an error.
-                            else
-                            {
-                                Logger.LogError("Could not create instance of node with name: " + name);
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
+                return;
 
             node.X = command.X;
             node.Y = command.Y;
 
             AddNodeToCurrentWorkspace(node, centered: command.DefaultPosition);
             CurrentWorkspace.RecordCreatedModel(node);
+        }
+
+        NodeModel GetNodeFromCommand(CreateNodeCommand command)
+        {
+            if (command.Node != null)
+            {
+                return command.Node;
+            }
+
+            if (command.NodeXml != null)
+            {
+                // command was deserialized, we must create the node directly
+                return NodeFactory.CreateNodeFromXml(command.NodeXml, SaveContext.File);
+            }
+
+            // legacy command, hold on to your butts
+            var name = command.Name;
+            var nodeId = command.NodeId;
+
+            // find nodes with of the same type with the same GUID
+            var query = CurrentWorkspace.Nodes.Where(n => n.GUID.Equals(nodeId) && n.Name.Equals(name));
+
+            // safely ignore a node of the same type with the same GUID
+            if (query.Any())
+            {
+                return query.First();
+            }
+
+            // To be used in the event it's a custom node we're making.
+            Guid customNodeId;
+
+            if (command is CreateProxyNodeCommand)
+            {
+                var proxyCommand = command as CreateProxyNodeCommand;
+
+                return NodeFactory.CreateProxyNodeInstance(nodeId, name,
+                    proxyCommand.NickName, proxyCommand.Inputs, proxyCommand.Outputs);
+            }
+
+            // Then, we have to figure out what kind of node to make, based on the name.
+
+            NodeModel node;
+
+            // First, we check for a DSFunction by looking for a FunctionDescriptor
+            var functionItem = LibraryServices.GetFunctionDescriptor(name);
+            if (functionItem != null)
+            {
+                node = (functionItem.IsVarArg)
+                    ? new DSVarArgFunction(functionItem) as NodeModel
+                    : new DSFunction(functionItem);
+                node.GUID = nodeId;
+                return node;
+            }
+
+            // If that didn't work, let's try using the NodeFactory
+            if (NodeFactory.CreateNodeFromTypeName(name, out node))
+            {
+                node.GUID = nodeId;
+                return node;
+            }
+
+            // And if that didn't work, then it must be a custom node.
+            if (Guid.TryParse(name, out customNodeId))
+            {
+                node = CustomNodeManager.CreateCustomNodeInstance(customNodeId);
+                node.GUID = nodeId;
+                return node;
+            }
+
+            // We're out of ideas, log an error.
+            Logger.LogError("Could not create instance of node with name: " + name);
+            return null;
         }
 
         void CreateNoteImpl(CreateNoteCommand command)
@@ -148,7 +155,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            ModelBase model = CurrentWorkspace.GetModelInternal(command.ModelGuid);
+            ModelBase model = CurrentWorkspace.GetModel(command.ModelGuid);
 
             if (false == model.IsSelected)
             {
@@ -189,7 +196,7 @@ namespace Dynamo.Models
         {
             bool isInPort = portType == PortType.Input;
 
-            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
+            var node = CurrentWorkspace.GetModel(nodeId) as NodeModel;
             if (node == null)
                 return;
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
@@ -220,7 +227,7 @@ namespace Dynamo.Models
         {
             bool isInPort = portType == PortType.Input;
 
-            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
+            var node = CurrentWorkspace.GetModel(nodeId) as NodeModel;
             if (node == null)
                 return;
             
@@ -269,7 +276,7 @@ namespace Dynamo.Models
             var modelsToDelete = new List<ModelBase>();
             if (command.ModelGuid != Guid.Empty)
             {
-                modelsToDelete.Add(CurrentWorkspace.GetModelInternal(command.ModelGuid));
+                modelsToDelete.Add(CurrentWorkspace.GetModel(command.ModelGuid));
             }
             else
             {

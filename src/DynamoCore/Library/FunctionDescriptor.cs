@@ -23,7 +23,8 @@ namespace Dynamo.DSEngine
         string DisplayName { get; }
 
         /// <summary>
-        /// Name to create node
+        ///     An unique name to identify a function. It is used to create 
+        ///     a corresponding node instance
         /// </summary>
         string MangledName { get; }
 

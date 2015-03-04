@@ -81,11 +81,13 @@ namespace Dynamo.Nodes
             }
             element.AppendChild(outEl);
         }
-        
+
         /// <summary>
-        /// Create a definition for custom node and add inputs and outputs
+        ///     Complete a definition for a proxy custom node instance 
+        ///     by adding input and output ports as far as we don't have
+        ///     a corresponding custom node workspace
         /// </summary>
-        /// <param name="funcID">ID of the definition</param>
+        /// <param name="funcID">Identifier of the custom node instance</param>
         /// <param name="inputs">Number of inputs</param>
         /// <param name="outputs">Number of outputs</param>
         internal void LoadNode(Guid nodeId, int inputs, int outputs)

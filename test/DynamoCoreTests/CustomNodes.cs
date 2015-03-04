@@ -203,7 +203,7 @@ namespace Dynamo.Tests
 
             var workspace = model.CurrentWorkspace;
             var selectionSet =
-                guids.Select(guid => workspace.GetModelInternal(Guid.Parse(guid)))
+                guids.Select(guid => workspace.GetModel(Guid.Parse(guid)))
                     .Cast<NodeModel>()
                     .ToList();
 

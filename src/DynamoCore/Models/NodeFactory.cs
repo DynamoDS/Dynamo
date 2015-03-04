@@ -111,11 +111,12 @@ namespace Dynamo.Models
             return AddTypeFactoryAndLoader(typeof(T));
         }
 
-        /// A proxy custom node is a custom node without its definition loaded 
-        /// in Dynamo. The creation of a proxy custom node relies on information 
-        /// provided by the caller since the definition is not readily available 
-        /// for reading. The actual definition may become available at a later 
-        /// time by means of user uploading the definition.
+        /// <summary>
+        ///     A proxy custom node is a custom node without its definition loaded 
+        ///     in Dynamo. The creation of a proxy custom node relies on information 
+        ///     provided by the caller since the definition is not readily available 
+        ///     for reading. The actual definition may become available at a later 
+        ///     time by means of user uploading the definition.
         /// </summary>
         /// <param name="id">Identifier of the custom node instance.</param>
         /// <param name="name">The name represents the GUID of the custom node 
