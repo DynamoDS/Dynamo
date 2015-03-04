@@ -486,4 +486,7 @@
   <data name="UseListJoinNode" xml:space="preserve">
     <value>Use List.Join node instead</value>
   </data>
+  <data name="ModuloByZero" xml:space="preserve">
+    <value>Integer modulo by zero</value>
+  </data>
 </root>

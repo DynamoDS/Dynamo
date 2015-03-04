@@ -16,22 +16,6 @@ namespace Dynamo.Tests
 {
     public class DSEvaluationViewModelUnitTest : DynamoViewModelUnitTest
     {
-        protected LibraryServices libraryServices = null;
-        protected ProtoCore.Core libraryServicesCore = null;
-
-        public override void Init()
-        {
-            base.Init();
-
-            var options = new ProtoCore.Options();
-            options.RootModulePathName = string.Empty;
-            libraryServicesCore = new ProtoCore.Core(options);
-            libraryServicesCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryServicesCore));
-            libraryServicesCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryServicesCore));
-
-            libraryServices = new LibraryServices(libraryServicesCore);
-        }
-
         public void OpenModel(string relativeFilePath)
         {
             string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
@@ -225,13 +209,6 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
-            if (libraryServicesCore != null)
-            {
-                libraryServicesCore.__TempCoreHostForRefactoring.Cleanup();
-                libraryServicesCore = null;
-            }
-            libraryServices = null;
-
             base.Cleanup();
             DynamoUtilities.DynamoPathManager.DestroyInstance();
         }
@@ -1126,6 +1103,15 @@ namespace Dynamo.Tests
             var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\regress5561.dyn");
             RunModel(dynFilePath);
             AssertPreviewValue("4fb0a4ef-8151-4e5f-a2e6-9c3fcd2c1e8f", new object[] { "1foo", null });
+        }
+
+        public void TestMod()
+        {
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsfunction\modDoesntWork.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("77c95ace-e4f1-4119-87fc-7163f9b3b8b0", true);
+            AssertPreviewValue("21f58def-725d-41c9-abc7-063cc3642420", true);
+            AssertPreviewValue("dbd73c1b-0b40-4138-af69-4dd3da2de62d", true);
         }
     }
 

@@ -132,35 +132,35 @@ namespace ProtoCore.Mirror
             }
         }
 
-        internal List<IGraphicItem> GetGraphicItems(DSASM.StackValue svData, Core core)
+        internal List<IGraphicItem> GetGraphicItems(DSASM.StackValue svData, RuntimeCore runtimeCore)
         {
             Validity.Assert(svData.IsPointer);
 
-            object obj = GetCLRObject(svData, core);
+            object obj = GetCLRObject(svData, runtimeCore);
             if (obj != null)
                 return GetGraphicItems(obj);
 
             return null;
         }
 
-        internal object GetCLRObject(StackValue svData, Core core)
+        internal object GetCLRObject(StackValue svData, RuntimeCore runtimeCore)
         {
-            if (null == core.DSExecutable.classTable)
+            if (null == runtimeCore.DSExecutable.classTable)
                 return null;
 
-            IList<ClassNode> classNodes = core.DSExecutable.classTable.ClassNodes;
+            IList<ClassNode> classNodes = runtimeCore.DSExecutable.classTable.ClassNodes;
             if (null == classNodes || (classNodes.Count <= 0))
                 return null;
 
-            ClassNode classnode = core.DSExecutable.classTable.ClassNodes[svData.metaData.type];
+            ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[svData.metaData.type];
             if (!classnode.IsImportedClass) //TODO: look at properties to see if it contains any FFI objects.
                 return null;
 
             try
             {
-                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core, false);
+                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
                 var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                var marshaler = helper.GetMarshaller(core.__TempCoreHostForRefactoring);
+                var marshaler = helper.GetMarshaller(runtimeCore);
                 return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
             }
             catch (System.Exception)

@@ -14,7 +14,7 @@ namespace Dynamo.Models
             Zoom = 1.0;
             X = 0; 
             Y = 0;
-            RunType = RunType.Automatically;
+            RunType = RunType.Automatic;
             RunPeriod = 100;
         }
 
@@ -31,7 +31,7 @@ namespace Dynamo.Models
                 string category = "";
                 string description = "";
                 string version = "";
-                var runType = Models.RunType.Manually;
+                var runType = RunType.Manual;
                 int runPeriod = 100;
 
                 var topNode = xmlDoc.GetElementsByTagName("Workspace");
@@ -67,7 +67,7 @@ namespace Dynamo.Models
                         {
                             if (!Enum.TryParse(att.Value, false, out runType))
                             {
-                                runType = RunType.Manually;
+                                runType = RunType.Manual;
                             }
                         }
                         else if (att.Name.Equals("RunPeriod"))

@@ -30,10 +30,17 @@ namespace Dynamo.ViewModels
         }
 
         public event EventHandler RequestReturnFocusToSearch;
-        public virtual void OnRequestReturnFocusToSearch(object sender, EventArgs e)
+        public void OnRequestReturnFocusToSearch(object sender, EventArgs e)
         {
             if (RequestReturnFocusToSearch != null)
                 RequestReturnFocusToSearch(this, e);
+        }
+
+        public event EventHandler RequestCloseSearchToolTip;
+        public void OnRequestCloseSearchToolTip(object sender, EventArgs e)
+        {
+            if (RequestCloseSearchToolTip != null)
+                RequestCloseSearchToolTip(this, e);
         }
 
         public event EventHandler SearchTextChanged;
@@ -225,7 +232,7 @@ namespace Dynamo.ViewModels
             };
             Model.EntryRemoved += RemoveEntry;
 
-            libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
+            dynamoViewModel.PropertyChanged += OnDynamoVMPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
@@ -234,10 +241,14 @@ namespace Dynamo.ViewModels
             ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
 
-        private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void OnDynamoVMPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (propertyChangedEventArgs.PropertyName == "Visibility")
-                SearchAndUpdateResults();
+            switch (e.PropertyName)
+            {
+                case "CurrentSpace":
+                    OnRequestCloseSearchToolTip(sender, e);
+                    break;
+            }
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
@@ -459,6 +470,7 @@ namespace Dynamo.ViewModels
                     var targetIsRoot = target == libraryRoot;
                     newTarget = targetIsRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
                     newTarget.FullCategoryName = fullyQualifiedCategoryName;
+                    newTarget.Assembly = entry.Assembly;
                     // Situation when we to add only one new category and item as it child.
                     // New category should be added to existing ClassesNodeCategoryViewModel.
                     // Make notice: ClassesNodeCategoryViewModel is always first item in 
@@ -540,6 +552,7 @@ namespace Dynamo.ViewModels
 
                 var cat = new NodeCategoryViewModel(name);
                 cat.FullCategoryName = path;
+                cat.Assembly = entry.Assembly;
                 return cat;
             }).ToList();
 
@@ -601,7 +614,7 @@ namespace Dynamo.ViewModels
         private static string MakeFullyQualifiedName(string path, string addition)
         {
             return string.IsNullOrEmpty(path) ? addition :
-                path + Configurations.CategoryDelimiter + addition;
+                path + Configurations.CategoryDelimiterString + addition;
         }
 
         internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)

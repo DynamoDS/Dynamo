@@ -11,16 +11,17 @@ namespace ProtoScript.Runners
     public class ExpressionInterpreterRunner
     {
         private ProtoCore.Core Core;
+        private ProtoCore.RuntimeCore runtimeCore;
         private readonly ProtoCore.DebugServices.EventSink EventSink = new ProtoCore.DebugServices.ConsoleEventSink();
 
-        public ExpressionInterpreterRunner(ProtoCore.Core core)
+        public ExpressionInterpreterRunner(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
             Core = core;
+            this.runtimeCore = runtimeCore;
         }
 
         public bool Compile(string code, int currentBlockID, out int blockId)
         {
-            ProtoCore.RuntimeCore runtimeCore = Core.__TempCoreHostForRefactoring;
             bool buildSucceeded = false;
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             try
@@ -67,7 +68,6 @@ namespace ProtoScript.Runners
             bool ssastate = Core.Options.GenerateSSA;
             bool ssastateExec = Core.Options.ExecuteSSA;
 
-            ProtoCore.RuntimeCore runtimeCore = Core.__TempCoreHostForRefactoring;
             runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter;
 
             runtimeCore.Options.GenerateSSA = false;
@@ -86,7 +86,7 @@ namespace ProtoScript.Runners
             Core.watchBaseOffset = 0;
             runtimeCore.watchStack.Clear();
 
-            bool succeeded = Compile(code, Core.GetCurrentBlockId(), out blockId);
+            bool succeeded = Compile(code, runtimeCore.GetCurrentBlockId(), out blockId);
 
             //Clear the warnings and errors so they will not continue impact the next compilation.
             Core.BuildStatus.ClearErrors();
@@ -132,7 +132,7 @@ namespace ProtoScript.Runners
                     ProtoCore.DSASM.StackFrame stackFrame = null;
                     int locals = 0;
 
-                    StackValue sv = Core.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.startPC, context, stackFrame, locals);
+                    StackValue sv = runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.startPC, context, stackFrame, locals);
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing
                     // it needs to be popped off at the end for stack alignment - pratapa
@@ -203,7 +203,7 @@ namespace ProtoScript.Runners
             runtimeCore.Options.ExecuteSSA = ssastateExec;
             runtimeCore.Options.RunMode = ProtoCore.DSASM.InterpreterMode.kNormal;
 
-            return new ExecutionMirror(Core.CurrentExecutive.CurrentDSASMExec, Core);
+            return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
         }
     }
 }
