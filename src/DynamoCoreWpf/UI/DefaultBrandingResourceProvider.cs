@@ -9,7 +9,7 @@ using Dynamo.Wpf.Interfaces;
 
 namespace Dynamo.Wpf.UI
 {
-    internal class DefaultBrandingResourceProvider : IBrandingResourceProvider
+    public class DefaultBrandingResourceProvider : IBrandingResourceProvider
     {
         #region interface members
 
