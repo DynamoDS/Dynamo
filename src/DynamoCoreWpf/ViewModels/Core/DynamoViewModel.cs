@@ -2146,6 +2146,30 @@ namespace Dynamo.ViewModels
         {
             this.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
+       
+        /// <summary>
+        /// Present the new designOption dialogue and add a new design 
+        /// option to the design option set on this graph
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void ShowNewDesignOptionDialogAndMakeDesignOption(object parameter)
+        {
+            //trigger the event to request the display
+            //of the function name dialogue
+            var args = new DesignOptionNamePromptEventArgs();
+            this.Model.OnRequestsFunctionNamePrompt(this, args);
+
+            if (args.Success)
+            {
+                this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
+                    args.Name, args.Category, args.Description, true));
+                this.ShowStartPage = false;
+            }
+        }
+        private bool CanShowNewDesignOptionDialog(object parameter)
+        {
+            return true;
+        }
 
         public DynamoViewModel ViewModel { get { return this; } }
 

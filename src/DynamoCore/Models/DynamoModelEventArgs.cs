@@ -183,6 +183,19 @@ namespace Dynamo.Models
         }
     }
 
+    public class DesignOptionNamePromptEventArgs : EventArgs
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public bool Success { get; set; }
+
+        public DesignOptionNamePromptEventArgs()
+        {
+            Name = "";
+            Description = "";
+        }
+    }
+
     public class ViewOperationEventArgs : EventArgs
     {
         public enum Operation
