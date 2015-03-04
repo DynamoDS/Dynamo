@@ -2127,16 +2127,6 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private bool CanCheckForLatestRender(object obj)
-        {
-            return true;
-        }
-
-        private void CheckForLatestRender(object obj)
-        {
-            this.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
-        }
-
         public DynamoViewModel ViewModel { get { return this; } }
 
         #endregion
