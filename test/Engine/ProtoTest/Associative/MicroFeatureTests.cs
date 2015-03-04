@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
@@ -1721,6 +1722,23 @@ x4 = 0..#5..10;
             string code = @"a = 5.2 % 2.3;";
             var mirror = thisTest.RunScriptSource(code);
             mirror.Verify("a", 0.6);
+        }
+
+        [Test]
+        public void ModuloByZero()
+        {
+            string code =
+@"
+a = 2 % 0;
+b = 2.1 % 0;
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+            thisTest.Verify("b", double.NaN);
+
+            var warnings = thisTest.GetTestRuntimeCore().RuntimeStatus.Warnings;
+            Assert.IsTrue(warnings.Any(w => w.ID == ProtoCore.Runtime.WarningID.kModuloByZero));
         }
 
         [Test]
