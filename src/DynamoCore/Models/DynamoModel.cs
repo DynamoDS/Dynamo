@@ -370,6 +370,7 @@ namespace Dynamo.Models
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
+            public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
@@ -416,7 +417,7 @@ namespace Dynamo.Models
             bool testMode = config.StartInTestMode;
 
             DynamoPathManager.Instance.InitializeCore(corePath);
-            pathManager = new PathManager();
+            pathManager = new PathManager(config.PathResolver);
 
             Context = context;
             IsTestMode = testMode;

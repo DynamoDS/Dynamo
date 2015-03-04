@@ -66,7 +66,13 @@ namespace Dynamo.Core
 
         #region Public Class Operational Methods
 
-        internal PathManager()
+        /// <summary>
+        /// Constructs an instance of PathManager object.
+        /// </summary>
+        /// <param name="pathResolver">Reference of an IPathResolver object that
+        /// supplies additional path information. This argument is optional.</param>
+        /// 
+        internal PathManager(IPathResolver pathResolver)
         {
             // This method is invoked in DynamoCore.dll, dynamoCorePath 
             // represents the directory that contains DynamoCore.dll.
@@ -101,6 +107,7 @@ namespace Dynamo.Core
             };
 
             additionalResolutionPaths = new List<string>();
+            LoadPathsFromResolver(pathResolver);
         }
 
         /// <summary>
@@ -130,6 +137,30 @@ namespace Dynamo.Core
         #endregion
 
         #region Private Class Helper Methods
+
+        private void LoadPathsFromResolver(IPathResolver pathResolver)
+        {
+            if (pathResolver == null) // No optional path resolver is specified...
+                return;
+
+            foreach (var directory in pathResolver.AdditionalNodeDirectories)
+            {
+                if (!Directory.Exists(directory))
+                    throw new DirectoryNotFoundException(directory);
+
+                if (!nodeDirectories.Contains(directory))
+                    nodeDirectories.Add(directory);
+            }
+
+            foreach (var directory in pathResolver.AdditionalResolutionPaths)
+            {
+                if (!Directory.Exists(directory))
+                    throw new DirectoryNotFoundException(directory);
+
+                if (!additionalResolutionPaths.Contains(directory))
+                    additionalResolutionPaths.Add(directory);                
+            }
+        }
 
         private string GetUserDataFolder()
         {
