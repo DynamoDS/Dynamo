@@ -39,11 +39,12 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, string> priorNameHints =
             new Dictionary<string, string>();
 
-        public LibraryServices(ProtoCore.Core libraryManagementCore)
+        public LibraryServices(ProtoCore.Core libraryManagementCore,
+            IEnumerable<string> preloadLibraries)
         {
             LibraryManagementCore = libraryManagementCore;
 
-            PreloadLibraries();
+            PreloadLibraries(preloadLibraries);
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
@@ -85,9 +86,9 @@ namespace Dynamo.DSEngine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        private void PreloadLibraries()
+        private void PreloadLibraries(IEnumerable<string> preloadLibraries)
         {
-            importedLibraries.AddRange(DynamoPathManager.Instance.PreloadLibraries);
+            importedLibraries.AddRange(preloadLibraries);
 
             foreach (var library in importedLibraries)
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);

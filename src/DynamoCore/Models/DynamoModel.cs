@@ -470,7 +470,8 @@ namespace Dynamo.Models
             libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
-            LibraryServices = new LibraryServices(libraryCore);
+            var preloadLibraries = DynamoPathManager.Instance.PreloadLibraries;
+            LibraryServices = new LibraryServices(libraryCore, preloadLibraries);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
