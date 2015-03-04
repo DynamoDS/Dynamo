@@ -1172,7 +1172,7 @@ namespace ProtoScript.Runners
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
             foreach (var item in configuration.PassThroughConfiguration)
             {
-                runtimeCore.DSExecutable.RuntimeData.Configurations[item.Key] = item.Value;
+                runnerCore.Configurations[item.Key] = item.Value;
             }
 
             vmState = null;
