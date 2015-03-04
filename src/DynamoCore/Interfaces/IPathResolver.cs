@@ -4,6 +4,32 @@ namespace Dynamo.Interfaces
 {
     public interface IPathResolver
     {
+        /// <summary>
+        /// Additional directories that should be considered when path resolution
+        /// is done for a library that does not contain full path information. 
+        /// The return value of this property should never be null. Each entry 
+        /// must represent a valid directory, otherwise DirectoryNotFoundException
+        /// exception is thrown.
+        /// </summary>
+        IEnumerable<string> AdditionalResolutionPaths { get; }
+
+        /// <summary>
+        /// Additional directories in which node assemblies can be located. The 
+        /// return value of this property should never be null. Each entry must 
+        /// represent a valid directory, otherwise DirectoryNotFoundException
+        /// exception is thrown.  
+        /// </summary>
+        IEnumerable<string> AdditionalNodeDirectories { get; }
+
+        /// <summary>
+        /// Libraries to be preloaded as part of Dynamo start up sequence. Each
+        /// entry in this list can either represent full path to a library, or 
+        /// just the assembly name. If absolute path information is not supplied,
+        /// the library will be looked up through both predefined and additional 
+        /// resolution paths. The return value of this property should never be 
+        /// null.
+        /// </summary>
+        IEnumerable<string> PreloadedLibraryPaths { get; }
     }
 
     public interface IPathManager
