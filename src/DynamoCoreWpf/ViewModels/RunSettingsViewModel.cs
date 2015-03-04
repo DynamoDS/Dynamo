@@ -52,11 +52,11 @@ namespace Dynamo.Wpf.ViewModels
             {
                 switch (RunType)
                 {
-                    case RunType.Automatically:
+                    case RunType.Automatic:
                         return Resources.RunTypeToolTipAutomatically;
-                    case RunType.Manually:
+                    case RunType.Manual:
                         return Resources.RunTypeToolTipManually;
-                    case RunType.Periodically:
+                    case RunType.Periodic:
                         return enabled
                             ? Resources.RunTypeToolTipPeriodicallyEnabled
                             : Resources.RunTypeToolTipPeriodicallyDisabled;
@@ -117,10 +117,10 @@ namespace Dynamo.Wpf.ViewModels
                 // set the run period input visibility
                 switch (SelectedRunTypeItem.RunType)
                 {
-                    case RunType.Manually:
-                    case RunType.Automatically:
+                    case RunType.Manual:
+                    case RunType.Automatic:
                         return Visibility.Collapsed;
-                    case RunType.Periodically:
+                    case RunType.Periodic:
                         return Visibility.Visible;
                     default:
                         return Visibility.Hidden;
@@ -139,8 +139,8 @@ namespace Dynamo.Wpf.ViewModels
             get
             {
                 return Model.RunEnabled &&
-                    Model.RunType != RunType.Automatically &&
-                    Model.RunType != RunType.Periodically;
+                    Model.RunType != RunType.Automatic &&
+                    Model.RunType != RunType.Periodic;
             }
         }
 
@@ -162,10 +162,17 @@ namespace Dynamo.Wpf.ViewModels
                 debug = value;
 
                 if (debug)
-                    Model.RunType = RunType.Manually;
-
-                ToggleRunTypeEnabled(RunType.Automatically, !debug);
-                ToggleRunTypeEnabled(RunType.Periodically, !debug);
+                {
+                    Model.RunType = RunType.Manual;
+                    ToggleRunTypeEnabled(RunType.Automatic, false);
+                    ToggleRunTypeEnabled(RunType.Periodic, false);
+                }
+                else
+                {
+                    ToggleRunTypeEnabled(RunType.Automatic, true);
+                    ToggleRunTypeEnabled(RunType.Periodic, true);
+                    workspaceViewModel.CheckAndSetPeriodicRunCapability();
+                }
 
                 RaisePropertyChanged("RunInDebug");
             }
@@ -184,7 +191,30 @@ namespace Dynamo.Wpf.ViewModels
         public ObservableCollection<RunTypeItem> RunTypeItems { get; set; }
  
         public DelegateCommand RunExpressionCommand { get; private set; }
+
         public DelegateCommand CancelRunCommand { get; set; }
+
+        public Visibility DebugCheckBoxVisibility
+        {
+            get
+            {
+#if DEBUG
+                return Visibility.Visible;
+#else
+                return Visibility.Hidden;
+#endif
+            }
+        }
+
+        public Visibility RunButtonVisibility
+        {
+            get
+            {
+                return Model.RunType == RunType.Manual
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+        }
 
         #endregion
 
@@ -206,7 +236,7 @@ namespace Dynamo.Wpf.ViewModels
             {
                 RunTypeItems.Add(new RunTypeItem(val));
             }
-            ToggleRunTypeEnabled(RunType.Periodically, false);
+            ToggleRunTypeEnabled(RunType.Periodic, false);
         }
 
         #endregion
@@ -238,6 +268,7 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunTypeItems");
                     RaisePropertyChanged("SelectedRunTypeItem");
+                    RaisePropertyChanged("RunButtonVisibility");
                     RunTypeChangedRun(null);
                     break;
             }
@@ -248,12 +279,12 @@ namespace Dynamo.Wpf.ViewModels
             workspaceViewModel.StopPeriodicTimerCommand.Execute(null);
             switch (Model.RunType)
             {
-                case RunType.Manually:
+                case RunType.Manual:
                     return;
-                case RunType.Automatically:
+                case RunType.Automatic:
                     RunExpressionCommand.Execute(true);
                     return;
-                case RunType.Periodically:
+                case RunType.Periodic:
                     workspaceViewModel.StartPeriodicTimerCommand.Execute(null);
                     return;
             }
