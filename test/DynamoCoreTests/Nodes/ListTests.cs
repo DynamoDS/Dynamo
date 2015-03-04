@@ -1117,6 +1117,9 @@ namespace Dynamo.Tests
 		[Test]
 		public void LaceLongest_Negative()
 		{
+            throw new Exception("TESTING WHETHER THIS CAUSES A CI FAIL - REMOVE ME");
+            /*
+
 			var model = ViewModel.Model;
 
 			string openPath = Path.Combine(GetTestDirectory(), @"core\list\LaceLongest_Negative.dyn");
@@ -1125,7 +1128,7 @@ namespace Dynamo.Tests
 			// check all the nodes and connectors are loaded
 			Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count);
 			Assert.AreEqual(3, model.CurrentWorkspace.Connectors.Count());
-
+            */
 		}
 
 		[Test]
