@@ -39,9 +39,6 @@
     <EmbeddedResource Include="DSCoreNodesImages.resx" />
     <EmbeddedResource Include="DSIronPythonNodeImages.resx" />
     <EmbeddedResource Include="DSOfficeImages.resx" />
-    <EmbeddedResource Include="ProtoGeometryImages.resx">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="TessellationImages.resx" />
   </ItemGroup>
   <ItemGroup>
