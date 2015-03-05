@@ -139,7 +139,8 @@ namespace Dynamo.UI.Controls
             }
             else if (this.IsExpanded)
             {
-                RefreshExpandedDisplayAsync(() => BeginViewSizeTransition(ComputeLargeContentSize()));
+                RefreshExpandedDisplay();
+                BeginViewSizeTransition(ComputeLargeContentSize());
             }
         }
 
@@ -233,6 +234,12 @@ namespace Dynamo.UI.Controls
             rootDataContext.Children.Clear();
         }
 
+        private void RunOnSchedulerSync(Action a)
+        {
+            scheduler.ScheduleForExecution(new DelegateBasedAsyncTask(scheduler, a));
+            while (scheduler.ProcessNextTask(false)) { }
+        }
+
         private void RefreshCondensedDisplay()
         {
             // The preview control will not have its content refreshed unless 
@@ -243,79 +250,33 @@ namespace Dynamo.UI.Controls
             if (cachedSmallContent != null)
                 return;
 
-            cachedSmallContent = "null";
-            if (mirrorData != null)
+            string newContent = "null";
+
+            RunOnSchedulerSync(() =>
             {
-                if (mirrorData.IsCollection)
+                if (mirrorData != null)
                 {
-                    // TODO(Ben): Can we display details of the array and 
-                    // probably display the first element of the array (even 
-                    // when it is multi-dimensional array)?
-                    cachedSmallContent = "Array";
+                    if (mirrorData.IsCollection)
+                    {
+                        // TODO(Ben): Can we display details of the array and 
+                        // probably display the first element of the array (even 
+                        // when it is multi-dimensional array)?
+                        newContent = "Array";
+                    }
+                    else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
+                    {
+                        newContent = mirrorData.Class.ClassName;
+                    }
+                    else
+                    {
+                        newContent = mirrorData.StringData;
+                    }
                 }
-                else if (mirrorData.Data == null && !mirrorData.IsNull && mirrorData.Class != null)
-                {
-                    cachedSmallContent = mirrorData.Class.ClassName;
-                }
-                else
-                {
-                    cachedSmallContent = mirrorData.StringData;
-                }
-            }
-
-            var smallContentView = smallContentGrid.Children[0] as TextBlock;
-            smallContentView.Text = cachedSmallContent; // Update displayed text.
-        }
-
-        private void RefreshExpandedDisplayAsync(Action continuation = null)
-        {
-            var scheduler = nodeViewModel.DynamoViewModel.Model.Scheduler;
-
-            // The preview control will not have its content refreshed unless 
-            // the content is null. In order to perform real refresh, new data 
-            // source needs to be rebound to the preview control by calling 
-            // BindToDataSource method.
-            // 
-            if (this.cachedLargeContent != null)
-                return;
-
-            if (largeContentGrid.Children.Count == 0)
-            {
-                var tree = new WatchTree();
-                tree.DataContext = new WatchViewModel(nodeViewModel.DynamoViewModel.VisualizationManager);
-                largeContentGrid.Children.Add(tree);
-            }
-
-            var watchTree = largeContentGrid.Children[0] as WatchTree;
-            var rootDataContext = watchTree.DataContext as WatchViewModel;
-
-            WatchViewModel newViewModel = null;
-
-            var mirrorDataTask = new DelegateBasedAsyncTask(scheduler, () =>
-            {
-                newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                    mirrorData, null, string.Empty, false);
             });
 
-            // once completed, run this on the dispatcher sync context
-            mirrorDataTask.ThenPost((_) =>
-            {
-                cachedLargeContent = newViewModel;
-
-                rootDataContext.Children.Add(cachedLargeContent);
-
-                watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
-                    new Binding("Children")
-                    {
-                        Mode = BindingMode.TwoWay,
-                        Source = rootDataContext
-                    });
-
-                if (continuation != null) continuation();
-
-            }, new DispatcherSynchronizationContext(this.Dispatcher));
-
-            scheduler.ScheduleForExecution(mirrorDataTask);
+            cachedSmallContent = newContent;
+            var smallContentView = smallContentGrid.Children[0] as TextBlock;
+            smallContentView.Text = cachedSmallContent; // Update displayed text.
         }
 
         private void RefreshExpandedDisplay()
@@ -328,6 +289,14 @@ namespace Dynamo.UI.Controls
             if (this.cachedLargeContent != null)
                 return;
 
+            WatchViewModel newViewModel = null;
+
+            RunOnSchedulerSync(() =>
+            {
+                newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
+                    mirrorData, null, string.Empty, false);
+            });
+
             if (largeContentGrid.Children.Count == 0)
             {
                 var tree = new WatchTree();
@@ -338,9 +307,9 @@ namespace Dynamo.UI.Controls
             var watchTree = largeContentGrid.Children[0] as WatchTree;
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
-            cachedLargeContent = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
-                mirrorData, null, string.Empty, false);
+            cachedLargeContent = newViewModel;
 
+            rootDataContext.Children.Clear();
             rootDataContext.Children.Add(cachedLargeContent);
 
             watchTree.treeView1.SetBinding(ItemsControl.ItemsSourceProperty,
@@ -348,7 +317,7 @@ namespace Dynamo.UI.Controls
                 {
                     Mode = BindingMode.TwoWay,
                     Source = rootDataContext
-                });
+                }); 
         }
 
         private Size ComputeSmallContentSize()
@@ -442,7 +411,8 @@ namespace Dynamo.UI.Controls
                 throw new InvalidOperationException();
 
             CenterHorizontallyOnHostCanvas();
-            RefreshCondensedDisplay(); // Bind data to the view, if needed.
+
+            RefreshCondensedDisplay();
 
             // Update size before fading in to view.
             var smallContentSize = ComputeSmallContentSize();
@@ -470,7 +440,7 @@ namespace Dynamo.UI.Controls
             if (this.IsExpanded == false)
                 throw new InvalidOperationException();
 
-            RefreshCondensedDisplay(); // Bind data to the view, if needed.
+            RefreshCondensedDisplay();
 
             this.smallContentGrid.Visibility = System.Windows.Visibility.Visible;
             SetCurrentStateAndNotify(State.InTransition);
@@ -493,7 +463,6 @@ namespace Dynamo.UI.Controls
             var largeContentSize = ComputeLargeContentSize();
             UpdateAnimatorTargetSize(SizeAnimator.Expansion, largeContentSize);
             this.expandStoryboard.Begin(this, true);
-
         }
 
         private void BeginViewSizeTransition(Size targetSize)
