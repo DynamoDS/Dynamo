@@ -46,7 +46,6 @@ namespace Dynamo.Nodes
         public const string GEOMETRY = "Geometry";
 
         public const string GEOMETRY_CURVE_CREATE = "Geometry.Curve.Create";
-        public const string GEOMETRY_CURVE_ACTION = "Geometry.Curve.Actions";
         public const string GEOMETRY_CURVE_DIVIDE = "Geometry.Curve.Divide";
         public const string GEOMETRY_CURVE_PRIMITIVES = "Geometry.Curve.Primitives";
         public const string GEOMETRY_CURVE_QUERY = "Geometry.Curve.Query";
@@ -93,6 +92,7 @@ namespace Dynamo.Nodes
         public const string REVIT_PARAMETERS = "Revit.Parameters";
         public const string REVIT_BAKE = "Revit.Bake";
         public const string REVIT_API = "Revit.API";
+        public const string REVIT_ELEMENTS_DIVIDEDPATH_ACTION = "Revit.Elements.DividedPath.Action";
 
         public const string ANALYZE = "Analyze";
         public const string ANALYZE_MEASURE = "Analyze.Measure";
