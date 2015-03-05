@@ -160,8 +160,6 @@ namespace Dynamo.Nodes
 
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
 
-        public DelegateCommand CheckForLatestRenderCommand { get; set; }
-
         public DelegateCommand ToggleCanNavigateBackgroundCommand
         {
             get
@@ -209,7 +207,7 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
-            CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
+
             WatchIsResizable = true;
 
             WatchWidth = 200;
@@ -336,7 +334,6 @@ namespace Dynamo.Nodes
             // No visualization update is required for this node type.
         }
 
-
         #region IWatchViewModel interface
 
         public void GetBranchVisualization(object parameters)
@@ -348,16 +345,6 @@ namespace Dynamo.Nodes
         public bool CanGetBranchVisualization(object parameter)
         {
             return true;
-        }
-
-        private bool CanCheckForLatestRender(object obj)
-        {
-            return true;
-        }
-
-        private void CheckForLatestRender(object obj)
-        {
-            this.ViewModel.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
 
         #endregion
