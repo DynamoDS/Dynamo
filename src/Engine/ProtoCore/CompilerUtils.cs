@@ -21,6 +21,7 @@ namespace ProtoCore.Utils
 
         public int line;
         public string variable;
+        public string displayName;
 
         #endregion
 
@@ -33,7 +34,7 @@ namespace ProtoCore.Utils
             if (string.IsNullOrEmpty(variable))
                 throw new ArgumentException("Invalid variable name", "variable");
 
-            this.variable = variable;
+            this.displayName = this.variable = variable;
             this.line = line;
         }
 
@@ -42,7 +43,7 @@ namespace ProtoCore.Utils
             if (line < 0)
                 throw new ArgumentException("Argument cannot be negative", "line");
 
-            this.variable = string.Empty; // In NUnit temp names are ignored.
+            this.displayName = this.variable = string.Empty; // In NUnit temp names are ignored.
             this.line = line;
         }
 
@@ -93,7 +94,8 @@ namespace ProtoCore.Utils
     public class ParseParam
     {
         private List<string> temporaries = null;
-        private List<string> unboundIdentifiers = null;
+        //private List<string> unboundIdentifiers = null;
+        private Dictionary<string, string> unboundIdentifiers;
         private List<ProtoCore.AST.Node> parsedNodes = null;
         private List<ProtoCore.BuildData.ErrorEntry> errors = null;
         private List<ProtoCore.BuildData.WarningEntry> warnings = null;
@@ -112,13 +114,15 @@ namespace ProtoCore.Utils
             this.temporaries.Add(variable);
         }
 
-        public void AppendUnboundIdentifier(string identifier)
+        public void AppendUnboundIdentifier(string displayName, string identifier)
         {
             if (this.unboundIdentifiers == null)
-                this.unboundIdentifiers = new List<string>();
+                this.unboundIdentifiers = new Dictionary<string, string>();
 
-            if (!this.unboundIdentifiers.Contains(identifier))
-                this.unboundIdentifiers.Add(identifier);
+            //if (!this.unboundIdentifiers.Contains(identifier))
+            //    this.unboundIdentifiers.Add(identifier);
+            if (!this.unboundIdentifiers.ContainsKey(displayName))
+                this.unboundIdentifiers.Add(displayName, identifier);
         }
 
         public void AppendParsedNodes(IEnumerable<ProtoCore.AST.Node> parsedNodes)
@@ -162,7 +166,7 @@ namespace ProtoCore.Utils
             get { return this.temporaries; }
         }
 
-        public IEnumerable<System.String> UnboundIdentifiers
+        public IDictionary<string, string> UnboundIdentifiers
         {
             get { return unboundIdentifiers; }
         }
@@ -322,7 +326,7 @@ namespace ProtoCore.Utils
                 foreach (KeyValuePair<int, List<VariableLine>> kvp in unboundIdentifiers)
                 {
                     foreach (VariableLine vl in kvp.Value)
-                        parseParams.AppendUnboundIdentifier(vl.variable);
+                        parseParams.AppendUnboundIdentifier(vl.displayName, vl.variable);
                 }
 
                 return true;
@@ -367,6 +371,7 @@ namespace ProtoCore.Utils
             Validity.Assert(nodes != null);
 
             int index = 0;
+            int typedIdentIndex = 0;
             foreach (var node in nodes)
             {
                 var n = node as AssociativeNode;
@@ -418,11 +423,13 @@ namespace ProtoCore.Utils
                     {
                         if (node is TypedIdentifierNode)
                         {
-                            var ident = new IdentifierNode(Constants.kTempVarForTypedIdentifier);
+                            // e.g. a : int = %tTypedIdent_<Index>;
+                            var ident = new IdentifierNode(Constants.kTempVarForTypedIdentifier + typedIdentIndex);
                             NodeUtils.CopyNodeLocation(ident, node);
                             var typedNode = new BinaryExpressionNode(node as TypedIdentifierNode, ident, Operator.assign);
                             NodeUtils.CopyNodeLocation(typedNode, node);
                             astNodes.Add(typedNode);
+                            typedIdentIndex++;
                         }
                         else
                         {
@@ -447,8 +454,8 @@ namespace ProtoCore.Utils
             return hasLHS;
         }
 
-        private static void GetInputLines(IEnumerable<ProtoCore.AST.Node> astNodes,
-                                   IEnumerable<ProtoCore.BuildData.WarningEntry> warnings,
+        private static void GetInputLines(IEnumerable<Node> astNodes,
+                                   IEnumerable<BuildData.WarningEntry> warnings,
                                    Dictionary<int, List<VariableLine>> inputLines)
         {
             List<VariableLine> warningVLList = GetVarLineListFromWarning(warnings);
@@ -465,19 +472,19 @@ namespace ProtoCore.Utils
                 if (bNode != null)
                 {
                     var variableLineList = new List<VariableLine>();
+
                     for (int i = 0; i < warningVLList.Count; ++i)
                     {
                         var warning = warningVLList[i];
                         if (warning.line >= bNode.line && warning.line <= bNode.endLine)
                         {
-                            if (warning.variable == Constants.kTempVarForTypedIdentifier)
+                            if (warning.variable.StartsWith(Constants.kTempVarForTypedIdentifier))
                             {
-                                warning.variable = bNode.LeftNode.Name;
+                                warning.displayName = bNode.LeftNode.Name;
                             }
                             variableLineList.Add(warning);
                         }
                     }
-
                     if (variableLineList.Count > 0)
                     {
                         inputLines.Add(stmtNumber, variableLineList);
@@ -494,10 +501,12 @@ namespace ProtoCore.Utils
             {
                 if (warningEntry.ID == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
                 {
+                    var varName = warningEntry.Message.Split(' ')[1].Replace("'", "");
                     result.Add(new VariableLine()
                     {
-                        variable = warningEntry.Message.Split(' ')[1].Replace("'", ""),
-                        line = warningEntry.Line
+                        variable = varName,
+                        line = warningEntry.Line,
+                        displayName = varName
                     });
                 }
             }
