@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using System.Reflection.Emit;
 
 using DynamoShapeManager;
 
@@ -19,6 +20,9 @@ namespace TestServices
         public LibraryVersion RequestedLibraryVersion { get; private set; }
 
         public RemoteTestSessionConfig()
+            : this(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)){}
+
+        public RemoteTestSessionConfig(string fallBackCoreDirectory)
         {
             var execAssemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var configPath = Path.Combine(execAssemblyDir, "TestServices.dll");
@@ -28,7 +32,7 @@ namespace TestServices
             // and version 219 for the shape manager.
             if (!File.Exists(configPath))
             {
-                DynamoCorePath = execAssemblyDir;
+                DynamoCorePath = fallBackCoreDirectory;
                 RequestedLibraryVersion = LibraryVersion.Version219;
                 return;
             }
