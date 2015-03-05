@@ -1,6 +1,9 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Reflection;
+
+using DynamoShapeManager;
 
 namespace TestServices
 {
@@ -13,26 +16,36 @@ namespace TestServices
     public class RemoteTestSessionConfig
     {
         public string DynamoCorePath { get; private set; }
-        public string RequestedLibraryVersion { get; private set; }
+        public LibraryVersion RequestedLibraryVersion { get; private set; }
 
         public RemoteTestSessionConfig()
         {
-            var assDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var configPath = Path.Combine(assDir, "TestServices.dll");
+            var execAssemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var configPath = Path.Combine(execAssemblyDir, "TestServices.dll");
+
+            // If a config file cannot be found, fall back to 
+            // using the executing assembly's directory for core
+            // and version 219 for the shape manager.
             if (!File.Exists(configPath))
             {
-                DynamoCorePath = assDir;
-                RequestedLibraryVersion = "Version219";
+                DynamoCorePath = execAssemblyDir;
+                RequestedLibraryVersion = LibraryVersion.Version219;
                 return;
             }
 
             var config = ConfigurationManager.OpenExeConfiguration(configPath);
 
             var dir = GetAppSetting(config, "DynamoBasePath");
-            DynamoCorePath = string.IsNullOrEmpty(dir) ? assDir : dir;
+            DynamoCorePath = string.IsNullOrEmpty(dir) ? execAssemblyDir : dir;
 
-            var asm = GetAppSetting(config, "RequestedLibraryVersion");
-            RequestedLibraryVersion = string.IsNullOrEmpty(dir) ? "Version219" : asm;
+            var versionStr = GetAppSetting(config, "RequestedLibraryVersion");
+
+            LibraryVersion version;
+            if(!LibraryVersion.TryParse(versionStr, out version))
+            {
+                throw new Exception("The specified string value did not map to a supported version of the shape manager.");
+            }
+            RequestedLibraryVersion = version;
         }
 
         private static string GetAppSetting(Configuration config, string key)

@@ -135,31 +135,17 @@ namespace DynamoShapeManager
         }
 
         /// <summary>
-        /// Construct a Preloader by specifying a required library version. If the 
-        /// specified version is invalid, then fallback to construction using
-        /// the standard list of versions.
+        /// Construct a Preloader by specifying a required library version.
         /// </summary>
         /// <param name="rootFolder">Full path of the directory that contains 
         /// LibG_xxx folder, where 'xxx' represents the library version. In a 
         /// typical setup this would be the same directory that contains Dynamo 
         /// core modules. This must represent a valid directory.
         /// </param>
-        /// <param name="version">A string representing the version of the shape manager.</param>
+        /// <param name="version">The version of shape manager.</param>
         /// <returns></returns>
-        public static Preloader FromSpecifiedLibraryVersionString(string rootFolder, string version)
-        {
-            try
-            {
-                LibraryVersion libVersion;
-                return LibraryVersion.TryParse(version, out libVersion) ? 
-                    new Preloader(rootFolder, new[] { libVersion }) : 
-                    new Preloader(rootFolder);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("The specified string value did not map to a supported version of the shape manager.");
-            }
-        }
+        public Preloader(string rootFolder, LibraryVersion version)
+            : this(rootFolder, new[] { version }) { }
 
         public void Preload()
         {
