@@ -20,6 +20,12 @@ namespace Dynamo.Models
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
 
+        /// <summary>
+        ///     Before the Workspace has been built the first time, we do not respond to 
+        ///     NodeModification events.
+        /// </summary>
+        private bool silenceNodeModifications = true;
+
         public RunSettings RunSettings { get; protected set; }
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
@@ -130,6 +136,10 @@ namespace Dynamo.Models
         public override void OnNodesModified()
         {
             base.OnNodesModified();
+
+            // Until the workspace has been constructed at least once, 
+            // we do not respond to node modification events
+            if (silenceNodeModifications) return;
 
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
@@ -373,6 +383,10 @@ namespace Dynamo.Models
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunSettings.RunEnabled = false; // Disable 'Run' button.
+
+                // The workspace has been built for the first time
+                silenceNodeModifications = false;
+
                 OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
             }
