@@ -12,7 +12,7 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreUITests.Utility;
 using NUnit.Framework;
-using Dynamo.Utilities;
+
 using Dynamo.Selection;
 
 namespace DynamoCoreUITests
@@ -26,6 +26,17 @@ namespace DynamoCoreUITests
             {
                 return (Watch3DView)View.background_grid.FindName("background_preview");
             }
+        }
+
+        [SetUp]
+        public void Setup()
+        {
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            // These tests were not written to assume run automatically.
+            // As such, they exhibit flaky behavior when running in that mode.
+            // Run them manually instead.
+            ws.RunSettings.RunType = RunType.Manual;
         }
 
         [Test]

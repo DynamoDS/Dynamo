@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Tests;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -29,6 +29,7 @@ namespace SystemTestServices
     public abstract class SystemTestBase
     {
         protected string workingDirectory;
+        private Preloader preloader;
 
         #region protected properties
 
@@ -61,41 +62,12 @@ namespace SystemTestServices
                 workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             }
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             StartDynamo();
-        }
-
-        public virtual void SetupCore()
-        {
-
-        }
-
-        public virtual void StartDynamo()
-        {
-            Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
-                {
-                    StartInTestMode = true,
-                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
-                });
-
-            ViewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    DynamoModel = Model
-                });
-
-            //create the view
-            View = new DynamoView(ViewModel);
-            View.Show();
-
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
         [TearDown]
@@ -118,6 +90,7 @@ namespace SystemTestServices
 
             View = null;
             Model = null;
+            preloader = null;
 
             GC.Collect();
 
@@ -140,6 +113,42 @@ namespace SystemTestServices
             //Dispatcher.CurrentDispatcher.InvokeShutdown();
         }
 
+        #endregion
+
+        #region protected methods
+
+        /// <summary>
+        /// SetupCore allows inheritors to provide custom setup logic.
+        /// </summary>
+        protected virtual void SetupCore(){}
+
+        protected virtual void StartDynamo()
+        {
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            preloader = new Preloader(Path.GetDirectoryName(exePath));
+            preloader.Preload();
+
+            Model = DynamoModel.Start(
+                new DynamoModel.StartConfiguration()
+                {
+                    StartInTestMode = true,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
+                });
+
+            ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = Model
+                });
+
+            //create the view
+            View = new DynamoView(ViewModel);
+            View.Show();
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+
         /// <summary>
         /// Open and run a Dynamo definition given a relative
         /// path from the working directory.
@@ -156,7 +165,7 @@ namespace SystemTestServices
         /// path from the working directory
         /// </summary>
         /// <param name="relativeFilePath"></param>
-        public void OpenDynamoDefinition(string relativeFilePath)
+        protected void OpenDynamoDefinition(string relativeFilePath)
         {
             string samplePath = Path.Combine(workingDirectory, relativeFilePath);
             string testPath = Path.GetFullPath(samplePath);
@@ -166,14 +175,24 @@ namespace SystemTestServices
             ViewModel.OpenCommand.Execute(testPath);
         }
 
-        #endregion
-
-        #region Utility functions
-
-        public static string GetTestDirectory(string executingDirectory)
+        protected bool IsNodeInErrorOrWarningState(string guid)
         {
-            var directory = new DirectoryInfo(executingDirectory);
-            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+            var model = ViewModel.Model;
+            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.IsNotNull(node);
+            return node.State == Dynamo.Models.ElementState.Error ||
+                    node.State == Dynamo.Models.ElementState.Warning;
+        }
+
+        protected void AssertNoDummyNodes()
+        {
+            var nodes = ViewModel.Model.CurrentWorkspace.Nodes;
+
+            double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
+            if (dummyNodesCount >= 1)
+            {
+                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
+            }
         }
 
         protected void CreateTemporaryFolder()
@@ -185,20 +204,24 @@ namespace SystemTestServices
                 Directory.CreateDirectory(TempFolder);
         }
 
+        protected static bool IsFuzzyEqual(double d0, double d1, double tol)
+        {
+            return System.Math.Abs(d0 - d1) < tol;
+        }
+
+        #endregion
+
+        #region public methods
+
+        public static string GetTestDirectory(string executingDirectory)
+        {
+            var directory = new DirectoryInfo(executingDirectory);
+            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
+        }
+
         public void RunCurrentModel()
         {
             Assert.DoesNotThrow(() => Model.Workspaces.OfType<HomeWorkspaceModel>().First().Run());
-        }
-
-        public void AssertNoDummyNodes()
-        {
-            var nodes = ViewModel.Model.CurrentWorkspace.Nodes;
-
-            double dummyNodesCount = nodes.OfType<DSCoreNodesUI.DummyNode>().Count();
-            if (dummyNodesCount >= 1)
-            {
-                Assert.Fail("Number of dummy nodes found in Sample: " + dummyNodesCount);
-            }
         }
 
         public void AssertPreviewCount(string guid, int count)
@@ -289,6 +312,17 @@ namespace SystemTestServices
             return objects;
         }
 
+        public void AssertClassName(string guid, string className)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var classInfo = mirror.GetData().Class;
+            Assert.AreEqual(classInfo.ClassName, className);
+        }
+
+        #endregion
+
         private static List<object> GetSublistItems(IEnumerable<MirrorData> datas)
         {
             var objects = new List<object>();
@@ -306,20 +340,6 @@ namespace SystemTestServices
             return objects;
         }
 
-        public void AssertClassName(string guid, string className)
-        {
-            string varname = GetVarName(guid);
-            var mirror = GetRuntimeMirror(varname);
-            Assert.IsNotNull(mirror);
-            var classInfo = mirror.GetData().Class;
-            Assert.AreEqual(classInfo.ClassName, className);
-        }
-
-        protected static bool IsFuzzyEqual(double d0, double d1, double tol)
-        {
-            return System.Math.Abs(d0 - d1) < tol;
-        }
-
         private string GetVarName(string guid)
         {
             var model = ViewModel.Model;
@@ -335,15 +355,5 @@ namespace SystemTestServices
             return mirror;
         }
 
-        protected bool IsNodeInErrorOrWarningState(string guid)
-        {
-            var model = ViewModel.Model;
-            var node = model.CurrentWorkspace.NodeFromWorkspace(guid);
-            Assert.IsNotNull(node);
-            return node.State == Dynamo.Models.ElementState.Error ||
-                    node.State == Dynamo.Models.ElementState.Warning;
-        }
-
-        #endregion
     }
 }

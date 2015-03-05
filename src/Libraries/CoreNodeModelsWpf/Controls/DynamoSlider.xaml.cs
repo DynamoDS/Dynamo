@@ -45,6 +45,7 @@ namespace Dynamo.Wpf.Controls
         private void Slider_OnDragCompleted(object sender, DragCompletedEventArgs e)
         {
             nodeModel.MarkNodeAsModified(true);
+            ui.ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)

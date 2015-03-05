@@ -290,7 +290,7 @@ namespace ProtoCore
 
         protected void SetStackIndex(ProtoCore.DSASM.SymbolNode symbol)
         {
-            if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 //Set the index of the symbol relative to the watching stack
                 symbol.index = core.watchBaseOffset;
@@ -1212,10 +1212,10 @@ namespace ProtoCore
             symbol = null;
             isAccessible = false;
             CodeBlock currentCodeBlock = codeBlock;
-            if (core.ExecMode == DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.RunMode == DSASM.InterpreterMode.kExpressionInterpreter)
             {
-                int tempBlockId = core.GetCurrentBlockId();
-                currentCodeBlock = core.GetCodeBlock(core.CodeBlockList, tempBlockId);
+                int tempBlockId = context.CurrentBlockId;
+                currentCodeBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, tempBlockId);
             }
 
             if (classScope != Constants.kGlobalScope)
@@ -1236,7 +1236,7 @@ namespace ProtoCore
                     return false;
                 }
 
-                if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                 {
                     //Search local variables in the class member function first
                     if (functionScope != Constants.kGlobalScope)
@@ -1260,7 +1260,7 @@ namespace ProtoCore
 
                 bool hasThisSymbol;
                 AddressType addressType;
-                symbolIndex = thisClass.GetSymbolIndex(name, classScope, functionScope, currentCodeBlock.codeBlockId, core, out hasThisSymbol, out addressType);
+                symbolIndex = ClassUtils.GetSymbolIndex(thisClass, name, classScope, functionScope, currentCodeBlock.codeBlockId, core.CompleteCodeBlockList, out hasThisSymbol, out addressType);
                 if (Constants.kInvalidIndex != symbolIndex)
                 {
                     // It is static member, then get node from code block
@@ -1339,7 +1339,7 @@ namespace ProtoCore
 
                 bool hasThisSymbol;
                 AddressType addressType;
-                symbolIndex = thisClass.GetSymbolIndex(name, classScope, functionScope, codeBlock.codeBlockId, core, out hasThisSymbol, out addressType);
+                symbolIndex = ClassUtils.GetSymbolIndex(thisClass, name, classScope, functionScope, codeBlock.codeBlockId, core.CompleteCodeBlockList, out hasThisSymbol, out addressType);
 
                 if (Constants.kInvalidIndex != symbolIndex)
                 {
@@ -1419,7 +1419,7 @@ namespace ProtoCore
 
                 //Fix IDE-448
                 //Search current running block as well.
-                searchBlock = core.GetCodeBlock(core.CodeBlockList, core.RunningBlock);
+                searchBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, 0);
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, Constants.kGlobalScope, Constants.kGlobalScope);
                 if (symbolIndex != Constants.kInvalidIndex)
                 {
@@ -1458,7 +1458,7 @@ namespace ProtoCore
             ProtoCore.DSASM.AddressType addressType;
             ProtoCore.DSASM.ClassNode classnode = core.ClassTable.ClassNodes[globalClassIndex];
 
-            int symbolIndex = classnode.GetSymbolIndex(name, globalClassIndex, globalProcIndex, core.RunningBlock, core, out hasThisSymbol, out addressType);
+            int symbolIndex = ClassUtils.GetSymbolIndex(classnode, name, globalClassIndex, globalProcIndex, 0, core.CompleteCodeBlockList, out hasThisSymbol, out addressType);
             if (symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
                 return false;
@@ -1691,7 +1691,7 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildLabelIndex(L2);
 
             ++pc;
-            if (core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
+            if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
             {
                 instr.debug = null;
             }
@@ -1803,12 +1803,12 @@ namespace ProtoCore
             ++pc;
 
             bool outputBreakpoint = false;
-            DebugProperties.BreakpointOptions options = core.DebugProps.breakOptions;
+            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
             if (options.HasFlag(DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint))
                 outputBreakpoint = true;
 
             // Do not emit breakpoints for null or var type declarations
-            if (!core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
+            if (!core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
             {
                 // Don't need no pop for temp (unless caller demands it).
                 if (outputBreakpoint || !symbol.name.StartsWith("%"))
@@ -1929,7 +1929,7 @@ namespace ProtoCore
 
         private void AppendInstruction(Instruction instr, int line = Constants.kInvalidIndex, int col = Constants.kInvalidIndex)
         {
-            if (DSASM.InterpreterMode.kExpressionInterpreter == core.ExecMode)
+            if (DSASM.InterpreterMode.kExpressionInterpreter == core.Options.RunMode)
             {
                 core.ExprInterpreterExe.iStreamCanvas.instrList.Add(instr);
             }
@@ -1952,7 +1952,7 @@ namespace ProtoCore
 
             ++pc;
 
-            DebugProperties.BreakpointOptions options = core.DebugProps.breakOptions;
+            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
             if (options.HasFlag(DebugProperties.BreakpointOptions.EmitIdentifierBreakpoint))
             {
                 instr.debug = GetDebugObject(identNode.line, identNode.col,
@@ -2231,7 +2231,7 @@ namespace ProtoCore
             String value = Encoding.UTF8.GetString(utf8bytes);
             if (value.Length > 1)
             {
-                buildStatus.LogSyntaxError(Resources.tooManyCharacters, null, node.line, node.col);
+                buildStatus.LogSyntaxError(Resources.TooManyCharacters, null, node.line, node.col);
             }
   
             String strValue = "'" + value + "'";
@@ -2611,7 +2611,7 @@ namespace ProtoCore
                 localProcedure.isConstructor &&
                 core.IsFunctionCodeBlock(codeBlock))
             {
-                buildStatus.LogSemanticError(Resources.returnStatementIsNotAllowedInConstructor, 
+                buildStatus.LogSemanticError(Resources.ReturnStatementIsNotAllowedInConstructor, 
                                              core.CurrentDSFileName, 
                                              node.line, 
                                              node.col);
@@ -2966,7 +2966,7 @@ namespace ProtoCore
             int cix = core.ClassTable.IndexOf(string.Format("{0}Attribute", anode.Function.Name));
             if (cix == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
-                buildStatus.LogSemanticError(string.Format(Resources.unknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resources.UnknownAttribute, anode.Function.Name), core.CurrentDSFileName, anode.line, anode.col);
             }
             ProtoCore.DSASM.AttributeEntry attribute = new ProtoCore.DSASM.AttributeEntry();
             attribute.ClassIndex = cix;
@@ -2975,7 +2975,7 @@ namespace ProtoCore
             {
                 if (!IsConstantExpression(attr))
                 {
-                    buildStatus.LogSemanticError(Resources.attributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
+                    buildStatus.LogSemanticError(Resources.AttributeArgMustBeConstant, core.CurrentDSFileName, anode.line, anode.col);
                     return null;
                 }
                 attribute.Arguments.Add(attr as ProtoCore.AST.Node);
@@ -2993,7 +2993,7 @@ namespace ProtoCore
             }
             if (!hasMatchedConstructor)
             {
-                buildStatus.LogSemanticError(string.Format(Resources.noConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
+                buildStatus.LogSemanticError(string.Format(Resources.NoConstructorForAttribute, anode.Function.Name, attribute.Arguments.Count), core.CurrentDSFileName, anode.line, anode.col);
                 return null;
             }
             
@@ -3094,137 +3094,7 @@ namespace ProtoCore
         public static void setBlkId(int b){ blk = b; }
         public static int getBlkId() { return blk; }
 
-        internal static void AuditCodeLocation(ProtoCore.Core core, ref string filePath, ref int line, ref int column)
-        {
-            // We don't attempt to change line and column numbers if 
-            // they are already provided (caller can force update of 
-            // them by setting either one of them to be -1).
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                if (-1 != line && (-1 != column))
-                    return;
-            }
-
-            // As we create internal functions like %dotarg() and %dot() and
-            // append them to the end of the script, it is possible that the 
-            // location is in these functions so that the pc dictionary doesn't
-            // contain pc key and return maximum line number + 1. 
-            // 
-            // Need to check if is in internal function or not, If it is, need
-            // to go back the last stack frame to get the correct pc value
-            int pc = Constants.kInvalidPC;
-            int codeBlock = 0;
-            if (core != null)
-            {
-                pc = core.CurrentExecutive.CurrentDSASMExec.PC;
-                codeBlock = core.RunningBlock;
-
-                if (String.IsNullOrEmpty(filePath))
-                {
-                    filePath = core.CurrentDSFileName;
-                }
-            }
-            if(core.Options.IsDeltaExecution)
-            {
-                GetLocationByGraphNode(core, ref line, ref column);
-
-                if(line == Constants.kInvalidIndex)
-                    GetLocationByPC(core, pc, codeBlock, ref line, ref column);
-            }
-            else
-                GetLocationByPC(core, pc, codeBlock, ref line, ref column);
-            
-        }
-
-        private static void GetLocationByPC(ProtoCore.Core core, int pc, int blk, ref int line, ref int column)
-        {
-            //--------Dictionary Structure:--------
-            //--------Name: codeToLocation---------
-            //----------KEY: ----------------------
-            //----------------mergedKey: ----------
-            //-------------------|- blk -----------
-            //-------------------|- pc ------------
-            //----------VALUE: --------------------
-            //----------------location: -----------
-            //-------------------|- line ----------
-            //-------------------|- col -----------
-
-            //Zip those integers into 64-bit ulong
-            ulong mergedKey = (((ulong)blk) << 32 | ((uint)pc));
-            ulong location = (((ulong)line) << 32 | ((uint)column));
-
-            if (core.codeToLocation.ContainsKey(mergedKey))
-            {
-                location = core.codeToLocation[mergedKey];
-            }
-
-            foreach (KeyValuePair<ulong, ulong> kv in core.codeToLocation)
-            {
-                //Conditions: within same blk && find the largest key which less than mergedKey we want to find
-                if ((((int)(kv.Key >> 32)) == blk) && (kv.Key < mergedKey))
-                {
-                    location = kv.Value;
-                }
-            }
-            //Unzip the location
-            line = ((int)(location >> 32));
-            column = ((int)(location & 0x00000000ffffffff));
-        }
-
-        private static void GetLocationByGraphNode(ProtoCore.Core core, ref int line, ref int col)
-        {
-            ulong location = (((ulong)line) << 32 | ((uint)col));
-
-            foreach (var prop in core.InterpreterProps)
-            {
-                bool fileScope = false;
-                if (prop.executingGraphNode == null)
-                    continue;
-
-                int startpc = prop.executingGraphNode.updateBlock.startpc;
-                int endpc = prop.executingGraphNode.updateBlock.endpc;
-                int block = prop.executingGraphNode.languageBlockId;
-
-                // Determine if the current executing graph node is in an imported file scope
-                // If so, continue searching in the outer graph nodes for the line and col in the outer-most context - pratapa
-                
-                for (int i = startpc; i <= endpc; ++i)
-                {
-                    var instruction = core.DSExecutable.instrStreamList[block].instrList[i];
-                    if (instruction.debug != null)
-                    {
-                        if (instruction.debug.Location.StartInclusive.SourceLocation.FilePath != null)
-                        {
-                            fileScope = true;
-                            break;
-                        }
-                        else
-                        {
-                            fileScope = false;
-                            break;
-                        }
-                    }
-                }
-                if (fileScope)
-                    continue;
-                
-
-                foreach (var kv in core.codeToLocation)
-                {
-                    if ((((int)(kv.Key >> 32)) == block) && (kv.Key >= (ulong)startpc && kv.Key <= (ulong)endpc))
-                    {
-                        location = kv.Value;
-                        line = ((int)(location >> 32));
-                        col = ((int)(location & 0x00000000ffffffff));
-                        break;
-                    }
-                }
-                if (line != -1)
-                    break;
-            }
-            
-        }
-
+       
         //public void updatePcDictionary(ProtoCore.AST.Node node, int blk)
         public void updatePcDictionary(int line, int col)
         {

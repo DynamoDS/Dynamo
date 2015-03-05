@@ -852,12 +852,12 @@ namespace ProtoAssociative
                          procNode.pc);
             }
             // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
-            else if (core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
+            else if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
             {
-                Validity.Assert(core.DebugProps.highlightRange != null);
+                Validity.Assert(core.DebuggerProperties.highlightRange != null);
 
-                ProtoCore.CodeModel.CodePoint startInclusive = core.DebugProps.highlightRange.StartInclusive;
-                ProtoCore.CodeModel.CodePoint endExclusive = core.DebugProps.highlightRange.EndExclusive;
+                ProtoCore.CodeModel.CodePoint startInclusive = core.DebuggerProperties.highlightRange.StartInclusive;
+                ProtoCore.CodeModel.CodePoint endExclusive = core.DebuggerProperties.highlightRange.EndExclusive;
 
                 EmitCall(procNode.procId, type, depth, startInclusive.LineNo, startInclusive.CharNo, endExclusive.LineNo, endExclusive.CharNo, procNode.pc);
             }
@@ -1491,7 +1491,7 @@ namespace ProtoAssociative
             // global function. 
             if ((procCallNode == null) && (procName != Constants.kFunctionPointerCall))
             {
-                procCallNode = core.GetFirstVisibleProcedure(procName, arglist, codeBlock);
+                procCallNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeBlock);
                 if (null != procCallNode)
                 {
                     type = Constants.kGlobalScope;
@@ -1539,7 +1539,7 @@ namespace ProtoAssociative
                     inferedType.UID = dotCallType.UID;
                 }
 
-                var procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
+                var procNode = CoreUtils.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
                 if (CoreUtils.IsGetter(procName))
                 {
                     EmitFunctionCall(depth, type, arglist, procNode, funcCall, true);
@@ -1580,7 +1580,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    var procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
+                    var procNode = CoreUtils.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
                     if (CoreUtils.IsSetter(procName))
                     {
                         EmitFunctionCall(depth, type, arglist, procNode, funcCall);
@@ -1796,7 +1796,7 @@ namespace ProtoAssociative
             // global function. 
             if ((procNode == null) && (procName != Constants.kFunctionPointerCall))
             {
-                procNode = core.GetFirstVisibleProcedure(procName, arglist, codeBlock);
+                procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeBlock);
                 if (null != procNode)
                 {
                     type = ProtoCore.DSASM.Constants.kGlobalScope;
@@ -1943,9 +1943,9 @@ namespace ProtoAssociative
                                  procNode.pc);
                     }
                     // Break at function call inside dynamic lang block created for a 'true' or 'false' expression inside an inline conditional
-                    else if (core.DebugProps.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
+                    else if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
                     {
-                        var codeRange = core.DebugProps.highlightRange;
+                        var codeRange = core.DebuggerProperties.highlightRange;
                         Validity.Assert(codeRange != null);
 
                         var startInclusive = codeRange.StartInclusive;
@@ -3848,6 +3848,8 @@ namespace ProtoAssociative
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+
             core.startPC = this.pc;
             compilePass = ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope;
             ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode;
@@ -3858,12 +3860,12 @@ namespace ProtoAssociative
             globalProcIndex = ProtoCore.DSASM.Constants.kGlobalScope;
 
             // check if currently inside a function when the break was called
-            if (core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
+            if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 // Save the current scope for the expression interpreter
-                globalClassIndex = core.watchClassScope = core.Rmem.CurrentStackFrame.ClassScope;
-                globalProcIndex = core.watchFunctionScope = core.Rmem.CurrentStackFrame.FunctionScope;
-                int functionBlock = core.Rmem.CurrentStackFrame.FunctionBlock;
+                globalClassIndex = runtimeCore.watchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
+                globalProcIndex = core.watchFunctionScope = context.MemoryState.CurrentStackFrame.FunctionScope;
+                int functionBlock = context.MemoryState.CurrentStackFrame.FunctionBlock;
 
                 if (globalClassIndex != -1)
                     localProcedure = core.ClassTable.ClassNodes[globalClassIndex].vtable.procList[globalProcIndex];
@@ -3955,7 +3957,7 @@ namespace ProtoAssociative
             AllocateContextGlobals();
 
             core.startPC = this.pc;
-            if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 return EmitExpressionInterpreter(codeBlockNode);
             }
@@ -4257,7 +4259,7 @@ namespace ProtoAssociative
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
-                procNode = core.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
                 if (null != procNode)
                 {
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId)
@@ -4313,7 +4315,7 @@ namespace ProtoAssociative
                 {
                     // The variable is unbound
                     ProtoCore.DSASM.SymbolNode unboundVariable = null;
-                    if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter != core.ExecMode)
+                    if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter != core.Options.RunMode)
                     {
                         inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeNull;
 
@@ -4435,7 +4437,7 @@ namespace ProtoAssociative
             }
             else
             {
-                if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter &&
+                if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter &&
                     !isAllocated)
                 {
                     // It happens when the debugger try to watch a variable 
@@ -4535,7 +4537,7 @@ namespace ProtoAssociative
 
                 EmitPushVarData(runtimeIndex, dimensions);
 
-                if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter == core.ExecMode)
+                if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter == core.Options.RunMode)
                 {
                     EmitInstrConsole(ProtoCore.DSASM.kw.pushw, t.Value);
                     EmitPushForSymbolW(symbolnode, t.line, t.col);
@@ -6482,17 +6484,17 @@ namespace ProtoAssociative
                     Validity.Assert(null != "Unknown node type!");
                 }
 
-                DebugProperties.BreakpointOptions oldOptions = core.DebugProps.breakOptions;
+                DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
 
                 if (emitBreakpointForPop)
                 {
                     DebugProperties.BreakpointOptions newOptions = oldOptions;
                     newOptions |= DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint;
-                    core.DebugProps.breakOptions = newOptions;
+                    core.DebuggerProperties.breakOptions = newOptions;
                 }
 
                 DfsTraverse(modifierNode, ref inferedType, isBooleanOp, graphNode, subPass);
-                core.DebugProps.breakOptions = oldOptions;
+                core.DebuggerProperties.breakOptions = oldOptions;
             }
             //core.Options.EmitBreakpoints = true;
         }
@@ -6698,12 +6700,12 @@ namespace ProtoAssociative
                 identNode.Name = ProtoCore.DSASM.Constants.kInlineConditionalMethodName;
                 inlineCall.Function = identNode;
 
-                DebugProperties.BreakpointOptions oldOptions = core.DebugProps.breakOptions;
+                DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
                 DebugProperties.BreakpointOptions newOptions = oldOptions;
                 newOptions |= DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint;
-                core.DebugProps.breakOptions = newOptions;
+                core.DebuggerProperties.breakOptions = newOptions;
 
-                core.DebugProps.highlightRange = new ProtoCore.CodeModel.CodeRange
+                core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
                 {
                     StartInclusive = new ProtoCore.CodeModel.CodePoint
                     {
@@ -6766,8 +6768,8 @@ namespace ProtoAssociative
                     inlineCall.FormalArguments.Add(dynBlockF);
                 }
 
-                core.DebugProps.breakOptions = oldOptions;
-                core.DebugProps.highlightRange = new ProtoCore.CodeModel.CodeRange
+                core.DebuggerProperties.breakOptions = oldOptions;
+                core.DebuggerProperties.highlightRange = new ProtoCore.CodeModel.CodeRange
                 {
                     StartInclusive = new ProtoCore.CodeModel.CodePoint
                     {
@@ -7958,7 +7960,7 @@ namespace ProtoAssociative
             ProtoCore.Type leftType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
             ProtoCore.Type rightType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
 
-            DebugProperties.BreakpointOptions oldOptions = core.DebugProps.breakOptions;
+            DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
             
             /*
             proc emitbinaryexpression(node)
@@ -8223,7 +8225,7 @@ namespace ProtoAssociative
             {
                 DebugProperties.BreakpointOptions newOptions = oldOptions;
                 newOptions |= DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint;
-                core.DebugProps.breakOptions = newOptions;
+                core.DebuggerProperties.breakOptions = newOptions;
 
                 IdentifierNode t = bnode.LeftNode as IdentifierNode;
                 ProtoCore.DSASM.SymbolNode symbolnode = null;
@@ -8361,7 +8363,7 @@ namespace ProtoAssociative
                         }
                         if (procNode == null)
                         {
-                            procNode = core.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                            procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
                         }
                         if (procNode != null)
                         {
@@ -8461,7 +8463,7 @@ namespace ProtoAssociative
                                     false, ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
 
                                 // Add the symbols during watching process to the watch symbol list.
-                                if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                                if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                                 {
                                     core.watchSymbolList.Add(symbolnode);
                                 }
@@ -8488,7 +8490,7 @@ namespace ProtoAssociative
                             }
                             else
                             {
-                                if (core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                                if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                                 {
                                     EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Name);
                                     EmitPopForSymbol(symbolnode, node.line, node.col, node.endLine, node.endCol);
@@ -8544,7 +8546,7 @@ namespace ProtoAssociative
                             symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, ProtoCore.DSASM.Constants.kPrimitiveSize,
                                     false, ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
 
-                            if (core.ExecMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                             {
                                 core.watchSymbolList.Add(symbolnode);
                             }
@@ -8573,7 +8575,7 @@ namespace ProtoAssociative
                         castType = symbolnode.staticType;
                         EmitPushVarData(runtimeIndex, dimensions, castType.UID, castType.rank);
 
-                        if (core.ExecMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+                        if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                         {
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, symbolnode.name);
                             EmitPopForSymbol(symbolnode, node.line, node.col, node.endLine, node.endCol);
@@ -8725,7 +8727,7 @@ namespace ProtoAssociative
                 buildStatus.LogSemanticError(message, core.CurrentDSFileName, bnode.line, bnode.col);
                 throw new BuildHaltException(message);
             }
-            core.DebugProps.breakOptions = oldOptions;
+            core.DebuggerProperties.breakOptions = oldOptions;
 
             //if post fix, now traverse the post fix
 

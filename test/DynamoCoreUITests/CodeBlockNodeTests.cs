@@ -254,7 +254,9 @@ namespace DynamoCoreUITests
                     CommandFilePath = commandFilePath
                 });
 
-            ViewModel.DynamicRunEnabled = autoRun;
+            ViewModel.HomeSpace.RunSettings.RunType = autoRun ? 
+                RunType.Automatic : 
+                RunType.Manual;
 
             RegisterCommandCallback(commandCallback);
 

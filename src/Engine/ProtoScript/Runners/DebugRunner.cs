@@ -19,6 +19,7 @@ namespace ProtoScript.Runners
         private bool executionsuspended;
         private VMState lastState;
         private ProtoCore.Core core;
+        public ProtoCore.RuntimeCore runtimeCore;
         private String code;
         private List<Dictionary<DebugInfo, Instruction>> diList;
         private readonly List<Instruction> allbreakPoints = new List<Instruction>();
@@ -61,7 +62,11 @@ namespace ProtoScript.Runners
                 core = new ProtoCore.Core(new ProtoCore.Options { IDEDebugMode = true });
                 core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
                 core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+
             }
+
+            runtimeCore = core.__TempCoreHostForRefactoring;
+            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
 
             if (null != fileName)
             {
@@ -73,10 +78,13 @@ namespace ProtoScript.Runners
             if (Compile(out resumeBlockID))
             {
                 inited = true;
-                core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
 
                 //int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
                 //core.runningBlock = blockId;
+
+                ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
+                runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context, core.ExprInterpreterExe);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
 
                 FirstExec();
                 diList = BuildReverseIndex();
@@ -113,8 +121,8 @@ namespace ProtoScript.Runners
         {
             DebuggerStateCheckBeforeRun();
 
-            core.DebugProps.RunMode = ProtoCore.Runmode.StepIn;
-            core.DebugProps.AllbreakPoints = allbreakPoints;
+            runtimeCore.DebugProps.RunMode = ProtoCore.Runmode.StepIn;
+            runtimeCore.DebugProps.AllbreakPoints = allbreakPoints;
             lastState =  RunVM(allbreakPoints);
             return lastState;
         }
@@ -127,12 +135,12 @@ namespace ProtoScript.Runners
             // if not, call Step
             VMState vms = null;
 
-            core.DebugProps.AllbreakPoints = allbreakPoints;
+            runtimeCore.DebugProps.AllbreakPoints = allbreakPoints;
             Instruction instr = GetCurrentInstruction();
             if (instr.opCode == OpCode.CALL ||
                 instr.opCode == OpCode.CALLR)
             {
-                core.DebugProps.RunMode = ProtoCore.Runmode.StepNext;
+                runtimeCore.DebugProps.RunMode = ProtoCore.Runmode.StepNext;
                 List<Instruction> instructions = new List<Instruction>();
                 foreach (Breakpoint bp in RegisteredBreakpoints)
                 {
@@ -154,12 +162,12 @@ namespace ProtoScript.Runners
 
             DebuggerStateCheckBeforeRun();
 
-            if(core.DebugProps.DebugStackFrameContains(ProtoCore.DebugProperties.StackFrameFlagOptions.FepRun))
+            if(runtimeCore.DebugProps.DebugStackFrameContains(ProtoCore.DebugProperties.StackFrameFlagOptions.FepRun))
             {
-                core.DebugProps.RunMode = ProtoCore.Runmode.StepOut;
-                core.DebugProps.AllbreakPoints = allbreakPoints;
+                runtimeCore.DebugProps.RunMode = ProtoCore.Runmode.StepOut;
+                runtimeCore.DebugProps.AllbreakPoints = allbreakPoints;
 
-                core.DebugProps.StepOutReturnPC = (int)core.Rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
+                runtimeCore.DebugProps.StepOutReturnPC = (int)runtimeCore.RuntimeMemory.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
 
                 List<Instruction> instructions = new List<Instruction>();
                 foreach (Breakpoint bp in RegisteredBreakpoints)
@@ -180,8 +188,8 @@ namespace ProtoScript.Runners
         {
             DebuggerStateCheckBeforeRun();
 
-            core.DebugProps.RunMode = ProtoCore.Runmode.RunTo;
-            core.DebugProps.AllbreakPoints = allbreakPoints;
+            runtimeCore.DebugProps.RunMode = ProtoCore.Runmode.RunTo;
+            runtimeCore.DebugProps.AllbreakPoints = allbreakPoints;
 
             List<Instruction> instructions = new List<Instruction>();
             foreach (Breakpoint bp in RegisteredBreakpoints)
@@ -204,23 +212,22 @@ namespace ProtoScript.Runners
         {
             //Get the next available location and set a break point
             //Unset the break point at the current location
-
             Instruction currentInstr = null; // will be instantialized when a proper breakpoint is reached
             VMState vms = null;
             try
             {
                 if (executionsuspended)
-                    core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionResume);
+                    runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionResume);
 
-                Execute(core.DebugProps.DebugEntryPC, breakPoints);
+                Execute(runtimeCore.DebugProps.DebugEntryPC, breakPoints);
                 isEnded = true; // the script has ended smoothly, 
             }
             catch (ProtoCore.Exceptions.DebugHalting)
             {
-                if (core.CurrentExecutive == null) //This was before the VM was properly started
+                if (runtimeCore.CurrentExecutive == null) //This was before the VM was properly started
                     return null;
                 currentInstr = GetCurrentInstruction(); // set the current instruction to the current breakpoint instruction
-                core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBreak);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBreak);
                 executionsuspended = true;
             }
             catch (ProtoCore.Exceptions.EndOfScript)
@@ -229,7 +236,7 @@ namespace ProtoScript.Runners
             }
             finally
             {
-                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
                 vms = new VMState(execMirror, core);
                 vms.isEnded = isEnded;
                 ProtoCore.CodeModel.CodePoint start = new ProtoCore.CodeModel.CodePoint();
@@ -261,7 +268,7 @@ namespace ProtoScript.Runners
             { }
 
             //Drop the VM state objects so they can be GCed
-            core.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+            runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             lastState = null;
             core = null;
 
@@ -269,7 +276,7 @@ namespace ProtoScript.Runners
 
         private Instruction GetCurrentInstruction()
         {
-            return core.DSExecutable.instrStreamList[core.RunningBlock].instrList[core.DebugProps.DebugEntryPC];
+            return core.DSExecutable.instrStreamList[runtimeCore.RunningBlock].instrList[runtimeCore.DebugProps.DebugEntryPC];
         }
 
         private ProtoCore.CodeModel.CodePoint InstructionToBeginCodePoint(Instruction instr)
@@ -440,7 +447,7 @@ namespace ProtoScript.Runners
 
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
                 core.GenerateExecutable();
-                core.Rmem.PushFrameForGlobals(core.GlobOffset);
+                runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
 
             }
             catch (Exception ex)
@@ -459,9 +466,8 @@ namespace ProtoScript.Runners
         /// </summary>
         private void FirstExec()
         {
-
             List<Instruction> bps = new List<Instruction>();
-            core.DebugProps.DebugEntryPC = core.DSExecutable.instrStreamList[0].entrypoint;
+            runtimeCore.DebugProps.DebugEntryPC = core.DSExecutable.instrStreamList[0].entrypoint;
 
             foreach (InstructionStream instrStream in core.DSExecutable.instrStreamList)
             {
@@ -533,34 +539,35 @@ namespace ProtoScript.Runners
         {
 
             ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-            core.Breakpoints = breakpoints;
-            resumeBlockID = core.RunningBlock;
+            runtimeCore.Breakpoints = breakpoints;
+            resumeBlockID = runtimeCore.RunningBlock;
 
-            if (core.DebugProps.FirstStackFrame != null)
+
+            if (runtimeCore.DebugProps.FirstStackFrame != null)
             {
-                core.DebugProps.FirstStackFrame.FramePointer = core.GlobOffset;
+                runtimeCore.DebugProps.FirstStackFrame.FramePointer = core.GlobOffset;
 
                 // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
                 // Register TX is used for this.
                 StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
-                core.DebugProps.FirstStackFrame.TX = svCallConvention;
+                runtimeCore.DebugProps.FirstStackFrame.TX = svCallConvention;
             }
 
             // Initialize the entry point interpreter
             int locals = 0; // This is the global scope, there are no locals
-            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
-            core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-            core.CurrentExecutive.CurrentDSASMExec.Bounce(
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+            runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+            runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                 resumeBlockID, 
                 programCounterToExecuteFrom,
                 context, 
-                core.DebugProps.FirstStackFrame, 
+                runtimeCore.DebugProps.FirstStackFrame, 
                 locals, 
                 fepRun,
                 null,
                 breakpoints);
 
-            return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+            return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
 
         }
         /// <summary>

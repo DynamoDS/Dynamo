@@ -85,8 +85,15 @@ namespace Dynamo.DSEngine
             try
             {
                 var fn = Path.GetFileNameWithoutExtension(assemblyLocation);
-                resourceAssemblyPath = fn + Configurations.ResourcesDLL;
+                // First try side-by-side search for customization dll.
+                var dirName = Path.GetDirectoryName(assemblyLocation);
+                resourceAssemblyPath = Path.Combine(dirName, fn + Configurations.IconResourcesDLL);
 
+                if (File.Exists(resourceAssemblyPath))
+                    return true;
+
+                resourceAssemblyPath = fn + Configurations.IconResourcesDLL;
+                // Side-by-side customization dll not found, try other resolution paths.
                 return DynamoPathManager.Instance.ResolveLibraryPath(ref resourceAssemblyPath);
             }
             catch
@@ -103,7 +110,10 @@ namespace Dynamo.DSEngine
         private readonly Assembly resourceAssembly;
         private readonly XDocument xmlDocument;
 
-        public Assembly Assembly { get { return resourceAssembly; } }
+        /// <summary>
+        /// Resources assembly. Assembly where icons are saved.
+        /// </summary>
+        public Assembly ResourceAssembly { get { return resourceAssembly; } }
 
         internal LibraryCustomization(Assembly resAssembly, XDocument document)
         {

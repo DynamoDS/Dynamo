@@ -9,7 +9,7 @@ namespace ProtoCore.Utils
     {
         public static void InsertPredefinedAndBuiltinMethods(Core core, ProtoCore.AST.Node root, bool builtinMethodsLoaded)
         {
-            if (DSASM.InterpreterMode.kNormal == core.ExecMode)
+            if (DSASM.InterpreterMode.kNormal == core.Options.RunMode)
             {
                 if (core.Options.AssocOperatorAsMethod)
                 {
@@ -196,6 +196,9 @@ namespace ProtoCore.Utils
             InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt, PrimitiveType.kTypeDouble);
             InsertBinaryOperationMethod(core, root, Operator.mul, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
             InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
+            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt);
+            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeDouble, PrimitiveType.kTypeInt, PrimitiveType.kTypeDouble);
+            InsertBinaryOperationMethod(core, root, Operator.mod, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble, PrimitiveType.kTypeDouble);
 
             InsertBinaryOperationMethod(core, root, Operator.bitwiseand, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt, PrimitiveType.kTypeInt);
             InsertBinaryOperationMethod(core, root, Operator.bitwiseand, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool, PrimitiveType.kTypeBool);
@@ -264,19 +267,15 @@ namespace ProtoCore.Utils
 
         public static void LogWarning(this Interpreter dsi, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
         {
-            ProtoCore.Core core = dsi.runtime.Core;
-            core.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
+            ProtoCore.RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
+            runtimeCore.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
         }
 
         public static void LogSemanticError(this Interpreter dsi, string msg, string fileName = null, int line = -1, int col = -1)
         {
-            ProtoCore.Core core = dsi.runtime.Core;
-            core.BuildStatus.LogSemanticError(msg, fileName, line, col);
-        }
-
-        public static void LogWarning(this Core core, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
-        {
-            core.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
+            // Consider renaming this function as there is no such thing as a semantic error at runtime
+            ProtoCore.RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
+            runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, msg, fileName, line, col);
         }
 
         public static void LogWarning(this Core core, ProtoCore.BuildData.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
@@ -800,6 +799,57 @@ namespace ProtoCore.Utils
                 astList.AddRange(BuildASTList(core, code));
             }
             return astList;
+        }
+
+        /// <summary>
+        /// Get the Codeblock given the blockId
+        /// </summary>
+        /// <param name="blockList"></param>
+        /// <param name="blockId"></param>
+        /// <returns></returns>
+        public static CodeBlock GetCodeBlock(List<CodeBlock> blockList, int blockId)
+        {
+            CodeBlock codeblock = null;
+            codeblock = blockList.Find(x => x.codeBlockId == blockId);
+            if (codeblock == null)
+            {
+                foreach (CodeBlock block in blockList)
+                {
+                    codeblock = GetCodeBlock(block.children, blockId);
+                    if (codeblock != null)
+                    {
+                        break;
+                    }
+                }
+            }
+            return codeblock;
+        }
+
+        public static ProcedureNode GetFirstVisibleProcedure(string name, List<Type> argTypeList, CodeBlock codeblock)
+        {
+            if (null == codeblock)
+            {
+                return null;
+            }
+
+            CodeBlock searchBlock = codeblock;
+            while (null != searchBlock)
+            {
+                if (null == searchBlock.procedureTable)
+                {
+                    searchBlock = searchBlock.parent;
+                    continue;
+                }
+
+                // The class table is passed just to check for coercion values
+                int procIndex = searchBlock.procedureTable.IndexOf(name, argTypeList);
+                if (Constants.kInvalidIndex != procIndex)
+                {
+                    return searchBlock.procedureTable.procList[procIndex];
+                }
+                searchBlock = searchBlock.parent;
+            }
+            return null;
         }
     }
 }

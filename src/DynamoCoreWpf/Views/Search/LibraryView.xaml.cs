@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -39,6 +39,11 @@ namespace Dynamo.UI.Views
         public LibraryView()
         {
             InitializeComponent();
+
+            // Invalidate the DataContext here because it will be set at a later 
+            // time through data binding expression. This way debugger will not 
+            // display warnings for missing properties.
+            this.DataContext = null;
         }
 
         /// <summary>
@@ -46,20 +51,26 @@ namespace Dynamo.UI.Views
         /// </summary>
         private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            // 1 case. 
-            // User presses Shift and uses mouse wheel. That means user tries to 
-            // scroll horizontally to the right side, to see the whole long name of node.
-            // So, we go further, in scrollbar, that is under this one, that's why Handled is false.
+            // Case 1: User scrolls the mouse wheel when Shift key is being held down. This 
+            // action triggers a horizontal scroll on the library view (so that lengthy names 
+            // can be revealed). Setting 'Handled' to 'false' allows the underlying scroll bar
+            // to handle the mouse wheel event.
             if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
                 e.Handled = false;
                 return;
             }
 
-            // 2 case.
-            // User uses just mouse wheel. That means user wants to scroll down LibraryView.
-            // So, we just change VerticalOffset, and there is no need to go further and change something.
-            // Set Handled to true.
+            // Case 2: If the mouse is outside of the library view, but mouse wheel messages 
+            // get sent to it anyway. In such case there is nothing to change here. The 'Handled'
+            // is not set to 'true' here because the mouse wheel messages should be routed to the 
+            // ScrollViewer on tool-tip for further processing.
+            if (!(sender as UIElement).IsMouseOver)
+                return;
+
+            // Case 3: Mouse wheel without any modifier keys, it scrolls the library view 
+            // vertically. In this case 'VerticalOffset' is updated, 'Handled' is also set 
+            // so that mouse wheel message routing ends here.
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
@@ -82,7 +93,7 @@ namespace Dynamo.UI.Views
             var expanderContent = (sender as FrameworkElement);
             expanderContent.BringIntoView(new Rect(0.0, 0.0, 100.0, 20.0));
 
-            var buttons = WpfUtilities.ChildOfType<ListView>(expanderContent);
+            var buttons = expanderContent.ChildOfType<ListView>();
             if (buttons != null)
                 buttons.UnselectAll();
 
@@ -118,9 +129,8 @@ namespace Dynamo.UI.Views
             if (!(categoryButton.DataContext is RootNodeCategoryViewModel))
                 return;
 
-            var wrapPanels = new List<LibraryWrapPanel>();
-            WpfUtilities.FindChildren<LibraryWrapPanel>(categoryButton, string.Empty, wrapPanels);
-            if (wrapPanels.Count == 0)
+            var wrapPanels = categoryButton.ChildrenOfType<LibraryWrapPanel>();
+            if (!wrapPanels.Any())
                 return;
 
             var selectedElement = e.OriginalSource as FrameworkElement;

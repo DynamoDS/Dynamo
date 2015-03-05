@@ -1,5 +1,3 @@
-//#define __NO_SAMPLES_MENU
-
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -8,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Diagnostics;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Core;
@@ -19,7 +18,6 @@ using Dynamo.PackageManager.UI;
 using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.UI;
-using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
@@ -41,21 +39,24 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class DynamoView : Window
     {
-        public const int CANVAS_OFFSET_Y = 0;
-        public const int CANVAS_OFFSET_X = 0;
-
         private readonly NodeViewCustomizationLibrary nodeViewCustomizationLibrary;
-
-        internal DynamoViewModel dynamoViewModel = null;
-        private Stopwatch _timer = null;
-        private StartPageViewModel startPage = null;
-
+        private DynamoViewModel dynamoViewModel;
+        private Stopwatch _timer;
+        private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
+            // The user's choice to enable hardware acceleration is now saved in
+            // the Dynamo preferences. It is set to true by default. 
+            // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
+            //This preference is not exposed in the UI and can be used to debug hardware issues only
+            // by modifying the preferences xml.
+            RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ? 
+                RenderMode.Default : RenderMode.SoftwareOnly;
+            
             this.dynamoViewModel = dynamoViewModel;
             this.dynamoViewModel.UIDispatcher = Dispatcher;
 
@@ -396,23 +397,12 @@ namespace Dynamo.Controls
             UnsubscribeNodeViewCustomizationEvents();
         }
 
-        private AboutWindow _aboutWindow;
         void DynamoViewModelRequestAboutWindow(DynamoViewModel model)
         {
-            if (_aboutWindow == null)
-            {
-                _aboutWindow = new AboutWindow(model)
-                {
-                    Owner = this,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                _aboutWindow.Closed += (sender, args) => _aboutWindow = null;
-                _aboutWindow.Show();
-
-                if (_aboutWindow.IsLoaded && IsLoaded) _aboutWindow.Owner = this;
-            }
-
-            _aboutWindow.Focus();
+            var aboutWindow = model.BrandingResourceProvider.CreateAboutBox(model);
+            aboutWindow.Owner = this;
+            aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            aboutWindow.ShowDialog();
         }
 
         private PublishPackageView _pubPkgView;
@@ -1072,15 +1062,19 @@ namespace Dynamo.Controls
                 {
                     // Handle tab closing with no change in window size
                     // Shift window
-
                     if (tabSlidingWindowEnd > lastTab)
                     {
                         tabSlidingWindowStart--;
                         tabSlidingWindowEnd--;
                     }
+                    // Handle case that selected tab is still 0 and 
+                    // a new tab is created. 
+                    else if (tabSlidingWindowEnd < lastTab)
+                    {
+                        tabSlidingWindowEnd++;
+                    }
                 }
             }
-
         }
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)
@@ -1196,11 +1190,6 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
-        }
-
-        private void RunButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            dynamoViewModel.ReturnFocusToSearch();
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)

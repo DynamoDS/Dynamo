@@ -268,7 +268,7 @@ b = c[w][x][y][z];";
 
             // Get preview data given AstIdentifierBase
             var core = ViewModel.Model.EngineController.LiveRunnerCore;
-            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
+            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core.__TempCoreHostForRefactoring);
             MirrorData mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, value);
 
@@ -289,7 +289,7 @@ b = c[w][x][y][z];";
             ViewModel.HomeSpace.Run();
 
             // Get preview data given AstIdentifierBase
-            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core);
+            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core.__TempCoreHostForRefactoring);
             mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, value);
 
@@ -772,7 +772,7 @@ b = c[w][x][y][z];";
 
         private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
         {
-            var command = new DynCmd.UpdateModelValueCommand(cbn.GUID, "Code", value);
+            var command = new DynCmd.UpdateModelValueCommand(System.Guid.Empty, cbn.GUID, "Code", value);
             ViewModel.ExecuteCommand(command);
         }
     }
@@ -801,7 +801,7 @@ b = c[w][x][y][z];";
         {
             if (libraryServicesCore != null)
             {
-                libraryServicesCore.Cleanup();
+                libraryServicesCore.__TempCoreHostForRefactoring.Cleanup();
                 libraryServicesCore = null;
             }
         }
@@ -1040,7 +1040,7 @@ b = c[w][x][y][z];";
             {
                 Assert.AreEqual(functionName, overload.Text);
             }
-            Assert.AreEqual("Count : int (array : [])", overloads.ElementAt(0).Stub);
+            Assert.AreEqual("Count : int (list : [])", overloads.ElementAt(0).Stub);
 
         }
 

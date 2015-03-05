@@ -16,6 +16,8 @@
         xmlns:um="clr-namespace:Dynamo.UpdateManager;assembly=DynamoCore"
         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCore"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+        xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -151,10 +153,10 @@
                     Command="{Binding Path=TogglePanCommand}" />
         <KeyBinding Key="F5"
                     Modifiers="Shift"
-                    Command="{Binding Path=DataContext.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.CancelRunCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="F5"
-                    Command="{Binding Path=DataContext.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                    CommandParameter="{Binding Path=DataContext.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                    Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                    CommandParameter="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -752,14 +754,14 @@
                                   Name="ForceReexec"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuForceReExecute}"
                                   Command="{Binding ForceRunExpressionCommand}"
-                                  CommandParameter="{Binding Path=RunInDebug}"
-                                  IsEnabled="{Binding Path=RunEnabled}"></MenuItem>
+                                  CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="MutateTest"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuRunMutationTest}"
                                   Command="{Binding MutateTestDelegateCommand}"
-                                  CommandParameter="{Binding Path=RunInDebug}"
-                                  IsEnabled="{Binding Path=RunEnabled}"></MenuItem>
+                                  CommandParameter="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunInDebug}"
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled}"></MenuItem>
                         <MenuItem Focusable="False"
                                   Name="CheckDailyBuilds"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuCheckDailyBuild}"
@@ -1586,79 +1588,18 @@
                            Grid.Row="0"
                            Grid.Column="0"
                            HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch">
+                           VerticalAlignment="Stretch" 
+                           Visibility="{Binding IsAbleToGoHome, Converter={StaticResource InverseBoolToVisibilityConverter}}">
 
-                    <StackPanel Orientation="Horizontal">
-                        <Button Name="RunButton"
-                                Width="100"
-                                Content="{x:Static p:Resources.DynamoViewRunButton}"
-                                Margin="5"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                Click="RunButton_OnClick"
-                                Command="{Binding RunExpressionCommand}"
-                                CommandParameter="{Binding Path=RunInDebug}"
-                                ToolTip="{x:Static p:Resources.DynamoViewRunButtonTooltip}"
-                                IsEnabled="{Binding Path=RunEnabled}"
-                                Focusable="False" />
-
-                        <Button Name="cancelButton"
-                                Width="100"
-                                Content="{x:Static p:Resources.CancelButton}"
-                                Focusable="False"
-                                Style="{DynamicResource ResourceKey=STextButton}"
-                                ToolTip="{x:Static p:Resources.DynamoViewCancelButtonTooltip}"
-                                Command="{Binding CancelRunCommand}"
-                                Margin="5" />
-
-                        <CheckBox Margin="10"
-                                  Name="dynamicCheckBox"
-                                  x:FieldModifier="public"
-                                  Focusable="False"
-                                  Foreground="Gray"
-                                  Content="{x:Static p:Resources.DynamoViewRunAutomaticallyOption}"
-                                  FontSize="11"
-                                  IsChecked="{Binding Path=DynamicRunEnabled, Mode=TwoWay}"
-                                  IsEnabled="{Binding Path=CanRunDynamically, Mode=OneWay}"
-                                  VerticalAlignment="Center"
-                                  VerticalContentAlignment="Center" />
-                    </StackPanel>
-
-                    <!--CheckBox Margin="10" x:FieldModifier="public" Name="debugCheckBox" 
-                      FontSize="11" VerticalAlignment="Center" Foreground="Gray"
-                      IsChecked="{Binding Path=RunInDebug, Mode=TwoWay}" Focusable="False"
-                      Content="Debug" VerticalContentAlignment="Center"/-->
-
+                        <controls1:RunSettingsControl x:Name="RunSettingsControl"
+                                                    Margin="2.5,5,5,5" 
+                                                     VerticalAlignment="Stretch"
+                                                     DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}"/>
                 </WrapPanel>
-                <TextBlock Name="warningText"
-                           Grid.Column="1"
-                           Text="{Binding Path=Model.Logger.Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}"
-                           FontStyle="Italic"
-                           FontSize="12"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Stretch"
-                           TextAlignment="Right"
-                           TextTrimming="WordEllipsis"
-                           Margin="10"
-                           Foreground="{Binding Path=Model.Logger.WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
-                    <TextBlock.Triggers>
-                        <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Opacity)">
-                                        <LinearDoubleKeyFrame Value="0"
-                                                              KeyTime="0:0:0" />
-                                        <LinearDoubleKeyFrame Value="1"
-                                                              KeyTime="0:0:0.35" />
-                                        <LinearDoubleKeyFrame Value="1"
-                                                              KeyTime="0:0:5" />
-                                        <LinearDoubleKeyFrame Value="0"
-                                                              KeyTime="0:0:5.35" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </TextBlock.Triggers>
-                </TextBlock>
+                
+                <!--NotificationControl for showing run-time notifications-->
+                <controls1:NotificationsControl Grid.Column="1"/>
+                
             </Grid>
 
         </WrapPanel>

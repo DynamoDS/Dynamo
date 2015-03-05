@@ -239,7 +239,7 @@ namespace ProtoFFI
                 }
                 catch
                 {
-                    _coreObj.LogSemanticError(string.Format(Resources.failedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
+                    _coreObj.LogSemanticError(string.Format(Resources.FailedToImport, importModuleName), _coreObj.CurrentDSFileName, curLine, curCol);
                 }
             }
             
@@ -250,7 +250,10 @@ namespace ProtoFFI
                 codeBlockNode = dllModule.ImportCodeBlock(typeName, alias, refNode);
                 Type type = dllModule.GetExtensionAppType();
                 if (type != null)
-                    FFIExecutionManager.Instance.RegisterExtensionApplicationType(_coreObj, type);
+                {
+                    ProtoCore.RuntimeCore runtimeCore = _coreObj.__TempCoreHostForRefactoring;
+                    FFIExecutionManager.Instance.RegisterExtensionApplicationType(runtimeCore, type);
+                }
             }
             else if (extension == ".ds")
             {

@@ -1738,7 +1738,7 @@ namespace Dynamo.Controls
     /// no point in prefixing a colon character (e.g. we don't want ": none").
     public class InOutParamTypeConverter : IValueConverter
     {
-        private static readonly string NoneString = "none";
+        private static readonly string NoneString = Resources.NoneString;
         private static readonly string ColonString = ":";
         private static readonly string SpaceString = " ";
 
@@ -1754,7 +1754,7 @@ namespace Dynamo.Controls
                 return input;
 
             if (shouldPrefixColon)
-                return String.Concat(ColonString, SpaceString, input);
+                return String.Concat(SpaceString, ColonString, SpaceString, input);
             else
                 return input;
         }
@@ -1906,7 +1906,8 @@ namespace Dynamo.Controls
             if (string.IsNullOrEmpty(incomingString))
                 throw new ArgumentException("value string should not be empty.");
 
-            var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
+            var c = Configurations.CategoryDelimiterString[0];
+            var numberOfPoints = incomingString.Count(x => x == c);
             if (numberOfPoints == 0)
                 return new Thickness(5, 0, 0, 0);
 

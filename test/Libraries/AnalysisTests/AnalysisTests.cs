@@ -8,9 +8,9 @@ using Analysis.DataTypes;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Dynamo;
 using Dynamo.Utilities;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -27,7 +27,6 @@ namespace AnalysisTests
         public void SetUp()
         {
             DynamoPathManager.Instance.InitializeCore(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
 
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
 
@@ -290,6 +289,8 @@ namespace AnalysisTests
     class TestExecutionSession : IExecutionSession, IConfiguration, IDisposable
     {
         private Dictionary<string, object> configValues;
+        private Preloader preloader;
+
         public TestExecutionSession()
         {
             configValues = new Dictionary<string, object>();
@@ -326,7 +327,16 @@ namespace AnalysisTests
         public object GetConfigValue(string config)
         {
             if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
-                return Path.Combine(DynamoPathManager.Instance.LibG, "LibG.ProtoInterface.dll");
+            {
+                if (preloader == null)
+                {
+                    var exePath = Assembly.GetExecutingAssembly().Location;
+                    preloader = new Preloader(Path.GetDirectoryName(exePath));
+                    preloader.Preload();
+                }
+
+                return preloader.GeometryFactoryPath;
+            }
 
             if (configValues.ContainsKey(config))
                 return configValues[config];

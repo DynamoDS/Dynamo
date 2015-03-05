@@ -8,7 +8,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Tests;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -935,6 +935,7 @@ namespace Dynamo
     public class SchedulerIntegrationTests : UnitTestBase
     {
         private DynamoModel dynamoModel;
+        private Preloader preloader;
         private SampleSchedulerThread schedulerThread;
         private List<string> results;
 
@@ -1208,15 +1209,18 @@ namespace Dynamo
                 dynamoModel = null;
             }
 
+            preloader = null;
             base.Cleanup();
         }
 
         protected void StartDynamo()
         {
-            DynamoPathManager.Instance.InitializeCore(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            var assemblyFolder = Path.GetDirectoryName(assemblyPath);
+            DynamoPathManager.Instance.InitializeCore(assemblyFolder);
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
+            preloader = new Preloader(assemblyFolder);
+            preloader.Preload();
 
             schedulerThread = new SampleSchedulerThread();
             dynamoModel = DynamoModel.Start(
@@ -1224,7 +1228,8 @@ namespace Dynamo
                 {
                     // See documentation for 'SchedulerIntegrationTests' above.
                     StartInTestMode = false,
-                    SchedulerThread = schedulerThread
+                    SchedulerThread = schedulerThread,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
         }
 

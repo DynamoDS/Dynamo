@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
-using System.Globalization;
+
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
+using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+
 using ProtoCore.Namespace;
-using String = System.String;
+
 using Utils = Dynamo.Nodes.Utilities;
-using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificationUndoHelper;
 
 namespace Dynamo.Models
 {
@@ -157,10 +160,10 @@ namespace Dynamo.Models
         ///     Event that is fired when a node is added to the workspace.
         /// </summary>
         public event Action<NodeModel> NodeAdded;
-        protected virtual void OnNodeAdded(NodeModel obj)
+        protected virtual void OnNodeAdded(NodeModel node)
         {
             var handler = NodeAdded;
-            if (handler != null) handler(obj);
+            if (handler != null) handler(node);
         }
 
         /// <summary>
@@ -425,34 +428,29 @@ namespace Dynamo.Models
 
         public ElementResolver ElementResolver { get; private set; }
 
-        private bool runEnabled;
-        public bool RunEnabled
-        {
-            get { return runEnabled; }
-            set
-            {
-                if (Equals(value, runEnabled)) return;
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
-            }
-        }
         #endregion
 
         #region constructors
 
         protected WorkspaceModel(
-            string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
+            IEnumerable<NodeModel> e, 
+            IEnumerable<NoteModel> n,
+            WorkspaceInfo info, 
+            NodeFactory factory, 
+            ElementResolver elementResolver)
         {
             guid = Guid.NewGuid();
 
-            Name = name;
-
             nodes = new ObservableCollection<NodeModel>(e);
             notes = new ObservableCollection<NoteModel>(n);
-            X = x;
-            Y = y;
-            FileName = fileName;
+
+            // Set workspace info from WorkspaceInfo object
+            Name = info.Name;
+            X = info.X;
+            Y = info.Y;
+            FileName = info.FileName;
+            Zoom = info.Zoom;
+
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
@@ -495,7 +493,9 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void Clear()
         {
-            Log(Properties.Resources.ClearingWorkSpace);
+            Log(Resources.ClearingWorkSpace);
+
+            DynamoSelection.Instance.ClearSelection();
 
             foreach (NodeModel el in Nodes)
             {
@@ -518,6 +518,10 @@ namespace Dynamo.Models
 
             ClearUndoRecorder();
             ResetWorkspace();
+
+            X = 0.0;
+            Y = 0.0;
+            Zoom = 1.0;
         }
 
         /// <summary>
@@ -530,7 +534,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log(String.Format(Properties.Resources.SavingInProgress, newPath));
+            Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
                 if (SaveInternal(newPath, core))
@@ -638,7 +642,7 @@ namespace Dynamo.Models
 
         public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
         {
-            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Properties.Resources.NewNoteString : text, id);
+            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Resources.NewNoteString : text, id);
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
@@ -857,7 +861,7 @@ namespace Dynamo.Models
             var nodeModel = retrievedModel as NodeModel;
             if (nodeModel != null)
             {
-                using (new ModelModificationUndoHelper(undoRecorder, nodeModel))
+                using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
                     handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
                 }
@@ -898,7 +902,7 @@ namespace Dynamo.Models
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
             var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
-            using (new ModelModificationUndoHelper(undoRecorder, retrievedModels))
+            using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, retrievedModels))
             {
                 foreach (var retrievedModel in retrievedModels)
                 {
@@ -1400,7 +1404,7 @@ namespace Dynamo.Models
             document.AppendChild(document.CreateElement("Workspace"));
 
             //This is only used for computing relative offsets, it's not actually created
-            string virtualFileName = String.Join(Path.GetTempPath(), "DynamoTemp.dyn");
+            string virtualFileName = Path.Combine(Path.GetTempPath(), "DynamoTemp.dyn");
             Utils.SetDocumentXmlPath(document, virtualFileName);
 
             if (!PopulateXmlDocument(document))

@@ -53,7 +53,7 @@ namespace Dynamo.TestInfrastructure
                     new DynamoModel.RunCancelCommand(false, false);
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
-            while (!DynamoViewModel.HomeSpace.RunEnabled)
+            while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
             {
                 Thread.Sleep(10);
             }

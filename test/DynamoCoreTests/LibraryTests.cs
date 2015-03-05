@@ -14,12 +14,16 @@ namespace Dynamo.Tests
     [TestFixture]
     class LibraryTests : DSEvaluationViewModelUnitTest
     {
+        private LibraryServices libraryServices;
+
         protected static bool LibraryLoaded { get; set; }
 
         [SetUp]
         public override void Init()
         {
             base.Init();
+
+            libraryServices = ViewModel.Model.LibraryServices;
             RegisterEvents();
         }
 
@@ -68,7 +72,7 @@ namespace Dynamo.Tests
 
         private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
         {
-            var command = new DynCmd.UpdateModelValueCommand(cbn.GUID, "Code", value);
+            var command = new DynCmd.UpdateModelValueCommand(System.Guid.Empty, cbn.GUID, "Code", value);
             ViewModel.ExecuteCommand(command);
         }
 

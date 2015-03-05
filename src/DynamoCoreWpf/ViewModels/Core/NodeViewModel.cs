@@ -195,6 +195,21 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public Visibility PeriodicUpdateVisibility
+        {
+            get
+            {
+                return nodeLogic.EnablePeriodicUpdate
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+        }
+        public bool EnablePeriodicUpdate
+        {
+            get { return nodeLogic.EnablePeriodicUpdate; }
+            set { nodeLogic.EnablePeriodicUpdate = value; }
+        }
+
         public bool ShowsVisibilityToggles
         {
             get { return true; }
@@ -467,6 +482,10 @@ namespace Dynamo.ViewModels
                 case "ForceReExecuteOfNode":
                     RaisePropertyChanged("WillForceReExecuteOfNode");
                     break;
+                case "EnablePeriodicUpdate":
+                    RaisePropertyChanged("EnablePeriodicUpdate");
+                    RaisePropertyChanged("PeriodicUpdateVisibility");
+                    break;
             }
         }
 
@@ -551,7 +570,7 @@ namespace Dynamo.ViewModels
         {           
             this.DynamoViewModel.ExecuteCommand(
               new DynamoModel.UpdateModelValueCommand(
-                    this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
+                    System.Guid.Empty, this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
           
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();

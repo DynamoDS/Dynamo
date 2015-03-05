@@ -72,7 +72,7 @@ namespace Dynamo.TestInfrastructure
                 DynamoViewModel.ExecuteCommand(runCancel);
             }));
             Thread.Sleep(10);
-            while (!DynamoViewModel.HomeSpace.RunEnabled)
+            while (!DynamoViewModel.HomeSpace.RunSettings.RunEnabled)
             {
                 Thread.Sleep(10);
             }
@@ -122,7 +122,7 @@ namespace Dynamo.TestInfrastructure
             DynamoViewModel.UIDispatcher.Invoke(new Action(() =>
             {
                 DynamoModel.UpdateModelValueCommand updateValue =
-                    new DynamoModel.UpdateModelValueCommand(node.GUID, "Value", assemblyPath);
+                    new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, node.GUID, "Value", assemblyPath);
 
                 DynamoViewModel.ExecuteCommand(updateValue);
             }));

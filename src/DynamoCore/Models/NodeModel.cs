@@ -33,6 +33,7 @@ namespace Dynamo.Models
         private bool displayLabels;
         private bool isUpstreamVisible;
         private bool isVisible;
+        private bool enablePeriodicUpdate;
         private string nickName;
         private ElementState state;
         private string toolTipText = "";
@@ -438,6 +439,16 @@ namespace Dynamo.Models
             {
                 description = value;
                 RaisePropertyChanged("Description");
+            }
+        }
+
+        public bool EnablePeriodicUpdate
+        {
+            get { return enablePeriodicUpdate; }
+            set
+            {
+                enablePeriodicUpdate = value;
+                RaisePropertyChanged("EnablePeriodicUpdate");
             }
         }
 
@@ -1142,7 +1153,7 @@ namespace Dynamo.Models
                             p.UsingDefaultValue = true;
                             p.DefaultValueEnabled = true;
                         }
-
+                        p.ToolTipContent = data.ToolTipString;
                         return p;
                     }
 
@@ -1766,7 +1777,9 @@ namespace Dynamo.Models
             if (resourceType == null)
                 throw new ArgumentNullException("resourceType");
 
-            var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static);
+            //Sometimes resources are made internal so that they don't appear in 
+            //node library, hence we also need to query non public properties.
+            var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
             if (prop != null && prop.PropertyType == typeof(String))
             {
                 var tagString = (string)prop.GetValue(null, null);
@@ -1818,7 +1831,9 @@ namespace Dynamo.Models
             if (resourceType == null)
                 throw new ArgumentNullException("resourceType");
 
-            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static);
+            //Sometimes resources are made internal so that they don't appear in 
+            //node library, hence we also need to query non public properties.
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
             if (prop != null && prop.PropertyType == typeof(String))
             {
                 ElementDescription = (string)prop.GetValue(null, null);

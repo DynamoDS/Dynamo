@@ -59,24 +59,26 @@ namespace ProtoCore.AssociativeEngine
         }
 
         /// <summary>
-        /// Gets the number of dirty VM graphnodes at the global scope
+        /// Determines if at least one graphnode in the glboal scope is dirty
         /// </summary>
         /// <param name="exe"></param>
         /// <returns></returns>
-        public static int GetDirtyNodeCountAtGlobalScope(Executable exe)
+        public static bool IsGlobalScopeDirty(Executable exe)
         {
             Validity.Assert(exe != null);
-            int dirtyNodes = 0;
             var graph = exe.instrStreamList[0].dependencyGraph;
             var graphNodes = graph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
-            foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
+            if (graphNodes != null)
             {
-                if (graphNode.isDirty)
+                foreach (AssociativeGraph.GraphNode graphNode in graphNodes)
                 {
-                    ++dirtyNodes;
+                    if (graphNode.isDirty)
+                    {
+                        return true;
+                    }
                 }
             }
-            return dirtyNodes;
+            return false;
         }
 
         /// <summary>
@@ -418,7 +420,7 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="executingGraphNode"></param>
         /// <param name="classScope"></param>
         /// <param name="functionScope"></param>
-        public static List<AssociativeGraph.GraphNode> GetRedefinedGraphNodes(Core core, AssociativeGraph.GraphNode executingGraphNode, List<AssociativeGraph.GraphNode> nodesInScope, int classScope, int functionScope)
+        public static List<AssociativeGraph.GraphNode> GetRedefinedGraphNodes(RuntimeCore runtimeCore, AssociativeGraph.GraphNode executingGraphNode, List<AssociativeGraph.GraphNode> nodesInScope, int classScope, int functionScope)
         {
             List<AssociativeGraph.GraphNode> redefinedNodes = new List<AssociativeGraph.GraphNode>();
             if (executingGraphNode != null)
@@ -426,7 +428,7 @@ namespace ProtoCore.AssociativeEngine
                 // Remove this condition when full SSA is enabled
                 bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
 
-                if (core.Options.ExecuteSSA)
+                if (runtimeCore.Options.ExecuteSSA)
                 {
                     isssa = executingGraphNode.IsSSANode();
                 }
@@ -1257,6 +1259,28 @@ namespace ProtoCore.AssociativeGraph
                 return graphList;
             }
         }
+
+        /// <summary>
+        /// Marks all graphnodes in scope as dirty
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="classIndex"></param>
+        /// <param name="procIndex"></param>
+        public void MarkAllGraphNodesDirty(int block, int classIndex, int procIndex)
+        {
+            List<GraphNode> gnodeList = GetGraphNodesAtScope(classIndex, procIndex);
+            if (gnodeList != null)
+            {
+                foreach (GraphNode gnode in gnodeList)
+                {
+                    if (gnode.languageBlockId == block)
+                    {
+                        gnode.isDirty = true;
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// Gets the graphnode of the given pc and scope

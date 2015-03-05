@@ -21,7 +21,7 @@ namespace ProtoFFI
 
         private AssemblyName mExecutingAssemblyName = Assembly.GetExecutingAssembly().GetName();
 
-        Dictionary<Core, FFIExecutionSession> mSessions = new Dictionary<Core, FFIExecutionSession>();
+        Dictionary<RuntimeCore, FFIExecutionSession> mSessions = new Dictionary<RuntimeCore, FFIExecutionSession>();
         ExtensionAppLoader mApploader = new ExtensionAppLoader();
 
         static FFIExecutionManager mSelf;
@@ -74,39 +74,39 @@ namespace ProtoFFI
             return GACGeometryKeyTokens.ContainsKey(assemblyName);
         }
 
-        public IExecutionSession GetSession(Core core)
+        public IExecutionSession GetSession(RuntimeCore runtimeCore)
         {
-            return GetSession(core, false);
+            return GetSession(runtimeCore, false);
         }
 
-        public bool RegisterExtensionApplicationType(Core core, SysType type)
+        public bool RegisterExtensionApplicationType(RuntimeCore runtimeCore, SysType type)
         {
             if (!typeof(IExtensionApplication).IsAssignableFrom(type))
                 return false;
 
-            FFIExecutionSession session = GetSession(core, true);
+            FFIExecutionSession session = GetSession(runtimeCore, true);
             session.AddExtensionAppType(type);
             return true;
         }
 
-        private FFIExecutionSession GetSession(Core core, bool createIfNone)
+        private FFIExecutionSession GetSession(RuntimeCore runtimeCore, bool createIfNone)
         {
             FFIExecutionSession session = null;
             lock (mSessions)
             {
-                if (!mSessions.TryGetValue(core, out session) && createIfNone)
+                if (!mSessions.TryGetValue(runtimeCore, out session) && createIfNone)
                 {
-                    session = new FFIExecutionSession(core);
-                    core.ExecutionEvent += OnExecutionEvent;
-                    core.Dispose += OnDispose;
-                    mSessions.Add(core, session);
+                    session = new FFIExecutionSession(runtimeCore);
+                    runtimeCore.ExecutionEvent += OnExecutionEvent;
+                    runtimeCore.Dispose += OnDispose;
+                    mSessions.Add(runtimeCore, session);
                 }
             }
 
             return session;
         }
 
-        private void OnDispose(Core sender)
+        private void OnDispose(RuntimeCore sender)
         {
             if (null == mSessions)
                 return;
@@ -126,8 +126,8 @@ namespace ProtoFFI
 
         private void OnExecutionEvent(object sender, ExecutionStateEventArgs e)
         {
-            Core core = sender as Core;
-            FFIExecutionSession session = GetSession(core, false);
+            RuntimeCore runtimeCore = sender as RuntimeCore;
+            FFIExecutionSession session = GetSession(runtimeCore, false);
             //If there wasn't any session created, there was no extension app 
             //registered for the session
             if (null == session)
@@ -156,12 +156,12 @@ namespace ProtoFFI
 
     class FFIExecutionSession : IExecutionSession, IConfiguration, IDisposable
     {
-        private Core core;
+        private RuntimeCore runtimeCore;
         private Dictionary<string, object> configValues;
         private List<SysType> extensionapps;
-        public FFIExecutionSession(Core core)
+        public FFIExecutionSession(RuntimeCore runtimeCore)
         {
-            this.core = core;
+            this.runtimeCore = runtimeCore;
             this.configValues = new Dictionary<string, object>();
             this.extensionapps = new List<SysType>();
         }
@@ -173,22 +173,22 @@ namespace ProtoFFI
 
         public string SearchFile(string fileName)
         {
-            return FileUtils.GetDSFullPathName(fileName, this.core.Options);
+            return FileUtils.GetDSFullPathName(fileName, this.runtimeCore.Options);
         }
 
         public string RootModulePath
         {
-            get { return core.Options.RootModulePathName; }
+            get { return runtimeCore.Options.RootModulePathName; }
         }
 
         public string[] IncludeDirectories
         {
-            get { return core.Options.IncludeDirectories.ToArray(); }
+            get { return runtimeCore.Options.IncludeDirectories.ToArray(); }
         }
 
         public bool IsDebugMode
         {
-            get { return core.Options.IDEDebugMode; }
+            get { return runtimeCore.Options.IDEDebugMode; }
         }
 
         public object GetConfigValue(string config)
@@ -196,7 +196,7 @@ namespace ProtoFFI
             object value = null;
             if (!this.configValues.TryGetValue(config, out value))
             {
-                core.Configurations.TryGetValue(config, out value);
+                runtimeCore.DSExecutable.RuntimeData.Configurations.TryGetValue(config, out value);
             }
             return value;
         }
