@@ -29,6 +29,12 @@ namespace ProtoCore
                 get; private set;
             }
 
+            public int GlobOffset
+            {
+                get;
+                private set;
+            }
+
             /// <summary>
             /// Where the first stack frame starts. Usually the stack below this
             /// pointer is reserved for global variables. 
@@ -71,6 +77,7 @@ namespace ProtoCore
             /// <param name="size"></param>
             public void PushFrameForGlobals(int size)
             {
+                GlobOffset = size;
                 PushFrame(size);
                 startFramePointer = Stack.Count;
             }

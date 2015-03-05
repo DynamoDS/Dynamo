@@ -53,7 +53,8 @@ namespace ProtoTest.Associative
                         Zipped = true
                     }
                 );
-            List<List<StackValue>> combin = ProtoCore.Lang.Replication.Replicator.ComputeAllReducedParams(args, ris, core);
+            runtimeCore = fsr.runtimeCore;
+            List<List<StackValue>> combin = ProtoCore.Lang.Replication.Replicator.ComputeAllReducedParams(args, ris, runtimeCore);
             Assert.IsTrue(combin[0][0].opdata == 1);
             Assert.IsTrue(combin[0][1].opdata == 3);
             Assert.IsTrue(combin[1][0].opdata == 2);

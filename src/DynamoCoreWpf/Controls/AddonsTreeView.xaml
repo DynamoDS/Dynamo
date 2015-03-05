@@ -7,6 +7,7 @@
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:searchCore="clr-namespace:Dynamo.Search;assembly=DynamoCore"
              xmlns:searchElements="clr-namespace:Dynamo.Search.SearchElements;assembly=DynamoCore"
+             xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300">
@@ -483,10 +484,10 @@
             <Border Height="30">
                 <Border.ContextMenu>
                     <ContextMenu Style="{StaticResource AddonsContextMenu}">
-                        <MenuItem Header="Remove" />
-                        <MenuItem Header="Move" />
+                        <MenuItem Header="{x:Static resx:Resources.RemoveLabel}" />
+                        <MenuItem Header="{x:Static resx:Resources.MoveLabel}" />
                         <Separator />
-                        <MenuItem Header="Locate in Disk.." />
+                        <MenuItem Header="{x:Static resx:Resources.LocateInDisk}" />
                     </ContextMenu>
                 </Border.ContextMenu>
                 <Grid>

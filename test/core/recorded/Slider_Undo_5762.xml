@@ -1,0 +1,24 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand NodeId="8ce8301c-5aac-4b74-a812-cac95917bb18" NodeName="Dynamo.Nodes.DoubleSlider" X="0" Y="0" DefaultPosition="true" TransformCoordinates="true" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <UpdateModelValueCommand ModelGuid="8ce8301c-5aac-4b74-a812-cac95917bb18" Name="Min" Value="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="8ce8301c-5aac-4b74-a812-cac95917bb18" Name="Max" Value="10" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand ModelGuid="8ce8301c-5aac-4b74-a812-cac95917bb18" Name="Value" Value="5" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="709.776337236184" Y="482.584792426571" Width="0" Height="0" IsCrossSelection="false" />
+  <PausePlaybackCommand Tag="Tag-4bf8e17c" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="Tag-f5f63a7d" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="Tag-adf3924e" PauseDurationInMs="20" />
+  <UndoRedoCommand CmdOperation="0" />
+  <PausePlaybackCommand Tag="Tag-89ac1edf" PauseDurationInMs="20" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="453.31841936885" Y="536.387152818319" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="486.795443612604" Y="567.472961044663" Width="0" Height="0" IsCrossSelection="false" />
+</Commands>

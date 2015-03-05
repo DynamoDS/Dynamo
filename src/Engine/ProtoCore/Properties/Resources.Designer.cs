@@ -934,6 +934,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Integer modulo by zero.
+        /// </summary>
+        public static string ModuloByZero {
+            get {
+                return ResourceManager.GetString("ModuloByZero", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No constructors for Attribute &apos;{0}&apos; takes {1} arguments.
         /// </summary>
         public static string NoConstructorForAttribute {

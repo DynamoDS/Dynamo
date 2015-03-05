@@ -1,0 +1,41 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <OpenFileCommand XmlFilePath=".\recursivesum2.dyf" />
+  <MakeConnectionCommand NodeId="75c4fea1-6820-4419-9ce0-ab547d08a163" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="c4c48a6d-2b8b-47a2-ac0a-15e21c156edc" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SwitchTabCommand TabIndex="0" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.Function guid="b27da218-ac51-4216-9238-229dcaec524e" type="Dynamo.Nodes.Function" nickname="recursivesum" x="251.2" y="202" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
+      <ID value="b23e60a6-dd4c-4100-b13a-9bb59f3779ac" />
+      <Name value="recursivesum" />
+      <Description value="testrec" />
+      <Inputs>
+        <Input value="list1" />
+      </Inputs>
+      <Outputs>
+        <Output value="partsum" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="142.4" Y="234.4" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="142.4" Y="234.4" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="eff3bb16-bd2b-410b-8325-16be512c91b5" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="50" y="203" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..5;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="1..5" WorkspaceGuid="99b492ba-3d45-4ed9-a797-63b552d0a076">
+    <ModelGuid>eff3bb16-bd2b-410b-8325-16be512c91b5</ModelGuid>
+  </UpdateModelValueCommand>
+  <MakeConnectionCommand NodeId="eff3bb16-bd2b-410b-8325-16be512c91b5" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="b27da218-ac51-4216-9238-229dcaec524e" PortIndex="0" Type="0" ConnectionMode="1" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.Watch guid="3e30c7d3-6316-4fb6-aec7-13c3ca706621" type="Dynamo.Nodes.Watch" nickname="Watch" x="482.4" y="224.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="3e30c7d3-6316-4fb6-aec7-13c3ca706621" Modifiers="0" />
+  <DragSelectionCommand X="312.8" Y="244.8" DragOperation="0" />
+  <DragSelectionCommand X="520" Y="243.2" DragOperation="1" />
+  <MakeConnectionCommand NodeId="b27da218-ac51-4216-9238-229dcaec524e" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="3e30c7d3-6316-4fb6-aec7-13c3ca706621" PortIndex="0" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="458.4" Y="330.4" Width="0" Height="0" IsCrossSelection="false" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+</Commands>
