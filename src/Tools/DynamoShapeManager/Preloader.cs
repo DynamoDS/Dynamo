@@ -157,7 +157,7 @@ namespace DynamoShapeManager
             }
             catch (Exception ex)
             {
-                throw new Exception("The specified integer value did not map to a supported version of ASM.");
+                throw new Exception("The specified string value did not map to a supported version of the shape manager.");
             }
         }
 
