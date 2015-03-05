@@ -94,7 +94,6 @@ namespace ProtoCore.Utils
     public class ParseParam
     {
         private List<string> temporaries = null;
-        //private List<string> unboundIdentifiers = null;
         private Dictionary<string, string> unboundIdentifiers;
         private List<ProtoCore.AST.Node> parsedNodes = null;
         private List<ProtoCore.BuildData.ErrorEntry> errors = null;
@@ -119,8 +118,6 @@ namespace ProtoCore.Utils
             if (this.unboundIdentifiers == null)
                 this.unboundIdentifiers = new Dictionary<string, string>();
 
-            //if (!this.unboundIdentifiers.Contains(identifier))
-            //    this.unboundIdentifiers.Add(identifier);
             if (!this.unboundIdentifiers.ContainsKey(displayName))
                 this.unboundIdentifiers.Add(displayName, identifier);
         }
