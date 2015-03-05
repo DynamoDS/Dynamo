@@ -121,12 +121,7 @@ namespace ProtoScript.Runners
         private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core, int runningBlock)
         {
             ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
-            runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
-            runtimeCore.RunningBlock = runningBlock;
-            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
-            runtimeCore.WatchSymbolList = core.watchSymbolList;
-            runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties);
-            runtimeCore.RegisterDllTypes(core.listDllTypesToLoad);
+            runtimeCore.SetupForExecution(core, new ProtoCore.Runtime.Context());
             return runtimeCore;
         }
 
@@ -142,9 +137,12 @@ namespace ProtoScript.Runners
             ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
         {
             ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core, runningBlock);
+
+            //Start the timer       
+            runtimeCore.StartTimer();
+
             try
             {
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
                 foreach (ProtoCore.DSASM.CodeBlock codeblock in core.CodeBlockList)
                 {
                     // Comment Jun:
@@ -376,8 +374,6 @@ namespace ProtoScript.Runners
 
             string strSource = reader.ReadToEnd();
             reader.Dispose();
-            //Start the timer       
-            runtimeCore.StartTimer();
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;

@@ -51,11 +51,7 @@ namespace ProtoScript.Runners
         private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core)
         {
             ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
-            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
-            runtimeCore.WatchSymbolList = core.watchSymbolList;
-            runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin); runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
-            runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, new ProtoCore.Runtime.Context(), core.ExprInterpreterExe);
-            runtimeCore.RegisterDllTypes(core.listDllTypesToLoad);
+            runtimeCore.SetupForExecution(core, new ProtoCore.Runtime.Context());
             return runtimeCore;
         }
 
