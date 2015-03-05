@@ -595,7 +595,6 @@ namespace Dynamo.Models
             OnNodeAdded(node);
             HasUnsavedChanges = true;
 
-            // Trigger an update of the graph.
             OnNodesModified();
         }
 
