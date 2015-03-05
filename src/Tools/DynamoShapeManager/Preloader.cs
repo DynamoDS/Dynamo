@@ -134,6 +134,21 @@ namespace DynamoShapeManager
                 Utilities.GeometryFactoryAssembly);
         }
 
+        public static Preloader FromSpecifiedLibraryVersion(string rootFolder, string version)
+        {
+            try
+            {
+                LibraryVersion libVersion;
+                return LibraryVersion.TryParse(version, out libVersion) ? 
+                    new Preloader(rootFolder, new[] { libVersion }) : 
+                    new Preloader(rootFolder);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("The specified integer value did not map to a supported version of ASM.");
+            }
+        }
+
         public void Preload()
         {
             if (version == LibraryVersion.None)
