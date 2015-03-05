@@ -70,6 +70,7 @@ namespace Dynamo.Models
             {
                 EngineController.MessageLogged -= Log;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+                EngineController.Dispose();
             }
 
             if (pulseMaker == null) return;
