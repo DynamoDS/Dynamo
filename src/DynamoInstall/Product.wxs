@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <Product Id="A0A6A915-F284-4CB4-90D3-C1356052D456"
-           Name="Dynamo 0.7.6"
+  <Product Id="3594373A-F8C0-40DF-ACBD-D4AF085C4189"
+           Name="Dynamo 0.8.0"
            Language="1033"
-           Version="0.7.6"
+           Version="0.8.0"
            Manufacturer="Dynamo"
            UpgradeCode="733f1d21-d745-47aa-bbb5-4a39b5996e4e">
 
@@ -39,7 +39,7 @@
     <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
 
     <Property Id='DYNAMO_INSTALLDIR'></Property>
-    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo 0.7" After="LaunchConditions"></SetProperty>
+    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo" After="LaunchConditions"></SetProperty>
 
     <Feature Id="DYNAMO_CORE_FEATURE"
              Title="Dynamo Core"
@@ -69,7 +69,7 @@
         <Directory Id="ADESK_DATA" Name="Autodesk">
         </Directory>
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
-          <Directory Id="PROGDATA_07" Name="0.7"/>
+          <Directory Id="PROGDATA" Name="0.8"/>
         </Directory>
       </Directory>
     </Directory>
@@ -78,12 +78,12 @@
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10" Win64="yes">
         <Shortcut Id="ApplicationStartMenuShortcut"
-                  Name="Dynamo 0.7"
+                  Name="Dynamo"
                   Description="Dynamo Sandbox"
                   Target="[DYNAMO_INSTALLDIR]\DynamoSandbox.exe"
                   WorkingDirectory="DYNAMO_INSTALLDIR"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue Root="HKCU" Key="Software\Microsoft\Dynamo_07" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RegistryValue Root="HKCU" Key="Software\Dynamo\0.8" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
         <RegistryKey Root="HKLM"
                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]"
               Action="createAndRemoveOnUninstall">

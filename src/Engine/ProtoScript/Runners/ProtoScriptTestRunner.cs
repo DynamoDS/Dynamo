@@ -126,12 +126,16 @@ namespace ProtoScript.Runners
         /// <param name="runningBlock"></param>
         /// <param name="staticContext"></param>
         /// <param name="runtimeContext"></param>
-        public void Execute(ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
+        public ProtoCore.RuntimeCore Execute(
+            ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
         {
+            //========================Generate runtimecore here===============================//
             ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+
             // Move these core setup to runtime core 
             runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
             runtimeCore.RunningBlock = runningBlock;
+            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
 
             try
             {
@@ -151,9 +155,9 @@ namespace ProtoScript.Runners
 
                     // Initialize the entry point interpreter
                     int locals = 0; // This is the global scope, there are no locals
-                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
-                    core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-                    core.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
                 }
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
@@ -162,6 +166,7 @@ namespace ProtoScript.Runners
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
                 throw;
             }
+            return runtimeCore;
         }
         
 
@@ -173,10 +178,15 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror Execute(ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext, ProtoCore.Core core, bool isTest = true)
+        public ExecutionMirror Execute(
+            ProtoCore.CompileTime.Context staticContext, 
+            ProtoCore.Runtime.Context runtimeContext, 
+            ProtoCore.Core core, 
+            out ProtoCore.RuntimeCore runtimeCoreOut, 
+            bool isTest = true)
         {
             Validity.Assert(null != staticContext.SourceCode && String.Empty != staticContext.SourceCode);
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.RuntimeCore runtimeCore = null;
 
             core.AddContextData(staticContext.GlobalVarList);
    
@@ -186,7 +196,7 @@ namespace ProtoScript.Runners
             {
                 core.GenerateExecutable();
                 Validity.Assert(null != runtimeContext);
-                Execute(core, blockId, staticContext, runtimeContext);
+                runtimeCore = Execute(core, blockId, staticContext, runtimeContext);
                 if (!isTest)
                 {
                     runtimeCore.RuntimeMemory.Heap.Free();
@@ -196,10 +206,11 @@ namespace ProtoScript.Runners
             {
                 throw new ProtoCore.Exceptions.CompileErrorsOccured();
             }
+            runtimeCoreOut = runtimeCore;
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
 
             return null;
@@ -214,13 +225,13 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public ExecutionMirror Execute(List<ProtoCore.AST.AssociativeAST.AssociativeNode> astList, ProtoCore.Core core, bool isTest = true)
         {
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.RuntimeCore runtimeCore = null;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(astList, core, out blockId);
             if (succeeded)
             {
                 core.GenerateExecutable();
-                Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+                runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
                 if (!isTest) 
                 {
                     runtimeCore.RuntimeMemory.Heap.Free(); 
@@ -233,7 +244,7 @@ namespace ProtoScript.Runners
 
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
 
             return null;
@@ -247,9 +258,9 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
+        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCoreOut, bool isTest = true)
         {
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.RuntimeCore runtimeCore = null;
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
             bool succeeded = Compile(sourcecode, core, out blockId);
             if (succeeded)
@@ -257,7 +268,7 @@ namespace ProtoScript.Runners
                 core.GenerateExecutable();
                 try
                 {
-                    Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+                    runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
                 }
                 catch (ProtoCore.Exceptions.ExecutionCancelledException e)
                 {
@@ -274,12 +285,20 @@ namespace ProtoScript.Runners
                 throw new ProtoCore.Exceptions.CompileErrorsOccured();
             }
 
+            runtimeCoreOut = runtimeCore;
+
             if (isTest && !core.Options.CompileToLib)
             {
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             }
 
             return null;
+        }
+
+        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
+        {
+            ProtoCore.RuntimeCore runtimeCore = null;
+            return Execute(sourcecode, core, out runtimeCore);
         }
 
         /// <summary>
@@ -289,7 +308,7 @@ namespace ProtoScript.Runners
         /// <param name="core"></param>
         /// <param name="isTest"></param>
         /// <returns></returns>
-        public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, bool isTest = true)
+        public ExecutionMirror LoadAndExecute(string filename, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCoreOut,  bool isTest = true)
         {
             System.IO.StreamReader reader = null;
             try
@@ -301,17 +320,21 @@ namespace ProtoScript.Runners
                 throw new Exception("Cannot open file " + filename);
             }
 
+            ProtoCore.RuntimeCore runtimeCore = null;
+
             string strSource = reader.ReadToEnd();
             reader.Dispose();
             //Start the timer       
-            core.StartTimer();
+            runtimeCore.StartTimer();
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;
-            Execute(strSource, core);
+            Execute(strSource, core, out runtimeCore);
+
+            runtimeCoreOut = runtimeCore;
 
             if (isTest && !core.Options.CompileToLib)
-                return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
             else
                 return null;
         }

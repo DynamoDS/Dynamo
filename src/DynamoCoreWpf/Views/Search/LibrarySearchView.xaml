@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              d:DesignHeight="525"
              d:DesignWidth="350">
@@ -260,6 +261,8 @@
                     Value="40" />
             <Setter Property="Focusable"
                     Value="False" />
+            <Setter Property="Visibility"
+                    Value="{Binding Path=Visibility, Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -299,6 +302,8 @@
                     Value="#333333" />
             <Setter Property="FocusVisualStyle"
                     Value="{x:Null}" />
+            <Setter Property="Visibility"
+                    Value="{Binding Path=Visibility, Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -609,13 +614,13 @@
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
-                <uicontrols:AddonsTreeView Grid.Row="2"
+                <!--<uicontrols:AddonsTreeView Grid.Row="2"
                                            DataContext="{Binding}">
                     <uicontrols:AddonsTreeView.Visibility>
                         <Binding Path="SearchAddonsVisibility"
                                  Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
                     </uicontrols:AddonsTreeView.Visibility>
-                </uicontrols:AddonsTreeView>
+                </uicontrols:AddonsTreeView>-->
             </Grid>
         </ScrollViewer>
 
@@ -629,7 +634,7 @@
                 Foreground="#666"
                 VerticalAlignment="Top"
                 HorizontalAlignment="Center"
-                Content="No matches found"
+                Content="{x:Static resx:Resources.NoMatchesFound}"
                 Click="OnNoMatchFoundButtonClick">
             <Button.Visibility>
                 <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
@@ -652,13 +657,6 @@
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                         StaysOpen="True"
                                         AllowsTransparency="True"
-                                        MouseLeave="OnPopupMouseLeave">
-            <uicontrols:LibraryToolTipPopup.IsOpen>
-                <Binding ElementName="libraryToolTipPopup"
-                         Path="DataContext"
-                         Mode="OneWay"
-                         Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
-            </uicontrols:LibraryToolTipPopup.IsOpen>
-        </uicontrols:LibraryToolTipPopup>
+                                        MouseLeave="OnPopupMouseLeave" />
     </Grid>
 </UserControl>
