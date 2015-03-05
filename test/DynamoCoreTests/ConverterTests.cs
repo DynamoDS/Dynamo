@@ -365,42 +365,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
-        [Ignore]
-        // TODO(Vladimir): HasParentRootElement converter is not used anywhere.
-        // Reimplement test when needed.
-        public void HasParentRootElementTest()
-        {
-            var converter = new HasParentRootElement();
-            var BreVM = new BrowserRootElementViewModel(new BrowserRootElement("BRE"));
-            var BieVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
-            object result;
-
-            //1. Element is null.
-            //2. Element is BrowserRootElement.
-            //3. Element is not child of BrowserRootElement.
-            //4. Element is child of BrowserRootElement.
-
-            // 1 case
-            result = converter.Convert(null, null, null, null);
-            Assert.AreEqual(false, result);
-
-            // 2 case
-            result = converter.Convert(BreVM, null, null, null);
-            Assert.AreEqual(true, result);
-
-            // 3 case
-            result = converter.Convert(BieVM, null, null, null);
-            Assert.AreEqual(false, result);
-
-            // 4 case
-            // TODO(Vladimir): take a look.
-            //BreVM.CastedModel.AddChild(BieVM.CastedModel);
-            result = converter.Convert(BieVM, null, null, null);
-            Assert.AreEqual(true, result);
-        }
-
-        [Test]
         public void NullValueToCollapsedConverterTest()
         {
             NullValueToCollapsedConverter converter = new NullValueToCollapsedConverter();

@@ -136,15 +136,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool SearchAddonsVisibility
-        {
-            get
-            {
-                // TODO(Vladimir): uncomment when Addons are shown.
-                return false;//AddonRootCategories.Any(cat => cat.Visibility);
-            }
-        }
-
         public enum ViewMode { LibraryView, LibrarySearchView };
 
         /// <summary>
