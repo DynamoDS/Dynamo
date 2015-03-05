@@ -43,35 +43,7 @@ namespace ProtoFFI
             {
                 return Assembly.LoadFrom(name);
             }
-            else
-            {
-                string assemblyName = System.IO.Path.GetFileNameWithoutExtension(name);
-                byte[] publicKeyToekn;
-
-                if (GACGeometryKeyTokens.TryGetValue(assemblyName, out publicKeyToekn))
-                {
-                    AssemblyName an = new AssemblyName();
-                    an.Name = assemblyName;
-                    an.SetPublicKeyToken(publicKeyToekn);
-                    an.Version = mExecutingAssemblyName.Version;
-                    an.CultureInfo = mExecutingAssemblyName.CultureInfo;
-                    an.ProcessorArchitecture = mExecutingAssemblyName.ProcessorArchitecture;
-                    System.Diagnostics.Debug.Write("Assembly: " + assemblyName + "," + an.Version.ToString() + " is in GAC.");
-                    return Assembly.Load(an);
-                }
-            }
             throw new System.IO.FileNotFoundException();
-        }
-
-        public bool IsInternalGacAssembly(string moduleName)
-        {
-            if (string.IsNullOrEmpty(moduleName))
-            {
-                return false;
-            }
-
-            string assemblyName = System.IO.Path.GetFileNameWithoutExtension(moduleName);
-            return GACGeometryKeyTokens.ContainsKey(assemblyName);
         }
 
         public IExecutionSession GetSession(RuntimeCore runtimeCore)
