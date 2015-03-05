@@ -80,7 +80,7 @@ namespace ProtoFFI
 
         private void OnDispose(RuntimeCore sender)
         {
-            if (null == mSessions)
+            if (mSessions == null)
                 return;
 
             FFIExecutionSession session = null;
@@ -94,7 +94,6 @@ namespace ProtoFFI
                     sender.ExecutionEvent -= OnExecutionEvent;
                 }
                 mSelf = null;
-
             }
 
         }
