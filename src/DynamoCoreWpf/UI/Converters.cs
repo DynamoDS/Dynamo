@@ -236,16 +236,12 @@ namespace Dynamo.Controls
     // (these properties are also to be bound in the exact order as stated here):
     // 
     //      SearchViewModel.SearchRootCategories.Count (int)
-    //      SearchViewModel.SearchAddonsVisibility (bool)
     //      SearchViewModel.SearchText (string)
-    //
-    // Rewrite converter when Addons treeview will be visible.
-    // Task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6226.
     public class SearchResultsToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[2] as string))
+            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
             {
                 return Visibility.Visible;
             }
