@@ -23,6 +23,7 @@ namespace TestServices
             {
                 DynamoCorePath = assDir;
                 RequestedLibraryVersion = "Version219";
+                return;
             }
 
             var config = ConfigurationManager.OpenExeConfiguration(configPath);
