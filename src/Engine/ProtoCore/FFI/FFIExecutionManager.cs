@@ -14,13 +14,6 @@ namespace ProtoFFI
         {
         }
 
-        private static Dictionary<string, byte[]> GACGeometryKeyTokens = new Dictionary<string, byte[]>()
-        {
-            /* {"ProtoGeometry", new byte[] { 0xD5, 0x24, 0x30, 0x4D, 0xAF, 0x1F, 0x8B, 0x35}}, */
-        };
-
-        private AssemblyName mExecutingAssemblyName = Assembly.GetExecutingAssembly().GetName();
-
         Dictionary<RuntimeCore, FFIExecutionSession> mSessions = new Dictionary<RuntimeCore, FFIExecutionSession>();
         ExtensionAppLoader mApploader = new ExtensionAppLoader();
 
