@@ -1174,8 +1174,8 @@ namespace Dynamo.Models
                     InPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += p_PortConnected;
-                    p.PortDisconnected += p_PortDisconnected;
+                    p.PortConnected += PortConnected;
+                    p.PortDisconnected += PortDisconnected;
                     
                     return p;
 
@@ -1197,8 +1197,8 @@ namespace Dynamo.Models
                     OutPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += p_PortConnected;
-                    p.PortDisconnected += p_PortDisconnected;
+                    p.PortConnected += PortConnected;
+                    p.PortDisconnected += PortDisconnected;
 
                     return p;
             }
@@ -1206,7 +1206,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        private void p_PortConnected(PortModel port, ConnectorModel connector)
+        private void PortConnected(PortModel port, ConnectorModel connector)
         {
             ValidateConnections();
 
@@ -1219,11 +1219,10 @@ namespace Dynamo.Models
             startPort.Owner.ConnectOutput(outData, data, this);
             OnConnectorAdded(connector);
 
-            MarkNodeAsModified();
             OnNodeModified();
         }
 
-        private void p_PortDisconnected(PortModel port)
+        private void PortDisconnected(PortModel port)
         {
             ValidateConnections();
 
@@ -1234,7 +1233,6 @@ namespace Dynamo.Models
             DisconnectInput(data);
             startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
 
-            MarkNodeAsModified();
             OnNodeModified();
         }
 
