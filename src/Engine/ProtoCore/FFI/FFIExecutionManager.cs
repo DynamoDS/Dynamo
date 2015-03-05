@@ -121,7 +121,10 @@ namespace ProtoFFI
                     sender.Dispose -= OnDispose;
                     sender.ExecutionEvent -= OnExecutionEvent;
                 }
+                mSelf = null;
+
             }
+
         }
 
         private void OnExecutionEvent(object sender, ExecutionStateEventArgs e)
