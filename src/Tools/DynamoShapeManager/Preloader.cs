@@ -134,7 +134,19 @@ namespace DynamoShapeManager
                 Utilities.GeometryFactoryAssembly);
         }
 
-        public static Preloader FromSpecifiedLibraryVersion(string rootFolder, string version)
+        /// <summary>
+        /// Construct a Preloader by specifying a required library version. If the 
+        /// specified version is invalid, then fallback to construction using
+        /// the standard list of versions.
+        /// </summary>
+        /// <param name="rootFolder">Full path of the directory that contains 
+        /// LibG_xxx folder, where 'xxx' represents the library version. In a 
+        /// typical setup this would be the same directory that contains Dynamo 
+        /// core modules. This must represent a valid directory.
+        /// </param>
+        /// <param name="version">A string representing the version of the shape manager.</param>
+        /// <returns></returns>
+        public static Preloader FromSpecifiedLibraryVersionString(string rootFolder, string version)
         {
             try
             {

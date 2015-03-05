@@ -84,7 +84,7 @@ namespace TestServices
             {
                 if (preloader != null) return preloader.GeometryFactoryPath;
 
-                preloader = Preloader.FromSpecifiedLibraryVersion(
+                preloader = Preloader.FromSpecifiedLibraryVersionString(
                     remoteConfig.DynamoCorePath,
                     remoteConfig.RequestedLibraryVersion);
 
