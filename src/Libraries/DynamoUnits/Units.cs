@@ -240,6 +240,7 @@ namespace DynamoUnits
         /// <summary>
         /// The internal value of the unit.
         /// </summary>
+        [Obsolete("SIUnit.Value is obsolete")]
         public double Value
         {
             get { return _value * UiLengthConversion; }
@@ -262,67 +263,102 @@ namespace DynamoUnits
         /// <param name="value"></param>
         public abstract void SetValueFromString(string value);
 
+        [Obsolete("SIUnit.Add is obsolete. Please use + instead.")]
         public abstract SIUnit Add(SIUnit x);
+
+        [Obsolete("SIUnit.Add is obsolete. Please use + instead.")]
         public abstract SIUnit Add(double x);
+
+        [Obsolete("SIUnit.Subtract is obsolete. Please use - instead.")]
         public abstract SIUnit Subtract(SIUnit x);
+
+        [Obsolete("SIUnit.Subtract is obsolete. Please use - instead.")]
         public abstract SIUnit Subtract(double x);
+
+        [Obsolete("SIUnit.Multiply is obsolete. Please use * instead.")]
         public abstract SIUnit Multiply(SIUnit x);
+
+        [Obsolete("SIUnit.Multiply is obsolete. Please use * instead.")]
         public abstract SIUnit Multiply(double x);
+
+        [Obsolete("SIUnit.Divide is obsolete. Please use / instead.")]
         public abstract dynamic Divide(SIUnit x);
+
+        [Obsolete("SIUnit.Divide is obsolete. Please use / instead.")]
         public abstract SIUnit Divide(double x);
+
+        [Obsolete("SIUnit.Modulo is obsolete. Please use % instead.")]
         public abstract SIUnit Modulo(SIUnit x);
+
+        [Obsolete("SIUnit.Modulo is obsolete. Please use % instead.")]
         public abstract SIUnit Modulo(double x);
+
+        [Obsolete("SIUnit.Round is obsolete. Please use Round instead.")]
         public abstract SIUnit Round();
+
+        [Obsolete("SIUnit.Ceiling is obsolete. Please use Ceiling instead.")]
         public abstract SIUnit Ceiling();
+
+        [Obsolete("SIUnit.Floor is obsolete. Please use Floor instead.")]
         public abstract SIUnit Floor();
 
         #region operator overloads;
 
+        [Obsolete("SIUnit.+ is obsolete. Please use + instead.")]
         public static SIUnit operator +(SIUnit x, SIUnit y)
         {
             return x.Add(y);
         }
 
+        [Obsolete("SIUnit.+ is obsolete. Please use + instead.")]
         public static SIUnit operator +(SIUnit x, double y)
         {
             return x.Add(y);
         }
 
+        [Obsolete("SIUnit.+ is obsolete. Please use + instead.")]
         public static double operator +(double x, SIUnit y)
         {
             return x + y.Value;
         }
 
+        [Obsolete("SIUnit.- is obsolete. Please use - instead.")]
         public static SIUnit operator -(SIUnit x, SIUnit y)
         {
             return x.Subtract(y);
         }
 
+        [Obsolete("SIUnit.- is obsolete. Please use - instead.")]
         public static SIUnit operator -(SIUnit x, double y)
         {
             return x.Subtract(y);
         }
 
+        [Obsolete("SIUnit.- is obsolete. Please use - instead.")]
         public static double operator -(double x, SIUnit y)
         {
             return x - y.Value;
         }
 
+        [Obsolete("SIUnit.* is obsolete. Please use * instead.")]
         public static SIUnit operator *(SIUnit x, SIUnit y)
         {
             return x.Multiply(y);
         }
 
+        [Obsolete("SIUnit.* is obsolete. Please use * instead.")]
         public static SIUnit operator *(SIUnit x, double y)
         {
             return x.Multiply(y);
         }
 
+        [Obsolete("SIUnit.* is obsolete. Please use * instead.")]
         public static SIUnit operator *(double x, SIUnit y)
         {
             return y.Multiply(x);
         }
 
+        [Obsolete("SIUnit./ is obsolete. Please use / instead.")]
         public static dynamic operator /(SIUnit x, SIUnit y)
         {
             //units will cancel
@@ -334,81 +370,97 @@ namespace DynamoUnits
             return x.Divide(y);
         }
 
+        [Obsolete("SIUnit./ is obsolete. Please use / instead.")]
         public static SIUnit operator /(SIUnit x, double y)
         {
             return x.Divide(y);
         }
 
+        [Obsolete("SIUnit.% is obsolete. Please use % instead.")]
         public static SIUnit operator %(SIUnit x, SIUnit y)
         {
             return x.Modulo(y);
         }
 
+        [Obsolete("SIUnit.% is obsolete. Please use % instead.")]
         public static SIUnit operator %(SIUnit x, double y)
         {
             return x.Modulo(y);
         }
 
+        [Obsolete("SIUnit.% is obsolete. Please use % instead.")]
         public static double operator %(double x, SIUnit y)
         {
             return x % y.Value;
         }
 
+        [Obsolete("SIUnit.> is obsolete. Please use > instead.")]
         public static bool operator >(double x, SIUnit y)
         {
             return x > y.Value;
         }
 
+        [Obsolete("SIUnit.> is obsolete. Please use > instead.")]
         public static bool operator >(SIUnit x, double y)
         {
             return x.Value > y;
         }
 
+        [Obsolete("SIUnit.> is obsolete. Please use > instead.")]
         public static bool operator >(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value > y.Value;
         }
 
+        [Obsolete("SIUnit.< is obsolete. Please use < instead.")]
         public static bool operator <(double x, SIUnit y)
         {
             return x < y.Value;
         }
 
+        [Obsolete("SIUnit.< is obsolete. Please use < instead.")]
         public static bool operator <(SIUnit x, double y)
         {
             return x.Value < y;
         }
 
+        [Obsolete("SIUnit.< is obsolete. Please use < instead.")]
         public static bool operator <(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value < y.Value;
         }
 
+        [Obsolete("SIUnit.>= is obsolete. Please use >= instead.")]
         public static bool operator >=(double x, SIUnit y)
         {
             return x >= y.Value;
         }
 
+        [Obsolete("SIUnit.>= is obsolete. Please use >= instead.")]
         public static bool operator >=(SIUnit x, double y)
         {
             return x.Value >= y;
         }
 
+        [Obsolete("SIUnit.>= is obsolete. Please use >= instead.")]
         public static bool operator >=(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value >= y.Value;
         }
 
+        [Obsolete("SIUnit.<= is obsolete. Please use <= instead.")]
         public static bool operator <=(double x, SIUnit y)
         {
             return x <= y.Value;
         }
 
+        [Obsolete("SIUnit.<= is obsolete. Please use <= instead.")]
         public static bool operator <=(SIUnit x, double y)
         {
             return x.Value <= y;
         }
 
+        [Obsolete("SIUnit.<= is obsolete. Please use <= instead.")]
         public static bool operator <=(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value <= y.Value;
@@ -435,6 +487,7 @@ namespace DynamoUnits
     /// A length stored in meters. This length can represent any unit type, but internally this 
     /// is stored as meters to make algorithms simpler.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class Length : SIUnit, IComparable, IEquatable<Length>
     {
         //length conversions
@@ -769,6 +822,7 @@ namespace DynamoUnits
     /// <summary>
     /// An area stored in square meters.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class Area : SIUnit, IComparable, IEquatable<Area>
     {
         //area conversions
