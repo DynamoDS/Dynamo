@@ -131,7 +131,7 @@ namespace Dynamo.Models
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            MarkNodesAsModified(Nodes);
+            MarkNodesAsModifiedAndRequestRun(Nodes);
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace Dynamo.Models
         private void PulseMakerRunStarted()
         {
             var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
-            MarkNodesAsModified(nodesToUpdate, true);
+            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace Dynamo.Models
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                MarkNodesAsModified(Nodes); 
+                MarkNodesAsModifiedAndRequestRun(Nodes); 
             }
 
             if (RunSettings.RunType == RunType.Automatic)
@@ -268,7 +268,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="nodes">The nodes to modify</param>
         /// <param name="forceExecute">The argument to NodeModel.MarkNodeAsModified</param>
-        public void MarkNodesAsModified(IEnumerable<NodeModel> nodes, bool forceExecute = false)
+        public void MarkNodesAsModifiedAndRequestRun(IEnumerable<NodeModel> nodes, bool forceExecute = false)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
