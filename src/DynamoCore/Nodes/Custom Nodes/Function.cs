@@ -103,7 +103,7 @@ namespace Dynamo.Nodes
             else
             {
                 PortData data;
-                if (outputs > -1)
+                if (outputs > 0)
                 {
                     // create outputs for the node
                     for (int i = 0; i < outputs; i++)
@@ -116,7 +116,7 @@ namespace Dynamo.Nodes
                     }
                 }
 
-                if (inputs > -1)
+                if (inputs > 0)
                 {
                     // create inputs for the node
                     for (int i = 0; i < inputs; i++)
