@@ -30,10 +30,17 @@ namespace Dynamo.ViewModels
         }
 
         public event EventHandler RequestReturnFocusToSearch;
-        public virtual void OnRequestReturnFocusToSearch(object sender, EventArgs e)
+        public void OnRequestReturnFocusToSearch(object sender, EventArgs e)
         {
             if (RequestReturnFocusToSearch != null)
                 RequestReturnFocusToSearch(this, e);
+        }
+
+        public event EventHandler RequestCloseSearchToolTip;
+        public void OnRequestCloseSearchToolTip(object sender, EventArgs e)
+        {
+            if (RequestCloseSearchToolTip != null)
+                RequestCloseSearchToolTip(this, e);
         }
 
         public event EventHandler SearchTextChanged;
@@ -225,7 +232,8 @@ namespace Dynamo.ViewModels
             };
             Model.EntryRemoved += RemoveEntry;
 
-            libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
+            if (dynamoViewModel != null)
+                dynamoViewModel.PropertyChanged += OnDynamoViewModelPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
@@ -234,10 +242,14 @@ namespace Dynamo.ViewModels
             ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
 
-        private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void OnDynamoViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (propertyChangedEventArgs.PropertyName == "Visibility")
-                SearchAndUpdateResults();
+            switch (e.PropertyName)
+            {
+                case "CurrentSpace":
+                    OnRequestCloseSearchToolTip(sender, e);
+                    break;
+            }
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
@@ -603,7 +615,7 @@ namespace Dynamo.ViewModels
         private static string MakeFullyQualifiedName(string path, string addition)
         {
             return string.IsNullOrEmpty(path) ? addition :
-                path + Configurations.CategoryDelimiter + addition;
+                path + Configurations.CategoryDelimiterString + addition;
         }
 
         internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)

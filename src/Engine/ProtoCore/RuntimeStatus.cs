@@ -32,7 +32,8 @@ namespace ProtoCore
             kTypeConvertionCauseInfoLoss,
             kTypeMismatch,
             kReplicationWarning,
-            kInvalidIndexing
+            kInvalidIndexing,
+            kModuloByZero
         }
 
         public struct WarningEntry
@@ -50,7 +51,6 @@ namespace ProtoCore
 
     public class RuntimeStatus
     {
-        private ProtoCore.Core core;
         private ProtoCore.RuntimeCore runtimeCore;
         private bool warningAsError;
         private System.IO.TextWriter output = System.Console.Out;
@@ -104,15 +104,13 @@ namespace ProtoCore
             warnings.RemoveAll(w => w.AstID.Equals(astID));
         }
 
-        public RuntimeStatus(Core core,
+        public RuntimeStatus(RuntimeCore runtimeCore,
                              bool warningAsError = false,
                              System.IO.TextWriter writer = null)
         {
-            runtimeCore = core.__TempCoreHostForRefactoring;
-
             warnings = new List<Runtime.WarningEntry>();
             this.warningAsError = warningAsError;
-            this.core = core;
+            this.runtimeCore = runtimeCore;
 
             if (writer != null)
             {
@@ -125,7 +123,7 @@ namespace ProtoCore
         {
             filename = filename ?? string.Empty;
 
-            if (!this.core.Options.IsDeltaExecution && (string.IsNullOrEmpty(filename) ||
+            if (!runtimeCore.Options.IsDeltaExecution && (string.IsNullOrEmpty(filename) ||
                 line == Constants.kInvalidIndex ||
                 col == Constants.kInvalidIndex))
             {
@@ -135,7 +133,7 @@ namespace ProtoCore
             var warningMsg = string.Format(Resources.kConsoleWarningMessage,
                                            message, filename, line, col);
 
-            if (core.Options.Verbose)
+            if (runtimeCore.Options.Verbose)
             {
                 System.Console.WriteLine(warningMsg);
             }
@@ -162,7 +160,7 @@ namespace ProtoCore
                 // internal graph node. 
                 if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
                 {
-                    executingGraphNode = core.DSExecutable.RuntimeData.ExecutingGraphnode;
+                    executingGraphNode = runtimeCore.DSExecutable.RuntimeData.ExecutingGraphnode;
                 }
             }
 
@@ -205,17 +203,17 @@ namespace ProtoCore
             // to go back the last stack frame to get the correct pc value
             int pc = Constants.kInvalidPC;
             int codeBlock = 0;
-            if (core != null)
+            if (runtimeCore != null)
             {
                 pc = runtimeCore.CurrentExecutive.CurrentDSASMExec.PC;
                 codeBlock = runtimeCore.RunningBlock;
 
                 if (String.IsNullOrEmpty(filePath))
                 {
-                    filePath = core.CurrentDSFileName;
+                    filePath = runtimeCore.DSExecutable.RuntimeData.CurrentDSFileName;
                 }
             }
-            if (core.Options.IsDeltaExecution)
+            if (runtimeCore.Options.IsDeltaExecution)
             {
                 GetLocationByGraphNode(ref line, ref column);
 
@@ -244,12 +242,12 @@ namespace ProtoCore
             ulong mergedKey = (((ulong)blk) << 32 | ((uint)pc));
             ulong location = (((ulong)line) << 32 | ((uint)column));
 
-            if (core.codeToLocation.ContainsKey(mergedKey))
+            if (runtimeCore.DSExecutable.RuntimeData.CodeToLocation.ContainsKey(mergedKey))
             {
-                location = core.codeToLocation[mergedKey];
+                location = runtimeCore.DSExecutable.RuntimeData.CodeToLocation[mergedKey];
             }
 
-            foreach (KeyValuePair<ulong, ulong> kv in core.codeToLocation)
+            foreach (KeyValuePair<ulong, ulong> kv in runtimeCore.DSExecutable.RuntimeData.CodeToLocation)
             {
                 //Conditions: within same blk && find the largest key which less than mergedKey we want to find
                 if ((((int)(kv.Key >> 32)) == blk) && (kv.Key < mergedKey))
@@ -266,7 +264,7 @@ namespace ProtoCore
         {
             ulong location = (((ulong)line) << 32 | ((uint)col));
 
-            foreach (var prop in core.__TempCoreHostForRefactoring.InterpreterProps)
+            foreach (var prop in runtimeCore.InterpreterProps)
             {
                 bool fileScope = false;
                 if (prop.executingGraphNode == null)
@@ -281,7 +279,7 @@ namespace ProtoCore
 
                 for (int i = startpc; i <= endpc; ++i)
                 {
-                    var instruction = core.DSExecutable.instrStreamList[block].instrList[i];
+                    var instruction = runtimeCore.DSExecutable.instrStreamList[block].instrList[i];
                     if (instruction.debug != null)
                     {
                         if (instruction.debug.Location.StartInclusive.SourceLocation.FilePath != null)
@@ -300,7 +298,7 @@ namespace ProtoCore
                     continue;
 
 
-                foreach (var kv in core.codeToLocation)
+                foreach (var kv in runtimeCore.DSExecutable.RuntimeData.CodeToLocation)
                 {
                     if ((((int)(kv.Key >> 32)) == block) && (kv.Key >= (ulong)startpc && kv.Key <= (ulong)endpc))
                     {
@@ -340,7 +338,7 @@ namespace ProtoCore
             {
                 if (classScope != Constants.kGlobalScope)
                 {
-                    string classname = core.ClassTable.ClassNodes[classScope].name;
+                    string classname = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].name;
                     message = string.Format(Resources.kPropertyOfClassNotFound, classname, propertyName);
                 }
                 else

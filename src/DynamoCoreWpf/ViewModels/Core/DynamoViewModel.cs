@@ -681,16 +681,6 @@ namespace Dynamo.ViewModels
             this.CurrentSpaceViewModel.CancelActiveState();
         }
 
-        public void RequestRedraw()
-        {
-            this.model.OnRequestsRedraw(this, EventArgs.Empty);
-        }
-
-        public void RequestClearDrawables()
-        {
-            //VisualizationManager.ClearRenderables();
-        }
-
         public void ReturnFocusToSearch()
         {
             this.SearchViewModel.OnRequestReturnFocusToSearch(null, EventArgs.Empty);
@@ -1176,7 +1166,7 @@ namespace Dynamo.ViewModels
 
         internal void ShowElement(NodeModel e)
         {
-            if (HomeSpace.RunSettings.RunType == RunType.Automatically)
+            if (HomeSpace.RunSettings.RunType == RunType.Automatic)
                 return;
 
             if (!model.CurrentWorkspace.Nodes.Contains(e))
@@ -2135,16 +2125,6 @@ namespace Dynamo.ViewModels
                 return true;
             }
             return false;
-        }
-
-        private bool CanCheckForLatestRender(object obj)
-        {
-            return true;
-        }
-
-        private void CheckForLatestRender(object obj)
-        {
-            this.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
 
         public DynamoViewModel ViewModel { get { return this; } }

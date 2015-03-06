@@ -834,7 +834,7 @@ namespace Dynamo.Core
                     node.GUID = Guid.NewGuid();
                     node.RenderPackages.Clear();
 
-                    // shit nodes
+                    // shift nodes
                     node.X = node.X - leftShift;
                     node.Y = node.Y - topMost;
 

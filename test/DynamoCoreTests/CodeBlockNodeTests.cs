@@ -270,7 +270,7 @@ b = c[w][x][y][z];";
 
             // Get preview data given AstIdentifierBase
             var core = ViewModel.Model.EngineController.LiveRunnerCore;
-            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
+            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core.__TempCoreHostForRefactoring);
             MirrorData mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, value);
 
@@ -291,7 +291,7 @@ b = c[w][x][y][z];";
             ViewModel.HomeSpace.Run();
 
             // Get preview data given AstIdentifierBase
-            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core);
+            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core.__TempCoreHostForRefactoring);
             mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, value);
 

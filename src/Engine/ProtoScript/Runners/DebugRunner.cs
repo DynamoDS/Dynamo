@@ -84,8 +84,7 @@ namespace ProtoScript.Runners
 
                 ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
                 runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context, core.ExprInterpreterExe);
-                core.__TempCoreHostForRefactoring = runtimeCore;
-                core.__TempCoreHostForRefactoring.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
 
                 FirstExec();
                 diList = BuildReverseIndex();
@@ -237,7 +236,7 @@ namespace ProtoScript.Runners
             }
             finally
             {
-                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
                 vms = new VMState(execMirror, core);
                 vms.isEnded = isEnded;
                 ProtoCore.CodeModel.CodePoint start = new ProtoCore.CodeModel.CodePoint();
@@ -568,7 +567,7 @@ namespace ProtoScript.Runners
                 null,
                 breakpoints);
 
-            return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, core.__TempCoreHostForRefactoring);
+            return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
 
         }
         /// <summary>

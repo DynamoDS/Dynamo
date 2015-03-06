@@ -249,12 +249,14 @@ namespace ProtoScript.Runners
     {
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
         private ProtoCore.Core core = null;
+        private ProtoCore.RuntimeCore runtimeCore = null;
 
         public ChangeSetData csData { get; private set; }
 
         public ChangeSetComputer(ProtoCore.Core core)
         {
             this.core = core;
+            this.runtimeCore = core.__TempCoreHostForRefactoring;
             currentSubTreeList = new Dictionary<Guid, Subtree>();
         }
 
@@ -264,14 +266,14 @@ namespace ProtoScript.Runners
         /// <param name="liveCore"></param>
         /// <param name="deltaGraphNodes"></param>
         /// <returns></returns>
-        private List<GraphNode> EstimateReachableGraphNodes(Core liveCore, List<GraphNode> deltaGraphNodes)
+        private List<GraphNode> EstimateReachableGraphNodes(RuntimeCore rt, List<GraphNode> deltaGraphNodes)
         {
             List<GraphNode> reachableNodes = new List<GraphNode>();
             foreach (GraphNode executingNode in deltaGraphNodes)
             {
                 reachableNodes.AddRange(ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
                     executingNode,
-                    liveCore.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec,
+                    rt.CurrentExecutive.CurrentDSASMExec,
                     executingNode.exprUID,
                     executingNode.modBlkUID,
                     executingNode.IsSSANode(),
@@ -296,7 +298,7 @@ namespace ProtoScript.Runners
             List<GraphNode> deltaGraphNodeList = ProtoCore.AssociativeEngine.Utils.GetGraphNodesFromAST(core.DSExecutable, astList);
             
             // Get the reachable VM graphnodes  given the modified graphnode list
-            List<GraphNode> reachableNodes = EstimateReachableGraphNodes(core, deltaGraphNodeList);
+            List<GraphNode> reachableNodes = EstimateReachableGraphNodes(runtimeCore, deltaGraphNodeList);
 
             // Append the modified nodes(deltaGraphNodeList) into the reachable list as they are also going to be executed when run
             reachableNodes.AddRange(deltaGraphNodeList);
@@ -367,7 +369,7 @@ namespace ProtoScript.Runners
 
                     core.BuildStatus.ClearWarningsForGraph(st.GUID);
 
-                    core.__TempCoreHostForRefactoring.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+                    runtimeCore.RuntimeStatus.ClearWarningsForGraph(st.GUID);
                 }
             }
             return deltaAstList;
@@ -500,7 +502,7 @@ namespace ProtoScript.Runners
                 foreach (var removedAST in csData.RemovedBinaryNodesFromModification)
                 {
                     core.BuildStatus.ClearWarningsForAst(removedAST.ID);
-                    core.__TempCoreHostForRefactoring.RuntimeStatus.ClearWarningsForAst(removedAST.ID);
+                    runtimeCore.RuntimeStatus.ClearWarningsForAst(removedAST.ID);
                 }
             }
 
@@ -956,6 +958,7 @@ namespace ProtoScript.Runners
     public interface ILiveRunner
     {
         ProtoCore.Core Core { get; }
+        ProtoCore.RuntimeCore RuntimeCore { get; }
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
@@ -1129,7 +1132,14 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
-                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
+                    runnerCore.__TempCoreHostForRefactoring.Cleanup();
+                    runnerCore = null;
+                }
+
+                if (runtimeCore != null)
+                {
+                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -=
+                        FFIPropertyChanged;
                     runtimeCore.Cleanup();
                 }
 
@@ -1140,10 +1150,15 @@ namespace ProtoScript.Runners
                     taskQueue.Clear();
                 }
 
-                // waiting for thread to finish
-                if (workerThread.IsAlive)
+                if (workerThread != null)
                 {
-                    workerThread.Join();
+                    // waiting for thread to finish
+                    if (workerThread.IsAlive)
+                    {
+                        workerThread.Join();
+                    }
+
+                    workerThread = null;
                 }
             }
         }
@@ -1169,7 +1184,7 @@ namespace ProtoScript.Runners
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
             foreach (var item in configuration.PassThroughConfiguration)
             {
-                runtimeCore.Configurations[item.Key] = item.Value;
+                runnerCore.Configurations[item.Key] = item.Value;
             }
 
             vmState = null;
@@ -1294,7 +1309,7 @@ namespace ProtoScript.Runners
                     {
                         //return GetWatchValue(nodeName);
                         const int blockID = 0;
-                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runnerCore);
+                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runtimeCore, runnerCore);
                         return runtimeMirror;
                     }
                 }
@@ -1313,8 +1328,8 @@ namespace ProtoScript.Runners
             // Traverse order:
             //  Exelist, Globals symbols
 
-            ProtoCore.DSASM.Executive exec = runnerCore.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec;
-            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore.__TempCoreHostForRefactoring);
+            ProtoCore.DSASM.Executive exec = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runtimeCore);
             Executable exe = exec.exe;
 
             // Only display symbols defined in the default top-most langauge block;
@@ -1464,7 +1479,7 @@ namespace ProtoScript.Runners
 
                     }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         }
 

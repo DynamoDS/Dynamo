@@ -486,4 +486,7 @@
   <data name="ValidForImperativeBlockOnly" xml:space="preserve">
     <value>'{0}' statement can only be used in imperative language block</value>
   </data>
+  <data name="ModuloByZero" xml:space="preserve">
+    <value>Integer modulo by zero</value>
+  </data>
 </root>

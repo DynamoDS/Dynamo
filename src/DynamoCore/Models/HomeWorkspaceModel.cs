@@ -20,6 +20,12 @@ namespace Dynamo.Models
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
 
+        /// <summary>
+        ///     Before the Workspace has been built the first time, we do not respond to 
+        ///     NodeModification events.
+        /// </summary>
+        private bool silenceNodeModifications = true;
+
         public RunSettings RunSettings { get; protected set; }
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
@@ -63,6 +69,7 @@ namespace Dynamo.Models
             {
                 EngineController.MessageLogged -= Log;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+                EngineController.Dispose();
             }
 
             if (pulseMaker == null) return;
@@ -130,10 +137,14 @@ namespace Dynamo.Models
         {
             base.OnNodesModified();
 
+            // Until the workspace has been constructed at least once, 
+            // we do not respond to node modification events
+            if (silenceNodeModifications) return;
+
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check whether an engine controller is available.
-            if (RunSettings.RunType != RunType.Manually && EngineController != null)
+            if (RunSettings.RunType != RunType.Manual && EngineController != null)
             {
                 Run();
             }
@@ -254,7 +265,7 @@ namespace Dynamo.Models
                 MarkNodesAsModified(Nodes); 
             }
 
-            if (RunSettings.RunType == RunType.Automatically)
+            if (RunSettings.RunType == RunType.Automatic)
                 Run();
         }
 
@@ -372,6 +383,11 @@ namespace Dynamo.Models
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunSettings.RunEnabled = false; // Disable 'Run' button.
+
+                // The workspace has been built for the first time
+                silenceNodeModifications = false;
+
+                OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
             }
             else
@@ -382,8 +398,15 @@ namespace Dynamo.Models
             }
         }
 
+        public event EventHandler<EventArgs> EvaluationStarted;
+        public virtual void OnEvaluationStarted(EventArgs e)
+        {
+            var handler = EvaluationStarted;
+            if (handler != null) handler(this, e);
+        }
+
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
-        protected virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
+        public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);

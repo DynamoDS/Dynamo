@@ -202,9 +202,6 @@ namespace Dynamo.Nodes
 
                 RaisePropertyChanged("Code");
                 
-                // Mark node for update
-                OnNodeModified();
-                
                 ReportPosition();
 
                 ClearRuntimeError();
@@ -212,6 +209,9 @@ namespace Dynamo.Nodes
                     Error(errorMessage);
                 else if (!string.IsNullOrEmpty(warningMessage))
                     Warning(warningMessage);
+
+                // Mark node for update
+                OnNodeModified();
             }
         }
 
@@ -364,9 +364,6 @@ namespace Dynamo.Nodes
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
             
-            // Mark node for update
-            OnNodeModified();
-            
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
@@ -376,6 +373,9 @@ namespace Dynamo.Nodes
             {
                 Warning(warningMessage);
             }
+
+            // Mark node for update
+            OnNodeModified();
         }
 
         private void ProcessCode(ref string errorMessage, ref string warningMessage, 

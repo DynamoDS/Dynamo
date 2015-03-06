@@ -187,6 +187,10 @@ namespace Dynamo.Models
                 if (value != ElementState.Error && value != ElementState.AstBuildBroken)
                     ClearTooltipText();
 
+                // Check before settings and raising 
+                // a notification.
+                if (state == value) return;
+
                 state = value;
                 RaisePropertyChanged("State");
             }
@@ -796,8 +800,6 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
-
-            OnNodeModified();
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -810,8 +812,6 @@ namespace Dynamo.Models
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
-
-            OnNodeModified();
         }
 
         /// <summary>
@@ -1174,8 +1174,8 @@ namespace Dynamo.Models
                     InPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += p_PortConnected;
-                    p.PortDisconnected += p_PortDisconnected;
+                    p.PortConnected += PortConnected;
+                    p.PortDisconnected += PortDisconnected;
                     
                     return p;
 
@@ -1197,8 +1197,8 @@ namespace Dynamo.Models
                     OutPorts.Add(p);
 
                     //register listeners on the port
-                    p.PortConnected += p_PortConnected;
-                    p.PortDisconnected += p_PortDisconnected;
+                    p.PortConnected += PortConnected;
+                    p.PortDisconnected += PortDisconnected;
 
                     return p;
             }
@@ -1206,34 +1206,34 @@ namespace Dynamo.Models
             return null;
         }
 
-        private void p_PortConnected(PortModel port, ConnectorModel connector)
+        private void PortConnected(PortModel port, ConnectorModel connector)
         {
             ValidateConnections();
 
-            if (port.PortType == PortType.Input)
-            {
-                int data = InPorts.IndexOf(port);
-                PortModel startPort = connector.Start;
-                int outData = startPort.Owner.OutPorts.IndexOf(startPort);
-                ConnectInput(data, outData, startPort.Owner);
-                startPort.Owner.ConnectOutput(outData, data, this);
-                OnConnectorAdded(connector);
+            if (port.PortType != PortType.Input) return;
 
-                // OnNodeModified();
-            }
+            var data = InPorts.IndexOf(port);
+            var startPort = connector.Start;
+            var outData = startPort.Owner.OutPorts.IndexOf(startPort);
+            ConnectInput(data, outData, startPort.Owner);
+            startPort.Owner.ConnectOutput(outData, data, this);
+            OnConnectorAdded(connector);
+
+            OnNodeModified();
         }
 
-        private void p_PortDisconnected(PortModel port)
+        private void PortDisconnected(PortModel port)
         {
             ValidateConnections();
 
-            if (port.PortType == PortType.Input)
-            {
-                int data = InPorts.IndexOf(port);
-                PortModel startPort = port.Connectors[0].Start;
-                DisconnectInput(data);
-                startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
-            }
+            if (port.PortType != PortType.Input) return;
+
+            var data = InPorts.IndexOf(port);
+            var startPort = port.Connectors[0].Start;
+            DisconnectInput(data);
+            startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
+
+            OnNodeModified();
         }
 
         #endregion

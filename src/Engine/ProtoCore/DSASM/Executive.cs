@@ -99,7 +99,6 @@ namespace ProtoCore.DSASM
             fepRun = isFep;
             Properties = new InterpreterProperties();
 
-            //rmem = runtimeCore.RuntimeMemory;
             rmem = runtimeCore.RuntimeMemory;
 
             // Execute DS View VM Log
@@ -5405,9 +5404,28 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (opdata1.IsInteger && opdata2.IsInteger)
+            if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
-                opdata2 = StackValue.BuildInt(opdata2.RawIntValue % opdata1.RawIntValue);
+                if (opdata1.IsInteger && opdata2.IsInteger)
+                {
+                    long lhs = opdata2.RawIntValue;
+                    long rhs = opdata1.RawIntValue;
+                    if (rhs == 0)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kModuloByZero, Resources.ModuloByZero);
+                        opdata2 = StackValue.Null;
+                    }
+                    else
+                    {
+                        opdata2 = StackValue.BuildInt(lhs % rhs);
+                    }
+                }
+                else
+                {
+                    double lhs = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                    double rhs = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                    opdata2 = StackValue.BuildDouble(lhs % rhs);
+                }
             }
             else
             {

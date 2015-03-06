@@ -119,7 +119,7 @@ namespace Dynamo.Wpf.Nodes
                 ? watch.AstIdentifierForPreview.Name
                 : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
-            var core = this.dynamoViewModel.Model.EngineController.LiveRunnerCore;
+            var core = this.dynamoViewModel.Model.EngineController.LiveRunnerRuntimeCore;
             var watchHandler = this.dynamoViewModel.WatchHandler;
 
             return watchHandler.GenerateWatchViewModelForData(
