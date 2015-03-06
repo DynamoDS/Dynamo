@@ -153,7 +153,7 @@ namespace Dynamo.Models
         }
         private string description;
 
-        public override void OnNodesModified()
+        protected override void OnNodesModified()
         {
             base.OnNodesModified();
             HasUnsavedChanges = true;

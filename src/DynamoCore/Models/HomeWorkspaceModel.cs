@@ -134,18 +134,21 @@ namespace Dynamo.Models
             MarkNodesAsModified(Nodes);
         }
 
-        public override void OnNodesModified()
+        protected override void OnNodesModified()
         {
             base.OnNodesModified();
 
-            // Until the workspace has been constructed at least once, 
-            // we do not respond to node modification events
-            if (silenceNodeModifications) return;
+            if (RunSettings.RunType != RunType.Manual)
+            {
+                Run();
+            }
+        }
 
-            // When Dynamo is shut down, the workspace is cleared, which results
-            // in Modified() being called. But, we don't want to run when we are
-            // shutting down so we check whether an engine controller is available.
-            if (RunSettings.RunType != RunType.Manual && EngineController != null)
+        protected override void OnNodeModified(NodeModel node)
+        {
+            base.OnNodeModified(node);
+
+            if (!silenceNodeModifications && RunSettings.RunType != RunType.Manual)
             {
                 Run();
             }
@@ -365,6 +368,14 @@ namespace Dynamo.Models
         /// running context.</param>
         public void Run()
         {
+            // When Dynamo is shut down, the workspace is cleared, which results
+            // in Modified() being called. But, we don't want to run when we are
+            // shutting down so we check whether an engine controller is available.
+            if (this.EngineController == null)
+            {
+                return;
+            }
+
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
