@@ -195,20 +195,6 @@ namespace Dynamo.UI.Views
             }
         }
 
-        private bool ExpandClassElement(NodeCategoryViewModel category, NodeCategoryViewModel selectedClass)
-        {
-            if (category == null || selectedClass == null)
-                return false;
-
-            var categoryClasses = category.Items[0] as ClassesNodeCategoryViewModel;
-            // Ensure, that this class is not part of current category.
-            if (categoryClasses != null)
-                if (!(categoryClasses).Items.Contains(selectedClass))
-                    return false;
-
-            return true;
-        }
-
         private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
         {
             // Because of bug we mark event as handled for all automatic requests 
