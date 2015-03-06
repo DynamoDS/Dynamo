@@ -73,20 +73,20 @@ namespace ProtoCore
             /// </summary>
             /// <param name="mirrorData"></param>
             /// <param name="core"></param>
-            public RuntimeMirror(MirrorData mirrorData, ProtoCore.Core runtimeCoreReflect, ProtoCore.Core staticCore = null)
-                : base(runtimeCoreReflect.__TempCoreHostForRefactoring, staticCore)
+            public RuntimeMirror(MirrorData mirrorData, ProtoCore.RuntimeCore runtimeCoreReflect, ProtoCore.Core staticCore = null)
+                : base(runtimeCoreReflect, staticCore)
             {
                 Validity.Assert(this.runtimeCore != null);
-                TargetExecutive = runtimeCoreReflect.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCoreReflect.__TempCoreHostForRefactoring);
+                TargetExecutive = runtimeCoreReflect.CurrentExecutive.CurrentDSASMExec;
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCoreReflect);
                 this.mirrorData = mirrorData;
             }
 
-            public RuntimeMirror(string varname, int blockDecl, ProtoCore.Core core)
-                : base(core.__TempCoreHostForRefactoring)
+            public RuntimeMirror(string varname, int blockDecl, ProtoCore.RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
+                : base(runtimeCore, staticCore)
             {
-                TargetExecutive = core.__TempCoreHostForRefactoring.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core.__TempCoreHostForRefactoring);
+                TargetExecutive = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCore);
 
                 Validity.Assert(this.runtimeCore != null);
 
@@ -94,7 +94,7 @@ namespace ProtoCore
                 blockDeclaration = blockDecl;
                 StackValue svData = deprecateThisMirror.GetValue(variableName, blockDeclaration).DsasmValue;
 
-                mirrorData = new MirrorData(this.runtimeCore, svData);
+                mirrorData = new MirrorData(staticCore, this.runtimeCore, svData);
             }
 
             /// <summary>

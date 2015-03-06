@@ -533,7 +533,7 @@ value: bool = false</value>
     <value>Run when you click the Run button.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
-    <value>Run Periodically is only available when there are nodes in the graph that support periodic update.</value>
+    <value>Run Periodic is only available when there are nodes in the graph that support periodic update.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
     <value>Run at the specified interval.</value>

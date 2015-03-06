@@ -66,9 +66,16 @@ namespace ProtoTest.EventTests
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
-        private Obj GetWatchValue(ProtoCore.Core core, string watchExpression)
+
+        public override void TearDown()
         {
-            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core);
+            runtimeCore = runner.runtimeCore;
+            base.TearDown();
+        }
+
+        private Obj GetWatchValue(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, string watchExpression)
+        {
+            ExpressionInterpreterRunner watchRunner = new ExpressionInterpreterRunner(core, runtimeCore);
             ExecutionMirror mirror = watchRunner.Execute(watchExpression);
             return mirror.GetWatchValue();
         }
@@ -84,7 +91,7 @@ namespace ProtoTest.EventTests
             DebugRunner.VMState vms = runner.StepOver();
             vms = runner.StepOver();
             vms = runner.StepOver();
-            Obj val = GetWatchValue(core, @"id");
+            Obj val = GetWatchValue(core, runner.runtimeCore, @"id");
             Assert.IsTrue((Int64)val.Payload == 101);
             // As Foo implements INotifyPropertyChanged interface, the property
             // change notification should be propagated back to DS virtual
@@ -96,7 +103,7 @@ namespace ProtoTest.EventTests
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             // Expect 'id' has been updated to 202
             vms = runner.StepOver();
-            val = GetWatchValue(core, @"id");
+            val = GetWatchValue(core, runner.runtimeCore, @"id");
             Assert.IsTrue((Int64)val.Payload == 202);
         }
 
@@ -112,7 +119,7 @@ namespace ProtoTest.EventTests
             vms = runner.StepOver();
             vms = runner.StepOver(); // foo = Foo.GetInstance();
             vms = runner.StepOver(); // id = foo.ID;
-            Obj val = GetWatchValue(core, @"id");
+            Obj val = GetWatchValue(core, runner.runtimeCore, @"id");
             Assert.IsTrue((Int64)val.Payload == 101);
             vms = runner.Step();     // return = null;
             fooSingleton.ID = 202;
@@ -123,7 +130,7 @@ namespace ProtoTest.EventTests
             Assert.AreEqual(7, vms.ExecutionCursor.StartInclusive.LineNo);
             // Expect 'id' has been updated to 202
             vms = runner.StepOver();
-            val = GetWatchValue(core, @"id");
+            val = GetWatchValue(core, runner.runtimeCore, @"id");
             Assert.IsTrue((Int64)val.Payload == 202);
         }
 
@@ -142,9 +149,9 @@ namespace ProtoTest.EventTests
             vms = runner.StepOver(); // id1 = foo.ID;
             vms = runner.StepOver(); // id2 = bar.ID;
             Obj val;
-            val = GetWatchValue(core, @"id1");
+            val = GetWatchValue(core, runner.runtimeCore, @"id1");
             Assert.IsTrue((Int64)val.Payload == 101);
-            val = GetWatchValue(core, @"id2");
+            val = GetWatchValue(core, runner.runtimeCore, @"id2");
             Assert.IsTrue((Int64)val.Payload == 101);
             fooSingleton.ID = 202;
             // expect to re-execute id1 = foo.ID
@@ -152,12 +159,12 @@ namespace ProtoTest.EventTests
             Assert.AreEqual(3, vms.ExecutionCursor.StartInclusive.LineNo);
             vms = runner.StepOver();
             vms = runner.StepOver();
-            val = GetWatchValue(core, @"id1");
+            val = GetWatchValue(core, runner.runtimeCore, @"id1");
             Assert.IsTrue((Int64)val.Payload == 202);
             // expect to re-execute id2 = bar.ID
             Assert.AreEqual(5, vms.ExecutionCursor.StartInclusive.LineNo);
             vms = runner.StepOver();
-            val = GetWatchValue(core, @"id2");
+            val = GetWatchValue(core, runner.runtimeCore, @"id2");
             Assert.IsTrue((Int64)val.Payload == 202);
         }
 

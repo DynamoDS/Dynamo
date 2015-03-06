@@ -134,7 +134,7 @@ namespace Dynamo.Models
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check whether an engine controller is available.
-            if (RunSettings.RunType != RunType.Manually && EngineController != null)
+            if (RunSettings.RunType != RunType.Manual && EngineController != null)
             {
                 Run();
             }
@@ -255,7 +255,7 @@ namespace Dynamo.Models
                 MarkNodesAsModified(Nodes); 
             }
 
-            if (RunSettings.RunType == RunType.Automatically)
+            if (RunSettings.RunType == RunType.Automatic)
                 Run();
         }
 
@@ -373,6 +373,7 @@ namespace Dynamo.Models
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunSettings.RunEnabled = false; // Disable 'Run' button.
+                OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
             }
             else
@@ -383,8 +384,15 @@ namespace Dynamo.Models
             }
         }
 
+        public event EventHandler<EventArgs> EvaluationStarted;
+        public virtual void OnEvaluationStarted(EventArgs e)
+        {
+            var handler = EvaluationStarted;
+            if (handler != null) handler(this, e);
+        }
+
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
-        protected virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
+        public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);

@@ -278,11 +278,6 @@ namespace ProtoCore.Utils
             runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, msg, fileName, line, col);
         }
 
-        public static void LogWarning(this Core core, ProtoCore.Runtime.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
-        {
-            core.__TempCoreHostForRefactoring.RuntimeStatus.LogWarning(id, msg, fileName, line, col);
-        }
-
         public static void LogWarning(this Core core, ProtoCore.BuildData.WarningID id, string msg, string fileName = null, int line = -1, int col = -1)
         {
             core.BuildStatus.LogWarning(id, msg, fileName, line, col);

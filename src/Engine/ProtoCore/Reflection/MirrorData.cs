@@ -50,8 +50,9 @@ namespace ProtoCore
             /// Takes a runtime core object to read runtime data
             /// </summary>
             /// <param name="sv"></param>
-            public MirrorData(ProtoCore.RuntimeCore runtimeCore, StackValue sv)
+            public MirrorData(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, StackValue sv)
             {
+                this.core = core;
                 this.runtimeCore = runtimeCore;
                 svData = sv;
             }
@@ -97,7 +98,7 @@ namespace ProtoCore
                         values.Add(sv);
                         break;
                     case ProtoCore.DSASM.AddressType.ArrayPointer:
-                        var stackValues = ArrayUtils.GetValues(sv, core.__TempCoreHostForRefactoring);
+                        var stackValues = ArrayUtils.GetValues(sv, runtimeCore);
                         foreach (var item in stackValues)
                             GetPointersRecursively(item, values);
 
@@ -158,7 +159,7 @@ namespace ProtoCore
                 if (!this.IsCollection)
                     return null;
 
-                return ArrayUtils.GetValues(svData, runtimeCore).Select(x => new MirrorData(this.runtimeCore, x)).ToList();
+                return ArrayUtils.GetValues(svData, runtimeCore).Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
             }
 
             /// <summary>
@@ -287,7 +288,7 @@ namespace ProtoCore
                 if (null == data)
                     return false;
 
-                return StackUtils.CompareStackValues(this.svData, data.svData, this.core.__TempCoreHostForRefactoring, data.core.__TempCoreHostForRefactoring);
+                return StackUtils.CompareStackValues(this.svData, data.svData, this.runtimeCore, data.runtimeCore);
             }
         }
     }
