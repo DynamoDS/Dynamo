@@ -134,9 +134,9 @@ namespace Dynamo.Models
             MarkNodesAsModified(Nodes);
         }
 
-        protected override void OnNodesModified()
+        protected override void RequestRun()
         {
-            base.OnNodesModified();
+            base.RequestRun();
 
             if (RunSettings.RunType != RunType.Manual)
             {
@@ -148,9 +148,9 @@ namespace Dynamo.Models
         {
             base.OnNodeModified(node);
 
-            if (!silenceNodeModifications && RunSettings.RunType != RunType.Manual)
+            if (!silenceNodeModifications)
             {
-                Run();
+                RequestRun();
             }
         }
 
@@ -209,7 +209,7 @@ namespace Dynamo.Models
                 nodeToUpdate.MarkNodeAsModified(true);
             }
 
-            OnNodesModified();
+            RequestRun();
         }
 
         /// <summary>
@@ -277,16 +277,21 @@ namespace Dynamo.Models
         /// Mark all nodes as modified. 
         /// </summary>
         /// <param name="nodes"></param>
-        public void MarkNodesAsModified(IEnumerable<NodeModel> nodes)
+        /// <param name="forceExecute"></param>
+        public void MarkNodesAsModified(IEnumerable<NodeModel> nodes, bool forceExecute = false)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
 
             foreach (var node in nodes)
-                node.MarkNodeAsModified();
+            {
+                node.MarkNodeAsModified(forceExecute);
+            } 
 
             if (nodes.Any())
-                OnNodesModified();
+            {
+                RequestRun();
+            } 
         }
 
         /// <summary>

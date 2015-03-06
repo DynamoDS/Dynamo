@@ -153,9 +153,9 @@ namespace Dynamo.Models
         }
         private string description;
 
-        protected override void OnNodesModified()
+        protected override void RequestRun()
         {
-            base.OnNodesModified();
+            base.RequestRun();
             HasUnsavedChanges = true;
             OnDefinitionUpdated();
         }

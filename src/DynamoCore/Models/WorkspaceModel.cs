@@ -579,7 +579,7 @@ namespace Dynamo.Models
             OnNodeAdded(node);
             HasUnsavedChanges = true;
 
-            OnNodesModified();
+            RequestRun();
         }
 
         private void RegisterNode(NodeModel node)
@@ -589,9 +589,11 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Indicates that the collection of nodes in this workspace has changed
+        ///     Invoked when a change to the workspace that requires re-execution
+        ///     has taken place.  If in run-automatic, a new run will take place,
+        ///     otherwise nothing will happen.
         /// </summary>
-        protected virtual void OnNodesModified()
+        protected virtual void RequestRun()
         {
             
         }
@@ -996,7 +998,7 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
-            OnNodesModified();
+            RequestRun();
         }
 
         #endregion
@@ -1155,7 +1157,7 @@ namespace Dynamo.Models
                     }
                 }
 
-                OnNodesModified();
+                RequestRun();
 
             } // Conclude the deletion.
         }
