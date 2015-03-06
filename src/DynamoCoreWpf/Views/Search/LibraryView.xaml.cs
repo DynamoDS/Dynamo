@@ -153,34 +153,45 @@ namespace Dynamo.UI.Views
                 }
             }
 
+            ExpandCategory(categoryButton, selectedClass);
+            e.Handled = !(selectedClass is RootNodeCategoryViewModel);
+        }
 
-            // If class is at the same level as namespace.
-            // First, find all expanded categories.
-            IEnumerable<NodeCategoryViewModel> allExpandedCategories = categoryButton.Items.OfType<NodeCategoryViewModel>().
-                Where(cat => (!(cat is ClassesNodeCategoryViewModel) && cat.IsExpanded == true) || cat == selectedClass);
+        private void ExpandCategory(TreeViewItem sender, NodeCategoryViewModel selectedClass)
+        {
+            // Get all category items.
+            var categories = sender.Items.OfType<NodeCategoryViewModel>();
 
-            // If there is no expanded categories, leave it.
-            if (allExpandedCategories.Count() == 0) return;
+            // Get all current expanded categories.
+            List<NodeCategoryViewModel> allExpandedCategories = categories.
+                Where(cat => (!(cat is ClassesNodeCategoryViewModel) && cat.IsExpanded == true)).ToList();
+
+            var categoryToBeExpanded = categories.Where(cat => cat == selectedClass).FirstOrDefault();
+
+            if (categoryToBeExpanded != null)
+                categoryToBeExpanded.IsExpanded = !categoryToBeExpanded.IsExpanded;
+
+            // Get expanded categories that should be collapsed.
+            var categoriesToBeCollapsed = allExpandedCategories.Remove(categoryToBeExpanded);
 
             // Close all open categories, except one, that contains class.
             // Or if category was clicked, also expand it and close others.
-            foreach (var category in allExpandedCategories)
+            foreach (var categoryToBeCollapsed in allExpandedCategories)
             {
-                // If category was clicked, then open it or close, it depends on the previous state.
-                if (selectedClass == category)
+                if (categoryToBeExpanded == null)
                 {
-                    category.IsExpanded = !category.IsExpanded;
-                    // Accept situation, when root category was clicked.
-                    // Don't handle it, wpf will close it by default and unselect classes.
-                    if (selectedClass is RootNodeCategoryViewModel)
-                        e.Handled = false;
-                    else
-                        e.Handled = true;
-                    break;
+                    var categoryClasses = categoryToBeCollapsed.Items[0] as ClassesNodeCategoryViewModel;
+                    // Ensure, that this class is not part of current category.
+                    if (categoryClasses != null)
+                        if (categoryClasses.Items.Contains(selectedClass))
+                            categoryToBeCollapsed.IsExpanded = true;
+                        else
+                            categoryToBeCollapsed.IsExpanded = false;
                 }
-
-                // If class button was clicked.
-                category.IsExpanded = ExpandClassElement(category, selectedClass);
+                else
+                {
+                    categoryToBeCollapsed.IsExpanded = false;
+                }
             }
         }
 
