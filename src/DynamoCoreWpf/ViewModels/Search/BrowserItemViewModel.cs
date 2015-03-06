@@ -485,6 +485,22 @@ namespace Dynamo.Wpf.ViewModels
 
             return iconRequest.Icon;
         }
+
+        public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
+        {
+            var first = SubCategories.Select((x, i) => new { x.Name, Idx = i })
+                .FirstOrDefault(
+                    x =>
+                        string.Compare(
+                            x.Name,
+                            newSubCategory.Name,
+                            StringComparison.Ordinal)
+                            >= 0);
+            if (first != null)
+                SubCategories.Insert(first.Idx, newSubCategory);
+            else
+                SubCategories.Add(newSubCategory);
+        }
     }
 
     public class RootNodeCategoryViewModel : NodeCategoryViewModel

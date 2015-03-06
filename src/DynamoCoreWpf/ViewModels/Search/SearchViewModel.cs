@@ -510,8 +510,7 @@ namespace Dynamo.ViewModels
                         }
                     }
 
-                    target.SubCategories.Add(newTarget);
-                    target.SubCategories = new ObservableCollection<NodeCategoryViewModel>(target.SubCategories.OrderBy(x => x.Name));
+                    target.InsertSubCategory(newTarget);
 
                     // Proceed to insert the new entry under 'newTarget' category with the remaining 
                     // name stack. In the first iteration this would have been 'MyNamespace.MyClass'.
