@@ -975,6 +975,7 @@ namespace ProtoCore.AST.AssociativeAST
             NameNode = NodeUtils.Clone(rhs.NameNode);
             access = rhs.access;
             IsStatic = rhs.IsStatic;
+            ExternalAttribute = rhs.ExternalAttribute;
         }
 
         public List<AssociativeNode> Attributes { get; set; }
@@ -983,6 +984,7 @@ namespace ProtoCore.AST.AssociativeAST
         public AssociativeNode NameNode { get; set; }
         public ProtoCore.CompilerDefinitions.AccessSpecifier access { get; set; }
         public bool IsStatic { get; set; }
+        public ParameterAttributes ExternalAttribute { get; set; }
 
         public override string ToString()
         {
@@ -1285,6 +1287,11 @@ namespace ProtoCore.AST.AssociativeAST
             HiddenInLibrary = hiddenInLibrary;
             ObsoleteMessage = msg;
         }
+    }
+
+    public class ParameterAttributes
+    {
+
     }
 
     public class ConstructorDefinitionNode : AssociativeNode

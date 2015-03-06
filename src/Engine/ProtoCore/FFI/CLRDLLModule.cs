@@ -807,7 +807,10 @@ namespace ProtoFFI
             foreach (var parameter in parameters)
             {
                 var paramNode = ParseArgumentDeclaration(parameter.Name, parameter.ParameterType);
-                if (parameter.IsDefined(typeof(Autodesk.DesignScript.Runtime.ArbitraryDimensionArrayImportAttribute), false))
+
+                var ffiAttribute = new FFIParamAttributes(parameter);
+                paramNode.ExternalAttribute = ffiAttribute;
+                if (ffiAttribute.IsArbitraryDimensionArray)
                 {
                     var argType = paramNode.ArgumentType;
                     argType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
@@ -1314,5 +1317,30 @@ namespace ProtoFFI
             }
         }
 
+    }
+
+    /// <summary>
+    /// A parameter's attributes.
+    /// </summary>
+    public class FFIParamAttributes: ProtoCore.AST.AssociativeAST.ParameterAttributes
+    {
+        public bool IsArbitraryDimensionArray { get; private set; }
+        public string DefaultArgumentExpression { get; private set; }
+
+        public FFIParamAttributes(ParameterInfo parameter)
+        {
+            var attributes = parameter.GetCustomAttributes(false);
+            foreach (var attr in attributes)
+            {
+                if (attr is DefaultArgumentAttribute)
+                {
+                    DefaultArgumentExpression = (attr as DefaultArgumentAttribute).ArgumentExpression;
+                }
+                else if (attr is ArbitraryDimensionArrayImportAttribute)
+                {
+                    IsArbitraryDimensionArray = true;
+                }
+            }
+        }
     }
 }
