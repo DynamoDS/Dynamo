@@ -240,6 +240,10 @@ namespace Dynamo.UI.Controls
             while (scheduler.ProcessNextTask(false)) { }
         }
 
+        /// <summary>
+        ///     Obtain the condensed preview values for this control.  Must not be called from 
+        ///     Scheduler thread or this could cause a live-lock.
+        /// </summary>
         private void RefreshCondensedDisplay()
         {
             // The preview control will not have its content refreshed unless 
@@ -279,6 +283,10 @@ namespace Dynamo.UI.Controls
             smallContentView.Text = cachedSmallContent; // Update displayed text.
         }
 
+        /// <summary>
+        ///     Obtain the expanded preview values for this control.  Must not be called from 
+        ///     Scheduler thread or this could cause a live-lock.
+        /// </summary>
         private void RefreshExpandedDisplay()
         {
             // The preview control will not have its content refreshed unless 
