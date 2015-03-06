@@ -1132,7 +1132,7 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
-                    runnerCore.__TempCoreHostForRefactoring.Cleanup();
+                    runtimeCore.Cleanup();
                     runnerCore = null;
                 }
 
