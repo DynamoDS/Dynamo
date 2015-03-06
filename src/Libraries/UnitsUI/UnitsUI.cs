@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -201,7 +202,7 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Number from Feet and Inches")]
+    [NodeName("Number From Feet and Inches")]
     [NodeCategory("Units.Length.Create")]
     [NodeDescription("LengthFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
@@ -231,6 +232,17 @@ namespace UnitsUI
                     }
                 }
             }
+        }
+
+        [NodeMigration(@from: "0.7.5.0")]
+        public static NodeMigrationData Migrate_0750(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(oldNode, "UnitsUI.LengthFromString", "Number From Feet and Inches", true);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
