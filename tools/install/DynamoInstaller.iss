@@ -29,6 +29,8 @@ UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\DynamoInstaller.ico
 UninstallDisplayName=Dynamo 0.8.0
 UsePreviousAppDir=no
+#define locale "en-US"
+;TODO check user locale and show the corresponding README
 
 [Dirs]
 Name: "{app}\libg_219"
@@ -54,6 +56,7 @@ Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Comp
 Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: temp\bin\lang\*; DestDir: {app}\; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
+Source: temp\bin\lang\{#locale}\README.txt; DestDir: {app}\{#locale}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore
 
 ;Revit 2014 / Vasari Beta 3
 Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2014 DynamoForVasariBeta3

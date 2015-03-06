@@ -1132,7 +1132,14 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
-                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
+                    runnerCore.__TempCoreHostForRefactoring.Cleanup();
+                    runnerCore = null;
+                }
+
+                if (runtimeCore != null)
+                {
+                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -=
+                        FFIPropertyChanged;
                     runtimeCore.Cleanup();
                 }
 
@@ -1143,10 +1150,15 @@ namespace ProtoScript.Runners
                     taskQueue.Clear();
                 }
 
-                // waiting for thread to finish
-                if (workerThread.IsAlive)
+                if (workerThread != null)
                 {
-                    workerThread.Join();
+                    // waiting for thread to finish
+                    if (workerThread.IsAlive)
+                    {
+                        workerThread.Join();
+                    }
+
+                    workerThread = null;
                 }
             }
         }
@@ -1467,7 +1479,7 @@ namespace ProtoScript.Runners
 
                     }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         }
 
