@@ -262,6 +262,8 @@ namespace UnitsUI
             Measure = Area.FromDouble(0.0);
             OutPortData.Add(new PortData("area", Resources.AreaFromStringPortDataAreaToolTip));
             RegisterAllPorts();
+
+            Warning("AreaFromString is obsolete.");
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -293,6 +295,8 @@ namespace UnitsUI
             Measure = Volume.FromDouble(0.0);
             OutPortData.Add(new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip));
             RegisterAllPorts();
+
+            Warning("AreaFromString is obsolete.");
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
