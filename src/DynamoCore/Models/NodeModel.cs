@@ -620,11 +620,11 @@ namespace Dynamo.Models
         /// <summary>
         ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
-        public event Action<NodeModel> NodeModified;
+        public event Action<NodeModel> Modified;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
             MarkNodeAsModified(forceExecute);
-            var handler = NodeModified;
+            var handler = Modified;
             if (handler != null) handler(this);
         }
 

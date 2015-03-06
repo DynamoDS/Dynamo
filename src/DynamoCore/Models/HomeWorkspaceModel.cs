@@ -134,6 +134,11 @@ namespace Dynamo.Models
             MarkNodesAsModified(Nodes);
         }
 
+        /// <summary>
+        ///     Invoked when a change to the workspace that requires re-execution
+        ///     has taken place.  If in run-automatic, a new run will take place,
+        ///     otherwise nothing will happen.
+        /// </summary>
         protected override void RequestRun()
         {
             base.RequestRun();
@@ -144,9 +149,9 @@ namespace Dynamo.Models
             }
         }
 
-        protected override void OnNodeModified(NodeModel node)
+        protected override void NodeModified(NodeModel node)
         {
-            base.OnNodeModified(node);
+            base.NodeModified(node);
 
             if (!silenceNodeModifications)
             {

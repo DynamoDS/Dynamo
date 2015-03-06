@@ -584,15 +584,10 @@ namespace Dynamo.Models
 
         private void RegisterNode(NodeModel node)
         {
-            node.NodeModified += OnNodeModified;
+            node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
         }
 
-        /// <summary>
-        ///     Invoked when a change to the workspace that requires re-execution
-        ///     has taken place.  If in run-automatic, a new run will take place,
-        ///     otherwise nothing will happen.
-        /// </summary>
         protected virtual void RequestRun()
         {
             
@@ -601,7 +596,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Indicates that the AST for a node in this workspace requires recompilation
         /// </summary>
-        protected virtual void OnNodeModified(NodeModel node)
+        protected virtual void NodeModified(NodeModel node)
         {
 
         }
@@ -621,7 +616,7 @@ namespace Dynamo.Models
         protected void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
-            model.NodeModified -= OnNodeModified;
+            model.Modified -= NodeModified;
             OnNodeRemoved(model);
         }
 
