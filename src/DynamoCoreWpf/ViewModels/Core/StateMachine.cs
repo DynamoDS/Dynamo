@@ -136,7 +136,7 @@ namespace Dynamo.ViewModels
         {
             bool isInPort = portType == PortType.Input;
 
-            NodeModel node = Model.GetModel(nodeId) as NodeModel;
+            NodeModel node = Model.GetModelInternal(nodeId) as NodeModel;
             if (node == null)
                 return;
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];

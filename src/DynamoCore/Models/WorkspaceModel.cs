@@ -853,7 +853,7 @@ namespace Dynamo.Models
 
         internal void SendModelEvent(Guid modelGuid, string eventName)
         {
-            var retrievedModel = GetModel(modelGuid);
+            var retrievedModel = GetModelInternal(modelGuid);
             if (retrievedModel == null)
                 throw new InvalidOperationException("SendModelEvent: Model not found");
 
@@ -1276,7 +1276,7 @@ namespace Dynamo.Models
             var helper = new XmlElementHelper(modelData);
             Guid modelGuid = helper.ReadGuid("guid");
 
-            ModelBase foundModel = GetModel(modelGuid);
+            ModelBase foundModel = GetModelInternal(modelGuid);
             if (null != foundModel)
                 return foundModel;
 
@@ -1284,7 +1284,7 @@ namespace Dynamo.Models
                 string.Format("Unhandled model type: {0}", helper.ReadString("type", modelData.Name)));
         }
 
-        public ModelBase GetModel(Guid modelGuid)
+        public ModelBase GetModelInternal(Guid modelGuid)
         {
             ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
                 ?? (ModelBase)Nodes.FirstOrDefault(node => node.GUID == modelGuid))
@@ -1299,7 +1299,7 @@ namespace Dynamo.Models
 
             foreach (var modelGuid in modelGuids)
             {
-                var foundModel = GetModel(modelGuid);
+                var foundModel = GetModelInternal(modelGuid);
                 if (foundModel != null)
                     foundModels.Add(foundModel);
             }

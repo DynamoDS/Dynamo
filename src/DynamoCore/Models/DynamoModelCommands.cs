@@ -155,7 +155,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            ModelBase model = CurrentWorkspace.GetModel(command.ModelGuid);
+            ModelBase model = CurrentWorkspace.GetModelInternal(command.ModelGuid);
 
             if (false == model.IsSelected)
             {
@@ -196,7 +196,7 @@ namespace Dynamo.Models
         {
             bool isInPort = portType == PortType.Input;
 
-            var node = CurrentWorkspace.GetModel(nodeId) as NodeModel;
+            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
             if (node == null)
                 return;
             PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
@@ -227,7 +227,7 @@ namespace Dynamo.Models
         {
             bool isInPort = portType == PortType.Input;
 
-            var node = CurrentWorkspace.GetModel(nodeId) as NodeModel;
+            var node = CurrentWorkspace.GetModelInternal(nodeId) as NodeModel;
             if (node == null)
                 return;
             
@@ -276,7 +276,7 @@ namespace Dynamo.Models
             var modelsToDelete = new List<ModelBase>();
             if (command.ModelGuid != Guid.Empty)
             {
-                modelsToDelete.Add(CurrentWorkspace.GetModel(command.ModelGuid));
+                modelsToDelete.Add(CurrentWorkspace.GetModelInternal(command.ModelGuid));
             }
             else
             {

@@ -630,7 +630,7 @@ namespace DynamoCoreUITests
         protected ModelBase GetNode(string guid)
         {
             Guid id = Guid.Parse(guid);
-            return ViewModel.Model.CurrentWorkspace.GetModel(id);
+            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
         }
 
         /// <summary>
