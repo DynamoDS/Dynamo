@@ -110,9 +110,8 @@ namespace ProtoCore
             RunningBlock = 0;
             RuntimeStatus.MessageHandler = compileCore.BuildStatus.MessageHandler;
             WatchSymbolList = compileCore.watchSymbolList;
-            SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties);
+            SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
             RegisterDllTypes(compileCore.listDllTypesToLoad);
-
             NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
         }
 
