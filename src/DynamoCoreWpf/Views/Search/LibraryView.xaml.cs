@@ -167,6 +167,8 @@ namespace Dynamo.UI.Views
 
             var categoryToBeExpanded = categories.Where(cat => cat == selectedClass).FirstOrDefault();
 
+            // If categoryToBeExpanded is null, that means not category button, but class button was clicked.
+            // During loop we will find out to which category this clicked class belongs.
             if (categoryToBeExpanded != null)
                 categoryToBeExpanded.IsExpanded = !categoryToBeExpanded.IsExpanded;
 
@@ -177,6 +179,7 @@ namespace Dynamo.UI.Views
             // Or if category was clicked, also expand it and close others.
             foreach (var categoryToBeCollapsed in allExpandedCategories)
             {
+                // If class button was clicked.
                 if (categoryToBeExpanded == null)
                 {
                     var categoryClasses = categoryToBeCollapsed.Items[0] as ClassesNodeCategoryViewModel;
@@ -187,6 +190,7 @@ namespace Dynamo.UI.Views
                         else
                             categoryToBeCollapsed.IsExpanded = false;
                 }
+                // If category button was clicked.
                 else
                 {
                     categoryToBeCollapsed.IsExpanded = false;
