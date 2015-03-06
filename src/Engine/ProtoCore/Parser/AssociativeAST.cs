@@ -433,6 +433,13 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class TypedIdentifierNode : IdentifierNode
     {
+        public TypedIdentifierNode()
+        {
+        }
+
+        public TypedIdentifierNode(IdentifierNode rhs)
+            : base(rhs) {}
+
         public override string ToString()
         {
             return base.ToString() + " : " + datatype;

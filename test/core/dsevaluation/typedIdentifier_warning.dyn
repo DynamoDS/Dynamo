@@ -1,0 +1,11 @@
+<Workspace Version="0.8.0.642" X="0" Y="0" zoom="1" Name="Home" RunType="Manual" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="df3ba069-2106-4ac8-a339-55ffdde468ab" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="74" y="236" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates();" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="17d2f866-dc5a-43ef-b3c5-ac7474d16467" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="327" y="128" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="a : int;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="df3ba069-2106-4ac8-a339-55ffdde468ab" start_index="0" end="17d2f866-dc5a-43ef-b3c5-ac7474d16467" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
