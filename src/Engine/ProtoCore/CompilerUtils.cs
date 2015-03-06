@@ -1,4 +1,5 @@
-﻿using ProtoCore.AST.AssociativeAST;
+﻿using ProtoCore.AST;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Properties;
 using System;
@@ -20,6 +21,7 @@ namespace ProtoCore.Utils
 
         public int line;
         public string variable;
+        public string displayName;
 
         #endregion
 
@@ -32,7 +34,7 @@ namespace ProtoCore.Utils
             if (string.IsNullOrEmpty(variable))
                 throw new ArgumentException("Invalid variable name", "variable");
 
-            this.variable = variable;
+            this.displayName = this.variable = variable;
             this.line = line;
         }
 
@@ -41,7 +43,7 @@ namespace ProtoCore.Utils
             if (line < 0)
                 throw new ArgumentException("Argument cannot be negative", "line");
 
-            this.variable = string.Empty; // In NUnit temp names are ignored.
+            this.displayName = this.variable = string.Empty; // In NUnit temp names are ignored.
             this.line = line;
         }
 
@@ -92,7 +94,7 @@ namespace ProtoCore.Utils
     public class ParseParam
     {
         private List<string> temporaries = null;
-        private List<string> unboundIdentifiers = null;
+        private Dictionary<string, string> unboundIdentifiers;
         private List<ProtoCore.AST.Node> parsedNodes = null;
         private List<ProtoCore.BuildData.ErrorEntry> errors = null;
         private List<ProtoCore.BuildData.WarningEntry> warnings = null;
@@ -111,13 +113,13 @@ namespace ProtoCore.Utils
             this.temporaries.Add(variable);
         }
 
-        public void AppendUnboundIdentifier(string identifier)
+        public void AppendUnboundIdentifier(string displayName, string identifier)
         {
             if (this.unboundIdentifiers == null)
-                this.unboundIdentifiers = new List<string>();
+                this.unboundIdentifiers = new Dictionary<string, string>();
 
-            if (!this.unboundIdentifiers.Contains(identifier))
-                this.unboundIdentifiers.Add(identifier);
+            if (!this.unboundIdentifiers.ContainsKey(displayName))
+                this.unboundIdentifiers.Add(displayName, identifier);
         }
 
         public void AppendParsedNodes(IEnumerable<ProtoCore.AST.Node> parsedNodes)
@@ -161,7 +163,7 @@ namespace ProtoCore.Utils
             get { return this.temporaries; }
         }
 
-        public IEnumerable<System.String> UnboundIdentifiers
+        public IDictionary<string, string> UnboundIdentifiers
         {
             get { return unboundIdentifiers; }
         }
@@ -321,7 +323,7 @@ namespace ProtoCore.Utils
                 foreach (KeyValuePair<int, List<VariableLine>> kvp in unboundIdentifiers)
                 {
                     foreach (VariableLine vl in kvp.Value)
-                        parseParams.AppendUnboundIdentifier(vl.variable);
+                        parseParams.AppendUnboundIdentifier(vl.displayName, vl.variable);
                 }
 
                 return true;
@@ -361,25 +363,26 @@ namespace ProtoCore.Utils
             core.IsParsingCodeBlockNode = true;
             core.ParsingMode = ParseMode.AllowNonAssignment;
 
-            ProtoCore.AST.Node codeBlockNode = ProtoCore.Utils.ParserUtils.ParseWithCore(expression, core);
-            List<ProtoCore.AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
+            var codeBlockNode = ParserUtils.ParseWithCore(expression, core);
+            List<AST.Node> nodes = ParserUtils.GetAstNodes(codeBlockNode);
             Validity.Assert(nodes != null);
 
             int index = 0;
+            int typedIdentIndex = 0;
             foreach (var node in nodes)
             {
-                ProtoCore.AST.AssociativeAST.AssociativeNode n = node as ProtoCore.AST.AssociativeAST.AssociativeNode;
-                ProtoCore.Utils.Validity.Assert(n != null);
+                var n = node as AssociativeNode;
+                Validity.Assert(n != null);
 
                 // Append the temporaries only if it is not a function def or class decl
                 bool isFunctionOrClassDef = n is FunctionDefinitionNode || n is ClassDeclNode;
 
                 // Handle non Binary expression nodes separately
-                if (n is ProtoCore.AST.AssociativeAST.ModifierStackNode)
+                if (n is ModifierStackNode)
                 {
                     core.BuildStatus.LogSemanticError(Resources.ModifierBlockNotSupported);
                 }
-                else if (n is ProtoCore.AST.AssociativeAST.ImportNode)
+                else if (n is ImportNode)
                 {
                     core.BuildStatus.LogSemanticError(Resources.ImportStatementNotSupported);
                 }
@@ -391,19 +394,19 @@ namespace ProtoCore.Utils
                 else
                 {
                     // Handle temporary naming for temporary Binary exp. nodes and non-assignment nodes
-                    BinaryExpressionNode ben = node as BinaryExpressionNode;
-                    if (ben != null && ben.Optr == ProtoCore.DSASM.Operator.assign)
+                    var ben = node as BinaryExpressionNode;
+                    if (ben != null && ben.Optr == Operator.assign)
                     {
-                        ModifierStackNode mNode = ben.RightNode as ModifierStackNode;
+                        var mNode = ben.RightNode as ModifierStackNode;
                         if (mNode != null)
                         {
                             core.BuildStatus.LogSemanticError(Resources.ModifierBlockNotSupported);
                         }
-                        IdentifierNode lNode = ben.LeftNode as IdentifierNode;
-                        if (lNode != null && lNode.Value == ProtoCore.DSASM.Constants.kTempProcLeftVar)
+                        var lNode = ben.LeftNode as IdentifierNode;
+                        if (lNode != null && lNode.Value == Constants.kTempProcLeftVar)
                         {
-                            string name = Constants.kTempVarForNonAssignment + index.ToString();
-                            BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), ben.RightNode);
+                            string name = Constants.kTempVarForNonAssignment + index;
+                            var newNode = new BinaryExpressionNode(new IdentifierNode(name), ben.RightNode);
                             astNodes.Add(newNode);
                             index++;
                         }
@@ -415,11 +418,24 @@ namespace ProtoCore.Utils
                     }
                     else
                     {
-                        // These nodes are non-assignment nodes
-                        string name = Constants.kTempVarForNonAssignment + index.ToString();
-                        BinaryExpressionNode newNode = new BinaryExpressionNode(new IdentifierNode(name), n);
-                        astNodes.Add(newNode);
-                        index++;
+                        if (node is TypedIdentifierNode)
+                        {
+                            // e.g. a : int = %tTypedIdent_<Index>;
+                            var ident = new IdentifierNode(Constants.kTempVarForTypedIdentifier + typedIdentIndex);
+                            NodeUtils.CopyNodeLocation(ident, node);
+                            var typedNode = new BinaryExpressionNode(node as TypedIdentifierNode, ident, Operator.assign);
+                            NodeUtils.CopyNodeLocation(typedNode, node);
+                            astNodes.Add(typedNode);
+                            typedIdentIndex++;
+                        }
+                        else
+                        {
+                            string name = Constants.kTempVarForNonAssignment + index;
+                            var newNode = new BinaryExpressionNode(new IdentifierNode(name), n);
+                            astNodes.Add(newNode);
+                            index++;
+                        }
+                        
                     }
                 }
             }
@@ -435,8 +451,8 @@ namespace ProtoCore.Utils
             return hasLHS;
         }
 
-        private static void GetInputLines(IEnumerable<ProtoCore.AST.Node> astNodes,
-                                   IEnumerable<ProtoCore.BuildData.WarningEntry> warnings,
+        private static void GetInputLines(IEnumerable<Node> astNodes,
+                                   IEnumerable<BuildData.WarningEntry> warnings,
                                    Dictionary<int, List<VariableLine>> inputLines)
         {
             List<VariableLine> warningVLList = GetVarLineListFromWarning(warnings);
@@ -449,15 +465,23 @@ namespace ProtoCore.Utils
             {
                 // Only binary expression need warnings. 
                 // Function definition nodes do not have input and output ports
-                if (node is ProtoCore.AST.AssociativeAST.BinaryExpressionNode)
+                var bNode = node as BinaryExpressionNode;
+                if (bNode != null)
                 {
-                    List<VariableLine> variableLineList = new List<VariableLine>();
-                    foreach (var warning in warningVLList)
-                    {
-                        if (warning.line >= node.line && warning.line <= node.endLine)
-                            variableLineList.Add(warning);
-                    }
+                    var variableLineList = new List<VariableLine>();
 
+                    for (int i = 0; i < warningVLList.Count; ++i)
+                    {
+                        var warning = warningVLList[i];
+                        if (warning.line >= bNode.line && warning.line <= bNode.endLine)
+                        {
+                            if (warning.variable.StartsWith(Constants.kTempVarForTypedIdentifier))
+                            {
+                                warning.displayName = bNode.LeftNode.Name;
+                            }
+                            variableLineList.Add(warning);
+                        }
+                    }
                     if (variableLineList.Count > 0)
                     {
                         inputLines.Add(stmtNumber, variableLineList);
@@ -474,10 +498,12 @@ namespace ProtoCore.Utils
             {
                 if (warningEntry.ID == ProtoCore.BuildData.WarningID.kIdUnboundIdentifier)
                 {
+                    var varName = warningEntry.Message.Split(' ')[1].Replace("'", "");
                     result.Add(new VariableLine()
                     {
-                        variable = warningEntry.Message.Split(' ')[1].Replace("'", ""),
-                        line = warningEntry.Line
+                        variable = varName,
+                        line = warningEntry.Line,
+                        displayName = varName
                     });
                 }
             }

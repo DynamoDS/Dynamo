@@ -328,23 +328,12 @@ namespace Dynamo.Nodes
             identifier = null;
             defaultValue = null;
 
-            // workaround: there is an issue in parsing "x:int" format unless 
-            // we create the other parser specially for it. We change it to 
-            // "x:int = dummy;" for parsing. 
             var parseString = InputSymbol;
 
             // if it has default value, then append ';'
-            if (InputSymbol.Contains("="))
-            {
-                parseString += ";";
-            }
-            else
-            {
-                String dummyExpression = "{0}=dummy;";
-                parseString = string.Format(dummyExpression, parseString);
-            }
-
-            ParseParam parseParam = new ParseParam(this.GUID, parseString);
+            parseString += ";";
+            
+            var parseParam = new ParseParam(this.GUID, parseString);
 
             if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
                 parseParam.ParsedNodes != null &&

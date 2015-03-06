@@ -217,13 +217,16 @@ namespace Dynamo.Models
             IsConnected = true;
         }
 
-        public void Disconnect(ConnectorModel connector)
+        public void Disconnect(ConnectorModel connector, bool silent = false)
         {
             if (!connectors.Contains(connector))
                 return;
             
-            //throw the event for a connection
-            OnPortDisconnected();
+            //throw the event for a disconnection
+            if (!silent)
+            {
+                OnPortDisconnected();  
+            }
 
             connectors.Remove(connector);
             
