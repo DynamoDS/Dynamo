@@ -184,7 +184,7 @@ namespace Dynamo.Models
                 pulseMaker = new PulseMaker();
             }
 
-            pulseMaker.RunStarted += pulseMaker_RunStarted;
+            pulseMaker.RunStarted += PulseMakerRunStarted;
             EvaluationCompleted += pulseMaker.OnRunExpressionCompleted;
 
             if (pulseMaker.TimerPeriod != 0)
@@ -196,25 +196,10 @@ namespace Dynamo.Models
             pulseMaker.Start(milliseconds);
         }
 
-        private void pulseMaker_RunStarted()
+        private void PulseMakerRunStarted()
         {
             var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
-            MarkNodesAsModifiedAndUpdate(nodesToUpdate);
-        }
-
-        private void MarkNodesAsModifiedAndUpdate(object state)
-        {
-            var nodesToUpdate = state as IEnumerable<NodeModel>;
-
-            if (nodesToUpdate == null) return;
-
-            // Dirty selective nodes so they get included for evaluation.
-            foreach (var nodeToUpdate in nodesToUpdate)
-            {
-                nodeToUpdate.MarkNodeAsModified(true);
-            }
-
-            RequestRun();
+            MarkNodesAsModified(nodesToUpdate, true);
         }
 
         /// <summary>
@@ -225,7 +210,7 @@ namespace Dynamo.Models
         {
             if (pulseMaker == null || (pulseMaker.TimerPeriod == 0)) return;
 
-            pulseMaker.RunStarted -= pulseMaker_RunStarted;
+            pulseMaker.RunStarted -= PulseMakerRunStarted;
             EvaluationCompleted -= pulseMaker.OnRunExpressionCompleted;
             pulseMaker.Stop();
         }
@@ -279,10 +264,10 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Mark all nodes as modified. 
+        /// Mark the input nodes as modified
         /// </summary>
-        /// <param name="nodes"></param>
-        /// <param name="forceExecute"></param>
+        /// <param name="nodes">The nodes to modify</param>
+        /// <param name="forceExecute">The argument to NodeModel.MarkNodeAsModified</param>
         public void MarkNodesAsModified(IEnumerable<NodeModel> nodes, bool forceExecute = false)
         {
             if (nodes == null)
