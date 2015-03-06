@@ -302,6 +302,8 @@ namespace Dynamo.DSEngine
                     return false;
                 }
 
+                LoadLibraryMigrations(library);
+
                 var loadedClasses = classTable.ClassNodes.Skip(classNumber);
                 foreach (var classNode in loadedClasses)
                 {
@@ -319,12 +321,12 @@ namespace Dynamo.DSEngine
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
                 return false;
             }
-
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
             return true;
         }
 
-        private void ParseLibraryMigrations(string library)
+
+        private void LoadLibraryMigrations(string library)
         {
             string fullLibraryName = library;
 
@@ -377,7 +379,6 @@ namespace Dynamo.DSEngine
             if (null == library || null == functions)
                 throw new ArgumentNullException();
 
-            ParseLibraryMigrations(library);
 
             Dictionary<string, FunctionGroup> fptrs;
             if (!importedFunctionGroups.TryGetValue(library, out fptrs))
@@ -502,14 +503,23 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulatePreloadLibraries()
         {
+            HashSet<String> librariesThatNeedMigrationLoading = new HashSet<string>();
+
             foreach (ClassNode classNode in LibraryManagementCore.ClassTable.ClassNodes)
             {
                 if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
                 {
                     string library = Path.GetFileName(classNode.ExternLib);
                     ImportClass(library, classNode);
+                    librariesThatNeedMigrationLoading.Add(library);
                 }
             }
+
+            foreach (String library in librariesThatNeedMigrationLoading)
+            {
+                LoadLibraryMigrations(library);
+            }
+
         }
 
         private void ImportProcedure(string library, ProcedureNode proc)

@@ -479,8 +479,9 @@ namespace Dynamo.Models
             ResetEngineInternal();
 
             AddHomeWorkspace();
-            
-            UpdateManager.UpdateManager.CheckForProductUpdate();
+
+            if (!IsTestMode)
+                UpdateManager.UpdateManager.CheckForProductUpdate();
 
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
@@ -555,6 +556,9 @@ namespace Dynamo.Models
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.__TempCoreHostForRefactoring.Cleanup();
             Logger.Dispose();
+
+            EngineController.Dispose();
+            EngineController = null;
 
             if (PreferenceSettings != null)
             {

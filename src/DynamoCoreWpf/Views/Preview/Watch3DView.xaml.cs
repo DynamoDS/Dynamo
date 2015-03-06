@@ -499,12 +499,6 @@ namespace Dynamo.Controls
             sw.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", sw.Elapsed));
 
-            var vm = (IWatchViewModel)DataContext;
-            if (vm.CheckForLatestRenderCommand.CanExecute(e.TaskId))
-            {
-                vm.CheckForLatestRenderCommand.Execute(e.TaskId);
-            }
-
             points.Freeze();
             pointsSelected.Freeze();
             lines.Freeze();

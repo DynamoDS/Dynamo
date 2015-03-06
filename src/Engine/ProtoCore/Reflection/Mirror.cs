@@ -82,8 +82,8 @@ namespace ProtoCore
                 this.mirrorData = mirrorData;
             }
 
-            public RuntimeMirror(string varname, int blockDecl, ProtoCore.RuntimeCore runtimeCore)
-                : base(runtimeCore)
+            public RuntimeMirror(string varname, int blockDecl, ProtoCore.RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
+                : base(runtimeCore, staticCore)
             {
                 TargetExecutive = runtimeCore.CurrentExecutive.CurrentDSASMExec;
                 deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCore);
@@ -94,7 +94,7 @@ namespace ProtoCore
                 blockDeclaration = blockDecl;
                 StackValue svData = deprecateThisMirror.GetValue(variableName, blockDeclaration).DsasmValue;
 
-                mirrorData = new MirrorData(this.runtimeCore, svData);
+                mirrorData = new MirrorData(staticCore, this.runtimeCore, svData);
             }
 
             /// <summary>
