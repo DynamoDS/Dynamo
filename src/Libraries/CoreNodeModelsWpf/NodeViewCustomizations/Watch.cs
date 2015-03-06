@@ -1,9 +1,10 @@
 using System;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -19,11 +20,11 @@ namespace Dynamo.Wpf.Nodes
         #region Private fields
 
         private IdentifierNode astBeingWatched;
-        private object cachedValue;
 
         private DynamoViewModel dynamoViewModel;
 
         private Watch watch;
+        private SynchronizationContext syncContext;
         private WatchViewModel rootWatchViewModel;
 
         #endregion
@@ -32,6 +33,7 @@ namespace Dynamo.Wpf.Nodes
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             this.watch = nodeModel;
+            this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
 
             var watchTree = new WatchTree();
 
@@ -47,6 +49,7 @@ namespace Dynamo.Wpf.Nodes
             Bind(watchTree, nodeView);
 
             Subscribe();
+            ResetWatch();
         }
 
         private void Bind(WatchTree watchTree, NodeView nodeView)
@@ -107,7 +110,6 @@ namespace Dynamo.Wpf.Nodes
                 if (oldId != null && astBeingWatched.Value != oldId.Value)
                 {
                     // the input node has changed, we clear preview
-                    cachedValue = null;
                     rootWatchViewModel.Children.Clear();
                 }
             }
@@ -116,14 +118,14 @@ namespace Dynamo.Wpf.Nodes
         private WatchViewModel GetWatchViewModel()
         {
             var inputVar = watch.IsPartiallyApplied
-                ? watch.AstIdentifierForPreview.Name
-                : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
+                    ? watch.AstIdentifierForPreview.Name
+                    : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
             var core = this.dynamoViewModel.Model.EngineController.LiveRunnerRuntimeCore;
             var watchHandler = this.dynamoViewModel.WatchHandler;
 
             return watchHandler.GenerateWatchViewModelForData(
-                cachedValue,
+                watch.CachedValue,
                 core,
                 inputVar,
                 rootWatchViewModel.ShowRawData);
@@ -131,7 +133,7 @@ namespace Dynamo.Wpf.Nodes
 
         private void ResetWatch()
         {
-            watch.DispatchOnUIThread(SilentUpdate);
+            syncContext.Post((_) => SilentUpdate(), null);
         }
 
         private void SilentUpdate()
@@ -168,7 +170,6 @@ namespace Dynamo.Wpf.Nodes
 
         private void WatchOnEvaluationComplete(object o)
         {
-            cachedValue = o;
             ResetWatch();
         }
 
