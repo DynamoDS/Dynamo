@@ -40,13 +40,12 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, string> priorNameHints =
             new Dictionary<string, string>();
 
-        public LibraryServices(ProtoCore.Core libraryManagementCore,
-            IEnumerable<string> preloadLibraries, IPathManager pathManager)
+        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
             LibraryManagementCore = libraryManagementCore;
             this.pathManager = pathManager;
 
-            PreloadLibraries(preloadLibraries);
+            PreloadLibraries(pathManager.PreloadedLibraries);
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();

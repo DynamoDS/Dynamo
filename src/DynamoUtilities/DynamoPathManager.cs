@@ -12,7 +12,6 @@ namespace DynamoUtilities
     /// </summary>
     public class DynamoPathManager
     {
-        private readonly HashSet<string> preloadLibaries = new HashSet<string>();
         private readonly List<string> addResolvePaths = new List<string>();
 
         private static DynamoPathManager instance;
@@ -22,14 +21,6 @@ namespace DynamoUtilities
         /// which contains DynamoCore.dll
         /// </summary>
         public string MainExecPath { get; private set; }
-
-        /// <summary>
-        /// Libraries to be preloaded by library services.
-        /// </summary>
-        public IEnumerable<string> PreloadLibraries
-        {
-            get { return preloadLibaries; }
-        }
 
         /// <summary>
         /// Additional paths that should be searched during
@@ -65,26 +56,6 @@ namespace DynamoUtilities
             else
             {
                 throw new Exception(String.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
-            }
-
-            var coreLibs = new List<string>
-            {
-                "VMDataBridge.dll",
-                "ProtoGeometry.dll",
-                "DSCoreNodes.dll",
-                "DSOffice.dll",
-                "DSIronPython.dll",
-                "FunctionObject.ds",
-                "Optimize.ds",
-                "DynamoUnits.dll",
-                "Tessellation.dll",
-                "Analysis.dll"
-            };
-
-            foreach (var lib in coreLibs)
-            {
-                if (!preloadLibaries.Contains(lib))
-                    preloadLibaries.Add(lib);
             }
         }
     }
