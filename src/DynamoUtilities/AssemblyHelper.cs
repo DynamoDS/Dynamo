@@ -20,6 +20,11 @@ namespace Dynamo.Utilities
             this.additionalResolutionPaths = additionalResolutionPaths;
         }
 
+        public static Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        {
+            throw new Exception("AssemblyHelper.ResolveAssembly is obsolete");
+        }
+
         /// <summary>
         /// Handler to the ApplicationDomain's AssemblyResolve event.
         /// If an assembly's location cannot be resolved, an exception is
@@ -30,7 +35,7 @@ namespace Dynamo.Utilities
         /// <param name="sender"></param>
         /// <param name="args"></param>
         /// <returns></returns>
-        public Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        public Assembly ResolveAssemblyNew(object sender, ResolveEventArgs args)
         {
             try
             {
