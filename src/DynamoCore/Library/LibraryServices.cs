@@ -34,15 +34,17 @@ namespace Dynamo.DSEngine
 
         private readonly List<string> importedLibraries = new List<string>();
 
+        private readonly IPathManager pathManager;
         public readonly ProtoCore.Core LibraryManagementCore;
 
         private readonly Dictionary<string, string> priorNameHints =
             new Dictionary<string, string>();
 
         public LibraryServices(ProtoCore.Core libraryManagementCore,
-            IEnumerable<string> preloadLibraries)
+            IEnumerable<string> preloadLibraries, IPathManager pathManager)
         {
             LibraryManagementCore = libraryManagementCore;
+            this.pathManager = pathManager;
 
             PreloadLibraries(preloadLibraries);
             PopulateBuiltIns();
@@ -267,7 +269,7 @@ namespace Dynamo.DSEngine
                 return false;
             }
 
-            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref library))
+            if (!pathManager.ResolveLibraryPath(ref library))
             {
                 string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
@@ -330,7 +332,7 @@ namespace Dynamo.DSEngine
         {
             string fullLibraryName = library;
 
-            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref fullLibraryName))
+            if (!pathManager.ResolveLibraryPath(ref fullLibraryName))
                 return;
 
             string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),

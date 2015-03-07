@@ -472,7 +472,7 @@ namespace Dynamo.Models
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             var preloadLibraries = DynamoPathManager.Instance.PreloadLibraries;
-            LibraryServices = new LibraryServices(libraryCore, preloadLibraries);
+            LibraryServices = new LibraryServices(libraryCore, preloadLibraries, pathManager);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
