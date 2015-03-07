@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Library
 {
@@ -17,6 +18,7 @@ namespace Dynamo.Library
         public string ParameterName { get; set; }
         public ProtoCore.Type Type { get; set; }
         public object DefaultValue { get; set; }
+        public IPathManager PathManager { get; set; }
         public FunctionDescriptor Function { get; set; }
     }
 
@@ -26,6 +28,7 @@ namespace Dynamo.Library
     public class TypedParameter
     {
         private string summary;
+        private readonly IPathManager pathManager;
 
         public TypedParameter(TypedParameterParams parameter)
         {
@@ -36,6 +39,8 @@ namespace Dynamo.Library
             Type = parameter.Type;
             DefaultValue = parameter.DefaultValue;
             Function = parameter.Function;
+
+            pathManager = parameter.PathManager;
         }
 
         public FunctionDescriptor Function { get; set; }
@@ -45,7 +50,7 @@ namespace Dynamo.Library
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetDescription()); }
+            get { return summary ?? (summary = this.GetDescription(pathManager)); }
         }
 
         public string Description

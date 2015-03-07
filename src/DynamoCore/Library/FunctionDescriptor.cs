@@ -164,7 +164,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetSummary()); }
+            get { return summary ?? (summary = this.GetSummary(pathManager)); }
         }
 
         /// <summary>
@@ -336,6 +336,8 @@ namespace Dynamo.DSEngine
                 return idx < 0 ? String.Empty : ClassName.Substring(0, idx);
             }
         }
+
+        public IPathManager PathManager { get { return pathManager; } }
 
         public override bool Equals(object obj)
         {
