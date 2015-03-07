@@ -83,18 +83,9 @@ namespace DynamoUtilities
 
             foreach (var lib in coreLibs)
             {
-                AddPreloadLibrary(lib);
+                if (!preloadLibaries.Contains(lib))
+                    preloadLibaries.Add(lib);
             }
-        }
-
-        /// <summary>
-        /// Add a library for preloading with a check.
-        /// </summary>
-        /// <param name="path"></param>
-        public void AddPreloadLibrary(string path)
-        {
-            if (!preloadLibaries.Contains(path))
-                preloadLibaries.Add(path);
         }
     }
 }

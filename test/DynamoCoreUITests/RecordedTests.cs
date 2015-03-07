@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Dynamo.UI;
 using DynamoUtilities;
 using System.Reflection;
+using TestServices;
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DynamoCoreUITests
@@ -37,6 +38,7 @@ namespace DynamoCoreUITests
         // Geometry preloading related members.
         protected bool preloadGeometry;
         protected Preloader preloader;
+        protected TestPathResolver pathResolver;
 
         // For access within test cases.
         protected DynamoView dynamoView = null;
@@ -704,8 +706,11 @@ namespace DynamoCoreUITests
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true,
+                    PathResolver = pathResolver,
                     GeometryFactoryPath = geometryFactoryPath
                 });
+
+            pathResolver = null; // Invalidate path resolver after specified.
 
             // Create the DynamoViewModel to control the view
             this.ViewModel = DynamoViewModel.Start(
@@ -1103,7 +1108,8 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void ReExecuteASTTest()
         {
-            DynamoUtilities.DynamoPathManager.Instance.AddPreloadLibrary("FFITarget.dll");
+            pathResolver = new TestPathResolver();
+            pathResolver.AddPreloadLibraryPath("FFITarget.dll");
 
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
             {
