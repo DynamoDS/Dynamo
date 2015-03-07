@@ -22,6 +22,8 @@ using System.Reflection;
 
 using Dynamo.Wpf.ViewModels.Core;
 
+using Microsoft.Practices.Prism.Logging;
+
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DynamoCoreUITests
@@ -2165,7 +2167,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("RegressionTests")]
+        [Category("RegressionTests"), Category("Failure")]
         public void Defect_MAGN_2378()
         {
             // this is using CBN. 
