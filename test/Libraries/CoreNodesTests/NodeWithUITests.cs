@@ -11,11 +11,14 @@
 // while "NodeSampleTests" resides in "Dynamo.Nodes". So by relocating the 
 // "NodeSampleTests" to "Dynamo.Tests" helps NUnit locating the "Setup" class. 
 // 
+
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-
+using System.Reflection;
 using Dynamo.Models;
-
+using Dynamo.Utilities;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
@@ -26,8 +29,32 @@ namespace DSCoreNodesTests
     [TestFixture]
     class NodeWithUITests
     {
+        private AssemblyHelper assemblyHelper;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
+
+            var resolutionPaths = new[]
+            {
+                // These tests need "DSCoreNodesUI.dll" under "nodes" folder.
+                Path.Combine(moduleRootFolder, "nodes")
+            };
+
+            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssemblyNew;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssemblyNew;
+            assemblyHelper = null;
+        }
+
         [Test]
-        [Category("Failure")]
         [Category("UnitTests")]
         public void SliderASTGeneration()
         {
@@ -40,7 +67,6 @@ namespace DSCoreNodesTests
         }
 
         [Test]
-        [Category("Failure")]
         public void SliderMaxValue()
         {
             var sliderNode = new DoubleSlider() { Value = 500 };
@@ -60,7 +86,6 @@ namespace DSCoreNodesTests
         }
 
         [Test]
-        [Category("Failure")]
         public void IntegerSliderMaxValue()
         {
             var integerSliderNode = new IntegerSlider() { Value = 500 };

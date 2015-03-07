@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using DSCore.IO;
 using Dynamo.Models;
@@ -371,6 +372,24 @@ namespace Dynamo.Tests
     [TestFixture]
     class FileWritingTests : DSEvaluationViewModelUnitTest
     {
+        private AssemblyHelper assemblyHelper;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
+            assemblyHelper = new AssemblyHelper(moduleRootFolder, null);
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssemblyNew;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssemblyNew;
+            assemblyHelper = null;
+        }
+
         [Test]
         public void FileWriter()
         {
