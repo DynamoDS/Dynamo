@@ -132,15 +132,5 @@ namespace DynamoUtilities
             if (!preloadLibaries.Contains(path))
                 preloadLibaries.Add(path);
         }
-
-        /// <summary>
-        /// Adds a library for resolution with a check.
-        /// </summary>
-        /// <param name="path"></param>
-        public void AddResolutionPath(string path)
-        {
-            if (!addResolvePaths.Contains(path))
-                addResolvePaths.Add(path);
-        }
     }
 }

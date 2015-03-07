@@ -713,6 +713,7 @@ namespace Dynamo.Models
             PackageLoader.LoadPackagesIntoDynamo(new LoadPackageParams
             {
                 Preferences = preferences,
+                PathManager = pathManager,
                 LibraryServices = LibraryServices,
                 Loader = Loader,
                 Context = Context,
