@@ -86,6 +86,7 @@ namespace Dynamo.DSEngine
                 x =>
                 {
                     x.Function = this;
+                    x.UpdateSummary(pathManager);
                     return x;
                 });
 
