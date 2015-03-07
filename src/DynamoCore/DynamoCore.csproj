@@ -341,7 +341,7 @@ xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_221\*" "$(OutputPath)libg_221\"
 xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
 xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples" "$(OutputPath)samples\$(UICulture)\"
-</PostBuildEvent>
+copy /Y $(SolutionDir)..\README.md $(OutputPath)$(UICulture)\README.txt</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

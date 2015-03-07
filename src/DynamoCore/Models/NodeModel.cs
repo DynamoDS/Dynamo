@@ -618,14 +618,14 @@ namespace Dynamo.Models
         #region Modification Reporting
 
         /// <summary>
-        ///     Event fired when the DesignScript AST produced by this node has changed.
+        ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
-        public event Action NodeModified;
+        public event Action<NodeModel> Modified;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
             MarkNodeAsModified(forceExecute);
-            var handler = NodeModified;
-            if (handler != null) handler();
+            var handler = Modified;
+            if (handler != null) handler(this);
         }
 
         #endregion

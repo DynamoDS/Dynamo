@@ -131,23 +131,31 @@ namespace Dynamo.Models
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            MarkNodesAsModified(Nodes);
+            MarkNodesAsModifiedAndRequestRun(Nodes);
         }
 
-        public override void OnNodesModified()
+        /// <summary>
+        ///     Invoked when a change to the workspace that requires re-execution
+        ///     has taken place.  If in run-automatic, a new run will take place,
+        ///     otherwise nothing will happen.
+        /// </summary>
+        protected override void RequestRun()
         {
-            base.OnNodesModified();
+            base.RequestRun();
 
-            // Until the workspace has been constructed at least once, 
-            // we do not respond to node modification events
-            if (silenceNodeModifications) return;
-
-            // When Dynamo is shut down, the workspace is cleared, which results
-            // in Modified() being called. But, we don't want to run when we are
-            // shutting down so we check whether an engine controller is available.
-            if (RunSettings.RunType != RunType.Manual && EngineController != null)
+            if (RunSettings.RunType != RunType.Manual)
             {
                 Run();
+            }
+        }
+
+        protected override void NodeModified(NodeModel node)
+        {
+            base.NodeModified(node);
+
+            if (!silenceNodeModifications)
+            {
+                RequestRun();
             }
         }
 
@@ -176,7 +184,7 @@ namespace Dynamo.Models
                 pulseMaker = new PulseMaker();
             }
 
-            pulseMaker.RunStarted += pulseMaker_RunStarted;
+            pulseMaker.RunStarted += PulseMakerRunStarted;
             EvaluationCompleted += pulseMaker.OnRunExpressionCompleted;
 
             if (pulseMaker.TimerPeriod != 0)
@@ -188,25 +196,10 @@ namespace Dynamo.Models
             pulseMaker.Start(milliseconds);
         }
 
-        private void pulseMaker_RunStarted()
+        private void PulseMakerRunStarted()
         {
             var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
-            MarkNodesAsModifiedAndUpdate(nodesToUpdate);
-        }
-
-        private void MarkNodesAsModifiedAndUpdate(object state)
-        {
-            var nodesToUpdate = state as IEnumerable<NodeModel>;
-
-            if (nodesToUpdate == null) return;
-
-            // Dirty selective nodes so they get included for evaluation.
-            foreach (var nodeToUpdate in nodesToUpdate)
-            {
-                nodeToUpdate.MarkNodeAsModified(true);
-            }
-
-            OnNodesModified();
+            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
         /// <summary>
@@ -217,7 +210,7 @@ namespace Dynamo.Models
         {
             if (pulseMaker == null || (pulseMaker.TimerPeriod == 0)) return;
 
-            pulseMaker.RunStarted -= pulseMaker_RunStarted;
+            pulseMaker.RunStarted -= PulseMakerRunStarted;
             EvaluationCompleted -= pulseMaker.OnRunExpressionCompleted;
             pulseMaker.Stop();
         }
@@ -263,7 +256,7 @@ namespace Dynamo.Models
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                MarkNodesAsModified(Nodes); 
+                MarkNodesAsModifiedAndRequestRun(Nodes); 
             }
 
             if (RunSettings.RunType == RunType.Automatic)
@@ -271,19 +264,24 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Mark all nodes as modified. 
+        /// Mark the input nodes as modified
         /// </summary>
-        /// <param name="nodes"></param>
-        public void MarkNodesAsModified(IEnumerable<NodeModel> nodes)
+        /// <param name="nodes">The nodes to modify</param>
+        /// <param name="forceExecute">The argument to NodeModel.MarkNodeAsModified</param>
+        public void MarkNodesAsModifiedAndRequestRun(IEnumerable<NodeModel> nodes, bool forceExecute = false)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
 
             foreach (var node in nodes)
-                node.MarkNodeAsModified();
+            {
+                node.MarkNodeAsModified(forceExecute);
+            } 
 
             if (nodes.Any())
-                OnNodesModified();
+            {
+                RequestRun();
+            } 
         }
 
         /// <summary>
@@ -365,6 +363,14 @@ namespace Dynamo.Models
         /// running context.</param>
         public void Run()
         {
+            // When Dynamo is shut down, the workspace is cleared, which results
+            // in Modified() being called. But, we don't want to run when we are
+            // shutting down so we check whether an engine controller is available.
+            if (this.EngineController == null)
+            {
+                return;
+            }
+
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
