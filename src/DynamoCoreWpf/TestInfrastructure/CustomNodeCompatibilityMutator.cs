@@ -244,7 +244,8 @@ namespace Dynamo.TestInfrastructure
             }).ToList();
 
             // add the core assembly to get things like code block nodes and watches.
-            allDynamoAssemblyPaths.Add(Path.Combine(DynamoPathManager.Instance.MainExecPath, "DynamoCore.dll"));
+            var mainExecPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            allDynamoAssemblyPaths.Add(Path.Combine(mainExecPath, "DynamoCore.dll"));
 
             var resolver = new ResolveEventHandler(delegate(object sender, ResolveEventArgs args)
             {

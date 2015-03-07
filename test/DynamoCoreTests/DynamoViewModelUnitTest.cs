@@ -89,10 +89,8 @@ namespace Dynamo.Tests
         protected void StartDynamo()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var assemblyFolder = Path.GetDirectoryName(assemblyPath);
-            DynamoPathManager.Instance.InitializeCore(assemblyFolder);
 
-            preloader = new Preloader(assemblyFolder);
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
 
             var model = DynamoModel.Start(
