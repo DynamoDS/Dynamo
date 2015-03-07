@@ -88,42 +88,6 @@ namespace DynamoUtilities
         }
 
         /// <summary>
-        /// Given an initial file path with the file name, resolve the full path
-        /// to the target file. The search happens in the following order:
-        /// 
-        /// 1. Alongside DynamoCore.dll folder (i.e. the "Add-in" folder).
-        /// 2. The AdditionalResolutionPaths
-        /// 3. System path resolution.
-        /// 
-        /// </summary>
-        /// <param name="library">The initial library file path.</param>
-        /// <returns>Returns true if the requested file can be located, or false
-        /// otherwise.</returns>
-        public bool ResolveLibraryPath(ref string library)
-        {
-            if (File.Exists(library)) // Absolute path, we're done here.
-                return true;
-
-            library = LibrarySearchPaths(library).FirstOrDefault(File.Exists);
-            return library != default(string);
-        }
-
-        private IEnumerable<string> LibrarySearchPaths(string library)
-        {
-            string assemblyName = Path.GetFileName(library); // Strip out possible directory.
-            if (assemblyName == null)
-                yield break;
-
-            var assemPath = Path.Combine(Instance.MainExecPath ?? "", assemblyName);
-            yield return assemPath;
-
-            foreach (var path in AdditionalResolutionPaths.Select(dir => Path.Combine(dir, assemblyName)))
-                yield return path;
-
-            yield return Path.GetFullPath(library);
-        }
-
-        /// <summary>
         /// Add a library for preloading with a check.
         /// </summary>
         /// <param name="path"></param>
