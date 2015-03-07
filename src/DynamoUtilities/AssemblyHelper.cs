@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using DynamoUtilities;
 
 namespace Dynamo.Utilities
 {
@@ -39,17 +38,19 @@ namespace Dynamo.Utilities
         {
             try
             {
+                var targetAssemblyName = new AssemblyName(args.Name).Name + ".dll";
+
                 // First check the core path
-                string assemblyPath = Path.Combine(moduleRootFolder, new AssemblyName(args.Name).Name + ".dll");
+                string assemblyPath = Path.Combine(moduleRootFolder, targetAssemblyName);
                 if (File.Exists(assemblyPath))
                 {
                     return Assembly.LoadFrom(assemblyPath);
                 }
 
                 // Then check all additional resolution paths
-                foreach (var addPath in additionalResolutionPaths)
+                foreach (var resolutionPath in additionalResolutionPaths)
                 {
-                    assemblyPath = Path.Combine(addPath, new AssemblyName(args.Name).Name + ".dll");
+                    assemblyPath = Path.Combine(resolutionPath, targetAssemblyName);
                     if (File.Exists(assemblyPath))
                     {
                         return Assembly.LoadFrom(assemblyPath);
@@ -60,7 +61,8 @@ namespace Dynamo.Utilities
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Format("There location of the assembly, {0} could not be resolved for loading.", args.Name), ex);
+                throw new Exception(string.Format("There location of the assembly, " +
+                    "{0} could not be resolved for loading.", args.Name), ex);
             }
         }
 
