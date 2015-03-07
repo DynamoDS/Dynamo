@@ -55,7 +55,7 @@ namespace Dynamo.Tests
                 TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
                 FunctionType.InstanceMethod);
 
-            parms.ForEach(x => x.Function = funcDesc);
+            parms.ForEach(x => x.UpdateFunctionDescriptor(funcDesc));
 
             return funcDesc;
         }
