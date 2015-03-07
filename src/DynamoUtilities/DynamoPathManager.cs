@@ -67,11 +67,6 @@ namespace DynamoUtilities
                 throw new Exception(String.Format("The specified main execution path: {0}, does not exist.", mainExecPath));
             }
 
-#if DEBUG
-            var sb = new StringBuilder();
-            sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));            
-            Debug.WriteLine(sb);
-#endif
             var coreLibs = new List<string>
             {
                 "VMDataBridge.dll",
