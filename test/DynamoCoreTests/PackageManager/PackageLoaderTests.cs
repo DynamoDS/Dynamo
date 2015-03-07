@@ -27,7 +27,7 @@ namespace Dynamo.Tests
                 + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
             Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
 
-            var loadPackageParams = new LoadPackageParams()
+            var loadPackageParams = new LoadPackageParams
             {
                 Loader = ViewModel.Model.Loader,
                 LibraryServices = ViewModel.Model.EngineController.LibraryServices,
