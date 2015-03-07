@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 
@@ -18,7 +16,6 @@ namespace Dynamo.Library
         public string ParameterName { get; set; }
         public ProtoCore.Type Type { get; set; }
         public object DefaultValue { get; set; }
-        public IPathManager PathManager { get; set; }
         public FunctionDescriptor Function { get; set; }
     }
 
@@ -27,8 +24,7 @@ namespace Dynamo.Library
     /// </summary>
     public class TypedParameter
     {
-        private string summary;
-        private readonly IPathManager pathManager;
+        private string summary = string.Empty;
 
         public TypedParameter(TypedParameterParams parameter)
         {
@@ -39,19 +35,13 @@ namespace Dynamo.Library
             Type = parameter.Type;
             DefaultValue = parameter.DefaultValue;
             Function = parameter.Function;
-
-            pathManager = parameter.PathManager;
         }
 
         public FunctionDescriptor Function { get; set; }
         public string Name { get; private set; }
         public ProtoCore.Type Type { get; private set; }
         public object DefaultValue { get; private set; }
-
-        public string Summary
-        {
-            get { return summary ?? (summary = this.GetDescription(pathManager)); }
-        }
+        public string Summary { get { return summary; } }
 
         public string Description
         {
@@ -66,6 +56,11 @@ namespace Dynamo.Library
         public string DisplayTypeName
         {
             get { return Type.ToShortString(); }
+        }
+
+        public void UpdateSummary(IPathManager pathManager)
+        {
+            summary = this.GetDescription(pathManager);
         }
 
         public override string ToString()
