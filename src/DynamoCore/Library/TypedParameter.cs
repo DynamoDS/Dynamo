@@ -29,8 +29,8 @@ namespace Dynamo.Library
 
         public TypedParameter(TypedParameterParams parameter)
         {
-            if (string.IsNullOrEmpty(parameter.ParameterName))
-                throw new ArgumentException("Invalid ParameterName");
+            if (parameter.ParameterName == null)
+                throw new ArgumentNullException("parameter.ParameterName");
 
             Name = parameter.ParameterName;
             Type = parameter.Type;
