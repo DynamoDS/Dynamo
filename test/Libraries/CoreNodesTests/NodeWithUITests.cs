@@ -12,13 +12,9 @@
 // "NodeSampleTests" to "Dynamo.Tests" helps NUnit locating the "Setup" class. 
 // 
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;

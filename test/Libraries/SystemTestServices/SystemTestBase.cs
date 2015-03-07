@@ -132,8 +132,7 @@ namespace SystemTestServices
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             ViewModel = DynamoViewModel.Start(
