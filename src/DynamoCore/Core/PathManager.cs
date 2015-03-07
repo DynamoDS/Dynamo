@@ -25,7 +25,8 @@ namespace Dynamo.Core
         private readonly string preferenceFilePath;
 
         private readonly HashSet<string> nodeDirectories;
-        private readonly List<string> additionalResolutionPaths;
+        private readonly HashSet<string> additionalResolutionPaths;
+        private readonly HashSet<string> preloadedLibraries;
 
         #endregion
 
@@ -64,6 +65,11 @@ namespace Dynamo.Core
         public IEnumerable<string> NodeDirectories
         {
             get { return nodeDirectories; }
+        }
+
+        public IEnumerable<string> PreloadedLibraries
+        {
+            get { return preloadedLibraries; }
         }
 
         public void AddResolutionPath(string path)
@@ -148,7 +154,21 @@ namespace Dynamo.Core
                 Path.Combine(dynamoCoreDir, "nodes")
             };
 
-            additionalResolutionPaths = new List<string>();
+            preloadedLibraries = new HashSet<string>
+            {
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSIronPython.dll",
+                "FunctionObject.ds",
+                "Optimize.ds",
+                "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll"
+            };
+
+            additionalResolutionPaths = new HashSet<string>();
             LoadPathsFromResolver(pathResolver);
         }
 
@@ -176,7 +196,13 @@ namespace Dynamo.Core
                     throw new DirectoryNotFoundException(directory);
 
                 if (!additionalResolutionPaths.Contains(directory))
-                    additionalResolutionPaths.Add(directory);                
+                    additionalResolutionPaths.Add(directory);
+            }
+
+            foreach (var path in pathResolver.PreloadedLibraryPaths)
+            {
+                if (!preloadedLibraries.Contains(path))
+                    preloadedLibraries.Add(path);
             }
         }
 

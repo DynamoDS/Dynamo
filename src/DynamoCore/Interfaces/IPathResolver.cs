@@ -74,6 +74,11 @@ namespace Dynamo.Interfaces
         IEnumerable<string> NodeDirectories { get; }
 
         /// <summary>
+        /// A list of node assembly names to be preloaded with Dynamo.
+        /// </summary>
+        IEnumerable<string> PreloadedLibraries { get; }
+
+        /// <summary>
         /// Call this method to add additional path for consideration when path 
         /// resolution take place.
         /// </summary>
