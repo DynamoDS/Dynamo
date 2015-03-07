@@ -706,16 +706,21 @@ namespace DynamoUnits
             double feet, inch, m, cm, mm, numerator, denominator;
             Utils.ParseLengthFromString(value, out feet, out inch, out m, out cm, out mm, out numerator, out denominator);
 
-            if (m != 0 || cm != 0 || mm != 0)
-                LengthUnit = LengthUnit.Meter;
-            else
-            {
-                if (value.Contains("'") || value.Contains("\""))
-                    LengthUnit = LengthUnit.FractionalFoot;
-                else
-                    LengthUnit = LengthUnit.DecimalFoot;
-            }
-                
+            //if (m != 0 || cm != 0 || mm != 0)
+            //    LengthUnit = LengthUnit.Meter;
+            //else
+            //{
+            //    if (value.Contains("'") || value.Contains("\""))
+            //        LengthUnit = LengthUnit.FractionalFoot;
+            //    else
+            //        LengthUnit = LengthUnit.DecimalFoot;
+            //}
+            
+            // This method is being used by the Number From Feet and Inches node.
+            // Until it has a broader purpose, we set the LengthUnit to FractionalFoot
+            // so that the converted string representation always shows fractional
+            // feet and inches.
+            LengthUnit = LengthUnit.FractionalFoot;
 
             if (denominator != 0)
                 fractionalInch = numerator / denominator;
