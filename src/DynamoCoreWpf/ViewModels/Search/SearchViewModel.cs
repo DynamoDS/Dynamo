@@ -54,7 +54,7 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
-        private IconServices iconServices = new IconServices();
+        private readonly IconServices iconServices;
 
         /// <summary>
         ///     Maximum number of items to show in search.
@@ -204,6 +204,7 @@ namespace Dynamo.ViewModels
         {
             Model = model;
             this.dynamoViewModel = dynamoViewModel;
+            iconServices = new IconServices(dynamoViewModel.Model.PathManager);
 
             MaxNumSearchResults = 15;
 
