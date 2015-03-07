@@ -5,6 +5,20 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Library
 {
+    public struct TypedParameterParams
+    {
+        public TypedParameterParams(string parameterName, ProtoCore.Type type) : 
+            this()
+        {
+            ParameterName = parameterName;
+            Type = type;
+        }
+
+        public string ParameterName { get; set; }
+        public ProtoCore.Type Type { get; set; }
+        public object DefaultValue { get; set; }
+        public FunctionDescriptor Function { get; set; }
+    }
 
     /// <summary>
     ///     A tuple of parameter and its type.
@@ -13,19 +27,15 @@ namespace Dynamo.Library
     {
         private string summary;
 
-        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null)
-            : this(null, parameter, type, defaultValue) { }
-
-        public TypedParameter(
-            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null)
+        public TypedParameter(TypedParameterParams parameter)
         {
-            if (name == null) 
-                throw new ArgumentNullException("name");
+            if (string.IsNullOrEmpty(parameter.ParameterName))
+                throw new ArgumentException("Invalid ParameterName");
 
-            Name = name;
-            Type = type;
-            DefaultValue = defaultValue;
-            Function = function;
+            Name = parameter.ParameterName;
+            Type = parameter.Type;
+            DefaultValue = parameter.DefaultValue;
+            Function = parameter.Function;
         }
 
         public FunctionDescriptor Function { get; set; }
