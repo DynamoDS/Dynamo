@@ -16,7 +16,6 @@ namespace Dynamo.Library
         public string ParameterName { get; set; }
         public ProtoCore.Type Type { get; set; }
         public object DefaultValue { get; set; }
-        public FunctionDescriptor Function { get; set; }
     }
 
     /// <summary>
@@ -34,10 +33,9 @@ namespace Dynamo.Library
             Name = parameter.ParameterName;
             Type = parameter.Type;
             DefaultValue = parameter.DefaultValue;
-            Function = parameter.Function;
         }
 
-        public FunctionDescriptor Function { get; set; }
+        public FunctionDescriptor Function { get; private set; }
         public string Name { get; private set; }
         public ProtoCore.Type Type { get; private set; }
         public object DefaultValue { get; private set; }
@@ -58,9 +56,9 @@ namespace Dynamo.Library
             get { return Type.ToShortString(); }
         }
 
-        public void UpdateSummary(IPathManager pathManager)
+        public void UpdateFunctionDescriptor(FunctionDescriptor funcDesc)
         {
-            summary = this.GetDescription(pathManager);
+            Function = funcDesc;
         }
 
         public override string ToString()
