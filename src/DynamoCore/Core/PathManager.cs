@@ -111,6 +111,28 @@ namespace Dynamo.Core
         }
 
         /// <summary>
+        /// Call this method to add additional path for consideration when path 
+        /// resolution take place.
+        /// </summary>
+        /// <param name="path">The full path to be considered when PathManager
+        /// attempt to resolve a file path. If this argument does not represent 
+        /// a valid directory path, this method throws an exception.</param>
+        /// 
+        internal void AddResolutionPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentNullException("path");
+
+            if (!additionalResolutionPaths.Contains(path))
+            {
+                if (!Directory.Exists(path))
+                    throw new DirectoryNotFoundException(path);
+
+                additionalResolutionPaths.Add(path);
+            }
+        }
+
+        /// <summary>
         /// Given an initial file path with the file name, resolve the full path
         /// to the target file. The search happens in the following order:
         /// 
