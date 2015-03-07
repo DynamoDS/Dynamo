@@ -438,9 +438,9 @@ namespace Dynamo.DSEngine
                                                             method.argInfoList.Zip(
                                                                 method.argTypeList,
                                                                 (arg, argType) =>
-                                                                    new TypedParameter(
+                                                                    new TypedParameter(new TypedParameterParams(
                                                                     arg.Name,
-                                                                    argType))
+                                                                    argType)))
                                                         let visibleInLibrary =
                                                             (method.MethodAttribute == null || !method.MethodAttribute.HiddenInLibrary)
                                                         let description = 
@@ -461,13 +461,13 @@ namespace Dynamo.DSEngine
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            yield return new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
-            yield return new TypedParameter(null, "y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
+            yield return new TypedParameter(new TypedParameterParams("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)));
+            yield return new TypedParameter(new TypedParameterParams("y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)));
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
         {
-            return new List<TypedParameter> { new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)), };
+            return new List<TypedParameter> { new TypedParameter(new TypedParameterParams("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar))) };
         }
 
         /// <summary>
@@ -610,7 +610,12 @@ namespace Dynamo.DSEngine
                         }
                     }
 
-                    return new TypedParameter(arg.Name, argType, defaultValue);
+                    return new TypedParameter(new TypedParameterParams
+                    {
+                        ParameterName = arg.Name,
+                        Type = argType,
+                        DefaultValue = defaultValue
+                    });
                 });
 
             IEnumerable<string> returnKeys = null;
