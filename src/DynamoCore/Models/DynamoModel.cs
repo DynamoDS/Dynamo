@@ -700,13 +700,16 @@ namespace Dynamo.Models
 
             // Load Packages
             PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadPackagesIntoDynamo(
-                preferences,
-                LibraryServices,
-                Loader,
-                Context,
-                IsTestMode,
-                CustomNodeManager);
+
+            PackageLoader.LoadPackagesIntoDynamo(new LoadPackageParams
+            {
+                Preferences = preferences,
+                LibraryServices = LibraryServices,
+                Loader = Loader,
+                Context = Context,
+                IsTestMode = IsTestMode,
+                CustomNodeManager = CustomNodeManager
+            });
 
             // Load local custom nodes
             CustomNodeManager.AddUninitializedCustomNodesInPath(DynamoPathManager.Instance.UserDefinitions, IsTestMode);
