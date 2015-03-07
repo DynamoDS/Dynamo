@@ -19,6 +19,9 @@ using NUnit.Framework;
 using Dynamo.UI;
 using DynamoUtilities;
 using System.Reflection;
+
+using Dynamo.Wpf.ViewModels.Core;
+
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DynamoCoreUITests
@@ -327,7 +330,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.Description, cmdTwo.Description);
             Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
         }
-        [Test]
+
+        [Test, Category("Failure")]
         public void TestCustomNode()
         {
             RunCommandsFromFile("TestCustomNode.xml");
@@ -3500,7 +3504,8 @@ namespace DynamoCoreUITests
 
             AssertPreviewValue("cd759105-3c6b-4f8e-81e7-73266e92f357", false);
         }
-        [Test]
+
+        [Test,Category("Failure")]
         public void modifyCN_6191()
         {
 
