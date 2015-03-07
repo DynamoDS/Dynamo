@@ -81,5 +81,17 @@ namespace Dynamo.Interfaces
         /// attempt to resolve a file path. If this argument does not represent 
         /// a valid directory path, this method throws an exception.</param>
         void AddResolutionPath(string path);
+
+        /// <summary>
+        /// Given an initial file path with the file name, resolve the full path
+        /// to the target file.
+        /// </summary>
+        /// <param name="library">The initial library file path. This argument 
+        /// can optionally include the full path with a target file name. If a 
+        /// full path is given and it represents an invalid file path, the file 
+        /// name will be searched for in additional resolution paths.</param>
+        /// <returns>Returns true if the requested file can be located, or false
+        /// otherwise.</returns>
+        bool ResolveLibraryPath(ref string library);
     }
 }

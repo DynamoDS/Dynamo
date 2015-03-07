@@ -80,6 +80,30 @@ namespace Dynamo.Core
             }
         }
 
+        /// <summary>
+        /// Given an initial file path with the file name, resolve the full path
+        /// to the target file. The search happens in the following order:
+        /// 
+        /// 1. If the provided file path is valid and points to an existing file, 
+        ///    the file path is return as-is.
+        /// 2. The file is searched alongside DynamoCore.dll for a match.
+        /// 3. The file is searched within AdditionalResolutionPaths.
+        /// 4. The search is left to system path resolution.
+        /// 
+        /// </summary>
+        /// <param name="library">The initial library file path.</param>
+        /// <returns>Returns true if the requested file can be located, or false
+        /// otherwise.</returns>
+        /// 
+        public bool ResolveLibraryPath(ref string library)
+        {
+            if (File.Exists(library)) // Absolute path, we're done here.
+                return true;
+
+            library = LibrarySearchPaths(library).FirstOrDefault(File.Exists);
+            return library != default(string);
+        }
+
         #endregion
 
         #region Public Class Operational Methods
@@ -126,30 +150,6 @@ namespace Dynamo.Core
 
             additionalResolutionPaths = new List<string>();
             LoadPathsFromResolver(pathResolver);
-        }
-
-        /// <summary>
-        /// Given an initial file path with the file name, resolve the full path
-        /// to the target file. The search happens in the following order:
-        /// 
-        /// 1. If the provided file path is valid and points to an existing file, 
-        ///    the file path is return as-is.
-        /// 2. The file is searched alongside DynamoCore.dll for a match.
-        /// 3. The file is searched within AdditionalResolutionPaths.
-        /// 4. The search is left to system path resolution.
-        /// 
-        /// </summary>
-        /// <param name="library">The initial library file path.</param>
-        /// <returns>Returns true if the requested file can be located, or false
-        /// otherwise.</returns>
-        /// 
-        internal bool ResolveLibraryPath(ref string library)
-        {
-            if (File.Exists(library)) // Absolute path, we're done here.
-                return true;
-
-            library = LibrarySearchPaths(library).FirstOrDefault(File.Exists);
-            return library != default(string);
         }
 
         #endregion
