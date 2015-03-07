@@ -29,31 +29,6 @@ namespace DSCoreNodesTests
     [TestFixture]
     class NodeWithUITests
     {
-        private AssemblyHelper assemblyHelper;
-
-        [SetUp]
-        public void SetUp()
-        {
-            var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
-
-            var resolutionPaths = new[]
-            {
-                // These tests need "DSCoreNodesUI.dll" under "nodes" folder.
-                Path.Combine(moduleRootFolder, "nodes")
-            };
-
-            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
-            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssemblyNew;
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssemblyNew;
-            assemblyHelper = null;
-        }
-
         [Test]
         [Category("UnitTests")]
         public void SliderASTGeneration()

@@ -372,24 +372,6 @@ namespace Dynamo.Tests
     [TestFixture]
     class FileWritingTests : DSEvaluationViewModelUnitTest
     {
-        private AssemblyHelper assemblyHelper;
-
-        [SetUp]
-        public void SetUp()
-        {
-            var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
-            assemblyHelper = new AssemblyHelper(moduleRootFolder, null);
-            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssemblyNew;
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssemblyNew;
-            assemblyHelper = null;
-        }
-
         [Test]
         public void FileWriter()
         {
