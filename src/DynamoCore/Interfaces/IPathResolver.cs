@@ -68,6 +68,18 @@ namespace Dynamo.Interfaces
         /// </summary>
         string PreferenceFilePath { get; }
 
+        /// <summary>
+        /// Folders in which node assemblies can be located.
+        /// </summary>
         IEnumerable<string> NodeDirectories { get; }
+
+        /// <summary>
+        /// Call this method to add additional path for consideration when path 
+        /// resolution take place.
+        /// </summary>
+        /// <param name="path">The full path to be considered when PathManager
+        /// attempt to resolve a file path. If this argument does not represent 
+        /// a valid directory path, this method throws an exception.</param>
+        void AddResolutionPath(string path);
     }
 }

@@ -11,7 +11,7 @@ namespace Dynamo.Core
 {
     class PathManager : IPathManager
     {
-        #region Class Data Members and Properties
+        #region Class Private Data Members
 
         private readonly string dynamoCoreDir;
         private readonly string userDataDir;
@@ -26,6 +26,10 @@ namespace Dynamo.Core
 
         private readonly HashSet<string> nodeDirectories;
         private readonly List<string> additionalResolutionPaths;
+
+        #endregion
+
+        #region IPathManager Interface Implementation
 
         public string UserDefinitions
         {
@@ -60,6 +64,20 @@ namespace Dynamo.Core
         public IEnumerable<string> NodeDirectories
         {
             get { return nodeDirectories; }
+        }
+
+        public void AddResolutionPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentNullException("path");
+
+            if (!additionalResolutionPaths.Contains(path))
+            {
+                if (!Directory.Exists(path))
+                    throw new DirectoryNotFoundException(path);
+
+                additionalResolutionPaths.Add(path);
+            }
         }
 
         #endregion
@@ -108,28 +126,6 @@ namespace Dynamo.Core
 
             additionalResolutionPaths = new List<string>();
             LoadPathsFromResolver(pathResolver);
-        }
-
-        /// <summary>
-        /// Call this method to add additional path for consideration when path 
-        /// resolution take place.
-        /// </summary>
-        /// <param name="path">The full path to be considered when PathManager
-        /// attempt to resolve a file path. If this argument does not represent 
-        /// a valid directory path, this method throws an exception.</param>
-        /// 
-        internal void AddResolutionPath(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-                throw new ArgumentNullException("path");
-
-            if (!additionalResolutionPaths.Contains(path))
-            {
-                if (!Directory.Exists(path))
-                    throw new DirectoryNotFoundException(path);
-
-                additionalResolutionPaths.Add(path);
-            }
         }
 
         /// <summary>
