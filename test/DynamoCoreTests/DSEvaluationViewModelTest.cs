@@ -2,14 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Dynamo.DSEngine;
-using Dynamo.Utilities;
 using NUnit.Framework;
-using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using System.Collections;
-using Dynamo.Models;
 using Dynamo.Nodes;
 
 namespace Dynamo.Tests
@@ -204,12 +199,6 @@ namespace Dynamo.Tests
             {
                 AssertValue(elements[i++], item);
             }
-        }
-
-        public override void Cleanup()
-        {
-            base.Cleanup();
-            DynamoUtilities.DynamoPathManager.DestroyInstance();
         }
     }
 
