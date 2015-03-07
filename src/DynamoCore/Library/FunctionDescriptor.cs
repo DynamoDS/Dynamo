@@ -85,7 +85,7 @@ namespace Dynamo.DSEngine
             Parameters = funcDescParams.Parameters.Select(
                 x =>
                 {
-                    x.UpdateFunctionDescriptor(this);
+                    x.UpdateFunctionDescriptor(this, pathManager);
                     return x;
                 });
 

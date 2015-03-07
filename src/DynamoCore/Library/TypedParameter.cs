@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
+using Dynamo.Nodes;
 
 namespace Dynamo.Library
 {
@@ -56,9 +58,10 @@ namespace Dynamo.Library
             get { return Type.ToShortString(); }
         }
 
-        public void UpdateFunctionDescriptor(FunctionDescriptor funcDesc)
+        public void UpdateFunctionDescriptor(FunctionDescriptor funcDesc, IPathManager pathManager)
         {
             Function = funcDesc;
+            summary = ((pathManager != null) ? this.GetDescription(pathManager) : string.Empty);
         }
 
         public override string ToString()
