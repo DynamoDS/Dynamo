@@ -217,8 +217,6 @@ namespace Dynamo.Controls
 
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Watch 3D view unloaded.");
-
             var vm = DataContext as IWatchViewModel;
             if (vm != null)
             {
@@ -420,8 +418,6 @@ namespace Dynamo.Controls
             {
                 return;
             }
-
-            Debug.WriteLine(string.Format("Rendering visuals for {0}", e.Id));
 
             var sw = new Stopwatch();
             sw.Start();
