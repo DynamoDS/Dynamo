@@ -13,7 +13,7 @@ namespace Dynamo
         protected string TempFolder { get; private set; }
 
         [SetUp]
-        public virtual void Init()
+        public virtual void Setup()
         {
             SetupDirectories();
         }

@@ -50,12 +50,11 @@ namespace DynamoCoreUITests
         protected double tolerance = 1e-6;
         protected double codeBlockPortHeight = Configurations.CodeBlockPortHeightInPixels;
 
-        public override void Init()
+        [SetUp]
+        public override void Setup()
         {
             // We do not call "base.Init()" here because we want to be able 
-            // to create our own copy of Controller here with command file path.
-            DynamoPathManager.Instance.InitializeCore(
-              Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            // to create our own copy of DynamoModel here with command file path.
         }
 
         [SetUp]

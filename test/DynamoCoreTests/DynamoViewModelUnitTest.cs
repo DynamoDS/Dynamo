@@ -26,9 +26,10 @@ namespace Dynamo.Tests
         protected DynamoViewModel ViewModel;
         private DynamoShapeManager.Preloader preloader;
 
-        public override void Init()
+        [SetUp]
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
             StartDynamo();
         }
 
@@ -94,7 +95,6 @@ namespace Dynamo.Tests
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             var assemblyFolder = Path.GetDirectoryName(assemblyPath);
-            DynamoPathManager.Instance.InitializeCore(assemblyFolder);
 
             preloader = new Preloader(assemblyFolder);
             preloader.Preload();
