@@ -39,8 +39,12 @@ namespace Dynamo.Tests
                 preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
+                if (ViewModel == null)
+                    return;
+
                 var shutdownParams = new DynamoViewModel.ShutdownParams(
-                    shutdownHost: false, allowCancellation: false);
+                    shutdownHost: false,
+                    allowCancellation: false);
 
                 ViewModel.PerformShutdownSequence(shutdownParams);
                 ViewModel.RequestUserSaveWorkflow -= RequestUserSaveWorkflow;
