@@ -65,9 +65,12 @@ namespace Dynamo
             string tempPath = Path.GetTempPath();
 
             TempFolder = Path.Combine(tempPath, "dynamoTmp\\" + Guid.NewGuid().ToString("N"));
-
+            
             if (!Directory.Exists(TempFolder))
                 Directory.CreateDirectory(TempFolder);
+
+            // Setup Temp PreferenceSetting Location for testing
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
         }
     }
 }
