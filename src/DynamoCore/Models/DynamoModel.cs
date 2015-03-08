@@ -339,6 +339,7 @@ namespace Dynamo.Models
             OnCleanup();
             
             DynamoSelection.DestroyInstance();
+            DynamoPathManager.DestroyInstance();
 
             InstrumentationLogger.End();
 
