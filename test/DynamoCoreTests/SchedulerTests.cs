@@ -1192,9 +1192,10 @@ namespace Dynamo
 
         #region Test Setup, TearDown, Helper Methods
 
-        public override void Init()
+        [SetUp]
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
             StartDynamo();
 
             FakeAsyncTaskData.ResetSerialNumber();

@@ -50,17 +50,14 @@ namespace DynamoCoreUITests
         protected double tolerance = 1e-6;
         protected double codeBlockPortHeight = Configurations.CodeBlockPortHeightInPixels;
 
-        public override void Init()
+        [SetUp]
+        public override void Setup()
         {
             // We do not call "base.Init()" here because we want to be able 
             // to create our own copy of Controller here with command file path.
             DynamoPathManager.Instance.InitializeCore(
               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-        }
 
-        [SetUp]
-        public void Start()
-        {
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
             SetupDirectories();
@@ -1780,7 +1777,7 @@ namespace DynamoCoreUITests
 
             // Reset current test case
             Exit();
-            Start();
+            Setup();
 
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithNodeToCode.xml");
@@ -1788,7 +1785,7 @@ namespace DynamoCoreUITests
 
             // Reset current test case
             Exit();
-            Start();
+            Setup();
 
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithNodeToCodeUndo.xml");
@@ -1886,7 +1883,7 @@ namespace DynamoCoreUITests
             AssertValue("p_d4d53e201514434983e17cb5c533a3e0", 0);
             
             Exit();
-            Start();
+            Setup();
             
             // redefine function - test if the CBN reexecuted
             RunCommandsFromFile("Function_redef01a.xml");
@@ -1909,7 +1906,7 @@ namespace DynamoCoreUITests
             AssertValue("p_c9827e41855647f68e9d6c600a2e45ee", 0);
 
             Exit();
-            Start();
+            Setup();
 
             // redefine function call - CBN with function definition is not expected to be executed
             RunCommandsFromFile("Function_redef02a.xml");
@@ -1932,7 +1929,7 @@ namespace DynamoCoreUITests
             AssertValue("d_f34e01e225e446349eb8e815e8ee580d", 1);
 
             Exit();
-            Start();
+            Setup();
 
             // redefine function call - CBN with function definition is not expected to be executed
             RunCommandsFromFile("Function_redef03a.xml");
@@ -1954,7 +1951,7 @@ namespace DynamoCoreUITests
             AssertValue("b_9b638b99d63145838b82662a60cdf6bc", 0);
             
             Exit();
-            Start();
+            Setup();
             
             // redefine function call - change type of argument
             RunCommandsFromFile("Function_redef04a.xml");
