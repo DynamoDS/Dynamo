@@ -247,7 +247,7 @@ namespace DynamoCoreUITests
             Assert.Greater(img.ActualHeight, 10);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void Watch3DContainsExpectedGeometry()
         {
             OpenAndRun(@"UI\WatchUINodes.dyn");
