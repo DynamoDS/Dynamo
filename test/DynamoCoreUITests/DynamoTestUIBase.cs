@@ -39,8 +39,6 @@ namespace DynamoCoreUITests
 
             preloader = new Preloader(assemblyFolder);
             preloader.Preload();
-
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
