@@ -642,7 +642,7 @@ namespace ProtoScript.Runners
                                     if (null != gnode.firstProc)
                                     {
                                         if (gnode.firstProc.name == functionNode.Name
-                                            && gnode.firstProc.argInfoList.Count == functionNode.Signature.Arguments.Count)
+                                            && gnode.firstProc.Arguments.Count == functionNode.Signature.Arguments.Count)
                                         {
                                             // If it does, create a new ast tree for this graphnode and append it to deltaAstList
                                             modifiedNodes.Add(assocNode);

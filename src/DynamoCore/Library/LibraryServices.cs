@@ -434,12 +434,12 @@ namespace Dynamo.DSEngine
 
             IEnumerable<FunctionDescriptor> functions = from method in builtins
                                                         let arguments =
-                                                            method.argInfoList.Zip(
-                                                                method.argTypeList,
+                                                            method.Arguments.Zip(
+                                                                method.Arguments,
                                                                 (arg, argType) =>
                                                                     new TypedParameter(
                                                                     arg.Name,
-                                                                    argType))
+                                                                    arg.type))
                                                         let visibleInLibrary =
                                                             (method.MethodAttribute == null || !method.MethodAttribute.HiddenInLibrary)
                                                         let description = 
@@ -455,6 +455,30 @@ namespace Dynamo.DSEngine
                                                                 FunctionType.GenericFunction,
                                                                 visibleInLibrary);
 
+        /*    IEnumerable<FunctionDescriptor> functions = from method in builtins
+                                                        let arguments =
+                                                            method.Arguments.Zip(
+                                                                method.argTypeList,
+                                                                (arg, argType) =>
+                                                                    new TypedParameter(
+                                                                    arg.Name,
+                                                                    argType))
+                                                        let visibleInLibrary =
+                                                            (method.MethodAttribute == null || !method.MethodAttribute.HiddenInLibrary)
+                                                        let description =
+                                                            (method.MethodAttribute != null ? method.MethodAttribute.Description : String.Empty)
+                                                        select
+                                                            new FunctionDescriptor(
+                                                                null,
+                                                                null,
+                                                                method.name,
+                                                                description,
+                                                                arguments,
+                                                                method.returntype,
+                                                                FunctionType.GenericFunction,
+                                                                visibleInLibrary);
+
+            */
             AddBuiltinFunctions(functions);
         }
 
@@ -578,8 +602,8 @@ namespace Dynamo.DSEngine
                 }
             }
 
-            IEnumerable<TypedParameter> arguments = proc.argInfoList.Zip(
-                proc.argTypeList,
+            IEnumerable<TypedParameter> arguments = proc.Arguments.Zip(
+                proc.Arguments,
                 (arg, argType) =>
                 {
                     object defaultValue = null;
@@ -600,9 +624,32 @@ namespace Dynamo.DSEngine
                         }
                     }
 
-                    return new TypedParameter(arg.Name, argType, defaultValue);
+                    return new TypedParameter(arg.Name, arg.type, defaultValue);
                 });
+       /*     IEnumerable<TypedParameter> arguments = proc.Arguments.Zip(
+               proc.argTypeList,
+               (arg, argType) =>
+               {
+                   object defaultValue = null;
+                   if (arg.IsDefault)
+                   {
+                       var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
+                       if (binaryExpr != null)
+                       {
+                           AssociativeNode vnode = binaryExpr.RightNode;
+                           if (vnode is IntNode)
+                               defaultValue = (vnode as IntNode).Value;
+                           else if (vnode is DoubleNode)
+                               defaultValue = (vnode as DoubleNode).Value;
+                           else if (vnode is BooleanNode)
+                               defaultValue = (vnode as BooleanNode).Value;
+                           else if (vnode is StringNode)
+                               defaultValue = (vnode as StringNode).value;
+                       }
+                   }
 
+                   return new TypedParameter(arg.Name, argType, defaultValue);
+               });*/
             IEnumerable<string> returnKeys = null;
             if (proc.MethodAttribute != null)
             {

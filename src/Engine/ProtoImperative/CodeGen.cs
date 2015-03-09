@@ -750,7 +750,7 @@ namespace ProtoImperative
                     int blockId = procNode.runtimeIndex;
 
                     //push value-not-provided default argument
-                    for (int i = arglist.Count; i < procNode.argInfoList.Count; i++)
+                    for (int i = arglist.Count; i < procNode.Arguments.Count; i++)
                     {
                         EmitDefaultArgNode();
                     }
@@ -1345,9 +1345,11 @@ namespace ProtoImperative
                             throw new BuildHaltException("26384684");
                         }
 
-                        localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { DefaultExpression = aDefaultExpression };
-                        localProcedure.argInfoList.Add(argInfo);
+                     // localProcedure.argTypeList.Add(argType);
+                     // ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { DefaultExpression = aDefaultExpression };
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { DefaultExpression = aDefaultExpression, type = argType };
+
+                        localProcedure.Arguments.Add(argInfo);
                     }
                 }
 
@@ -1368,13 +1370,16 @@ namespace ProtoImperative
                 EmitCompileLogFunctionStart(GetFunctionSignatureString(funcDef.Name, funcDef.ReturnType, funcDef.Signature));
 
                 // Build arglist for comparison
-                List<ProtoCore.Type> argList = new List<ProtoCore.Type>();
+              //List<ProtoCore.Type> argList = new List<ProtoCore.Type>();
+                List<ArgumentInfo> argList = new List<ArgumentInfo>();
                 if (null != funcDef.Signature)
                 {
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
                         ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, firstSSAGraphNode);
-                        argList.Add(argType);
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { type = argType };
+                      //argList.Add(argType);
+                        argList.Add(argInfo);
                     }
                 }
 
@@ -1400,7 +1405,7 @@ namespace ProtoImperative
                                 
                 //Traverse default argument
                 emitDebugInfo = false;
-                foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.argInfoList)
+                foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.Arguments)
                 {
                     if (!argNode.IsDefault)
                     {
@@ -1462,11 +1467,20 @@ namespace ProtoImperative
 
 
                 // Construct the fep arguments
-                fep.FormalParams = new ProtoCore.Type[localProcedure.argTypeList.Count];
+            //  fep.FormalParams = new ProtoCore.Type[localProcedure.argTypeList.Count];
+                fep.FormalParams = new ProtoCore.Type[localProcedure.Arguments.Count];
                 fep.BlockScope = codeBlock.codeBlockId;
                 fep.procedureNode = localProcedure;
-                localProcedure.argTypeList.CopyTo(fep.FormalParams, 0);
 
+                // Get a typeList of localProcedure: typeList+ for loop
+                List<ProtoCore.Type> localProceduretypeList = new List<ProtoCore.Type>();
+                for (int i = 0; i < localProcedure.Arguments.Count; i++)
+                {
+                    localProceduretypeList.Add(localProcedure.Arguments[i].type);
+
+                }
+               //localProcedure.argTypeList.CopyTo(fep.FormalParams, 0);
+                localProceduretypeList.CopyTo(fep.FormalParams, 0);
                 // TODO Jun: 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
                 // Determine whether this still needs to be aligned to the actual 'classIndex' variable
                 // The factors that will affect this is whether the 2 function tables (compiler and callsite) need to be merged

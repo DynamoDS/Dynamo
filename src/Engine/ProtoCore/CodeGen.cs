@@ -2985,7 +2985,7 @@ namespace ProtoCore
             bool hasMatchedConstructor = false;
             foreach (ProtoCore.DSASM.ProcedureNode pn in core.ClassTable.ClassNodes[cix].vtable.procList)
             {
-                if (pn.isConstructor && pn.argInfoList.Count == attribute.Arguments.Count)
+                if (pn.isConstructor && pn.Arguments.Count == attribute.Arguments.Count)
                 {
                     hasMatchedConstructor = true;
                     break;

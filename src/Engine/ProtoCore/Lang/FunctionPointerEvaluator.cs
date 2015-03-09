@@ -61,7 +61,7 @@ namespace ProtoCore.Lang
             //    {a1, a2, ..., am, {v1, v2, ..., vn}}
             if (procNode.isVarArg)
             {
-                int paramCount = procNode.argInfoList.Count;
+                int paramCount = procNode.Arguments.Count;
                 Validity.Assert(paramCount >= 1);
 
                 int varParamCount = args.Count - (paramCount - 1);

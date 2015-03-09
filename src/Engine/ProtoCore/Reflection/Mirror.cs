@@ -368,18 +368,18 @@ namespace ProtoCore
                 Name = name;
             }
 
-            protected static MethodMirror FindMethod(string methodName, List<ProtoCore.Type> arguments, List<ProcedureNode> procNodes)
+            protected static MethodMirror FindMethod(string methodName, List<ArgumentInfo> arguments, List<ProcedureNode> procNodes)
             {
                 foreach (var procNode in procNodes)
                 {
                     if (procNode.name == methodName)
                     {
-                        if (procNode.argInfoList.Count == arguments.Count)
+                        if (procNode.Arguments.Count == arguments.Count)
                         {
                             bool isEqual = true;
                             for (int i = 0; i < arguments.Count; ++i)
                             {
-                                if (!arguments[i].Equals(procNode.argTypeList[i]))
+                                if (!((arguments[i].type).Equals(procNode.Arguments[i].type)))
                                 {
                                     isEqual = false;
                                     break;
@@ -469,7 +469,7 @@ namespace ProtoCore
             /// <param name="methodName"></param>
             /// <param name="arguments"></param>
             /// <returns></returns>
-            public static ProtoCore.Type? GetType(string className, string methodName, List<ProtoCore.Type> arguments)
+            public static ProtoCore.Type? GetType(string className, string methodName, List<ArgumentInfo> arguments)
             {
                 if (!string.IsNullOrEmpty(className))
                 {
@@ -733,7 +733,7 @@ namespace ProtoCore
                 {
                     name = pNode.name;
                     bool hidden = pNode.MethodAttribute == null ? false : pNode.MethodAttribute.HiddenInLibrary;
-                    if (!hidden && name.Contains(getterPrefix) && pNode.argInfoList.Count == 0)
+                    if (!hidden && name.Contains(getterPrefix) && pNode.Arguments.Count == 0)
                     {
                         properties.Add(new PropertyMirror(pNode));
                     }
@@ -855,7 +855,7 @@ namespace ProtoCore
                 return members;
             }
 
-            public MethodMirror GetDeclaredMethod(string methodName, List<ProtoCore.Type> argumentTypes)
+            public MethodMirror GetDeclaredMethod(string methodName, List<ArgumentInfo> argumentTypes)
             {
                 ProcedureTable procedureTable = ClassNode.vtable;
                 List<ProcedureNode> procList = procedureTable.procList;
@@ -899,11 +899,11 @@ namespace ProtoCore
                     if (argumentList == null)
                     {
                         argumentList = new Dictionary<string, string>();
-                        for (int i = 0; i < procNode.argInfoList.Count; ++i)
+                        for (int i = 0; i < procNode.Arguments.Count; ++i)
                         {
 
-                            argumentList.Add(procNode.argInfoList[i].Name,
-                                procNode.argTypeList[i].ToString().Split('.').Last());
+                            argumentList.Add(procNode.Arguments[i].Name,
+                                procNode.Arguments[i].type.ToString().Split('.').Last());
                         }
                     }
                     return argumentList;
@@ -924,7 +924,7 @@ namespace ProtoCore
                 List<string> argNames = new List<string>();
                 if (procNode != null)
                 {
-                    List<ArgumentInfo> argList = procNode.argInfoList;
+                    List<ArgumentInfo> argList = procNode.Arguments;
                     foreach (var arg in argList)
                     {
                         argNames.Add(arg.Name);
@@ -933,6 +933,22 @@ namespace ProtoCore
                 return argNames;
             }
 
+            // List<ArgumentInfo> GetArguments() is used to get "Arguments"--> so that can use "Arguments" to get ArgumentsType;
+            //original method is  public List<ProtoCore.Type> GetArgumentTypes()
+            public List<ArgumentInfo> GetArguments()
+            {
+                List<ArgumentInfo> argumentsTypes = new List<ArgumentInfo>();
+                if (procNode != null)
+                {
+                    foreach (var arg in procNode.Arguments)
+                    {
+                        argumentsTypes.Add(arg);
+
+                    }
+                }
+                return argumentsTypes;
+            }
+/*
             public List<ProtoCore.Type> GetArgumentTypes()
             {
                 List<ProtoCore.Type> argTypes = new List<ProtoCore.Type>();
@@ -945,7 +961,7 @@ namespace ProtoCore
                 }
                 return argTypes;
             }
-
+*/
             public MethodAttributes GetMethodAttributes()
             {
                 return procNode == null ? null : procNode.MethodAttribute;
@@ -996,7 +1012,7 @@ namespace ProtoCore
                     if (procNode != null)
                     {
                         if (isSetter)
-                            return procNode.argTypeList[0];
+                            return procNode.Arguments[0].type;
                         else
                             return procNode.returntype;
                     }
@@ -1128,6 +1144,60 @@ namespace ProtoCore
                 return overloads;
             }
 
+            public MethodMirror GetDeclaredMethod(string className, string methodName, List<ArgumentInfo> argumentTypes)
+            {
+                // Check global methods if classname is empty or null
+                if (string.IsNullOrEmpty(className))
+                {
+                    List<MethodMirror> methods = null;
+                    methods = GetGlobalMethods();
+                    foreach (var method in methods)
+                    {
+                        if (method.MethodName == methodName)
+                        {
+
+                            List<ArgumentInfo> argTypes = method.GetArguments();
+                            if (argTypes.Count == argumentTypes.Count)
+                            {
+                                bool isEqual = true;
+                                for (int i = 0; i < argumentTypes.Count; ++i)
+                                {
+                                    if (!(argumentTypes[i].type).Equals(argTypes[i].type))
+                                    {
+                                        isEqual = false;
+                                        break;
+                                    }
+                                }
+                                if (isEqual)
+                                    return method;
+                            }
+                        }
+                    }
+                }
+                else // find method in Class
+                {
+
+                    Validity.Assert(staticCore != null);
+
+                    ClassNode classNode = null;
+                    ProtoCore.DSASM.ClassTable classTable = staticCore.ClassTable;
+                    int ci = classTable.IndexOf(className);
+
+                    if (ci != ProtoCore.DSASM.Constants.kInvalidIndex)
+                    {
+                        classNode = classTable.ClassNodes[ci];
+                    }
+
+
+                    ProcedureTable procedureTable = classNode.vtable;
+                    List<ProcedureNode> procList = procedureTable.procList;
+
+                    return StaticMirror.FindMethod(methodName, argumentTypes, procList);
+                }
+
+                return null;
+            }
+/*
             public MethodMirror GetDeclaredMethod(string className, string methodName, List<ProtoCore.Type> argumentTypes)
             {
                 // Check global methods if classname is empty or null
@@ -1180,7 +1250,7 @@ namespace ProtoCore
 
                 return null;
             }
-
+*/
             public enum LibraryType
             {
                 kDSfile = 0,

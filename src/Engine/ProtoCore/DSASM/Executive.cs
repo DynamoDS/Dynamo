@@ -676,7 +676,7 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                PopArgumentsFromStack(fNode.argTypeList.Count, ref arguments, ref replicationGuides);
+                PopArgumentsFromStack(fNode.Arguments.Count, ref arguments, ref replicationGuides);
             }
 
             replicationGuides.Reverse();
@@ -1047,7 +1047,7 @@ namespace ProtoCore.DSASM
             // Get all arguments and replications 
             var arguments = new List<StackValue>();
             var repGuides = new List<List<ReplicationGuide>>();
-            PopArgumentsFromStack(procNode.argTypeList.Count,
+            PopArgumentsFromStack(procNode.Arguments.Count,
                                   ref arguments,
                                   ref repGuides);
             arguments.Reverse();
@@ -1750,7 +1750,7 @@ namespace ProtoCore.DSASM
             }
 
 
-            if (graphNode.firstProc != null && graphNode.firstProc.argTypeList.Count != 0)
+            if (graphNode.firstProc != null && graphNode.firstProc.Arguments.Count != 0)
             {
                 // Skip the case that function on RHS takes over 1 parameters --
                 // there is potential replication guide which hasn't been supported
@@ -1759,7 +1759,7 @@ namespace ProtoCore.DSASM
                 //     x = foo(a, b);
                 //     a[0] = ...
                 //
-                if (graphNode.firstProc.argTypeList.Count > 1)
+                if (graphNode.firstProc.Arguments.Count > 1)
                 {
                     return;
                 }
@@ -1774,7 +1774,7 @@ namespace ProtoCore.DSASM
                 // b = a;
                 // a[0] = 0;   // b[0] = foo(a[0]) doesn't work!
                 //  
-                if (graphNode.firstProc.argTypeList[0].rank >= 1)
+                if (graphNode.firstProc.Arguments[0].type.rank >= 1)
                 {
                     return;
                 }
@@ -3997,7 +3997,7 @@ namespace ProtoCore.DSASM
                     rmem.Push(argSvList[i]);
                 }
                 //push value-not-provided default argument
-                for (int i = arglist.Count; i < procNode.argInfoList.Count; i++)
+                for (int i = arglist.Count; i < procNode.Arguments.Count; i++)
                 {
                     rmem.Push(StackValue.BuildDefaultArgument());
                 }
@@ -4182,12 +4182,12 @@ namespace ProtoCore.DSASM
             if (Constants.kGlobalScope != classIndex)
             {
                 localCount = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex].localCount;
-                paramCount = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex].argTypeList.Count;
+                paramCount = exe.classTable.ClassNodes[classIndex].vtable.procList[functionIndex].Arguments.Count;
             }
             else
             {
                 localCount = exe.procedureTable[blockId].procList[functionIndex].localCount;
-                paramCount = exe.procedureTable[blockId].procList[functionIndex].argTypeList.Count;
+                paramCount = exe.procedureTable[blockId].procList[functionIndex].Arguments.Count;
             }
         }
 
@@ -5910,7 +5910,7 @@ namespace ProtoCore.DSASM
                 // in base constructor all params will be in reverse order
                 List<StackValue> argvalues = new List<StackValue>();
                 int stackindex = rmem.Stack.Count - 1;
-                for (int idx = 0; idx < fNode.argTypeList.Count; ++idx)
+                for (int idx = 0; idx < fNode.Arguments.Count; ++idx)
                 {
                     StackValue value = rmem.Stack[stackindex--];
                     argvalues.Add(value);
@@ -5937,8 +5937,8 @@ namespace ProtoCore.DSASM
                         replicationGuideList.Reverse();
                     }
                 }
-                rmem.PopFrame(fNode.argTypeList.Count);
-                for (int idx = 0; idx < fNode.argTypeList.Count; ++idx)
+                rmem.PopFrame(fNode.Arguments.Count);
+                for (int idx = 0; idx < fNode.Arguments.Count; ++idx)
                 {
                     rmem.Push(argvalues[idx]);
                 }

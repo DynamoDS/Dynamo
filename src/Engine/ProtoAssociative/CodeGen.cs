@@ -830,7 +830,7 @@ namespace ProtoAssociative
             int blockId = procNode.runtimeIndex;
 
             //push value-not-provided default argument
-            for (int i = arglist.Count; i < procNode.argInfoList.Count; i++)
+            for (int i = arglist.Count; i < procNode.Arguments.Count; i++)
             {
                 EmitDefaultArgNode();
             }
@@ -977,7 +977,7 @@ namespace ProtoAssociative
                     // If its null this is the second call in a chained dot
                     if (null != procCallNode)
                     {
-                        defaultArgNumber = procCallNode.argInfoList.Count - dotCall.FunctionCall.FormalArguments.Count;
+                        defaultArgNumber = procCallNode.Arguments.Count - dotCall.FunctionCall.FormalArguments.Count;
                     }
 
                     // Enable graphnode dependencies if its a setter method
@@ -1916,7 +1916,7 @@ namespace ProtoAssociative
                     int blockId = procNode.runtimeIndex;
 
                     //push value-not-provided default argument
-                    for (int i = arglist.Count; i < procNode.argInfoList.Count; i++)
+                    for (int i = arglist.Count; i < procNode.Arguments.Count; i++)
                     {
                         EmitDefaultArgNode();
                     }
@@ -5354,7 +5354,8 @@ namespace ProtoAssociative
                 if (!classDecl.IsExternLib)
                 {
                     ProtoCore.DSASM.ProcedureTable vtable = core.ClassTable.ClassNodes[globalClassIndex].vtable;
-                    if (vtable.IndexOfExact(classDecl.className, new List<ProtoCore.Type>(), false) == ProtoCore.DSASM.Constants.kInvalidIndex)
+                  //  if (vtable.IndexOfExact(classDecl.className, new List<ProtoCore.Type>(), false) == ProtoCore.DSASM.Constants.kInvalidIndex)
+                      if (vtable.IndexOfExact(classDecl.className, new List<ArgumentInfo>(), false) == ProtoCore.DSASM.Constants.kInvalidIndex)
                     {
                         ConstructorDefinitionNode defaultConstructor = new ConstructorDefinitionNode();
                         defaultConstructor.Name = classDecl.className;
@@ -5576,9 +5577,10 @@ namespace ProtoAssociative
 
                         ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, gNode);
                         argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
-                        localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
-                        localProcedure.argInfoList.Add(argInfo);
+                     //   localProcedure.argTypeList.Add(argType);
+                     //   ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression,type = argType };
+                        localProcedure.Arguments.Add(argInfo);
                     }
 
                     localProcedure.isVarArg = funcDef.Signature.IsVarArg;
@@ -5610,13 +5612,17 @@ namespace ProtoAssociative
             {
                 EmitCompileLogFunctionStart(GetFunctionSignatureString(funcDef.Name, funcDef.ReturnType, funcDef.Signature, true));
                 // Build arglist for comparison
-                List<ProtoCore.Type> argList = new List<ProtoCore.Type>();
+               // List<ProtoCore.Type> argList = new List<ProtoCore.Type>();
+                List<ArgumentInfo> argList = new List<ArgumentInfo>();
                 if (null != funcDef.Signature)
                 {
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
                         ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, gNode);
-                        argList.Add(argType);
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { type = argType };
+                         
+                      //  argList.Add(argType);
+                        argList.Add(argInfo);
                     }
                 }
 
@@ -5658,7 +5664,7 @@ namespace ProtoAssociative
                     }
 
                     //Traverse default argument for the constructor
-                    foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.argInfoList)
+                    foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.Arguments)
                     {
                         if (!argNode.IsDefault)
                         {
@@ -5751,15 +5757,31 @@ namespace ProtoAssociative
                     record.ModuleType = "dll";
                     record.IsDNI = false;
                     record.ReturnType = funcDef.ReturnType;
-                    record.ParameterTypes = localProcedure.argTypeList;
+                    // Get a typeList to be added in record: typeList+ for loop
+                    List<ProtoCore.Type> typeList = new List<ProtoCore.Type>();
+                    for (int i = 0; i < localProcedure.Arguments.Count; i++)
+                    {
+                        typeList.Add(localProcedure.Arguments[i].type);
+
+                    }
+                  //record.ParameterTypes = localProcedure.argTypeList;
+                    record.ParameterTypes = typeList;
                     fep = new ProtoCore.Lang.FFIFunctionEndPoint(record);
                 }
 
                 // Construct the fep arguments
-                fep.FormalParams = new ProtoCore.Type[localProcedure.argTypeList.Count];
+             // fep.FormalParams = new ProtoCore.Type[localProcedure.argTypeList.Count];
+                fep.FormalParams = new ProtoCore.Type[localProcedure.Arguments.Count];
                 fep.procedureNode = localProcedure;
-                localProcedure.argTypeList.CopyTo(fep.FormalParams, 0);
+                // Get a typeList of localProcedure: typeList+ for loop
+                List<ProtoCore.Type> localProceduretypeList = new List<ProtoCore.Type>();
+                for (int i = 0; i < localProcedure.Arguments.Count; i++)
+                {
+                    localProceduretypeList.Add(localProcedure.Arguments[i].type);
 
+                }
+              //localProcedure.argTypeList.CopyTo(fep.FormalParams, 0);
+                localProceduretypeList.CopyTo(fep.FormalParams, 0);
                 // 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
                 int classIndexAtCallsite = globalClassIndex + 1;
                 core.FunctionTable.InitGlobalFunctionEntry(classIndexAtCallsite);
@@ -5920,9 +5942,9 @@ namespace ProtoAssociative
                         // We dont directly allocate arguments now
                         argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
                         
-                        localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
-                        localProcedure.argInfoList.Add(argInfo);
+                     //   localProcedure.argTypeList.Add(argType);
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression, type = argType };
+                        localProcedure.Arguments.Add(argInfo);
 
                         functionDescription += argNode.ArgumentType.ToString();
                     }
@@ -5981,13 +6003,21 @@ namespace ProtoAssociative
                 }
 
                 // Build arglist for comparison
-                List<ProtoCore.Type> argList = new List<ProtoCore.Type>();
+              //  List<ProtoCore.Type> argList = new List<ProtoCore.Type>();
+                  List<ArgumentInfo> argList = new List<ArgumentInfo>();
+
+
+
                 if (null != funcDef.Signature)
                 {
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
                         ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, graphNode);
-                        argList.Add(argType);
+                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { type = argType };
+                      //  argList.Add(argType);
+                        argList.Add(argInfo);
+
+
                     }
                 }
 
@@ -6019,7 +6049,7 @@ namespace ProtoAssociative
                 {
                     //Traverse default argument
                     emitDebugInfo = false;
-                    foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.argInfoList)
+                    foreach (ProtoCore.DSASM.ArgumentInfo argNode in localProcedure.Arguments)
                     {
                         if (!argNode.IsDefault)
                         {
@@ -6154,18 +6184,38 @@ namespace ProtoAssociative
                         record.ModuleType = "dll";
                         record.IsDNI = funcDef.IsDNI;
                         record.ReturnType = funcDef.ReturnType;
-                        record.ParameterTypes = localProcedure.argTypeList;
+
+                        // Get a typeList of localProcedure: typeList+ for loop
+                        List<ProtoCore.Type> localProceduretypeList = new List<ProtoCore.Type>();
+                        for (int i = 0; i < localProcedure.Arguments.Count; i++)
+                        {
+                            localProceduretypeList.Add(localProcedure.Arguments[i].type);
+
+                        }
+
+                       // record.ParameterTypes = localProcedure.argTypeList;
+                        record.ParameterTypes = localProceduretypeList;
+
                         fep = new ProtoCore.Lang.FFIFunctionEndPoint(record);
                     //}
                 }
 
 
                 // Construct the fep arguments
-                fep.FormalParams = new ProtoCore.Type[localProcedure.argTypeList.Count];
+             // fep.FormalParams = new ProtoCore.Type[localProcedure.argTypeList.Count];
+                fep.FormalParams = new ProtoCore.Type[localProcedure.Arguments.Count];
                 fep.BlockScope = codeBlock.codeBlockId;
                 fep.ClassOwnerIndex = localProcedure.classScope;
                 fep.procedureNode = localProcedure;
-                localProcedure.argTypeList.CopyTo(fep.FormalParams, 0);
+                // Get a typeList of localProcedure: typeList+ for loop
+                List<ProtoCore.Type> localProcedure_typeList = new List<ProtoCore.Type>();
+                for (int i = 0; i < localProcedure.Arguments.Count; i++)
+                {
+                    localProcedure_typeList.Add(localProcedure.Arguments[i].type);
+
+                }
+              //localProcedure.argTypeList.CopyTo(fep.FormalParams, 0);
+                localProcedure_typeList.CopyTo(fep.FormalParams, 0);
 
                 // 'classIndexAtCallsite' is the class index as it is stored at the callsite function tables
                 int classIndexAtCallsite = globalClassIndex + 1;
@@ -7619,7 +7669,7 @@ namespace ProtoAssociative
                     if (null != firstSymbol && leftNodeRef.nodeList[0].nodeType != ProtoCore.AssociativeGraph.UpdateNodeType.kMethod)
                     {
                         // Now check if the first element of the identifier list is an argument
-                        foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.argInfoList)
+                        foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.Arguments)
                         {
                             if (argInfo.Name == firstSymbol.name)
                             {
@@ -7668,7 +7718,7 @@ namespace ProtoAssociative
                     {
                         // There is only one, see if its an array modification
                         // Now check if the first element of the identifier list is an argument
-                        foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.argInfoList)
+                        foreach (ProtoCore.DSASM.ArgumentInfo argInfo in localProcedure.Arguments)
                         {
                             // See if this modified variable is an argument
                             if (argInfo.Name == firstSymbol.name)
