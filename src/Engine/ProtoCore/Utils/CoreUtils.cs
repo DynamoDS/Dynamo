@@ -644,7 +644,7 @@ namespace ProtoCore.Utils
 
 
 
-        public static ProcedureNode GetClassAndProcFromGlobalInstance(ProcedureNode procNode, Core core, out int classIndex, List<Type> argTypeList)
+        public static ProcedureNode GetClassAndProcFromGlobalInstance(ProcedureNode procNode, Core core, out int classIndex, List<ArgumentInfo> argTypeList)
         {
             string className = ProtoCore.Utils.CoreUtils.GetClassDeclarationName(procNode, core);
             classIndex = core.ClassTable.IndexOf(className);

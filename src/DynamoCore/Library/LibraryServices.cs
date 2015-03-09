@@ -435,12 +435,12 @@ namespace Dynamo.DSEngine
 
             IEnumerable<FunctionDescriptor> functions = from method in builtins
                                                         let arguments =
-                                                            method.argInfoList.Zip(
-                                                                method.argTypeList,
+                                                            method.Arguments.Zip(
+                                                                method.Arguments,
                                                                 (arg, argType) =>
                                                                     new TypedParameter(
                                                                     arg.Name,
-                                                                    argType))
+                                                                    arg.type))
                                                         let visibleInLibrary =
                                                             (method.MethodAttribute == null || !method.MethodAttribute.HiddenInLibrary)
                                                         let description = 
@@ -455,6 +455,7 @@ namespace Dynamo.DSEngine
                                                                 method.returntype,
                                                                 FunctionType.GenericFunction,
                                                                 visibleInLibrary);
+
 
             AddBuiltinFunctions(functions);
         }
@@ -588,8 +589,8 @@ namespace Dynamo.DSEngine
                 }
             }
 
-            IEnumerable<TypedParameter> arguments = proc.argInfoList.Zip(
-                proc.argTypeList,
+            IEnumerable<TypedParameter> arguments = proc.Arguments.Zip(
+                proc.Arguments,
                 (arg, argType) =>
                 {
                     object defaultValue = null;
@@ -610,9 +611,9 @@ namespace Dynamo.DSEngine
                         }
                     }
 
-                    return new TypedParameter(arg.Name, argType, defaultValue);
+                    return new TypedParameter(arg.Name, arg.type, defaultValue);
                 });
-
+     
             IEnumerable<string> returnKeys = null;
             if (proc.MethodAttribute != null)
             {

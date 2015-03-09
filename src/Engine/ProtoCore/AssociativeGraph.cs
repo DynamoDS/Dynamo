@@ -544,7 +544,7 @@ namespace ProtoCore.AssociativeEngine
                     {
                         if (null != gnode.firstProc)
                         {
-                            if (fnode.Name == gnode.firstProc.name && fnode.Signature.Arguments.Count == gnode.firstProc.argInfoList.Count)
+                            if (fnode.Name == gnode.firstProc.name && fnode.Signature.Arguments.Count == gnode.firstProc.Arguments.Count)
                             {
                                 if (Constants.kInvalidIndex == exprId)
                                 {

@@ -390,7 +390,7 @@ namespace ProtoCore.DSASM
                 {
                     foreach (ProcedureNode procNode in vtable.procList)
                     {
-                        if (CoreUtils.IsDisposeMethod(procNode.name) && procNode.argInfoList.Count == 0)
+                        if (CoreUtils.IsDisposeMethod(procNode.name) && procNode.Arguments.Count == 0)
                         {
                             disposeMethod = procNode;
                             break;
