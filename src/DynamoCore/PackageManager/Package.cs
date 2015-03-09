@@ -196,12 +196,8 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Load the Package into Dynamo.  
         /// </summary>
-        /// <param name="loader"></param>
+        /// <param name="loadPackageParams"></param>
         /// <param name="logger"></param>
-        /// <param name="libraryServices"></param>
-        /// <param name="context"></param>
-        /// <param name="isTestMode"></param>
-        /// <param name="customNodeManager"></param>
         public void LoadIntoDynamo(LoadPackageParams loadPackageParams, ILogger logger)
         {
             // Prevent duplicate loads
@@ -298,7 +294,7 @@ namespace Dynamo.PackageManager
         {
             foreach (var assem in assems)
             {
-                var existingAssem = LoadedAssemblies.FirstOrDefault(x => x.Assembly.FullName == assem.Assembly.FullName);
+                var existingAssem = LoadedAssemblies.FirstOrDefault(x => x.Assembly.GetName().Name == assem.Assembly.GetName().Name);
                 if (existingAssem != null)
                 {
                     existingAssem.IsNodeLibrary = assem.IsNodeLibrary;
@@ -335,7 +331,7 @@ namespace Dynamo.PackageManager
                     assemblies.Add(new PackageAssembly()
                     {
                         Assembly = assem,
-                        IsNodeLibrary = (nodeLibraries == null || nodeLibraries.Contains(assem.FullName))
+                        IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName())
                     });
                 }
             }
@@ -346,6 +342,47 @@ namespace Dynamo.PackageManager
             }
 
             return assemblies;
+        }
+
+        /// <summary>
+        ///     Determine if an assembly is in the "node_libraries" list for the package.
+        /// 
+        ///     This algorithm accepts assemblies that don't have the same version, but the same name.
+        ///     This is important when a package author has updated a dll in their package.  
+        /// 
+        ///     This algorithm assumes all of the entries in nodeLibraryFullNames are properly formatted
+        ///     as returned by the Assembly.FullName property.  If they are not, it ignores the entry.
+        /// </summary>
+        /// <param name="nodeLibraryFullNames"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        internal static bool IsNodeLibrary(IEnumerable<string> nodeLibraryFullNames, AssemblyName name)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (nodeLibraryFullNames == null)
+            {
+                return true;
+            }
+
+            foreach (var n in nodeLibraryFullNames)
+            {
+                try
+                {
+                    // The AssemblyName constructor throws an exception for an improperly formatted string
+                    if (new AssemblyName(n).Name == name.Name)
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception _)
+                {  
+                }
+            }
+            return false;
         }
 
         internal bool ContainsFile(string path)
