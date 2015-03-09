@@ -17,9 +17,9 @@ namespace Dynamo.Tests
     public class ExcelTests : DynamoViewModelUnitTest
     {
         [SetUp]
-        public override void Init()
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
 
             // In unit-test scenario we are redirecting 'PreferenceSettings' to 
             // load from a non-existing preference XML file. That way each test 

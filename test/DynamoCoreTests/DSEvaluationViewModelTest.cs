@@ -206,11 +206,6 @@ namespace Dynamo.Tests
             }
         }
 
-        public override void Cleanup()
-        {
-            base.Cleanup();
-            DynamoUtilities.DynamoPathManager.DestroyInstance();
-        }
     }
 
     [Category("DSExecution")]
