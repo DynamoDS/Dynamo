@@ -431,9 +431,7 @@ namespace Dynamo.UI.Controls
           
             if (cb == null || cb.Code != null && text.Equals(cb.Code))
                 OnRequestReturnFocusToSearch();
-            else
-                this.InnerTextEditor.Text = (DataContext as CodeBlockNodeModel).Code;
-
+            
             if (text == "")
             {
                 nodeViewModel.DynamoViewModel.ExecuteCommand(
