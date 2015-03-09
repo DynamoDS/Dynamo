@@ -4663,10 +4663,24 @@ namespace ProtoCore.DSASM
                 if (arrayHasElement || dictionaryHasElement)
                 {
                     key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                    key.metaData = svArrayToIterate.metaData;
                 }
                 else
                 {
-                    // svArrayToIterate has no elements 
+                    key = StackValue.Null;
+                }
+            }
+            else if (svArrayToIterate.IsString)
+            {
+                var str = runtimeCore.RuntimeMemory.Heap.GetString(svArrayToIterate);
+                Validity.Assert(str != null);
+                if (str.Any())
+                {
+                    key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                    key.metaData = svArrayToIterate.metaData;
+                }
+                else
+                {
                     key = StackValue.Null;
                 }
             }
