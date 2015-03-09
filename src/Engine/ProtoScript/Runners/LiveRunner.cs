@@ -1132,7 +1132,14 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
-                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
+                    runnerCore.__TempCoreHostForRefactoring.Cleanup();
+                    runnerCore = null;
+                }
+
+                if (runtimeCore != null)
+                {
+                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -=
+                        FFIPropertyChanged;
                     runtimeCore.Cleanup();
                 }
 
@@ -1143,10 +1150,15 @@ namespace ProtoScript.Runners
                     taskQueue.Clear();
                 }
 
-                // waiting for thread to finish
-                if (workerThread.IsAlive)
+                if (workerThread != null)
                 {
-                    workerThread.Join();
+                    // waiting for thread to finish
+                    if (workerThread.IsAlive)
+                    {
+                        workerThread.Join();
+                    }
+
+                    workerThread = null;
                 }
             }
         }
@@ -1172,7 +1184,7 @@ namespace ProtoScript.Runners
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
             foreach (var item in configuration.PassThroughConfiguration)
             {
-                runtimeCore.DSExecutable.RuntimeData.Configurations[item.Key] = item.Value;
+                runnerCore.Configurations[item.Key] = item.Value;
             }
 
             vmState = null;
@@ -1297,7 +1309,7 @@ namespace ProtoScript.Runners
                     {
                         //return GetWatchValue(nodeName);
                         const int blockID = 0;
-                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runtimeCore);
+                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runtimeCore, runnerCore);
                         return runtimeMirror;
                     }
                 }
@@ -1467,7 +1479,7 @@ namespace ProtoScript.Runners
 
                     }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         }
 

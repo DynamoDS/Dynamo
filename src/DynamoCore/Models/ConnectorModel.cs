@@ -111,15 +111,20 @@ namespace Dynamo.Models
             return;
         }
         
-        public void Delete()
+        /// <summary>
+        /// Delete the connector.
+        /// </summary>
+        /// <param name="silent">If silent is true, the start and end ports will be disconnected
+        /// without raising port disconnection events.</param>
+        public void Delete(bool silent = false)
         {
             if (Start != null && Start.Connectors.Contains(this))
             {
-                Start.Disconnect(this);
+                Start.Disconnect(this, silent);
             }
             if (End != null && End.Connectors.Contains(this))
             {
-                End.Disconnect(this);
+                End.Disconnect(this, silent);
             }
             OnDeleted();
         }

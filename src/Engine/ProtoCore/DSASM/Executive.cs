@@ -4663,10 +4663,24 @@ namespace ProtoCore.DSASM
                 if (arrayHasElement || dictionaryHasElement)
                 {
                     key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                    key.metaData = svArrayToIterate.metaData;
                 }
                 else
                 {
-                    // svArrayToIterate has no elements 
+                    key = StackValue.Null;
+                }
+            }
+            else if (svArrayToIterate.IsString)
+            {
+                var str = runtimeCore.RuntimeMemory.Heap.GetString(svArrayToIterate);
+                Validity.Assert(str != null);
+                if (str.Any())
+                {
+                    key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                    key.metaData = svArrayToIterate.metaData;
+                }
+                else
+                {
                     key = StackValue.Null;
                 }
             }
@@ -5408,7 +5422,17 @@ namespace ProtoCore.DSASM
             {
                 if (opdata1.IsInteger && opdata2.IsInteger)
                 {
-                    opdata2 = StackValue.BuildInt(opdata2.RawIntValue % opdata1.RawIntValue);
+                    long lhs = opdata2.RawIntValue;
+                    long rhs = opdata1.RawIntValue;
+                    if (rhs == 0)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kModuloByZero, Resources.ModuloByZero);
+                        opdata2 = StackValue.Null;
+                    }
+                    else
+                    {
+                        opdata2 = StackValue.BuildInt(lhs % rhs);
+                    }
                 }
                 else
                 {

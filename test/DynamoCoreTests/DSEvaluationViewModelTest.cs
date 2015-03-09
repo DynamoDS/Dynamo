@@ -112,11 +112,10 @@ namespace Dynamo.Tests
 
         public void AssertClassName(string guid, string className)
         {
-            string varname = GetVarName(guid);
-            var mirror = GetRuntimeMirror(varname);
-            Assert.IsNotNull(mirror);
-            var classInfo = mirror.GetData().Class;
-            Assert.AreEqual(classInfo.ClassName, className);
+            var classMirror = GetClassMirror(className);
+            Assert.IsNotNull(classMirror);
+
+            Assert.AreEqual(classMirror.Name, className);
         }
 
         public void AssertPreviewCount(string guid, int count)
@@ -207,11 +206,6 @@ namespace Dynamo.Tests
             }
         }
 
-        public override void Cleanup()
-        {
-            base.Cleanup();
-            DynamoUtilities.DynamoPathManager.DestroyInstance();
-        }
     }
 
     [Category("DSExecution")]
@@ -1098,6 +1092,13 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestListCombineRegress5561()
+        {
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\regress5561.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("4fb0a4ef-8151-4e5f-a2e6-9c3fcd2c1e8f", new object[] { "1foo", null });
+        }
+
         public void TestMod()
         {
             var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsfunction\modDoesntWork.dyn");

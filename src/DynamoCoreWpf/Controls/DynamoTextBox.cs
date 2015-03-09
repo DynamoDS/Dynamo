@@ -388,7 +388,7 @@ namespace Dynamo.UI.Controls
         public void SetDataContext(object dataContext, bool closeImmediately = false)
         {
             // If Dynamo window is not active, we should not show as well as hide tooltip or do any other staff.
-            if (!mainDynamoWindow.IsActive) return;
+            if (mainDynamoWindow == null || !mainDynamoWindow.IsActive) return;
 
             if (dataContext == null)
             {
