@@ -34,10 +34,7 @@ namespace DynamoCoreUITests
         public virtual void Start()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var assemblyFolder = Path.GetDirectoryName(assemblyPath);
-            DynamoPathManager.Instance.InitializeCore(assemblyFolder);
-
-            preloader = new Preloader(assemblyFolder);
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
             CreateTemporaryFolder();
 

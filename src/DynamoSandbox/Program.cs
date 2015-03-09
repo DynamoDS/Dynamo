@@ -54,10 +54,6 @@ namespace DynamoSandbox
     {
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var rootFolder = Path.GetDirectoryName(exePath);
-            DynamoPathManager.Instance.InitializeCore(rootFolder);
-
             var geometryFactoryPath = string.Empty;
             var preloaderLocation = string.Empty;
             PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);

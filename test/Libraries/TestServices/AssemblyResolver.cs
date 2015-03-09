@@ -22,8 +22,6 @@ namespace TestServices
             if (assemblyHelper != null) return;
 
             var basePath = OpenAndReadDynamoBasePath();
-
-            DynamoPathManager.Instance.InitializeCore(basePath);
             assemblyHelper = new AssemblyHelper(basePath, null);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }

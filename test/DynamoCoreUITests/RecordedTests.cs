@@ -52,14 +52,14 @@ namespace DynamoCoreUITests
         [SetUp]
         public override void Setup()
         {
-            // We do not call "base.Init()" here because we want to be able 
-            // to create our own copy of Controller here with command file path.
-            DynamoPathManager.Instance.InitializeCore(
-              Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
             SetupDirectories();
+
+            // We do not call "base.Init()" here because we want to be able 
+            // to create our own copy of Controller here with command file path.
+            // 
+            // base.Init();
         }
 
         [TearDown]
