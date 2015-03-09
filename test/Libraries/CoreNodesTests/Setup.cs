@@ -25,13 +25,13 @@ namespace DSCoreNodesTests
             };
 
             assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
-            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssemblyNew;
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
         [TearDown]
         public void TearDown()
         {
-            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssemblyNew;
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
         }
     }

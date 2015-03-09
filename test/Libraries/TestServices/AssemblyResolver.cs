@@ -25,7 +25,7 @@ namespace TestServices
 
             DynamoPathManager.Instance.InitializeCore(basePath);
             assemblyHelper = new AssemblyHelper(basePath, null);
-            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssemblyNew;
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
         public void TearDown()
@@ -33,7 +33,7 @@ namespace TestServices
             if (assemblyHelper == null)
                 return;
 
-            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssemblyNew;
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
         }
 
