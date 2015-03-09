@@ -263,102 +263,102 @@ namespace DynamoUnits
         /// <param name="value"></param>
         public abstract void SetValueFromString(string value);
 
-        [Obsolete("SIUnit.Add is obsolete. Please use + instead.")]
+        [Obsolete("SIUnit.Add is obsolete. Please use + instead.", false)]
         public abstract SIUnit Add(SIUnit x);
 
-        [Obsolete("SIUnit.Add is obsolete. Please use + instead.")]
+        [Obsolete("SIUnit.Add is obsolete. Please use + instead.", false)]
         public abstract SIUnit Add(double x);
 
-        [Obsolete("SIUnit.Subtract is obsolete. Please use - instead.")]
+        [Obsolete("SIUnit.Subtract is obsolete. Please use - instead.", false)]
         public abstract SIUnit Subtract(SIUnit x);
 
-        [Obsolete("SIUnit.Subtract is obsolete. Please use - instead.")]
+        [Obsolete("SIUnit.Subtract is obsolete. Please use - instead.", false)]
         public abstract SIUnit Subtract(double x);
 
-        [Obsolete("SIUnit.Multiply is obsolete. Please use * instead.")]
+        [Obsolete("SIUnit.Multiply is obsolete. Please use * instead.", false)]
         public abstract SIUnit Multiply(SIUnit x);
 
-        [Obsolete("SIUnit.Multiply is obsolete. Please use * instead.")]
+        [Obsolete("SIUnit.Multiply is obsolete. Please use * instead.", false)]
         public abstract SIUnit Multiply(double x);
 
-        [Obsolete("SIUnit.Divide is obsolete. Please use / instead.")]
+        [Obsolete("SIUnit.Divide is obsolete. Please use / instead.", false)]
         public abstract dynamic Divide(SIUnit x);
 
-        [Obsolete("SIUnit.Divide is obsolete. Please use / instead.")]
+        [Obsolete("SIUnit.Divide is obsolete. Please use / instead.", false)]
         public abstract SIUnit Divide(double x);
 
-        [Obsolete("SIUnit.Modulo is obsolete. Please use % instead.")]
+        [Obsolete("SIUnit.Modulo is obsolete. Please use % instead.", false)]
         public abstract SIUnit Modulo(SIUnit x);
 
-        [Obsolete("SIUnit.Modulo is obsolete. Please use % instead.")]
+        [Obsolete("SIUnit.Modulo is obsolete. Please use % instead.", false)]
         public abstract SIUnit Modulo(double x);
 
-        [Obsolete("SIUnit.Round is obsolete. Please use Round instead.")]
+        [Obsolete("SIUnit.Round is obsolete. Please use Round instead.", false)]
         public abstract SIUnit Round();
 
-        [Obsolete("SIUnit.Ceiling is obsolete. Please use Ceiling instead.")]
+        [Obsolete("SIUnit.Ceiling is obsolete. Please use Ceiling instead.", false)]
         public abstract SIUnit Ceiling();
 
-        [Obsolete("SIUnit.Floor is obsolete. Please use Floor instead.")]
+        [Obsolete("SIUnit.Floor is obsolete. Please use Floor instead.", false)]
         public abstract SIUnit Floor();
 
         #region operator overloads;
 
-        [Obsolete("SIUnit.+ is obsolete. Please use + instead.")]
+        [Obsolete("SIUnit.+ is obsolete. Please use + instead.", false)]
         public static SIUnit operator +(SIUnit x, SIUnit y)
         {
             return x.Add(y);
         }
 
-        [Obsolete("SIUnit.+ is obsolete. Please use + instead.")]
+        [Obsolete("SIUnit.+ is obsolete. Please use + instead.", false)]
         public static SIUnit operator +(SIUnit x, double y)
         {
             return x.Add(y);
         }
 
-        [Obsolete("SIUnit.+ is obsolete. Please use + instead.")]
+        [Obsolete("SIUnit.+ is obsolete. Please use + instead.", false)]
         public static double operator +(double x, SIUnit y)
         {
             return x + y.Value;
         }
 
-        [Obsolete("SIUnit.- is obsolete. Please use - instead.")]
+        [Obsolete("SIUnit.- is obsolete. Please use - instead.", false)]
         public static SIUnit operator -(SIUnit x, SIUnit y)
         {
             return x.Subtract(y);
         }
 
-        [Obsolete("SIUnit.- is obsolete. Please use - instead.")]
+        [Obsolete("SIUnit.- is obsolete. Please use - instead.", false)]
         public static SIUnit operator -(SIUnit x, double y)
         {
             return x.Subtract(y);
         }
 
-        [Obsolete("SIUnit.- is obsolete. Please use - instead.")]
+        [Obsolete("SIUnit.- is obsolete. Please use - instead.", false)]
         public static double operator -(double x, SIUnit y)
         {
             return x - y.Value;
         }
 
-        [Obsolete("SIUnit.* is obsolete. Please use * instead.")]
+        [Obsolete("SIUnit.* is obsolete. Please use * instead.", false)]
         public static SIUnit operator *(SIUnit x, SIUnit y)
         {
             return x.Multiply(y);
         }
 
-        [Obsolete("SIUnit.* is obsolete. Please use * instead.")]
+        [Obsolete("SIUnit.* is obsolete. Please use * instead.", false)]
         public static SIUnit operator *(SIUnit x, double y)
         {
             return x.Multiply(y);
         }
 
-        [Obsolete("SIUnit.* is obsolete. Please use * instead.")]
+        [Obsolete("SIUnit.* is obsolete. Please use * instead.", false)]
         public static SIUnit operator *(double x, SIUnit y)
         {
             return y.Multiply(x);
         }
 
-        [Obsolete("SIUnit./ is obsolete. Please use / instead.")]
+        [Obsolete("SIUnit./ is obsolete. Please use / instead.", false)]
         public static dynamic operator /(SIUnit x, SIUnit y)
         {
             //units will cancel
@@ -370,97 +370,97 @@ namespace DynamoUnits
             return x.Divide(y);
         }
 
-        [Obsolete("SIUnit./ is obsolete. Please use / instead.")]
+        [Obsolete("SIUnit./ is obsolete. Please use / instead.", false)]
         public static SIUnit operator /(SIUnit x, double y)
         {
             return x.Divide(y);
         }
 
-        [Obsolete("SIUnit.% is obsolete. Please use % instead.")]
+        [Obsolete("SIUnit.% is obsolete. Please use % instead.", false)]
         public static SIUnit operator %(SIUnit x, SIUnit y)
         {
             return x.Modulo(y);
         }
 
-        [Obsolete("SIUnit.% is obsolete. Please use % instead.")]
+        [Obsolete("SIUnit.% is obsolete. Please use % instead.", false)]
         public static SIUnit operator %(SIUnit x, double y)
         {
             return x.Modulo(y);
         }
 
-        [Obsolete("SIUnit.% is obsolete. Please use % instead.")]
+        [Obsolete("SIUnit.% is obsolete. Please use % instead.", false)]
         public static double operator %(double x, SIUnit y)
         {
             return x % y.Value;
         }
 
-        [Obsolete("SIUnit.> is obsolete. Please use > instead.")]
+        [Obsolete("SIUnit.> is obsolete. Please use > instead.", false)]
         public static bool operator >(double x, SIUnit y)
         {
             return x > y.Value;
         }
 
-        [Obsolete("SIUnit.> is obsolete. Please use > instead.")]
+        [Obsolete("SIUnit.> is obsolete. Please use > instead.", false)]
         public static bool operator >(SIUnit x, double y)
         {
             return x.Value > y;
         }
 
-        [Obsolete("SIUnit.> is obsolete. Please use > instead.")]
+        [Obsolete("SIUnit.> is obsolete. Please use > instead.", false)]
         public static bool operator >(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value > y.Value;
         }
 
-        [Obsolete("SIUnit.< is obsolete. Please use < instead.")]
+        [Obsolete("SIUnit.< is obsolete. Please use < instead.", false)]
         public static bool operator <(double x, SIUnit y)
         {
             return x < y.Value;
         }
 
-        [Obsolete("SIUnit.< is obsolete. Please use < instead.")]
+        [Obsolete("SIUnit.< is obsolete. Please use < instead.", false)]
         public static bool operator <(SIUnit x, double y)
         {
             return x.Value < y;
         }
 
-        [Obsolete("SIUnit.< is obsolete. Please use < instead.")]
+        [Obsolete("SIUnit.< is obsolete. Please use < instead.", false)]
         public static bool operator <(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value < y.Value;
         }
 
-        [Obsolete("SIUnit.>= is obsolete. Please use >= instead.")]
+        [Obsolete("SIUnit.>= is obsolete. Please use >= instead.", false)]
         public static bool operator >=(double x, SIUnit y)
         {
             return x >= y.Value;
         }
 
-        [Obsolete("SIUnit.>= is obsolete. Please use >= instead.")]
+        [Obsolete("SIUnit.>= is obsolete. Please use >= instead.", false)]
         public static bool operator >=(SIUnit x, double y)
         {
             return x.Value >= y;
         }
 
-        [Obsolete("SIUnit.>= is obsolete. Please use >= instead.")]
+        [Obsolete("SIUnit.>= is obsolete. Please use >= instead.", false)]
         public static bool operator >=(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value >= y.Value;
         }
 
-        [Obsolete("SIUnit.<= is obsolete. Please use <= instead.")]
+        [Obsolete("SIUnit.<= is obsolete. Please use <= instead.", false)]
         public static bool operator <=(double x, SIUnit y)
         {
             return x <= y.Value;
         }
 
-        [Obsolete("SIUnit.<= is obsolete. Please use <= instead.")]
+        [Obsolete("SIUnit.<= is obsolete. Please use <= instead.", false)]
         public static bool operator <=(SIUnit x, double y)
         {
             return x.Value <= y;
         }
 
-        [Obsolete("SIUnit.<= is obsolete. Please use <= instead.")]
+        [Obsolete("SIUnit.<= is obsolete. Please use <= instead.", false)]
         public static bool operator <=(SIUnit x, SIUnit y)
         {
             return x.GetType() == y.GetType() && x.Value <= y.Value;
@@ -502,31 +502,31 @@ namespace DynamoUnits
         public const string INCHES = "in";
         public const string FEET = "ft";
 
-        [Obsolete("Area.ToMillimeter is obsolete. Please use Convert Units.")]
+        [Obsolete("Area.ToMillimeter is obsolete. Please use Convert Units.", false)]
         public static double ToMillimeter
         {
             get { return METER_TO_MILLIMETER; }
         }
 
-        [Obsolete("Area.ToCentimeter is obsolete. Please use Convert Units.")]
+        [Obsolete("Area.ToCentimeter is obsolete. Please use Convert Units.", false)]
         public static double ToCentimeter
         {
             get { return METER_TO_CENTIMETER; }
         }
 
-        [Obsolete("Area.ToMeter is obsolete. Please use Convert Units.")]
+        [Obsolete("Area.ToMeter is obsolete. Please use Convert Units.", false)]
         public static double ToMeter
         {
             get { return 1.0; }
         }
 
-        [Obsolete("Area.ToInch is obsolete. Please use Convert Units.")]
+        [Obsolete("Area.ToInch is obsolete. Please use Convert Units.", false)]
         public static double ToInch
         {
             get { return METER_TO_INCH; }
         }
 
-        [Obsolete("Area.ToFoot is obsolete. Please use Convert Units.")]
+        [Obsolete("Area.ToFoot is obsolete. Please use Convert Units.", false)]
         public static double ToFoot
         {
             get { return METER_TO_FOOT; }
@@ -534,13 +534,13 @@ namespace DynamoUnits
 
         internal Length(double value):base(value){}
 
-        [Obsolete("Length.FromDouble is obsolete. Please pass number values directly.")]
+        [Obsolete("Length.FromDouble is obsolete. Please pass number values directly.", false)]
         public static Length FromDouble(double value)
         {
             return new Length(value);
         }
 
-        [Obsolete("Length.From feet is obsolete. Please pass number values directly.")]
+        [Obsolete("Length.From feet is obsolete. Please pass number values directly.", false)]
         public static Length FromFeet(double value)
         {
             return new Length(value/ToFoot);
@@ -565,7 +565,7 @@ namespace DynamoUnits
 
         #region math
 
-        [Obsolete("Length.Add is obsolete. Please use + instead.")]
+        [Obsolete("Length.Add is obsolete. Please use + instead.", false)]
         public override SIUnit Add(SIUnit x)
         {
             if (x is Length)
@@ -574,13 +574,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Length.Add is obsolete. Please use + instead.")]
+        [Obsolete("Length.Add is obsolete. Please use + instead.", false)]
         public override SIUnit Add(double x)
         {
             return new Length(_value + x);
         }
 
-        [Obsolete("Length.Subtract is obsolete. Please use - instead.")]
+        [Obsolete("Length.Subtract is obsolete. Please use - instead.", false)]
         public override SIUnit Subtract(SIUnit x)
         {
             if (x is Length)
@@ -589,13 +589,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Length.Subtract is obsolete. Please use - instead.")]
+        [Obsolete("Length.Subtract is obsolete. Please use - instead.", false)]
         public override SIUnit Subtract(double x)
         {
             return new Length(_value - x);
         }
 
-        [Obsolete("Length.Multiply is obsolete. Please use * instead.")]
+        [Obsolete("Length.Multiply is obsolete. Please use * instead.", false)]
         public override SIUnit Multiply(SIUnit x)
         {
             if (x is Length)
@@ -611,13 +611,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Length.Multiply is obsolete. Please use * instead.")]
+        [Obsolete("Length.Multiply is obsolete. Please use * instead.", false)]
         public override SIUnit Multiply(double x)
         {
             return new Length(_value * x);
         }
 
-        [Obsolete("Length.Divide is obsolete. Please use / instead.")]
+        [Obsolete("Length.Divide is obsolete. Please use / instead.", false)]
         public override dynamic Divide(SIUnit x)
         {
             if (x is Length)
@@ -628,13 +628,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Length.Divide is obsolete. Please use / instead.")]
+        [Obsolete("Length.Divide is obsolete. Please use / instead.", false)]
         public override SIUnit Divide(double x)
         {
             return new Length(_value / x);
         }
 
-        [Obsolete("Length.Modulo is obsolete. Please use % instead.")]
+        [Obsolete("Length.Modulo is obsolete. Please use % instead.", false)]
         public override SIUnit Modulo(SIUnit x)
         {
             if (x is Length)
@@ -643,13 +643,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Length.Modulo is obsolete. Please use % instead.")]
+        [Obsolete("Length.Modulo is obsolete. Please use % instead.", false)]
         public override SIUnit Modulo(double x)
         {
             return new Length(_value % x);
         }
 
-        [Obsolete("Length.Round is obsolete. Please use Round instead.")]
+        [Obsolete("Length.Round is obsolete. Please use Round instead.", false)]
         public override SIUnit Round()
         {
             var val = _value * UiLengthConversion;
@@ -657,7 +657,7 @@ namespace DynamoUnits
             return new Length(round / UiLengthConversion);
         }
 
-        [Obsolete("Length.Ceiling is obsolete. Please use Ceiling instead.")]
+        [Obsolete("Length.Ceiling is obsolete. Please use Ceiling instead.", false)]
         public override SIUnit Ceiling()
         {
             var val = _value * UiLengthConversion;
@@ -665,7 +665,7 @@ namespace DynamoUnits
             return new Length(round / UiLengthConversion);
         }
 
-        [Obsolete("Length.Floor is obsolete. Please use Floor instead.")]
+        [Obsolete("Length.Floor is obsolete. Please use Floor instead.", false)]
         public override SIUnit Floor()
         {
             var val = _value * UiLengthConversion;
@@ -673,7 +673,7 @@ namespace DynamoUnits
             return new Length(round / UiLengthConversion);
         }
 
-        [Obsolete("Length.ConvertToHostUnits is obsolete. Please Convert Units instead")]
+        [Obsolete("Length.ConvertToHostUnits is obsolete. Please Convert Units instead", false)]
         public override double ConvertToHostUnits()
         {
             switch (HostApplicationInternalLengthUnit)
@@ -689,7 +689,7 @@ namespace DynamoUnits
 
         #region string
 
-        [Obsolete("Length.SetValueFromString is obsolete.")]
+        [Obsolete("Length.SetValueFromString is obsolete.", false)]
         public override void SetValueFromString(string value)
         {
             //first try to parse the input as a number
@@ -842,25 +842,25 @@ namespace DynamoUnits
         public const string SQUARE_INCHES = "in²";
         public const string SQUARE_FEET = "ft²";
 
-        [Obsolete("Area.ToSquareMillimeters is obsolete. Please use Convert Units.")]
+        [Obsolete("Area.ToSquareMillimeters is obsolete. Please use Convert Units.", false)]
         public static double ToSquareMillimeters
         {
             get { return SQUARE_METERS_TO_SQUARE_MILLIMETERS; }
         }
 
-        [Obsolete("Area.ToSquareFoot is obsolete. Please use Convert Units.")]
+        [Obsolete("Area.ToSquareFoot is obsolete. Please use Convert Units.", false)]
         public static double ToSquareCentimeters
         {
             get { return SQUARE_METERS_TO_SQUARE_CENTIMETERS; }
         }
 
-        [Obsolete("Area.ToSquareInch is obsolete. Please use Convert Units.")]
+        [Obsolete("Area.ToSquareInch is obsolete. Please use Convert Units.", false)]
         public static double ToSquareInch
         {
             get { return SQUARE_METERS_TO_SQUARE_INCH; }
         }
 
-        [Obsolete("Area.ToSquareFoot is obsolete. Please use Convert Units.")]
+        [Obsolete("Area.ToSquareFoot is obsolete. Please use Convert Units.", false)]
         public static double ToSquareFoot
         {
             get { return SQUARE_METERS_TO_SQUARE_FOOT; }
@@ -868,13 +868,13 @@ namespace DynamoUnits
 
         internal Area(double value):base(value){}
 
-        [Obsolete("Area.FromDouble is obsolete. Please use Number.")]
+        [Obsolete("Area.FromDouble is obsolete. Please use Number.", false)]
         public static Area FromDouble(double value)
         {
             return new Area(value);
         }
 
-        [Obsolete("Area.FromSquareFeet is obsolete. Please use Number.")]
+        [Obsolete("Area.FromSquareFeet is obsolete. Please use Number.", false)]
         public static Area FromSquareFeet(double value)
         {
             return new Area(value / ToSquareFoot);
@@ -882,7 +882,7 @@ namespace DynamoUnits
 
         #region math
 
-        [Obsolete("Area.Add is obsolete. Please use + instead.")]
+        [Obsolete("Area.Add is obsolete. Please use + instead.", false)]
         public override SIUnit Add(SIUnit x)
         {
             if (x is Area)
@@ -891,13 +891,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Area.Add is obsolete. Please use + instead.")]
+        [Obsolete("Area.Add is obsolete. Please use + instead.", false)]
         public override SIUnit Add(double x)
         {
             return new Area(_value + x);
         }
 
-        [Obsolete("Area.Subtract is obsolete. Please use + instead.")]
+        [Obsolete("Area.Subtract is obsolete. Please use + instead.", false)]
         public override SIUnit Subtract(SIUnit x)
         {
             if (x is Area)
@@ -906,13 +906,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Area.Subtract is obsolete. Please use + instead.")]
+        [Obsolete("Area.Subtract is obsolete. Please use + instead.", false)]
         public override SIUnit Subtract(double x)
         {
             return new Area(_value - x);
         }
 
-        [Obsolete("Area.Multiply is obsolete. Please use * instead.")]
+        [Obsolete("Area.Multiply is obsolete. Please use * instead.", false)]
         public override SIUnit Multiply(SIUnit x)
         {
             if (x is Length)
@@ -924,13 +924,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Area.Multiply is obsolete. Please use * instead.")]
+        [Obsolete("Area.Multiply is obsolete. Please use * instead.", false)]
         public override SIUnit Multiply(double x)
         {
             return new Area(_value * x);
         }
 
-        [Obsolete("Area.Divide is obsolete. Please use / instead.")]
+        [Obsolete("Area.Divide is obsolete. Please use / instead.", false)]
         public override dynamic Divide(SIUnit x)
         {
             if (x is Area)
@@ -948,13 +948,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Area.Divide is obsolete. Please use / instead.")]
+        [Obsolete("Area.Divide is obsolete. Please use / instead.", false)]
         public override SIUnit Divide(double x)
         {
             return new Area(_value / x);
         }
 
-        [Obsolete("Area.Modulo is obsolete. Please use % instead.")]
+        [Obsolete("Area.Modulo is obsolete. Please use % instead.", false)]
         public override SIUnit Modulo(SIUnit x)
         {
             if (x is Area)
@@ -965,13 +965,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Area.Modulo is obsolete. Please use % instead.")]
+        [Obsolete("Area.Modulo is obsolete. Please use % instead.", false)]
         public override SIUnit Modulo(double x)
         {
             return new Area(_value % x);
         }
 
-        [Obsolete("Area.Round is obsolete. Please use Round instead.")]
+        [Obsolete("Area.Round is obsolete. Please use Round instead.", false)]
         public override SIUnit Round()
         {
             var val = _value * UiAreaConversion;
@@ -979,7 +979,7 @@ namespace DynamoUnits
             return new Area(round / UiAreaConversion);
         }
 
-        [Obsolete("Area.Ceiling is obsolete. Please use Ceiling instead.")]
+        [Obsolete("Area.Ceiling is obsolete. Please use Ceiling instead.", false)]
         public override SIUnit Ceiling()
         {
             var val = _value * UiAreaConversion;
@@ -987,7 +987,7 @@ namespace DynamoUnits
             return new Area(round / UiAreaConversion);
         }
 
-        [Obsolete("Area.Floor is obsolete. Please use Floor instead.")]
+        [Obsolete("Area.Floor is obsolete. Please use Floor instead.", false)]
         public override SIUnit Floor()
         {
             var val = _value * UiAreaConversion;
@@ -1011,7 +1011,7 @@ namespace DynamoUnits
             }
         }
 
-        [Obsolete("Area.ConvertToHostUnits is obsolete. Please use Convert units instead.")]
+        [Obsolete("Area.ConvertToHostUnits is obsolete. Please use Convert units instead.", false)]
         public override double ConvertToHostUnits()
         {
             switch (HostApplicationInternalAreaUnit)
@@ -1027,7 +1027,7 @@ namespace DynamoUnits
 
         #region string
 
-        [Obsolete("Area.SetValueFromString is obsolete.")]
+        [Obsolete("Area.SetValueFromString is obsolete.", false)]
         public override void SetValueFromString(string value)
         {
             //first try to parse the input as a number
@@ -1157,25 +1157,25 @@ namespace DynamoUnits
         public const string CUBIC_INCHES = "in³";
         public const string CUBIC_FEET = "ft³";
 
-        [Obsolete("Volume.ToCubicMillimeter is obsolete. Please use Convert Units.")]
+        [Obsolete("Volume.ToCubicMillimeter is obsolete. Please use Convert Units.", false)]
         public static double ToCubicMillimeter
         {
             get { return CUBIC_METERS_TO_CUBIC_MILLIMETERS; }
         }
 
-        [Obsolete("Volume.ToCubicCentimeter is obsolete. Please use Convert Units.")]
+        [Obsolete("Volume.ToCubicCentimeter is obsolete. Please use Convert Units.", false)]
         public static double ToCubicCentimeter
         {
             get { return CUBIC_METERS_TO_CUBIC_CENTIMETERS; }
         }
 
-        [Obsolete("Volume.ToCubicInch is obsolete. Please use Convert Units.")]
+        [Obsolete("Volume.ToCubicInch is obsolete. Please use Convert Units.", false)]
         public static double ToCubicInch
         {
             get { return CUBIC_METERS_TO_CUBIC_INCHES; }
         }
 
-        [Obsolete("Volume.ToCubicFoot is obsolete. Please use Convert Units.")]
+        [Obsolete("Volume.ToCubicFoot is obsolete. Please use Convert Units.", false)]
         public static double ToCubicFoot
         {
             get { return CUBIC_METERS_TO_CUBIC_FEET; }
@@ -1183,13 +1183,13 @@ namespace DynamoUnits
 
         internal Volume(double value) : base(value){}
 
-        [Obsolete("Volume.FromDouble is obsolete. Please use Number.")]
+        [Obsolete("Volume.FromDouble is obsolete. Please use Number.", false)]
         public static Volume FromDouble(double value)
         {
             return new Volume(value);
         }
 
-        [Obsolete("Volume.FromCubicFeet is obsolete. Please use Number.")]
+        [Obsolete("Volume.FromCubicFeet is obsolete. Please use Number.", false)]
         public static Volume FromCubicFeet(double value)
         {
             return new Volume(value / ToCubicFoot);
@@ -1197,7 +1197,7 @@ namespace DynamoUnits
 
         #region math
 
-        [Obsolete("Volume.Add is obsolete. Please use + instead.")]
+        [Obsolete("Volume.Add is obsolete. Please use + instead.", false)]
         public override SIUnit Add(SIUnit x)
         {
             if (x is Volume)
@@ -1206,13 +1206,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Volume.Add is obsolete. Please use + instead.")]
+        [Obsolete("Volume.Add is obsolete. Please use + instead.", false)]
         public override SIUnit Add(double x)
         {
             return new Volume(_value + x);
         }
 
-        [Obsolete("Volume.Subtract is obsolete. Please use - instead.")]
+        [Obsolete("Volume.Subtract is obsolete. Please use - instead.", false)]
         public override SIUnit Subtract(SIUnit x)
         {
             if (x is Volume)
@@ -1221,25 +1221,25 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Volume.Subtract is obsolete. Please use - instead.")]
+        [Obsolete("Volume.Subtract is obsolete. Please use - instead.", false)]
         public override SIUnit Subtract(double x)
         {
             return new Volume(_value - x);
         }
 
-        [Obsolete("Volume.Multiply is obsolete. Please use * instead.")]
+        [Obsolete("Volume.Multiply is obsolete. Please use * instead.", false)]
         public override SIUnit Multiply(SIUnit x)
         {
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Volume.Multiply is obsolete. Please use * instead.")]
+        [Obsolete("Volume.Multiply is obsolete. Please use * instead.", false)]
         public override SIUnit Multiply(double x)
         {
             return new Volume(_value * x);
         }
 
-        [Obsolete("Volume.Multiply is obsolete. Please use / instead.")]
+        [Obsolete("Volume.Multiply is obsolete. Please use / instead.", false)]
         public override dynamic Divide(SIUnit x)
         {
             if (x is Length)
@@ -1254,13 +1254,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Volume.Multiply is obsolete. Please use / instead.")]
+        [Obsolete("Volume.Multiply is obsolete. Please use / instead.", false)]
         public override SIUnit Divide(double x)
         {
             return new Volume(_value / x);
         }
 
-        [Obsolete("Volume.Multiply is obsolete. Please use % instead.")]
+        [Obsolete("Volume.Multiply is obsolete. Please use % instead.", false)]
         public override SIUnit Modulo(SIUnit x)
         {
             if (x is Volume)
@@ -1271,13 +1271,13 @@ namespace DynamoUnits
             throw new UnitsException(GetType(), x.GetType());
         }
 
-        [Obsolete("Volume.Multiply is obsolete. Please use % instead.")]
+        [Obsolete("Volume.Multiply is obsolete. Please use % instead.", false)]
         public override SIUnit Modulo(double x)
         {
             return new Volume(_value % x);
         }
 
-        [Obsolete("Volume.Multiply is obsolete. Please use Round instead.")]
+        [Obsolete("Volume.Multiply is obsolete. Please use Round instead.", false)]
         public override SIUnit Round()
         {
             var val = _value * UiVolumeConversion;
@@ -1285,7 +1285,7 @@ namespace DynamoUnits
             return new Volume(round / UiVolumeConversion);
         }
 
-        [Obsolete("Volume.Multiply is obsolete. Please use Ceiling instead.")]
+        [Obsolete("Volume.Multiply is obsolete. Please use Ceiling instead.", false)]
         public override SIUnit Ceiling()
         {
             var val = _value * UiVolumeConversion;
@@ -1293,7 +1293,7 @@ namespace DynamoUnits
             return new Volume(round / UiVolumeConversion);
         }
 
-        [Obsolete("Volume.Multiply is obsolete. Please use Floor instead.")]
+        [Obsolete("Volume.Multiply is obsolete. Please use Floor instead.", false)]
         public override SIUnit Floor()
         {
             var val = _value * UiVolumeConversion;
@@ -1317,7 +1317,7 @@ namespace DynamoUnits
             }
         }
 
-        [Obsolete("Volume.ConvertToHostUnits is obsolete. Please use Convert Units.")]
+        [Obsolete("Volume.ConvertToHostUnits is obsolete. Please use Convert Units.", false)]
         public override double ConvertToHostUnits()
         {
             switch (VolumeUnit)
@@ -1333,7 +1333,7 @@ namespace DynamoUnits
 
         #region string
 
-        [Obsolete("Volume.SetValueFromString is obsolete.")]
+        [Obsolete("Volume.SetValueFromString is obsolete.", false)]
         public override void SetValueFromString(string value)
         {
             //first try to parse the input as a number

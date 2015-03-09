@@ -199,10 +199,14 @@ namespace Dynamo.Controls
             // this method will be called with "e.NewValue" sets to "true". 
             // In such cases the state machine should be notified, and any 
             // connection that is in progress should be cancelled off.
-            // 
+            
             object dataContext = this.owningWorkspace.DataContext;
             WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
-            wvm.HandleFocusChanged(this, ((bool)e.NewValue));
+            // when there is a connection on a dynamonodebutton, then the connection should not be cancelled
+            if (wvm != null && !wvm.CheckActiveConnectorCompatibility(wvm.portViewModel))
+            {
+                wvm.HandleFocusChanged(this, ((bool) e.NewValue));
+            }
             base.OnIsKeyboardFocusWithinChanged(e);
         }
 

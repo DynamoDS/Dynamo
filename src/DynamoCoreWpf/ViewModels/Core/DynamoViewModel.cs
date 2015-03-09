@@ -2018,7 +2018,6 @@ namespace Dynamo.ViewModels
 
         public void GetBranchVisualization(object parameters)
         {
-            Debug.WriteLine("Requesting branch update for background preview.");
             VisualizationManager.RequestBranchUpdate(null);
         }
 

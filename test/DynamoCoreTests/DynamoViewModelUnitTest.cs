@@ -26,9 +26,10 @@ namespace Dynamo.Tests
         protected DynamoViewModel ViewModel;
         private DynamoShapeManager.Preloader preloader;
 
-        public override void Init()
+        [SetUp]
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
             StartDynamo();
         }
 
@@ -39,8 +40,12 @@ namespace Dynamo.Tests
                 preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
+                if (ViewModel == null)
+                    return;
+
                 var shutdownParams = new DynamoViewModel.ShutdownParams(
-                    shutdownHost: false, allowCancellation: false);
+                    shutdownHost: false,
+                    allowCancellation: false);
 
                 ViewModel.PerformShutdownSequence(shutdownParams);
                 ViewModel.RequestUserSaveWorkflow -= RequestUserSaveWorkflow;
@@ -90,7 +95,6 @@ namespace Dynamo.Tests
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             var assemblyFolder = Path.GetDirectoryName(assemblyPath);
-            DynamoPathManager.Instance.InitializeCore(assemblyFolder);
 
             preloader = new Preloader(assemblyFolder);
             preloader.Preload();

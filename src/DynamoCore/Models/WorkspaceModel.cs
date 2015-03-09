@@ -423,6 +423,7 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
+        public ElementResolver ElementResolver { get; protected set; }
         /// <summary>
         /// A unique identifier for the workspace.
         /// </summary>
@@ -431,7 +432,6 @@ namespace Dynamo.Models
             get { return guid; }
         }
 
-        public ElementResolver ElementResolver { get; private set; }
 
         #endregion
 
@@ -441,8 +441,7 @@ namespace Dynamo.Models
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n,
             WorkspaceInfo info, 
-            NodeFactory factory, 
-            ElementResolver elementResolver)
+            NodeFactory factory)
         {
             guid = Guid.NewGuid();
 
@@ -463,10 +462,19 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
-            ElementResolver = elementResolver;
 
+            // Update ElementResolver from nodeGraph.Nodes (where node is CBN)
+            ElementResolver = new ElementResolver();
             foreach (var node in nodes)
+            {
                 RegisterNode(node);
+
+                var cbn = node as CodeBlockNodeModel;
+                if (cbn != null && cbn.ElementResolver != null)
+                {
+                    ElementResolver.CopyResolutionMap(cbn.ElementResolver);
+                }
+            }
 
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
@@ -651,6 +659,7 @@ namespace Dynamo.Models
 
         internal void ResetWorkspace()
         {
+            ElementResolver = new ElementResolver();
             ResetWorkspaceCore();
         }
 
