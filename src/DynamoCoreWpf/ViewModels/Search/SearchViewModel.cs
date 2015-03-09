@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -204,7 +205,12 @@ namespace Dynamo.ViewModels
         {
             Model = model;
             this.dynamoViewModel = dynamoViewModel;
-            iconServices = new IconServices(dynamoViewModel.Model.PathManager);
+
+            IPathManager pathManager = null;
+            if (dynamoViewModel != null && (dynamoViewModel.Model != null))
+                pathManager = dynamoViewModel.Model.PathManager;
+
+            iconServices = new IconServices(pathManager);
 
             MaxNumSearchResults = 15;
 
