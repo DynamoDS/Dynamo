@@ -11,7 +11,7 @@ using System.Globalization;
 namespace DSCoreNodesUI
 {
     [NodeCategory(BuiltinNodeCategories.CORE)]
-    [NodeName("Convert")]
+    [NodeName("Convert Between Units")]
     [NodeDescription("ConversionNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class DynamoConvert : NodeModel
