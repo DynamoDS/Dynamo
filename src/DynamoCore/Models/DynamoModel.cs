@@ -347,8 +347,6 @@ namespace Dynamo.Models
             OnCleanup();
             
             DynamoSelection.DestroyInstance();
-            DynamoPathManager.DestroyInstance();
-
             InstrumentationLogger.End();
 
             if (Scheduler != null)
@@ -369,7 +367,6 @@ namespace Dynamo.Models
         public struct StartConfiguration
         {
             public string Context { get; set; }
-            public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
             public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
@@ -399,11 +396,6 @@ namespace Dynamo.Models
             // where necessary, assign defaults
             if (string.IsNullOrEmpty(configuration.Context))
                 configuration.Context = Core.Context.NONE;
-            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
-            {
-                var asmLocation = Assembly.GetExecutingAssembly().Location;
-                configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
-            }
 
             return new DynamoModel(configuration);
         }
@@ -414,10 +406,8 @@ namespace Dynamo.Models
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
             string context = config.Context;
-            string corePath = config.DynamoCorePath;
             bool testMode = config.StartInTestMode;
 
-            DynamoPathManager.Instance.InitializeCore(corePath);
             pathManager = new PathManager(config.PathResolver);
 
             Context = context;
