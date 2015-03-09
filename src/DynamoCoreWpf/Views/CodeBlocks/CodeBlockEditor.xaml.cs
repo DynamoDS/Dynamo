@@ -92,8 +92,8 @@ namespace Dynamo.UI.Controls
         {
             var engineController = dynamoViewModel.EngineController;
 
-            return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid, 
-                dynamoViewModel.HomeSpace.ElementResolver).Select(x => new CodeBlockCompletionData(x));
+            return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid,
+                dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeBlockCompletionData(x));
         }
 
         internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
