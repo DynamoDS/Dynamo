@@ -204,7 +204,9 @@ namespace Dynamo.Controls
             WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
             // when there is a connection on a dynamonodebutton, then the connection should not be cancelled
             if (wvm != null && !wvm.CheckActiveConnectorCompatibility(wvm.portViewModel))
-                wvm.HandleFocusChanged(this, ((bool)e.NewValue));
+            {
+                wvm.HandleFocusChanged(this, ((bool) e.NewValue));
+            }
             base.OnIsKeyboardFocusWithinChanged(e);
         }
 
