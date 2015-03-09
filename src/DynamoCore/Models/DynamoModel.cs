@@ -339,6 +339,7 @@ namespace Dynamo.Models
             OnCleanup();
             
             DynamoSelection.DestroyInstance();
+            DynamoPathManager.DestroyInstance();
 
             InstrumentationLogger.End();
 
@@ -471,8 +472,9 @@ namespace Dynamo.Models
             ResetEngineInternal();
 
             AddHomeWorkspace();
-            
-            UpdateManager.UpdateManager.CheckForProductUpdate();
+
+            if (!IsTestMode)
+                UpdateManager.UpdateManager.CheckForProductUpdate();
 
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
@@ -547,6 +549,9 @@ namespace Dynamo.Models
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.__TempCoreHostForRefactoring.Cleanup();
             Logger.Dispose();
+
+            EngineController.Dispose();
+            EngineController = null;
 
             if (PreferenceSettings != null)
             {
@@ -696,13 +701,16 @@ namespace Dynamo.Models
 
             // Load Packages
             PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadPackagesIntoDynamo(
-                preferences,
-                LibraryServices,
-                Loader,
-                Context,
-                IsTestMode,
-                CustomNodeManager);
+
+            PackageLoader.LoadPackagesIntoDynamo(new LoadPackageParams
+            {
+                Preferences = preferences,
+                LibraryServices = LibraryServices,
+                Loader = Loader,
+                Context = Context,
+                IsTestMode = IsTestMode,
+                CustomNodeManager = CustomNodeManager
+            });
 
             // Load local custom nodes
             CustomNodeManager.AddUninitializedCustomNodesInPath(DynamoPathManager.Instance.UserDefinitions, IsTestMode);
@@ -784,7 +792,7 @@ namespace Dynamo.Models
             var dependencies = CustomNodeManager.GetAllDependenciesGuids(def);
             var funcNodes = homeWorkspace.Nodes.OfType<Function>();
             var dirtyNodes = funcNodes.Where(n => dependencies.Contains(n.Definition.FunctionId));
-            homeWorkspace.MarkNodesAsModified(dirtyNodes);
+            homeWorkspace.MarkNodesAsModifiedAndRequestRun(dirtyNodes);
         }
 
         /// <summary>

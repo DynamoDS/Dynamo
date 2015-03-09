@@ -458,10 +458,14 @@ namespace Dynamo.Wpf.ViewModels
                                 entry.Name,
                                 StringComparison.Ordinal)
                                 >= 0);
-                if (first != null)
-                    Items.Insert(first.Idx, entry);
+                // Classes must be first in any case.
+                if (entry is ClassesNodeCategoryViewModel)
+                    Items.Insert(0, entry);
                 else
-                    Items.Add(entry);
+                    if (first != null)
+                        Items.Insert(first.Idx, entry);
+                    else
+                        Items.Add(entry);
             }
         }
 

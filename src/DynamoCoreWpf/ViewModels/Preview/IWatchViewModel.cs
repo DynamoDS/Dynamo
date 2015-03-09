@@ -7,7 +7,6 @@ namespace Dynamo.ViewModels
     {
         DelegateCommand GetBranchVisualizationCommand { get; set; }
         bool WatchIsResizable { get; set; }
-        DelegateCommand CheckForLatestRenderCommand { get; set; }
         DynamoViewModel ViewModel { get;}
         IVisualizationManager VisualizationManager { get;}
     }

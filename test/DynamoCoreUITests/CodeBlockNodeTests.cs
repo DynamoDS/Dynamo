@@ -34,7 +34,7 @@ namespace DynamoCoreUITests
         protected WorkspaceModel workspace = null;
         protected WorkspaceViewModel workspaceViewModel = null;
 
-        public override void Init()
+        public override void Setup()
         {
             // We do not call "base.Init()" here because we want to be able 
             // to create our own copy of Controller here with command file path.

@@ -258,6 +258,8 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     All of the nodes currently in the workspace.
+        /// 
+        ///     TODO(Peter): This should be an IEnumerable of nodes to prevent modification from the outside - MAGN-6580
         /// </summary>
         public ObservableCollection<NodeModel> Nodes { get { return nodes; } }
 
@@ -276,8 +278,11 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     All of the notes currently in the workspace.
+        /// 
+        ///     TODO(Peter): This should be an IEnumerable of notes to prevent modification from the outside - MAGN-6580
         /// </summary>
         public ObservableCollection<NoteModel> Notes { get { return notes; } }
+
         /// <summary>
         ///     Path to the file this workspace is associated with. If null or empty, this workspace has never been saved.
         /// </summary>
@@ -570,63 +575,48 @@ namespace Dynamo.Models
                 OnRequestNodeCentered(this, args);
             }
 
-            //var cbn = node as CodeBlockNodeModel;
-            //if (cbn != null)
-            //{
-            //    var firstChange = true;
-            //    PropertyChangedEventHandler codeChangedHandler = (sender, args) =>
-            //    {
-            //        if (args.PropertyName != "Code") return;
-                    
-            //        if (string.IsNullOrWhiteSpace(cbn.Code))
-            //        {
-            //            if (firstChange)
-            //                RemoveNode(cbn);
-            //            else
-            //                RecordAndDeleteModels(new List<ModelBase> { cbn });
-            //        }
-            //        firstChange = false;
-            //    };
-            //    cbn.PropertyChanged += codeChangedHandler;
-            //    cbn.Disposed += () => { cbn.PropertyChanged -= codeChangedHandler; };
-            //}
-
             nodes.Add(node);
             OnNodeAdded(node);
             HasUnsavedChanges = true;
+
+            RequestRun();
         }
 
         private void RegisterNode(NodeModel node)
         {
-            node.NodeModified += OnNodesModified;
+            node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
         }
 
-        /// <summary>
-        ///     Indicates that this workspace's DesignScript AST has been updated.
-        /// </summary>
-        public virtual void OnNodesModified()
+        protected virtual void RequestRun()
         {
             
         }
 
         /// <summary>
-        ///     Removes a node from this workspace.
+        ///     Indicates that the AST for a node in this workspace requires recompilation
+        /// </summary>
+        protected virtual void NodeModified(NodeModel node)
+        {
+
+        }
+
+        /// <summary>
+        /// Removes a node from this workspace. 
+        /// This method does not raise a NodesModified event.
         /// </summary>
         /// <param name="model"></param>
         public void RemoveNode(NodeModel model)
         {
-            if (nodes.Remove(model))
-            {
-                DisposeNode(model);
-                OnNodesModified();
-            }
+            if (!nodes.Remove(model)) return;
+
+            DisposeNode(model);
         }
 
         protected void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
-            model.NodeModified -= OnNodesModified;
+            model.Modified -= NodeModified;
             OnNodeRemoved(model);
         }
 
@@ -1003,7 +993,7 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
-            OnNodesModified();
+            RequestRun();
         }
 
         #endregion
@@ -1147,7 +1137,7 @@ namespace Dynamo.Models
                         // the Enumerator in this "foreach" to become invalid.
                         foreach (var conn in node.AllConnectors.ToList())
                         {
-                            conn.Delete();
+                            conn.Delete(true);
                             undoRecorder.RecordDeletionForUndo(conn);
                         }
 
@@ -1161,6 +1151,8 @@ namespace Dynamo.Models
                         undoRecorder.RecordDeletionForUndo(model);
                     }
                 }
+
+                RequestRun();
 
             } // Conclude the deletion.
         }
