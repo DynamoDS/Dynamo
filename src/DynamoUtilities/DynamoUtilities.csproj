@@ -48,7 +48,6 @@
     </Compile>
     <Compile Include="AssemblyHelper.cs" />
     <Compile Include="DataMarshaler.cs" />
-    <Compile Include="DynamoPathManager.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeSwitch.cs" />
