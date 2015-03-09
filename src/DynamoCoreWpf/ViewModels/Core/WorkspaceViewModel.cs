@@ -290,7 +290,6 @@ namespace Dynamo.ViewModels
             // If any property changes on the run settings object
             // Raise a property change notification for the RunSettingsViewModel
             // property
-            Debug.WriteLine(string.Format("{0} property change handled on the WorkspaceViewModel object.", e.PropertyName));
             RaisePropertyChanged("RunSettingsViewModel");
         }
 

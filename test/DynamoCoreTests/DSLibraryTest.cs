@@ -14,9 +14,9 @@ namespace Dynamo.Tests
         private LibraryServices libraryServices;
 
         [SetUp]
-        public override void Init()
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
             libraryServices = ViewModel.Model.LibraryServices;
         }
 
