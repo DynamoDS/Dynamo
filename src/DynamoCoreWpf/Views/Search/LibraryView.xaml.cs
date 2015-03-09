@@ -91,7 +91,6 @@ namespace Dynamo.UI.Views
         {
             BringIntoViewCount++;
             var expanderContent = (sender as FrameworkElement);
-            expanderContent.BringIntoView(new Rect(0.0, 0.0, 100.0, 20.0));
 
             var buttons = expanderContent.ChildOfType<ListView>();
             if (buttons != null)

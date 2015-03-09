@@ -202,17 +202,15 @@ namespace Dynamo.PackageManager
         /// <param name="context"></param>
         /// <param name="isTestMode"></param>
         /// <param name="customNodeManager"></param>
-        public void LoadIntoDynamo(
-            DynamoLoader loader, ILogger logger, LibraryServices libraryServices, string context,
-            bool isTestMode, CustomNodeManager customNodeManager)
+        public void LoadIntoDynamo(LoadPackageParams loadPackageParams, ILogger logger)
         {
             // Prevent duplicate loads
             if (Loaded) return;
 
             try
             {
-                LoadAssembliesIntoDynamo(loader, libraryServices, context);
-                LoadCustomNodesIntoDynamo(customNodeManager, isTestMode);
+                LoadAssembliesIntoDynamo(loadPackageParams);
+                LoadCustomNodesIntoDynamo(loadPackageParams);
                 EnumerateAdditionalFiles();
                 Loaded = true;
             }
@@ -246,14 +244,17 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*.dll", SearchOption.AllDirectories);
         }
 
-        private void LoadCustomNodesIntoDynamo(CustomNodeManager loader, bool isTestMode)
+        private void LoadCustomNodesIntoDynamo(LoadPackageParams loadPackageParams)
         {
+            var loader = loadPackageParams.CustomNodeManager;
+            var isTestMode = loadPackageParams.IsTestMode;
             foreach (var info in loader.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
                 LoadedCustomNodes.Add(info);
         }
 
-        private void LoadAssembliesIntoDynamo(DynamoLoader loader, LibraryServices libraryServices, string context)
+        private void LoadAssembliesIntoDynamo(LoadPackageParams loadPackageParams)
         {
+            var loader = loadPackageParams.Loader;
             var assemblies = LoadAssembliesInBinDirectory();
 
             // filter the assemblies
@@ -270,10 +271,12 @@ namespace Dynamo.PackageManager
             }
 
             // load the zero touch assemblies
+            var libraryServices = loadPackageParams.LibraryServices;
             foreach (var zeroTouchAssem in zeroTouchAssemblies)
                 libraryServices.ImportLibrary(zeroTouchAssem.Location);
 
             // load the node model assemblies
+            var context = loadPackageParams.Context;
             var nodes = nodeModelAssemblies.SelectMany(
                 assem =>
                 {
