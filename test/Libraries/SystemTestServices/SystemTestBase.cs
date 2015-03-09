@@ -30,6 +30,7 @@ namespace SystemTestServices
     {
         protected string workingDirectory;
         private Preloader preloader;
+        private AssemblyResolver assemblyResolver;
 
         #region protected properties
 
@@ -53,7 +54,11 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
-            AssemblyResolver.Setup();
+            if (assemblyResolver == null)
+            {
+                assemblyResolver = new AssemblyResolver();
+                assemblyResolver.Setup();
+            }
 
             SetupCore();
 
@@ -91,6 +96,12 @@ namespace SystemTestServices
             View = null;
             Model = null;
             preloader = null;
+
+            if (assemblyResolver != null)
+            {
+                assemblyResolver.TearDown();
+                assemblyResolver = null;
+            }
 
             GC.Collect();
 

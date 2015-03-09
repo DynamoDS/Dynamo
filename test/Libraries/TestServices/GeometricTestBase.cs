@@ -14,13 +14,19 @@ namespace TestServices
 {
     public class GeometricTestBase
     {
-        IExtensionApplication application = Application.Instance as IExtensionApplication;
-        TestExecutionSession session = new TestExecutionSession();
+        private IExtensionApplication application = Application.Instance;
+        private TestExecutionSession session = new TestExecutionSession();
+        private AssemblyResolver assemblyResolver;
 
         [SetUp]
         public virtual void Setup()
         {
-            AssemblyResolver.Setup();
+            if (assemblyResolver == null)
+            {
+                assemblyResolver = new AssemblyResolver();
+                assemblyResolver.Setup();
+            }
+
             application.OnBeginExecution(session);
             HostFactory.Instance.StartUp();
         }
@@ -30,6 +36,12 @@ namespace TestServices
         {
             //application.OnEndExecution(session);
             //HostFactory.Instance.ShutDown();
+
+            if (assemblyResolver != null)
+            {
+                assemblyResolver.TearDown();
+                assemblyResolver = null;
+            }
         }
     }
 
@@ -63,7 +75,12 @@ namespace TestServices
 
         public string RootModulePath
         {
-            get { return AssemblyResolver.GetDynamoRootDirectory(); }
+            get
+            {
+                var assemPath = Assembly.GetExecutingAssembly().Location;
+                var assemDir = new DirectoryInfo(Path.GetDirectoryName(assemPath));
+                return assemDir.Parent.FullName;
+            }
         }
 
         public string[] IncludeDirectories

@@ -9,31 +9,32 @@ using DynamoUtilities;
 
 namespace TestServices
 {
-    public static class AssemblyResolver
+    public class AssemblyResolver
     {
-        private static bool resolverSetup;
+        private AssemblyHelper assemblyHelper;
 
         /// <summary>
         /// Setup the assembly resolver using the base path 
         /// specified in the config file.
         /// </summary>
-        public static void Setup()
+        public void Setup()
         {
-            if (resolverSetup) return;
+            if (assemblyHelper != null) return;
 
             var basePath = OpenAndReadDynamoBasePath();
 
             DynamoPathManager.Instance.InitializeCore(basePath);
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
-
-            resolverSetup = true;
+            assemblyHelper = new AssemblyHelper(basePath, null);
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssemblyNew;
         }
 
-        public static string GetDynamoRootDirectory()
+        public void TearDown()
         {
-            var assemPath = Assembly.GetExecutingAssembly().Location;
-            var assemDir = new DirectoryInfo(Path.GetDirectoryName(assemPath));
-            return assemDir.Parent.FullName;
+            if (assemblyHelper == null)
+                return;
+
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssemblyNew;
+            assemblyHelper = null;
         }
 
         #region private helper methods
