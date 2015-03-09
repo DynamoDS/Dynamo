@@ -8,12 +8,14 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.DSASM;
 using Dynamo.Models;
+using ProtoCore.Namespace;
 using DynCmd = Dynamo.Models.DynamoModel;
 using ProtoCore.Mirror;
 using Dynamo.DSEngine;
 using ProtoCore.Utils;
 using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.UI;
+using System.Xml;
 
 namespace Dynamo.Tests
 {
@@ -809,6 +811,33 @@ b = c[w][x][y][z];";
         
         #endregion
 
+        #region Codeblock Namespace Resolution Tests
+
+        [Test]
+        public void Resolve_NamespaceConflict_LoadLibrary()
+        {
+            string code = "Point.ByCoordinates(10,0,0);";
+
+            var cbn = CreateCodeBlockNode();
+
+            UpdateCodeBlockNodeContent(cbn, code);
+            Assert.AreEqual(1, cbn.OutPortData.Count);
+
+            // FFITarget introduces conflicts with Point class in
+            // FFITarget.Dummy.Point, FFITarget.Dynamo.Point
+            const string libraryPath = "FFITarget.dll";
+
+            CompilerUtils.TryLoadAssemblyIntoCore(
+                ViewModel.Model.LibraryServices.LibraryManagementCore, libraryPath);
+
+            code = "Point.ByCoordinates(0,0,0);";
+            UpdateCodeBlockNodeContent(cbn, code);
+            Assert.AreEqual(0, ViewModel.Model.LibraryServices.LibraryManagementCore.BuildStatus.Warnings.Count());
+        }
+
+        #endregion
+
+
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
             var cbn = new CodeBlockNodeModel(ViewModel.Model.LibraryServices);
@@ -826,6 +855,7 @@ b = c[w][x][y][z];";
             ViewModel.ExecuteCommand(command);
         }
     }
+
 
     public class CodeBlockCompletionTests 
     {

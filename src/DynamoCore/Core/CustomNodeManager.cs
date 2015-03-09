@@ -485,8 +485,7 @@ namespace Dynamo.Core
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                workspaceInfo,
-                nodeGraph.ElementResolver);
+                workspaceInfo);
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -607,7 +606,7 @@ namespace Dynamo.Core
                 ID = newId.ToString(), 
                 FileName = string.Empty
             };
-            var workspace = new CustomNodeWorkspaceModel(info, nodeFactory, new ElementResolver());
+            var workspace = new CustomNodeWorkspaceModel(info, nodeFactory);
 
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
