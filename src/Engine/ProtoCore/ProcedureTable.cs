@@ -42,7 +42,6 @@ namespace ProtoCore.DSASM
         public string name;                         // Name of the procedure
         public int pc;                              // First instruction of the procedure
         public int localCount;                      // Number of local variables
-   //     public List<ProtoCore.Type> argTypeList;    // List of arguments required by the procedure
         public List<ArgumentInfo> Arguments;      // List of arguments' information (default value)
         public ProtoCore.Type returntype;           // Procedure return data type
         public bool isConstructor;                  // Flag whether procedure is a constructor or not
@@ -76,7 +75,6 @@ namespace ProtoCore.DSASM
         {
             procId = DSASM.Constants.kInvalidIndex;
             classScope = DSASM.Constants.kInvalidIndex;
-       //     argTypeList = new List<Type>();
             Arguments = new List<ArgumentInfo>();
             isConstructor = false;
             isStatic = false;

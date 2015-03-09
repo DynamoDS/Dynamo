@@ -139,11 +139,9 @@ namespace ProtoFFITests
             thisTest.RunScriptSource(code);
             var methods = thisTest.GetMethods("DummyCollection", "AcceptListOfList");
             //List<List<int>> ==> int[][]
-          //var args = methods[0].GetArgumentTypes();
-            var args = methods[0].GetArguments();
-          //Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].UID);
-            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].type.UID);
-          //Assert.AreEqual(2, args[0].rank); //Expecting it tobe marshaled as 2D array
+         
+            var args = methods[0].GetArguments();      
+            Assert.AreEqual((int)ProtoCore.PrimitiveType.kTypeInt, args[0].type.UID);        
             Assert.AreEqual(2, args[0].type.rank); //Expecting it tobe marshaled as 2D array
 
             thisTest.Verify("b", new List<object> { new int[] { 1, 2, 3, 4, 5 }, new int[] { 6, 7, 8, 9, 10 } });
