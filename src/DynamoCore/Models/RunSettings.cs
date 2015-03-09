@@ -98,9 +98,6 @@ namespace Dynamo.Models
 
         private void RaisePropertyChangeWithDebug(string propertyName)
         {
-#if DEBUG
-            Debug.WriteLine(string.Format("{0} property change raised on the RunSettings object.", propertyName));
-#endif
             RaisePropertyChanged(propertyName);
         }
 

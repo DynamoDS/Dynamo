@@ -269,8 +269,8 @@ b = c[w][x][y][z];";
             ViewModel.HomeSpace.Run();
 
             // Get preview data given AstIdentifierBase
-            var core = ViewModel.Model.EngineController.LiveRunnerCore;
-            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core.__TempCoreHostForRefactoring);
+            var core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
             MirrorData mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, value);
 
@@ -291,7 +291,7 @@ b = c[w][x][y][z];";
             ViewModel.HomeSpace.Run();
 
             // Get preview data given AstIdentifierBase
-            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core.__TempCoreHostForRefactoring);
+            runtimeMirror = new RuntimeMirror(codeBlockNodeTwo.AstIdentifierBase, 0, core);
             mirrorData = runtimeMirror.GetData();
             Assert.AreEqual(mirrorData.Data, value);
 
@@ -758,6 +758,56 @@ b = c[w][x][y][z];";
             Assert.IsTrue(CodeBlockUtils.DoesStatementRequireOutputPort(svs, 2));
         }
 
+        [Test]
+        public void TypedIdentifier_AssignedToDifferentType_ThrowsWarning()
+        {
+            var model = ViewModel.Model;
+            string codeInCBN = @"a : int = Point.ByCoordinates();";
+
+            // Create the initial code block node.
+            var codeBlockNodeOne = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, codeInCBN);
+
+            // We should have one code block node by now.
+            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
+
+            // Run 
+            ViewModel.HomeSpace.Run();
+
+            // Get preview data given AstIdentifierBase
+            var core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
+            RuntimeMirror runtimeMirror = new RuntimeMirror(codeBlockNodeOne.AstIdentifierBase, 0, core);
+            MirrorData mirrorData = runtimeMirror.GetData();
+            Assert.AreEqual(mirrorData.Data, null);
+
+            // Assert that node throws type mismatch warning
+            Assert.IsTrue(codeBlockNodeOne.ToolTipText.Contains(
+                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes));
+        }
+
+        [Test]
+        public void TypedIdentifier_AssignedToDifferentType_ThrowsWarning2()
+        {
+            string openPath = Path.Combine(GetTestDirectory(),
+                @"core\dsevaluation\typedIdentifier_warning.dyn");
+
+            var dynamoModel = ViewModel.Model;
+            ViewModel.OpenCommand.Execute(openPath);
+            var workspace = dynamoModel.CurrentWorkspace;
+            Assert.AreEqual(2, workspace.Nodes.Count);
+
+            ViewModel.HomeSpace.Run();
+
+            var node = workspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse("17d2f866-dc5a-43ef-b3c5-ac7474d16467"));
+
+            Assert.IsNotNull(node);
+            Assert.AreEqual(null, node.CachedValue.Data);
+
+            // Assert that node throws type mismatch warning
+            Assert.IsTrue(node.ToolTipText.Contains(
+                ProtoCore.Properties.Resources.kConvertNonConvertibleTypes));
+        }
         
         #endregion
 

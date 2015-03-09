@@ -29,6 +29,7 @@ namespace Dynamo.Nodes
         private readonly List<Statement> codeStatements = new List<Statement>();
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
+        private List<string> inputPortNames = new List<string>();
         private readonly List<string> tempVariables = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
@@ -437,9 +438,20 @@ namespace Dynamo.Nodes
                 }
 
                 if (parseParam.UnboundIdentifiers != null)
-                    inputIdentifiers = new List<string>(parseParam.UnboundIdentifiers);
+                {
+                    inputIdentifiers = new List<string>();
+                    inputPortNames = new List<string>();
+                    foreach (var kvp in parseParam.UnboundIdentifiers)
+                    {
+                        inputIdentifiers.Add(kvp.Value);
+                        inputPortNames.Add(kvp.Key);
+                    }
+                }
                 else
+                {
                     inputIdentifiers.Clear();
+                    inputPortNames.Clear();                    
+                }
             }
             catch (Exception e)
             {
@@ -521,7 +533,7 @@ namespace Dynamo.Nodes
         private void SetInputPorts()
         {
             // Generate input port data list from the unbound identifiers.
-            var inportData = CodeBlockUtils.GenerateInputPortData(inputIdentifiers);
+            var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
             foreach (var portData in inportData)
                 InPortData.Add(portData);
         }

@@ -93,7 +93,6 @@ namespace Dynamo.Core.Threading
                 duplicatedNodeReferences = gathered;
             }
 
-            Debug.WriteLine(string.Format("Aggregation task initialized for {0}", nodeModel == null?"null":nodeModel.GUID.ToString()));
             return duplicatedNodeReferences.Any();
         }
 

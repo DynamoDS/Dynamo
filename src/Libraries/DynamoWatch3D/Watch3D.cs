@@ -338,7 +338,6 @@ namespace Dynamo.Nodes
 
         public void GetBranchVisualization(object parameters)
         {
-            Debug.WriteLine(string.Format("Requesting branch update for {0}", GUID));
             ViewModel.VisualizationManager.RequestBranchUpdate(this);
         }
 

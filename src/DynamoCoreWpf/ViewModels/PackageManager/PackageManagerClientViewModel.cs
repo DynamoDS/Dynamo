@@ -267,13 +267,17 @@ namespace Dynamo.ViewModels
                                 var loader = DynamoViewModel.Model.Loader;
                                 var logger = DynamoViewModel.Model.Logger;
                                 var libraryServices = DynamoViewModel.EngineController.LibraryServices;
-                                downloadPkg.LoadIntoDynamo(
-                                    loader,
-                                    logger,
-                                    libraryServices,
-                                    DynamoViewModel.Model.Context,
-                                    DynamoModel.IsTestMode,
-                                    DynamoViewModel.Model.CustomNodeManager);
+
+                                var loadPackageParams = new LoadPackageParams
+                                {
+                                    Loader = loader,
+                                    LibraryServices = libraryServices,
+                                    Context = DynamoViewModel.Model.Context,
+                                    IsTestMode = DynamoModel.IsTestMode,
+                                    CustomNodeManager = DynamoViewModel.Model.CustomNodeManager
+                                };
+
+                                downloadPkg.LoadIntoDynamo(loadPackageParams, logger);
 
                                 DynamoViewModel.Model.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;

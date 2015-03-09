@@ -84,8 +84,6 @@ namespace Dynamo.Controls
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Node view unloaded.");
-
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
             ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
@@ -108,7 +106,6 @@ namespace Dynamo.Controls
                 var size = new double[] { ActualWidth, nodeBorder.ActualHeight };
                 if (ViewModel.SetModelSizeCommand.CanExecute(size))
                 {
-                    //Debug.WriteLine(string.Format("Updating {2} node size {0}:{1}", size[0], size[1], ViewModel.NodeLogic.GetType().ToString()));
                     ViewModel.SetModelSizeCommand.Execute(size);
                 }
             }
