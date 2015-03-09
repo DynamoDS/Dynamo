@@ -537,7 +537,7 @@ namespace Dynamo.ViewModels
 
         #region Event handler destroy/create
 
-        internal void UnsubscribeAllEvents()
+        protected virtual void UnsubscribeAllEvents()
         {
             UnsubscribeDispatcherEvents();
             UnsubscribeModelUiEvents();
