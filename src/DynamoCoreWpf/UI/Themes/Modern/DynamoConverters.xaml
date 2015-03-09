@@ -125,6 +125,7 @@
     <controls:DoubleDisplay x:Key="DoubleDisplayConverter"/>
     <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>   
     <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter"/>
+    <controls:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
     <controls:RunPreviewConverter x:Key="RunPreviewConverter"/>
     <controls:RunPreviewToolTipConverter x:Key="RunPreviewToolTipConverter"/>
 </ResourceDictionary>
