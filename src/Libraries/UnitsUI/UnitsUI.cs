@@ -212,7 +212,7 @@ namespace UnitsUI
         public LengthFromString()
         {
             Measure = Length.FromDouble(0.0);
-            OutPortData.Add(new PortData("length", Resources.LengthFromStringPortDataLengthToolTip));
+            OutPortData.Add(new PortData("number", Resources.LengthFromStringPortDataLengthToolTip));
             RegisterAllPorts();
         }
 
