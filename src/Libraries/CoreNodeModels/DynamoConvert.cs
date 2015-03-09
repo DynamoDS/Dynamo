@@ -10,9 +10,10 @@ using System.Globalization;
 
 namespace DSCoreNodesUI
 {
-    [NodeCategory(BuiltinNodeCategories.CORE)]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeName("Convert Between Units")]
     [NodeDescription("ConversionNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("Convert", "Units", "Length", "Area", "Volume")]
     [IsDesignScriptCompatible]
     public class DynamoConvert : NodeModel
     {

@@ -203,7 +203,7 @@ namespace UnitsUI
     }
 
     [NodeName("Number From Feet and Inches")]
-    [NodeCategory("Units.Length.Create")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("LengthFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
@@ -319,7 +319,7 @@ namespace UnitsUI
     }
 
     [NodeName("Unit Types")]
-    [NodeCategory("Units")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("UnitTypesDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("UnitTypesSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
