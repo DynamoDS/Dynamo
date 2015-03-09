@@ -232,13 +232,13 @@ namespace ProtoCore
 
     public class Core
     {
-        public Dictionary<string, object> Configurations { get; set; }
-        public List<System.Type> listDllTypesToLoad { get; private set; }
+        public IDictionary<string, object> Configurations { get; set; }
+        public List<System.Type> DllTypesToLoad { get; private set; }
 
         public void AddDLLExtensionAppType(System.Type type)
         {
-            Validity.Assert(listDllTypesToLoad != null);
-            listDllTypesToLoad.Add(type);
+            Validity.Assert(DllTypesToLoad != null);
+            DllTypesToLoad.Add(type);
         }
 
         /// <summary>
@@ -573,7 +573,7 @@ namespace ProtoCore
             Heap = new Heap();
             //Rmem = new RuntimeMemory(Heap);
             Configurations = new Dictionary<string, object>();
-            listDllTypesToLoad = new List<System.Type>();
+            DllTypesToLoad = new List<System.Type>();
 
             RuntimeData = new ProtoCore.RuntimeData();
 

@@ -1208,7 +1208,7 @@ namespace ProtoScript.Runners
             runtimeCore.RunningBlock = 0;
             runtimeCore.WatchSymbolList = runnerCore.watchSymbolList;
             runtimeCore.SetProperties(runnerCore.Options, runnerCore.DSExecutable, runnerCore.DebuggerProperties);
-            runtimeCore.RegisterDllTypes(runnerCore.listDllTypesToLoad);
+            runtimeCore.RegisterDllTypes(runnerCore.DllTypesToLoad);
         }
 
         private void FFIPropertyChanged(FFIPropertyChangedEventArgs arg)
