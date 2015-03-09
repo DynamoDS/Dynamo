@@ -9,7 +9,7 @@ namespace Dynamo.Tests
     internal class UnitsOfMeasureTests : UnitTestBase
     {
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
             BaseUnit.NumberFormat = "f4";
         }

@@ -27,6 +27,11 @@ namespace Dynamo.UI.Views
         {
             InitializeComponent();
 
+            // Invalidate the DataContext here because it will be set at a later 
+            // time through data binding expression. This way debugger will not 
+            // display warnings for missing properties.
+            this.DataContext = null;
+
             Loaded += OnLibrarySearchViewLoaded;
         }
 
@@ -34,6 +39,12 @@ namespace Dynamo.UI.Views
         {
             viewModel = DataContext as SearchViewModel;
             viewModel.SearchTextChanged += OnSearchTextBoxKeyDown;
+
+            // RequestReturnFocusToSearch calls, when workspace was clicked.
+            // We should hide tooltip.
+            viewModel.RequestReturnFocusToSearch += OnRequestCloseToolTip;
+            // When workspace was changed, we should hide tooltip. 
+            viewModel.RequestCloseSearchToolTip += OnRequestCloseToolTip;
         }
 
         // Changing text content of the search box should always bring up the 
@@ -46,7 +57,7 @@ namespace Dynamo.UI.Views
             if (string.IsNullOrEmpty(viewModel.SearchText))
             {
                 UpdateHighlightedItem(null);
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseToolTipInternal(true);
             }
         }
 
@@ -83,7 +94,7 @@ namespace Dynamo.UI.Views
             if (searchElement != null)
             {
                 searchElement.ClickedCommand.Execute(null);
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseToolTipInternal(true);
             }
         }
 
@@ -162,13 +173,13 @@ namespace Dynamo.UI.Views
         private void OnPopupMouseLeave(object sender, MouseEventArgs e)
         {
             UpdateHighlightedItem(null);
-            libraryToolTipPopup.SetDataContext(null);
+            CloseToolTipInternal();
         }
 
         private void OnListBoxItemLostFocus(object sender, RoutedEventArgs e)
         {
             // Hide tooltip immediately.
-            libraryToolTipPopup.SetDataContext(null, true);
+            CloseToolTipInternal(true);
         }
 
         private void ShowTooltip(object sender)
@@ -177,7 +188,20 @@ namespace Dynamo.UI.Views
             if (fromSender == null) return;
 
             libraryToolTipPopup.PlacementTarget = fromSender;
-            libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            if ((fromSender.DataContext as NodeSearchElementViewModel).Visibility)
+                libraryToolTipPopup.SetDataContext(fromSender.DataContext);
+            else
+                CloseToolTipInternal();
+        }
+
+        private void CloseToolTipInternal(bool closeImmediately = false)
+        {
+            libraryToolTipPopup.SetDataContext(null, closeImmediately);
+        }
+
+        private void OnRequestCloseToolTip(object sender, EventArgs e)
+        {
+            CloseToolTipInternal(true);
         }
 
         #endregion
@@ -631,7 +655,7 @@ namespace Dynamo.UI.Views
             // If we turn to regular view, we have to hide tooltip immediately.
             if (viewModel.CurrentMode != SearchViewModel.ViewMode.LibrarySearchView)
             {
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseToolTipInternal(true);
                 UpdateHighlightedItem(null);
                 return;
             }
@@ -644,7 +668,7 @@ namespace Dynamo.UI.Views
             else
             {
                 // Or hide ToolTip if topResultListBox is empty.
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseToolTipInternal(true);
                 UpdateHighlightedItem(null);
             }
         }
@@ -677,7 +701,7 @@ namespace Dynamo.UI.Views
         private void OnTopResultMouseLeave(object sender, MouseEventArgs e)
         {
             UpdateHighlightedItem(null);
-            libraryToolTipPopup.SetDataContext(null);
+            CloseToolTipInternal();
         }
 
         // User collapsed a category. Function checks if HighlightedItem inside and deselect it.
@@ -694,7 +718,7 @@ namespace Dynamo.UI.Views
             if (categoryToCollapse.MemberGroups.Any(mg => mg.Members.Contains(element)))
             {
                 UpdateHighlightedItem(null);
-                libraryToolTipPopup.SetDataContext(null, true);
+                CloseToolTipInternal(true);
             }
         }
 

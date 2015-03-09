@@ -74,7 +74,7 @@ namespace ProtoCore
         /// <returns></returns>
         public Dictionary<FunctionEndPoint, int> GetExactMatchStatistics(
             ProtoCore.Runtime.Context context,
-            List<List<StackValue>> reducedFormalParams, StackFrame stackFrame, Core core, out int unresolvable)
+            List<List<StackValue>> reducedFormalParams, StackFrame stackFrame, RuntimeCore runtimeCore, out int unresolvable)
         {
             List<ReplicationInstruction> replicationInstructions = new List<ReplicationInstruction>(); //We've already done the reduction before calling this
 
@@ -85,7 +85,7 @@ namespace ProtoCore
             {
                 List<FunctionEndPoint> feps = GetExactTypeMatches(context,
                                                                   formalParamSet, replicationInstructions, stackFrame,
-                                                                  core);
+                                                                  runtimeCore);
                 if (feps.Count == 0)
                 {
                     
@@ -114,12 +114,12 @@ namespace ProtoCore
         /// </summary>
         /// <returns></returns>
         public List<FunctionEndPoint> GetExactTypeMatches(ProtoCore.Runtime.Context context,
-            List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame, Core core)
+            List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame, RuntimeCore runtimeCore)
         {
             List<FunctionEndPoint> ret = new List<FunctionEndPoint>();
 
 
-            List<List<StackValue>> allReducedParamSVs = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, core);
+            List<List<StackValue>> allReducedParamSVs = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
 
             List<StackValue> reducedParamSVs = allReducedParamSVs[0];
             
@@ -148,7 +148,7 @@ namespace ProtoCore
                     continue;
                 }
 
-                if (fep.DoesTypeDeepMatch(reducedParamSVs, core))
+                if (fep.DoesTypeDeepMatch(reducedParamSVs, runtimeCore))
                 {
                     ret.Add(fep);
                 }
@@ -167,17 +167,17 @@ namespace ProtoCore
         /// <returns></returns>
         public Dictionary<FunctionEndPoint, int> GetConversionDistances(ProtoCore.Runtime.Context context,
             List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, 
-            ProtoCore.DSASM.ClassTable classTable, Core core, bool allowArrayPromotion = false)
+            ProtoCore.DSASM.ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion = false)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
 
             //@PERF: Consider parallelising this
             List<FunctionEndPoint> feps = FunctionEndPoints;
-            List<StackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions, core);
+            List<StackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions, runtimeCore);
 
             foreach (FunctionEndPoint fep in feps)
             {
-                int distance = fep.GetConversionDistance(reducedParamSVs, classTable, allowArrayPromotion, core);
+                int distance = fep.GetConversionDistance(reducedParamSVs, classTable, allowArrayPromotion, runtimeCore);
                 if (distance != 
                     (int)ProcedureDistance.kInvalidDistance)
                     ret.Add(fep, distance);
@@ -187,7 +187,7 @@ namespace ProtoCore
         }
 
 
-        public static bool CheckInvalidArrayCoersion(FunctionEndPoint fep, List<StackValue> reducedSVs, ClassTable classTable, Core core, bool allowArrayPromotion)
+        public static bool CheckInvalidArrayCoersion(FunctionEndPoint fep, List<StackValue> reducedSVs, ClassTable classTable, RuntimeCore runtimeCore, bool allowArrayPromotion)
         {
             for (int i = 0; i < reducedSVs.Count; i++)
             {
@@ -205,20 +205,20 @@ namespace ProtoCore
 
                 if (!allowArrayPromotion)
                 {
-                    if (typ.rank != ArrayUtils.GetMaxRankForArray(reducedSVs[i], core) &&
+                    if (typ.rank != ArrayUtils.GetMaxRankForArray(reducedSVs[i], runtimeCore) &&
                         typ.rank != DSASM.Constants.kArbitraryRank)
                         return true; //Invalid co-ercsion
                 }
                 else
                 {
-                    if (typ.rank < ArrayUtils.GetMaxRankForArray(reducedSVs[i], core) &&
+                    if (typ.rank < ArrayUtils.GetMaxRankForArray(reducedSVs[i], runtimeCore) &&
                         typ.rank != DSASM.Constants.kArbitraryRank)
                         return true; //Invalid co-ercsion
                     
                 }
 
 
-                Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(reducedSVs[i], core);
+                Dictionary<ClassNode, int> arrayTypes = ArrayUtils.GetTypeStatisticsForArray(reducedSVs[i], runtimeCore);
 
                 ClassNode cn = null;
 
@@ -226,7 +226,7 @@ namespace ProtoCore
                 {
                     //This was an empty array
                     Validity.Assert(cn == null, "If it was an empty array, there shouldn't be a type node");
-                    cn = core.ClassTable.ClassNodes[(int)PrimitiveType.kTypeNull];
+                    cn = runtimeCore.DSExecutable.classTable.ClassNodes[(int)PrimitiveType.kTypeNull];
                 }
                 else if (arrayTypes.Count == 1)
                 {
@@ -236,7 +236,7 @@ namespace ProtoCore
                 }
                 else if (arrayTypes.Count > 1)
                 {
-                    ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(reducedSVs[i], core);
+                    ClassNode commonBaseType = ArrayUtils.GetGreatestCommonSubclassForArray(reducedSVs[i], runtimeCore);
 
                     if (commonBaseType == null)
                         throw new ProtoCore.Exceptions.ReplicationCaseNotCurrentlySupported("Array with no common superclass not yet supported: {0C644179-14F5-4172-8EF8-A2F3739901B2}");
@@ -254,8 +254,8 @@ namespace ProtoCore
 
 
                 bool isNotExactTypeMatch = cn != argTypeNode;
-                bool argumentsNotNull = cn != core.ClassTable.ClassNodes[(int) PrimitiveType.kTypeNull];
-                bool recievingTypeNotAVar = argTypeNode != core.ClassTable.ClassNodes[(int) PrimitiveType.kTypeVar];
+                bool argumentsNotNull = cn != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.kTypeNull];
+                bool recievingTypeNotAVar = argTypeNode != runtimeCore.DSExecutable.classTable.ClassNodes[(int) PrimitiveType.kTypeVar];
                 bool isNotConvertible = !cn.ConvertibleTo(typ.UID);
                 
                 //bool isCalleeVar = cn == core.classTable.list[(int) PrimitiveType.kTypeVar];
@@ -277,17 +277,17 @@ namespace ProtoCore
         }
 
 
-        public Dictionary<FunctionEndPoint, int> GetCastDistances(ProtoCore.Runtime.Context context, List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, ClassTable classTable, Core core)
+        public Dictionary<FunctionEndPoint, int> GetCastDistances(ProtoCore.Runtime.Context context, List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, ClassTable classTable, RuntimeCore runtimeCore)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
 
             //@PERF: Consider parallelising this
             List<FunctionEndPoint> feps = FunctionEndPoints;
-            List<StackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions, core);
+            List<StackValue> reducedParamSVs = Replicator.EstimateReducedParams(formalParams, replicationInstructions, runtimeCore);
 
             foreach (FunctionEndPoint fep in feps)
             {
-                int dist = fep.ComputeCastDistance(reducedParamSVs, classTable,core);
+                int dist = fep.ComputeCastDistance(reducedParamSVs, classTable, runtimeCore);
                 ret.Add(fep, dist);
             }
 

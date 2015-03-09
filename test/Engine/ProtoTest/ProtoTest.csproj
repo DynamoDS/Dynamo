@@ -111,6 +111,7 @@
     <Compile Include="Associative\ReplicatorTest.cs" />
     <Compile Include="Associative\SSATransformTest.cs" />
     <Compile Include="Associative\TypeSystemTests.cs" />
+    <Compile Include="ComponentTest\CompileAndExecute.cs" />
     <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
     <Compile Include="DebugTests\BasicTests.cs" />
     <Compile Include="DebugTests\NamespaceConflictTest.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="FFITests\CSFFIDataMarshalingTest.cs" />
     <Compile Include="FFITests\CSFFIDispose.cs" />
     <Compile Include="FFITests\CSFFITest.cs" />
+    <Compile Include="FFITests\ElementRewriterTests.cs" />
     <Compile Include="FFITests\RegressionAnalysisTests.cs" />
     <Compile Include="GraphCompiler\NewFrontEndTests.cs" />
     <Compile Include="Imperative\FromOldTestSuite.cs" />

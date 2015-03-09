@@ -48,12 +48,6 @@ namespace DynamoUtilities
         public string Packages { get; private set; }
 
         /// <summary>
-        /// The ASM folder which contains LibG and the 
-        /// ASM binaries.
-        /// </summary>
-        public string LibG { get; private set; }
-
-        /// <summary>
         /// All 'nodes' folders.
         /// </summary>
         public HashSet<string> Nodes { get; private set; }
@@ -76,10 +70,6 @@ namespace DynamoUtilities
         /// </summary>
         public string AppData { get; private set;}
 
-        public string GeometryFactory { get; private set; }
-
-        public string AsmPreloader { get; private set; }
-
         /// <summary>
         /// Additional paths that should be searched during
         /// assembly resolution
@@ -94,7 +84,7 @@ namespace DynamoUtilities
             get { return instance ?? (instance = new DynamoPathManager()); }
         }
 
-        internal static void DestroyInstance()
+        public static void DestroyInstance()
         {
             instance = null;
         }
@@ -146,9 +136,20 @@ namespace DynamoUtilities
 
             var UICulture = System.Globalization.CultureInfo.CurrentUICulture.ToString();
             CommonSamples = Path.Combine(commonData, "samples", UICulture);
-            if (!Directory.Exists(CommonSamples))
+
+            // If the localized samples directory does not exist
+            // then fall back to using the en-US samples folder. Do an
+            // additional check whether the localized folder is available
+            // but is empty.
+            var di = new DirectoryInfo(CommonSamples);
+            if (!Directory.Exists(CommonSamples)
+                || !di.GetDirectories().Any() 
+                || !di.GetFiles().Any())
             {
-                Directory.CreateDirectory(CommonSamples);
+                var neturalCommonSamples = Path.Combine(commonData, "samples", "en-US");
+
+                if (Directory.Exists(neturalCommonSamples))
+                    CommonSamples = neturalCommonSamples;
             }
 
             if (Nodes == null)
@@ -164,7 +165,6 @@ namespace DynamoUtilities
             sb.AppendLine(String.Format("MainExecPath: {0}", MainExecPath));
             sb.AppendLine(String.Format("Definitions: {0}", UserDefinitions));
             sb.AppendLine(String.Format("Packages: {0}", Packages));
-            sb.AppendLine(String.Format("Asm: {0}", LibG));
             Nodes.ToList().ForEach(n=>sb.AppendLine(String.Format("Nodes: {0}", n)));
             
             Debug.WriteLine(sb);
@@ -273,159 +273,6 @@ namespace DynamoUtilities
         {
             if (!addResolvePaths.Contains(path))
                 addResolvePaths.Add(path);
-        }
-
-        public void SetLibGPath(string version)
-        {
-            LibG = Path.Combine(MainExecPath, string.Format("libg_{0}", version));
-            var splits = LibG.Split('\\');
-            GeometryFactory = splits.Last() + "\\" + "LibG.ProtoInterface.dll";
-            AsmPreloader = Path.Combine(
-                MainExecPath,
-                splits.Last() + "\\" + "LibG.AsmPreloader.Managed.dll");
-
-            if (!AdditionalResolutionPaths.Contains(LibG))
-            {
-                AdditionalResolutionPaths.Add(LibG);
-            }
-        }
-
-        // This is a temporary method while we phase DynamoPathManager out.
-        private static bool FindAlternativeAsm(string version,
-            DynamoPathManager pathManager, out string hostLocation)
-        {
-            hostLocation = string.Empty;
-
-            try
-            {
-                var libgFolder = Path.Combine(pathManager.MainExecPath, "libg_" + version);
-                if (!Directory.Exists(libgFolder)) // Did not find the LibG folder.
-                    return false;
-
-                // The target binary file name to search for.
-                var targetFileName = string.Format("ASMAHL{0}A.DLL", version);
-
-                var directory = new DirectoryInfo(libgFolder);
-                var files = directory.GetFiles("*.dll");
-                if (files.Any(f => f.Name.ToUpper() == targetFileName))
-                    hostLocation = libgFolder;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            // Returns true if a host location is found.
-            return !String.IsNullOrEmpty(hostLocation);
-        }
-
-        /// <summary>
-        /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs
-        /// for the specified version.
-        /// </summary>
-        /// <param name="version"> The version of ASM which you would like to find. Ex. "219" or "220"</param>
-        /// <param name="host"></param>
-        /// <returns>True if it finds the specified ASM version on the user's machine, false if it does not.</returns>
-        private static bool FindAsm(string version, out string host)
-        {
-            host = null;
-
-            string baseSearchDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Autodesk");
-
-            DirectoryInfo root;
-
-            try
-            {
-                root = new DirectoryInfo(baseSearchDirectory);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            DirectoryInfo[] subDirs;
-
-            try
-            {
-                subDirs = root.GetDirectories();
-            }
-            catch (Exception)
-            {
-                // TODO: figure out how to print to the console that Sandbox needs higher permissions
-                return false;
-            }
-
-            if (subDirs.Length == 0)
-                return false;
-
-            foreach (
-                var dirInfo in
-                    from dirInfo in
-                        subDirs.Where(
-                            dirInfo => dirInfo.Name.Contains("Revit") || dirInfo.Name.Contains("Vasari"))
-                    let files = dirInfo.GetFiles("*.*")
-                    where files.Any(fi => fi.Name.ToUpper() == string.Format("ASMAHL{0}A.DLL", version))
-                    select dirInfo)
-            {
-                host = dirInfo.FullName;
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Preload a specific version of ASM.
-        /// </summary>
-        /// <param name="version">The version as ex. "219"</param>
-        /// <param name="pathManager"></param>
-        public static bool PreloadAsmVersion(string version, DynamoPathManager pathManager)
-        {
-            Debug.WriteLine(string.Format("Attempting to preload ASM version {0}", version));
-
-            string hostLocation;
-            if (!FindAlternativeAsm(version, pathManager, out hostLocation))
-            {
-                if (!FindAsm(version, out hostLocation))
-                {
-                    Debug.WriteLine(string.Format("Could not load ASM version {0}", version));
-                    return false;
-                }
-            }
-
-            pathManager.SetLibGPath(version);
-
-            var libG = Assembly.LoadFrom(Instance.AsmPreloader);
-
-            Type preloadType = libG.GetType("Autodesk.LibG.AsmPreloader");
-
-            MethodInfo preloadMethod = preloadType.GetMethod(
-                "PreloadAsmLibraries",
-                BindingFlags.Public | BindingFlags.Static);
-
-            if (preloadMethod == null)
-                throw new MissingMethodException(@"Method ""PreloadAsmLibraries"" not found");
-
-            var methodParams = new object[1];
-            methodParams[0] = hostLocation;
-
-            preloadMethod.Invoke(null, methodParams);
-
-            Debug.WriteLine(string.Format("Successfully loaded ASM version {0}", version));
-            return true;
-        }
-
-        /// <summary>
-        /// Searches the user's computer for a suitable Autodesk host application containing ASM DLLs,
-        /// determines the correct version of ASM and loads the binaries.
-        /// </summary>
-        public static bool PreloadAsmLibraries(DynamoPathManager pathManager)
-        {
-            if (PreloadAsmVersion("219", pathManager)) return true;
-            if (PreloadAsmVersion("220", pathManager)) return true;
-            if (PreloadAsmVersion("221", pathManager)) return true;
-
-            return false;
         }
     }
 }

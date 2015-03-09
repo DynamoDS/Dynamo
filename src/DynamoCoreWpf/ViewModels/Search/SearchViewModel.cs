@@ -30,10 +30,17 @@ namespace Dynamo.ViewModels
         }
 
         public event EventHandler RequestReturnFocusToSearch;
-        public virtual void OnRequestReturnFocusToSearch(object sender, EventArgs e)
+        public void OnRequestReturnFocusToSearch(object sender, EventArgs e)
         {
             if (RequestReturnFocusToSearch != null)
                 RequestReturnFocusToSearch(this, e);
+        }
+
+        public event EventHandler RequestCloseSearchToolTip;
+        public void OnRequestCloseSearchToolTip(object sender, EventArgs e)
+        {
+            if (RequestCloseSearchToolTip != null)
+                RequestCloseSearchToolTip(this, e);
         }
 
         public event EventHandler SearchTextChanged;
@@ -147,7 +154,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return string.IsNullOrEmpty(SearchText) ? ViewMode.LibraryView :
+                return string.IsNullOrEmpty(SearchText.Trim()) ? ViewMode.LibraryView :
                     ViewMode.LibrarySearchView;
             }
         }
@@ -221,10 +228,12 @@ namespace Dynamo.ViewModels
             Model.EntryAdded += entry =>
             {
                 InsertEntry(MakeNodeSearchElementVM(entry), entry.Categories);
+                RaisePropertyChanged("BrowserRootCategories");
             };
             Model.EntryRemoved += RemoveEntry;
 
-            libraryRoot.PropertyChanged += LibraryRootOnPropertyChanged;
+            if (dynamoViewModel != null)
+                dynamoViewModel.PropertyChanged += OnDynamoViewModelPropertyChanged;
             LibraryRootCategories.AddRange(CategorizeEntries(Model.SearchEntries, false));
 
             DefineFullCategoryNames(LibraryRootCategories, "");
@@ -233,10 +242,14 @@ namespace Dynamo.ViewModels
             ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY, true);
         }
 
-        private void LibraryRootOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void OnDynamoViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (propertyChangedEventArgs.PropertyName == "Visibility")
-                SearchAndUpdateResults();
+            switch (e.PropertyName)
+            {
+                case "CurrentSpace":
+                    OnRequestCloseSearchToolTip(sender, e);
+                    break;
+            }
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
@@ -313,6 +326,7 @@ namespace Dynamo.ViewModels
             {
                 var parent = treeStack.Pop();
                 parent.SubCategories.Remove(target);
+                parent.Items.Remove(target);
 
                 // Check to see if all items under "parent" are removed, leaving behind only one 
                 // entry that is "ClassInformationViewModel" (a class used to show StandardPanel).
@@ -457,6 +471,7 @@ namespace Dynamo.ViewModels
                     var targetIsRoot = target == libraryRoot;
                     newTarget = targetIsRoot ? new RootNodeCategoryViewModel(next) : new NodeCategoryViewModel(next);
                     newTarget.FullCategoryName = fullyQualifiedCategoryName;
+                    newTarget.Assembly = entry.Assembly;
                     // Situation when we to add only one new category and item as it child.
                     // New category should be added to existing ClassesNodeCategoryViewModel.
                     // Make notice: ClassesNodeCategoryViewModel is always first item in 
@@ -496,6 +511,7 @@ namespace Dynamo.ViewModels
                     }
 
                     target.SubCategories.Add(newTarget);
+                    target.SubCategories = new ObservableCollection<NodeCategoryViewModel>(target.SubCategories.OrderBy(x => x.Name));
 
                     // Proceed to insert the new entry under 'newTarget' category with the remaining 
                     // name stack. In the first iteration this would have been 'MyNamespace.MyClass'.
@@ -537,6 +553,7 @@ namespace Dynamo.ViewModels
 
                 var cat = new NodeCategoryViewModel(name);
                 cat.FullCategoryName = path;
+                cat.Assembly = entry.Assembly;
                 return cat;
             }).ToList();
 
@@ -598,7 +615,7 @@ namespace Dynamo.ViewModels
         private static string MakeFullyQualifiedName(string path, string addition)
         {
             return string.IsNullOrEmpty(path) ? addition :
-                path + Configurations.CategoryDelimiter + addition;
+                path + Configurations.CategoryDelimiterString + addition;
         }
 
         internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)
@@ -617,7 +634,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void SearchAndUpdateResults()
         {
-            SearchAndUpdateResults(SearchText);
+            if (!String.IsNullOrEmpty(SearchText.Trim()))
+                SearchAndUpdateResults(SearchText);
         }
 
         /// <summary>
@@ -636,7 +654,6 @@ namespace Dynamo.ViewModels
 
             var foundNodes = Search(query);
 
-            UpdateTopResult();
             RaisePropertyChanged("SearchRootCategories");
 
             SearchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
@@ -686,6 +703,12 @@ namespace Dynamo.ViewModels
 
                 category.AddMemberToGroup(elementVM);
             }
+
+            // Update top result before we do not sort categories.
+            if (searchRootCategories.Any())
+                UpdateTopResult(searchRootCategories.FirstOrDefault().MemberGroups.FirstOrDefault());
+            else
+                UpdateTopResult(null);
 
             // Order found categories by name.
             searchRootCategories = new ObservableCollection<SearchCategory>(searchRootCategories.OrderBy(x => x.Name));
@@ -797,20 +820,16 @@ namespace Dynamo.ViewModels
 
         }
 
-        private void UpdateTopResult()
+        private void UpdateTopResult(SearchMemberGroup memberGroup)
         {
-            if (!SearchRootCategories.Any())
+            if (memberGroup == null)
             {
                 TopResult = null;
-
                 return;
             }
 
-            // If SearchRootCategories has at least 1 element, it has at least 1 member. 
-            var firstMemberGroup = SearchRootCategories.First().MemberGroups.First();
-
-            var topMemberGroup = new SearchMemberGroup(firstMemberGroup.FullyQualifiedName);
-            topMemberGroup.AddMember(firstMemberGroup.Members.First());
+            var topMemberGroup = new SearchMemberGroup(memberGroup.FullyQualifiedName);
+            topMemberGroup.AddMember(memberGroup.Members.First());
 
             TopResult = topMemberGroup;
         }

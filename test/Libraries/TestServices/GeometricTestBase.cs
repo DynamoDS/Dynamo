@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Reflection;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Dynamo;
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -20,7 +21,6 @@ namespace TestServices
         public virtual void Setup()
         {
             AssemblyResolver.Setup();
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
             application.OnBeginExecution(session);
             HostFactory.Instance.StartUp();
         }
@@ -41,9 +41,13 @@ namespace TestServices
     class TestExecutionSession : IExecutionSession, IConfiguration, IDisposable
     {
         private Dictionary<string, object> configValues;
+        private Preloader preloader;
+        private RemoteTestSessionConfig remoteConfig;
+
         public TestExecutionSession()
         {
             configValues = new Dictionary<string, object>();
+            remoteConfig = new RemoteTestSessionConfig();
         }
 
         public IConfiguration Configuration
@@ -77,7 +81,14 @@ namespace TestServices
         public object GetConfigValue(string config)
         {
             if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
-                return Path.Combine(DynamoPathManager.Instance.LibG, "LibG.ProtoInterface.dll");
+            {
+                if (preloader != null) return preloader.GeometryFactoryPath;
+
+                preloader = new Preloader( remoteConfig.DynamoCorePath, remoteConfig.RequestedLibraryVersion);
+                preloader.Preload();
+
+                return preloader.GeometryFactoryPath;
+            }
 
             if (configValues.ContainsKey(config))
                 return configValues[config];

@@ -8,16 +8,16 @@ AppCopyright=
 AppPublisherURL=http://www.dynamobim.org
 AppSupportURL=http://www.dynamobim.org
 AppUpdatesURL=http://www.dynamobim.org
-AppVersion=0.7.6
-VersionInfoVersion=0.7.6
+AppVersion=0.8.0
+VersionInfoVersion=0.8.0
 VersionInfoCompany=Dynamo 
-VersionInfoDescription=Dynamo 0.7.6
-VersionInfoTextVersion=Dynamo 0.7.6
+VersionInfoDescription=Dynamo 0.8.0
+VersionInfoTextVersion=Dynamo 0.8.0
 VersionInfoCopyright=
-DefaultDirName={pf64}\Dynamo 0.7
+DefaultDirName={pf64}\Dynamo
 DefaultGroupName=Dynamo
 OutputDir=Installers
-OutputBaseFilename=InstallDynamo0.7.6
+OutputBaseFilename=InstallDynamo0.8.0
 SetupIconFile=Extra\DynamoInstaller.ico
 Compression=lzma
 SolidCompression=true
@@ -27,8 +27,10 @@ ShowLanguageDialog=auto
 DirExistsWarning=no
 UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\DynamoInstaller.ico
-UninstallDisplayName=Dynamo 0.7.6
+UninstallDisplayName=Dynamo 0.8.0
 UsePreviousAppDir=no
+#define locale "en-US"
+;TODO check user locale and show the corresponding README
 
 [Dirs]
 Name: "{app}\libg_219"
@@ -51,8 +53,10 @@ Source: "Extra\DynamoAddinGenerator.exe"; Flags: dontcopy
 
 ;Core Files
 Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Components: DynamoCore
-Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\bin\lang\*; DestDir: {app}\; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
+Source: temp\bin\lang\{#locale}\README.txt; DestDir: {app}\{#locale}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore
 
 ;Revit 2014 / Vasari Beta 3
 Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2014 DynamoForVasariBeta3
@@ -65,8 +69,6 @@ Source: temp\bin\Revit_2015\nodes\*; DestDir: {app}\Revit_2015\nodes; Flags:skip
 ;Revit 2016
 Source: temp\bin\Revit_2016\*; DestDir: {app}\Revit_2016; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components:  DynamoForRevit2016
 Source: temp\bin\Revit_2016\nodes\*; DestDir: {app}\Revit_2016\nodes; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2016
-
-#include "Localized.iss"
 
 ;AddinGenerator
 Source: Extra\DynamoAddinGenerator.exe; DestDir: {app}; Flags: ignoreversion overwritereadonly uninsneveruninstall; Components: DynamoCore
@@ -84,10 +86,10 @@ Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwrit
 Source: temp\bin\UI\*; DestDir: {app}\UI; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;Samples
-Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\0.7\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
+Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\0.8\samples; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoTrainingFiles
 
 ;Other Custom Nodes
-Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\0.7\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
+Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\0.8\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo071.addin"
@@ -303,6 +305,11 @@ begin
 	  
 	  // Query for 0.7.6 MSI uninstall string.
       sUninstallString := GetUninstallStringForMSI('{A0A6A915-F284-4CB4-90D3-C1356052D456}');
+      if sUninstallString <> '' then
+        UnInstallOldMSI(sUninstallString);
+
+	  // Query for 0.8.0 MSI uninstall string.
+      sUninstallString := GetUninstallStringForMSI('{3594373A-F8C0-40DF-ACBD-D4AF085C4189}');
       if sUninstallString <> '' then
         UnInstallOldMSI(sUninstallString);
 

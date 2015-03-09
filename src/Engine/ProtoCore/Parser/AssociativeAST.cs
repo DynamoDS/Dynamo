@@ -433,6 +433,13 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class TypedIdentifierNode : IdentifierNode
     {
+        public TypedIdentifierNode()
+        {
+        }
+
+        public TypedIdentifierNode(IdentifierNode rhs)
+            : base(rhs) {}
+
         public override string ToString()
         {
             return base.ToString() + " : " + datatype;
@@ -1267,12 +1274,12 @@ namespace ProtoCore.AST.AssociativeAST
         protected List<string> returnKeys;
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
-        
+
         /// <summary>
         /// Gets/Sets description for the method.
         /// </summary>
         public string Description { get; set; }
-        
+
         public MethodAttributes(bool hiddenInLibrary = false, string msg = "")
         {
             HiddenInLibrary = hiddenInLibrary;
