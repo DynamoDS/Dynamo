@@ -636,14 +636,12 @@ namespace Dynamo.DSEngine
                 (arg, argType) =>
                 {
                     AssociativeNode defaultArgumentNode;
-                    TryGetDefaultArgumentNode(arg, out defaultArgumentNode);
-                    
-                    if (defaultArgumentNode != null && arg.IsDefault)
+                    if (!TryGetDefaultArgumentNode(arg, out defaultArgumentNode) && arg.IsDefault)
                     {
                         var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)
                         {
-                            AssociativeNode vnode = binaryExpr.RightNode;
+                            defaultArgumentNode = binaryExpr.RightNode;
                         }
                     }
 
