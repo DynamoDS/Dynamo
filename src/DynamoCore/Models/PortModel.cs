@@ -103,10 +103,7 @@ namespace Dynamo.Models
                     var port = Owner.InPortData[Index];
                     if (port.HasDefaultValue)
                     {
-                        if (port.DefaultExpression != null)
-                            return port.DefaultExpression.ToString();
-                        else
-                            return port.DefaultValue.ToString();
+                        return port.DefaultValue.ToString();
                     }
                 }
                 return "";
@@ -287,21 +284,18 @@ namespace Dynamo.Models
     {
         public string NickName { get; set; }
         public string ToolTipString { get; set; }
-        public object DefaultValue { get; set; }
-        // TODO: unify with DefaultValue
-        public AssociativeNode DefaultExpression { get; set; }
+        public AssociativeNode DefaultValue { get; set; }
         public double VerticalMargin { get; set; }
 
         public double Height { get; set; }
 
-        public PortData(string nickName, string tip) : this(nickName, tip, null, null) { }
+        public PortData(string nickName, string tip) : this(nickName, tip, null) { }
 
-        public PortData(string nickName, string toolTipString, object defaultValue, AssociativeNode defaultExpression)
+        public PortData(string nickName, string toolTipString, AssociativeNode defaultValue)
         {
             NickName = nickName;
             ToolTipString = toolTipString;
             DefaultValue = defaultValue;
-            DefaultExpression = defaultExpression;
             VerticalMargin = 0;
             Height = 0;
         }
@@ -310,7 +304,7 @@ namespace Dynamo.Models
         {
             get
             {
-                return DefaultValue != null || DefaultExpression != null;
+                return DefaultValue != null;
             }
         }
     }

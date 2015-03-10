@@ -14,11 +14,11 @@ namespace Dynamo.Library
     {
         private string summary;
 
-        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null, AssociativeNode defaultArgumentNode = null)
-            : this(null, parameter, type, defaultValue, defaultArgumentNode) { }
+        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null)
+            : this(null, parameter, type, defaultValue) { }
 
         public TypedParameter(
-            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null, AssociativeNode defaultArgumentNode = null)
+            FunctionDescriptor function, string name, ProtoCore.Type type, AssociativeNode defaultValue = null)
         {
             if (name == null) 
                 throw new ArgumentNullException("name");
@@ -26,15 +26,13 @@ namespace Dynamo.Library
             Name = name;
             Type = type;
             DefaultValue = defaultValue;
-            DefaultExpression = defaultArgumentNode;
             Function = function;
         }
 
         public FunctionDescriptor Function { get; set; }
         public string Name { get; private set; }
         public ProtoCore.Type Type { get; private set; }
-        public object DefaultValue { get; private set; }
-        public AssociativeNode DefaultExpression { get; private set; }
+        public AssociativeNode DefaultValue { get; private set; }
 
         public string Summary
         {
@@ -58,23 +56,15 @@ namespace Dynamo.Library
 
         public override string ToString()
         {
-            string strDefaultValue = string.Empty;
-            if (DefaultExpression != null)
+            string str = Name + ": " + DisplayTypeName;
+
+            if (DefaultValue != null)
             {
-                strDefaultValue = DefaultExpression.ToString();
-            }
-            else if (DefaultValue != null)
-            {
-                strDefaultValue = DefaultValue.ToString();
-                if (DefaultValue is bool)
+                var strDefaultValue = DefaultValue.ToString();
+                if (DefaultValue is BooleanNode )
                 {
                     strDefaultValue = strDefaultValue.ToLower();
                 }
-            }
-
-            string str = Name + ": " + DisplayTypeName;
-            if (!string.IsNullOrEmpty(strDefaultValue))
-            {
                 str = str + " = " + strDefaultValue;
             }
 

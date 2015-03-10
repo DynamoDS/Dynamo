@@ -629,28 +629,19 @@ namespace Dynamo.DSEngine
                 proc.argTypeList,
                 (arg, argType) =>
                 {
-                    object defaultValue = null;
-                    if (arg.IsDefault)
+                    AssociativeNode defaultArgumentNode;
+                    TryGetDefaultArgumentNode(arg, out defaultArgumentNode);
+                    
+                    if (defaultArgumentNode != null && arg.IsDefault)
                     {
                         var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)
                         {
                             AssociativeNode vnode = binaryExpr.RightNode;
-                            if (vnode is IntNode)
-                                defaultValue = (vnode as IntNode).Value;
-                            else if (vnode is DoubleNode)
-                                defaultValue = (vnode as DoubleNode).Value;
-                            else if (vnode is BooleanNode)
-                                defaultValue = (vnode as BooleanNode).Value;
-                            else if (vnode is StringNode)
-                                defaultValue = (vnode as StringNode).value;
                         }
                     }
 
-                    AssociativeNode defaultArgumentNode;
-                    TryGetDefaultArgumentNode(arg, out defaultArgumentNode);
-
-                    return new TypedParameter(arg.Name, argType, defaultValue, defaultArgumentNode);
+                    return new TypedParameter(arg.Name, argType, defaultArgumentNode);
                 });
 
             IEnumerable<string> returnKeys = null;
