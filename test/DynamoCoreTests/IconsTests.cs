@@ -1,4 +1,7 @@
 ﻿using Dynamo.Models;
+using Dynamo.Search.SearchElements;
+using Dynamo.UI;
+using Dynamo.Wpf.Services;
 using DynamoShapeManager;
 using DynamoUtilities;
 
@@ -6,6 +9,7 @@ using NUnit.Framework;
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -23,6 +27,8 @@ namespace Dynamo.Tests
         static readonly string DynamoPath = Directory.GetParent(binPath).FullName;
 
         static readonly string ResourcePath = Path.Combine(DynamoPath, @"src\Resources");
+
+        private IconServices iconServices = new IconServices();
 
         [SetUp]
         public void PreloadShapeManager()
@@ -46,6 +52,8 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        [Category("Failure")]
+        // Test checks png images. If at least one icon is not presented, test fails.
         public void SearchForPNGFiles()
         {
             var model = DynamoModel.Start(
@@ -56,11 +64,34 @@ namespace Dynamo.Tests
                 });
 
             searchEntries = model.SearchModel.SearchEntries;
+            bool testResult = true;
 
             foreach (var entry in searchEntries)
             {
-                Assert.IsTrue(true);
+                if (entry is NodeSearchElement)
+                {
+                    var searchEle = entry as NodeSearchElement;
+
+                    string smallIconPath = Path.Combine(ResourcePath, Path.GetFileNameWithoutExtension(searchEle.Assembly),
+                        "SmallIcons", searchEle.IconName + Configurations.SmallIconPostfix + ".png");
+
+                    string largeIconPath = Path.Combine(ResourcePath, Path.GetFileNameWithoutExtension(searchEle.Assembly),
+                        "LargeIcons", searchEle.IconName + Configurations.LargeIconPostfix + ".png");
+
+                    bool smallIconExists = File.Exists(smallIconPath);
+                    bool largeIconExists = File.Exists(largeIconPath);
+
+                    // Alert which icon is missed.
+                    if (!smallIconExists)
+                        Debug.WriteLine(smallIconPath);
+                    if (!largeIconExists)
+                        Debug.WriteLine(largeIconPath);
+
+                    testResult = testResult && smallIconExists && largeIconExists;
+                }
             }
+
+            Assert.IsTrue(testResult);
         }
     }
 }
