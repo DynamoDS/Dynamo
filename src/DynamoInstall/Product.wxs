@@ -2,9 +2,9 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <Product Id="3594373A-F8C0-40DF-ACBD-D4AF085C4189"
-           Name="Dynamo 0.8.0"
+           Name="$(var.DynPdtName)"
            Language="1033"
-           Version="0.8.0"
+           Version="$(var.DynVer).$(var.DynRev)"
            Manufacturer="Dynamo"
            UpgradeCode="733f1d21-d745-47aa-bbb5-4a39b5996e4e">
 
@@ -69,7 +69,7 @@
         <Directory Id="ADESK_DATA" Name="Autodesk">
         </Directory>
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
-          <Directory Id="PROGDATA" Name="0.8"/>
+          <Directory Id="PROGDATA" Name="$(var.DynVer)"/>
         </Directory>
       </Directory>
     </Directory>
@@ -83,7 +83,7 @@
                   Target="[DYNAMO_INSTALLDIR]\DynamoSandbox.exe"
                   WorkingDirectory="DYNAMO_INSTALLDIR"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue Root="HKCU" Key="Software\Dynamo\0.8" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RegistryValue Root="HKCU" Key="Software\Dynamo\$(var.DynVer)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
         <RegistryKey Root="HKLM"
                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]"
               Action="createAndRemoveOnUninstall">
