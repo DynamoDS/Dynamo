@@ -347,8 +347,8 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            var dynamicRunEnabled = (bool)value;
-            return !dynamicRunEnabled;
+            var runEnabled = (bool)value;
+            return runEnabled;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

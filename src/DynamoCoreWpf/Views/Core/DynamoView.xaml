@@ -533,8 +533,8 @@
                                   IsChecked="{Binding ShowRunPreview}" 
                                   Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
                                   ToolTipService.ShowOnDisabled="True" 
-                                  ToolTip="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
-                                  IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>                       
+                                  ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
+                                  IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>                       
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuLengthUnits}"
                                   Name="LengthUnitsMenu">
