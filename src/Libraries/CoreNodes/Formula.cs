@@ -26,7 +26,7 @@ namespace DSCore
             {
                 var parameter = parameters[arg.Index];
                 var value = DynamoUnits.SIUnit.ToSIUnit(arg.Value);
-                e.Parameters[parameter] = value == null ? arg.Value : value.Value * DynamoUnits.BaseUnit.UiLengthConversion;
+                e.Parameters[parameter] = value == null ? arg.Value : value.Value * value.UiLengthConversion;
             }
 
             return e.Evaluate();

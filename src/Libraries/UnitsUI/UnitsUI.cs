@@ -211,7 +211,8 @@ namespace UnitsUI
     {
         public LengthFromString()
         {
-            Measure = Length.FromDouble(0.0);
+            Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
+
             OutPortData.Add(new PortData("number", Resources.LengthFromStringPortDataLengthToolTip));
             RegisterAllPorts();
         }
@@ -247,7 +248,7 @@ namespace UnitsUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var doubleNode = AstFactory.BuildDoubleNode(Value);
+            var doubleNode = AstFactory.BuildDoubleNode(Measure.UnitValue);
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), doubleNode) };
         }
     }
