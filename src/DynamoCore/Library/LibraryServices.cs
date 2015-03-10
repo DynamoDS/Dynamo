@@ -446,15 +446,15 @@ namespace Dynamo.DSEngine
                                                         let description = 
                                                             (method.MethodAttribute != null ? method.MethodAttribute.Description :String.Empty)
                                                         select
-                                                            new FunctionDescriptor(
-                                                                null,
-                                                                null,
-                                                                method.name,
-                                                                description,
-                                                                arguments,
-                                                                method.returntype,
-                                                                FunctionType.GenericFunction,
-                                                                visibleInLibrary);
+                                                            new FunctionDescriptor(new FunctionDescriptorParams
+                                                            {
+                                                                FunctionName = method.name,
+                                                                Summary = description,
+                                                                Parameters = arguments,
+                                                                ReturnType = method.returntype,
+                                                                FunctionType = FunctionType.GenericFunction,
+                                                                IsVisibleInLibrary = visibleInLibrary
+                                                            });
 
             AddBuiltinFunctions(functions);
         }
@@ -487,12 +487,18 @@ namespace Dynamo.DSEngine
             };
 
             var functions =
-                ops.Select(op => new FunctionDescriptor(op, args, FunctionType.GenericFunction))
-                    .Concat(
-                        new FunctionDescriptor(
-                            Op.GetUnaryOpFunction(UnaryOperator.Not),
-                            GetUnaryFuncArgs(),
-                            FunctionType.GenericFunction).AsSingleton());
+                ops.Select(op => new FunctionDescriptor(new FunctionDescriptorParams
+                {
+                    FunctionName = op,
+                    Parameters = args,
+                    FunctionType = FunctionType.GenericFunction
+                }))
+                .Concat(new FunctionDescriptor(new FunctionDescriptorParams
+                {
+                    FunctionName = Op.GetUnaryOpFunction(UnaryOperator.Not),
+                    Parameters = GetUnaryFuncArgs(),
+                    FunctionType = FunctionType.GenericFunction
+                }).AsSingleton());
 
             AddBuiltinFunctions(functions);
         }
@@ -653,17 +659,19 @@ namespace Dynamo.DSEngine
                     obsoleteMessage = proc.MethodAttribute.ObsoleteMessage;
             }
 
-            var function = new FunctionDescriptor(
-                library,
-                className,
-                procName,
-                arguments,
-                proc.returntype,
-                type,
-                isVisible,
-                returnKeys,
-                proc.isVarArg,
-                obsoleteMessage);
+            var function = new FunctionDescriptor(new FunctionDescriptorParams
+            {
+                Assembly = library,
+                ClassName = className,
+                FunctionName = procName,
+                Parameters = arguments,
+                ReturnType = proc.returntype,
+                FunctionType = type,
+                IsVisibleInLibrary = isVisible,
+                ReturnKeys = returnKeys,
+                IsVarArg = proc.isVarArg,
+                ObsoleteMsg = obsoleteMessage
+            });
 
             AddImportedFunctions(library, new[] { function });
         }

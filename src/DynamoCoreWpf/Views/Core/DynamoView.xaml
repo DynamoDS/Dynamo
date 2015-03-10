@@ -32,7 +32,6 @@
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
         UseLayoutRounding="True"
-        Cursor="/DynamoCoreWpf;component/UI/Images/pointer.cur"
         Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
