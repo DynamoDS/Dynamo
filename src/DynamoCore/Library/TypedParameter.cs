@@ -6,20 +6,6 @@ using Dynamo.Nodes;
 
 namespace Dynamo.Library
 {
-    public struct TypedParameterParams
-    {
-        public TypedParameterParams(string parameterName, ProtoCore.Type type) : 
-            this()
-        {
-            ParameterName = parameterName;
-            Type = type;
-        }
-
-        public string ParameterName { get; set; }
-        public ProtoCore.Type Type { get; set; }
-        public object DefaultValue { get; set; }
-    }
-
     /// <summary>
     ///     A tuple of parameter and its type.
     /// </summary>
@@ -27,14 +13,19 @@ namespace Dynamo.Library
     {
         private string summary = string.Empty;
 
-        public TypedParameter(TypedParameterParams parameter)
-        {
-            if (parameter.ParameterName == null)
-                throw new ArgumentNullException("parameter.ParameterName");
+        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null)
+            : this(null, parameter, type, defaultValue) { }
 
-            Name = parameter.ParameterName;
-            Type = parameter.Type;
-            DefaultValue = parameter.DefaultValue;
+        public TypedParameter(
+            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null)
+        {
+            if (name == null) 
+                throw new ArgumentNullException("name");
+
+            Name = name;
+            Type = type;
+            DefaultValue = defaultValue;
+            Function = function;
         }
 
         public FunctionDescriptor Function { get; private set; }

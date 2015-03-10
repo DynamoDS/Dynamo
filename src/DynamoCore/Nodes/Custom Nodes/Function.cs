@@ -279,12 +279,7 @@ namespace Dynamo.Nodes
                     }
                 }
 
-                Parameter = new TypedParameter(new TypedParameterParams
-                {
-                    ParameterName = nickName,
-                    Type = type,
-                    DefaultValue = defaultValue
-                });
+                Parameter = new TypedParameter(nickName, type, defaultValue);
 
                 OnNodeModified();
                 RaisePropertyChanged("InputSymbol");

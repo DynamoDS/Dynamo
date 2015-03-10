@@ -42,9 +42,9 @@ namespace Dynamo.Tests
         {
             var parms = new List<TypedParameter>()
             {
-                new TypedParameter(new TypedParameterParams("xTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0))),
-                new TypedParameter(new TypedParameterParams("yTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0))),
-                new TypedParameter(new TypedParameterParams("zTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)))
+                new TypedParameter("xTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                new TypedParameter("yTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                new TypedParameter("zTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0))
             };
 
             var funcDesc = new FunctionDescriptor(new FunctionDescriptorParams
