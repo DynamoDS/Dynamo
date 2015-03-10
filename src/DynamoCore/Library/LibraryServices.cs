@@ -521,6 +521,43 @@ namespace Dynamo.DSEngine
 
         }
 
+        private bool TryGetDefaultArgumentNode(ArgumentInfo arg, out AssociativeNode defaultArgumentNode)
+        {
+            defaultArgumentNode = null;
+
+            if (arg.Attributes == null)
+                return false;
+
+            string defaultExpression = null;
+            object o;
+            if (arg.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o))
+            {
+                defaultExpression = o as string;
+            }
+
+            if (string.IsNullOrEmpty(defaultExpression))
+                return false;
+
+            var currentParsingmode = LibraryManagementCore.ParsingMode;
+            var currentParsingFlag = LibraryManagementCore.IsParsingCodeBlockNode;
+
+            LibraryManagementCore.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
+            LibraryManagementCore.IsParsingCodeBlockNode = true;
+
+            var astNode = ParserUtils.ParseWithCore(defaultExpression + ";", LibraryManagementCore);
+            if (astNode != null)
+            {
+                var cbn = astNode as CodeBlockNode;
+                if (cbn != null && cbn.Body.Any())
+                    defaultArgumentNode = (cbn.Body[0] as BinaryExpressionNode).RightNode;
+            }
+
+            LibraryManagementCore.ParsingMode = currentParsingmode;
+            LibraryManagementCore.IsParsingCodeBlockNode = currentParsingFlag;
+
+            return defaultArgumentNode != null;
+        }
+
         private void ImportProcedure(string library, ProcedureNode proc)
         {
             string procName = proc.name;
@@ -610,17 +647,10 @@ namespace Dynamo.DSEngine
                         }
                     }
 
-                    // This is for FFI function which could have a [DefaultArgumentAttribute]
-                    // for its parameters to support complex default argument. 
-                    string defaultExpression = null;
-                    if (arg.Attributes != null)
-                    {
-                        object o;
-                        if (arg.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o))
-                            defaultExpression = o as string;
-                    }
+                    AssociativeNode defaultArgumentNode;
+                    TryGetDefaultArgumentNode(arg, out defaultArgumentNode);
 
-                    return new TypedParameter(arg.Name, argType, defaultValue, defaultExpression);
+                    return new TypedParameter(arg.Name, argType, defaultValue, defaultArgumentNode);
                 });
 
             IEnumerable<string> returnKeys = null;

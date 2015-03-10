@@ -118,11 +118,23 @@ namespace Dynamo.DSEngine
                 else
                 {
                     PortData port = node.InPortData[index];
-                    inputAstNodes.Add(
-                        port.HasDefaultValue
-                            ? AstFactory.BuildPrimitiveNodeFromObject(port.DefaultValue)
-                            : new NullNode());
-                }
+                    if (port.HasDefaultValue)
+                    {
+                        if (port.DefaultExpression != null)
+                        {
+                            inputAstNodes.Add(port.DefaultExpression);
+                        }
+                        else
+                        {
+                            var defaultValueNode = AstFactory.BuildPrimitiveNodeFromObject(port.DefaultValue);
+                            inputAstNodes.Add(defaultValueNode);
+                        }
+                    }
+                    else
+                    {
+                        inputAstNodes.Add(new NullNode());
+                    }
+               }
             }
 
             //TODO: This should do something more than just log a generic message. --SJE

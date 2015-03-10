@@ -133,7 +133,7 @@ namespace Dynamo.Nodes
         protected virtual void InitializeFunctionParameters(NodeModel model, IEnumerable<TypedParameter> parameters)
         {
             foreach (var arg in parameters)
-                model.InPortData.Add(new PortData(arg.Name, arg.Description, arg.DefaultValue));
+                model.InPortData.Add(new PortData(arg.Name, arg.Description, arg.DefaultValue, arg.DefaultExpression));
         }
 
         protected override void InitializeOutputs(NodeModel model)

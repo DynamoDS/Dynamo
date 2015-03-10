@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Dynamo.DSEngine;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Library
 {
@@ -13,11 +14,11 @@ namespace Dynamo.Library
     {
         private string summary;
 
-        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null, string defaultExpression = null)
-            : this(null, parameter, type, defaultValue) { }
+        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null, AssociativeNode defaultArgumentNode = null)
+            : this(null, parameter, type, defaultValue, defaultArgumentNode) { }
 
         public TypedParameter(
-            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null, string defaultExpression = null)
+            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null, AssociativeNode defaultArgumentNode = null)
         {
             if (name == null) 
                 throw new ArgumentNullException("name");
@@ -25,7 +26,7 @@ namespace Dynamo.Library
             Name = name;
             Type = type;
             DefaultValue = defaultValue;
-            DefaultExpression = defaultExpression;
+            DefaultExpression = defaultArgumentNode;
             Function = function;
         }
 
@@ -33,7 +34,7 @@ namespace Dynamo.Library
         public string Name { get; private set; }
         public ProtoCore.Type Type { get; private set; }
         public object DefaultValue { get; private set; }
-        public String DefaultExpression { get; private set; }
+        public AssociativeNode DefaultExpression { get; private set; }
 
         public string Summary
         {
@@ -57,15 +58,23 @@ namespace Dynamo.Library
 
         public override string ToString()
         {
-            string str = Name + ": " + DisplayTypeName;
-
-            if (DefaultValue != null)
+            string strDefaultValue = string.Empty;
+            if (DefaultExpression != null)
             {
-                string strDefaultValue = DefaultValue.ToString();
+                strDefaultValue = DefaultExpression.ToString();
+            }
+            else if (DefaultValue != null)
+            {
+                strDefaultValue = DefaultValue.ToString();
                 if (DefaultValue is bool)
                 {
                     strDefaultValue = strDefaultValue.ToLower();
                 }
+            }
+
+            string str = Name + ": " + DisplayTypeName;
+            if (!string.IsNullOrEmpty(strDefaultValue))
+            {
                 str = str + " = " + strDefaultValue;
             }
 

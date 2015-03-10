@@ -106,7 +106,7 @@ namespace Dynamo.Nodes
             {
                 var arg = parameters.Last();
                 var argName = arg.Name.Remove(arg.Name.Length - 1) + "0";
-                model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue));
+                model.InPortData.Add(new PortData(argName, arg.Description, arg.DefaultValue, arg.DefaultExpression));
             }
         }
 

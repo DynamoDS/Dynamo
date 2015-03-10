@@ -24,9 +24,9 @@ namespace Dynamo.Nodes
             if (Definition.DisplayParameters == null || Definition.Parameters == null)
                 return;
 
-            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.DisplayTypeName, p.DefaultValue));
+            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.DisplayTypeName, p.DefaultValue, p.DefaultExpression));
             foreach (var p in inputs)
-                model.InPortData.Add(new PortData(p.Item1, p.Item2, p.Item3));
+                model.InPortData.Add(new PortData(p.Item1, p.Item2, p.Item3, p.Item4));
         }
 
         protected override void InitializeOutputs(NodeModel model)
