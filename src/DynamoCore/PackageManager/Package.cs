@@ -10,6 +10,7 @@ using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
 
@@ -317,9 +318,9 @@ namespace Dynamo.PackageManager
             if (!Directory.Exists(BinaryDirectory))
                 return assemblies;
 
-            // use the pkg header to determine which assemblies to load
-            var nodeLibraries = Header.node_libraries;
-
+            // use the pkg header to determine which assemblies to load and prevent multiple enumeration
+            var nodeLibraries = Header.node_libraries.ToList();
+            
             foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
             {
                 Assembly assem;
@@ -328,11 +329,16 @@ namespace Dynamo.PackageManager
                 var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
                 if (result)
                 {
+                    // IsNodeLibrary may fail, we store the warnings here and then show
+                    IList<ILogMessage> warnings = new List<ILogMessage>();
+
                     assemblies.Add(new PackageAssembly()
                     {
                         Assembly = assem,
-                        IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName())
+                        IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
                     });
+
+                    warnings.ToList().ForEach(this.Log);
                 }
             }
 
@@ -353,10 +359,7 @@ namespace Dynamo.PackageManager
         ///     This algorithm assumes all of the entries in nodeLibraryFullNames are properly formatted
         ///     as returned by the Assembly.FullName property.  If they are not, it ignores the entry.
         /// </summary>
-        /// <param name="nodeLibraryFullNames"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        internal static bool IsNodeLibrary(IEnumerable<string> nodeLibraryFullNames, AssemblyName name)
+        internal static bool IsNodeLibrary(IEnumerable<string> nodeLibraryFullNames, AssemblyName name, ref IList<ILogMessage> messages)
         {
             if (name == null)
             {
@@ -379,7 +382,12 @@ namespace Dynamo.PackageManager
                     }
                 }
                 catch (Exception _)
-                {  
+                {
+                    if (messages != null)
+                    {
+                        messages.Add(LogMessage.Warning(Resources.IncorrectlyFormattedNodeLibraryWarning, WarningLevel.Mild));
+                        messages.Add(LogMessage.Warning(String.Format(Resources.IncorrectlyFormattedNodeLibraryDisplay + " {0}", n), WarningLevel.Mild));
+                    }
                 }
             }
             return false;
