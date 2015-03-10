@@ -1117,6 +1117,15 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             AssertPreviewValue("4f0c05a7-4e52-4d60-807a-08824baa23bb", true);
         }
+
+        [Test]
+        public void TestDefaultValueAttributeForDummyLine()
+        {
+            DynamoUtilities.DynamoPathManager.Instance.AddPreloadLibrary("FFITarget.dll");
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueAttributeForDummyLine.dyn.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("e95a634b-aab9-4b6e-bb33-2f9669381ad6", 5);
+        }
     }
 
     [Category("DSCustomNode")]
