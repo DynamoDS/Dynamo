@@ -2553,5 +2553,27 @@ import(""FFITarget.dll"");
             Assert.AreEqual(expected, actual);
         }
 
+        [Test]
+        public void TestDefaultArgumentAttribute()
+        {
+            string code = @"
+import (TestData from ""FFITarget.dll"");
+";
+            thisTest.RunScriptSource(code);
+            var core = thisTest.GetTestCore();
+            var testDataClassIndex = core.ClassTable.IndexOf("TestData");
+            var testDataClass = core.ClassTable.ClassNodes[testDataClassIndex];
+            var funcNode = testDataClass.vtable.GetFirstStatic("GetCircleArea");
+            var argument = funcNode.argInfoList.First();
+
+            Assert.IsNotNull(argument);
+            Assert.IsNotNull(argument.Attributes);
+
+            object o;
+            Assert.IsTrue(argument.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o));
+
+            string expression = o as string;
+            Assert.IsTrue(expression.Equals("TestData.GetFloat()"));
+        }
     }
 }
