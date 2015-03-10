@@ -14,13 +14,6 @@ namespace ProtoFFI
         {
         }
 
-        private static Dictionary<string, byte[]> GACGeometryKeyTokens = new Dictionary<string, byte[]>()
-        {
-            /* {"ProtoGeometry", new byte[] { 0xD5, 0x24, 0x30, 0x4D, 0xAF, 0x1F, 0x8B, 0x35}}, */
-        };
-
-        private AssemblyName mExecutingAssemblyName = Assembly.GetExecutingAssembly().GetName();
-
         Dictionary<RuntimeCore, FFIExecutionSession> mSessions = new Dictionary<RuntimeCore, FFIExecutionSession>();
         ExtensionAppLoader mApploader = new ExtensionAppLoader();
 
@@ -43,35 +36,7 @@ namespace ProtoFFI
             {
                 return Assembly.LoadFrom(name);
             }
-            else
-            {
-                string assemblyName = System.IO.Path.GetFileNameWithoutExtension(name);
-                byte[] publicKeyToekn;
-
-                if (GACGeometryKeyTokens.TryGetValue(assemblyName, out publicKeyToekn))
-                {
-                    AssemblyName an = new AssemblyName();
-                    an.Name = assemblyName;
-                    an.SetPublicKeyToken(publicKeyToekn);
-                    an.Version = mExecutingAssemblyName.Version;
-                    an.CultureInfo = mExecutingAssemblyName.CultureInfo;
-                    an.ProcessorArchitecture = mExecutingAssemblyName.ProcessorArchitecture;
-                    System.Diagnostics.Debug.Write("Assembly: " + assemblyName + "," + an.Version.ToString() + " is in GAC.");
-                    return Assembly.Load(an);
-                }
-            }
             throw new System.IO.FileNotFoundException();
-        }
-
-        public bool IsInternalGacAssembly(string moduleName)
-        {
-            if (string.IsNullOrEmpty(moduleName))
-            {
-                return false;
-            }
-
-            string assemblyName = System.IO.Path.GetFileNameWithoutExtension(moduleName);
-            return GACGeometryKeyTokens.ContainsKey(assemblyName);
         }
 
         public IExecutionSession GetSession(RuntimeCore runtimeCore)
@@ -108,7 +73,7 @@ namespace ProtoFFI
 
         private void OnDispose(RuntimeCore sender)
         {
-            if (null == mSessions)
+            if (mSessions == null)
                 return;
 
             FFIExecutionSession session = null;
@@ -121,7 +86,9 @@ namespace ProtoFFI
                     sender.Dispose -= OnDispose;
                     sender.ExecutionEvent -= OnExecutionEvent;
                 }
+                mSelf = null;
             }
+
         }
 
         private void OnExecutionEvent(object sender, ExecutionStateEventArgs e)
@@ -196,7 +163,7 @@ namespace ProtoFFI
             object value = null;
             if (!this.configValues.TryGetValue(config, out value))
             {
-                runtimeCore.Configurations.TryGetValue(config, out value);
+                runtimeCore.DSExecutable.RuntimeData.Configurations.TryGetValue(config, out value);
             }
             return value;
         }

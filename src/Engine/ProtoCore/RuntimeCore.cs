@@ -77,7 +77,6 @@ namespace ProtoCore
 
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid; //not yet started
-            Configurations = new Dictionary<string, object>();
             FFIPropertyChangedMonitor = new FFIPropertyChangedMonitor(this);
 
             ContinuationStruct = new ContinuationStructure();
@@ -89,6 +88,13 @@ namespace ProtoCore
 
             FunctionCallDepth = 0;
             cancellationPending = false;
+
+            watchClassScope = Constants.kInvalidIndex;
+
+            ExecutionInstance = CurrentExecutive = new Executive(this);
+            ExecutiveProvider = new ExecutiveProvider();
+
+            RuntimeStatus = new ProtoCore.RuntimeStatus(this);
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -100,6 +106,9 @@ namespace ProtoCore
             this.ExprInterpreterExe = exprInterpreterExe;
         }
 
+        public IExecutiveProvider ExecutiveProvider { get; set; }
+        public Executive ExecutionInstance { get; private set; }
+        public Executive CurrentExecutive { get; private set; }
 
         // Execution properties
         public Executable DSExecutable { get; private set; }
@@ -117,7 +126,6 @@ namespace ProtoCore
         public event DisposeDelegate Dispose;
         public event EventHandler<ExecutionStateEventArgs> ExecutionEvent;
         public int ExecutionState { get; set; }
-        public Dictionary<string, object> Configurations { get; set; }
         public FFIPropertyChangedMonitor FFIPropertyChangedMonitor { get; private set; }
 
         // this one is to address the issue that when the execution control is in a language block
@@ -151,6 +159,9 @@ namespace ProtoCore
         }
 
 #region DEBUGGER_PROPERTIES
+
+        public int watchClassScope { get; set; }
+
         public DebugProperties DebugProps { get; set; }
         public List<Instruction> Breakpoints { get; set; }
 
@@ -237,5 +248,40 @@ namespace ProtoCore
 
             cancellationPending = true;
         }
+
+        public int GetCurrentBlockId()
+        {
+            int constructBlockId = RuntimeMemory.CurrentConstructBlockId;
+            if (constructBlockId == Constants.kInvalidIndex)
+                return DebugProps.CurrentBlockId;
+
+            CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(DSExecutable.CodeBlocks, constructBlockId);
+            while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
+            {
+                constructBlock = constructBlock.parent;
+            }
+
+            if (null != constructBlock)
+                constructBlockId = constructBlock.codeBlockId;
+
+            if (constructBlockId != DebugProps.CurrentBlockId)
+                return DebugProps.CurrentBlockId;
+            else
+                return RuntimeMemory.CurrentConstructBlockId;
+        }
+
+        //STop
+        public Stopwatch StopWatch;
+        public void StartTimer()
+        {
+            StopWatch = new Stopwatch();
+            StopWatch.Start();
+        }
+        public TimeSpan GetCurrentTime()
+        {
+            TimeSpan ts = StopWatch.Elapsed;
+            return ts;
+        }
+
     }
 }

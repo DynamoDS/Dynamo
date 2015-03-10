@@ -7,6 +7,7 @@ using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
+using ProtoCore.Namespace;
 using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
@@ -92,13 +93,23 @@ namespace Dynamo.DSEngine
         
         /// <summary>
         /// Get DesignScript core.
-        /// This will be superceeded by the runtime core
         /// </summary>
         public ProtoCore.Core LiveRunnerCore
         {
             get
             {
                 return liveRunnerServices.Core;
+            }
+        }
+
+        /// <summary>
+        /// Get DesignScript runtime core.
+        /// </summary>
+        public ProtoCore.RuntimeCore LiveRunnerRuntimeCore
+        {
+            get
+            {
+                return liveRunnerServices.RuntimeCore;
             }
         }
 
@@ -613,6 +624,7 @@ namespace Dynamo.DSEngine
         }
 
         #endregion
+
     }
 
     public class CompilationServices

@@ -259,6 +259,8 @@ namespace Dynamo.Nodes
     {
         private string inputSymbol = String.Empty;
         private string nickName = String.Empty;
+        private ElementResolver elementResolver;
+        private ElementResolver workspaceElementResolver;
 
         public Symbol()
         {
@@ -269,6 +271,8 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             InputSymbol = String.Empty;
+
+            elementResolver = new ElementResolver();
         }
 
         public string InputSymbol
@@ -375,6 +379,9 @@ namespace Dynamo.Nodes
             }
 
             ArgumentLacing = LacingStrategy.Disabled;
+
+            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
+            elementResolver = new ElementResolver(resolutionMap);
         }
 
         private bool TryParseInputSymbol(string inputSymbol, 
@@ -384,23 +391,13 @@ namespace Dynamo.Nodes
             identifier = null;
             defaultValue = null;
 
-            // workaround: there is an issue in parsing "x:int" format unless 
-            // we create the other parser specially for it. We change it to 
-            // "x:int = dummy;" for parsing. 
             var parseString = InputSymbol;
-
-            // if it has default value, then append ';'
-            if (InputSymbol.Contains("="))
-            {
-                parseString += ";";
-            }
-            else
-            {
-                String dummyExpression = "{0}=dummy;";
-                parseString = string.Format(dummyExpression, parseString);
-            }
-
-            ParseParam parseParam = new ParseParam(this.GUID, parseString);
+            parseString += ";";
+            
+            // During loading of symbol node from file, the elementResolver from the workspace is unavailable
+            // in which case, a local copy of the ER obtained from the symbol node is used
+            var resolver = workspaceElementResolver ?? elementResolver;
+            var parseParam = new ParseParam(this.GUID, parseString, resolver);
 
             if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
                 parseParam.ParsedNodes != null &&
@@ -426,6 +423,7 @@ namespace Dynamo.Nodes
         {
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
+            workspaceElementResolver = updateValueParams.ElementResolver;
 
             if (name == "InputSymbol")
             {

@@ -72,12 +72,11 @@ namespace ProtoTestFx
                 core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
                 core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-                runtimeCore = core.__TempCoreHostForRefactoring;
-                runtimeCore.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
-                runtimeCore.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
+                core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
+                core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
                 ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
 
-                ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core);
+                ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core, out runtimeCore);
                 executionLog.AppendLine("Script executed successfully.");
 
                 executionLog.AppendLine();
@@ -148,9 +147,8 @@ namespace ProtoTestFx
                 core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
                 core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-                runtimeCore = core.__TempCoreHostForRefactoring;
-                runtimeCore.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
-                runtimeCore.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
+                core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
+                core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
 
                 ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core);
                 ProtoScript.Config.RunConfiguration runnerConfig = new ProtoScript.Config.RunConfiguration();

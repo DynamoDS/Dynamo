@@ -13,14 +13,6 @@ namespace ProtoCore.DSASM
     public class Executive : IExecutive
     {
         private readonly bool enableLogging = true;
-        private readonly Core core;
-        public Core Core
-        {
-            get
-            {
-                return core;
-            }
-        }
 
 
         private readonly RuntimeCore runtimeCore;
@@ -93,13 +85,12 @@ namespace ProtoCore.DSASM
         private Dictionary<string, List<int>> symbolArrayIndexMap = new Dictionary<string,List<int>>();
 #endif
 
-        public Executive(Core core, bool isFep = false)
+        public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
             IsExplicitCall = false;
-            Validity.Assert(core != null);
-            this.core = core;
+            Validity.Assert(runtimeCore != null);
 
-            this.runtimeCore = core.__TempCoreHostForRefactoring;
+            this.runtimeCore = runtimeCore;
             enableLogging = runtimeCore.Options.Verbose;
 
             exe = runtimeCore.DSExecutable;
@@ -108,7 +99,6 @@ namespace ProtoCore.DSASM
             fepRun = isFep;
             Properties = new InterpreterProperties();
 
-            //rmem = runtimeCore.RuntimeMemory;
             rmem = runtimeCore.RuntimeMemory;
 
             // Execute DS View VM Log
@@ -185,7 +175,7 @@ namespace ProtoCore.DSASM
                 SetupAndPushBounceStackFrame(exeblock, entry, context, stackFrame, locals);
                 runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
-            return core.ExecutionInstance.Execute(exeblock, entry, context, fepRun, breakpoints);
+            return runtimeCore.ExecutionInstance.Execute(exeblock, entry, context, fepRun, breakpoints);
         }
 
         /// <summary>
@@ -876,10 +866,10 @@ namespace ProtoCore.DSASM
 
                     if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
                     {
-                        runtimeCore.DebugProps.SetUpCallrForDebug(core, runtimeCore, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
+                        runtimeCore.DebugProps.SetUpCallrForDebug(runtimeCore, this, fNode, pc, false, callsite, arguments, replicationGuides, stackFrame, dotCallDimensions, hasDebugInfo);
                     }
 
-                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
+                    sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, runtimeCore, runtimeContext);
                 }
                 else
                 {
@@ -898,7 +888,7 @@ namespace ProtoCore.DSASM
                 {
                     if (runtimeCore.ContinuationStruct.IsFirstCall)
                     {
-                        runtimeCore.DebugProps.SetUpCallrForDebug(core,
+                        runtimeCore.DebugProps.SetUpCallrForDebug(
                                                            runtimeCore,
                                                            this, 
                                                            fNode, 
@@ -913,7 +903,7 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        runtimeCore.DebugProps.SetUpCallrForDebug(core, 
+                        runtimeCore.DebugProps.SetUpCallrForDebug( 
                                                            runtimeCore,
                                                            this, 
                                                            fNode, 
@@ -989,7 +979,7 @@ namespace ProtoCore.DSASM
                 }
                 else
 #endif
-                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, core, runtimeContext);
+                sv = callsite.JILDispatch(arguments, replicationGuides, stackFrame, runtimeCore, runtimeContext);
 
                 if (sv.IsExplicitCall)
                 {
@@ -1027,7 +1017,7 @@ namespace ProtoCore.DSASM
                 // Restore debug properties after returning from a CALL/CALLR
                 if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
                 {
-                    runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, fNode);
+                    runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, fNode);
                 }
 
                 GCDotMethods(fNode.name, ref sv, dotCallDimensions, arguments);
@@ -1108,7 +1098,7 @@ namespace ProtoCore.DSASM
 
             if (setDebugProperty)
             {
-                runtimeCore.DebugProps.SetUpCallrForDebug(core,
+                runtimeCore.DebugProps.SetUpCallrForDebug(
                                                    runtimeCore,
                                                    this,
                                                    procNode,
@@ -1128,7 +1118,7 @@ namespace ProtoCore.DSASM
             StackValue sv = callsite.JILDispatch(arguments,
                                                  repGuides,
                                                  stackFrame,
-                                                 core,
+                                                 runtimeCore,
                                                  new Runtime.Context());
 
             isExplicitCall = sv.IsExplicitCall;
@@ -1665,7 +1655,8 @@ namespace ProtoCore.DSASM
             int functionScope = Constants.kInvalidIndex;
             GetCallerInformation(out classScope, out functionScope);
             var nodesInScope = istream.dependencyGraph.GetGraphNodesAtScope(classScope, functionScope);
-            List<AssociativeGraph.GraphNode> redefinedNodes = AssociativeEngine.Utils.GetRedefinedGraphNodes(core, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
+            List<AssociativeGraph.GraphNode> redefinedNodes = 
+                AssociativeEngine.Utils.GetRedefinedGraphNodes(runtimeCore, Properties.executingGraphNode, nodesInScope, classScope, functionScope);
             Validity.Assert(redefinedNodes != null);
             foreach(AssociativeGraph.GraphNode gnode in redefinedNodes)
             {
@@ -2228,7 +2219,7 @@ namespace ProtoCore.DSASM
             // and for such calls 'PerformReturnTypeCoerce' is not called 
             if (!isBaseCall)
             {
-                RX = CallSite.PerformReturnTypeCoerce(procNode, core, RX);
+                RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
 
                 if (thisPtr == null)
                 {
@@ -2531,7 +2522,7 @@ namespace ProtoCore.DSASM
 
                 if (!waspopped)
                 {
-                    runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode, isReplicating);
+                    runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode, isReplicating);
                 }
             }
 
@@ -3698,7 +3689,16 @@ namespace ProtoCore.DSASM
                 string name = dynamicVariableNode.variableName;
                 int contextClassIndex = dynamicVariableNode.classIndex;
                 int contextProcIndex = dynamicVariableNode.procIndex;
-                int symbolIndex = exe.classTable.ClassNodes[classIndex].GetSymbolIndex(name, contextClassIndex, contextProcIndex, runtimeCore.RunningBlock, core, out hasThisSymbol, out addressType);
+                ClassNode classNode = exe.classTable.ClassNodes[classIndex];
+                int symbolIndex = ClassUtils.GetSymbolIndex(
+                    classNode, 
+                    name, 
+                    contextClassIndex, 
+                    contextProcIndex, 
+                    runtimeCore.RunningBlock,
+                    exe.CompleteCodeBlocks, 
+                    out hasThisSymbol,
+                    out addressType);
                 if (Constants.kInvalidIndex != symbolIndex)
                 {
                     if (addressType == AddressType.StaticMemVarIndex)
@@ -3840,7 +3840,17 @@ namespace ProtoCore.DSASM
                     AddressType addressType;
                     SymbolNode node = null;
                     bool isStatic = false;
-                    int symbolIndex = exe.classTable.ClassNodes[type].GetSymbolIndex(procName, type, Constants.kGlobalScope, runtimeCore.RunningBlock, core, out hasThisSymbol, out addressType);
+                    ClassNode classNode = exe.classTable.ClassNodes[type];
+                    int symbolIndex = ClassUtils.GetSymbolIndex(
+                        classNode, 
+                        procName, 
+                        type, 
+                        Constants.kGlobalScope, 
+                        runtimeCore.RunningBlock,
+                        exe.CompleteCodeBlocks, 
+                        out hasThisSymbol,
+                        out addressType);
+
                     if (Constants.kInvalidIndex != symbolIndex)
                     {
                         if (addressType == AddressType.StaticMemVarIndex)
@@ -4653,10 +4663,24 @@ namespace ProtoCore.DSASM
                 if (arrayHasElement || dictionaryHasElement)
                 {
                     key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                    key.metaData = svArrayToIterate.metaData;
                 }
                 else
                 {
-                    // svArrayToIterate has no elements 
+                    key = StackValue.Null;
+                }
+            }
+            else if (svArrayToIterate.IsString)
+            {
+                var str = runtimeCore.RuntimeMemory.Heap.GetString(svArrayToIterate);
+                Validity.Assert(str != null);
+                if (str.Any())
+                {
+                    key = StackValue.BuildArrayKey(svArrayToIterate, 0);
+                    key.metaData = svArrayToIterate.metaData;
+                }
+                else
+                {
                     key = StackValue.Null;
                 }
             }
@@ -5291,12 +5315,12 @@ namespace ProtoCore.DSASM
                 StackValue newSV;
                 if (opdata1.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata2, core, rmem);
+                    newSV = StringUtils.ConvertToString(opdata2, runtimeCore, rmem);
                     opdata2 = StringUtils.ConcatString(newSV, opdata1, runtimeCore);
                 }
                 else if (opdata2.IsString)
                 {
-                    newSV = StringUtils.ConvertToString(opdata1, core, rmem);
+                    newSV = StringUtils.ConvertToString(opdata1, runtimeCore, rmem);
                     opdata2 = StringUtils.ConcatString(opdata2, newSV, runtimeCore);
                 }
             }
@@ -5394,9 +5418,28 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = GetOperandData(instruction.op2);
             StackValue opdata2 = GetOperandData(instruction.op1);
 
-            if (opdata1.IsInteger && opdata2.IsInteger)
+            if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
-                opdata2 = StackValue.BuildInt(opdata2.RawIntValue % opdata1.RawIntValue);
+                if (opdata1.IsInteger && opdata2.IsInteger)
+                {
+                    long lhs = opdata2.RawIntValue;
+                    long rhs = opdata1.RawIntValue;
+                    if (rhs == 0)
+                    {
+                        runtimeCore.RuntimeStatus.LogWarning(WarningID.kModuloByZero, Resources.ModuloByZero);
+                        opdata2 = StackValue.Null;
+                    }
+                    else
+                    {
+                        opdata2 = StackValue.BuildInt(lhs % rhs);
+                    }
+                }
+                else
+                {
+                    double lhs = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
+                    double rhs = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
+                    opdata2 = StackValue.BuildDouble(lhs % rhs);
+                }
             }
             else
             {
@@ -5850,7 +5893,7 @@ namespace ProtoCore.DSASM
             // we need a corresponding SetUpCallr to save the states. Therefore this call here - pratapa
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
-                runtimeCore.DebugProps.SetUpCallrForDebug(core, runtimeCore, this, fNode, pc, true);
+                runtimeCore.DebugProps.SetUpCallrForDebug(runtimeCore, this, fNode, pc, true);
             }
 
             StackValue svThisPointer = StackValue.BuildInvalid();
@@ -6425,7 +6468,7 @@ namespace ProtoCore.DSASM
                 // 2. Normal execution in Serial (explicit call), non-replicating mode
                 if (!wasDebugPropsPopped)
                 {
-                    RX = CallSite.PerformReturnTypeCoerce(procNode, core, RX);
+                    RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
                     StackValue svRet = RX;
                     GCDotMethods(procNode.name, ref svRet, Properties.functionCallDotCallDimensions, Properties.functionCallArguments);
                     RX = svRet;
@@ -6440,7 +6483,7 @@ namespace ProtoCore.DSASM
             // TODO: Decide where to insert this common code block for Serial mode and Debugging - pratapa
             if (runtimeCore.Options.ExecutionMode == ProtoCore.ExecutionMode.Serial || runtimeCore.Options.IDEDebugMode)
             {
-                RX = CallSite.PerformReturnTypeCoerce(procNode, core, RX);
+                RX = CallSite.PerformReturnTypeCoerce(procNode, runtimeCore, RX);
 
                 runtimeCore.ContinuationStruct.RunningResult.Add(RX);
                 runtimeCore.ContinuationStruct.Result = RX;
@@ -6462,7 +6505,7 @@ namespace ProtoCore.DSASM
                             // if stepping over outermost function call
                             if (!runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsFunctionStepOver))
                             {
-                                runtimeCore.DebugProps.SetUpStepOverFunctionCalls(core, runtimeCore, procNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
+                                runtimeCore.DebugProps.SetUpStepOverFunctionCalls(runtimeCore, procNode, debugFrame.ExecutingGraphNode, debugFrame.HasDebugInfo);
                             }
                         }
                         // The DebugFrame passed here is the previous one that was popped off before this call
@@ -6483,7 +6526,7 @@ namespace ProtoCore.DSASM
                             }
                             else
                             {
-                                runtimeCore.DebugProps.RestoreCallrForNoBreak(core, runtimeCore, procNode, false);
+                                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode, false);
                             }
                             DebugPerformCoercionAndGC(debugFrame);
                         }

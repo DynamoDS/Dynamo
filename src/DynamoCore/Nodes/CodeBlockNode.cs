@@ -2,13 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Xml;
-
-using Dynamo.Core;
 using Dynamo.DSEngine;
-
 using ProtoCore.AST.AssociativeAST;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -31,6 +29,7 @@ namespace Dynamo.Nodes
         private readonly List<Statement> codeStatements = new List<Statement>();
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
+        private List<string> inputPortNames = new List<string>();
         private readonly List<string> tempVariables = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
@@ -41,6 +40,8 @@ namespace Dynamo.Nodes
             get { return shouldFocus;  }
             internal set { shouldFocus = value; }
         }
+
+        public ElementResolver ElementResolver { get; private set; }
 
         private struct Formatting
         {
@@ -55,13 +56,7 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
             this.libraryServices = libraryServices;
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
-        }
-
-        public CodeBlockNodeModel(string userCode, LibraryServices libraryServices)
-            : this(libraryServices)
-        {
-            code = userCode;
-            ProcessCodeDirect();
+            this.ElementResolver = new ElementResolver();
         }
 
         public CodeBlockNodeModel(string userCode, double xPos, double yPos, LibraryServices libraryServices)
@@ -74,6 +69,7 @@ namespace Dynamo.Nodes
             Y = yPos;
             this.libraryServices = libraryServices;
             this.libraryServices.LibraryLoaded += LibraryServicesOnLibraryLoaded;
+            this.ElementResolver = new ElementResolver();
             code = userCode;
             GUID = guid;
             ShouldFocus = false;
@@ -89,7 +85,7 @@ namespace Dynamo.Nodes
 
         private void LibraryServicesOnLibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs libraryLoadedEventArgs)
         {
-            ProcessCodeDirect();
+            //ProcessCodeDirect();
         }
 
         /// <summary>
@@ -182,7 +178,7 @@ namespace Dynamo.Nodes
             private set { code = value; }
         }
 
-        public void SetCodeContent(string newCode)
+        public void SetCodeContent(string newCode, ElementResolver workspaceElementResolver)
         {
             if (code != null && code.Equals(newCode))
                 return;
@@ -200,15 +196,12 @@ namespace Dynamo.Nodes
                 SaveAndDeleteConnectors(inportConnections, outportConnections);
 
                 code = newCode;
-                ProcessCode(ref errorMessage, ref warningMessage);
+                ProcessCode(ref errorMessage, ref warningMessage, workspaceElementResolver);
 
                 //Recreate connectors that can be reused
                 LoadAndCreateConnectors(inportConnections, outportConnections);
 
                 RaisePropertyChanged("Code");
-                
-                // Mark node for update
-                OnNodeModified();
                 
                 ReportPosition();
 
@@ -217,6 +210,9 @@ namespace Dynamo.Nodes
                     Error(errorMessage);
                 else if (!string.IsNullOrEmpty(warningMessage))
                     Warning(warningMessage);
+
+                // Mark node for update
+                OnNodeModified();
             }
         }
 
@@ -241,6 +237,7 @@ namespace Dynamo.Nodes
         {
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
+            ElementResolver workspaceElementResolver = updateValueParams.ElementResolver;
 
             if (name != "Code") 
                 return base.UpdateValueCore(updateValueParams);
@@ -258,7 +255,7 @@ namespace Dynamo.Nodes
             else
             {
                 if (!value.Equals(Code))
-                    SetCodeContent(value);
+                    SetCodeContent(value, workspaceElementResolver);
             }
             return true;
         }
@@ -269,6 +266,7 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(element);
             helper.SetAttribute("CodeText", code);
             helper.SetAttribute("ShouldFocus", shouldFocus);
+
         }
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
@@ -277,6 +275,11 @@ namespace Dynamo.Nodes
             var helper = new XmlElementHelper(nodeElement);
             shouldFocus = helper.ReadBoolean("ShouldFocus");
             code = helper.ReadString("CodeText");
+
+            // Lookup namespace resolution map if available and initialize new instance of ElementResolver
+            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
+            ElementResolver = new ElementResolver(resolutionMap);
+
             ProcessCodeDirect();
         }
 
@@ -367,9 +370,6 @@ namespace Dynamo.Nodes
             ProcessCode(ref errorMessage, ref warningMessage);
             RaisePropertyChanged("Code");
             
-            // Mark node for update
-            OnNodeModified();
-            
             ClearRuntimeError();
             if (!string.IsNullOrEmpty(errorMessage))
             {
@@ -379,9 +379,13 @@ namespace Dynamo.Nodes
             {
                 Warning(warningMessage);
             }
+
+            // Mark node for update
+            OnNodeModified();
         }
 
-        private void ProcessCode(ref string errorMessage, ref string warningMessage)
+        private void ProcessCode(ref string errorMessage, ref string warningMessage, 
+            ElementResolver workspaceElementResolver = null)
         {
             code = CodeBlockUtils.FormatUserText(code);
             codeStatements.Clear();
@@ -391,7 +395,11 @@ namespace Dynamo.Nodes
 
             try
             {
-                var parseParam = new ParseParam(GUID, code);
+                // During loading of CBN from file, the elementResolver from the workspace is unavailable
+                // in which case, a local copy of the ER obtained from the CBN is used
+                var resolver = workspaceElementResolver ?? this.ElementResolver;
+                var parseParam = new ParseParam(GUID, code, resolver);
+
                 if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ref parseParam))
                 {
                     if (parseParam.ParsedNodes != null)
@@ -435,9 +443,20 @@ namespace Dynamo.Nodes
                 }
 
                 if (parseParam.UnboundIdentifiers != null)
-                    inputIdentifiers = new List<string>(parseParam.UnboundIdentifiers);
+                {
+                    inputIdentifiers = new List<string>();
+                    inputPortNames = new List<string>();
+                    foreach (var kvp in parseParam.UnboundIdentifiers)
+                    {
+                        inputIdentifiers.Add(kvp.Value);
+                        inputPortNames.Add(kvp.Key);
+                    }
+                }
                 else
+                {
                     inputIdentifiers.Clear();
+                    inputPortNames.Clear();                    
+                }
             }
             catch (Exception e)
             {
@@ -519,7 +538,7 @@ namespace Dynamo.Nodes
         private void SetInputPorts()
         {
             // Generate input port data list from the unbound identifiers.
-            var inportData = CodeBlockUtils.GenerateInputPortData(inputIdentifiers);
+            var inportData = CodeBlockUtils.GenerateInputPortData(inputPortNames);
             foreach (var portData in inportData)
                 InPortData.Add(portData);
         }

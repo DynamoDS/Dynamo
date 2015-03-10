@@ -495,8 +495,7 @@ namespace Dynamo.Core
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                workspaceInfo,
-                nodeGraph.ElementResolver);
+                workspaceInfo);
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -617,7 +616,7 @@ namespace Dynamo.Core
                 ID = newId.ToString(), 
                 FileName = string.Empty
             };
-            var workspace = new CustomNodeWorkspaceModel(info, nodeFactory, new ElementResolver());
+            var workspace = new CustomNodeWorkspaceModel(info, nodeFactory);
 
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
@@ -845,7 +844,7 @@ namespace Dynamo.Core
                     node.GUID = Guid.NewGuid();
                     node.RenderPackages.Clear();
 
-                    // shit nodes
+                    // shift nodes
                     node.X = node.X - leftShift;
                     node.Y = node.Y - topMost;
 

@@ -63,10 +63,10 @@ namespace ProtoScript.Runners
                 core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
                 core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-                runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
             }
 
             runtimeCore = core.__TempCoreHostForRefactoring;
+            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
 
             if (null != fileName)
             {
@@ -84,8 +84,7 @@ namespace ProtoScript.Runners
 
                 ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
                 runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context, core.ExprInterpreterExe);
-                core.__TempCoreHostForRefactoring = runtimeCore;
-                core.__TempCoreHostForRefactoring.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
 
                 FirstExec();
                 diList = BuildReverseIndex();
@@ -225,7 +224,7 @@ namespace ProtoScript.Runners
             }
             catch (ProtoCore.Exceptions.DebugHalting)
             {
-                if (core.CurrentExecutive == null) //This was before the VM was properly started
+                if (runtimeCore.CurrentExecutive == null) //This was before the VM was properly started
                     return null;
                 currentInstr = GetCurrentInstruction(); // set the current instruction to the current breakpoint instruction
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBreak);
@@ -237,7 +236,7 @@ namespace ProtoScript.Runners
             }
             finally
             {
-                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+                ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
                 vms = new VMState(execMirror, core);
                 vms.isEnded = isEnded;
                 ProtoCore.CodeModel.CodePoint start = new ProtoCore.CodeModel.CodePoint();
@@ -556,9 +555,9 @@ namespace ProtoScript.Runners
 
             // Initialize the entry point interpreter
             int locals = 0; // This is the global scope, there are no locals
-            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(core);
-            core.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-            core.CurrentExecutive.CurrentDSASMExec.Bounce(
+            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+            runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+            runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                 resumeBlockID, 
                 programCounterToExecuteFrom,
                 context, 
@@ -568,7 +567,7 @@ namespace ProtoScript.Runners
                 null,
                 breakpoints);
 
-            return new ExecutionMirror(core.CurrentExecutive.CurrentDSASMExec, core);
+            return new ExecutionMirror(runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore);
 
         }
         /// <summary>

@@ -387,8 +387,7 @@ namespace ProtoFFI
 
         protected StackValue ToDSArray(IDictionary dictionary, ProtoCore.Runtime.Context context, Interpreter dsi, ProtoCore.Type expectedDSType)
         {
-            var core = dsi.runtime.Core;
-            var runtimeCore = core.__TempCoreHostForRefactoring;
+            var runtimeCore = dsi.runtime.RuntimeCore;
 
             var array = dsi.runtime.rmem.Heap.AllocateArray(Enumerable.Empty<StackValue>());
             HeapElement ho = ArrayUtils.GetHeapElement(array, runtimeCore);
@@ -557,7 +556,7 @@ namespace ProtoFFI
                     marshaller = new CLRObjectMarshler(core);
 
                     object value;
-                    if (core.Configurations.TryGetValue(ConfigurationKeys.GeometryXmlProperties, out value))
+                    if (core.DSExecutable.RuntimeData.Configurations.TryGetValue(ConfigurationKeys.GeometryXmlProperties, out value))
                         marshaller.DumpXmlProperties = value == null ? false : (bool)value;
                     else
                         marshaller.DumpXmlProperties = false;
@@ -1012,11 +1011,11 @@ namespace ProtoFFI
             if (null == properties || properties.Count == 0)
                 return;
 
-            var core = dsi.runtime.Core;
+            var runtimeCore = dsi.runtime.RuntimeCore;
             StackValue[] svs = dsi.runtime.rmem.Heap.GetHeapElement(dsObject).Stack;
             for (int ix = 0; ix < svs.Length; ++ix)
             {
-                SymbolNode symbol = core.ClassTable.ClassNodes[classIndex].symbols.symbolList[ix];
+                SymbolNode symbol = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].symbols.symbolList[ix];
                 object prop = null;
                 if (properties.TryGetValue(symbol.name, out prop) && null != prop)
                     svs[ix] = Marshal(prop, context, dsi, GetMarshaledType(prop.GetType()));

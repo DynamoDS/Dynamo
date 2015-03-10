@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Lang;
@@ -1713,6 +1714,31 @@ x4 = 0..#5..10;
                @"                    a = 10 % 4; // 2                    b = 5 % a; // 1                    c = 11 % a == 2 ? 11 % 2 : 11 % 3; // 2                ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("c").Payload == 2);
+        }
+
+        [Test]
+        public void Modulo003()
+        {
+            string code = @"a = 5.2 % 2.3;";
+            var mirror = thisTest.RunScriptSource(code);
+            mirror.Verify("a", 0.6);
+        }
+
+        [Test]
+        public void ModuloByZero()
+        {
+            string code =
+@"
+a = 2 % 0;
+b = 2.1 % 0;
+";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+            thisTest.Verify("b", double.NaN);
+
+            var warnings = thisTest.GetTestRuntimeCore().RuntimeStatus.Warnings;
+            Assert.IsTrue(warnings.Any(w => w.ID == ProtoCore.Runtime.WarningID.kModuloByZero));
         }
 
         [Test]

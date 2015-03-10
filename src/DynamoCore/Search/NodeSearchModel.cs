@@ -95,7 +95,7 @@ namespace Dynamo.Search
             if (string.IsNullOrEmpty(category))
                 return category;
 
-            int index = category.LastIndexOf(Configurations.CategoryDelimiter);
+            int index = category.LastIndexOf(Configurations.CategoryDelimiterString);
 
             // If "index" is "-1", then the whole "category" will be used as-is.            
             switch (category.Substring(index + 1))

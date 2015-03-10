@@ -39,6 +39,11 @@ namespace Dynamo.UI.Views
         public LibraryView()
         {
             InitializeComponent();
+
+            // Invalidate the DataContext here because it will be set at a later 
+            // time through data binding expression. This way debugger will not 
+            // display warnings for missing properties.
+            this.DataContext = null;
         }
 
         /// <summary>
@@ -86,7 +91,6 @@ namespace Dynamo.UI.Views
         {
             BringIntoViewCount++;
             var expanderContent = (sender as FrameworkElement);
-            expanderContent.BringIntoView(new Rect(0.0, 0.0, 100.0, 20.0));
 
             var buttons = expanderContent.ChildOfType<ListView>();
             if (buttons != null)

@@ -1,4 +1,5 @@
-﻿using Dynamo.Utilities;
+﻿using Dynamo.Properties;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI
 {
@@ -129,7 +130,7 @@ namespace Dynamo.UI
         public static double NodeButtonHeight = 32; // Height of node button.
         public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
         public static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
-        public static string NoDescriptionAvailable = "No description available";
+        public static string NoDescriptionAvailable = Resources.NoDescriptionAvailable;
 
         #endregion
 
@@ -202,12 +203,13 @@ namespace Dynamo.UI
 
         public const double MinWidthLibraryView = 204;
 
-        public const string TopResult = "Top Result";
+        public static string TopResult = Resources.TopResult;
         public const string CategoryGroupCreate = "Create";
         public const string CategoryGroupAction = "Actions";
         public const string CategoryGroupQuery = "Query";
-        public const char CategoryDelimiter = '.';
+        public const string CategoryDelimiterString = ".";
         public const char ShortenedCategoryDelimiter = '-';
+        public const string CategoryDelimiterWithSpaces = " - ";
 
         public const string ClassesDefaultName = "Classes";
 
@@ -219,10 +221,10 @@ namespace Dynamo.UI
 
         #region StandardPanel
 
-        public const string MoreButtonTextFormat = "SHOW MORE ({0})";
-        public const string HeaderCreate = "CREATE";
-        public const string HeaderAction = "ACTIONS";
-        public const string HeaderQuery = "QUERY";
+        public static string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
+        public static string HeaderCreate = Resources.HeaderCreate;
+        public static string HeaderAction = Resources.HeaderAction;
+        public static string HeaderQuery = Resources.HeaderQuery;
 
         #endregion
     }
