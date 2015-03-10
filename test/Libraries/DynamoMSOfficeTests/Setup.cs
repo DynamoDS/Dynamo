@@ -1,37 +1,22 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     [SetUpFixture]
-    public class Setup
+    public class UITestSetup
     {
-        private AssemblyHelper assemblyHelper;
-
         [SetUp]
-        public void RunBeforeAllTests()
+        public void Setup()
         {
-            var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
-
-            var resolutionPaths = new[]
-            {
-                // These tests need "DSCoreNodesUI.dll" under "nodes" folder.
-                Path.Combine(moduleRootFolder, "nodes")
-            };
-
-            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
-            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
+            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
         }
 
         [TearDown]
         public void RunAfterAllTests()
         {
-            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
-            assemblyHelper = null;
+            
         }
     }
 }
