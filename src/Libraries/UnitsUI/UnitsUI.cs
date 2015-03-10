@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -201,8 +202,8 @@ namespace UnitsUI
         }
     }
 
-    [NodeName("Length From String")]
-    [NodeCategory("Units.Length.Create")]
+    [NodeName("Number From Feet and Inches")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("LengthFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("LengthFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
@@ -210,8 +211,9 @@ namespace UnitsUI
     {
         public LengthFromString()
         {
-            Measure = Length.FromDouble(0.0);
-            OutPortData.Add(new PortData("length", Resources.LengthFromStringPortDataLengthToolTip));
+            Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
+
+            OutPortData.Add(new PortData("number", Resources.LengthFromStringPortDataLengthToolTip));
             RegisterAllPorts();
         }
 
@@ -233,11 +235,21 @@ namespace UnitsUI
             }
         }
 
+        [NodeMigration(@from: "0.7.5.0")]
+        public static NodeMigrationData Migrate_0750(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            var oldNode = data.MigratedNodes.ElementAt(0);
+            var newNode = MigrationManager.CloneAndChangeName(oldNode, "UnitsUI.LengthFromString", "Number From Feet and Inches", true);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var doubleNode = AstFactory.BuildDoubleNode(Value);
-            var functionCall = AstFactory.BuildFunctionCall(new Func<double,Length>(Length.FromDouble), new List<AssociativeNode> { doubleNode });
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            var doubleNode = AstFactory.BuildDoubleNode(Measure.UnitValue);
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), doubleNode) };
         }
     }
 
@@ -255,6 +267,7 @@ namespace UnitsUI
     [NodeDescription("AreaFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("AreaFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [NodeDeprecatedAttribute]
     public class AreaFromString : MeasurementInputBase
     {
         public AreaFromString()
@@ -262,13 +275,14 @@ namespace UnitsUI
             Measure = Area.FromDouble(0.0);
             OutPortData.Add(new PortData("area", Resources.AreaFromStringPortDataAreaToolTip));
             RegisterAllPorts();
+
+            Warning("AreaFromString is obsolete.", true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var doubleNode = AstFactory.BuildDoubleNode(Value);
-            var functionCall = AstFactory.BuildFunctionCall(new Func<double,Area>(Area.FromDouble), new List<AssociativeNode> { doubleNode });
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), doubleNode) };
         }
     }
 
@@ -286,6 +300,7 @@ namespace UnitsUI
     [NodeDescription("VolumeFromStringDescription",typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("VolumeFromStringSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
+    [NodeDeprecatedAttribute]
     public class VolumeFromString : MeasurementInputBase
     {
         public VolumeFromString()
@@ -293,18 +308,19 @@ namespace UnitsUI
             Measure = Volume.FromDouble(0.0);
             OutPortData.Add(new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip));
             RegisterAllPorts();
+
+            Warning("AreaFromString is obsolete.", true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var doubleNode = AstFactory.BuildDoubleNode(Value);
-            var functionCall = AstFactory.BuildFunctionCall(new Func<double, Volume>(Volume.FromDouble), new List<AssociativeNode> { doubleNode });
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall) };
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), doubleNode) };
         }
     }
 
     [NodeName("Unit Types")]
-    [NodeCategory("Units")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("UnitTypesDescription", typeof(UnitsUI.Properties.Resources))]
     [NodeSearchTags("UnitTypesSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
