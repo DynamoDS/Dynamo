@@ -367,6 +367,7 @@ namespace Dynamo.Models
         public struct StartConfiguration
         {
             public string Context { get; set; }
+            public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
             public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
@@ -405,13 +406,10 @@ namespace Dynamo.Models
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
-            string context = config.Context;
-            bool testMode = config.StartInTestMode;
+            pathManager = new PathManager(config.DynamoCorePath, config.PathResolver);
 
-            pathManager = new PathManager(config.PathResolver);
-
-            Context = context;
-            IsTestMode = testMode;
+            Context = config.Context;
+            IsTestMode = config.StartInTestMode;
             DebugSettings = new DebugSettings();
             Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
 
