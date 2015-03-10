@@ -166,7 +166,7 @@ namespace Dynamo.UI.Views
         // here to ignore the immediate mouse-enter event.
         private void OnExpanderButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if ((sender as Button).DataContext is NodeSearchElement)
+            if ((sender as Button).DataContext is NodeCategoryViewModel)
             {
                 libraryToolTipPopup.SetDataContext(null, true);
                 ignoreMouseEnter = true;
