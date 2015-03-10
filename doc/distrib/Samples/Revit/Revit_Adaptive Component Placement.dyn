@@ -1,29 +1,30 @@
-<Workspace Version="0.7.0.42482" X="-578.46004238121" Y="-310.21681016374" zoom="0.85994620622489" Description="" Category="" Name="Home">
+<Workspace Version="0.8.0.677" X="-258.767969522897" Y="188.584867663214" zoom="0.341189264941471" Name="Home" RunType="Manual" RunPeriod="100">
+  <NamespaceResolutionMap />
   <Elements>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="357e7a53-361c-4c1e-81ae-83e16213a39a" nickname="AdaptiveComponent.ByPoints" x="2266.50061471428" y="871.04331788143" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.AdaptiveComponent.ByPoints@Autodesk.DesignScript.Geometry.Point[],Revit.Elements.FamilySymbol" />
-    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="eed8d389-5ad2-4ac0-a270-7d737f487ad0" nickname="Select Model Element" x="846.35713721073" y="804.956539576904" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.DSFunction guid="357e7a53-361c-4c1e-81ae-83e16213a39a" type="Dynamo.Nodes.DSFunction" nickname="AdaptiveComponent.ByPoints" x="2266.50061471428" y="871.04331788143" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.AdaptiveComponent.ByPoints@Autodesk.DesignScript.Geometry.Point[],Revit.Elements.FamilySymbol" />
+    <Dynamo.Nodes.DSModelElementSelection guid="eed8d389-5ad2-4ac0-a270-7d737f487ad0" type="Dynamo.Nodes.DSModelElementSelection" nickname="Select Model Element" x="846.35713721073" y="804.956539576904" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <instance id="c222719c-4dcb-4e48-98ea-a81db96bf8ce-000f490a" />
     </Dynamo.Nodes.DSModelElementSelection>
-    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="f46e385f-3b0a-446c-adeb-8d419a480cba" nickname="Select Model Element" x="846.35713721073" y="707.416917580937" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.DSModelElementSelection guid="f46e385f-3b0a-446c-adeb-8d419a480cba" type="Dynamo.Nodes.DSModelElementSelection" nickname="Select Model Element" x="846.35713721073" y="707.416917580937" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <instance id="c222719c-4dcb-4e48-98ea-a81db96bf8ce-000f484f" />
     </Dynamo.Nodes.DSModelElementSelection>
-    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="fe4c569f-a1b4-46da-8e76-d1b1bd5b6ef4" nickname="Select Model Element" x="846.35713721073" y="910.636205623684" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.DSModelElementSelection guid="fe4c569f-a1b4-46da-8e76-d1b1bd5b6ef4" type="Dynamo.Nodes.DSModelElementSelection" nickname="Select Model Element" x="846.35713721073" y="910.636205623684" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <instance id="c222719c-4dcb-4e48-98ea-a81db96bf8ce-000f4954" />
     </Dynamo.Nodes.DSModelElementSelection>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="83f06d4b-59ed-4888-a259-43d12f3d1736" nickname="Curve.PointAtParameter" x="1604.97594529067" y="841.170734021938" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double" />
-    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="765c3e25-1262-4f2b-ab25-08ece79508f5" nickname="Create List" x="1093.97818501915" y="777.087284360294" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="ddaba609-2fa0-4d18-be64-1443ad3d08f1" nickname="Code Block" x="1222" y="1047" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..1..#x;" ShouldFocus="false" />
-    <Dynamo.Nodes.IntegerSlider type="Dynamo.Nodes.IntegerSlider" guid="cc3ba87a-cc1f-4db6-99f2-769f3020e0df" nickname="Integer Slider" x="853.875547146619" y="1051.61572756957" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.DSFunction guid="83f06d4b-59ed-4888-a259-43d12f3d1736" type="Dynamo.Nodes.DSFunction" nickname="Curve.PointAtParameter" x="1604.97594529067" y="841.170734021938" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double" />
+    <DSCoreNodesUI.CreateList guid="765c3e25-1262-4f2b-ab25-08ece79508f5" type="DSCoreNodesUI.CreateList" nickname="Create List" x="1093.97818501915" y="777.087284360294" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="ddaba609-2fa0-4d18-be64-1443ad3d08f1" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1222" y="1047" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..1..#x;" ShouldFocus="false" />
+    <DSCoreNodesUI.Input.IntegerSlider guid="cc3ba87a-cc1f-4db6-99f2-769f3020e0df" type="DSCoreNodesUI.Input.IntegerSlider" nickname="Integer Slider" x="853.875547146619" y="1051.61572756957" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Int32>9</System.Int32>
-      <Range min="2" max="10" />
-    </Dynamo.Nodes.IntegerSlider>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="13ca5899-91cd-448b-b475-a286eb0fbfba" nickname="Transpose" x="1839.06575219627" y="837.84231720703" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Transpose@var[]..[]" />
-    <DSRevitNodesUI.FamilyTypes type="DSRevitNodesUI.FamilyTypes" guid="2bc4ccef-dee5-4567-b976-89536f8908ce" nickname="Family Types" x="1921.49070078006" y="1026.3522881507" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="2" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c0c528a3-ac5f-4504-ba81-04c08d060ded" nickname="Element.Geometry" x="1264.18967442195" y="786.603707522597" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.Element.Geometry" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3ad828dc-2d67-41fb-a3a1-6c288712c421" nickname="PolyCurve.ByPoints" x="2261.14774119977" y="679.952054336218" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool">
+      <Range min="2" max="10" step="1" />
+    </DSCoreNodesUI.Input.IntegerSlider>
+    <Dynamo.Nodes.DSFunction guid="13ca5899-91cd-448b-b475-a286eb0fbfba" type="Dynamo.Nodes.DSFunction" nickname="Transpose" x="1839.06575219627" y="837.84231720703" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Transpose@var[]..[]" />
+    <DSRevitNodesUI.FamilyTypes guid="2bc4ccef-dee5-4567-b976-89536f8908ce" type="DSRevitNodesUI.FamilyTypes" nickname="Family Types" x="1786.66817051115" y="953.079173874116" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="2:3PointAC_SquareTruss:3PointAC_SquareTruss" />
+    <Dynamo.Nodes.DSFunction guid="c0c528a3-ac5f-4504-ba81-04c08d060ded" type="Dynamo.Nodes.DSFunction" nickname="Element.Geometry" x="1264.18967442195" y="786.603707522597" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.Element.Geometry" />
+    <Dynamo.Nodes.DSFunction guid="3ad828dc-2d67-41fb-a3a1-6c288712c421" type="Dynamo.Nodes.DSFunction" nickname="PolyCurve.ByPoints" x="2261.14774119977" y="679.952054336218" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool">
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.DSFunction>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0d6c969b-eb27-4e27-bc1c-e9fe072db404" nickname="Flatten" x="1425.04893083771" y="785.772626996785" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Flatten@var[]..[]" />
+    <Dynamo.Nodes.DSFunction guid="0d6c969b-eb27-4e27-bc1c-e9fe072db404" type="Dynamo.Nodes.DSFunction" nickname="Flatten" x="1425.04893083771" y="785.772626996785" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Flatten@var[]..[]" />
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="eed8d389-5ad2-4ac0-a270-7d737f487ad0" start_index="0" end="765c3e25-1262-4f2b-ab25-08ece79508f5" end_index="1" portType="0" />
