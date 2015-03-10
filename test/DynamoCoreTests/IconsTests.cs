@@ -28,8 +28,6 @@ namespace Dynamo.Tests
 
         static readonly string ResourcePath = Path.Combine(DynamoPath, @"src\Resources");
 
-        private IconServices iconServices = new IconServices();
-
         [SetUp]
         public void PreloadShapeManager()
         {
