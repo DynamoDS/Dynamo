@@ -98,7 +98,7 @@ namespace Dynamo.Interfaces
             return new WatchViewModel(visualizationManager, value.ToString(preferences.NumberFormat, CultureInfo.InvariantCulture), tag);
         }
 
-        private WatchViewModel ProcessThing(int value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
+        private WatchViewModel ProcessThing(long value, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, WatchHandlerCallback callback)
         {
             return new WatchViewModel(visualizationManager, value.ToString(CultureInfo.InvariantCulture), tag);
         }

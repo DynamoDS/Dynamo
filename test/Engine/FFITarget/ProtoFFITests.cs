@@ -470,6 +470,11 @@ namespace FFITarget
             newList.AddRange(list);
             return newList;
         }
+
+        public static double GetCircleArea([DefaultArgumentAttribute("TestData.GetFloat()")]double radius)
+        {
+            return radius * radius * Math.PI;
+        }
     }
 
     internal class InternalClass
