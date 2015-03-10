@@ -174,8 +174,6 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.Model.PreferenceSettings.WindowW = e.NewSize.Width;
             dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
-
-            Debug.WriteLine("Resizing window to {0}:{1}", e.NewSize.Width, e.NewSize.Height);
         }
 
         void InitializeLogin()
@@ -716,8 +714,6 @@ namespace Dynamo.Controls
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            Debug.WriteLine("Dynamo window closed.");
-
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 
@@ -1168,8 +1164,6 @@ namespace Dynamo.Controls
             if (dynamoViewModel == null)
                 return;
             dynamoViewModel.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
-
-            Debug.WriteLine("Resizing workspace children.");
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)

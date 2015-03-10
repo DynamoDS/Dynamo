@@ -18,7 +18,7 @@ namespace ProtoCore
         /// </summary>
         public abstract class MirrorObject
         {
-            protected ProtoCore.Core core = null;
+            protected ProtoCore.RuntimeCore runtimeCore = null;
             protected static ProtoCore.Core staticCore = null;
 
             protected MirrorObject() { }
@@ -28,9 +28,9 @@ namespace ProtoCore
             //    this.core = core;
             //}
 
-            protected MirrorObject(ProtoCore.Core core, ProtoCore.Core staticCore = null)
+            protected MirrorObject(ProtoCore.RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
             {
-                this.core = core;
+                this.runtimeCore = runtimeCore;
                 MirrorObject.staticCore = staticCore;
             }
         }
@@ -73,28 +73,28 @@ namespace ProtoCore
             /// </summary>
             /// <param name="mirrorData"></param>
             /// <param name="core"></param>
-            public RuntimeMirror(MirrorData mirrorData, ProtoCore.Core core, ProtoCore.Core staticCore = null)
-                : base(core, staticCore)
+            public RuntimeMirror(MirrorData mirrorData, ProtoCore.RuntimeCore runtimeCoreReflect, ProtoCore.Core staticCore = null)
+                : base(runtimeCoreReflect, staticCore)
             {
-                Validity.Assert(this.core != null);
-                TargetExecutive = core.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core);
+                Validity.Assert(this.runtimeCore != null);
+                TargetExecutive = runtimeCoreReflect.CurrentExecutive.CurrentDSASMExec;
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCoreReflect);
                 this.mirrorData = mirrorData;
             }
 
-            public RuntimeMirror(string varname, int blockDecl, ProtoCore.Core core)
-                : base(core)
+            public RuntimeMirror(string varname, int blockDecl, ProtoCore.RuntimeCore runtimeCore, ProtoCore.Core staticCore = null)
+                : base(runtimeCore, staticCore)
             {
-                TargetExecutive = core.CurrentExecutive.CurrentDSASMExec;
-                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, core);
+                TargetExecutive = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+                deprecateThisMirror = new DSASM.Mirror.ExecutionMirror(TargetExecutive, runtimeCore);
 
-                Validity.Assert(this.core != null);
+                Validity.Assert(this.runtimeCore != null);
 
                 variableName = varname;
                 blockDeclaration = blockDecl;
                 StackValue svData = deprecateThisMirror.GetValue(variableName, blockDeclaration).DsasmValue;
 
-                mirrorData = new MirrorData(this.core, svData);
+                mirrorData = new MirrorData(staticCore, this.runtimeCore, svData);
             }
 
             /// <summary>
@@ -124,7 +124,7 @@ namespace ProtoCore
             /// </summary>
             public string GetStringData()
             {
-                Validity.Assert(this.core != null);
+                Validity.Assert(this.runtimeCore != null);
                 Validity.Assert(TargetExecutive != null);
                 return deprecateThisMirror.GetStringValue(mirrorData.GetStackValue(), TargetExecutive.rmem.Heap, blockDeclaration);
             }
@@ -162,7 +162,6 @@ namespace ProtoCore
             //private List<string> GetArrayTypes(StackValue svData)
             private Dictionary<string, List<string>> GetArrayTypes(StackValue svData)
             {
-                RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
                 Dictionary<string, List<string>> asmTypes = new Dictionary<string, List<string>>();
                 //List<string> types = new List<string>();
 
@@ -221,7 +220,7 @@ namespace ProtoCore
                 Dictionary<string, List<string>> asmType = new Dictionary<string, List<string>>();
                 if (sv.IsPointer)
                 {
-                    ClassNode classNode = core.ClassTable.ClassNodes[sv.metaData.type];
+                    ClassNode classNode = runtimeCore.DSExecutable.classTable.ClassNodes[sv.metaData.type];
                     List<string> types = new List<string>();
                     types.Add(classNode.name);
                     asmType.Add(classNode.ExternLib, types);

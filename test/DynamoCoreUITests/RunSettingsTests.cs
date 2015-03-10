@@ -1,7 +1,9 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+
+using System.Linq;
 
 using SystemTestServices;
 
@@ -20,7 +22,7 @@ namespace DynamoCoreUITests
         public void RunButtonDisabledInAutomaticRun()
         {
             var homeSpace = GetHomeSpace();
-            homeSpace.RunSettings.RunType = RunType.Automatically;
+            homeSpace.RunSettings.RunType = RunType.Automatic;
             Assert.False((View.RunSettingsControl.RunButton.IsEnabled));
         }
 
@@ -31,7 +33,7 @@ namespace DynamoCoreUITests
             var node = new DoubleInput();
             Model.AddNodeToCurrentWorkspace(node, true);
             node.EnablePeriodicUpdate = true;
-            homeSpace.RunSettings.RunType = RunType.Periodically;
+            homeSpace.RunSettings.RunType = RunType.Periodic;
             Assert.False((View.RunSettingsControl.RunButton.IsEnabled));
         }
 
@@ -39,7 +41,7 @@ namespace DynamoCoreUITests
         public void RunButtonEnabledInManualRun()
         {
             var homeSpace = GetHomeSpace();
-            homeSpace.RunSettings.RunType = RunType.Manually;
+            homeSpace.RunSettings.RunType = RunType.Manual;
             Assert.True((View.RunSettingsControl.RunButton.IsEnabled));
         }
 
@@ -107,10 +109,10 @@ namespace DynamoCoreUITests
         public void RunSettingsResetsOnWorkspaceClear()
         {
             var homeSpace = GetHomeSpace();
-            homeSpace.RunSettings.RunType = RunType.Periodically;
+            homeSpace.RunSettings.RunType = RunType.Periodic;
             homeSpace.RunSettings.RunPeriod = 10;
             homeSpace.Clear();
-            Assert.AreEqual(homeSpace.RunSettings.RunType, RunType.Automatically);
+            Assert.AreEqual(homeSpace.RunSettings.RunType, RunType.Automatic);
             Assert.AreEqual(homeSpace.RunSettings.RunPeriod, 100);
         }
 
@@ -120,17 +122,17 @@ namespace DynamoCoreUITests
             var homeSpace = GetHomeSpace();
             var tmpPath = Path.GetTempFileName();
             homeSpace.FileName = tmpPath;
-            homeSpace.RunSettings.RunType = RunType.Periodically;
+            homeSpace.RunSettings.RunType = RunType.Periodic;
             homeSpace.RunSettings.RunPeriod = 10;
             ViewModel.Model.CurrentWorkspace.Save(Model.EngineController.LiveRunnerCore);
             homeSpace.Clear();
             Model.OpenFileFromPath(tmpPath);
             homeSpace = GetHomeSpace();
-            Assert.AreEqual(homeSpace.RunSettings.RunType, RunType.Periodically);
+            Assert.AreEqual(homeSpace.RunSettings.RunType, RunType.Periodic);
             Assert.AreEqual(homeSpace.RunSettings.RunPeriod, 10);
         }
 
-        private RoutedEventArgs GetKeyboardEnterEventArgs(System.Windows.Media.Visual visual)
+        private RoutedEventArgs GetKeyboardEnterEventArgs(Visual visual)
         {
             var routedEvent = Keyboard.KeyDownEvent;
             return new KeyEventArgs(

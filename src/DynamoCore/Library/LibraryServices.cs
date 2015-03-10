@@ -301,6 +301,8 @@ namespace Dynamo.DSEngine
                     return false;
                 }
 
+                LoadLibraryMigrations(library);
+
                 var loadedClasses = classTable.ClassNodes.Skip(classNumber);
                 foreach (var classNode in loadedClasses)
                 {
@@ -318,12 +320,12 @@ namespace Dynamo.DSEngine
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
                 return false;
             }
-
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
             return true;
         }
 
-        private void ParseLibraryMigrations(string library)
+
+        private void LoadLibraryMigrations(string library)
         {
             string fullLibraryName = library;
 
@@ -376,7 +378,6 @@ namespace Dynamo.DSEngine
             if (null == library || null == functions)
                 throw new ArgumentNullException();
 
-            ParseLibraryMigrations(library);
 
             Dictionary<string, FunctionGroup> fptrs;
             if (!importedFunctionGroups.TryGetValue(library, out fptrs))
@@ -445,15 +446,15 @@ namespace Dynamo.DSEngine
                                                         let description = 
                                                             (method.MethodAttribute != null ? method.MethodAttribute.Description :String.Empty)
                                                         select
-                                                            new FunctionDescriptor(
-                                                                null,
-                                                                null,
-                                                                method.name,
-                                                                description,
-                                                                arguments,
-                                                                method.returntype,
-                                                                FunctionType.GenericFunction,
-                                                                visibleInLibrary);
+                                                            new FunctionDescriptor(new FunctionDescriptorParams
+                                                            {
+                                                                FunctionName = method.name,
+                                                                Summary = description,
+                                                                Parameters = arguments,
+                                                                ReturnType = method.returntype,
+                                                                FunctionType = FunctionType.GenericFunction,
+                                                                IsVisibleInLibrary = visibleInLibrary
+                                                            });
 
             AddBuiltinFunctions(functions);
         }
@@ -486,12 +487,18 @@ namespace Dynamo.DSEngine
             };
 
             var functions =
-                ops.Select(op => new FunctionDescriptor(op, args, FunctionType.GenericFunction))
-                    .Concat(
-                        new FunctionDescriptor(
-                            Op.GetUnaryOpFunction(UnaryOperator.Not),
-                            GetUnaryFuncArgs(),
-                            FunctionType.GenericFunction).AsSingleton());
+                ops.Select(op => new FunctionDescriptor(new FunctionDescriptorParams
+                {
+                    FunctionName = op,
+                    Parameters = args,
+                    FunctionType = FunctionType.GenericFunction
+                }))
+                .Concat(new FunctionDescriptor(new FunctionDescriptorParams
+                {
+                    FunctionName = Op.GetUnaryOpFunction(UnaryOperator.Not),
+                    Parameters = GetUnaryFuncArgs(),
+                    FunctionType = FunctionType.GenericFunction
+                }).AsSingleton());
 
             AddBuiltinFunctions(functions);
         }
@@ -501,14 +508,23 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulatePreloadLibraries()
         {
+            HashSet<String> librariesThatNeedMigrationLoading = new HashSet<string>();
+
             foreach (ClassNode classNode in LibraryManagementCore.ClassTable.ClassNodes)
             {
                 if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
                 {
                     string library = Path.GetFileName(classNode.ExternLib);
                     ImportClass(library, classNode);
+                    librariesThatNeedMigrationLoading.Add(library);
                 }
             }
+
+            foreach (String library in librariesThatNeedMigrationLoading)
+            {
+                LoadLibraryMigrations(library);
+            }
+
         }
 
         private void ImportProcedure(string library, ProcedureNode proc)
@@ -612,17 +628,19 @@ namespace Dynamo.DSEngine
                     obsoleteMessage = proc.MethodAttribute.ObsoleteMessage;
             }
 
-            var function = new FunctionDescriptor(
-                library,
-                className,
-                procName,
-                arguments,
-                proc.returntype,
-                type,
-                isVisible,
-                returnKeys,
-                proc.isVarArg,
-                obsoleteMessage);
+            var function = new FunctionDescriptor(new FunctionDescriptorParams
+            {
+                Assembly = library,
+                ClassName = className,
+                FunctionName = procName,
+                Parameters = arguments,
+                ReturnType = proc.returntype,
+                FunctionType = type,
+                IsVisibleInLibrary = isVisible,
+                ReturnKeys = returnKeys,
+                IsVarArg = proc.isVarArg,
+                ObsoleteMsg = obsoleteMessage
+            });
 
             AddImportedFunctions(library, new[] { function });
         }

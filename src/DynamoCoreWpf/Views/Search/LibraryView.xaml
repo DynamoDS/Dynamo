@@ -87,41 +87,42 @@
             <!-- This data template is used to show one subcategory. -->
             <DataTemplate x:Key="ClassObjectDataTemplate">
                 <StackPanel Orientation="Vertical"
-                            Width="96"
-                            Height="96">
-                    <Border Padding="4">
+                            Width="72"
+                            Height="72">
+                    <Border Padding="0">
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="50" />
+                                <RowDefinition Height="32" />
                                 <RowDefinition Height="40" />
-                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="32" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image Source="{Binding Path=SmallIcon}"
                                    Width="32"
                                    Height="32"
-                                   Margin="8"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"
-                                   Grid.Row="1"
+                                   Grid.Row="0"
                                    Grid.Column="1" />
                             <TextBlock HorizontalAlignment="Center"
                                        VerticalAlignment="Top"
                                        TextAlignment="Center"
                                        Foreground="#989898"
-                                       Grid.Row="2"
-                                       Grid.Column="1"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="3"
                                        FontSize="13">
                                 <TextBlock.Text>
                                     <Binding Path="Name"
                                              Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
                                              ConverterParameter="ClassButton" />
                                 </TextBlock.Text>
+                                <TextBlock.ToolTip>
+                                    <ToolTip>
+                                        <TextBlock Text="{Binding Path=Name}" />
+                                    </ToolTip>
+                                </TextBlock.ToolTip>
                             </TextBlock>
                         </Grid>
                     </Border>
@@ -658,12 +659,12 @@
                     </TreeView.Template>
                 </TreeView>
                 <!-- Do not remove. Possibly Addons TreeView will be return later. -->
-                <uicontrols:AddonsTreeView Grid.Row="1"
+                <!--<uicontrols:AddonsTreeView Grid.Row="1"
                                            DataContext="{Binding}">
                     <uicontrols:AddonsTreeView.Visibility>
                         Collapsed
                     </uicontrols:AddonsTreeView.Visibility>
-                </uicontrols:AddonsTreeView>
+                </uicontrols:AddonsTreeView>-->
                 <Button Grid.Row="2"
                         Height="23"
                         HorizontalAlignment="Center"
@@ -733,13 +734,6 @@
         <uicontrols:LibraryToolTipPopup x:Name="libraryToolTipPopup"
                                         StaysOpen="True"
                                         AllowsTransparency="True"
-                                        MouseLeave="OnPopupMouseLeave">
-            <uicontrols:LibraryToolTipPopup.IsOpen>
-                <Binding ElementName="libraryToolTipPopup"
-                         Path="DataContext"
-                         Mode="OneWay"
-                         Converter="{StaticResource NodeSearchElementVMToBoolConverter}" />
-            </uicontrols:LibraryToolTipPopup.IsOpen>
-        </uicontrols:LibraryToolTipPopup>
+                                        MouseLeave="OnPopupMouseLeave" />
     </Grid>
 </UserControl>

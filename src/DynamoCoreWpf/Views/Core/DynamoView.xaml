@@ -32,7 +32,6 @@
         SnapsToDevicePixels="True"
         ResizeMode="CanResizeWithGrip"
         UseLayoutRounding="True"
-        Cursor="/DynamoCoreWpf;component/UI/Images/pointer.cur"
         Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
@@ -1589,7 +1588,7 @@
                            Grid.Column="0"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch" 
-                           IsEnabled="{Binding IsAbleToGoHome, Converter={StaticResource InverseBooleanConverter}}">
+                           Visibility="{Binding IsAbleToGoHome, Converter={StaticResource InverseBoolToVisibilityConverter}}">
 
                         <controls1:RunSettingsControl x:Name="RunSettingsControl"
                                                     Margin="2.5,5,5,5" 
@@ -1597,36 +1596,9 @@
                                                      DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}"/>
                 </WrapPanel>
                 
-                <TextBlock Name="warningText"
-                           Grid.Column="1"
-                           Text="{Binding Path=Model.Logger.Warning, UpdateSourceTrigger=PropertyChanged, Mode=OneWay, NotifyOnTargetUpdated=True}"
-                           FontStyle="Italic"
-                           FontSize="12"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Stretch"
-                           TextAlignment="Right"
-                           TextTrimming="WordEllipsis"
-                           Margin="10"
-                           Foreground="{Binding Path=Model.Logger.WarningLevel, Converter={StaticResource WarningLevelToColorConverter}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
-                    <TextBlock.Triggers>
-                        <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Opacity)">
-                                        <LinearDoubleKeyFrame Value="0"
-                                                              KeyTime="0:0:0" />
-                                        <LinearDoubleKeyFrame Value="1"
-                                                              KeyTime="0:0:0.35" />
-                                        <LinearDoubleKeyFrame Value="1"
-                                                              KeyTime="0:0:5" />
-                                        <LinearDoubleKeyFrame Value="0"
-                                                              KeyTime="0:0:5.35" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </TextBlock.Triggers>
-                </TextBlock>
+                <!--NotificationControl for showing run-time notifications-->
+                <controls1:NotificationsControl Grid.Column="1"/>
+                
             </Grid>
 
         </WrapPanel>
