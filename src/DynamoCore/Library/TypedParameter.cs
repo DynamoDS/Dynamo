@@ -13,11 +13,11 @@ namespace Dynamo.Library
     {
         private string summary;
 
-        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null)
+        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null, string defaultExpression = null)
             : this(null, parameter, type, defaultValue) { }
 
         public TypedParameter(
-            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null)
+            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null, string defaultExpression = null)
         {
             if (name == null) 
                 throw new ArgumentNullException("name");
@@ -25,6 +25,7 @@ namespace Dynamo.Library
             Name = name;
             Type = type;
             DefaultValue = defaultValue;
+            DefaultExpression = defaultExpression;
             Function = function;
         }
 
@@ -32,6 +33,7 @@ namespace Dynamo.Library
         public string Name { get; private set; }
         public ProtoCore.Type Type { get; private set; }
         public object DefaultValue { get; private set; }
+        public String DefaultExpression { get; private set; }
 
         public string Summary
         {

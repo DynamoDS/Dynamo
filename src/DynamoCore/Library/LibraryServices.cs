@@ -610,7 +610,17 @@ namespace Dynamo.DSEngine
                         }
                     }
 
-                    return new TypedParameter(arg.Name, argType, defaultValue);
+                    // This is for FFI function which could have a [DefaultArgumentAttribute]
+                    // for its parameters to support complex default argument. 
+                    string defaultExpression = null;
+                    if (arg.Attributes != null)
+                    {
+                        object o;
+                        if (arg.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o))
+                            defaultExpression = o as string;
+                    }
+
+                    return new TypedParameter(arg.Name, argType, defaultValue, defaultExpression);
                 });
 
             IEnumerable<string> returnKeys = null;
