@@ -59,102 +59,10 @@ namespace DynamoUnits
         private static VolumeUnit _hostApplicationInternalVolumeUnit = DynamoUnits.VolumeUnit.CubicMeter;
 
         private static string _numberFormat = "f4";
-        private LengthUnit _lengthUnit = LengthUnit.Meter;
-        private AreaUnit _areaUnit = AreaUnit.SquareMeter;
-        private VolumeUnit _volumeUnit = VolumeUnit.CubicMeter;
-        private InsolationUnit _insolationUnit = InsolationUnit.WattHoursPerMeterSquared;
 
         public static double Epsilon
         {
             get { return epsilon; }
-        }
-
-        public double UiLengthConversion
-        {
-            get
-            {
-                switch (_lengthUnit)
-                {
-                    case LengthUnit.Millimeter:
-                        return Length.ToMillimeter;
-                    case LengthUnit.Centimeter:
-                        return Length.ToCentimeter;
-                    case LengthUnit.Meter:
-                        return 1.0;
-                    case LengthUnit.DecimalInch:
-                        return Length.ToInch;
-                    case LengthUnit.FractionalInch:
-                        return Length.ToInch;
-                    case LengthUnit.DecimalFoot:
-                        return Length.ToFoot;
-                    case LengthUnit.FractionalFoot:
-                        return Length.ToFoot;
-                    default:
-                        return 1.0;
-                }
-            }
-        }
-
-        public double UiAreaConversion
-        {
-            get
-            {
-                switch (_areaUnit)
-                {
-                    case AreaUnit.SquareMillimeter:
-                        return Area.ToSquareMillimeters;
-                    case AreaUnit.SquareCentimeter:
-                        return Area.ToSquareCentimeters;
-                    case AreaUnit.SquareMeter:
-                        return 1.0;
-                    case AreaUnit.SquareInch:
-                        return Area.ToSquareInch;
-                    case AreaUnit.SquareFoot:
-                        return Area.ToSquareFoot;
-                    default:
-                        return 1.0;
-                }
-            }
-        }
-
-        public double UiVolumeConversion
-        {
-            get
-            {
-                switch (_volumeUnit)
-                {
-                    case VolumeUnit.CubicMillimeter:
-                        return Volume.ToCubicMillimeter;
-                    case VolumeUnit.CubicCentimeter:
-                        return Volume.ToCubicCentimeter;
-                    case VolumeUnit.CubicMeter:
-                        return 1.0;
-                    case VolumeUnit.CubicInch:
-                        return Volume.ToCubicInch;
-                    case VolumeUnit.CubicFoot:
-                        return Volume.ToCubicFoot;
-                    default:
-                        return 1.0;
-                }
-            }
-        }
-
-        public double UiInsolationConversion
-        {
-            get
-            {
-                switch (_insolationUnit)
-                {
-                    case InsolationUnit.WattHoursPerMeterSquared:
-                       return 1.0;
-                    case InsolationUnit.KilowattHoursPerMeterSquared:
-                        return Insolation.ToKwhMeter2;
-                    case InsolationUnit.BTUPerFootSquared:
-                        return Insolation.ToBTUFoot2;
-                    default:
-                        return 1.0;
-                }
-            }
         }
 
         public static LengthUnit HostApplicationInternalLengthUnit
@@ -181,41 +89,6 @@ namespace DynamoUnits
             set { _numberFormat = value; }
         }
 
-        public LengthUnit LengthUnit
-        {
-            get { return _lengthUnit; }
-            set
-            {
-                _lengthUnit = value;
-            }
-        }
-
-        public AreaUnit AreaUnit
-        {
-            get { return _areaUnit; }
-            set
-            {
-                _areaUnit = value;
-            }
-        }
-
-        public VolumeUnit VolumeUnit
-        {
-            get { return _volumeUnit; }
-            set
-            {
-                _volumeUnit = value;
-            }
-        }
-
-        public InsolationUnit InsolationUnit
-        {
-            get { return _insolationUnit; }
-            set
-            {
-                _insolationUnit = value;
-            }
-        }
     }
 
     [IsVisibleInDynamoLibrary(false)]
@@ -494,6 +367,45 @@ namespace DynamoUnits
         public const string CENTIMETERS = "cm";
         public const string INCHES = "in";
         public const string FEET = "ft";
+
+        private LengthUnit _lengthUnit = LengthUnit.Meter;
+
+        [IsVisibleInDynamoLibrary(false)]
+        public LengthUnit LengthUnit
+        {
+            get { return _lengthUnit; }
+            set
+            {
+                _lengthUnit = value;
+            }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public double UiLengthConversion
+        {
+            get
+            {
+                switch (_lengthUnit)
+                {
+                    case LengthUnit.Millimeter:
+                        return Length.ToMillimeter;
+                    case LengthUnit.Centimeter:
+                        return Length.ToCentimeter;
+                    case LengthUnit.Meter:
+                        return 1.0;
+                    case LengthUnit.DecimalInch:
+                        return Length.ToInch;
+                    case LengthUnit.FractionalInch:
+                        return Length.ToInch;
+                    case LengthUnit.DecimalFoot:
+                        return Length.ToFoot;
+                    case LengthUnit.FractionalFoot:
+                        return Length.ToFoot;
+                    default:
+                        return 1.0;
+                }
+            }
+        }
 
         [IsVisibleInDynamoLibrary(false)]
         public override double UnitValue
@@ -843,6 +755,41 @@ namespace DynamoUnits
         public const string SQUARE_INCHES = "in²";
         public const string SQUARE_FEET = "ft²";
 
+        private AreaUnit _areaUnit = AreaUnit.SquareMeter;
+
+        [IsVisibleInDynamoLibrary(false)]
+        public AreaUnit AreaUnit
+        {
+            get { return _areaUnit; }
+            set
+            {
+                _areaUnit = value;
+            }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public double UiAreaConversion
+        {
+            get
+            {
+                switch (_areaUnit)
+                {
+                    case AreaUnit.SquareMillimeter:
+                        return Area.ToSquareMillimeters;
+                    case AreaUnit.SquareCentimeter:
+                        return Area.ToSquareCentimeters;
+                    case AreaUnit.SquareMeter:
+                        return 1.0;
+                    case AreaUnit.SquareInch:
+                        return Area.ToSquareInch;
+                    case AreaUnit.SquareFoot:
+                        return Area.ToSquareFoot;
+                    default:
+                        return 1.0;
+                }
+            }
+        }
+
         [IsVisibleInDynamoLibrary(false)]
         public override double UnitValue
         {
@@ -1176,6 +1123,41 @@ namespace DynamoUnits
         public const string CUBIC_INCHES = "in³";
         public const string CUBIC_FEET = "ft³";
 
+        private VolumeUnit _volumeUnit = VolumeUnit.CubicMeter;
+
+        [IsVisibleInDynamoLibrary(false)]
+        public VolumeUnit VolumeUnit
+        {
+            get { return _volumeUnit; }
+            set
+            {
+                _volumeUnit = value;
+            }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public double UiVolumeConversion
+        {
+            get
+            {
+                switch (_volumeUnit)
+                {
+                    case VolumeUnit.CubicMillimeter:
+                        return Volume.ToCubicMillimeter;
+                    case VolumeUnit.CubicCentimeter:
+                        return Volume.ToCubicCentimeter;
+                    case VolumeUnit.CubicMeter:
+                        return 1.0;
+                    case VolumeUnit.CubicInch:
+                        return Volume.ToCubicInch;
+                    case VolumeUnit.CubicFoot:
+                        return Volume.ToCubicFoot;
+                    default:
+                        return 1.0;
+                }
+            }
+        }
+
         [IsVisibleInDynamoLibrary(false)]
         public override double UnitValue
         {
@@ -1494,6 +1476,37 @@ namespace DynamoUnits
         public const string WATT_HOURS_PER_SQUARE_METER = "Wh/m²";
         public const string KILLOWATT_HOURS_PER_SQUARE_METER = "kWh/m²";
         public const string BTU_PER_SQUARE_FOOT = "BTU/ft²";
+
+        private InsolationUnit _insolationUnit = InsolationUnit.WattHoursPerMeterSquared;
+
+        [IsVisibleInDynamoLibrary(false)]
+        public InsolationUnit InsolationUnit
+        {
+            get { return _insolationUnit; }
+            set
+            {
+                _insolationUnit = value;
+            }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public double UiInsolationConversion
+        {
+            get
+            {
+                switch (_insolationUnit)
+                {
+                    case InsolationUnit.WattHoursPerMeterSquared:
+                        return 1.0;
+                    case InsolationUnit.KilowattHoursPerMeterSquared:
+                        return Insolation.ToKwhMeter2;
+                    case InsolationUnit.BTUPerFootSquared:
+                        return Insolation.ToBTUFoot2;
+                    default:
+                        return 1.0;
+                }
+            }
+        }
 
         [IsVisibleInDynamoLibrary(false)]
         public override double UnitValue
