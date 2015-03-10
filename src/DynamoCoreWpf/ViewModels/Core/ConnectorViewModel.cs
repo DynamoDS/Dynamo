@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.Utilities;
 
@@ -184,17 +184,25 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public PreviewState PreviewState
+        public NodeViewModel Nodevm
         {
             get
             {
+                return workspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic.GUID == _model.Start.Owner.GUID);
+            }
+        }
+
+        public PreviewState PreviewState
+        {
+            get
+            {               
                 if (_model == null)
                 {
                     return PreviewState.None;
                 }
-
-                if (_model.Start.Owner.ShowExecutionPreview)
-                {
+              
+                if (Nodevm.ShowExecutionPreview)
+                {                  
                     return PreviewState.ExecutionPreview;
                 }
 
@@ -236,8 +244,18 @@ namespace Dynamo.ViewModels
             _model.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
 
             workspaceViewModel.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
-
+            Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
             Redraw();
+        }
+
+        private void nodeViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "ShowExecutionPreview":
+                    RaisePropertyChanged("PreviewState");
+                    break;
+            }
         }
 
         /// <summary>

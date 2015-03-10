@@ -433,19 +433,6 @@ namespace Dynamo.Models
             get { return guid; }
         }
 
-        private bool showRunPreview;
-
-        public bool ShowRunPreview
-        {
-            get { return showRunPreview; }
-            set
-            {
-                showRunPreview = value;
-                GetExecutingNodes();
-                RaisePropertyChanged("ShowRunPreview");
-            }
-        }
-
         #endregion
 
         #region constructors
@@ -621,14 +608,6 @@ namespace Dynamo.Models
         protected virtual void NodeModified(NodeModel node)
         {
 
-        }
-
-
-        /// <summary>
-        /// This gets the next set of executing nodes 
-        /// </summary>
-        public virtual void GetExecutingNodes()
-        {
         }
 
         /// <summary>

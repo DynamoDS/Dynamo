@@ -18,10 +18,7 @@ namespace Dynamo.Models
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
 
-        private bool graphExecuted;
-        
-        public bool DynamicRunEnabled;
-       
+        private bool graphExecuted;              
         public readonly bool VerboseLogging;
 
         /// <summary>
@@ -31,6 +28,7 @@ namespace Dynamo.Models
         private bool silenceNodeModifications = true;
 
         public RunSettings RunSettings { get; protected set; }
+        public bool ShowRunPreview { get; set; }
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
@@ -164,8 +162,8 @@ namespace Dynamo.Models
             }
 
             //Find the next executing nodes on when Run-Auto is not set 
-            if (!DynamicRunEnabled && ShowRunPreview)
-                     GetExecutingNodes();
+            if (RunSettings.RunType == RunType.Manual && ShowRunPreview)
+                GetExecutingNodes();
         }
 
         /// <summary>
@@ -335,12 +333,7 @@ namespace Dynamo.Models
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
             {
-                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
-                if (modifiedNode.State != ElementState.Error && modifiedNode.State != ElementState.Warning)
-                {
-                    modifiedNode.ShowExecutionPreview = false;
-                    modifiedNode.IsNodeAddedRecently = false;
-                }
+                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);                
             }
 
             foreach (var node in Nodes)
@@ -350,6 +343,9 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
+
+            //set the node execution preview to false;
+            OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
 
             // This method is guaranteed to be called in the context of 
             // ISchedulerThread (for Revit's case, it is the idle thread).
@@ -436,7 +432,14 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        public override void GetExecutingNodes()
+        public event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
+        public virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
+        {
+            var handler = SetNodeDeltaState;
+            if (handler != null) handler(this, e);
+        }
+
+        public void GetExecutingNodes()
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
             bool showRunPreview = ShowRunPreview;               
@@ -452,10 +455,8 @@ namespace Dynamo.Models
             //Show node exection is checked but the graph has not RUN
             else
             {
-                foreach (var nodeModel in Nodes)
-                {
-                    nodeModel.ShowExecutionPreview = showRunPreview;
-                }
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs); 
             }
         }
 
@@ -465,20 +466,8 @@ namespace Dynamo.Models
             if (updateTask != null)
             {
                 var nodeGuids = updateTask.previewGraphData;
-                foreach (var nodeModel in Nodes)
-                {
-                    foreach (Guid t in nodeGuids)
-                    {
-                        if (nodeModel.GUID == t)
-                        {
-                            nodeModel.ShowExecutionPreview = true;
-                            nodeModel.IsNodeAddedRecently = false;
-                        }                       
-                    }
-                    /* Color the recently added nodes */
-                    if (nodeModel.IsNodeAddedRecently && !nodeModel.ShowExecutionPreview)
-                        nodeModel.ShowExecutionPreview = true;
-                }
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids,graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs);               
             }            
         }
        

@@ -583,8 +583,7 @@ namespace Dynamo.Models
 
             IsSelected = false;
             State = ElementState.Dead;
-            ArgumentLacing = LacingStrategy.Disabled;
-            ShowExecutionPreview = false;
+            ArgumentLacing = LacingStrategy.Disabled;           
             //IsReportingModifications = true;
         }
 
@@ -1449,10 +1448,7 @@ namespace Dynamo.Models
         #region Dirty Management
         //TODO: Refactor Property into Automatic with private(?) setter
         //TODO: Add RequestRecalc() method to replace setter --steve
-
-        private bool showExecutionPreview = true;
-        private bool isNodeNewlyAdded  = true;
-
+       
         /// <summary>
         /// Execution scenarios for a Node to be re-executed
         /// </summary>
@@ -1493,33 +1489,6 @@ namespace Dynamo.Models
         {
             return executionHint;
         }
-
-
-        public bool ShowExecutionPreview
-        {
-            get
-            {
-                return showExecutionPreview;
-            }
-            set
-            {
-                showExecutionPreview = value;
-                RaisePropertyChanged("ShowExecutionPreview");
-            }
-        }
-
-        public bool IsNodeAddedRecently
-        {
-            get
-            {
-                return isNodeNewlyAdded;
-            }
-            set
-            {
-                isNodeNewlyAdded = value;
-            }
-        }
-
         #endregion
 
         #region Visualization Related Methods

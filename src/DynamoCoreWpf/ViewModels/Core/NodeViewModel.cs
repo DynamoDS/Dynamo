@@ -279,17 +279,26 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool showExectionPreview;
         public bool ShowExecutionPreview
         {
-            get { return NodeModel.ShowExecutionPreview; }
-            set { NodeModel.ShowExecutionPreview = value; }
+            get
+            {
+                return showExectionPreview;
+            }
+            set
+            {
+                showExectionPreview = value;
+                RaisePropertyChanged("ShowExecutionPreview");
+                RaisePropertyChanged("PreviewState");
+            }
         }
 
         public PreviewState PreviewState
         {
             get
             {
-                if (NodeModel.ShowExecutionPreview)
+                if (ShowExecutionPreview)
                 {
                     return PreviewState.ExecutionPreview;
                 }
@@ -303,10 +312,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool isNodeNewlyAdded;
         public bool IsNodeAddedRecently
         {
-            get { return NodeModel.IsNodeAddedRecently; }
-            set { NodeModel.IsNodeAddedRecently = value; }
+            get
+            {
+                return isNodeNewlyAdded;
+            }
+            set
+            {
+                isNodeNewlyAdded = value;
+            }
         }
 
         #endregion
@@ -517,11 +533,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "ForceReExecuteOfNode":
                     RaisePropertyChanged("WillForceReExecuteOfNode");
-                    break;
-                case "ShowExecutionPreview":
-                    RaisePropertyChanged("ShowExecutionPreview");
-                    RaisePropertyChanged("PreviewState");
-                    break;
+                    break;             
                 case "EnablePeriodicUpdate":
                     RaisePropertyChanged("EnablePeriodicUpdate");
                     RaisePropertyChanged("PeriodicUpdateVisibility");
