@@ -2164,13 +2164,30 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			NodeUtils.SetNodeLocation(typedVar, t);
 			
 			Expect(51);
-			Expect(1);
-			int type = core.TypeSystem.GetType(t.val); 
+			//Expect(1);
+            string ident = string.Empty;
+            int type = ProtoCore.DSASM.Constants.kInvalidIndex;
+		    if (la.kind == 1)
+		    {
+		        if (IsIdentList())
+		        {
+                    Associative_IdentifierList(out node);
+                    ident = node.ToString();
+		        }
+		        else
+		        {
+                    Expect(1);
+		            ident = t.val;
+		        }
+		    }
+		    //int type = core.TypeSystem.GetType(t.val); 
+            type = core.TypeSystem.GetType(ident);
 			if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
 			{
 			   var unknownType = new ProtoCore.Type();
 			   unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-			   unknownType.Name = t.val; 
+			   //unknownType.Name = t.val; 
+               unknownType.Name = ident; 
 			   typedVar.datatype = unknownType;
 			}
 			else
