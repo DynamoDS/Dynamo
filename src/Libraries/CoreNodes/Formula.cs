@@ -25,8 +25,7 @@ namespace DSCore
             foreach (var arg in args.Select((arg, i) => new { Value = arg, Index = i }))
             {
                 var parameter = parameters[arg.Index];
-                var value = DynamoUnits.SIUnit.ToSIUnit(arg.Value);
-                e.Parameters[parameter] = value == null ? arg.Value : value.Value * value.UiLengthConversion;
+                e.Parameters[parameter] = arg.Value;
             }
 
             return e.Evaluate();
