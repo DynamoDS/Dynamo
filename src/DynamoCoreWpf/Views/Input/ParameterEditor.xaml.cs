@@ -128,7 +128,7 @@ namespace Dynamo.UI.Controls
                 char currentChar = e.Text[0];
                 if (completionWindow == null)
                 {
-                    string validCharacters = "[]=.:\"";
+                    string validCharacters = "[]=.:\"(),";
                     if (!char.IsWhiteSpace(currentChar) &&
                         !char.IsLetterOrDigit(currentChar) && 
                         !validCharacters.Contains(currentChar))
