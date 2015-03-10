@@ -135,8 +135,8 @@ namespace SystemTestServices
 
         protected virtual void StartDynamo()
         {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            preloader = new Preloader(Path.GetDirectoryName(exePath));
+            var remoteConfig = new RemoteTestSessionConfig();
+            preloader = new Preloader(remoteConfig.DynamoCorePath, remoteConfig.RequestedLibraryVersion);
             preloader.Preload();
 
             Model = DynamoModel.Start(

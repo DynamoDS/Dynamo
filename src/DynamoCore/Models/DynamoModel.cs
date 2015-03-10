@@ -925,8 +925,7 @@ namespace Dynamo.Models
                 nodeGraph.Notes,
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
-                IsTestMode, 
-                nodeGraph.ElementResolver
+                IsTestMode
                );
 
             RegisterHomeWorkspace(newWorkspace);

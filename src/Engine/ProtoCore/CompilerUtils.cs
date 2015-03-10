@@ -1,11 +1,11 @@
 ﻿using ProtoCore.AST;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.Namespace;
 using ProtoCore.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ProtoCore.Utils
 {
@@ -93,16 +93,17 @@ namespace ProtoCore.Utils
 
     public class ParseParam
     {
-        private List<string> temporaries = null;
+        private List<string> temporaries;
         private Dictionary<string, string> unboundIdentifiers;
-        private List<ProtoCore.AST.Node> parsedNodes = null;
-        private List<ProtoCore.BuildData.ErrorEntry> errors = null;
-        private List<ProtoCore.BuildData.WarningEntry> warnings = null;
-
-        public ParseParam(System.Guid postfixGuid, System.String code)
+        private List<ProtoCore.AST.Node> parsedNodes;
+        private List<ProtoCore.BuildData.ErrorEntry> errors;
+        private List<ProtoCore.BuildData.WarningEntry> warnings;
+        
+        public ParseParam(System.Guid postfixGuid, System.String code, ElementResolver elementResolver)
         {
             this.PostfixGuid = postfixGuid;
             this.OriginalCode = code;
+            this.ElementResolver = elementResolver;
         }
 
         public void AppendTemporaryVariable(string variable)
@@ -157,6 +158,7 @@ namespace ProtoCore.Utils
         public System.Guid PostfixGuid { get; private set; }
         public System.String OriginalCode { get; private set; }
         public System.String ProcessedCode { get; internal set; }
+        public ElementResolver ElementResolver { get; private set; }
 
         public IEnumerable<System.String> Temporaries
         {
@@ -254,8 +256,9 @@ namespace ProtoCore.Utils
         /// stores list of AST nodes, errors and warnings
         /// Evaluates and stores list of unbound identifiers
         /// </summary>
-        /// <param name="parseParams"></param>
-        /// <returns></returns>
+        /// <param name="parseParams"> container for compilation related parameters </param>
+        /// <param name="elementResolver"> classname resolver </param>
+        /// <returns> true if code compilation succeeds, false otherwise </returns>
         public static bool PreCompileCodeBlock(Core core, ref ParseParam parseParams)
         {
             string postfixGuid = parseParams.PostfixGuid.ToString().Replace("-", "_");
@@ -280,23 +283,13 @@ namespace ProtoCore.Utils
 
         private static bool CompileCodeBlockAST(Core core, ParseParam parseParams)
         {
-            Dictionary<int, List<VariableLine>> unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
-            IEnumerable<BuildData.WarningEntry> warnings = null;
+            var unboundIdentifiers = new Dictionary<int, List<VariableLine>>();
 
             ProtoCore.BuildStatus buildStatus = null;
             try
             {
                 int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                CodeBlockNode codeblock = new CodeBlockNode();
-                List<AssociativeNode> nodes = new List<AssociativeNode>();
-                foreach (var i in parseParams.ParsedNodes)
-                {
-                    AssociativeNode assocNode = i as AssociativeNode;
-
-                    if (assocNode != null)
-                        nodes.Add(NodeUtils.Clone(assocNode));
-                }
-                codeblock.Body.AddRange(nodes);
+                
 
                 bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
                 bool parsingCbnFlag = core.IsParsingPreloadedAssembly;
@@ -304,6 +297,21 @@ namespace ProtoCore.Utils
                 core.IsParsingCodeBlockNode = true;
 
                 core.ResetForPrecompilation();
+
+                var astNodes = parseParams.ParsedNodes;
+
+                // Lookup namespace resolution map in elementResolver to rewrite 
+                // partial classnames with their fully qualified names in ASTs
+                // before passing them for pre-compilation. If partial class is not found in map, 
+                // update Resolution map in elementResolver with fully resolved name from compiler.
+                ElementRewriter.RewriteElementNames(core.ClassTable, parseParams.ElementResolver, astNodes);
+
+                // Clone a disposable copy of AST nodes for PreCompile() as Codegen mutates AST's
+                // while performing SSA transforms and we want to keep the original AST's
+                var codeblock = new CodeBlockNode();
+                var nodes = astNodes.OfType<AssociativeNode>().Select(assocNode => NodeUtils.Clone(assocNode)).ToList();
+                codeblock.Body.AddRange(nodes);
+
                 buildStatus = PreCompile(string.Empty, core, codeblock, out blockId);
 
                 core.IsParsingCodeBlockNode = parsingCbnFlag;
@@ -316,7 +324,7 @@ namespace ProtoCore.Utils
                 {
                     return false;
                 }
-                warnings = buildStatus.Warnings;
+                IEnumerable<BuildData.WarningEntry> warnings = buildStatus.Warnings;
 
                 // Get the unboundIdentifiers from the warnings
                 GetInputLines(parseParams.ParsedNodes, warnings, unboundIdentifiers);

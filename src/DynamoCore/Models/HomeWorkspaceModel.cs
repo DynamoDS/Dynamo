@@ -39,7 +39,7 @@ namespace Dynamo.Models
                 Enumerable.Empty<NoteModel>(),
                 new WorkspaceInfo(){FileName = fileName, Name = "Home"},
                 verboseLogging, 
-                isTestMode, new ElementResolver()) { }
+                isTestMode) { }
 
         public HomeWorkspaceModel(
             EngineController engine, 
@@ -50,9 +50,8 @@ namespace Dynamo.Models
             IEnumerable<NoteModel> n, 
             WorkspaceInfo info, 
             bool verboseLogging,
-            bool isTestMode, 
-            ElementResolver elementResolver)
-            : base(e, n, info, factory, elementResolver)
+            bool isTestMode)
+            : base(e, n, info, factory)
         {
             RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 
