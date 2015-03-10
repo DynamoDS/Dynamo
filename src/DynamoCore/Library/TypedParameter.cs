@@ -5,7 +5,6 @@ using Dynamo.DSEngine;
 
 namespace Dynamo.Library
 {
-
     /// <summary>
     ///     A tuple of parameter and its type.
     /// </summary>
@@ -28,7 +27,7 @@ namespace Dynamo.Library
             Function = function;
         }
 
-        public FunctionDescriptor Function { get; set; }
+        public FunctionDescriptor Function { get; private set; }
         public string Name { get; private set; }
         public ProtoCore.Type Type { get; private set; }
         public object DefaultValue { get; private set; }
@@ -51,6 +50,11 @@ namespace Dynamo.Library
         public string DisplayTypeName
         {
             get { return Type.ToShortString(); }
+        }
+
+        public void UpdateFunctionDescriptor(FunctionDescriptor funcDesc)
+        {
+            Function = funcDesc;
         }
 
         public override string ToString()
