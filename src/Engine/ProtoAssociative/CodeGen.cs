@@ -5554,7 +5554,7 @@ namespace ProtoAssociative
                 {
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
-                        var argInfo = BuildArgInfoFromVarDeclNode(argNode); 
+                        var argInfo = BuildArgumentInfoFromVarDeclNode(argNode); 
                         localProcedure.argInfoList.Add(argInfo);
 
                         var argType = BuildArgumentTypeFromVarDeclNode(argNode, gNode);
@@ -5810,7 +5810,7 @@ namespace ProtoAssociative
             codeBlock.blockType = originalBlockType;
         }
 
-        private ArgumentInfo BuildArgInfoFromVarDeclNode(VarDeclNode argNode)
+        private ArgumentInfo BuildArgumentInfoFromVarDeclNode(VarDeclNode argNode)
         {
             var argumentName = String.Empty;
             ProtoCore.AST.Node defaultExpression = null;
@@ -5832,7 +5832,8 @@ namespace ProtoAssociative
             var argInfo = new ProtoCore.DSASM.ArgumentInfo 
             { 
                 Name = argumentName, 
-                DefaultExpression = defaultExpression 
+                DefaultExpression = defaultExpression,
+                Attributes = argNode.ExternalAttributes
             };
             return argInfo;
         }
@@ -5904,7 +5905,7 @@ namespace ProtoAssociative
                 {
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
-                        var argInfo = BuildArgInfoFromVarDeclNode(argNode);
+                        var argInfo = BuildArgumentInfoFromVarDeclNode(argNode);
                         localProcedure.argInfoList.Add(argInfo);
 
                         var argType = BuildArgumentTypeFromVarDeclNode(argNode, graphNode);

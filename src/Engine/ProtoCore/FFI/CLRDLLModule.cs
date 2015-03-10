@@ -809,7 +809,7 @@ namespace ProtoFFI
                 var paramNode = ParseArgumentDeclaration(parameter.Name, parameter.ParameterType);
 
                 var ffiAttribute = new FFIParamAttributes(parameter);
-                paramNode.ExternalAttribute = ffiAttribute;
+                paramNode.ExternalAttributes = ffiAttribute;
                 if (ffiAttribute.IsArbitraryDimensionArray)
                 {
                     var argType = paramNode.ArgumentType;
@@ -1322,10 +1322,31 @@ namespace ProtoFFI
     /// <summary>
     /// A parameter's attributes.
     /// </summary>
-    public class FFIParamAttributes: ProtoCore.AST.AssociativeAST.ParameterAttributes
+    public class FFIParamAttributes: ProtoCore.AST.AssociativeAST.ExternalAttributes
     {
-        public bool IsArbitraryDimensionArray { get; private set; }
-        public string DefaultArgumentExpression { get; private set; }
+        public bool IsArbitraryDimensionArray
+        {
+            get
+            {
+                object isArbitraryRank;
+                if (TryGetAttribute("ArbitraryDimensionArrayImportAttribute", out isArbitraryRank))
+                    return (bool)isArbitraryRank;
+                else
+                    return false;
+            }
+        }
+
+        public string DefaultArgumentExpression 
+        { 
+            get
+            {
+                object defaultExpression = null;
+                if (TryGetAttribute("DefaultArgumentAttribute", out defaultExpression))
+                    return defaultExpression as string;
+                else
+                    return null;
+            }
+        }
 
         public FFIParamAttributes(ParameterInfo parameter)
         {
@@ -1334,11 +1355,12 @@ namespace ProtoFFI
             {
                 if (attr is DefaultArgumentAttribute)
                 {
-                    DefaultArgumentExpression = (attr as DefaultArgumentAttribute).ArgumentExpression;
+                    string defaultExpression = (attr as DefaultArgumentAttribute).ArgumentExpression;
+                    AddAttribute("DefaultArgumentAttribute", defaultExpression);
                 }
                 else if (attr is ArbitraryDimensionArrayImportAttribute)
                 {
-                    IsArbitraryDimensionArray = true;
+                    AddAttribute("ArbitraryDimensionArrayImportAttribute", true);
                 }
             }
         }
