@@ -28,8 +28,7 @@ namespace Dynamo.Models
         private bool silenceNodeModifications = true;
 
         public RunSettings RunSettings { get; protected set; }
-        public bool ShowRunPreview { get; set; }
-
+       
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
@@ -162,7 +161,7 @@ namespace Dynamo.Models
             }
 
             //Find the next executing nodes on when Run-Auto is not set 
-            if (RunSettings.RunType == RunType.Manual && ShowRunPreview)
+            if (RunSettings.RunType == RunType.Manual)
                 GetExecutingNodes();
         }
 
@@ -442,9 +441,9 @@ namespace Dynamo.Models
         public void GetExecutingNodes()
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
-            bool showRunPreview = ShowRunPreview;               
+                        
             //The Graph is executed and Show node execution is checked on the Debug menu
-            if (graphExecuted && showRunPreview)
+            if (graphExecuted)
             {
                 if (task.Initialize(EngineController, this) != null)
                 {

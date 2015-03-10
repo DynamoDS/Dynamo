@@ -439,12 +439,13 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool ShowLogin { get; private set; }
 
+        private bool showRunPreview;
         public bool ShowRunPreview
         {
-            get { return HomeSpace.ShowRunPreview; }
+            get { return showRunPreview; }
             set
             {
-                HomeSpace.ShowRunPreview = value;
+                showRunPreview = value;
                 HomeSpace.GetExecutingNodes();
                 RaisePropertyChanged("ShowRunPreview");              
             }
