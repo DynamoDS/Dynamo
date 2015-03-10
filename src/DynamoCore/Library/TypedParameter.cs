@@ -14,18 +14,13 @@ namespace Dynamo.Library
         private string summary = string.Empty;
 
         public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null)
-            : this(null, parameter, type, defaultValue) { }
-
-        public TypedParameter(
-            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null)
         {
-            if (name == null) 
-                throw new ArgumentNullException("name");
+            if (parameter == null)
+                throw new ArgumentNullException("parameter");
 
-            Name = name;
+            Name = parameter;
             Type = type;
             DefaultValue = defaultValue;
-            Function = function;
         }
 
         public FunctionDescriptor Function { get; private set; }
