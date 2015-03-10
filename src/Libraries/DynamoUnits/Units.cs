@@ -9,6 +9,7 @@ using Autodesk.DesignScript.Runtime;
 namespace DynamoUnits
 {
     [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public enum LengthUnit
     {
         DecimalInch,
@@ -21,6 +22,7 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public enum AreaUnit
     {
         SquareInch, 
@@ -31,6 +33,7 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public enum VolumeUnit
     {
         CubicInch,
@@ -41,6 +44,7 @@ namespace DynamoUnits
     }
 
     [SupressImportIntoVM]
+    [IsVisibleInDynamoLibrary(false)]
     public enum InsolationUnit
     {
         WattHoursPerMeterSquared,
