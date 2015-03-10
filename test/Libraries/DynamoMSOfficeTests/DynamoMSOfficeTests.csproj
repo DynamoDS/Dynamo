@@ -51,8 +51,8 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="ExcelTests.cs" />
-    <Compile Include="MSOfficeTestsSetup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Setup.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
