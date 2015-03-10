@@ -1434,13 +1434,13 @@ Do you want to install the latest Dynamo update?</value>
     <value>Show In Folder</value>
   </data>
   <data name="FileDialogAllFiles" xml:space="preserve">
-    <value>All Files (*.*)|*.*</value>
+    <value>All Files ({0})|{0}</value>
   </data>
   <data name="FileDialogAssemblyFiles" xml:space="preserve">
-    <value>Assembly Library Files (*.dll)|*.dll</value>
+    <value>Assembly Library Files ({0})|{0}</value>
   </data>
   <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
-    <value>Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml</value>
+    <value>Custom Node, DLL, XML ({0})|{0}</value>
   </data>
   <data name="FileDialogDefaultPNGName" xml:space="preserve">
     <value>Capture.png</value>
@@ -1449,25 +1449,25 @@ Do you want to install the latest Dynamo update?</value>
     <value>model.stl</value>
   </data>
   <data name="FileDialogDesignScriptFiles" xml:space="preserve">
-    <value>DesignScript Files (*.ds)|*.ds</value>
+    <value>DesignScript Files ({0})|{0}</value>
   </data>
   <data name="FileDialogDynamoCustomNode" xml:space="preserve">
-    <value>Dynamo Custom Node (*.dyf)|*.dyf</value>
+    <value>Dynamo Custom Node ({0})|{0}</value>
   </data>
   <data name="FileDialogDynamoDefinitions" xml:space="preserve">
-    <value>Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf</value>
+    <value>Dynamo Definitions ({0})|{0}</value>
   </data>
   <data name="FileDialogDynamoWorkspace" xml:space="preserve">
-    <value>Dynamo Workspace (*.dyn)|*.dyn</value>
+    <value>Dynamo Workspace ({0})|{0}</value>
   </data>
   <data name="FileDialogLibraryFiles" xml:space="preserve">
-    <value>Library Files (*.dll, *.ds)|*.dll;*.ds</value>
+    <value>Library Files ({0})|{0}</value>
   </data>
   <data name="FileDialogPNGFiles" xml:space="preserve">
-    <value>PNG Image|*.png</value>
+    <value>PNG Image|{0}</value>
   </data>
   <data name="FileDialogSTLModels" xml:space="preserve">
-    <value>STL Models|*.stl</value>
+    <value>STL Models|{0}</value>
   </data>
   <data name="InfoBubbleError" xml:space="preserve">
     <value>Error: </value>

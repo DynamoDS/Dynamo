@@ -947,14 +947,14 @@ namespace Dynamo.ViewModels
             if (workspace == HomeSpace)
             {
                 ext = ".dyn";
-                fltr = Resources.FileDialogDynamoWorkspace;
+                fltr = string.Format(Resources.FileDialogDynamoWorkspace,"*.dyn");
             }
             else
             {
                 ext = ".dyf";
-                fltr = Resources.FileDialogDynamoCustomNode;
+                fltr = string.Format(Resources.FileDialogDynamoCustomNode,"*.dyf");
             }
-            fltr += "|" + Resources.FileDialogAllFiles;
+            fltr += "|" + string.Format(Resources.FileDialogAllFiles, "*.*");
 
             fileDialog.FileName = workspace.Name + ext;
             fileDialog.AddExtension = true;
@@ -1006,8 +1006,8 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = Resources.FileDialogDynamoDefinitions + "|" +
-                         Resources.FileDialogAllFiles,
+                Filter = string.Format(Resources.FileDialogDynamoDefinitions, "*.dyn; *.dyf") + "|" +
+                         string.Format(Resources.FileDialogAllFiles, "*.*"),
                 Title = Resources.OpenDynamoDefinitionDialogTitle
             };
 
@@ -1528,7 +1528,7 @@ namespace Dynamo.ViewModels
                     AddExtension = true,
                     DefaultExt = ".png",
                     FileName = Resources.FileDialogDefaultPNGName,
-                    Filter = Resources.FileDialogPNGFiles,
+                    Filter = string.Format(Resources.FileDialogPNGFiles,"*.png"),
                     Title = Resources.SaveWorkbenToImageDialogTitle
                 };
             }
@@ -1760,8 +1760,8 @@ namespace Dynamo.ViewModels
 
         public void ImportLibrary(object parameter)
         {
-            string[] fileFilter = {Resources.FileDialogLibraryFiles, Resources.FileDialogAssemblyFiles, 
-                                   Resources.FileDialogDesignScriptFiles, Resources.FileDialogAllFiles};
+            string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll, *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"), 
+                                   string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = String.Join("|", fileFilter);
             openFileDialog.Title = Resources.ImportLibraryDialogTitle;
@@ -1848,7 +1848,7 @@ namespace Dynamo.ViewModels
                     AddExtension = true,
                     DefaultExt = ".stl",
                     FileName = Resources.FileDialogDefaultSTLModelName,
-                    Filter = Resources.FileDialogSTLModels,
+                    Filter = string.Format(Resources.FileDialogSTLModels,"*.stl"),
                     Title = Resources.SaveModelToSTLDialogTitle,
                 };
             }
