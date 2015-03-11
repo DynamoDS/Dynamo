@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
             Category = Controller.Category;
 
             if (controller.Definition.IsObsolete)
-                Warning(controller.Definition.ObsoleteMessage,true);
+                Warning(controller.Definition.ObsoleteMessage, true);
 
             string signature = String.Empty;
             if (Controller.Definition is FunctionDescriptor)
