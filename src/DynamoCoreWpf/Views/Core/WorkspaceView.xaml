@@ -137,7 +137,8 @@
             </controls:ZoomBorder>
 
             <Canvas.ContextMenu>
-                <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}">
+                <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}"
+                             Name="WorkspaceContextMenu">
 
                     <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}"
                                Name="Align">
