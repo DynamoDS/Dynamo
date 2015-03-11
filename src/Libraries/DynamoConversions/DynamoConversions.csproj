@@ -7,7 +7,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{67CF6CF2-CD6A-442C-BABE-864F896DD8EA}</ProjectGuid>
+    <ProjectGuid>{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoConversions</RootNamespace>
@@ -35,9 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ProtoInterface">
-      <HintPath>..\..\..\bin\AnyCPU\Debug\ProtoInterface.dll</HintPath>
-      <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
+    <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
