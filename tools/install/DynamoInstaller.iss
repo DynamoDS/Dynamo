@@ -117,6 +117,8 @@ Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#Produ
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo071.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2015\Dynamo071.addin"
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\DynamoVersionSelector.addin"
+Type: files; Name: "{app}\DynamoAddinGenerator.exe"
+Type: files; Name: "{app}\RevitAddinUtility.dll"
 Type: filesandordirs; Name: {app}\libg_219
 Type: filesandordirs; Name: {app}\libg_220
 Type: filesandordirs; Name: {app}\libg_221
