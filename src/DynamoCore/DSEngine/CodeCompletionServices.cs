@@ -4,6 +4,7 @@ using ProtoCore.Mirror;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ProtoCore.Namespace;
 
 namespace Dynamo.DSEngine.CodeCompletion
 {
@@ -37,9 +38,14 @@ namespace Dynamo.DSEngine.CodeCompletion
         /// <param name="code"> code typed in the code block </param>
         /// <param name="stringToComplete"> Class name or declared variable </param>
         /// <returns> list of method and property members of the type </returns>
-        internal IEnumerable<CompletionData> GetCompletionsOnType(string code, string stringToComplete)
+        internal IEnumerable<CompletionData> GetCompletionsOnType(string code, string stringToComplete, ElementResolver resolver = null)
         {
             IEnumerable<StaticMirror> members = null;
+
+            if (resolver != null)
+            {
+                stringToComplete = resolver.LookupResolvedName(stringToComplete) ?? stringToComplete;
+            }
 
             // Determine if the string to be completed is a class
             var type = GetClassType(stringToComplete);
@@ -88,8 +94,9 @@ namespace Dynamo.DSEngine.CodeCompletion
         /// </summary>
         /// <param name="stringToComplete"> current string being typed which is to be completed </param>
         /// <param name="guid"> code block node guid to identify current node being typed </param>
+        /// <param name="resolver"></param>
         /// <returns> list of classes, global methods and properties that match with string being completed </returns>
-        internal IEnumerable<CompletionData> SearchCompletions(string stringToComplete, Guid guid)
+        internal IEnumerable<CompletionData> SearchCompletions(string stringToComplete, Guid guid, ElementResolver resolver = null)
         {
             List<CompletionData> completions = new List<CompletionData>();
 
@@ -109,7 +116,7 @@ namespace Dynamo.DSEngine.CodeCompletion
                 {
                     completions.AddRange(group.
                         Where(x => !x.IsHiddenInLibrary).
-                        Select(x =>CompletionData.ConvertMirrorToCompletionData(x, useFullyQualifiedName: true)));
+                        Select(x =>CompletionData.ConvertMirrorToCompletionData(x, useFullyQualifiedName: true, resolver: resolver)));
                 }
                 else
                     completions.AddRange(group.
@@ -165,7 +172,8 @@ namespace Dynamo.DSEngine.CodeCompletion
         /// <param name="functionPrefix"> class name in case of constructor or static method, OR
         /// declared instance variable on which method is invoked </param>
         /// <returns> list of method overload signatures </returns>
-        internal IEnumerable<CompletionData> GetFunctionSignatures(string code, string functionName, string functionPrefix)
+        internal IEnumerable<CompletionData> GetFunctionSignatures(string code, string functionName, string functionPrefix,
+            ElementResolver resolver = null)
         {
             IEnumerable<MethodMirror> candidates = null;
 
@@ -183,6 +191,11 @@ namespace Dynamo.DSEngine.CodeCompletion
             }
 
             // Determine if the function prefix is a class name
+            if (resolver != null)
+            {
+                functionPrefix = resolver.LookupResolvedName(functionPrefix) ?? functionPrefix;
+            }
+
             var type = GetClassType(functionPrefix);
             if (type != null)
             {
@@ -191,7 +204,7 @@ namespace Dynamo.DSEngine.CodeCompletion
             // If not of class type
             else
             {
-                // Check if the function prefix is a declared identifier
+                // Check if the function prefix is a typed identifier
                 string typeName = CodeCompletionParser.GetVariableType(code, functionPrefix);
                 if (typeName != null)
                     type = GetClassType(typeName);
@@ -266,9 +279,10 @@ namespace Dynamo.DSEngine.CodeCompletion
         }
 
 
-        internal static CompletionData ConvertMirrorToCompletionData(StaticMirror mirror, bool useFullyQualifiedName = false)
+        internal static CompletionData ConvertMirrorToCompletionData(StaticMirror mirror, bool useFullyQualifiedName = false, 
+            ElementResolver resolver = null)
         {
-            MethodMirror method = mirror as MethodMirror;
+            var method = mirror as MethodMirror;
             if (method != null)
             {
                 string methodName = method.MethodName;
@@ -279,20 +293,31 @@ namespace Dynamo.DSEngine.CodeCompletion
                     Stub = signature
                 };
             }
-            PropertyMirror property = mirror as PropertyMirror;
+            var property = mirror as PropertyMirror;
             if (property != null)
             {
                 string propertyName = property.PropertyName;
                 return new CompletionData(propertyName, CompletionType.Property);
             }
-            ClassMirror classMirror = mirror as ClassMirror;
+            var classMirror = mirror as ClassMirror;
             if (classMirror != null)
             {
-                string className = useFullyQualifiedName ? classMirror.ClassName : classMirror.Alias;
+                string className = useFullyQualifiedName ? GetShortClassName(classMirror, resolver) : classMirror.Alias;
                 return new CompletionData(className, CompletionType.Class);
             }
             else
                 throw new ArgumentException("Invalid argument");
+        }
+
+        private static string GetShortClassName(ClassMirror mirror, ElementResolver resolver)
+        {
+            var shortName = string.Empty;
+            if (resolver != null)
+            {
+                shortName = resolver.LookupShortName(mirror.ClassName);
+            }
+
+            return string.IsNullOrEmpty(shortName) ? mirror.ClassName : shortName;
         }
     }
 }

@@ -22,7 +22,8 @@ using Moq;
 namespace DynamoCoreUITests
 {
     [TestFixture]
-    public class UpdateManagerUITests : SystemTestBase
+    public class 
+        UpdateManagerUITests : SystemTestBase
     {
         private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
         private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
@@ -46,34 +47,6 @@ namespace DynamoCoreUITests
             return um_mock;
         }
 
-        private void Init()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
-
-            var corePath =
-                    Path.GetFullPath(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
-            Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
-                {
-                    StartInTestMode = true,
-                    DynamoCorePath = corePath
-                });
-
-            ViewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    DynamoModel = Model
-                });
-
-            //create the view
-            View = new DynamoView(ViewModel);
-            View.Show();                             
-
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-            CreateTemporaryFolder();
-        }
-
         [SetUp]
         public override void Setup()
         {
@@ -87,8 +60,8 @@ namespace DynamoCoreUITests
             const string availableVersion = "9.9.9.9";
             const string productVersion = "1.1.1.1";
             MockUpdateManager(availableVersion, productVersion);
-            
-            Init();
+
+            base.Setup();
 
             var stb = (ShortcutToolbar)View.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");
@@ -104,7 +77,7 @@ namespace DynamoCoreUITests
             const string productVersion = "9.9.9.9";
             MockUpdateManager(availableVersion, productVersion);
 
-            Init();
+            base.Setup();
 
             var stb = (ShortcutToolbar)View.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");
@@ -120,7 +93,7 @@ namespace DynamoCoreUITests
             const string productVersion = "9.9.9.9";
             MockUpdateManager(availableVersion, productVersion);
 
-            Init();
+            base.Setup();
 
             var stb = (ShortcutToolbar)View.shortcutBarGrid.Children[0];
             var sbgrid = (Grid)stb.FindName("ShortcutToolbarGrid");

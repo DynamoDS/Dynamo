@@ -211,6 +211,18 @@ namespace Dynamo
         }
 
         #endregion
+
+        #region IFunctionDescriptor Members
+
+        /// <summary>
+        /// Name to create custom node
+        /// </summary>
+        public string MangledName
+        {
+            get { return FunctionId.ToString(); }
+        }
+
+        #endregion
     }
     
     /// <summary>

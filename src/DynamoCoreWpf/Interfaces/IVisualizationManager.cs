@@ -59,12 +59,6 @@ namespace Dynamo.Interfaces
         /// </summary>
         void UnPause();
 
-        /// <summary>
-        /// Checks whether the most recent rendering is the latest,
-        /// and triggers a re-render.
-        /// </summary>
-        void CheckIfLatestAndUpdate(long taskId);
-
         void RequestBranchUpdate(NodeModel node);
     }
 }
