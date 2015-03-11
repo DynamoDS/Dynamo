@@ -8,6 +8,7 @@ using System.Threading;
 
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
@@ -28,6 +29,7 @@ namespace SystemTestServices
     /// </summary>
     public abstract class SystemTestBase
     {
+        protected IPathResolver pathResolver;
         protected string workingDirectory;
         private Preloader preloader;
         private AssemblyResolver assemblyResolver;
@@ -96,6 +98,7 @@ namespace SystemTestServices
             View = null;
             Model = null;
             preloader = null;
+            pathResolver = null;
 
             if (assemblyResolver != null)
             {
@@ -143,6 +146,7 @@ namespace SystemTestServices
                 new DynamoModel.StartConfiguration()
                 {
                     StartInTestMode = true,
+                    PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
