@@ -362,7 +362,7 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var dynamicRunEnabled = (bool)value;
-            return dynamicRunEnabled ? Resources.ShowRunPreviewEnableToolTip : Resources.ShowRunPreviewDisableToolTip;
+            return dynamicRunEnabled ? Resources.ShowRunPreviewDisableToolTip : Resources.ShowRunPreviewEnableToolTip;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
