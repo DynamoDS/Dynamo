@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <Product Id="3594373A-F8C0-40DF-ACBD-D4AF085C4189"
+  <Product Id="{28362521-26E2-4E78-BFCF-BB0D1E8F5C2A}"
            Name="$(var.DynPdtName)"
            Language="1033"
            Version="$(var.DynVer).$(var.DynRev)"
            Manufacturer="Dynamo"
-           UpgradeCode="733f1d21-d745-47aa-bbb5-4a39b5996e4e">
+           UpgradeCode="{EFF4EBAD-E976-4EA8-A110-537D6D0B669A}">
 
     <Package InstallerVersion="200"
              Compressed="yes"
