@@ -30,15 +30,19 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ContextMenu}">
-                        <StackPanel>
+                        <StackPanel Margin="8,0,8,8">
                             <ui:IncanvasLibrarySearchControl />
                             <Border x:Name="Border"
                                     Background="White"
-                                    BorderThickness="1"
                                     BorderBrush="#bbbbbb">
 
                                 <StackPanel IsItemsHost="True"
                                             KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="20"
+                                                      ShadowDepth="0"
+                                                      Opacity="0.7" />
+                                </Border.Effect>
                             </Border>
                         </StackPanel>
                         <ControlTemplate.Triggers>
