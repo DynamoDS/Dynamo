@@ -1446,19 +1446,17 @@
 
                     <TabControl.ContentTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <views:WorkspaceView></views:WorkspaceView>
-                                <Popup Name="IncanvasSearch"
-                                       StaysOpen="True"
-                                       AllowsTransparency="True"
-                                       IsOpen="{Binding Path=ShowIncanvasSearch}">
-                                    <uictrls:IncanvasLibrarySearchControl />
-                                </Popup>
-                            </Grid>
+                            <views:WorkspaceView></views:WorkspaceView>
                         </DataTemplate>
                     </TabControl.ContentTemplate>
 
                 </TabControl>
+                <Popup Name="IncanvasSearch"
+                       StaysOpen="True"
+                       AllowsTransparency="True"
+                       Placement="Center">
+                    <uictrls:IncanvasLibrarySearchControl />
+                </Popup>
             </Grid>
 
         </Border>

@@ -338,7 +338,7 @@ namespace Dynamo.Controls
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
 #endif
-            #region Search initialization
+            #region Search and incanvas search initialization
 
             var search = new SearchView(
                 dynamoViewModel.SearchViewModel,
@@ -346,6 +346,7 @@ namespace Dynamo.Controls
             sidebarGrid.Children.Add(search);
             dynamoViewModel.SearchViewModel.Visible = true;
 
+            IncanvasSearch.DataContext = new SearchViewModel(dynamoViewModel, dynamoViewModel.Model.SearchModel);
             #endregion
 
             #region Package manager
@@ -752,8 +753,7 @@ namespace Dynamo.Controls
             if (e.Key == Key.Escape)
                 dynamoViewModel.WatchEscapeIsDown = true;
             if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
-                dynamoViewModel.CurrentSpaceViewModel.ShowIncanvasSearch = 
-                    !dynamoViewModel.CurrentSpaceViewModel.ShowIncanvasSearch;
+                IncanvasSearch.IsOpen = !IncanvasSearch.IsOpen;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)

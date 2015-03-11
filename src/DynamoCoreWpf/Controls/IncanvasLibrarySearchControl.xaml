@@ -45,7 +45,7 @@
                                             Value="/DynamoCoreWpf;component/UI/Images/search_normal.png" />
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}"
+                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"
                                                      Value="True">
                                             <Setter Property="Source"
                                                     Value="/DynamoCoreWpf;component/UI/Images/search_hover.png" />
@@ -58,7 +58,7 @@
                         <TextBlock Name="SearchTextBlock"
                                    FontSize="14"
                                    IsHitTestVisible="False"
-                                   Foreground="#AAAAAA"
+                                   Foreground="#878787"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding Path=SearchText, 
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
@@ -77,7 +77,7 @@
                              FontSize="14"
                              IsEnabled="True"
                              VerticalAlignment="Center"
-                             Text="{Binding Path=SearchText,Mode=TwoWay}"
+                             Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              MinWidth="200"
                              CaretBrush="#CCCCCC"
                              Margin="26,0,0,-1" />
