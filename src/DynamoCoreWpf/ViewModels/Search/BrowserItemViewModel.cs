@@ -164,12 +164,6 @@ namespace Dynamo.Wpf.ViewModels
         public ObservableCollection<ISearchEntryViewModel> Items
         {
             get { return items; }
-            set
-            {
-                if (Equals(value, items)) return;
-                items = value;
-                RaisePropertyChanged("Items");
-            }
         }
 
         public ObservableCollection<NodeSearchElementViewModel> Entries
@@ -261,7 +255,7 @@ namespace Dynamo.Wpf.ViewModels
             SubCategories.CollectionChanged += OnCollectionChanged;
             SubCategories.CollectionChanged += SubCategoriesOnCollectionChanged;
 
-            Items = new ObservableCollection<ISearchEntryViewModel>(
+            items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
 
@@ -418,7 +412,7 @@ namespace Dynamo.Wpf.ViewModels
             foreach (var item in items)
                 item.PropertyChanged -= ItemOnPropertyChanged;
 
-            Items = new ObservableCollection<ISearchEntryViewModel>(
+            items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
 
