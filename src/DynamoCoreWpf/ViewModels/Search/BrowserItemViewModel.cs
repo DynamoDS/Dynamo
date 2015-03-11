@@ -108,8 +108,8 @@ namespace Dynamo.Wpf.ViewModels
         private string fullCategoryName;
         private string assembly;
         private ObservableCollection<ISearchEntryViewModel> items;
-        private ObservableCollection<NodeSearchElementViewModel> entries;
-        private ObservableCollection<NodeCategoryViewModel> subCategories;
+        private readonly ObservableCollection<NodeSearchElementViewModel> entries;
+        private readonly ObservableCollection<NodeCategoryViewModel> subCategories;
         private bool visibility;
         private bool isExpanded;
         private bool isSelected;
