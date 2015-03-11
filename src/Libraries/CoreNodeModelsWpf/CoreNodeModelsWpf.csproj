@@ -94,11 +94,6 @@
     <Compile Include="SliderViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DynamoConversions\DynamoConversions.csproj">
-      <Project>{c5adc05b-34e8-47bf-8e78-9c7bf96418c2}</Project>
-      <Name>DynamoConversions</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
@@ -122,6 +117,11 @@
     <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
+      <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
+      <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
