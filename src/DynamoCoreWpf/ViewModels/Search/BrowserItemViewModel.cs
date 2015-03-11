@@ -186,12 +186,6 @@ namespace Dynamo.Wpf.ViewModels
         public ObservableCollection<NodeCategoryViewModel> SubCategories
         {
             get { return subCategories; }
-            set
-            {
-                if (Equals(value, subCategories)) return;
-                subCategories = value;
-                RaisePropertyChanged("SubCategories");
-            }
         }
 
         public bool Visibility
@@ -264,7 +258,7 @@ namespace Dynamo.Wpf.ViewModels
 
             Name = name;
             Entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
-            SubCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
+            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
 
             foreach (var category in SubCategories)
                 category.PropertyChanged += CategoryOnPropertyChanged;
