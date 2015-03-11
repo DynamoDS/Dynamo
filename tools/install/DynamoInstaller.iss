@@ -43,7 +43,11 @@ UsePreviousAppDir=no
 [Dirs]
 Name: "{app}\libg_219"
 Name: "{app}\libg_220"
+Name: "{app}\libg_221"
 Name: "{app}\nodes"
+Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\definitions"
+Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\Logs"
+Name: "{userappdata}\Dynamo\{#Major}.{#Minor}\packages"
 
 
 [Components]
