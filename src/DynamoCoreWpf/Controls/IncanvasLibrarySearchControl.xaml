@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:views="clr-namespace:Dynamo.UI.Views"
              mc:Ignorable="d"
              MaxHeight="350"
              Width="250">
@@ -11,6 +12,120 @@
         <ResourceDictionary>
 
             <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
+            <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+            <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
+
+
+            <!-- This data template is used to show one member. -->
+            <ControlTemplate x:Key="MemberControlTemplate">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Image HorizontalAlignment="Left"
+                           Height="32"
+                           Margin="16,0,16,0"
+                           VerticalAlignment="Center"
+                           Width="32"
+                           Source="{Binding SmallIcon}" />
+                    <Border Grid.Column="1"
+                            Margin="5,10,0,10">
+                        <Rectangle Fill="#3E464C"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch">
+                            <Rectangle.Margin>
+                                <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
+                                    <Binding ElementName="memberName" />
+                                    <Binding Path="DataContext"
+                                             RelativeSource="{RelativeSource Mode=FindAncestor, 
+                                                                     AncestorType={x:Type UserControl}}" />
+                                </MultiBinding>
+                            </Rectangle.Margin>
+                        </Rectangle>
+                    </Border>
+                    <TextBlock Grid.Column="1"
+                               Name="memberName"
+                               HorizontalAlignment="Left"
+                               Text="{Binding Name}"
+                               VerticalAlignment="Top"
+                               Margin="5,10,0,0"
+                               Foreground="#CCCCCC"
+                               FontSize="13" />
+                </Grid>
+            </ControlTemplate>
+
+            <!--Style for every member in found MemberGroup-->
+            <Style x:Key="ListBoxMembersStyle"
+                   TargetType="{x:Type ListBoxItem}">
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+                <Setter Property="Height"
+                        Value="40" />
+                <Setter Property="Background"
+                        Value="#333333" />
+                <Setter Property="FocusVisualStyle"
+                        Value="{x:Null}" />
+                <Setter Property="Visibility"
+                        Value="{Binding Path=Visibility, Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="#404040" />
+                                </Trigger>
+                                <Trigger Property="IsSelected"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="#404040" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <EventSetter Event="PreviewMouseLeftButtonDown"
+                             Handler="OnMouseLeftButtonDown" />
+            </Style>
+            
+            <!--Style for found MemberGroup-->
+            <Style x:Key="ListBoxMemberGroupsStyle"
+                   TargetType="{x:Type ListBoxItem}">
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+                <Setter Property="Background"
+                        Value="#333333" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsMouseOver"
+                                                   Value="True" />
+                                        <Condition Property="IsSelected"
+                                                   Value="False" />
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="Background"
+                                            Value="#333333" />
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -80,17 +195,98 @@
                              Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              MinWidth="200"
                              CaretBrush="#CCCCCC"
-                             Margin="26,0,0,-1" />
+                             Margin="26,0,0,-1"
+                             TextChanged="OnSearchTextBoxTextChanged" />
                 </Grid>
             </Border>
         </Grid>
 
-        <Grid Name="FoundElements"
-              Grid.Row="1">
-            <Border Opacity=".9"
-                    Background="#333333"
-                    Margin="1,2,1,0">
-            </Border>
-        </Grid>
+        <Border Opacity=".9"
+                Background="#333333"
+                Margin="1,2,1,0"
+                Grid.Row="1"
+                Name="FoundMembers">
+            <Border.Visibility>
+                <Binding Path="CurrentMode"
+                         Converter="{StaticResource ViewModeToVisibilityConverter}"
+                         ConverterParameter="LibrarySearchView" />
+            </Border.Visibility>
+            <ListView Name="CategoryListView"
+                      Grid.Row="1"
+                      ScrollViewer.CanContentScroll="False"
+                      Background="#343434"
+                      BorderThickness="0"
+                      ItemsSource="{Binding SearchRootCategories}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <!--Found member groups-->
+                        <ListBox Background="Transparent"
+                                 BorderBrush="Transparent"
+                                 BorderThickness="0"
+                                 ItemContainerStyle="{StaticResource ListBoxMemberGroupsStyle}"
+                                 ItemsSource="{Binding MemberGroups}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                 Name="MemberGroupsListBox">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Foreground="#989898"
+                                                   FontSize="12"
+                                                   Margin="16,8,0,8">
+                                                            <Run Text="{Binding Prefix, Mode=OneWay}" />
+                                                            <Run Text="{Binding GroupName, Mode=OneWay}">
+                                                                <Run.Style>
+                                                                   <Style TargetType="{x:Type Run}">
+                                                                    <Setter Property="Foreground"
+                                                                            Value="#989898" />
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsMouseOver"
+                                                                                 Value="true">
+                                                                            <Setter Property="Foreground"
+                                                                                    Value="#aaaaaa" />
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style> 
+                                                                </Run.Style>
+                                                            </Run>
+                                        </TextBlock>
+                                        <ListBox Background="Transparent"
+                                                 BorderBrush="Transparent"
+                                                 ItemContainerStyle="{StaticResource ListBoxMembersStyle}"
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                                 ItemsSource="{Binding Members}"
+                                                 Name="MembersListBox">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background"
+                                Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border BorderThickness="0,0,0,0"
+                                            BorderBrush="#2F2F2F">
+                                        <ContentPresenter />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </Border>
     </Grid>
 </UserControl>

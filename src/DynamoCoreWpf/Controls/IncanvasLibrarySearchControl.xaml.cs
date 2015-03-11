@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +24,38 @@ namespace Dynamo.UI.Controls
         public IncanvasLibrarySearchControl()
         {
             InitializeComponent();
+        }
+
+        private SearchViewModel viewModel
+        {
+            get { return DataContext as SearchViewModel; }
+        }
+
+        private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            BindingExpression binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
+            if (binding != null)
+                binding.UpdateSource();
+
+            if (viewModel != null)
+                viewModel.SearchCommand.Execute(null);
+        }
+
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var listBoxItem = sender as ListBoxItem;
+            if (listBoxItem == null) return;
+            ExecuteSearchElement(listBoxItem);
+            e.Handled = true;
+        }
+
+        private void ExecuteSearchElement(ListBoxItem listBoxItem)
+        {
+            var searchElement = listBoxItem.DataContext as NodeSearchElementViewModel;
+            if (searchElement != null)
+            {
+                searchElement.ClickedCommand.Execute(null);
+            }
         }
     }
 }

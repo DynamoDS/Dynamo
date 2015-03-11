@@ -346,7 +346,9 @@ namespace Dynamo.Controls
             sidebarGrid.Children.Add(search);
             dynamoViewModel.SearchViewModel.Visible = true;
 
-            IncanvasSearch.DataContext = new SearchViewModel(dynamoViewModel, dynamoViewModel.Model.SearchModel);
+            var incanvasSeachViewModel = new SearchViewModel(dynamoViewModel, dynamoViewModel.Model.SearchModel);
+            incanvasSeachViewModel.Visible = true;
+            IncanvasSearch.DataContext = incanvasSeachViewModel;
             #endregion
 
             #region Package manager
