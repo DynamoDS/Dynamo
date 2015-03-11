@@ -175,12 +175,6 @@ namespace Dynamo.Wpf.ViewModels
         public ObservableCollection<NodeSearchElementViewModel> Entries
         {
             get { return entries; }
-            set
-            {
-                if (Equals(value, entries)) return;
-                entries = value;
-                RaisePropertyChanged("Entries");
-            }
         }
 
         public ObservableCollection<NodeCategoryViewModel> SubCategories
@@ -257,7 +251,7 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(Expand);
 
             Name = name;
-            Entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
+            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
             subCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
 
             foreach (var category in SubCategories)
