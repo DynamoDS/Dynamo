@@ -65,6 +65,10 @@ namespace Dynamo.UI.Controls
 
         public event StateChangedEventHandler StateChanged = null;
 
+        // Queued data refresh
+        private bool queuedRefresh;
+        private MirrorData queuedMirrorData;
+
         #endregion
 
         #region Public Class Operational Methods
@@ -144,6 +148,17 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        /// <summary>
+        /// It is possible for a run to complete while the preview display is
+        /// in transition.  In these situations, we can store the MirrorData and
+        /// set a flag to refresh the display.
+        /// </summary>
+        internal void EnqueueBindToDataSource(MirrorData mirrorData)
+        {
+            this.queuedMirrorData = mirrorData;
+            this.queuedRefresh = true;
+        }
+
         #endregion
 
         #region Public Class Properties
@@ -182,16 +197,28 @@ namespace Dynamo.UI.Controls
             SetValue(Canvas.LeftProperty, widthDifference * 0.5);
         }
 
+        public State RequestedState { get; private set; }
+
         private void BeginNextTransition()
         {
-            if (this.IsInTransition || (queuedRequest.Count <= 0))
-                return; // Still in transition or nothing else to do.
+            // A run completed while in transition, we must refresh
+            if (queuedRefresh)
+            {
+                queuedRefresh = false;
+                BindToDataSource(queuedMirrorData);
+                this.queuedMirrorData = null;
+                return;
+            }
+
+            if (this.IsInTransition || queuedRequest.Count <= 0)
+                return; // Nothing else to do.
 
             State requestedState = queuedRequest.Dequeue();
             while (requestedState == this.currentState)
             {
                 if (queuedRequest.Count <= 0)
                     return; // There's no more request for now.
+                requestedState = queuedRequest.Dequeue();
             }
 
             if (requestedState == State.Hidden)
@@ -209,11 +236,14 @@ namespace Dynamo.UI.Controls
             {
                 BeginExpandTransition();
             }
+
+            this.RequestedState = requestedState;
         }
 
         private void SetCurrentStateAndNotify(State newState)
         {
             this.currentState = newState;
+
             if (this.StateChanged != null)
                 this.StateChanged(this, EventArgs.Empty);
         }

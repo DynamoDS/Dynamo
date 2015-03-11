@@ -176,8 +176,18 @@ namespace Dynamo.Controls
                 // There is no preview control or the preview control is 
                 // currently in transition state (it can come back to handle
                 // the new data later on when it is ready).
-                if ((previewControl == null) || previewControl.IsInTransition)
+                if ((previewControl == null))
+                {
                     return;
+                }
+
+                // Enqueue an update of the preview control once it has completed its 
+                // transition
+                if (previewControl.IsInTransition)
+                {
+                    previewControl.EnqueueBindToDataSource(ViewModel.NodeModel.CachedValue);
+                    return;
+                }
 
                 if (previewControl.IsHidden) // The preview control is hidden.
                 {
@@ -353,72 +363,46 @@ namespace Dynamo.Controls
 
         #region Preview Control Related Event Handlers
 
-        /// <summary>
-        ///     A helper method for deferring execution of a given action.  
-        /// </summary>
-        private void Defer(Action a)
-        {
-            Dispatcher.BeginInvoke(a, DispatcherPriority.Background);
-        }
-
         private void OnPreviewIconMouseEnter(object sender, MouseEventArgs e)
         {
-            // Update the display after other UI events, such as TextArea.LostFocus have been processed.
-            // This ensures that code blocks have the chance to commit their code before we interrogate 
-            // the node preview value.  
-            Defer(() =>
+            previewInnerRect.Visibility = Visibility.Visible;
+            previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
+
+            if (PreviewControl.IsInTransition) // In transition state, come back later.
+                return;
+
+            if (PreviewControl.IsHidden)
             {
-                previewInnerRect.Visibility = Visibility.Visible;
-                previewOuterRect.Fill = FrozenResources.PreviewIconHoverBrush;
+                if (PreviewControl.IsDataBound == false)
+                    PreviewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
 
-                if (PreviewControl.IsInTransition) // In transition state, come back later.
-                    return;
-
-                if (PreviewControl.IsHidden)
-                {
-                    if (PreviewControl.IsDataBound == false)
-                        PreviewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
-
-                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
-                }
-            });
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            }
         }
 
         private void OnPreviewIconMouseLeave(object sender, MouseEventArgs e)
         {
-            // Update the display after other UI events, such as TextArea.LostFocus have been processed.
-            // This ensures that code blocks have the chance to commit their code before we interrogate 
-            // the node preview value.  
-            Defer(() =>
-            {
-                RefreshPreviewIconDisplay();
-                previewInnerRect.Visibility = Visibility.Hidden;
+            RefreshPreviewIconDisplay();
+            previewInnerRect.Visibility = Visibility.Hidden;
 
-                if (PreviewControl.IsInTransition) // In transition state, come back later.
-                    return;
+            if (PreviewControl.IsInTransition) // In transition state, come back later.
+                return;
 
-                if (PreviewControl.IsCondensed)
-                    PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-            });
+            if (PreviewControl.IsCondensed)
+                PreviewControl.TransitionToState(PreviewControl.State.Hidden);
         }
 
         private void OnPreviewIconMouseClicked(object sender, MouseEventArgs e)
         {
-            // Update the display after other UI events, such as TextArea.LostFocus have been processed.
-            // This ensures that code blocks have the chance to commit their code before we interrogate 
-            // the node preview value.    
-            Defer(() =>
-            {
-                if (PreviewControl.IsInTransition) // In transition state, come back later.
-                    return;
+            if (PreviewControl.IsInTransition) // In transition state, come back later.
+                return;
 
-                if (PreviewControl.IsCondensed)
-                    PreviewControl.TransitionToState(PreviewControl.State.Expanded);
-                else if (PreviewControl.IsExpanded)
-                    PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            if (PreviewControl.IsCondensed)
+                PreviewControl.TransitionToState(PreviewControl.State.Expanded);
+            else if (PreviewControl.IsExpanded)
+                PreviewControl.TransitionToState(PreviewControl.State.Condensed);
 
-                previewOuterRect.Fill = FrozenResources.PreviewIconClickedBrush;
-            });
+            previewOuterRect.Fill = FrozenResources.PreviewIconClickedBrush;
         }
 
         private void OnPreviewControlStateChanged(object sender, EventArgs e)
