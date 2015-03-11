@@ -752,8 +752,6 @@ namespace Dynamo.Controls
         {
             if (e.Key == Key.Escape)
                 dynamoViewModel.WatchEscapeIsDown = true;
-            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
-                IncanvasSearch.IsOpen = !IncanvasSearch.IsOpen;
         }
 
         void DynamoView_KeyUp(object sender, KeyEventArgs e)

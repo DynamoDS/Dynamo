@@ -40,6 +40,7 @@ namespace Dynamo.ViewModels
         private bool canNavigateBackground = false;
         private bool showStartPage = false;
         private bool watchEscapeIsDown = false;
+        private bool incanvasSearchIsOpen = false;
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -83,6 +84,16 @@ namespace Dynamo.ViewModels
         public bool IsAbleToGoHome
         {
             get { return !(model.CurrentWorkspace is HomeWorkspaceModel); }
+        }
+
+        public bool IncanvasSearchIsOpen
+        {
+            get { return incanvasSearchIsOpen; }
+            set
+            {
+                incanvasSearchIsOpen = value;
+                RaisePropertyChanged("IncanvasSearchIsOpen");
+            }
         }
 
         public HomeWorkspaceModel HomeSpace
@@ -1786,6 +1797,16 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanTogglePan(object parameter)
+        {
+            return true;
+        }
+
+        internal void ShowIncanvasSearch(object parameter)
+        {
+            IncanvasSearchIsOpen = !IncanvasSearchIsOpen;
+        }
+
+        internal bool CanShowIncanvasSearch(object parameter)
         {
             return true;
         }

@@ -156,6 +156,9 @@
         <KeyBinding Key="F5"
                     Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                     CommandParameter="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="Space"
+                    Modifiers="Ctrl"
+                    Command="{Binding Path=ShowIncanvasSearchCommand}" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -1452,8 +1455,9 @@
 
                 </TabControl>
                 <Popup Name="IncanvasSearch"
-                       StaysOpen="True"
+                       StaysOpen="False"
                        AllowsTransparency="True"
+                       IsOpen="{Binding Path=DataContext.IncanvasSearchIsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                        Placement="Center">
                     <uictrls:IncanvasLibrarySearchControl />
                 </Popup>
