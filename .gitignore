@@ -68,3 +68,4 @@ extern/ASM/
 /src/DynamoIcons/*.resources
 tools/CBNLanguageComparisonTests/GenerateTests.cs
 src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
+/extern/ProtoGeometry/ProtoGeometry.config

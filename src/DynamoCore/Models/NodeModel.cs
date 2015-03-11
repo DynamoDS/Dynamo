@@ -88,6 +88,11 @@ namespace Dynamo.Models
 
         public bool HasRenderPackages { get; set; }
 
+        /// <summary>
+        /// The unique name that was created the node by
+        /// </summary>
+        public virtual string CreationName { get { return this.Name; } }
+
         #endregion
 
         #region events
@@ -1342,6 +1347,20 @@ namespace Dynamo.Models
             if (name == "NickName")
             {
                 NickName = value;
+                return true;
+            }
+
+            if (name == "UsingDefaultValue")
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    return true;
+
+                // Here we expect a string that represents an array of Boolean values which are separated by ";"
+                var arr = value.Split(';');
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                }
                 return true;
             }
 
