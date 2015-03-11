@@ -305,12 +305,14 @@ namespace Dynamo.Search
         {
             SearchIcon.Source = searchIconBitmapHover;
             SearchTextBlock.Foreground = searchForegroundBrushHover;
+            SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
         }
 
         private void OnSearchTextBoxGridMouseLeave(object sender, MouseEventArgs e)
         {
             SearchIcon.Source = searchIconBitmapNormal;
             SearchTextBlock.Foreground = searchForegroundBrushNormal;
+            SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
         }
 
         private void OnSearchCancelButtonClick(object sender, RoutedEventArgs e)

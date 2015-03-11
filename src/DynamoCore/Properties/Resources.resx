@@ -565,4 +565,7 @@ value: bool = false</value>
   <data name="RemoveLabel" xml:space="preserve">
     <value>Remove</value>
   </data>
+  <data name="SearchTextBlockText" xml:space="preserve">
+    <value>Search Library</value>
+  </data>
 </root>
