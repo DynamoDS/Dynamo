@@ -17,7 +17,8 @@
              KeyUp="WorkspaceView_KeyUp"
              IsHitTestVisible="{Binding IsCurrentSpace}">
     <UserControl.Resources>
-        <Style TargetType="{x:Type ContextMenu}">
+        <Style TargetType="{x:Type ContextMenu}"
+               x:Key="WorkspaceContextMenuStyle">
             <Setter Property="SnapsToDevicePixels"
                     Value="True" />
             <Setter Property="OverridesDefaultStyle"
@@ -34,7 +35,7 @@
                             <Border x:Name="Border"
                                     Background="White"
                                     BorderThickness="1"
-                                    BorderBrush="Gray">
+                                    BorderBrush="#bbbbbb">
 
                                 <StackPanel IsItemsHost="True"
                                             KeyboardNavigation.DirectionalNavigation="Cycle" />
@@ -132,7 +133,7 @@
             </controls:ZoomBorder>
 
             <Canvas.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}">
 
                     <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}"
                                Name="Align">
