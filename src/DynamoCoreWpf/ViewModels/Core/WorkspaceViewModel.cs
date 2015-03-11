@@ -242,17 +242,6 @@ namespace Dynamo.ViewModels
 
         public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
 
-        private bool showIncanvasSearch;
-        public bool ShowIncanvasSearch
-        {
-            get { return showIncanvasSearch; }
-            set
-            {
-                showIncanvasSearch = value;
-                RaisePropertyChanged("ShowIncanvasSearch");
-            }
-        }
-
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
