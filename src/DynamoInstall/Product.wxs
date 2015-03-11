@@ -66,8 +66,6 @@
       </Directory>
       <Directory Id="DYNAMO_INSTALLDIR"/>
       <Directory Id="CommonAppDataFolder">
-        <Directory Id="ADESK_DATA" Name="Autodesk">
-        </Directory>
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
           <Directory Id="PROGDATA" Name="$(var.DynVer)"/>
         </Directory>
