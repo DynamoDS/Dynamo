@@ -70,6 +70,15 @@
           <Directory Id="PROGDATA" Name="$(var.DynVer)"/>
         </Directory>
       </Directory>
+      <Directory Id="AppDataFolder">
+        <Directory Id="DYNAMO_APPDATA" Name="Dynamo">
+          <Directory Id="APPDATA" Name="$(var.DynVer)">
+            <Directory Id="definitions" Name="definitions" />
+            <Directory Id="logs" Name="Logs" />
+            <Directory Id="packages" Name="packages" />
+          </Directory>
+        </Directory>
+      </Directory>
     </Directory>
 
     <!-- Install a shortcut in the Start menu -->
@@ -90,6 +99,15 @@
           <RegistryValue Name="DisplayVersion" Value="[ProductVersion]" Type="string"/>
         </RegistryKey>
         
+        <CreateFolder Directory="definitions" />
+        <CreateFolder Directory="logs" />
+        <CreateFolder Directory="packages" />
+
+        <RemoveFolder Id="RemoveDefinitionsDir" Directory="definitions" On="uninstall" />
+        <RemoveFolder Id="RemoveLogsDir" Directory="logs" On="uninstall" />
+        <RemoveFolder Id="RemovePackagesDir" Directory="packages" On="uninstall" />
+        <RemoveFolder Id="RemoveAppDataDir" Directory="APPDATA" On="uninstall" />
+        <RemoveFolder Id="RemoveDynamoAppDataDir" Directory="DYNAMO_APPDATA" On="uninstall" />
       </Component>
     </DirectoryRef>
   </Fragment>
