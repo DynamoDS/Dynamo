@@ -15,6 +15,7 @@ namespace DynamoUtilities
     {
         private readonly HashSet<string> preloadLibaries = new HashSet<string>();
         private readonly List<string> addResolvePaths = new List<string>();
+        private readonly HashSet<string> nodes = new HashSet<string>();
 
         private static DynamoPathManager instance;
 
@@ -27,7 +28,7 @@ namespace DynamoUtilities
         /// <summary>
         /// The definitions folder, which contains custom nodes
         /// created by the user.
-        /// </summary>
+        /// </summary>/
         public string UserDefinitions { get; private set; }
 
         /// <summary>
@@ -50,7 +51,10 @@ namespace DynamoUtilities
         /// <summary>
         /// All 'nodes' folders.
         /// </summary>
-        public HashSet<string> Nodes { get; private set; }
+        public HashSet<string> Nodes
+        {
+            get { return nodes; }
+        }
 
         /// <summary>
         /// Libraries to be preloaded by library services.
@@ -152,11 +156,6 @@ namespace DynamoUtilities
                     CommonSamples = neturalCommonSamples;
             }
 
-            if (Nodes == null)
-            {
-                Nodes = new HashSet<string>();
-            }
-
             // Only register the core nodes directory
             Nodes.Add(Path.Combine(MainExecPath, "nodes"));
 
@@ -180,6 +179,7 @@ namespace DynamoUtilities
                 "Optimize.ds",
                 "DynamoUnits.dll",
                 "Tessellation.dll",
+                "DynamoConversions.dll",
                 "Analysis.dll"
             };
 

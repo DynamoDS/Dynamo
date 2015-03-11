@@ -692,7 +692,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return HeaderBackgroundInactive;
                 case ElementState.Active: return HeaderBackgroundActive;
-                case ElementState.Warning: return HeaderBackgroundWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return HeaderBackgroundWarning;
                 case ElementState.Error: return HeaderBackgroundError;
                 case ElementState.AstBuildBroken: return HeaderBackgroundBroken;
             }
@@ -706,7 +708,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return HeaderForegroundInactive;
                 case ElementState.Active: return HeaderForegroundActive;
-                case ElementState.Warning: return HeaderForegroundWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return HeaderForegroundWarning;
                 case ElementState.Error: return HeaderForegroundError;
                 case ElementState.AstBuildBroken: return HeaderForegroundBroken;
             }
@@ -720,7 +724,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return HeaderBorderInactive;
                 case ElementState.Active: return HeaderBorderActive;
-                case ElementState.Warning: return HeaderBorderWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return HeaderBorderWarning;
                 case ElementState.Error: return HeaderBorderError;
                 case ElementState.AstBuildBroken: return HeaderBorderBroken;
             }
@@ -734,7 +740,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return OuterBorderInactive;
                 case ElementState.Active: return OuterBorderActive;
-                case ElementState.Warning: return OuterBorderWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return OuterBorderWarning;
                 case ElementState.Error: return OuterBorderError;
                 case ElementState.AstBuildBroken: return OuterBorderBroken;
             }
@@ -748,7 +756,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return BodyBackgroundInactive;
                 case ElementState.Active: return BodyBackgroundActive;
-                case ElementState.Warning: return BodyBackgroundWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return BodyBackgroundWarning;
                 case ElementState.Error: return BodyBackgroundError;
                 case ElementState.AstBuildBroken: return BodyBackgroundBroken;
             }

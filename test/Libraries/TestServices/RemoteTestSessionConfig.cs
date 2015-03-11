@@ -45,11 +45,9 @@ namespace TestServices
             var versionStr = GetAppSetting(config, "RequestedLibraryVersion");
 
             LibraryVersion version;
-            if(!LibraryVersion.TryParse(versionStr, out version))
-            {
-                throw new Exception("The specified string value did not map to a supported version of the shape manager.");
-            }
-            RequestedLibraryVersion = version;
+            RequestedLibraryVersion = LibraryVersion.TryParse(versionStr, out version) ? 
+                version : LibraryVersion.Version219;
+            
         }
 
         private static string GetAppSetting(Configuration config, string key)
