@@ -312,7 +312,7 @@ namespace Dynamo.Utilities
             this ObservableCollection<T> coll, Predicate<T> predicate )
         {
 
-            for (int i = coll.Count; i == 0; i-- )
+            for (int i = coll.Count - 1; i >= 0; i-- )
             {
                 if ( predicate.Invoke( coll[i] ) )
                 {

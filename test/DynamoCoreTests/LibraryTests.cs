@@ -19,9 +19,9 @@ namespace Dynamo.Tests
         protected static bool LibraryLoaded { get; set; }
 
         [SetUp]
-        public override void Init()
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
 
             libraryServices = ViewModel.Model.LibraryServices;
             RegisterEvents();

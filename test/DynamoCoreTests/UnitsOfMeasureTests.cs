@@ -47,7 +47,7 @@ namespace Dynamo.Tests
 
             length.SetValueFromString("1' 2 1/2\"");
             Assert.AreEqual(0.3683, length.Value, 0.001);
-            
+
             length.SetValueFromString("14 1/2\"");
             Assert.AreEqual(0.3683, length.Value, 0.001);
         }
@@ -59,7 +59,7 @@ namespace Dynamo.Tests
             var area = Area.FromDouble(1.0);
 
             area.SetValueFromString("1 mm²");
-            Assert.AreEqual(1.0e-6 , area.Value, 0.001);
+            Assert.AreEqual(1.0e-6, area.Value, 0.001);
 
             area.SetValueFromString("1mm²");
             Assert.AreEqual(1.0e-6, area.Value, 0.001);
@@ -201,7 +201,7 @@ namespace Dynamo.Tests
         {
             var length = Length.FromDouble(0.03175); //1.25"
 
-            SIUnit.LengthUnit = LengthUnit.FractionalInch;
+            length.LengthUnit = LengthUnit.FractionalInch;
             Assert.AreEqual("1 1/4\"", length.ToString());
 
             length.Value = -0.03175;
@@ -238,7 +238,7 @@ namespace Dynamo.Tests
         {
             //test just the fractional case
             var length = Length.FromDouble(0.0762); //.25"
-            SIUnit.LengthUnit = LengthUnit.FractionalFoot;
+            length.LengthUnit = LengthUnit.FractionalFoot;
 
             Assert.AreEqual("3\"", length.ToString());
 
@@ -439,7 +439,7 @@ namespace Dynamo.Tests
             Assert.Throws<UnitsException>(() => { var test = length + area; });
             Assert.Throws<UnitsException>(() => { var test = area + volume; });
             Assert.Throws<UnitsException>(() => { var test = length + volume; });
-            
+
             //subtraction
             var length_sub = length - length;
             Assert.AreEqual(0, length_sub.Value);
@@ -474,11 +474,11 @@ namespace Dynamo.Tests
             Assert.Throws<UnitsException>(() => { var test = length / volume; });
 
             //modulo
-            var length_mod = length%length;
+            var length_mod = length % length;
             Assert.AreEqual(0, length_mod.Value);
-            var area_mode = area%area;
+            var area_mode = area % area;
             Assert.AreEqual(0, area_mode.Value);
-            var volume_mod = volume%volume;
+            var volume_mod = volume % volume;
             Assert.AreEqual(0, volume_mod.Value);
             Assert.Throws<UnitsException>(() => { var test = length % area; });
             Assert.Throws<UnitsException>(() => { var test = area % volume; });
@@ -524,15 +524,15 @@ namespace Dynamo.Tests
             const double x = 5.0;
 
             var length = x.ToLength();
-            SIUnit.LengthUnit = LengthUnit.Meter;
+            length.LengthUnit = LengthUnit.Meter;
             Assert.AreEqual("5.0000m", length.ToString());
 
             var area = x.ToArea();
-            SIUnit.AreaUnit = AreaUnit.SquareMeter;
+            area.AreaUnit = AreaUnit.SquareMeter;
             Assert.AreEqual("5.0000m²", area.ToString());
 
             var volume = x.ToVolume();
-            SIUnit.VolumeUnit = VolumeUnit.CubicMeter;
+            volume.VolumeUnit = VolumeUnit.CubicMeter;
             Assert.AreEqual("5.0000m³", volume.ToString());
 
         }
@@ -541,25 +541,22 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void UiRounding()
         {
-            SIUnit.LengthUnit = LengthUnit.FractionalFoot;
-
-            var length = Length.FromFeet(1.5);
-            SIUnit.LengthUnit = LengthUnit.FractionalFoot;
+            var length = Length.FromFeet(1.5, LengthUnit.FractionalFoot);
             Assert.AreEqual("2' 0\"", ((Length)length.Round()).ToString());
             Assert.AreEqual("2' 0\"", ((Length)length.Ceiling()).ToString());
             Assert.AreEqual("1' 0\"", ((Length)length.Floor()).ToString());
 
-            length = Length.FromFeet(1.2);
+            length = Length.FromFeet(1.2, LengthUnit.FractionalFoot);
             Assert.AreEqual("1' 0\"", ((Length)length.Round()).ToString());
             Assert.AreEqual("2' 0\"", ((Length)length.Ceiling()).ToString());
             Assert.AreEqual("1' 0\"", ((Length)length.Floor()).ToString());
 
-            length = Length.FromFeet(-1.5);
+            length = Length.FromFeet(-1.5, LengthUnit.FractionalFoot);
             Assert.AreEqual("-2' 0\"", ((Length)length.Round()).ToString());
             Assert.AreEqual("-1' 0\"", ((Length)length.Ceiling()).ToString());
             Assert.AreEqual("-2' 0\"", ((Length)length.Floor()).ToString());
 
-            length = Length.FromFeet(-1.2);
+            length = Length.FromFeet(-1.2, LengthUnit.FractionalFoot);
             Assert.AreEqual("-1' 0\"", ((Length)length.Round()).ToString());
             Assert.AreEqual("-1' 0\"", ((Length)length.Ceiling()).ToString());
             Assert.AreEqual("-2' 0\"", ((Length)length.Floor()).ToString());
@@ -580,7 +577,7 @@ namespace Dynamo.Tests
             var l3 = Length.FromDouble(0.0);
             var l4 = Length.FromDouble(.0000001);
 
-            var lengths = new List<Length> {l4, l3, l1, l2};
+            var lengths = new List<Length> { l4, l3, l1, l2 };
             lengths.Sort();
 
             Assert.AreEqual(l1.Value, lengths[0].Value);
@@ -592,7 +589,7 @@ namespace Dynamo.Tests
             var a3 = Area.FromDouble(0.0);
             var a4 = Area.FromDouble(.0000001);
 
-            var areas = new List<Area> {a4, a3, a2};
+            var areas = new List<Area> { a4, a3, a2 };
             areas.Sort();
 
             Assert.AreEqual(a2.Value, areas[2].Value);
@@ -603,7 +600,7 @@ namespace Dynamo.Tests
             var v3 = Volume.FromDouble(0.0);
             var v4 = Volume.FromDouble(.0000001);
 
-            var volumes = new List<Volume> {v4, v3, v2};
+            var volumes = new List<Volume> { v4, v3, v2 };
             volumes.Sort();
 
             Assert.AreEqual(v2.Value, volumes[2].Value);
@@ -612,7 +609,7 @@ namespace Dynamo.Tests
 
             //test that we're not comparing units 
             //that can't be compared
-            var mixedList = new List<SIUnit> {l2, a4, v4};
+            var mixedList = new List<SIUnit> { l2, a4, v4 };
             Assert.Throws<InvalidOperationException>(mixedList.Sort);
 
         }
@@ -667,8 +664,21 @@ namespace Dynamo.Tests
         [Test, Category("UnitTests")]
         public void Location_InvalidArgs()
         {
-            Assert.Throws<Exception>(()=>Location.ByLatitudeAndLongitude(500.0, 10.0));
+            Assert.Throws<Exception>(() => Location.ByLatitudeAndLongitude(500.0, 10.0));
             Assert.Throws<Exception>(() => Location.ByLatitudeAndLongitude(10.0, 500.0));
+        }
+
+        [Test, Category("UnitTests")]
+        public void UnitValues()
+        {
+            var length = Length.FromDouble(1.0, LengthUnit.DecimalFoot);
+            Assert.AreEqual(length.UnitValue, Length.ToFoot);
+
+            var area = Area.FromDouble(1.0, AreaUnit.SquareFoot);
+            Assert.AreEqual(area.UnitValue, Area.ToSquareFoot);
+
+            var volume = Volume.FromDouble(1.0, VolumeUnit.CubicFoot);
+            Assert.AreEqual(volume.UnitValue, Volume.ToCubicFoot);
         }
     }
 

@@ -57,7 +57,6 @@ namespace Dynamo
             get { return updatingPaused; }
             internal set
             {
-                Debug.WriteLine("Updating paused = " + value.ToString());
                 updatingPaused = value;
             }
         }
@@ -576,8 +575,6 @@ namespace Dynamo
             var rps = new List<RenderPackage>();
             rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
             rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
-
-            Debug.WriteLine("Render aggregation complete for {0}", task.NodeId);
 
             var e = new VisualizationEventArgs(rps, task.NodeId, -1);
             OnResultsReadyToVisualize(this, e);

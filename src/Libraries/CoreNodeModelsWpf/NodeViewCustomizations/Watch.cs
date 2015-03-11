@@ -1,10 +1,13 @@
 using System;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-
+using System.Windows.Threading;
+using DSCoreNodesUI.Logic;
 using Dynamo.Controls;
+using Dynamo.Core.Threading;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.UI;
@@ -19,11 +22,11 @@ namespace Dynamo.Wpf.Nodes
         #region Private fields
 
         private IdentifierNode astBeingWatched;
-        private object cachedValue;
 
         private DynamoViewModel dynamoViewModel;
 
         private Watch watch;
+        private SynchronizationContext syncContext;
         private WatchViewModel rootWatchViewModel;
 
         #endregion
@@ -32,6 +35,7 @@ namespace Dynamo.Wpf.Nodes
         {
             this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             this.watch = nodeModel;
+            this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
 
             var watchTree = new WatchTree();
 
@@ -47,6 +51,7 @@ namespace Dynamo.Wpf.Nodes
             Bind(watchTree, nodeView);
 
             Subscribe();
+            ResetWatch();
         }
 
         private void Bind(WatchTree watchTree, NodeView nodeView)
@@ -85,6 +90,7 @@ namespace Dynamo.Wpf.Nodes
             rootWatchViewModel.PropertyChanged += RootWatchViewModelOnPropertyChanged;
 
             watch.InPorts[0].PortConnected += OnPortConnected;
+            watch.InPorts[0].PortDisconnected += OnPortDisconnected;
         }
 
         public void Dispose()
@@ -94,6 +100,7 @@ namespace Dynamo.Wpf.Nodes
             rootWatchViewModel.PropertyChanged -= RootWatchViewModelOnPropertyChanged;
 
             watch.InPorts[0].PortConnected -= OnPortConnected;
+            watch.InPorts[0].PortDisconnected -= OnPortDisconnected;
         }
 
         private void OnPortConnected(PortModel port, ConnectorModel connectorModel)
@@ -107,23 +114,27 @@ namespace Dynamo.Wpf.Nodes
                 if (oldId != null && astBeingWatched.Value != oldId.Value)
                 {
                     // the input node has changed, we clear preview
-                    cachedValue = null;
                     rootWatchViewModel.Children.Clear();
                 }
             }
         }
 
+        private void OnPortDisconnected(PortModel obj)
+        {
+            ResetWatch();
+        }
+
         private WatchViewModel GetWatchViewModel()
         {
             var inputVar = watch.IsPartiallyApplied
-                ? watch.AstIdentifierForPreview.Name
-                : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
+                    ? watch.AstIdentifierForPreview.Name
+                    : watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview.Name;
 
             var core = this.dynamoViewModel.Model.EngineController.LiveRunnerRuntimeCore;
             var watchHandler = this.dynamoViewModel.WatchHandler;
 
             return watchHandler.GenerateWatchViewModelForData(
-                cachedValue,
+                watch.CachedValue,
                 core,
                 inputVar,
                 rootWatchViewModel.ShowRawData);
@@ -131,20 +142,45 @@ namespace Dynamo.Wpf.Nodes
 
         private void ResetWatch()
         {
-            watch.DispatchOnUIThread(SilentUpdate);
-        }
+            // When the node has no input connected, the preview should be empty
+            // Without doing this, the preview would say "null"
+            if (watch.IsPartiallyApplied)
+            {
+                rootWatchViewModel.Children.Clear();
+                return;
+            }
 
-        private void SilentUpdate()
-        {
-            // store in temp variable to silence binding
-            var temp = rootWatchViewModel.Children;
-            rootWatchViewModel.Children = null;
+            // If the node hasn't been evaluated, no need to update the UI
+            if (!watch.HasRunOnce)
+            {
+                return;
+            }
 
-            temp.Clear();
-            temp.Add(this.GetWatchViewModel());
+            var s = dynamoViewModel.Model.Scheduler;
 
-            // rebind
-            rootWatchViewModel.Children = temp;
+            WatchViewModel wvm = null;
+
+            // prevent data race by running on scheduler
+            var t = new DelegateBasedAsyncTask(s, () =>
+            {
+                wvm = GetWatchViewModel();
+            });
+
+            // then update on the ui thread
+            t.ThenPost((_) =>
+            {
+                // store in temp variable to silence binding
+                var temp = rootWatchViewModel.Children;
+
+                rootWatchViewModel.Children = null;
+                temp.Clear();
+                temp.Add(wvm);
+
+                // rebind
+                rootWatchViewModel.Children = temp;
+            }, syncContext);
+
+            s.ScheduleForExecution(t);
         }
 
         private void RootWatchViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -168,9 +204,7 @@ namespace Dynamo.Wpf.Nodes
 
         private void WatchOnEvaluationComplete(object o)
         {
-            cachedValue = o;
             ResetWatch();
         }
-
     }
 }

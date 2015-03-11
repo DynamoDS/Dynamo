@@ -174,8 +174,6 @@ namespace Dynamo.Controls
         {
             dynamoViewModel.Model.PreferenceSettings.WindowW = e.NewSize.Width;
             dynamoViewModel.Model.PreferenceSettings.WindowH = e.NewSize.Height;
-
-            Debug.WriteLine("Resizing window to {0}:{1}", e.NewSize.Width, e.NewSize.Height);
         }
 
         void InitializeLogin()
@@ -538,7 +536,7 @@ namespace Dynamo.Controls
         {
             if (!string.IsNullOrEmpty(e.Path))
             {
-                var control = WpfUtilities.ChildOfType<DragCanvas>(this, null);
+                var control = WpfUtilities.ChildOfType<ZoomBorder>(this, "zoomBorder");
 
                 double width = 1;
                 double height = 1;
@@ -557,8 +555,8 @@ namespace Dynamo.Controls
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                var rtb = new RenderTargetBitmap(Math.Max(1, (int)width),
-                                                  Math.Max(1, (int)height),
+                var rtb = new RenderTargetBitmap(Math.Max((int)control.ActualWidth, (int)width),
+                                                  Math.Max((int)control.ActualHeight, (int)height),
                                                   96,
                                                   96,
                                                   PixelFormats.Default);
@@ -716,8 +714,6 @@ namespace Dynamo.Controls
 
         private void WindowClosed(object sender, EventArgs e)
         {
-            Debug.WriteLine("Dynamo window closed.");
-
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 
@@ -1168,8 +1164,6 @@ namespace Dynamo.Controls
             if (dynamoViewModel == null)
                 return;
             dynamoViewModel.WorkspaceActualSize(border.ActualWidth, border.ActualHeight);
-
-            Debug.WriteLine("Resizing workspace children.");
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
