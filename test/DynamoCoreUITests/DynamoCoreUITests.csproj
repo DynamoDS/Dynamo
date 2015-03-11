@@ -83,6 +83,7 @@
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUITests.cs" />
     <Compile Include="DropDownTests.cs" />
+    <Compile Include="DynamoConverterTest.cs" />
     <Compile Include="DynamoTestUIBase.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />
@@ -129,6 +130,11 @@
     <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">
       <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
       <Name>CoreNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DynamoConversions\DynamoConversions.csproj">
+      <Project>{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}</Project>
+      <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">

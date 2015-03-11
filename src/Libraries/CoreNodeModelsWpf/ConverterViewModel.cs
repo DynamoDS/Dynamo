@@ -14,18 +14,26 @@ namespace Dynamo.Wpf
 {
     public class ConverterViewModel : NotificationObject
     {
-        private DynamoConvert dynamoConvertModel;
+        private readonly DynamoConvert dynamoConvertModel;
         public DelegateCommand ToggleButtonClick { get; set; }
-        private NodeViewModel nodeViewModel;
-        private NodeModel nodeModel;
+        private readonly NodeViewModel nodeViewModel;
+        private readonly NodeModel nodeModel;
+
+        public ConversionMetricUnit SelectedMetricConversion
+        {
+            get { return dynamoConvertModel.SelectedMetricConversion; }
+            set
+            {
+                dynamoConvertModel.SelectedMetricConversion = value;                                
+            }
+        }
 
         public ConversionUnit SelectedFromConversion
         {
             get { return dynamoConvertModel.SelectedFromConversion; }
             set
             {
-                dynamoConvertModel.SelectedFromConversion = value;
-                RaisePropertyChanged("SelectedFromConversion");
+                dynamoConvertModel.SelectedFromConversion = value;                             
             }
         }
 
@@ -34,8 +42,43 @@ namespace Dynamo.Wpf
             get { return dynamoConvertModel.SelectedToConversion; }
             set
             {
-                dynamoConvertModel.SelectedToConversion = value;
-                RaisePropertyChanged("SelectedToConversion");
+                dynamoConvertModel.SelectedToConversion = value;                            
+            }
+        }
+
+        public List<ConversionUnit> SelectedFromConversionSource
+        {
+            get { return dynamoConvertModel.SelectedFromConversionSource; }
+            set
+            {
+                dynamoConvertModel.SelectedFromConversionSource = value;               
+            }
+        }
+
+        public List<ConversionUnit> SelectedToConversionSource
+        {
+            get { return dynamoConvertModel.SelectedToConversionSource; }
+            set
+            {
+                dynamoConvertModel.SelectedFromConversionSource = value;             
+            }
+        }
+
+        public bool IsSelectionFromBoxEnabled
+        {
+            get { return dynamoConvertModel.IsSelectionFromBoxEnabled; }
+            set
+            {
+                dynamoConvertModel.IsSelectionFromBoxEnabled = value;                
+            }
+        }
+
+        public string SelectionFromBoxToolTip
+        {
+            get { return dynamoConvertModel.SelectionFromBoxToolTip; }
+            set
+            {
+                dynamoConvertModel.SelectionFromBoxToolTip = value;                
             }
         }
 
@@ -45,24 +88,36 @@ namespace Dynamo.Wpf
             nodeViewModel = nodeView.ViewModel;
             nodeModel = nodeView.ViewModel.NodeModel;
             model.PropertyChanged +=model_PropertyChanged;
-            ToggleButtonClick = new DelegateCommand(OnToggleButtonClick, CanToggleButton);
+            ToggleButtonClick = new DelegateCommand(OnToggleButtonClick, CanToggleButton);         
         }
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
+                case "SelectedMetricConversion":
+                    RaisePropertyChanged("SelectedMetricConversion");
+                    break;
+                case "SelectedFromConversionSource":
+                    RaisePropertyChanged("SelectedFromConversionSource");
+                    break;
+                case "SelectedToConversionSource":
+                    RaisePropertyChanged("SelectedToConversionSource");
+                    break;
                 case "SelectedFromConversion":
                     RaisePropertyChanged("SelectedFromConversion");
                     break;
-
                 case "SelectedToConversion":                    
                     RaisePropertyChanged("SelectedToConversion");
                     break;
-
+                case "IsSelectionFromBoxEnabled":
+                    RaisePropertyChanged("IsSelectionFromBoxEnabled");
+                    break;
+                case "SelectionFromBoxToolTip":
+                    RaisePropertyChanged("SelectionFromBoxToolTip");
+                    break;
             }
         }
-
 
         /// <summary>
         /// Called when Toggle button is clicked.
@@ -74,19 +129,13 @@ namespace Dynamo.Wpf
         {
             var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
             WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);   
-            var temp = this.SelectedFromConversion;
-            this.SelectedFromConversion = this.SelectedToConversion;
-            this.SelectedToConversion = temp;
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true; 
-            
+            dynamoConvertModel.ToggleDropdownValues();
+            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;             
         }
 
         private bool CanToggleButton(object obj)
         {
             return true;
         }
-
-
-
     }
 }

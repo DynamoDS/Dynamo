@@ -6,7 +6,6 @@ using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using DynamoUnits;
 
 using DynamoUtilities;
 
@@ -21,9 +20,6 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DynamoTestPath = null;
-        private LengthUnit lengthUnit;
-        private AreaUnit areaUnit;
-        private VolumeUnit volumeUnit;
         private string numberFormat;
         private string lastUpdateDownloadPath;
         
@@ -93,36 +89,6 @@ namespace Dynamo
         /// </summary>
         public List<string> PackageDirectoriesToUninstall { get; set; }
 
-        public LengthUnit LengthUnit
-        {
-            get { return lengthUnit; }
-            set
-            {
-                lengthUnit = value;
-                RaisePropertyChanged("LengthUnit");
-            }
-        }
-
-        public AreaUnit AreaUnit
-        {
-            get { return areaUnit; }
-            set
-            {
-                areaUnit = value;
-                RaisePropertyChanged("AreaUnit");
-            }
-        }
-
-        public VolumeUnit VolumeUnit
-        {
-            get { return volumeUnit; }
-            set
-            {
-                volumeUnit = value;
-                RaisePropertyChanged("VolumeUnit");
-            }
-        }
-
         /// <summary>
         /// The last X coordinate of the Dynamo window.
         /// </summary>
@@ -164,9 +130,6 @@ namespace Dynamo
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             FullscreenWatchShowing = true;
-            LengthUnit = LengthUnit.Meter;
-            AreaUnit = DynamoUnits.AreaUnit.SquareMeter;
-            VolumeUnit = VolumeUnit.CubicMeter;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
