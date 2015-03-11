@@ -597,6 +597,7 @@ namespace Dynamo.DSEngine
                                                                 FunctionName = method.name,
                                                                 Summary = description,
                                                                 Parameters = arguments,
+                                                                PathManager = pathManager,
                                                                 ReturnType = method.returntype,
                                                                 FunctionType = FunctionType.GenericFunction,
                                                                 IsVisibleInLibrary = visibleInLibrary
@@ -637,12 +638,14 @@ namespace Dynamo.DSEngine
                 {
                     FunctionName = op,
                     Parameters = args,
+                    PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
                 {
                     FunctionName = Op.GetUnaryOpFunction(UnaryOperator.Not),
                     Parameters = GetUnaryFuncArgs(),
+                    PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction
                 }).AsSingleton());
 
@@ -784,6 +787,7 @@ namespace Dynamo.DSEngine
                 FunctionType = type,
                 IsVisibleInLibrary = isVisible,
                 ReturnKeys = returnKeys,
+                PathManager = pathManager,
                 IsVarArg = proc.isVarArg,
                 ObsoleteMsg = obsoleteMessage
             });
