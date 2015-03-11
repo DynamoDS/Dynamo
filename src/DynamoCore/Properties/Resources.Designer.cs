@@ -1316,6 +1316,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your code goes here.
+        /// </summary>
+        public static string WatermarkLabelText {
+            get {
+                return ResourceManager.GetString("WatermarkLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to Dynamo!.
         /// </summary>
         public static string WelcomeMessage {
