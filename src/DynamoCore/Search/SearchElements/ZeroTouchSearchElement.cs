@@ -23,7 +23,7 @@ namespace Dynamo.Search.SearchElements
 
             Name = displayName;
             FullCategoryName = functionDescriptor.Category;
-            Description = functionDescriptor.LibraryDescription;
+            Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
 
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
