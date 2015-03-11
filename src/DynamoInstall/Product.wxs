@@ -90,7 +90,12 @@
                   Target="[DYNAMO_INSTALLDIR]\DynamoSandbox.exe"
                   WorkingDirectory="DYNAMO_INSTALLDIR"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue Root="HKCU" Key="Software\Dynamo\$(var.DynVer)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+
+        <RegistryKey Root="HKCU" Key="Software\Dynamo\$(var.DynVer)" Action="createAndRemoveOnUninstall">
+          <RegistryValue Name="installed" Type="integer" Value="1" KeyPath="yes" />
+          <RegistryValue Name="InstallLocation" Type="string" Value="[DYNAMO_INSTALLDIR]" />
+        </RegistryKey>
+
         <RegistryKey Root="HKLM"
                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]"
               Action="createAndRemoveOnUninstall">
