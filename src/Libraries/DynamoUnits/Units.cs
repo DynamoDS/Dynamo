@@ -131,6 +131,7 @@ namespace DynamoUnits
         /// from a string representation to an SI value.
         /// </summary>
         /// <param name="value"></param>
+        [Obsolete("SIUnit.SetValueFromString is obsolete.", false)]
         public abstract void SetValueFromString(string value);
 
         [Obsolete("SIUnit.Add is obsolete. Please use + instead.", false)]
@@ -349,7 +350,8 @@ namespace DynamoUnits
                 return new Dictionary<string,double>();
             }
         }
- 
+
+        [Obsolete("SIUnit.ConvertToHostUnits is obsolete. Please use Convert Units.", false)]
         public abstract double ConvertToHostUnits();
     }
 
