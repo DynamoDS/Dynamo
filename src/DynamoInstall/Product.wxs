@@ -33,13 +33,13 @@
       <!--<Custom Action="UninstallDynamo07" Before="CostInitialize">NOT Installed</Custom>-->
     </InstallExecuteSequence>
 
-    <Property Id='ARPNOMODIFY'>1</Property>
+    <Property Id="ARPNOMODIFY">1</Property>
     
     <!--<UIRef Id="WixUI_FeatureTree"/>
     <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
 
-    <Property Id='DYNAMO_INSTALLDIR'></Property>
-    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo 0.8" After="LaunchConditions"></SetProperty>
+    <Property Id="DYNAMO_INSTALLDIR"></Property>
+    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo $(var.DynVer)" After="LaunchConditions"></SetProperty>
 
     <Feature Id="DYNAMO_CORE_FEATURE"
              Title="Dynamo Core"
@@ -85,7 +85,7 @@
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10" Win64="yes">
         <Shortcut Id="ApplicationStartMenuShortcut"
-                  Name="Dynamo"
+                  Name="Dynamo $(var.DynVer).$(var.DynRev)"
                   Description="Dynamo Sandbox"
                   Target="[DYNAMO_INSTALLDIR]\DynamoSandbox.exe"
                   WorkingDirectory="DYNAMO_INSTALLDIR"/>
