@@ -197,8 +197,6 @@ namespace Dynamo.UI.Controls
             SetValue(Canvas.LeftProperty, widthDifference * 0.5);
         }
 
-        public State RequestedState { get; private set; }
-
         private void BeginNextTransition()
         {
             // A run completed while in transition, we must refresh
@@ -236,8 +234,6 @@ namespace Dynamo.UI.Controls
             {
                 BeginExpandTransition();
             }
-
-            this.RequestedState = requestedState;
         }
 
         private void SetCurrentStateAndNotify(State newState)
