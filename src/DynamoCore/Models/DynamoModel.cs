@@ -54,6 +54,7 @@ namespace Dynamo.Models
 
         #region events
 
+
         public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
         public void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
@@ -440,7 +441,7 @@ namespace Dynamo.Models
             InitializeInstrumentationLogger();
 
             SearchModel = new NodeSearchModel();
-            SearchModel.ItemProduced += 
+            SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
 
             NodeFactory = new NodeFactory();
@@ -488,6 +489,8 @@ namespace Dynamo.Models
             Logger.Log("Dynamo will use the package manager server at : " + url);
 
             InitializeNodeLibrary(preferences);
+
+            LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
         }
 
         /// <summary>
@@ -557,6 +560,8 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             }
+
+            LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
         }
 
         /// <summary>
@@ -743,6 +748,16 @@ namespace Dynamo.Models
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
+        }
+
+        /// <summary>
+        /// This warning message is displayed on the node associated with the FFI dll
+        /// </summary>
+        /// <param name="args"></param>
+        private void LogWarningMessage(LogWarningMessageEventArgs args)
+        {
+            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, args.message);
         }
 
         #endregion
