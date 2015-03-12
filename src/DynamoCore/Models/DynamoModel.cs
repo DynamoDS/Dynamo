@@ -50,6 +50,7 @@ namespace Dynamo.Models
 
         private readonly string geometryFactoryPath;
         private WorkspaceModel currentWorkspace;
+
         #endregion
 
         #region events
@@ -605,6 +606,9 @@ namespace Dynamo.Models
                     {
                         customNodeSearchRegistry.Remove(info.FunctionId);
                         SearchModel.Remove(searchElement);
+                        var workspacesToRemove = _workspaces.FindAll(w => w is CustomNodeWorkspaceModel
+                            && (w as CustomNodeWorkspaceModel).CustomNodeId == id);
+                        workspacesToRemove.ForEach(w => RemoveWorkspace(w));
                     }
                 };
             };
@@ -725,9 +729,6 @@ namespace Dynamo.Models
 
         private static void InitializePreferences(IPreferences preferences)
         {
-            BaseUnit.LengthUnit = preferences.LengthUnit;
-            BaseUnit.AreaUnit = preferences.AreaUnit;
-            BaseUnit.VolumeUnit = preferences.VolumeUnit;
             BaseUnit.NumberFormat = preferences.NumberFormat;
         }
 
@@ -742,15 +743,6 @@ namespace Dynamo.Models
         {
             switch (e.PropertyName)
             {
-                case "LengthUnit":
-                    BaseUnit.LengthUnit = PreferenceSettings.LengthUnit;
-                    break;
-                case "AreaUnit":
-                    BaseUnit.AreaUnit = PreferenceSettings.AreaUnit;
-                    break;
-                case "VolumeUnit":
-                    BaseUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
-                    break;
                 case "NumberFormat":
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;

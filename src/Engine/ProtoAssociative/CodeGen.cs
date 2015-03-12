@@ -3527,7 +3527,7 @@ namespace ProtoAssociative
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
                                 ssaNode.guid = bnode.guid;
-                                ssaNode.OriginalAstID = bnode.ID;
+                                ssaNode.OriginalAstID = bnode.OriginalAstID;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 

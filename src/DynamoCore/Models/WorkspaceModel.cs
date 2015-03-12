@@ -1285,7 +1285,7 @@ namespace Dynamo.Models
                 string.Format("Unhandled model type: {0}", helper.ReadString("type", modelData.Name)));
         }
 
-        internal ModelBase GetModelInternal(Guid modelGuid)
+        public ModelBase GetModelInternal(Guid modelGuid)
         {
             ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
                 ?? (ModelBase)Nodes.FirstOrDefault(node => node.GUID == modelGuid))

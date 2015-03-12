@@ -121,7 +121,6 @@ namespace ProtoCore
 
             List<List<StackValue>> allReducedParamSVs = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
 
-            List<StackValue> reducedParamSVs = allReducedParamSVs[0];
             
             //@TODO(Luke): Need to add type statistics checks to the below if it is an array to stop int[] matching char[]
             
@@ -133,6 +132,9 @@ namespace ProtoCore
             foreach (FunctionEndPoint fep in FunctionEndPoints)
             {
                 var proc = fep.procedureNode;
+
+
+
 
                 // Member functions are overloaded with thisptr as the first
                 // parameter, so if member function replicates on the left hand
@@ -148,10 +150,19 @@ namespace ProtoCore
                     continue;
                 }
 
-                if (fep.DoesTypeDeepMatch(reducedParamSVs, runtimeCore))
+                bool typesOK = true;
+                foreach (List<StackValue> reducedParamSVs in allReducedParamSVs)
                 {
-                    ret.Add(fep);
+                    if (!fep.DoesTypeDeepMatch(reducedParamSVs, runtimeCore))
+                    {
+                        typesOK = false;
+                        break;
+                    }
                 }
+
+                if (typesOK)
+                    ret.Add(fep);
+
             }
 
             return ret;

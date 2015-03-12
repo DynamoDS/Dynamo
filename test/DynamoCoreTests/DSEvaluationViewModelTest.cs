@@ -872,12 +872,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Test_Formula_InputWithUnit()
-        {
-            RunModel(@"core\formula\formula-inputWithUnit-test.dyn");
-            AssertPreviewValue("152a2a64-8c73-4e8c-a418-06ceb4ac0637", 1);
-        }
-        [Test]
         [Category("RegressionTests")]
         public void Test_IFnode_3483_1()
         {
