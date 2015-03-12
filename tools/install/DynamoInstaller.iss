@@ -167,6 +167,7 @@ var
   revision: Cardinal;
   iResultCode: Integer;
   sMsg: String;
+  sMsg2: String;
 begin
   silentFlag := ''
   updateFlag := ''
@@ -193,6 +194,7 @@ begin
       result := false;
     end
 
+  sMsg2 := ExpandConstant(' In order to proceed with the installation, you need to uninstall {#ProductName} {#Major}.{#Minor} manually.')	
   sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}');
   sUninstallString := '';
   RegQueryStringValue(HKLM, sUnInstPath, 'UnInstallString', sUninstallString);
@@ -200,13 +202,14 @@ begin
 	begin
 		if not RegQueryDWordValue(HKLM, sUnInstPath, 'RevVersion', revision) then
 			begin
-				MsgBox('The installed Dynamo version is corrupted. Aborting...', mbInformation, MB_OK);
+				sMsg := ExpandConstant('Could not determine the revision number for already installed {#ProductName} {#Major}.{#Minor}.')
+				MsgBox(sMsg + sMsg2, mbInformation, MB_OK);
 				result := false
-			end;
-		if (revision >= {#Rev}) then
+			end
+		else if (revision >= {#Rev}) then
 			begin
-				sMsg := ExpandConstant('{#ProductName} version {#ProductVersion} or higher is already installed.'
-				MsgBox(sMsg, mbInformation, MB_OK);
+				sMsg := ExpandConstant('{#ProductName} {#ProductVersion} or higher is already installed.')
+				MsgBox(sMsg + sMsg2, mbInformation, MB_OK);
 				result := false
 			end
 		else
