@@ -4538,6 +4538,7 @@ public class Errors {
 	public virtual void SynErr (int line, int col, int n) {
 		string s;
 		switch (n) {
+
 			case 0: s = "EOF expected"; break;
 			case 1: s = "ident expected"; break;
 			case 2: s = "number expected"; break;
@@ -4672,6 +4673,7 @@ public class Errors {
 			case 131: s = "invalid Imperative_bitop"; break;
 			case 132: s = "invalid Imperative_num"; break;
 			case 133: s = "invalid Imperative_PostFixOp"; break;
+
 
 			default: s = "error " + n; break;
 		}
