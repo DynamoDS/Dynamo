@@ -671,20 +671,25 @@ namespace Dynamo.DSEngine
 
         }
 
-        private bool TryGetDefaultArgumentNode(ArgumentInfo arg, out AssociativeNode defaultArgumentNode)
+        /// <summary>
+        /// Try get default argument expression from DefaultArgumentAttribute, 
+        /// and parse into Associaitve AST node. 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="defaultArgumentNode"></param>
+        /// <returns></returns>
+        private bool TryGetDefaultArgumentFromAttribute(ArgumentInfo arg, out AssociativeNode defaultArgumentNode)
         {
             defaultArgumentNode = null;
 
             if (arg.Attributes == null)
                 return false;
 
-            string defaultExpression = null;
             object o;
-            if (arg.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o))
-            {
-                defaultExpression = o as string;
-            }
+            if (!arg.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o))
+                return false;
 
+            var defaultExpression = o as string;
             if (string.IsNullOrEmpty(defaultExpression))
                 return false;
 
@@ -780,7 +785,9 @@ namespace Dynamo.DSEngine
                 (arg, argType) =>
                 {
                     AssociativeNode defaultArgumentNode;
-                    if (!TryGetDefaultArgumentNode(arg, out defaultArgumentNode) && arg.IsDefault)
+                    // Default argument specified by DefaultArgumentAttribute
+                    // takes higher priority
+                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) && arg.IsDefault)
                     {
                         var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)

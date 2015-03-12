@@ -57,15 +57,9 @@ namespace Dynamo.Library
         public override string ToString()
         {
             string str = Name + ": " + DisplayTypeName;
-
             if (DefaultValue != null)
             {
-                var strDefaultValue = DefaultValue.ToString();
-                if (DefaultValue is BooleanNode )
-                {
-                    strDefaultValue = strDefaultValue.ToLower();
-                }
-                str = str + " = " + strDefaultValue;
+                str = str + " = " + DefaultValue.ToString();
             }
 
             return str;

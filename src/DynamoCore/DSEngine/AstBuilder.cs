@@ -118,7 +118,7 @@ namespace Dynamo.DSEngine
                 else
                 {
                     PortData port = node.InPortData[index];
-                    inputAstNodes.Add(port.HasDefaultValue ? port.DefaultValue : new NullNode());
+                    inputAstNodes.Add(port.DefaultValue ?? new NullNode());
                 }
             }
 

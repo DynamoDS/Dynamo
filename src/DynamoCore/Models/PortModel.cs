@@ -101,7 +101,7 @@ namespace Dynamo.Models
                 if (PortType == PortType.Input && Owner != null)
                 {
                     var port = Owner.InPortData[Index];
-                    if (port.HasDefaultValue)
+                    if (port.DefaultValue != null)
                     {
                         return port.DefaultValue.ToString();
                     }
@@ -298,14 +298,6 @@ namespace Dynamo.Models
             DefaultValue = defaultValue;
             VerticalMargin = 0;
             Height = 0;
-        }
-
-        public bool HasDefaultValue 
-        {
-            get
-            {
-                return DefaultValue != null;
-            }
         }
     }
 }
