@@ -426,7 +426,7 @@ namespace DynamoCoreUITests
 
         #region PreferenceSettings
         [Test, RequiresSTA]
-        [Category("DynamoUI"), Category("Failure")]
+        [Category("DynamoUI")]
         public void PreferenceSetting()
         {
             // Test Case to ensure that the link for these persistent variable

@@ -587,6 +587,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This is the incorrectly formatted library name:.
+        /// </summary>
+        public static string IncorrectlyFormattedNodeLibraryDisplay {
+            get {
+                return ResourceManager.GetString("IncorrectlyFormattedNodeLibraryDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!.
+        /// </summary>
+        public static string IncorrectlyFormattedNodeLibraryWarning {
+            get {
+                return ResourceManager.GetString("IncorrectlyFormattedNodeLibraryWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your file &apos;{0}&apos; was created in future version &apos;{1}&apos; and may not open correctly in your installed version of Dynamo &apos;{2}&apos;.
         /// </summary>
         public static string IncorrectVersionToOpenFile {

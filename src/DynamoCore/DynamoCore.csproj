@@ -99,6 +99,7 @@ limitations under the License.
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
@@ -111,8 +112,10 @@ limitations under the License.
     <Compile Include="Core\Context.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="Core\PathManager.cs" />
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Core\Threading\AsyncTaskExtensions.cs" />
+    <Compile Include="Interfaces\IPathResolver.cs" />
     <Compile Include="PackageManager\PackageManagerResult.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />
@@ -333,13 +336,14 @@ copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
     <PostBuildEvent>xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.xml" "$(OutputPath)\$(UICulture)"
 xcopy /Y /e "$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" "$(OutputPath)\$(UICulture)"
+xcopy  /Y /e "$(SolutionDir)..\extern\ProtoGeometry\libg_locale\*" "$(OutputPath)libg_locale\"
 xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)\$(UICulture)"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_221\*" "$(OutputPath)libg_221\"
 xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
 xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples" "$(OutputPath)samples\$(UICulture)\"
-</PostBuildEvent>
+copy /Y $(SolutionDir)..\README.md $(OutputPath)$(UICulture)\README.txt</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

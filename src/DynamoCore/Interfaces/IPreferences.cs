@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Dynamo.Models;
-using DynamoUnits;
 
 namespace Dynamo.Interfaces
 {
@@ -11,9 +10,6 @@ namespace Dynamo.Interfaces
         ConnectorType ConnectorType { get; set; }
         bool FullscreenWatchShowing { get; set; }
         string NumberFormat { get; set; }
-        LengthUnit LengthUnit { get; set; }
-        AreaUnit AreaUnit { get; set; }
-        VolumeUnit VolumeUnit { get; set; }
         bool IsUsageReportingApproved { get; set; }
         bool IsAnalyticsReportingApproved { get; set; }
         bool IsFirstRun { get; set; }

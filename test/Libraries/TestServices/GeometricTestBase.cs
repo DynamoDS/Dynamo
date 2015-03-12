@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo;
+
 using DynamoShapeManager;
-using DynamoUtilities;
 
 using NUnit.Framework;
 
@@ -42,10 +41,12 @@ namespace TestServices
     {
         private Dictionary<string, object> configValues;
         private Preloader preloader;
+        private RemoteTestSessionConfig remoteConfig;
 
         public TestExecutionSession()
         {
             configValues = new Dictionary<string, object>();
+            remoteConfig = new RemoteTestSessionConfig();
         }
 
         public IConfiguration Configuration
@@ -80,12 +81,10 @@ namespace TestServices
         {
             if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
             {
-                if (preloader == null)
-                {
-                    var exePath = Assembly.GetExecutingAssembly().Location;
-                    preloader = new Preloader(Path.GetDirectoryName(exePath));
-                    preloader.Preload();
-                }
+                if (preloader != null) return preloader.GeometryFactoryPath;
+
+                preloader = new Preloader( remoteConfig.DynamoCorePath, remoteConfig.RequestedLibraryVersion);
+                preloader.Preload();
 
                 return preloader.GeometryFactoryPath;
             }

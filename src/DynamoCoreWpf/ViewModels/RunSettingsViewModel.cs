@@ -250,7 +250,6 @@ namespace Dynamo.Wpf.ViewModels
         /// <param name="e"></param>
         void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            Debug.WriteLine(string.Format("{0} property change handled on the RunSettingsViewModel object.", e.PropertyName));
             switch (e.PropertyName)
             {
                 case "RunEnabled":

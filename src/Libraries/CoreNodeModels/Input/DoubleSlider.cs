@@ -24,7 +24,7 @@ namespace DSCoreNodesUI.Input
         {
             Min = 0;
             Max = 100;
-            Step = 0.01;
+            Step = 0.1;
             Value = 0;
             ShouldDisplayPreviewCore = false;
         }

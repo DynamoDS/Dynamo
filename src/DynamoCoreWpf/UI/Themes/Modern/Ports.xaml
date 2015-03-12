@@ -54,11 +54,6 @@
                 </ContextMenu>
             </Grid.ContextMenu>
 
-            <Grid.Width>
-                <Binding Path="ActualWidth"
-                         RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ItemsControl}}" />
-            </Grid.Width>
-
             <Grid.ToolTip>
                 <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}"
                          Style="{DynamicResource ResourceKey=SLightToolTip}">

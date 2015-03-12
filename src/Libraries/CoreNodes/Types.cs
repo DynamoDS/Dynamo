@@ -15,7 +15,7 @@ namespace DSCore
             if(found == null)
                 throw new Exception(string.Format("Could not find {0} in the loaded assemblies.", assemblyName));
 
-            var type = found.GetTypes().First(x => x.Name == typeName);
+            var type = found.GetTypes().First(x => (x.Name == typeName && x.IsPublic == true));
 
             if(type == null)
                 throw new Exception(string.Format("Could not find {0} in the loaded types.", typeName));

@@ -565,10 +565,18 @@ value: bool = false</value>
   <data name="RemoveLabel" xml:space="preserve">
     <value>Remove</value>
   </data>
+
   <data name="SearchTextBlockText" xml:space="preserve">
     <value>Search Library</value>
   </data>
   <data name="WatermarkLabelText" xml:space="preserve">
     <value>Your code goes here</value>
+   </data>
+  <data name="IncorrectlyFormattedNodeLibraryDisplay" xml:space="preserve">
+    <value>This is the incorrectly formatted library name:</value>
+  </data>
+  <data name="IncorrectlyFormattedNodeLibraryWarning" xml:space="preserve">
+    <value>Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!</value>
+
   </data>
 </root>

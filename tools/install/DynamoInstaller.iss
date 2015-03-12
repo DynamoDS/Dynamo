@@ -14,7 +14,7 @@ VersionInfoCompany=Dynamo
 VersionInfoDescription=Dynamo 0.8.0
 VersionInfoTextVersion=Dynamo 0.8.0
 VersionInfoCopyright=
-DefaultDirName={pf64}\Dynamo
+DefaultDirName={pf64}\Dynamo 0.8
 DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamo0.8.0
@@ -29,10 +29,14 @@ UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\DynamoInstaller.ico
 UninstallDisplayName=Dynamo 0.8.0
 UsePreviousAppDir=no
+#define locale "en-US"
+;TODO check user locale and show the corresponding README
 
 [Dirs]
 Name: "{app}\libg_219"
 Name: "{app}\libg_220"
+Name: "{app}\libg_221"
+Name: "{app}\libg_locale"
 Name: "{app}\nodes"
 
 [Components]
@@ -54,6 +58,7 @@ Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Comp
 Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: temp\bin\lang\*; DestDir: {app}\; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
+Source: temp\bin\lang\{#locale}\README.txt; DestDir: {app}\{#locale}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore
 
 ;Revit 2014 / Vasari Beta 3
 Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2014 DynamoForVasariBeta3
@@ -75,6 +80,7 @@ Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwr
 Source: temp\bin\LibG_219\*; DestDir: {app}\libg_219; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_220\*; DestDir: {app}\libg_220; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_221\*; DestDir: {app}\libg_221; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\LibG_locale\*; DestDir: {app}\libg_locale; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;Icon
 Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
@@ -97,6 +103,7 @@ Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoVersionSel
 Type: filesandordirs; Name: {app}\libg_219
 Type: filesandordirs; Name: {app}\libg_220
 Type: filesandordirs; Name: {app}\libg_221
+Type: filesandordirs; Name: {app}\libg_locale
 
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};

@@ -33,6 +33,7 @@ namespace ProtoCore.DSASM
             }
         }
         public ProtoCore.AST.Node DefaultExpression;
+        public ProtoCore.AST.AssociativeAST.ExternalAttributes Attributes;
     }
 
     [System.Diagnostics.DebuggerDisplay("{name}, procId={procId}, classScope={classScope}")]

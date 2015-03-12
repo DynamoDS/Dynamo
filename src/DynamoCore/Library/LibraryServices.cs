@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 
 using Dynamo.Interfaces;
 using Dynamo.Library;
@@ -14,6 +17,8 @@ using ProtoCore.BuildData;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 using ProtoFFI;
+
+using RestSharp;
 
 using Operator = ProtoCore.DSASM.Operator;
 using ProtoCore;
@@ -36,8 +41,24 @@ namespace Dynamo.DSEngine
 
         public readonly ProtoCore.Core LibraryManagementCore;
 
-        private readonly Dictionary<string, string> priorNameHints =
-            new Dictionary<string, string>();
+        private class UpgradeHint
+        {
+            public UpgradeHint()
+            {
+                UpgradeName = null;
+                AdditionalAttributes = new Dictionary<string, string>();
+                AdditionalElements = new List<XmlElement>();
+            }
+
+            // The new name of the method in Dynamo
+            public string UpgradeName { get; set; }
+            // A list of additional parameters to append or change on the XML node when migrating
+            public Dictionary<string, string> AdditionalAttributes { get; set; } 
+            public List<XmlElement> AdditionalElements { get; set; } 
+        }
+
+        private readonly Dictionary<string, UpgradeHint> priorNameHints =
+            new Dictionary<string, UpgradeHint>();
 
         public LibraryServices(ProtoCore.Core libraryManagementCore)
         {
@@ -93,19 +114,81 @@ namespace Dynamo.DSEngine
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
         }
 
+        public bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
+        {
+            if (!priorNameHints.ContainsKey(functionSignature))
+                return false;
+
+            return priorNameHints[functionSignature].AdditionalAttributes.Count > 0;
+        }
+
+        public bool FunctionSignatureNeedsAdditionalElements(string functionSignature)
+        {
+            if (!priorNameHints.ContainsKey(functionSignature))
+                return false;
+
+            return priorNameHints[functionSignature].AdditionalElements.Count > 0;
+        }
+
+        public void AddAdditionalAttributesToNode(string functionSignature, XmlElement nodeElement)
+        {
+            var upgradeHint = priorNameHints[functionSignature];
+
+            foreach (string key in upgradeHint.AdditionalAttributes.Keys)
+            {
+                var val = nodeElement.Attributes[key];
+
+                if (val != null)
+                {
+                    nodeElement.Attributes[key].Value = upgradeHint.AdditionalAttributes[key];
+                    continue;
+                }
+
+                nodeElement.SetAttribute(key, upgradeHint.AdditionalAttributes[key]);
+            }
+        }
+
+        public void AddAdditionalElementsToNode(string functionSignature, XmlElement nodeElement)
+        {
+            var upgradeHint = priorNameHints[functionSignature];
+
+            foreach (XmlElement elem in upgradeHint.AdditionalElements)
+            {
+                XmlNode newNode = nodeElement.OwnerDocument.ImportNode(elem, true);
+                nodeElement.AppendChild(newNode);
+            }
+        }
+
         public string NicknameFromFunctionSignatureHint(string functionSignature)
         {
-            string[] splitted = functionSignature.Split('@');
+            string[] splitted = null;
+            string newName = null;
 
-            if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
-                return null;
+            if (priorNameHints.ContainsKey(functionSignature))
+            {
+                var mappedSignature = priorNameHints[functionSignature].UpgradeName;
 
-            string qualifiedFunction = splitted[0];
+                splitted = mappedSignature.Split('@');
 
-            if (!priorNameHints.ContainsKey(qualifiedFunction))
-                return null;
+                if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
+                    return null;
 
-            string newName = priorNameHints[qualifiedFunction];
+                newName = splitted[0];
+            }
+            else
+            {
+                splitted = functionSignature.Split('@');
+
+                if (splitted.Length < 1 || String.IsNullOrEmpty(splitted[0]))
+                    return null;
+
+                string qualifiedFunction = splitted[0];
+
+                if (!priorNameHints.ContainsKey(qualifiedFunction))
+                    return null;
+
+                newName = priorNameHints[qualifiedFunction].UpgradeName;
+            }
 
             splitted = newName.Split('.');
 
@@ -117,6 +200,11 @@ namespace Dynamo.DSEngine
 
         public string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
         {
+            // if the hint is explicit, we can simply return the mapped function
+            if (priorNameHints.ContainsKey(functionSignature))
+                return priorNameHints[functionSignature].UpgradeName;
+
+            // if the hint is not explicit, we try the function name without parameters
             string[] splitted = functionSignature.Split('@');
 
             if (splitted.Length < 2 || String.IsNullOrEmpty(splitted[0]) || String.IsNullOrEmpty(splitted[1]))
@@ -127,7 +215,7 @@ namespace Dynamo.DSEngine
             if (!priorNameHints.ContainsKey(qualifiedFunction))
                 return null;
 
-            string newName = priorNameHints[qualifiedFunction];
+            string newName = priorNameHints[qualifiedFunction].UpgradeName;
 
             return newName + "@" + splitted[1];
         }
@@ -301,6 +389,8 @@ namespace Dynamo.DSEngine
                     return false;
                 }
 
+                LoadLibraryMigrations(library);
+
                 var loadedClasses = classTable.ClassNodes.Skip(classNumber);
                 foreach (var classNode in loadedClasses)
                 {
@@ -318,12 +408,12 @@ namespace Dynamo.DSEngine
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
                 return false;
             }
-
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
             return true;
         }
 
-        private void ParseLibraryMigrations(string library)
+
+        private void LoadLibraryMigrations(string library)
         {
             string fullLibraryName = library;
 
@@ -336,29 +426,85 @@ namespace Dynamo.DSEngine
             if (!File.Exists(migrationsXMLFile))
                 return;
 
-            var foundPriorNameHints = new Dictionary<string, string>();
+            var foundPriorNameHints = new Dictionary<string, UpgradeHint>();
 
             try
             {
                 using (var reader = XmlReader.Create(migrationsXMLFile))
                 {
-                    while (reader.Read())
+
+                    var doc = new XmlDocument();
+                    doc.Load(reader);
+                    XmlElement migrationsElement = doc.DocumentElement;
+
+                    var names = new List<string>();
+
+                    foreach (XmlNode subNode in migrationsElement.ChildNodes)
                     {
-                        reader.ReadToFollowing("priorNameHint");
+                        if (subNode.Name != "priorNameHint")
+                            throw new Exception("Invalid XML");
 
-                        if (!reader.Read())
-                            break;
+                        names.Add(subNode.Name);
 
-                        reader.ReadToFollowing("oldName");
-                        string oldName = reader.ReadElementContentAsString();
-                        reader.ReadToFollowing("newName");
-                        string newName = reader.ReadElementContentAsString();
+                        var upgradeHint = new UpgradeHint();
 
-                        foundPriorNameHints[oldName] = newName;
+                        string oldName = null;
+
+                        foreach (XmlNode hintSubNode in subNode.ChildNodes)
+                        {
+                            names.Add(hintSubNode.Name);
+
+                            switch (hintSubNode.Name)
+                            {
+                                case "oldName":
+                                    oldName = hintSubNode.InnerText;
+                                    break;
+                                case "newName":
+                                    upgradeHint.UpgradeName = hintSubNode.InnerText;
+                                    break;
+                                case "additionalAttributes":
+                                    foreach (XmlNode attributesSubNode in hintSubNode.ChildNodes)
+                                    {
+                                        string attributeName = null;
+                                        string attributeValue = null;
+
+                                        switch (attributesSubNode.Name)
+                                        {
+                                            case "attribute":
+                                                foreach (XmlNode attributeSubNode in attributesSubNode.ChildNodes)
+                                                {
+                                                    switch (attributeSubNode.Name)
+                                                    {
+                                                        case "name":
+                                                            attributeName = attributeSubNode.InnerText;
+                                                            break;
+                                                        case "value":
+                                                            attributeValue = attributeSubNode.InnerText;
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                        upgradeHint.AdditionalAttributes[attributeName] = attributeValue;
+                                    }
+                                    break;
+                                case "additionalElements":
+                                    foreach (XmlNode elementsSubnode in hintSubNode.ChildNodes)
+                                    {
+                                        XmlElement elem = elementsSubnode as XmlElement;
+
+                                        if (elem != null)
+                                            upgradeHint.AdditionalElements.Add(elem);
+                                    }
+                                    break;
+                            }
+                        }
+
+                        foundPriorNameHints[oldName] = upgradeHint;
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 return; // if the XML file is badly formatted, return like it doesn't exist
             }
@@ -376,7 +522,6 @@ namespace Dynamo.DSEngine
             if (null == library || null == functions)
                 throw new ArgumentNullException();
 
-            ParseLibraryMigrations(library);
 
             Dictionary<string, FunctionGroup> fptrs;
             if (!importedFunctionGroups.TryGetValue(library, out fptrs))
@@ -445,15 +590,15 @@ namespace Dynamo.DSEngine
                                                         let description = 
                                                             (method.MethodAttribute != null ? method.MethodAttribute.Description :String.Empty)
                                                         select
-                                                            new FunctionDescriptor(
-                                                                null,
-                                                                null,
-                                                                method.name,
-                                                                description,
-                                                                arguments,
-                                                                method.returntype,
-                                                                FunctionType.GenericFunction,
-                                                                visibleInLibrary);
+                                                            new FunctionDescriptor(new FunctionDescriptorParams
+                                                            {
+                                                                FunctionName = method.name,
+                                                                Summary = description,
+                                                                Parameters = arguments,
+                                                                ReturnType = method.returntype,
+                                                                FunctionType = FunctionType.GenericFunction,
+                                                                IsVisibleInLibrary = visibleInLibrary
+                                                            });
 
             AddBuiltinFunctions(functions);
         }
@@ -486,12 +631,18 @@ namespace Dynamo.DSEngine
             };
 
             var functions =
-                ops.Select(op => new FunctionDescriptor(op, args, FunctionType.GenericFunction))
-                    .Concat(
-                        new FunctionDescriptor(
-                            Op.GetUnaryOpFunction(UnaryOperator.Not),
-                            GetUnaryFuncArgs(),
-                            FunctionType.GenericFunction).AsSingleton());
+                ops.Select(op => new FunctionDescriptor(new FunctionDescriptorParams
+                {
+                    FunctionName = op,
+                    Parameters = args,
+                    FunctionType = FunctionType.GenericFunction
+                }))
+                .Concat(new FunctionDescriptor(new FunctionDescriptorParams
+                {
+                    FunctionName = Op.GetUnaryOpFunction(UnaryOperator.Not),
+                    Parameters = GetUnaryFuncArgs(),
+                    FunctionType = FunctionType.GenericFunction
+                }).AsSingleton());
 
             AddBuiltinFunctions(functions);
         }
@@ -501,14 +652,65 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulatePreloadLibraries()
         {
+            HashSet<String> librariesThatNeedMigrationLoading = new HashSet<string>();
+
             foreach (ClassNode classNode in LibraryManagementCore.ClassTable.ClassNodes)
             {
                 if (classNode.IsImportedClass && !string.IsNullOrEmpty(classNode.ExternLib))
                 {
                     string library = Path.GetFileName(classNode.ExternLib);
                     ImportClass(library, classNode);
+                    librariesThatNeedMigrationLoading.Add(library);
                 }
             }
+
+            foreach (String library in librariesThatNeedMigrationLoading)
+            {
+                LoadLibraryMigrations(library);
+            }
+
+        }
+
+        /// <summary>
+        /// Try get default argument expression from DefaultArgumentAttribute, 
+        /// and parse into Associaitve AST node. 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="defaultArgumentNode"></param>
+        /// <returns></returns>
+        private bool TryGetDefaultArgumentFromAttribute(ArgumentInfo arg, out AssociativeNode defaultArgumentNode)
+        {
+            defaultArgumentNode = null;
+
+            if (arg.Attributes == null)
+                return false;
+
+            object o;
+            if (!arg.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o))
+                return false;
+
+            var defaultExpression = o as string;
+            if (string.IsNullOrEmpty(defaultExpression))
+                return false;
+
+            var currentParsingmode = LibraryManagementCore.ParsingMode;
+            var currentParsingFlag = LibraryManagementCore.IsParsingCodeBlockNode;
+
+            LibraryManagementCore.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
+            LibraryManagementCore.IsParsingCodeBlockNode = true;
+
+            var astNode = ParserUtils.ParseWithCore(defaultExpression + ";", LibraryManagementCore);
+            if (astNode != null)
+            {
+                var cbn = astNode as CodeBlockNode;
+                if (cbn != null && cbn.Body.Any())
+                    defaultArgumentNode = (cbn.Body[0] as BinaryExpressionNode).RightNode;
+            }
+
+            LibraryManagementCore.ParsingMode = currentParsingmode;
+            LibraryManagementCore.IsParsingCodeBlockNode = currentParsingFlag;
+
+            return defaultArgumentNode != null;
         }
 
         private void ImportProcedure(string library, ProcedureNode proc)
@@ -582,25 +784,19 @@ namespace Dynamo.DSEngine
                 proc.argTypeList,
                 (arg, argType) =>
                 {
-                    object defaultValue = null;
-                    if (arg.IsDefault)
+                    AssociativeNode defaultArgumentNode;
+                    // Default argument specified by DefaultArgumentAttribute
+                    // takes higher priority
+                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) && arg.IsDefault)
                     {
                         var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)
                         {
-                            AssociativeNode vnode = binaryExpr.RightNode;
-                            if (vnode is IntNode)
-                                defaultValue = (vnode as IntNode).Value;
-                            else if (vnode is DoubleNode)
-                                defaultValue = (vnode as DoubleNode).Value;
-                            else if (vnode is BooleanNode)
-                                defaultValue = (vnode as BooleanNode).Value;
-                            else if (vnode is StringNode)
-                                defaultValue = (vnode as StringNode).value;
+                            defaultArgumentNode = binaryExpr.RightNode;
                         }
                     }
 
-                    return new TypedParameter(arg.Name, argType, defaultValue);
+                    return new TypedParameter(arg.Name, argType, defaultArgumentNode);
                 });
 
             IEnumerable<string> returnKeys = null;
@@ -612,17 +808,19 @@ namespace Dynamo.DSEngine
                     obsoleteMessage = proc.MethodAttribute.ObsoleteMessage;
             }
 
-            var function = new FunctionDescriptor(
-                library,
-                className,
-                procName,
-                arguments,
-                proc.returntype,
-                type,
-                isVisible,
-                returnKeys,
-                proc.isVarArg,
-                obsoleteMessage);
+            var function = new FunctionDescriptor(new FunctionDescriptorParams
+            {
+                Assembly = library,
+                ClassName = className,
+                FunctionName = procName,
+                Parameters = arguments,
+                ReturnType = proc.returntype,
+                FunctionType = type,
+                IsVisibleInLibrary = isVisible,
+                ReturnKeys = returnKeys,
+                IsVarArg = proc.isVarArg,
+                ObsoleteMsg = obsoleteMessage
+            });
 
             AddImportedFunctions(library, new[] { function });
         }

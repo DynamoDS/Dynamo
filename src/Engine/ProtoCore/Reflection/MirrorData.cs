@@ -50,8 +50,9 @@ namespace ProtoCore
             /// Takes a runtime core object to read runtime data
             /// </summary>
             /// <param name="sv"></param>
-            public MirrorData(ProtoCore.RuntimeCore runtimeCore, StackValue sv)
+            public MirrorData(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, StackValue sv)
             {
+                this.core = core;
                 this.runtimeCore = runtimeCore;
                 svData = sv;
             }
@@ -158,7 +159,7 @@ namespace ProtoCore
                 if (!this.IsCollection)
                     return null;
 
-                return ArrayUtils.GetValues(svData, runtimeCore).Select(x => new MirrorData(this.runtimeCore, x)).ToList();
+                return ArrayUtils.GetValues(svData, runtimeCore).Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
             }
 
             /// <summary>

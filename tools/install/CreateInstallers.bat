@@ -31,6 +31,7 @@ copy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\ProtoGeometry_DynamoCust
 robocopy %cwd%\..\..\extern\LibG_219 %cwd%\temp\bin\LibG_219
 robocopy %cwd%\..\..\extern\LibG_220 %cwd%\temp\bin\LibG_220
 robocopy %cwd%\..\..\extern\LibG_221 %cwd%\temp\bin\LibG_221
+robocopy %cwd%\..\..\extern\ProtoGeometry\libg_locale %cwd%\temp\bin\LibG_locale /e *.po *.mo
 
 SET PATH=%PATH%;%cwd%\..\..\src\Tools\XmlDocumentationsUtility\bin\%OPT_CONFIGURATION%
 echo %cwd%
@@ -38,15 +39,9 @@ XmlDocumentationsUtility.exe %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\
 
 REM Localized resource assemblies
 for %%L in (cs-CZ, de-DE, en-US, es-ES, fr-FR, it-IT, ja-JP, ko-KR, pl-PL, pt-BR, ru-RU, zh-CN, zh-TW) do (
-    robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%%L %cwd%\temp\bin\lang\%%L License.rtf
-    robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%%L %cwd%\temp\bin\lang\%%L *.dll *.xml *.po *.mo /e
+    robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%%L %cwd%\temp\bin\lang\%%L License.rtf README.txt
+    robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\%%L %cwd%\temp\bin\lang\%%L *.dll *.xml /e
 )
-
-set OPT_Language=en-US
-robocopy %cwd%\..\..\ %cwd%\temp\bin\%OPT_Language% README.md
-pushd %cwd%\temp\bin\%OPT_Language%\
-rename README.md README.txt
-popd 
 
 robocopy %cwd%\..\..\doc\distrib\migration_nodes %cwd%\temp\definitions /e
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\samples %cwd%\temp\samples /s
