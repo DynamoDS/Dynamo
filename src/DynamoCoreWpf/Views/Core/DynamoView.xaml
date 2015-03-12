@@ -1457,7 +1457,7 @@
                 <Popup Name="IncanvasSearch"
                        StaysOpen="False"
                        AllowsTransparency="True"
-                       IsOpen="{Binding Path=DataContext.IncanvasSearchIsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                       IsOpen="{Binding Path=DataContext.HomeSpaceViewModel.IncanvasSearchIsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                        Placement="MousePoint">
                     <uictrls:IncanvasLibrarySearchControl />
                 </Popup>
