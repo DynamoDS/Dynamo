@@ -357,9 +357,9 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        ///     Initialization settings for DynamoModel.
+        /// Initialization settings for DynamoModel.
         /// </summary>
-        public struct StartConfiguration
+        public struct StartConfiguration : IStartConfiguration
         {
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
@@ -386,7 +386,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static DynamoModel Start(StartConfiguration configuration)
+        public static DynamoModel Start(IStartConfiguration configuration)
         {
             // where necessary, assign defaults
             if (string.IsNullOrEmpty(configuration.Context))
@@ -403,7 +403,7 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        protected DynamoModel(StartConfiguration config)
+        protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
@@ -545,7 +545,7 @@ namespace Dynamo.Models
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <filterpriority>2</filterpriority>
-        public void Dispose()
+        public virtual void Dispose()
         {
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.__TempCoreHostForRefactoring.Cleanup();
