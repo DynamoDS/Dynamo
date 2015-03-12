@@ -42,7 +42,6 @@ namespace Dynamo.Tests
             };
 
             var preloader = new Preloader(rootFolder, versions);
-            preloader.Preload();
             geometryFactoryPath = preloader.GeometryFactoryPath;
         }
 
