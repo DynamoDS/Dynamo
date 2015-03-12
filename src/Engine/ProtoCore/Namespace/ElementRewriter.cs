@@ -170,7 +170,8 @@ namespace ProtoCore.Namespace
                 var typedNode = astNode as TypedIdentifierNode;
 
                 // If type is primitive type
-                if (typedNode.datatype.UID < (int) PrimitiveType.kMaxPrimitives)
+                if (typedNode.datatype.UID != (int)PrimitiveType.kInvalidType &&
+                    typedNode.datatype.UID < (int) PrimitiveType.kMaxPrimitives)
                     return;
 
                 var identListNode = CoreUtils.CreateNodeFromString(typedNode.datatype.Name);
