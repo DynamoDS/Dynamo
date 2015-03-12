@@ -21,12 +21,18 @@ namespace Dynamo.Tests
         private static string geometryFactoryPath = "";
         private IEnumerable searchEntries;
 
-        static readonly string AssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        static readonly string AnyCPUPath = Directory.GetParent(AssemblyPath).FullName;
-        static readonly string binPath = Directory.GetParent(AnyCPUPath).FullName;
-        static readonly string DynamoPath = Directory.GetParent(binPath).FullName;
+        private static string ResourcePath = String.Empty;
 
-        static readonly string ResourcePath = Path.Combine(DynamoPath, @"src\Resources");
+        [SetUp]
+        public void InitializeDirectoryPaths()
+        {
+            var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var relativeDir = Path.Combine(assemblyDir, @"..\..\..\src\Resources");
+            var absoluteDir = Path.GetFullPath(relativeDir);
+            Assert.IsFalse(string.IsNullOrEmpty(absoluteDir));
+            Assert.IsTrue(Directory.Exists(absoluteDir));
+            ResourcePath = absoluteDir;
+        }
 
         [SetUp]
         public void PreloadShapeManager()
