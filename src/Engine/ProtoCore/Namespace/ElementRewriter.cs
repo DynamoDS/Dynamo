@@ -91,7 +91,8 @@ namespace ProtoCore.Namespace
                 resolvedNames.Enqueue(resolvedName);
             }
             
-            RewriteAstWithResolvedName(ref astNode, resolvedNames);
+            if(resolvedNames.Any())
+                RewriteAstWithResolvedName(ref astNode, resolvedNames);
         }
 
         internal IEnumerable<AssociativeNode> GetClassIdentifiers(AssociativeNode astNode)
@@ -167,6 +168,11 @@ namespace ProtoCore.Namespace
             else if (astNode is TypedIdentifierNode)
             {
                 var typedNode = astNode as TypedIdentifierNode;
+
+                // If type is primitive type
+                if (typedNode.datatype.UID < (int) PrimitiveType.kMaxPrimitives)
+                    return;
+
                 var identListNode = CoreUtils.CreateNodeFromString(typedNode.datatype.Name);
 
                 // Rewrite node with resolved name
