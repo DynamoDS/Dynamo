@@ -313,5 +313,57 @@ namespace ProtoTest.Associative
             thisTest.VerifyRunScriptSource(code, error);
             thisTest.Verify("z", null);
         }
+
+
+        [Test]
+        public void TestArraySubtypeDispatch1D()
+        {
+            string code = @"def foo(val : int){    return = true;}def foo(val : double){    return = false;}r1 = foo({1, 2});   // r1 = {true, true}
+r2 = foo({1.0, 2.0});   // r1 = {false, false}
+r3 = foo({1, 2.0});
+";
+            string error = "";
+            thisTest.VerifyRunScriptSource(code, error);
+            thisTest.Verify("r1", new object[] { true, true });
+            thisTest.Verify("r2", new object[] { false, false });
+            thisTest.Verify("r3", new object[] { true, false });
+        }
+
+        [Test]
+        public void TestArraySubtypeDispatch1D_R1()
+        {
+            string code = @"def foo(val : int){    return = true;}def foo(val : double){    return = false;}r1 = foo({1, 2}<1>);   // r1 = {true, true}
+r2 = foo({1.0, 2.0}<1>);   // r1 = {false, false}
+r3 = foo({1, 2.0}<1>);
+";
+            string error = "";
+            thisTest.VerifyRunScriptSource(code, error);
+            thisTest.Verify("r1", new object[] { true, true });
+            thisTest.Verify("r2", new object[] { false, false });
+            thisTest.Verify("r3", new object[] { true, false });
+        }
+
+        [Test]
+        public void MAGN5729_Repro()
+        {
+            string code = @"def foo(val : int){    return = true;}def foo(val : double){    return = false;}r3 = foo({1, 2.0}<1>);
+";
+            string error = "";
+            thisTest.VerifyRunScriptSource(code, error);
+            thisTest.Verify("r3", new object[] { true, false });
+        }
+
+
+        [Test]
+        public void MAGN5729_Repro_Simple()
+        {
+            string code = @"def foo(val : int){    return = true;}def foo(val : double){    return = false;}r3 = foo({1, 2.0});
+";
+            string error = "";
+            thisTest.VerifyRunScriptSource(code, error);
+            thisTest.Verify("r3", new object[] { true, false });
+        }
+
+
     }
 }

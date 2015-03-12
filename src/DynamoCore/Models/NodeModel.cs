@@ -38,6 +38,7 @@ namespace Dynamo.Models
         private ElementState state;
         private string toolTipText = "";
         private string description;
+        private string persistentWarning = "";
 
         // Data caching related class members. There are multiple parties at
         // play when it comes to caching MirrorData for a NodeModel, this value
@@ -86,6 +87,11 @@ namespace Dynamo.Models
         }
 
         public bool HasRenderPackages { get; set; }
+
+        /// <summary>
+        /// The unique name that was created the node by
+        /// </summary>
+        public virtual string CreationName { get { return this.Name; } }
 
         #endregion
 
@@ -584,7 +590,7 @@ namespace Dynamo.Models
             IsSelected = false;
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
-            //IsReportingModifications = true;
+
         }
 
         public virtual void Dispose()
@@ -884,12 +890,25 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Clears the errors/warnings that are generated when running the graph
+        /// Clears the errors/warnings that are generated when running the graph.
+        /// If the node has a value supplied for the persistentWarning, then the
+        /// node's State will be set to ElementState.Persistent and the ToolTipText will
+        /// be set to the persistent warning. Otherwise, the State will be 
+        /// set to ElementState.Dead
         /// </summary>
         public virtual void ClearRuntimeError()
         {
-            State = ElementState.Dead;
-            ClearTooltipText();
+            if (!string.IsNullOrEmpty(persistentWarning))
+            {
+                State = ElementState.PersistentWarning;
+                ToolTipText = persistentWarning;
+            }
+            else
+            {
+                State = ElementState.Dead;
+                ClearTooltipText();
+            }
+
             ValidateConnections();
         }
 
@@ -916,14 +935,18 @@ namespace Dynamo.Models
             {
                 if (State == ElementState.Active)
                 {
-                    State = ElementState.Dead;
+                    State = string.IsNullOrEmpty(persistentWarning)
+                        ? ElementState.Dead
+                        : ElementState.PersistentWarning;
                 }
             }
             else
             {
                 if (State == ElementState.Dead)
                 {
-                    State = ElementState.Active;
+                    State = string.IsNullOrEmpty(persistentWarning)
+                        ? ElementState.Active
+                        : ElementState.PersistentWarning;
                 }
             }
         }
@@ -934,10 +957,25 @@ namespace Dynamo.Models
             ToolTipText = p;
         }
         
-        public void Warning(string p)
+        /// <summary>
+        /// Set a warning on a node. 
+        /// </summary>
+        /// <param name="p">The warning text.</param>
+        /// <param name="isPersistent">Is the warning persistent? If true, the warning will not be
+        /// cleared when the node is next evaluated and any additional warning messages will be concatenated
+        /// to the persistent error message. If false, the warning will be cleared on the next evaluation.</param>
+        public void Warning(string p, bool isPersistent = false)
         {
-            State = ElementState.Warning;
-            ToolTipText = p;
+            if (isPersistent)
+            {
+                State = ElementState.PersistentWarning;
+                ToolTipText = string.Format("{0}\n{1}", persistentWarning, p);
+            }
+            else
+            {
+                State = ElementState.Warning;
+                ToolTipText = p;
+            }
         }
 
         /// <summary>
@@ -1309,6 +1347,20 @@ namespace Dynamo.Models
             if (name == "NickName")
             {
                 NickName = value;
+                return true;
+            }
+
+            if (name == "UsingDefaultValue")
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    return true;
+
+                // Here we expect a string that represents an array of Boolean values which are separated by ";"
+                var arr = value.Split(';');
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                }
                 return true;
             }
 
@@ -1702,6 +1754,7 @@ namespace Dynamo.Models
         Dead,
         Active,
         Warning,
+        PersistentWarning,
         Error,
         AstBuildBroken
     };
