@@ -7,6 +7,7 @@
 #expr ParseVersion("temp\bin\DynamoCore.dll", Major, Minor, Rev, Build)
 #define ProductName "Dynamo"
 #define ProductVersion Str(Major) + "." + Str(Minor) + "." + Str(Rev)
+#define FullVersion GetFileVersion("temp\bin\DynamoCore.dll")
 
 [Setup]
 AppName={#ProductName}
@@ -106,12 +107,13 @@ Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\de
 [Registry]
 Root: HKCU; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; ValueType: dword; ValueName: "installed"; ValueData: "1"
-Root: HKCU; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; ValueType: string; ValueName: "InstallLocation"; ValueData: "{app}"
 
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName}"; ValueType: string; ValueName: "InstallLocation"; ValueData: "{app}"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName}"; ValueType: string; ValueName: "DisplayName"; ValueData: "{#ProductName}"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName}"; ValueType: string; ValueName: "DisplayVersion"; ValueData: "{#ProductVersion}"
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "InstallLocation"; ValueData: "{app}\"
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallPath"; ValueData: """{app}\Uninstall\unins000.exe\"" /SILENT"
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallString"; ValueData: """{app}\Uninstall\unins000.exe\"" /SILENT"
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: dword; ValueName: "RevVersion"; ValueData: "{#Rev}"
+
 
 [UninstallDelete]
 Type: files; Name: "{commonappdata}\Autodesk\Revit\Addins\2014\Dynamo071.addin"
