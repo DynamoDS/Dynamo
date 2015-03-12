@@ -113,7 +113,7 @@ Root: HKCU; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; ValueType: dwor
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "InstallLocation"; ValueData: "{app}\"
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallString"; ValueData: "{app}\Uninstall\unins000.exe"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallParam"; ValueData: "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallParam"; ValueData: "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /UPDATE"
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "Version"; ValueData: "{#FullVersion}"
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: dword; ValueName: "RevVersion"; ValueData: "{#Rev}"
 
@@ -200,12 +200,12 @@ begin
 	begin
 		if not RegQueryDWordValue(HKLM, sUnInstPath, 'RevVersion', revision) then
 			begin
-				MsgBox('The Dynamo version is corrupted?!. Aborting...', mbInformation, MB_OK);
+				MsgBox('The installed Dynamo version is corrupted. Aborting...', mbInformation, MB_OK);
 				result := false
 			end;
 		if (revision >= {#Rev}) then
 			begin
-				sMsg := ExpandConstant('{#ProductName} {#Major}.{#Minor}.') + IntToStr(revision) + ' is already installed. Aborting'
+				sMsg := ExpandConstant('{#ProductName} version {#Major}.{#Minor}.') + IntToStr(revision) + ' or higher is already installed.'
 				MsgBox(sMsg, mbInformation, MB_OK);
 				result := false
 			end
@@ -271,7 +271,7 @@ begin
 
 		if (updateFlag = '') then
         begin
-		      DeleteFile(ExpandConstant('{userappdata}\Dynamo\0.7\DynamoSettings.xml'));
+		      DeleteFile(ExpandConstant('{userappdata}\Dynamo\{#Major}.{#Minor}\DynamoSettings.xml'));
         end;
     end;
 end;
