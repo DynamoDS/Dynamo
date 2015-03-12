@@ -790,7 +790,7 @@ namespace ProtoCore.Utils
                 }
                 if (leftNode is IdentifierNode)
                 {
-                    classNames = classTable.GetAllMatchingClasses(identifierNode.Name);
+                    classNames = classTable.GetAllMatchingClasses(leftNode.Name);
                     break;
                 }
                 else
