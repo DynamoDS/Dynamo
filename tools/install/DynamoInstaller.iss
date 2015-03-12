@@ -14,7 +14,7 @@ VersionInfoCompany=Dynamo
 VersionInfoDescription=Dynamo 0.8.0
 VersionInfoTextVersion=Dynamo 0.8.0
 VersionInfoCopyright=
-DefaultDirName={pf64}\Dynamo
+DefaultDirName={pf64}\Dynamo 0.8
 DefaultGroupName=Dynamo
 OutputDir=Installers
 OutputBaseFilename=InstallDynamo0.8.0
@@ -35,6 +35,8 @@ UsePreviousAppDir=no
 [Dirs]
 Name: "{app}\libg_219"
 Name: "{app}\libg_220"
+Name: "{app}\libg_221"
+Name: "{app}\libg_locale"
 Name: "{app}\nodes"
 
 [Components]
@@ -78,6 +80,7 @@ Source: Extra\RevitAddinUtility.dll; DestDir: {app}; Flags: ignoreversion overwr
 Source: temp\bin\LibG_219\*; DestDir: {app}\libg_219; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_220\*; DestDir: {app}\libg_220; Flags: ignoreversion overwritereadonly; Components: DynamoCore
 Source: temp\bin\LibG_221\*; DestDir: {app}\libg_221; Flags: ignoreversion overwritereadonly; Components: DynamoCore
+Source: temp\bin\LibG_locale\*; DestDir: {app}\libg_locale; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 ;Icon
 Source: Extra\DynamoInstaller.ico; DestDir: {app}; Flags: ignoreversion overwritereadonly;
@@ -100,6 +103,7 @@ Type: files; Name: "{commonappdata}\Autodesk\Vasari\Addins\2014\DynamoVersionSel
 Type: filesandordirs; Name: {app}\libg_219
 Type: filesandordirs; Name: {app}\libg_220
 Type: filesandordirs; Name: {app}\libg_221
+Type: filesandordirs; Name: {app}\libg_locale
 
 [Run]
 Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; WorkingDir: {tmp};

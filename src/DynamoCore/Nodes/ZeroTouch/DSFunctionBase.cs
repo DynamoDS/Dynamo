@@ -22,7 +22,7 @@ namespace Dynamo.Nodes
             Category = Controller.Category;
 
             if (controller.Definition.IsObsolete)
-                Warning(controller.Definition.ObsoleteMessage);
+                Warning(controller.Definition.ObsoleteMessage, true);
         }
         
         public override bool IsConvertible
@@ -175,7 +175,7 @@ namespace Dynamo.Nodes
         {
             base.SyncNodeWithDefinition(model);
             if (Definition != null && Definition.IsObsolete)
-                model.Warning(Definition.ObsoleteMessage);
+                model.Warning(Definition.ObsoleteMessage, true);
         }
 
         /// <summary>
