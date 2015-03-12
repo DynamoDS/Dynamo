@@ -5,9 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -176,8 +174,18 @@ namespace Dynamo.Controls
                 // There is no preview control or the preview control is 
                 // currently in transition state (it can come back to handle
                 // the new data later on when it is ready).
-                if ((previewControl == null) || previewControl.IsInTransition)
+                if ((previewControl == null))
+                {
                     return;
+                }
+
+                // Enqueue an update of the preview control once it has completed its 
+                // transition
+                if (previewControl.IsInTransition)
+                {
+                    previewControl.EnqueueBindToDataSource(ViewModel.NodeModel.CachedValue);
+                    return;
+                }
 
                 if (previewControl.IsHidden) // The preview control is hidden.
                 {

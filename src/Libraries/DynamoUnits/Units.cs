@@ -131,6 +131,7 @@ namespace DynamoUnits
         /// from a string representation to an SI value.
         /// </summary>
         /// <param name="value"></param>
+        [Obsolete("SIUnit.SetValueFromString is obsolete.", false)]
         public abstract void SetValueFromString(string value);
 
         [Obsolete("SIUnit.Add is obsolete. Please use + instead.", false)]
@@ -349,7 +350,8 @@ namespace DynamoUnits
                 return new Dictionary<string,double>();
             }
         }
- 
+
+        [Obsolete("SIUnit.ConvertToHostUnits is obsolete. Please use Convert Units.", false)]
         public abstract double ConvertToHostUnits();
     }
 
@@ -1014,11 +1016,6 @@ namespace DynamoUnits
             double sq_mm, sq_cm, sq_m, sq_in, sq_ft;
             Utils.ParseAreaFromString(value, out sq_in, out sq_ft, out sq_mm, out sq_cm, out sq_m);
 
-            if (sq_mm != 0 || sq_cm != 0 || sq_m != 0)
-                AreaUnit = AreaUnit.SquareMeter;
-            else
-                AreaUnit = AreaUnit.SquareFoot;
-
             total += sq_mm / ToSquareMillimeters;
             total += sq_cm / ToSquareCentimeters;
             total += sq_m;
@@ -1371,11 +1368,6 @@ namespace DynamoUnits
 
             double cu_mm, cu_cm, cu_m, cu_in, cu_ft;
             Utils.ParseVolumeFromString(value, out cu_in, out cu_ft, out cu_mm, out cu_cm, out cu_m);
-
-            if (cu_mm != 0 || cu_cm != 0 || cu_m != 0)
-                VolumeUnit = VolumeUnit.CubicMeter;
-            else
-                VolumeUnit = VolumeUnit.CubicFoot;
 
             total += cu_mm / ToCubicMillimeter;
             total += cu_cm / ToCubicCentimeter;

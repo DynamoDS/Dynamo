@@ -676,6 +676,48 @@ namespace Dynamo.DSEngine
 
         }
 
+        /// <summary>
+        /// Try get default argument expression from DefaultArgumentAttribute, 
+        /// and parse into Associaitve AST node. 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="defaultArgumentNode"></param>
+        /// <returns></returns>
+        private bool TryGetDefaultArgumentFromAttribute(ArgumentInfo arg, out AssociativeNode defaultArgumentNode)
+        {
+            defaultArgumentNode = null;
+
+            if (arg.Attributes == null)
+                return false;
+
+            object o;
+            if (!arg.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o))
+                return false;
+
+            var defaultExpression = o as string;
+            if (string.IsNullOrEmpty(defaultExpression))
+                return false;
+
+            var currentParsingmode = LibraryManagementCore.ParsingMode;
+            var currentParsingFlag = LibraryManagementCore.IsParsingCodeBlockNode;
+
+            LibraryManagementCore.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
+            LibraryManagementCore.IsParsingCodeBlockNode = true;
+
+            var astNode = ParserUtils.ParseWithCore(defaultExpression + ";", LibraryManagementCore);
+            if (astNode != null)
+            {
+                var cbn = astNode as CodeBlockNode;
+                if (cbn != null && cbn.Body.Any())
+                    defaultArgumentNode = (cbn.Body[0] as BinaryExpressionNode).RightNode;
+            }
+
+            LibraryManagementCore.ParsingMode = currentParsingmode;
+            LibraryManagementCore.IsParsingCodeBlockNode = currentParsingFlag;
+
+            return defaultArgumentNode != null;
+        }
+
         private void ImportProcedure(string library, ProcedureNode proc)
         {
             string procName = proc.name;
@@ -747,25 +789,19 @@ namespace Dynamo.DSEngine
                 proc.argTypeList,
                 (arg, argType) =>
                 {
-                    object defaultValue = null;
-                    if (arg.IsDefault)
+                    AssociativeNode defaultArgumentNode;
+                    // Default argument specified by DefaultArgumentAttribute
+                    // takes higher priority
+                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) && arg.IsDefault)
                     {
                         var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)
                         {
-                            AssociativeNode vnode = binaryExpr.RightNode;
-                            if (vnode is IntNode)
-                                defaultValue = (vnode as IntNode).Value;
-                            else if (vnode is DoubleNode)
-                                defaultValue = (vnode as DoubleNode).Value;
-                            else if (vnode is BooleanNode)
-                                defaultValue = (vnode as BooleanNode).Value;
-                            else if (vnode is StringNode)
-                                defaultValue = (vnode as StringNode).value;
+                            defaultArgumentNode = binaryExpr.RightNode;
                         }
                     }
 
-                    return new TypedParameter(arg.Name, argType, defaultValue);
+                    return new TypedParameter(arg.Name, argType, defaultArgumentNode);
                 });
 
             IEnumerable<string> returnKeys = null;

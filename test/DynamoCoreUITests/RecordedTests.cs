@@ -39,8 +39,6 @@ namespace DynamoCoreUITests
 
         // Geometry preloading related members.
         protected bool preloadGeometry;
-        protected Preloader preloader;
-        protected TestPathResolver pathResolver;
 
         // For access within test cases.
         protected DynamoView dynamoView = null;

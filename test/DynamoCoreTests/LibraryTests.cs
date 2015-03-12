@@ -290,6 +290,27 @@ namespace Dynamo.Tests
             }
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestDefaultArgumentAttribute()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+            }
+
+            // Get function groups for ClassFunctionality Class
+            var functions = libraryServices.GetFunctionGroups(libraryPath)
+                                            .SelectMany(x => x.Functions)
+                                            .Where(y => y.ClassName.Contains("FFITarget.TestData") && y.FunctionName.Equals("GetCircleArea"));
+
+            Assert.IsTrue(functions.Any());
+            var func = functions.First();
+
+            Assert.IsTrue(func.Parameters.First().DefaultValue.ToString().Equals("TestData.GetFloat()"));
+        }
+
         #endregion
     }
 }

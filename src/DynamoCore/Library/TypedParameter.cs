@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
-using Dynamo.Nodes;
-using ProtoCore.Lang;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Library
 {
@@ -15,7 +13,7 @@ namespace Dynamo.Library
         private IPathManager pathManager;
         private string summary = null; // Indicating that it is not initialized.
 
-        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null)
+        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null)
         {
             if (parameter == null)
                 throw new ArgumentNullException("parameter");
@@ -28,7 +26,7 @@ namespace Dynamo.Library
         public FunctionDescriptor Function { get; private set; }
         public string Name { get; private set; }
         public ProtoCore.Type Type { get; private set; }
-        public object DefaultValue { get; private set; }
+        public AssociativeNode DefaultValue { get; private set; }
 
         public string Summary
         {
@@ -73,15 +71,9 @@ namespace Dynamo.Library
         public override string ToString()
         {
             string str = Name + ": " + DisplayTypeName;
-
             if (DefaultValue != null)
             {
-                string strDefaultValue = DefaultValue.ToString();
-                if (DefaultValue is bool)
-                {
-                    strDefaultValue = strDefaultValue.ToLower();
-                }
-                str = str + " = " + strDefaultValue;
+                str = str + " = " + DefaultValue.ToString();
             }
 
             return str;

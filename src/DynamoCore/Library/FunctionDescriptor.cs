@@ -23,6 +23,12 @@ namespace Dynamo.DSEngine
         string DisplayName { get; }
 
         /// <summary>
+        ///     An unique name to identify a function. It is used to create 
+        ///     a corresponding node instance
+        /// </summary>
+        string MangledName { get; }
+
+        /// <summary>
         ///     Return keys for multi-output functions.
         /// </summary>
         IEnumerable<string> ReturnKeys { get; }

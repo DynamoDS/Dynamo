@@ -51,6 +51,7 @@ namespace Dynamo.Models
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
+
         #endregion
 
         #region events
@@ -600,6 +601,9 @@ namespace Dynamo.Models
                     {
                         customNodeSearchRegistry.Remove(info.FunctionId);
                         SearchModel.Remove(searchElement);
+                        var workspacesToRemove = _workspaces.FindAll(w => w is CustomNodeWorkspaceModel
+                            && (w as CustomNodeWorkspaceModel).CustomNodeId == id);
+                        workspacesToRemove.ForEach(w => RemoveWorkspace(w));
                     }
                 };
             };

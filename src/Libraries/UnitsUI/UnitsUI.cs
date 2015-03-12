@@ -272,7 +272,7 @@ namespace UnitsUI
     {
         public AreaFromString()
         {
-            Measure = Area.FromDouble(0.0);
+            Measure = Area.FromDouble(0.0, AreaUnit.SquareMeter);
             OutPortData.Add(new PortData("area", Resources.AreaFromStringPortDataAreaToolTip));
             RegisterAllPorts();
 
@@ -305,7 +305,7 @@ namespace UnitsUI
     {
         public VolumeFromString()
         {
-            Measure = Volume.FromDouble(0.0);
+            Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
             OutPortData.Add(new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip));
             RegisterAllPorts();
 
