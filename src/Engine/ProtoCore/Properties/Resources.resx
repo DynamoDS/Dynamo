@@ -792,11 +792,20 @@
   <data name="InvalidAssociativePostFixOp" xml:space="preserve">
     <value>invalid Associative_PostFixOp</value>
   </data>
+  <data name="InvalidImperativeAddop" xml:space="preserve">
+    <value>invalid Imperative_addop</value>
+  </data>
   <data name="InvalidImperativeAssignstmt" xml:space="preserve">
     <value>invalid Imperative_assignstmt</value>
   </data>
+  <data name="InvalidImperativeBitop" xml:space="preserve">
+    <value>invalid Imperative_bitop</value>
+  </data>
   <data name="InvalidImperativeDecoratedIdentifier" xml:space="preserve">
     <value>invalid Imperative_decoratedIdentifier</value>
+  </data>
+  <data name="InvalidImperativeFactor" xml:space="preserve">
+    <value>invalid Imperative_factor</value>
   </data>
   <data name="InvalidImperativeForLoop" xml:space="preserve">
     <value>invalid Imperative_forloop</value>
@@ -807,7 +816,31 @@
   <data name="InvalidImperativeLanguageblock" xml:space="preserve">
     <value>invalid Imperative_languageblock</value>
   </data>
+  <data name="InvalidImperativeLogicallop" xml:space="preserve">
+    <value>invalid Imperative_logicalop</value>
+  </data>
+  <data name="InvalidImperativeMulop" xml:space="preserve">
+    <value>invalid Imperative_mulop</value>
+  </data>
+  <data name="InvalidImperativeNameReference" xml:space="preserve">
+    <value>invalid Imperative_NameReference</value>
+  </data>
+  <data name="InvalidImperativeNum" xml:space="preserve">
+    <value>invalid Imperative_num</value>
+  </data>
+  <data name="InvalidImperativePostFixOp" xml:space="preserve">
+    <value>invalid Imperative_PostFixOp</value>
+  </data>
+  <data name="InvalidImperativeRelop" xml:space="preserve">
+    <value>invalid Imperative_relop</value>
+  </data>
   <data name="InvalidImperativeStmt" xml:space="preserve">
     <value>invalid Imperative_stmt</value>
+  </data>
+  <data name="InvalidImperativeUnaryexpr" xml:space="preserve">
+    <value>invalid Imperative_unaryexpr</value>
+  </data>
+  <data name="InvalidImperativeUnaryop" xml:space="preserve">
+    <value>invalid Imperative_unaryop</value>
   </data>
 </root>
