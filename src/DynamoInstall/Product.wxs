@@ -39,7 +39,7 @@
     <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
 
     <Property Id='DYNAMO_INSTALLDIR'></Property>
-    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo" After="LaunchConditions"></SetProperty>
+    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo 0.8" After="LaunchConditions"></SetProperty>
 
     <Feature Id="DYNAMO_CORE_FEATURE"
              Title="Dynamo Core"
