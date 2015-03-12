@@ -129,7 +129,7 @@ namespace SystemTestServices
             preloader.Preload();
 
             Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,

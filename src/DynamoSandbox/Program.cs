@@ -61,7 +61,7 @@ namespace DynamoSandbox
             PreloadShapeManager(ref geometryFactoryPath);
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     GeometryFactoryPath = geometryFactoryPath,
                     Preferences = PreferenceSettings.Load()

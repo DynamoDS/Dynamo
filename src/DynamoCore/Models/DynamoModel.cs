@@ -359,7 +359,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Initialization settings for DynamoModel.
         /// </summary>
-        public struct StartConfiguration : IStartConfiguration
+        public struct DefaultStartConfiguration : IStartConfiguration
         {
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
@@ -378,7 +378,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public static DynamoModel Start()
         {
-            return Start(new StartConfiguration());
+            return Start(new DefaultStartConfiguration());
         }
 
         /// <summary>
