@@ -3,15 +3,15 @@ using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Wpf.Services;
 using DynamoShapeManager;
-using DynamoUtilities;
 
 using NUnit.Framework;
 
 using System;
 using System.Collections;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Windows.Media;
 
 namespace Dynamo.Tests
 {
@@ -20,6 +20,7 @@ namespace Dynamo.Tests
     {
         private static string geometryFactoryPath = "";
         private IEnumerable searchEntries;
+        private IconServices iconServices = new IconServices();
 
         private static string ResourcePath = String.Empty;
 
@@ -67,34 +68,37 @@ namespace Dynamo.Tests
                 });
 
             searchEntries = model.SearchModel.SearchEntries;
-            bool testResult = true;
 
+            List<String> missingIcons = new List<string>();
             foreach (var entry in searchEntries)
             {
-                if (entry is NodeSearchElement)
+                if (!(entry is NodeSearchElement))
+                    continue;
+
+                var searchEle = entry as NodeSearchElement;
+                if (String.IsNullOrEmpty(searchEle.IconName))
+                    continue;
+
+                var smallIconName = searchEle.IconName + Configurations.SmallIconPostfix;
+                var largeIconName = searchEle.IconName + Configurations.LargeIconPostfix;
+
+
+                var warehouse = iconServices.GetForAssembly(searchEle.Assembly);
+                ImageSource smallIcon = null;
+                ImageSource largeIcon = null;
+                if (warehouse != null)
                 {
-                    var searchEle = entry as NodeSearchElement;
-
-                    string smallIconPath = Path.Combine(ResourcePath, Path.GetFileNameWithoutExtension(searchEle.Assembly),
-                        "SmallIcons", searchEle.IconName + Configurations.SmallIconPostfix + ".png");
-
-                    string largeIconPath = Path.Combine(ResourcePath, Path.GetFileNameWithoutExtension(searchEle.Assembly),
-                        "LargeIcons", searchEle.IconName + Configurations.LargeIconPostfix + ".png");
-
-                    bool smallIconExists = File.Exists(smallIconPath);
-                    bool largeIconExists = File.Exists(largeIconPath);
-
-                    // Alert which icon is missed.
-                    if (!smallIconExists)
-                        Debug.WriteLine(smallIconPath);
-                    if (!largeIconExists)
-                        Debug.WriteLine(largeIconPath);
-
-                    testResult = testResult && smallIconExists && largeIconExists;
+                    smallIcon = warehouse.LoadIconInternal(smallIconName);
+                    largeIcon = warehouse.LoadIconInternal(largeIconName);
                 }
+
+                if (smallIcon == null)
+                    missingIcons.Add(smallIconName);
+                if (largeIcon == null)
+                    missingIcons.Add(largeIconName);
             }
 
-            Assert.IsTrue(testResult);
+            Assert.IsTrue(missingIcons.Count == 0, String.Join(Environment.NewLine, missingIcons));
         }
     }
 }
