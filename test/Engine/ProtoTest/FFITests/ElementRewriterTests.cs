@@ -18,7 +18,8 @@ namespace ProtoTest.FFITests
             var elementResolver = new ElementResolver();
             elementResolver.AddToResolutionMap("Point", "Autodesk.DS.Geometry.Point", "Protogeometry.dll");
 
-            ElementRewriter.LookupResolvedNameAndRewriteAst(core.ClassTable, elementResolver, ref astNode);
+            var elementRewriter = new ElementRewriter(core.ClassTable);
+            elementRewriter.LookupResolvedNameAndRewriteAst(elementResolver, ref astNode);
 
             Assert.AreEqual("p = Autodesk.DS.Geometry.Point.ByCoordinates(0, 0, 0);\n", astNode.ToString());
         }
@@ -36,7 +37,8 @@ namespace ProtoTest.FFITests
 
             var elementResolver = new ElementResolver();
 
-            ElementRewriter.LookupResolvedNameAndRewriteAst(testCore.ClassTable, elementResolver, ref astNode);
+            var elementRewriter = new ElementRewriter(testCore.ClassTable);
+            elementRewriter.LookupResolvedNameAndRewriteAst(elementResolver, ref astNode);
 
             Assert.AreEqual("d = FFITarget.ElementResolverTarget.ElementResolverTarget();\n", astNode.ToString());
 
@@ -57,7 +59,8 @@ namespace ProtoTest.FFITests
             var astNodes = CoreUtils.BuildASTList(core, "d = Point.ByCoordinates(0, 0, pt.X + 5);");
             var astNode = astNodes[0];
 
-            var identifiers = ElementRewriter.GetClassIdentifiers(astNode);
+            var elementRewriter = new ElementRewriter(null);
+            var identifiers = elementRewriter.GetClassIdentifiers(astNode);
             var identifierListNodes = identifiers as IdentifierListNode[] ?? identifiers.ToArray();
             Assert.AreEqual(2, identifierListNodes.Count());
             Assert.AreEqual("pt.X", identifierListNodes.ElementAt(0).ToString());
