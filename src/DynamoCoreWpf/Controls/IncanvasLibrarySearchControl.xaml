@@ -5,128 +5,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:views="clr-namespace:Dynamo.UI.Views"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              MaxHeight="350"
              Width="250">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
 
             <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
             <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
-            <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
-
-
-            <!-- This data template is used to show one member. -->
-            <ControlTemplate x:Key="MemberControlTemplate">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Image HorizontalAlignment="Left"
-                           Height="32"
-                           Margin="16,0,16,0"
-                           VerticalAlignment="Center"
-                           Width="32"
-                           Source="{Binding SmallIcon}" />
-                    <Border Grid.Column="1"
-                            Margin="5,10,0,10">
-                        <Rectangle Fill="#3E464C"
-                                   HorizontalAlignment="Stretch"
-                                   VerticalAlignment="Stretch">
-                            <Rectangle.Margin>
-                                <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
-                                    <Binding ElementName="memberName" />
-                                    <Binding Path="DataContext"
-                                             RelativeSource="{RelativeSource Mode=FindAncestor, 
-                                                                     AncestorType={x:Type UserControl}}" />
-                                </MultiBinding>
-                            </Rectangle.Margin>
-                        </Rectangle>
-                    </Border>
-                    <TextBlock Grid.Column="1"
-                               Name="memberName"
-                               HorizontalAlignment="Left"
-                               Text="{Binding Name}"
-                               VerticalAlignment="Top"
-                               Margin="5,10,0,0"
-                               Foreground="#CCCCCC"
-                               FontSize="13" />
-                </Grid>
-            </ControlTemplate>
 
             <!--Style for every member in found MemberGroup-->
-            <Style x:Key="ListBoxMembersStyle"
-                   TargetType="{x:Type ListBoxItem}">
-                <Setter Property="BorderBrush"
-                        Value="Transparent" />
-                <Setter Property="Height"
-                        Value="40" />
-                <Setter Property="Background"
-                        Value="#333333" />
-                <Setter Property="FocusVisualStyle"
-                        Value="{x:Null}" />
-                <Setter Property="Visibility"
-                        Value="{Binding Path=Visibility, Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
-
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <Border Background="{TemplateBinding Background}">
-                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  Content="{TemplateBinding Content}" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver"
-                                         Value="True">
-                                    <Setter Property="Background"
-                                            Value="#404040" />
-                                </Trigger>
-                                <Trigger Property="IsSelected"
-                                         Value="True">
-                                    <Setter Property="Background"
-                                            Value="#404040" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
+            <Style x:Key="ListBoxIncanvasMembersStyle"
+                   TargetType="{x:Type ListBoxItem}"
+                   BasedOn="{StaticResource ListBoxMembersStyle}">
                 <EventSetter Event="PreviewMouseLeftButtonDown"
                              Handler="OnMouseLeftButtonDown" />
             </Style>
-            
-            <!--Style for found MemberGroup-->
-            <Style x:Key="ListBoxMemberGroupsStyle"
-                   TargetType="{x:Type ListBoxItem}">
-                <Setter Property="BorderBrush"
-                        Value="Transparent" />
-                <Setter Property="Background"
-                        Value="#333333" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <Border Background="{TemplateBinding Background}">
-                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                  Content="{TemplateBinding Content}" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver"
-                                                   Value="True" />
-                                        <Condition Property="IsSelected"
-                                                   Value="False" />
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background"
-                                            Value="#333333" />
-                                </MultiTrigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -236,31 +135,17 @@
                                                    FontSize="12"
                                                    Margin="16,8,0,8">
                                                             <Run Text="{Binding Prefix, Mode=OneWay}" />
-                                                            <Run Text="{Binding GroupName, Mode=OneWay}">
-                                                                <Run.Style>
-                                                                   <Style TargetType="{x:Type Run}">
-                                                                    <Setter Property="Foreground"
-                                                                            Value="#989898" />
-                                                                    <Style.Triggers>
-                                                                        <Trigger Property="IsMouseOver"
-                                                                                 Value="true">
-                                                                            <Setter Property="Foreground"
-                                                                                    Value="#aaaaaa" />
-                                                                        </Trigger>
-                                                                    </Style.Triggers>
-                                                                </Style> 
-                                                                </Run.Style>
-                                                            </Run>
+                                                            <Run Text="{Binding GroupName, Mode=OneWay}" />
                                         </TextBlock>
                                         <ListBox Background="Transparent"
                                                  BorderBrush="Transparent"
-                                                 ItemContainerStyle="{StaticResource ListBoxMembersStyle}"
+                                                 ItemContainerStyle="{StaticResource ListBoxIncanvasMembersStyle}"
                                                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                                  ItemsSource="{Binding Members}"
                                                  Name="MembersListBox">
                                             <ListBox.ItemTemplate>
                                                 <DataTemplate>
-                                                    <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                                                    <ContentControl Template="{StaticResource SearchMemberControlTemplate}" />
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
                                         </ListBox>
