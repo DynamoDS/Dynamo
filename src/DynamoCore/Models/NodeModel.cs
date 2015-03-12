@@ -1178,6 +1178,9 @@ namespace Dynamo.Models
             switch (portType)
             {
                 case PortType.Input:
+
+                    bool hasDefaultValue = data.DefaultValue != null;
+
                     if (inPorts.Count > index)
                     {
                         p = inPorts[index];
@@ -1186,7 +1189,7 @@ namespace Dynamo.Models
                         //e.x. when the node is being re-registered during a custom
                         //node save
                         p.PortName = data.NickName;
-                        if (data.HasDefaultValue)
+                        if (hasDefaultValue)
                         {
                             p.UsingDefaultValue = true;
                             p.DefaultValueEnabled = true;
@@ -1197,8 +1200,8 @@ namespace Dynamo.Models
 
                     p = new PortModel(portType, this, data)
                     {
-                        UsingDefaultValue = data.HasDefaultValue,
-                        DefaultValueEnabled = data.HasDefaultValue
+                        UsingDefaultValue = hasDefaultValue,
+                        DefaultValueEnabled = hasDefaultValue
                     };
 
                     p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)

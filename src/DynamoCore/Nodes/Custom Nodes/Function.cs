@@ -287,7 +287,7 @@ namespace Dynamo.Nodes
 
                 nickName = substrings[0].Trim();
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
-                object defaultValue = null;
+                AssociativeNode defaultValue = null;
 
                 if (substrings.Count() > 2)
                 {
@@ -301,25 +301,12 @@ namespace Dynamo.Nodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    AssociativeNode defaultValueNode;
-
-                    if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValueNode))
+                    if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValue))
                     {
                         this.Warning(Properties.Resources.WarningInvalidInput);
                     }
                     else
                     {
-                        if (defaultValueNode != null)
-                        {
-                            TypeSwitch.Do(
-                                defaultValueNode,
-                                TypeSwitch.Case<IntNode>(n => defaultValue = n.Value),
-                                TypeSwitch.Case<DoubleNode>(n => defaultValue = n.Value),
-                                TypeSwitch.Case<BooleanNode>(n => defaultValue = n.Value),
-                                TypeSwitch.Case<StringNode>(n => defaultValue = n.value),
-                                TypeSwitch.Default(() => defaultValue = null));
-                        }
-
                         if (identifierNode.datatype.UID == Constants.kInvalidIndex)
                         {
                             string warningMessage = String.Format(
@@ -329,9 +316,7 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
-                            // Default value not supported or invalid, so use the original
-                            // input as nickName. For example, "y = f(x)"
-                            if (defaultValueNode == null || defaultValue != null)
+                            if (defaultValue == null)
                                 nickName = identifierNode.Value;
 
                             type = identifierNode.datatype;
