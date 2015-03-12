@@ -526,6 +526,9 @@ value: bool = false</value>
   <data name="SymbolNodeDescription" xml:space="preserve">
     <value>A function parameter, use with custom nodes. \n\nYou can specify the type and default value for parameter. E.g.,\n\ninput : var[]..[]\nvalue : bool = false</value>
   </data>
+  <data name="CustomNodeNotLoaded" xml:space="preserve">
+    <value>Custom node definition is not loaded!</value>
+</data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
     <value>Run whenever an input to the graph is updated.</value>
   </data>
@@ -573,5 +576,11 @@ value: bool = false</value>
   </data>
   <data name="RemoveLabel" xml:space="preserve">
     <value>Remove</value>
+  </data>
+  <data name="IncorrectlyFormattedNodeLibraryDisplay" xml:space="preserve">
+    <value>This is the incorrectly formatted library name:</value>
+  </data>
+  <data name="IncorrectlyFormattedNodeLibraryWarning" xml:space="preserve">
+    <value>Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!</value>
   </data>
 </root>
