@@ -117,8 +117,80 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AttributeArgMustBeConstant" xml:space="preserve">
+    <value>An attribute argument must be a constant expression</value>
+  </data>
+  <data name="BaseIsExpectedToCallBaseConstructor" xml:space="preserve">
+    <value>The keyword 'base' is expected here to call base constructor</value>
+  </data>
+  <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
+    <value>Checks if all the elements in the specified list are of the same type</value>
+  </data>
+  <data name="ChecksIfLengthsAreSameInMultiDimentionalList" xml:space="preserve">
+    <value>Checks if each of rows in multidimensional list has the same number of elements </value>
+  </data>
+  <data name="ChecksIfListContainsTheElement" xml:space="preserve">
+    <value>Checks if the specified element is present in the specified list</value>
+  </data>
+  <data name="ChecksIfTheListIsAllFalse" xml:space="preserve">
+    <value>Checks if all elements in the specified list are false</value>
+  </data>
+  <data name="ChecksIfTheListIsAllTrue" xml:space="preserve">
+    <value>Checks if all elements in the specified list are true</value>
+  </data>
+  <data name="ChecksListWithUniformDepth" xml:space="preserve">
+    <value>Checks if the list has a uniform depth</value>
+  </data>
+  <data name="CloseBracketExpected" xml:space="preserve">
+    <value>')' expected - Imcomplete Closure</value>
+  </data>
+  <data name="ContainsKeys" xml:space="preserve">
+    <value>Checks if the specified key is present in the specified key-value pair list</value>
+  </data>
+  <data name="DeterminesObjectsAreEqual" xml:space="preserve">
+    <value>Determines whether two object instances are equal</value>
+  </data>
+  <data name="EmptyCharacterLiteral" xml:space="preserve">
+    <value>Empty character literal</value>
+  </data>
+  <data name="FailedToImport" xml:space="preserve">
+    <value>Failed to import {0}</value>
+  </data>
+  <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
+    <value>A function call is not allowed to the left hand side of an assignment</value>
+  </data>
   <data name="FUNCTION_GROUP_RESOLUTION_FAILURE" xml:space="preserve">
     <value>No function called {0} could be found. Please check the name of the function</value>
+  </data>
+  <data name="GetKeys" xml:space="preserve">
+    <value>Gets all keys from the specified key-value pair list</value>
+  </data>
+  <data name="Gettypes" xml:space="preserve">
+    <value>Gets the Type of the current instance</value>
+  </data>
+  <data name="GetValues" xml:space="preserve">
+    <value>Gets all values stored in the specified key-value pair list and for a simple list it returns all elements in the list</value>
+  </data>
+  <data name="ImportFileByGivenFilePath" xml:space="preserve">
+    <value>Imports data from a text file containing comma separated values into two-dimensional list</value>
+  </data>
+  <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
+    <value>Imports data from a text file containing comma separated values into two-dimensional list and also transpose the output list if specified</value>
+  </data>
+  <data name="ImportStatementNotSupported" xml:space="preserve">
+    <value>Imports statements are not supported in CodeBlock Nodes</value>
+  </data>
+  <data name="InsertsAnElementIntoList" xml:space="preserve">
+    <value>Inserts an element into a list at specified index</value>
+  </data>
+  <data name="InvalidLanguageBlockIdentifier" xml:space="preserve">
+    <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
+  </data>
+  <data name="InvalidReturnStatement" xml:space="preserve">
+    <value>Return statement is invalid. Do you mean: return = {0} ?</value>
+  </data>
+  <data name="InvalidSymbol" xml:space="preserve">
+    <value>Syntax Error: invalid symbol '{0}'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
   </data>
   <data name="kAlreadyImported" xml:space="preserve">
     <value>File : '{0}' is already imported</value>
@@ -173,6 +245,12 @@
   </data>
   <data name="kExceptionTypeUndefined" xml:space="preserve">
     <value>Exception type '{0}' is not defined</value>
+  </data>
+  <data name="keywordCannotBeUsedAsConstructorName" xml:space="preserve">
+    <value>\"{0}\" is a keyword, can't be used as constructor name</value>
+  </data>
+  <data name="keywordCantBeUsedAsIdentifier" xml:space="preserve">
+    <value>\"{0}\" is a keyword, identifier expected</value>
   </data>
   <data name="kFailToConverToFunction" xml:space="preserve">
     <value>Converting other objects to a function pointer is not allowed</value>
@@ -297,6 +375,9 @@
   <data name="kStaticMethodNotFound" xml:space="preserve">
     <value>Cannot find static method or constructor {0}.{1}()</value>
   </data>
+  <data name="kStringIndexingCannotBeAssigned" xml:space="preserve">
+    <value>String indexing cannot be assigned to, it is read only</value>
+  </data>
   <data name="kStringIndexOutOfRange" xml:space="preserve">
     <value>The index to string is out of range</value>
   </data>
@@ -318,14 +399,11 @@
   <data name="kUsingThisInStaticFunction" xml:space="preserve">
     <value>'this' cannot be used in static method</value>
   </data>
-  <data name="AttributeArgMustBeConstant" xml:space="preserve">
-    <value>An attribute argument must be a constant expression</value>
+  <data name="MapsValueFromOneRangeToAnotherRange" xml:space="preserve">
+    <value>Maps a vlaue from one range to another range</value>
   </data>
-  <data name="FailedToImport" xml:space="preserve">
-    <value>Failed to import {0}</value>
-  </data>
-  <data name="ImportStatementNotSupported" xml:space="preserve">
-    <value>Imports statements are not supported in CodeBlock Nodes</value>
+  <data name="MapsValueIntoInputRange" xml:space="preserve">
+    <value>Maps a value into an input range</value>
   </data>
   <data name="ModifierBlockNotSupported" xml:space="preserve">
     <value>Modifier Blocks are not supported currently</value>
@@ -333,83 +411,11 @@
   <data name="NoConstructorForAttribute" xml:space="preserve">
     <value>No constructors for Attribute '{0}' takes {1} arguments</value>
   </data>
-  <data name="ReturnStatementIsNotAllowedInConstructor" xml:space="preserve">
-    <value>return statement is not allowed in constructor</value>
-  </data>
-  <data name="UnknownAttribute" xml:space="preserve">
-    <value>Unknown attribute {0}</value>
-  </data>
-  <data name="TooManyCharacters" xml:space="preserve">
-    <value>Too many characters in character literal</value>
-  </data>
-  <data name="keywordCannotBeUsedAsConstructorName" xml:space="preserve">
-    <value>\"{0}\" is a keyword, can't be used as constructor name</value>
-  </data>
-  <data name="EmptyCharacterLiteral" xml:space="preserve">
-    <value>Empty character literal</value>
-  </data>
-  <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
-    <value>A function call is not allowed to the left hand side of an assignment</value>
-  </data>
-  <data name="keywordCantBeUsedAsIdentifier" xml:space="preserve">
-    <value>\"{0}\" is a keyword, identifier expected</value>
-  </data>
-  <data name="InvalidLanguageBlockIdentifier" xml:space="preserve">
-    <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
-  </data>
-  <data name="BaseIsExpectedToCallBaseConstructor" xml:space="preserve">
-    <value>The keyword 'base' is expected here to call base constructor</value>
-  </data>
-  <data name="CloseBracketExpected" xml:space="preserve">
-    <value>')' expected - Imcomplete Closure</value>
-  </data>
-  <data name="InvalidSymbol" xml:space="preserve">
-    <value>Syntax Error: invalid symbol '{0}'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
-  </data>
-  <data name="InvalidReturnStatement" xml:space="preserve">
-    <value>Return statement is invalid. Do you mean: return = {0} ?</value>
-  </data>
-  <data name="SemiColonExpected" xml:space="preserve">
-    <value>';' is expected</value>
-  </data>
-  <data name="ValidForImperativeBlockOnly" xml:space="preserve">
-    <value>'{0}' statement can only be used in imperative language block</value>
-  </data>
-  <data name="UseInlineConditional" xml:space="preserve">
-    <value>'{0}' statement can only be used in imperative language block, consider using an inline conditional instead?</value>
-  </data>
   <data name="NoSuchFileOrDirectoryToImport" xml:space="preserve">
     <value>Cannot import file: '{0}': No such file or directory</value>
   </data>
-  <data name="kStringIndexingCannotBeAssigned" xml:space="preserve">
-    <value>String indexing cannot be assigned to, it is read only</value>
-  </data>
-  <data name="ChecksListWithUniformDepth" xml:space="preserve">
-    <value>Checks if the list has a uniform depth</value>
-  </data>
-  <data name="ChecksIfListContainsTheElement" xml:space="preserve">
-    <value>Checks if the specified element is present in the specified list</value>
-  </data>
-  <data name="ChecksIfTheListIsAllFalse" xml:space="preserve">
-    <value>Checks if all elements in the specified list are false</value>
-  </data>
-  <data name="ChecksIfTheListIsAllTrue" xml:space="preserve">
-    <value>Checks if all elements in the specified list are true</value>
-  </data>
-  <data name="DeterminesObjectsAreEqual" xml:space="preserve">
-    <value>Determines whether two object instances are equal</value>
-  </data>
-  <data name="Gettypes" xml:space="preserve">
-    <value>Gets the Type of the current instance</value>
-  </data>
-  <data name="InsertsAnElementIntoList" xml:space="preserve">
-    <value>Inserts an element into a list at specified index</value>
-  </data>
-  <data name="MapsValueFromOneRangeToAnotherRange" xml:space="preserve">
-    <value>Maps a vlaue from one range to another range</value>
-  </data>
-  <data name="MapsValueIntoInputRange" xml:space="preserve">
-    <value>Maps a value into an input range</value>
+  <data name="ObjectsContainsInList1NotInList2" xml:space="preserve">
+    <value>Returns objects that are included in List1 but excluded in List2</value>
   </data>
   <data name="ProducesTheSetIntersection" xml:space="preserve">
     <value>Produces the set intersection of two sequences</value>
@@ -417,20 +423,29 @@
   <data name="ProducesTheSetUnion" xml:space="preserve">
     <value>Produces the set union of two sequences by using the default equality comparer</value>
   </data>
+  <data name="RemoveKeys" xml:space="preserve">
+    <value>Returns true if the specified key is removed from list, otherwise returns false</value>
+  </data>
   <data name="RemovesTheMembersofTheList" xml:space="preserve">
     <value>Removes the members of the list which are not members of the specified type</value>
   </data>
   <data name="ReordersList" xml:space="preserve">
     <value>Reorders the list using the specified indices</value>
   </data>
-  <data name="ReturnsListWithUniformDepth" xml:space="preserve">
-    <value>Returns a list with uniform depth as specified by the input depth</value>
-  </data>
   <data name="ReturnsConcatenatingList" xml:space="preserve">
     <value>Joins two lists into a single list</value>
   </data>
+  <data name="ReturnsListWithRankDepth" xml:space="preserve">
+    <value>Returns multidimentional list according the rank given</value>
+  </data>
+  <data name="ReturnsListWithUniformDepth" xml:space="preserve">
+    <value>Returns a list with uniform depth as specified by the input depth</value>
+  </data>
   <data name="ReturnsNumberOfItems" xml:space="preserve">
     <value>Returns number of items in the specified list</value>
+  </data>
+  <data name="ReturnStatementIsNotAllowedInConstructor" xml:space="preserve">
+    <value>return statement is not allowed in constructor</value>
   </data>
   <data name="ReturnsTheDeepestDepthOfTheList" xml:space="preserve">
     <value>Returns the deepest depth of the list</value>
@@ -447,44 +462,29 @@
   <data name="ReturnsTheNumberOfTrueValue" xml:space="preserve">
     <value>Returns the number of true values in the list</value>
   </data>
+  <data name="SemiColonExpected" xml:space="preserve">
+    <value>';' is expected</value>
+  </data>
   <data name="SortsListByValue" xml:space="preserve">
     <value>Sorts a specified list by the values of its members in either ascending or descending order</value>
   </data>
   <data name="SortsListByValueInAscending" xml:space="preserve">
     <value>Sorts a specified list by values of its members in ascending order</value>
   </data>
-  <data name="ObjectsContainsInList1NotInList2" xml:space="preserve">
-    <value>Returns objects that are included in List1 but excluded in List2</value>
+  <data name="TooManyCharacters" xml:space="preserve">
+    <value>Too many characters in character literal</value>
   </data>
-  <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
-    <value>Checks if all the elements in the specified list are of the same type</value>
+  <data name="UnknownAttribute" xml:space="preserve">
+    <value>Unknown attribute {0}</value>
   </data>
-  <data name="ChecksIfLengthsAreSameInMultiDimentionalList" xml:space="preserve">
-    <value>Checks if each of rows in multidimensional list has the same number of elements </value>
-  </data>
-  <data name="ContainsKeys" xml:space="preserve">
-    <value>Checks if the specified key is present in the specified key-value pair list</value>
-  </data>
-  <data name="GetKeys" xml:space="preserve">
-    <value>Gets all keys from the specified key-value pair list</value>
-  </data>
-  <data name="GetValues" xml:space="preserve">
-    <value>Gets all values stored in the specified key-value pair list and for a simple list it returns all elements in the list</value>
-  </data>
-  <data name="ImportFileByGivenFilePath" xml:space="preserve">
-    <value>Imports data from a text file containing comma separated values into two-dimensional list</value>
-  </data>
-  <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
-    <value>Imports data from a text file containing comma separated values into two-dimensional list and also transpose the output list if specified</value>
-  </data>
-  <data name="RemoveKeys" xml:space="preserve">
-    <value>Returns true if the specified key is removed from list, otherwise returns false</value>
-  </data>
-  <data name="ReturnsListWithRankDepth" xml:space="preserve">
-    <value>Returns multidimentional list according the rank given</value>
+  <data name="UseInlineConditional" xml:space="preserve">
+    <value>'{0}' statement can only be used in imperative language block, consider using an inline conditional instead?</value>
   </data>
   <data name="UseListJoinNode" xml:space="preserve">
     <value>Use List.Join node instead</value>
+  </data>
+  <data name="ValidForImperativeBlockOnly" xml:space="preserve">
+    <value>'{0}' statement can only be used in imperative language block</value>
   </data>
   <data name="ModuloByZero" xml:space="preserve">
     <value>Integer modulo by zero</value>
