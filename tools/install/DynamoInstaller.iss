@@ -205,7 +205,7 @@ begin
 			end;
 		if (revision >= {#Rev}) then
 			begin
-				sMsg := ExpandConstant('{#ProductName} version {#Major}.{#Minor}.') + IntToStr(revision) + ' or higher is already installed.'
+				sMsg := ExpandConstant('{#ProductName} version {#ProductVersion} or higher is already installed.'
 				MsgBox(sMsg, mbInformation, MB_OK);
 				result := false
 			end
