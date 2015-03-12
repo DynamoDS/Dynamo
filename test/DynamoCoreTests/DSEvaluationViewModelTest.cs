@@ -1122,7 +1122,7 @@ namespace Dynamo.Tests
         public void TestDefaultValueAttributeForDummyLine()
         {
             DynamoUtilities.DynamoPathManager.Instance.AddPreloadLibrary("FFITarget.dll");
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueAttributeForDummyLine.dyn.dyn");
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueAttributeForDummyLine.dyn");
             RunModel(dynFilePath);
             AssertPreviewValue("e95a634b-aab9-4b6e-bb33-2f9669381ad6", 5);
         }
