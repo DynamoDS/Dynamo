@@ -1,4 +1,6 @@
-﻿using Dynamo.UI;
+﻿using System.Diagnostics;
+using System.Xml;
+using Dynamo.UI;
 
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -10,7 +12,7 @@ using System.Text.RegularExpressions;
 
 namespace Dynamo.Utilities
 {
-    public class CodeBlockUtils
+    public static class CodeBlockUtils
     {
         /// <summary>
         /// Call this method to turn all "\r\n" and "\r" 
@@ -228,6 +230,59 @@ namespace Dynamo.Utilities
             return inputCode;
         }
 
+        /// <summary>
+        /// Returns a list of defined variables, along with the line number on which 
+        /// they are defined last. A variable can be defined multiple times in a single 
+        /// code block node, but the output port is only shown on the last definition.
+        /// </summary>
+        /// <returns>Returns a map between defined variables and the line index on 
+        /// which they are defined last.</returns>
+        public static IOrderedEnumerable<KeyValuePair<string, int>> GetDefinitionLineIndexMap(IEnumerable<Statement> codeStatements)
+        {
+            // Get all defined variables and their locations
+            var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))
+                                            .Where(pair => pair.Key != null)
+                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.Name, pair.Value))
+                                            .OrderBy(pair => pair.Key)
+                                            .GroupBy(pair => pair.Key);
+
+            // Calc each variable's last location of definition
+            var locationMap = new Dictionary<string, int>();
+            foreach (var defs in definedVars)
+            {
+                var name = defs.FirstOrDefault().Key;
+                var loc = defs.Select(p => p.Value).Max<int>();
+                locationMap[name] = loc;
+            }
+
+            return locationMap.OrderBy(p => p.Value);
+        }
+
+        public static IDictionary<string, KeyValuePair<string, string>> DeserializeElementResolver(
+            XmlElement nodeElement)
+        {
+            var xmlDoc = nodeElement.OwnerDocument;
+            Debug.Assert(xmlDoc != null);
+
+            var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
+
+            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
+            if (nodes.Count > 0)
+            {
+                foreach (XmlNode child in nodes[0].ChildNodes)
+                {
+                    if (child.Attributes != null)
+                    {
+                        XmlAttribute pName = child.Attributes["partialName"];
+                        XmlAttribute rName = child.Attributes["resolvedName"];
+                        XmlAttribute aName = child.Attributes["assemblyName"];
+                        var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
+                        resolutionMap.Add(pName.Value, kvp);
+                    }
+                }
+            }
+            return resolutionMap;
+        }
     }
 
     /// <summary>

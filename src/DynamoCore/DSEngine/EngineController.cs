@@ -7,6 +7,7 @@ using Dynamo.Nodes;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
+using ProtoCore.Namespace;
 using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
@@ -623,6 +624,7 @@ namespace Dynamo.DSEngine
         }
 
         #endregion
+
     }
 
     public class CompilationServices
