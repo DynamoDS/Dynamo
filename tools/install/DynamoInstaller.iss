@@ -110,8 +110,9 @@ Root: HKCU; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; ValueType: dwor
 
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "InstallLocation"; ValueData: "{app}\"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallPath"; ValueData: """{app}\Uninstall\unins000.exe\"" /SILENT"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallString"; ValueData: """{app}\Uninstall\unins000.exe\"" /SILENT"
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallString"; ValueData: "{app}\Uninstall\unins000.exe"
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallParam"; ValueData: "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES"
+Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "Version"; ValueData: "{#FullVersion}"
 Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: dword; ValueName: "RevVersion"; ValueData: "{#Rev}"
 
 
@@ -144,38 +145,6 @@ updateFlag : String;
 
 // added custom uninstall trigger based on http://stackoverflow.com/questions/2000296/innosetup-how-to-automatically-uninstall-previous-installed-version
 /////////////////////////////////////////////////////////////////////
-
-function GetUninstallStringForEXE(): String;
-var
-  sUnInstPath: String;
-  sUnInstallString: String;
-begin
-  sUnInstallString := '';
-
-  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1')
-  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
-    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString)
-
-  Result := sUnInstallString;
-end;
-
-function GetUninstallStringForMSI(sAppId: String) : String;
-var 
-  sUnInstPath: String;
-  sUnInstallString: String;
-begin
-  sUnInstallString := '';
-
-  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{' + sAppId);
-  if not RegQueryStringValue(HKLM64, sUnInstPath, 'UninstallString', sUnInstallString) then
-    RegQueryStringValue(HKCU64, sUnInstPath, 'UninstallString', sUnInstallString);
-
-  if sUnInstallString <> '' then
-    sUnInstallString := '/X' + sAppId;
-  
-  Result := sUnInstallString;
-end;
-
 function RevitInstallationExists(Version: String): Boolean;
 var 
   ResultCode: Integer;
@@ -188,7 +157,13 @@ end;
 
 function InitializeSetup(): Boolean;
 var
-j: Cardinal;
+  j: Cardinal;
+  sUnInstPath: String;
+  sUninstallString: String;
+  sUnInstallParam: String;
+  revision: Cardinal;
+  iResultCode: Integer;
+  sMsg: String;
 begin
   silentFlag := ''
   updateFlag := ''
@@ -207,66 +182,36 @@ begin
   ExtractTemporaryFile('RevitAddinUtility.dll');
   ExtractTemporaryFile('DynamoAddinGenerator.exe');
 
+  result := true
   // check if there is a valid revit installation on this machine, if not - fail
-  if (RevitInstallationExists('Revit2016') or RevitInstallationExists('Revit2015') or RevitInstallationExists('Revit2014')) then
+  if not (RevitInstallationExists('Revit2016') or RevitInstallationExists('Revit2015') or RevitInstallationExists('Revit2014')) then
     begin
-    result := true;
+	  MsgBox('Dynamo requires an installation of Revit 2014, Revit 2015 or Revit 2016 in order to proceed!', mbCriticalError, MB_OK);
+      result := false;
     end
-  else
-    begin
-    MsgBox('Dynamo requires an installation of Revit 2014, Revit 2015 or Revit 2016 in order to proceed!', mbCriticalError, MB_OK);
-    result := false;
-    end;
-end;
 
-/////////////////////////////////////////////////////////////////////
-function IsEXEInstalled(): Boolean;
-begin
-  Result := (GetUninstallStringForEXE() <> '');
-end;
-
-/////////////////////////////////////////////////////////////////////
-function UnInstallOldEXE(sUnInstallString: String): Integer;
-var
-  iResultCode: Integer;
-  installStr: String;
-begin
-// Return Values:
-// 1 - uninstall string is empty
-// 2 - error executing the UnInstallString
-// 3 - successfully executed the UnInstallString
-
-  // default return value
-  Result := 0;
-
-  if sUnInstallString <> '' then begin
-    sUnInstallString := RemoveQuotes(sUnInstallString);
-    installStr := '/SILENT /NORESTART /SUPPRESSMSGBOXES ';
-
-    if Exec(sUnInstallString, installStr + updateFlag,'', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
-      Result := 3
-    else
-      Result := 2;
-  end else
-    Result := 1;
-end;
-
-function UnInstallOldMSI(sUnInstallString: String): Integer;
-var
-  iResultCode: Integer;
-begin
-  // default return value
-  Result := 0;
-
-  if sUnInstallString <> '' then begin
-    sUnInstallString := RemoveQuotes(sUnInstallString);
-	
-	if Exec('MsiExec.exe', sUnInstallString + ' /quiet','', SW_SHOWNORMAL, ewWaitUntilTerminated, iResultCode) then
-      Result := 3
-    else
-      Result := 2;
-  end else
-    Result := 1;
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}');
+  sUninstallString := '';
+  RegQueryStringValue(HKLM, sUnInstPath, 'UnInstallString', sUninstallString);
+    if (sUninstallString <> '') then
+	begin
+		if not RegQueryDWordValue(HKLM, sUnInstPath, 'RevVersion', revision) then
+			begin
+				MsgBox('The Dynamo version is corrupted?!. Aborting...', mbInformation, MB_OK);
+				result := false
+			end;
+		if (revision >= {#Rev}) then
+			begin
+				sMsg := ExpandConstant('{#ProductName} {#Major}.{#Minor}.') + IntToStr(revision) + ' is already installed. Aborting'
+				MsgBox(sMsg, mbInformation, MB_OK);
+				result := false
+			end
+		else
+			begin
+				RegQueryStringValue(HKLM, sUnInstPath, 'UnInstallParam', sUninstallParam);
+				Exec(sUnInstallString, sUnInstallParam, '', SW_HIDE, ewWaitUntilTerminated, iResultCode);
+			end
+	end;
 end;
 
 // check if the components exists, if they do enable the component for installation
@@ -299,40 +244,6 @@ begin
     Result := 0
   else
     Result := 1
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-var 
-  sUninstallString: String;
-begin
-  if (CurStep=ssInstall) then
-    begin
-      if (IsEXEInstalled()) then
-        begin
-          sUninstallString := GetUninstallStringForEXE()
-          UnInstallOldEXE(sUninstallString)
-        end;
-      // Query for pre 0.7.3 MSI uninstall string, which is same as AppId
-      sUninstallString := GetUninstallStringForMSI(ExpandConstant('{#emit SetupSetting("AppId")}'));
-      if sUninstallString <> '' then
-        UnInstallOldMSI(sUninstallString);
-
-      // Query for 0.7.3 MSI uninstall string.
-      sUninstallString := GetUninstallStringForMSI('{F295EB3F-AAD2-4514-B466-6F0375AAEEE5}');
-      if sUninstallString <> '' then
-        UnInstallOldMSI(sUninstallString);
-	  
-	  // Query for 0.7.6 MSI uninstall string.
-      sUninstallString := GetUninstallStringForMSI('{A0A6A915-F284-4CB4-90D3-C1356052D456}');
-      if sUninstallString <> '' then
-        UnInstallOldMSI(sUninstallString);
-
-	  // Query for 0.8.0 MSI uninstall string.
-      sUninstallString := GetUninstallStringForMSI('{3594373A-F8C0-40DF-ACBD-D4AF085C4189}');
-      if sUninstallString <> '' then
-        UnInstallOldMSI(sUninstallString);
-
-    end;
 end;
 
 // Note this procedure is run in a different process and doesn't share
