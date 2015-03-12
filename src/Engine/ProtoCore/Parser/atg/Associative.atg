@@ -958,8 +958,33 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
 .
 */
 
+//-----------------------------------------------------------------------------------------------------
+TypedIdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+(
+		ident
+		(. node = new IdentifierNode(t.val); .)
+		
+			{
+				'.'
+				(. ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null; .)
+				ident
+				(. 
+					rnode = new IdentifierNode(t.val);
+            
+					ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+					bnode.LeftNode = node;
+					bnode.Optr = Operator.dot;
+					bnode.RightNode = rnode;
+					node = bnode;
+					NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode); 
+				.)
+			}
+		
+ ) 
+ .   
 
-
+//-----------------------------------------------------------------------------------------------------
 Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =                           (. node = null; .)
 (
@@ -1055,37 +1080,40 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
                         .)
         ':'
 
-                        (. 
-                            string ident = string.Empty;
-							int type = ProtoCore.DSASM.Constants.kInvalidIndex;
-							if (la.kind == 1)
-							{
-								if (IsIdentList())
-								{
-									Associative_IdentifierList(out node);
-									ident = node.ToString();
-								}
-								else
-								{
-						.)
-		ident
-						(.
-									ident = t.val;
-								}
-							}
-							type = core.TypeSystem.GetType(ident);
-                            if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
-                            {
-                                var unknownType = new ProtoCore.Type();
-                                unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-                                unknownType.Name = ident; 
-                                typedVar.datatype = unknownType;
-                            }
-                            else
-                            {
-                                typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
-                            }
-                        .)
+
+            (. 
+                string strIdent = string.Empty;
+				int type = ProtoCore.DSASM.Constants.kInvalidIndex;
+			.)
+				
+				(IF (IsIdentList())
+				(
+					TypedIdentifierList<out node>
+										(.	strIdent = node.ToString(); .)
+				)
+				|
+				(
+					ident
+							(. strIdent = t.val; .)
+							
+				)
+				)
+				(.
+						type = core.TypeSystem.GetType(strIdent);
+						if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
+						{
+							var unknownType = new ProtoCore.Type();
+							unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
+							unknownType.Name = strIdent; 
+							typedVar.datatype = unknownType;
+						}
+						else
+						{
+							typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+						}
+				.)		
+				
+	
 
         [                               
                         (. var datatype = typedVar.datatype; .)
