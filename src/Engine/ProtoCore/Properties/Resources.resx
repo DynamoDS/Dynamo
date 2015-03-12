@@ -489,4 +489,325 @@
   <data name="ModuloByZero" xml:space="preserve">
     <value>Integer modulo by zero</value>
   </data>
+  <data name="AddExpected" xml:space="preserve">
+    <value>"+" expected</value>
+  </data>
+  <data name="AndAndExpected" xml:space="preserve">
+    <value>"&amp;&amp;" expected</value>
+  </data>
+  <data name="AndExpected" xml:space="preserve">
+    <value>"&amp;" expected</value>
+  </data>
+  <data name="AsteriskExpected" xml:space="preserve">
+    <value>"*" expected</value>
+  </data>
+  <data name="CatchExpected" xml:space="preserve">
+    <value>"catch" expected</value>
+  </data>
+  <data name="char_expected" xml:space="preserve">
+    <value>char expected</value>
+  </data>
+  <data name="closebracket_expected" xml:space="preserve">
+    <value>closebracket expected</value>
+  </data>
+  <data name="CloseCurlyBracketExpected" xml:space="preserve">
+    <value>"}" expected</value>
+  </data>
+  <data name="closeparen_expected" xml:space="preserve">
+    <value>closeparen expected</value>
+  </data>
+  <data name="CommaExpected" xml:space="preserve">
+    <value>"," expected</value>
+  </data>
+  <data name="CurverDashExpected" xml:space="preserve">
+    <value>"~" expected</value>
+  </data>
+  <data name="DashExpected" xml:space="preserve">
+    <value>"--" expected</value>
+  </data>
+  <data name="DoubleColumnExpected" xml:space="preserve">
+    <value>":" expected</value>
+  </data>
+  <data name="DoubleDashExpected" xml:space="preserve">
+    <value>"||" expected</value>
+  </data>
+  <data name="endline_expected" xml:space="preserve">
+    <value>endline_expected</value>
+  </data>
+  <data name="EOF_expected" xml:space="preserve">
+    <value>EOF expected</value>
+  </data>
+  <data name="EqualExpected" xml:space="preserve">
+    <value>"=" expected</value>
+  </data>
+  <data name="EqualRightExpected" xml:space="preserve">
+    <value>"=&gt;" expected</value>
+  </data>
+  <data name="equal_expected" xml:space="preserve">
+    <value>equal expected</value>
+  </data>
+  <data name="float_expected" xml:space="preserve">
+    <value>float expected</value>
+  </data>
+  <data name="greaterequal_expected" xml:space="preserve">
+    <value>greaterequal expected</value>
+  </data>
+  <data name="greaterthan_expected" xml:space="preserve">
+    <value>greaterthan expected</value>
+  </data>
+  <data name="HexExpected" xml:space="preserve">
+    <value>"#" expected</value>
+  </data>
+  <data name="ident_expected" xml:space="preserve">
+    <value>ident expected</value>
+  </data>
+  <data name="InExpected" xml:space="preserve">
+    <value>"in" expected</value>
+  </data>
+  <data name="InvalidAssociativeAccessSpecifier" xml:space="preserve">
+    <value>invalid Associative_AccessSpecifier</value>
+  </data>
+  <data name="InvalidAssociativeAddOp" xml:space="preserve">
+    <value>invalid Associative_AddOp</value>
+  </data>
+  <data name="InvalidAssociativeBinaryOps" xml:space="preserve">
+    <value>invalid Associative_BinaryOps</value>
+  </data>
+  <data name="InvalidAssociativeClassdecl" xml:space="preserve">
+    <value>invalid Associative_classdecl</value>
+  </data>
+  <data name="InvalidAssociativeComparisonOp" xml:space="preserve">
+    <value>invalid Associative_ComparisonOp</value>
+  </data>
+  <data name="InvalidAssociativeDecoratedIdentifier" xml:space="preserve">
+    <value>invalid Associative_DecoratedIdentifier</value>
+  </data>
+  <data name="InvalidAssociativeFunctionaldecl" xml:space="preserve">
+    <value>invalid Associative_functiondecl</value>
+  </data>
+  <data name="InvalidAssociativeFunctionalStatement" xml:space="preserve">
+    <value>invalid Associative_FunctionalStatement</value>
+  </data>
+  <data name="InvalidAssociativeLanguageBlock" xml:space="preserve">
+    <value>invalid Associative_LanguageBlock</value>
+  </data>
+  <data name="InvalidAssociativeLogicalOp" xml:space="preserve">
+    <value>invalid Associative_LogicalOp</value>
+  </data>
+  <data name="InvalidAssociativeMulOp" xml:space="preserve">
+    <value>invalid Associative_MulOp</value>
+  </data>
+  <data name="InvalidAssociativeStatement" xml:space="preserve">
+    <value>invalid Associative_Statement</value>
+  </data>
+  <data name="InvalidAssociativeUnaryExpression" xml:space="preserve">
+    <value>invalid Associative_UnaryExpression</value>
+  </data>
+  <data name="InvalidAssociativeUnaryop" xml:space="preserve">
+    <value>invalid Associative_unaryop</value>
+  </data>
+  <data name="InvalidHydrogen" xml:space="preserve">
+    <value>invalid Hydrogen</value>
+  </data>
+  <data name="InvalidImportStatement" xml:space="preserve">
+    <value>invalid Import_Statement</value>
+  </data>
+  <data name="kw_break_expected" xml:space="preserve">
+    <value>kw_break expected</value>
+  </data>
+  <data name="kw_class_expected" xml:space="preserve">
+    <value>kw_class expected</value>
+  </data>
+  <data name="kw_constructor_expected" xml:space="preserve">
+    <value>kw_constructor expected</value>
+  </data>
+  <data name="Kw_continue_expected" xml:space="preserve">
+    <value>kw_continue expected</value>
+  </data>
+  <data name="kw_def_expected" xml:space="preserve">
+    <value>kw_def expected</value>
+  </data>
+  <data name="kw_elseif_expected" xml:space="preserve">
+    <value>kw_elseif expected</value>
+  </data>
+  <data name="kw_else_expected" xml:space="preserve">
+    <value>kw_else expected</value>
+  </data>
+  <data name="kw_extend_expected" xml:space="preserve">
+    <value>kw_extend expected</value>
+  </data>
+  <data name="kw_external_expected" xml:space="preserve">
+    <value>kw_external expected</value>
+  </data>
+  <data name="kw_for_expected" xml:space="preserve">
+    <value>kw_for expected</value>
+  </data>
+  <data name="kw_from_expected" xml:space="preserve">
+    <value>kw_from expected</value>
+  </data>
+  <data name="kw_heap_expected" xml:space="preserve">
+    <value>kw_heap expected</value>
+  </data>
+  <data name="kw_if_expected" xml:space="preserve">
+    <value>kw_if expected</value>
+  </data>
+  <data name="kw_import_expected" xml:space="preserve">
+    <value>kw_import expected</value>
+  </data>
+  <data name="Kw_Local_expected" xml:space="preserve">
+    <value>kw_local expected</value>
+  </data>
+  <data name="kw_native_expected" xml:space="preserve">
+    <value>kw_native expected</value>
+  </data>
+  <data name="kw_prefix_expected" xml:space="preserve">
+    <value>kw_prefix expected</value>
+  </data>
+  <data name="Kw_static_expected" xml:space="preserve">
+    <value>kw_static expected</value>
+  </data>
+  <data name="kw_while_expected" xml:space="preserve">
+    <value>kw_while expected</value>
+  </data>
+  <data name="lessequal_expected" xml:space="preserve">
+    <value>lessequal expected</value>
+  </data>
+  <data name="lessthan_expected" xml:space="preserve">
+    <value>lessthan expected</value>
+  </data>
+  <data name="Literal_false_expected" xml:space="preserve">
+    <value>literal_false expected</value>
+  </data>
+  <data name="Literal_null_expected" xml:space="preserve">
+    <value>literal_null expected</value>
+  </data>
+  <data name="Literal_true_expected" xml:space="preserve">
+    <value>literal_true expected</value>
+  </data>
+  <data name="neg_expected" xml:space="preserve">
+    <value>neg expected</value>
+  </data>
+  <data name="notequal_expected" xml:space="preserve">
+    <value>notequal expected</value>
+  </data>
+  <data name="not_expected" xml:space="preserve">
+    <value>not expected</value>
+  </data>
+  <data name="number_expected" xml:space="preserve">
+    <value>number expected</value>
+  </data>
+  <data name="openbracket_expected" xml:space="preserve">
+    <value>openbracket expected</value>
+  </data>
+  <data name="OpenCurlyBracketExpected" xml:space="preserve">
+    <value>"{" expected</value>
+  </data>
+  <data name="openparen_expected" xml:space="preserve">
+    <value>openparen expected</value>
+  </data>
+  <data name="period_expected" xml:space="preserve">
+    <value>period expected</value>
+  </data>
+  <data name="pipe_expected" xml:space="preserve">
+    <value>pipe expected</value>
+  </data>
+  <data name="PlusExpected" xml:space="preserve">
+    <value>"++" expected</value>
+  </data>
+  <data name="postfixed_replicationguide_expected" xml:space="preserve">
+    <value>postfixed_replicationguide expected</value>
+  </data>
+  <data name="PowerExpected" xml:space="preserve">
+    <value>"^" expected</value>
+  </data>
+  <data name="PrivatedExpected" xml:space="preserve">
+    <value>"private" expected</value>
+  </data>
+  <data name="ProtectedExpected" xml:space="preserve">
+    <value>"protected" expected</value>
+  </data>
+  <data name="PublicExpected" xml:space="preserve">
+    <value>"public" expected</value>
+  </data>
+  <data name="QuestionExpected" xml:space="preserve">
+    <value>??? expected</value>
+  </data>
+  <data name="QuestionMarkExpected" xml:space="preserve">
+    <value>"?" expected</value>
+  </data>
+  <data name="rangeop_expected" xml:space="preserve">
+    <value>rangeop_expected</value>
+  </data>
+  <data name="RemainderExpected" xml:space="preserve">
+    <value> "%" expected</value>
+  </data>
+  <data name="Replicationguide_postfix_expected" xml:space="preserve">
+    <value>replicationguide_postfix expected</value>
+  </data>
+  <data name="SlashExpected" xml:space="preserve">
+    <value>"/" expected</value>
+  </data>
+  <data name="textstring_expected" xml:space="preserve">
+    <value>textstring expected</value>
+  </data>
+  <data name="ThisSymbolNotExpectedInAssociativeFunctionalStatement" xml:space="preserve">
+    <value>this symbol not expected in Associative_FunctionalStatement</value>
+  </data>
+  <data name="ThisSymbolNotExpectedInAssociativeFunctionCallStatement" xml:space="preserve">
+    <value>this symbol not expected in Associative_FunctionCallStatement</value>
+  </data>
+  <data name="ThisSymbolNotExpectedInAssociativeNonAssignmentStatement" xml:space="preserve">
+    <value>this symbol not expected in Associative_NonAssignmentStatement</value>
+  </data>
+  <data name="ThisSymbolNotExpectedInAssociativeStatement" xml:space="preserve">
+    <value>this symbol not expected in Associative_Statement</value>
+  </data>
+  <data name="ThisSymbolNotExpectedInImportStatement" xml:space="preserve">
+    <value>this symbol not expected in Import_Statement</value>
+  </data>
+  <data name="ThrowExpected" xml:space="preserve">
+    <value>"throw" expected</value>
+  </data>
+  <data name="TryExpected" xml:space="preserve">
+    <value>"try" expected</value>
+  </data>
+  <data name="InvalidAssociativeAccessFunctiondecl" xml:space="preserve">
+    <value>invalid Imperative_functiondecl</value>
+  </data>
+  <data name="InvalidAssociativeBitOp" xml:space="preserve">
+    <value>invalid Associative_BitOp</value>
+  </data>
+  <data name="InvalidAssociativeFactor" xml:space="preserve">
+    <value>invalid Associative_Factor</value>
+  </data>
+  <data name="InvalidAssociativeNameReference" xml:space="preserve">
+    <value>invalid Associative_NameReference</value>
+  </data>
+  <data name="InvalidAssociativeNegop" xml:space="preserve">
+    <value>invalid Associative_negop</value>
+  </data>
+  <data name="InvalidAssociativeNumber" xml:space="preserve">
+    <value>invalid Associative_Number</value>
+  </data>
+  <data name="InvalidAssociativePostFixOp" xml:space="preserve">
+    <value>invalid Associative_PostFixOp</value>
+  </data>
+  <data name="InvalidImperativeAssignstmt" xml:space="preserve">
+    <value>invalid Imperative_assignstmt</value>
+  </data>
+  <data name="InvalidImperativeDecoratedIdentifier" xml:space="preserve">
+    <value>invalid Imperative_decoratedIdentifier</value>
+  </data>
+  <data name="InvalidImperativeForLoop" xml:space="preserve">
+    <value>invalid Imperative_forloop</value>
+  </data>
+  <data name="InvalidImperativeIfstmt" xml:space="preserve">
+    <value>invalid Imperative_ifstmt</value>
+  </data>
+  <data name="InvalidImperativeLanguageblock" xml:space="preserve">
+    <value>invalid Imperative_languageblock</value>
+  </data>
+  <data name="InvalidImperativeStmt" xml:space="preserve">
+    <value>invalid Imperative_stmt</value>
+  </data>
 </root>
