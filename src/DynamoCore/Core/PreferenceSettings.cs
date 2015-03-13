@@ -163,13 +163,19 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Save PreferenceSettings in a default directory when no path is specified
+        /// Save PreferenceSettings in a default directory when no path is 
+        /// specified.
         /// </summary>
+        /// <param name="preferenceFilePath">The file path to save preference
+        /// settings to. If this parameter is null or empty string, preference 
+        /// settings will be saved to the default path.</param>
         /// <returns>Whether file is saved or error occurred.</returns>
         public bool SaveInternal(string preferenceFilePath)
         {
             if (!string.IsNullOrEmpty(DynamoTestPath))
+            {
                 preferenceFilePath = DynamoTestPath;
+            }
 
             return Save(preferenceFilePath);
         }
