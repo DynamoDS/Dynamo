@@ -972,7 +972,7 @@ You will get a chance to save your work.</value>
   </data>
   <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
     <value>Submit Bug To Github</value>
-    <comment>Submit a but on github</comment>
+    <comment>Submit a bug on github</comment>
   </data>
   <data name="CrashPromptDialogTitle" xml:space="preserve">
     <value>Dynamo has crashed</value>
