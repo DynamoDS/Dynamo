@@ -19,18 +19,23 @@
 
     <MediaTemplate EmbedCab="yes" />
 
-    <!--<Binary Id="DynamoInstallActions.CA.dll"
+    <Binary Id="DynamoInstallActions.CA.dll"
             src="$(var.base)\src\DynamoInstallActions\bin\$(var.Configuration)\DynamoInstallActions.CA.dll" />
 
-    <CustomAction Id="UninstallDynamo07"
+    <CustomAction Id="UninstallDynamo"
                 Return="check"
-                Execute="immediate"
+                Execute="deferred"
                 BinaryKey="DynamoInstallActions.CA.dll"
-                DllEntry="UninstallDynamo07" >
-    </CustomAction>-->
+                DllEntry="UninstallDynamo"
+                Impersonate="no">
+    </CustomAction>
+
+    <CustomAction Id="SetCustomActionDataValue" Return="check" Property="UninstallDynamo" 
+                  Value="Major=$(var.Major);Minor=$(var.Minor);Rev=$(var.Rev)" />
 
     <InstallExecuteSequence>
-      <!--<Custom Action="UninstallDynamo07" Before="CostInitialize">NOT Installed</Custom>-->
+      <Custom Action="SetCustomActionDataValue" Before="UninstallDynamo">NOT Installed</Custom>
+      <Custom Action="UninstallDynamo" After="InstallInitialize">NOT Installed</Custom>
     </InstallExecuteSequence>
 
     <Property Id="ARPNOMODIFY">1</Property>
