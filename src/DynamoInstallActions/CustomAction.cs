@@ -18,10 +18,9 @@ namespace DynamoInstallActions
             {
                 string UninstallString;
                 string UninstallParam;
-                session.Log("Before checking");
                 if (!GetUninstallString(session, out UninstallString, out UninstallParam))
                 {
-                    return ActionResult.NotExecuted;
+                    return ActionResult.SkipRemainingActions;
                 }
 
                 if (!string.IsNullOrEmpty(UninstallString) && File.Exists(UninstallString))
@@ -35,7 +34,6 @@ namespace DynamoInstallActions
                 }
 
                 return ActionResult.Success;
-
             }
             catch (Exception ex)
             {
@@ -94,7 +92,7 @@ namespace DynamoInstallActions
                 {
                     UninstallString = string.Empty;
                     UninstallParam = string.Empty;
-                    return false;
+                    return true;
                 }
             }
 
