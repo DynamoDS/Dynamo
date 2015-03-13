@@ -558,7 +558,7 @@ namespace Dynamo.Models
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <filterpriority>2</filterpriority>
-        public virtual void Dispose()
+        public void Dispose()
         {
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.__TempCoreHostForRefactoring.Cleanup();
