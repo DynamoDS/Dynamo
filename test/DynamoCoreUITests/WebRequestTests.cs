@@ -20,7 +20,11 @@ namespace DynamoCoreUITests
             var openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\web_request\WebRequest.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            var ws = Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            AssertEvaluationCount(ws, 1);
+
+            // Ensure that the response is valid
             var webRequestNode = ws.FirstNodeFromWorkspace<WebRequest>();
             Assert.NotNull(webRequestNode);
 
