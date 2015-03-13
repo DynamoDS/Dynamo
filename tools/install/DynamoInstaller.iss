@@ -107,15 +107,15 @@ Source: temp\samples\*.*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\samp
 Source: temp\definitions\*; DestDir: {commonappdata}\Dynamo\{#Major}.{#Minor}\definitions; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 
 [Registry]
-Root: HKCU; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; ValueType: dword; ValueName: "installed"; ValueData: "1"
+Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; Flags: uninsdeletekey
+Root: HKCU64; Subkey: "Software\{#ProductName}\{#Major}.{#Minor}"; ValueType: dword; ValueName: "installed"; ValueData: "1"
 
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; Flags: uninsdeletekey
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "InstallLocation"; ValueData: "{app}\"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallString"; ValueData: "{app}\Uninstall\unins000.exe"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallParam"; ValueData: "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /UPDATE"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "Version"; ValueData: "{#FullVersion}"
-Root: HKLM; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: dword; ValueName: "RevVersion"; ValueData: "{#Rev}"
+Root: HKLM64; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; Flags: uninsdeletekey
+Root: HKLM64; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "InstallLocation"; ValueData: "{app}\"
+Root: HKLM64; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallString"; ValueData: "{app}\Uninstall\unins000.exe"
+Root: HKLM64; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "UninstallParam"; ValueData: "/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /UPDATE"
+Root: HKLM64; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: string; ValueName: "Version"; ValueData: "{#FullVersion}"
+Root: HKLM64; Subkey: "Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}"; ValueType: dword; ValueName: "RevVersion"; ValueData: "{#Rev}"
 
 
 [UninstallDelete]
@@ -197,10 +197,10 @@ begin
   sMsg2 := ExpandConstant(' In order to proceed with the installation, you need to uninstall {#ProductName} {#Major}.{#Minor} manually.')	
   sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}');
   sUninstallString := '';
-  RegQueryStringValue(HKLM, sUnInstPath, 'UnInstallString', sUninstallString);
+  RegQueryStringValue(HKLM64, sUnInstPath, 'UnInstallString', sUninstallString);
     if (sUninstallString <> '') then
 	begin
-		if not RegQueryDWordValue(HKLM, sUnInstPath, 'RevVersion', revision) then
+		if not RegQueryDWordValue(HKLM64, sUnInstPath, 'RevVersion', revision) then
 			begin
 				sMsg := ExpandConstant('Could not determine the revision number for already installed {#ProductName} {#Major}.{#Minor}.')
 				MsgBox(sMsg + sMsg2, mbInformation, MB_OK);
@@ -214,7 +214,7 @@ begin
 			end
 		else
 			begin
-				RegQueryStringValue(HKLM, sUnInstPath, 'UnInstallParam', sUninstallParam);
+				RegQueryStringValue(HKLM64, sUnInstPath, 'UnInstallParam', sUninstallParam);
 				Exec(sUnInstallString, sUnInstallParam, '', SW_HIDE, ewWaitUntilTerminated, iResultCode);
 			end
 	end;
