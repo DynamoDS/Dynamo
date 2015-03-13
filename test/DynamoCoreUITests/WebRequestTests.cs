@@ -30,6 +30,13 @@ namespace DynamoCoreUITests
 
             var response = GetPreviewValue(webRequestNode.GUID.ToString()).ToString();
             Assert.True(response.Contains("Search the world's information"));
+
+            // Switch to periodic mode
+            ws.RunSettings.RunPeriod = 100;
+            ws.RunSettings.RunType = RunType.Periodic;
+            System.Threading.Thread.Sleep(1000);
+
+            Assert.Greater(ws.EvaluationCount, 3);
         }
     }
 }
