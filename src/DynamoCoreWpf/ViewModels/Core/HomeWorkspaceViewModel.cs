@@ -100,7 +100,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 {
                     if (nodeViewModel.NodeModel.GUID == t)
                     {
-                        nodeViewModel.ShowExecutionPreview = true;
+                        nodeViewModel.ShowExecutionPreview = nodeViewModel.DynamoViewModel.ShowRunPreview && true;
                         nodeViewModel.IsNodeAddedRecently = false;
                     }
                 }

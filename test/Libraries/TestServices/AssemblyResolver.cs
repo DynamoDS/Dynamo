@@ -21,8 +21,8 @@ namespace TestServices
         {
             if (resolverSetup) return;
 
-            var remoteConfig = new RemoteTestSessionConfig();
-            DynamoPathManager.Instance.InitializeCore(remoteConfig.DynamoCorePath);
+            var testConfig = new TestSessionConfiguration();
+            DynamoPathManager.Instance.InitializeCore(testConfig.DynamoCorePath);
             AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
 
             resolverSetup = true;

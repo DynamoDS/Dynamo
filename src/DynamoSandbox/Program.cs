@@ -61,7 +61,7 @@ namespace DynamoSandbox
             PreloadShapeManager(ref geometryFactoryPath);
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     GeometryFactoryPath = geometryFactoryPath,
                     Preferences = PreferenceSettings.Load()
@@ -111,10 +111,12 @@ namespace DynamoSandbox
                 // DynamoSandbox.exe /c "C:\file path\file.xml"
                 // 
                 var commandFilePath = string.Empty;
+
                 for (var i = 0; i < args.Length; ++i)
                 {
-                    // Looking for '/c'
                     var arg = args[i];
+
+                    // Looking for '/c'
                     if (arg.Length != 2 || (arg[0] != '/'))
                         continue;
 

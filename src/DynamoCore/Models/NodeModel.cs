@@ -88,6 +88,11 @@ namespace Dynamo.Models
 
         public bool HasRenderPackages { get; set; }
 
+        /// <summary>
+        /// The unique name that was created the node by
+        /// </summary>
+        public virtual string CreationName { get { return this.Name; } }
+
         #endregion
 
         #region events
@@ -1173,6 +1178,9 @@ namespace Dynamo.Models
             switch (portType)
             {
                 case PortType.Input:
+
+                    bool hasDefaultValue = data.DefaultValue != null;
+
                     if (inPorts.Count > index)
                     {
                         p = inPorts[index];
@@ -1181,7 +1189,7 @@ namespace Dynamo.Models
                         //e.x. when the node is being re-registered during a custom
                         //node save
                         p.PortName = data.NickName;
-                        if (data.HasDefaultValue)
+                        if (hasDefaultValue)
                         {
                             p.UsingDefaultValue = true;
                             p.DefaultValueEnabled = true;
@@ -1192,8 +1200,8 @@ namespace Dynamo.Models
 
                     p = new PortModel(portType, this, data)
                     {
-                        UsingDefaultValue = data.HasDefaultValue,
-                        DefaultValueEnabled = data.HasDefaultValue
+                        UsingDefaultValue = hasDefaultValue,
+                        DefaultValueEnabled = hasDefaultValue
                     };
 
                     p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
@@ -1342,6 +1350,20 @@ namespace Dynamo.Models
             if (name == "NickName")
             {
                 NickName = value;
+                return true;
+            }
+
+            if (name == "UsingDefaultValue")
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    return true;
+
+                // Here we expect a string that represents an array of Boolean values which are separated by ";"
+                var arr = value.Split(';');
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                }
                 return true;
             }
 

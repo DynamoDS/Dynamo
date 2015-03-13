@@ -296,13 +296,14 @@ namespace Dynamo.Controls
         }
     }
 
-    public class SnapRegionMarginConverter : IValueConverter
+    public class SnapRegionMarginConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
+        public object Convert(object[] values, Type targetType, object parameter,
           CultureInfo culture)
         {
             Thickness thickness = new Thickness(0, 0, 0, 0);
-            PortModel port = value as PortModel;
+            var actualWidth = (double)values[0];
+            PortModel port = values[1] as PortModel;
             if (port != null)
             {
                 PortType type = port.PortType;
@@ -313,33 +314,33 @@ namespace Dynamo.Controls
                 switch (type)
                 {
                     case PortType.Input:
-                        thickness = new Thickness(left - 25, top + 3, right + 0, bottom + 3);
+                        thickness = new Thickness(left - 25, top + 3, right + actualWidth, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom - 10);
+                            thickness = new Thickness(left - 25, top - 10, right + actualWidth, bottom - 10);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
-                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom + 3);
+                            thickness = new Thickness(left - 25, top - 10, right + actualWidth, bottom + 3);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
+                            thickness = new Thickness(left - 25, top + 3, right + actualWidth, bottom - 10);
                         break;
 
                     case PortType.Output:
-                        thickness = new Thickness(left + 0, top + 3, right - 25, bottom + 3);
+                        thickness = new Thickness(left + actualWidth, top + 3, right - 25, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left + 0, top - 10, right - 25, bottom - 10);
+                            thickness = new Thickness(left + actualWidth, top - 10, right - 25, bottom - 10);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
-                            thickness = new Thickness(left + 0, top - 10, right - 25, bottom + 3);
+                            thickness = new Thickness(left + actualWidth, top - 10, right - 25, bottom + 3);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left + 0, top + 3, right - 25, bottom - 10);
+                            thickness = new Thickness(left + actualWidth, top + 3, right - 25, bottom - 10);
                         break;
                 }
             }
             return thickness;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter,
+        public object[] ConvertBack(object value, Type[] targetType, object parameter,
          CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 
