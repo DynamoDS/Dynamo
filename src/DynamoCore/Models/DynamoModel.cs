@@ -362,10 +362,23 @@ namespace Dynamo.Models
         {
         }
 
+        public interface IStartConfiguration
+        {
+            string Context { get; set; }
+            string DynamoCorePath { get; set; }
+            IPreferences Preferences { get; set; }
+            bool StartInTestMode { get; set; }
+            IUpdateManager UpdateManager { get; set; }
+            ISchedulerThread SchedulerThread { get; set; }
+            string GeometryFactoryPath { get; set; }
+            IAuthProvider AuthProvider { get; set; }
+            string PackageManagerAddress { get; set; }
+        }
+
         /// <summary>
-        ///     Initialization settings for DynamoModel.
+        /// Initialization settings for DynamoModel.
         /// </summary>
-        public struct StartConfiguration
+        public struct DefaultStartConfiguration : IStartConfiguration
         {
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
@@ -385,7 +398,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public static DynamoModel Start()
         {
-            return Start(new StartConfiguration());
+            return Start(new DefaultStartConfiguration());
         }
 
         /// <summary>
@@ -393,7 +406,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static DynamoModel Start(StartConfiguration configuration)
+        public static DynamoModel Start(IStartConfiguration configuration)
         {
             // where necessary, assign defaults
             if (string.IsNullOrEmpty(configuration.Context))
@@ -402,7 +415,7 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        protected DynamoModel(StartConfiguration config)
+        protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;

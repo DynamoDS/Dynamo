@@ -21,8 +21,8 @@ namespace TestServices
         {
             if (assemblyHelper != null) return;
 
-            var remoteConfig = new RemoteTestSessionConfig();
-            assemblyHelper = new AssemblyHelper(remoteConfig.DynamoCorePath, null);
+            var testConfig = new TestSessionConfiguration();
+            assemblyHelper = new AssemblyHelper(testConfig.DynamoCorePath, null);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 

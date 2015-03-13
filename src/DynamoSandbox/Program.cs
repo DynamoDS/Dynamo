@@ -63,7 +63,7 @@ namespace DynamoSandbox
             var pathResolver = new PathResolver(preloaderLocation);
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     PathResolver = pathResolver,
                     GeometryFactoryPath = geometryFactoryPath

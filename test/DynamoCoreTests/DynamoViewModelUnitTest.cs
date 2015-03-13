@@ -99,7 +99,7 @@ namespace Dynamo.Tests
             preloader.Preload();
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     PathResolver = pathResolver,
                     StartInTestMode = true,
