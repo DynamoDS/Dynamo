@@ -217,9 +217,9 @@ begin
 				MsgBox(sMsg + sMsg2, mbInformation, MB_OK);
 				result := false
 			end
-		else if (revision >= {#Rev}) then
+		else if (revision > {#Rev}) then
 			begin
-				sMsg := ExpandConstant('{#ProductName} {#ProductVersion} or higher is already installed.')
+				sMsg := ExpandConstant('A newer version of {#ProductName} {#ProductVersion} is already installed.')
 				MsgBox(sMsg + sMsg2, mbInformation, MB_OK);
 				result := false
 			end
