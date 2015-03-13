@@ -2,9 +2,9 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <Product Id="{28362521-26E2-4E78-BFCF-BB0D1E8F5C2A}"
-           Name="$(var.DynPdtName)"
+           Name="$(var.PdtName) $(var.Major).$(var.Minor).$(var.Rev)"
            Language="1033"
-           Version="$(var.DynVer).$(var.DynRev)"
+           Version="$(var.Major).$(var.Minor).$(var.Rev)"
            Manufacturer="Dynamo"
            UpgradeCode="{EFF4EBAD-E976-4EA8-A110-537D6D0B669A}">
 
@@ -39,7 +39,7 @@
     <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
 
     <Property Id="DYNAMO_INSTALLDIR"></Property>
-    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo $(var.DynVer)" After="LaunchConditions"></SetProperty>
+    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo $(var.Major).$(var.Minor)" After="LaunchConditions"></SetProperty>
 
     <Feature Id="DYNAMO_CORE_FEATURE"
              Title="Dynamo Core"
@@ -67,12 +67,12 @@
       <Directory Id="DYNAMO_INSTALLDIR"/>
       <Directory Id="CommonAppDataFolder">
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
-          <Directory Id="PROGDATA" Name="$(var.DynVer)"/>
+          <Directory Id="PROGDATA" Name="$(var.Major).$(var.Minor)"/>
         </Directory>
       </Directory>
       <Directory Id="AppDataFolder">
         <Directory Id="DYNAMO_APPDATA" Name="Dynamo">
-          <Directory Id="APPDATA" Name="$(var.DynVer)">
+          <Directory Id="APPDATA" Name="$(var.Major).$(var.Minor)">
             <Directory Id="definitions" Name="definitions" />
             <Directory Id="logs" Name="Logs" />
             <Directory Id="packages" Name="packages" />
@@ -85,23 +85,24 @@
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10" Win64="yes">
         <Shortcut Id="ApplicationStartMenuShortcut"
-                  Name="Dynamo $(var.DynVer).$(var.DynRev)"
+                  Name="Dynamo $(var.Major).$(var.Minor).$(var.Rev)"
                   Description="Dynamo Sandbox"
                   Target="[DYNAMO_INSTALLDIR]\DynamoSandbox.exe"
                   WorkingDirectory="DYNAMO_INSTALLDIR"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
 
-        <RegistryKey Root="HKCU" Key="Software\Dynamo\$(var.DynVer)" Action="createAndRemoveOnUninstall">
+        <RegistryKey Root="HKCU" Key="Software\Dynamo\$(var.Major).$(var.Minor)" Action="createAndRemoveOnUninstall">
           <RegistryValue Name="installed" Type="integer" Value="1" KeyPath="yes" />
-          <RegistryValue Name="InstallLocation" Type="string" Value="[DYNAMO_INSTALLDIR]" />
         </RegistryKey>
 
         <RegistryKey Root="HKLM"
-                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]"
+                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.PdtName) $(var.Major).$(var.Minor)"
               Action="createAndRemoveOnUninstall">
           <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
-          <RegistryValue Name="DisplayName" Value="[ProductName]" Type="string"/>
-          <RegistryValue Name="DisplayVersion" Value="[ProductVersion]" Type="string"/>
+          <RegistryValue Name="UninstallString" Value="MsiExec.exe" Type="string" />
+          <RegistryValue Name="UninstallParam" Value="/X[ProductCode] /quiet" Type="string" />
+          <RegistryValue Name="Version" Value="$(var.FullVersion)" Type="string" />
+          <RegistryValue Name="RevVersion" Value="$(var.Rev)" Type="integer" />
         </RegistryKey>
         
         <CreateFolder Directory="definitions" />
