@@ -1,0 +1,38 @@
+<Workspace Version="0.8.0.681" X="43.9160723582899" Y="-39.5572980778848" zoom="0.888789228297156" Name="Home" RunType="Manual" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="1b4ed70d-5dd6-4750-8f53-0c466cac399b" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="4" y="34" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{12.129,8.026,11.899,7.83};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="9433d723-3708-4773-9b9c-c6def0f17b18" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="415" y="36" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x%y;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="55f03be2-8720-4648-b989-996b261e1502" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="596" y="28" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="num==0;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="76d8f16e-3664-4e89-83fc-3db6838d5450" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="27" y="149" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="2;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="0b9eca5b-835b-493e-af4b-84a3366d75d3" type="Dynamo.Nodes.DSFunction" nickname="%" x="437" y="274.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="%@var[]..[],var[]..[]" />
+    <DSIronPythonNode.PythonNode guid="7e1f9810-2f4f-4911-975b-d392afc3a674" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="438" y="485.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">
+      <Script>import clr
+clr.AddReference('ProtoGeometry')
+from Autodesk.DesignScript.Geometry import *
+#The inputs to this node will be stored as a list in the IN variable.
+dataEnteringNode = IN
+
+#Assign your output to the OUT variable
+numbers = IN[0]
+num = IN[1]
+
+results = []
+for i in range(len(numbers)):
+    results.append(numbers[i] % num)
+
+OUT = results
+</Script>
+    </DSIronPythonNode.PythonNode>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1b4ed70d-5dd6-4750-8f53-0c466cac399b" start_index="0" end="9433d723-3708-4773-9b9c-c6def0f17b18" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1b4ed70d-5dd6-4750-8f53-0c466cac399b" start_index="0" end="0b9eca5b-835b-493e-af4b-84a3366d75d3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1b4ed70d-5dd6-4750-8f53-0c466cac399b" start_index="0" end="7e1f9810-2f4f-4911-975b-d392afc3a674" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9433d723-3708-4773-9b9c-c6def0f17b18" start_index="0" end="55f03be2-8720-4648-b989-996b261e1502" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="76d8f16e-3664-4e89-83fc-3db6838d5450" start_index="0" end="0b9eca5b-835b-493e-af4b-84a3366d75d3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="76d8f16e-3664-4e89-83fc-3db6838d5450" start_index="0" end="7e1f9810-2f4f-4911-975b-d392afc3a674" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="76d8f16e-3664-4e89-83fc-3db6838d5450" start_index="0" end="9433d723-3708-4773-9b9c-c6def0f17b18" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
