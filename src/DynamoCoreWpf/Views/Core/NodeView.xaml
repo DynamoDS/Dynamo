@@ -355,16 +355,16 @@
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
                    Fill="Transparent"
-                   Stroke="#4192d9"
+                   Stroke="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
                    StrokeThickness="2"
                    IsHitTestVisible="False"
                    Canvas.ZIndex="41"
                    Margin="-1">
             <Rectangle.Visibility>
-                <Binding Path="IsSelected"
+                <Binding Path="PreviewState"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
-                         Converter="{StaticResource BooleanToVisibilityConverter}">
+                         Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}">
                 </Binding>
             </Rectangle.Visibility>
         </Rectangle>
@@ -375,14 +375,15 @@
                    Grid.ColumnSpan="3"
                    Grid.RowSpan="3"
                    Fill="Transparent"
-                   Stroke="#7E43F041"
-                   StrokeThickness="8"
+                   Stroke="#FFF000"
+                   StrokeThickness="5"
                    StrokeLineJoin="Round"
-                   IsHitTestVisible="False"
-                   Canvas.ZIndex="20"
-                   Margin="-10">
+                   IsHitTestVisible="False"                   
+                   Canvas.ZIndex="100"
+                   Opacity="2"
+                   Margin="-1">
             <Rectangle.Visibility>
-                <Binding Path="WillForceReExecuteOfNode"
+                <Binding Path="ShowExecutionPreview"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
                          Converter="{StaticResource BooleanToVisibilityConverter}">

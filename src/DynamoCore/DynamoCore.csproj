@@ -149,6 +149,7 @@ limitations under the License.
     <Compile Include="Core\Threading\AggregateRenderPackageAsyncTask.cs" />
     <Compile Include="Core\Threading\NotifyRenderPackagesReadyAsyncTask.cs" />
     <Compile Include="Core\Threading\QueryMirrorDataAsyncTask.cs" />
+    <Compile Include="Core\Threading\PreviewGraphAsyncTask.cs" />
     <Compile Include="Core\Threading\UpdateRenderPackageAsyncTask.cs" />
     <Compile Include="DSEngine\CodeCompletionServices.cs" />
     <Compile Include="Models\DynamoModelCommands.cs" />

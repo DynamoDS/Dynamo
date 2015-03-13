@@ -569,6 +569,16 @@ You will get a chance to save your work.</value>
     <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&amp;#x0a;It does not contain your graph or any personal data</value>
     <comment>Setting menu | Tooltip for enable summary reporting during usage menu item</comment>
   </data>
+  <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
+    <value>Show Run Preview</value>
+    <comment>Setting menu | Show Run Preview</comment>
+  </data>
+  <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
+    <value>Execution preview is not available when running automatically</value>
+  </data>
+  <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
+    <value>Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph</value>
+  </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
     <value>Fractional Foot</value>
     <comment>Setting menu | Fractional foot</comment>

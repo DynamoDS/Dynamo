@@ -9,8 +9,6 @@ using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 
-using ProtoCore.Namespace;
-
 namespace Dynamo.Models
 {
     public class HomeWorkspaceModel : WorkspaceModel
@@ -20,6 +18,9 @@ namespace Dynamo.Models
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
 
+        private bool graphExecuted;              
+        public readonly bool VerboseLogging;
+
         /// <summary>
         ///     Before the Workspace has been built the first time, we do not respond to 
         ///     NodeModification events.
@@ -27,7 +28,7 @@ namespace Dynamo.Models
         private bool silenceNodeModifications = true;
 
         public RunSettings RunSettings { get; protected set; }
-
+       
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
@@ -53,6 +54,7 @@ namespace Dynamo.Models
             bool isTestMode)
             : base(e, n, info, factory)
         {
+
             RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 
             PreloadedTraceData = traceData;
@@ -126,6 +128,7 @@ namespace Dynamo.Models
             EngineController.NodeDeleted(node);
         }
 
+        
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
@@ -156,6 +159,10 @@ namespace Dynamo.Models
             {
                 RequestRun();
             }
+
+            //Find the next executing nodes on when Run-Auto is not set 
+            if (RunSettings.RunType == RunType.Manual)
+                GetExecutingNodes();
         }
 
         /// <summary>
@@ -324,7 +331,9 @@ namespace Dynamo.Models
 
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
-                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+            {
+                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);                
+            }
 
             foreach (var node in Nodes)
             {
@@ -333,6 +342,9 @@ namespace Dynamo.Models
 
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
+
+            //set the node execution preview to false;
+            OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
 
             // This method is guaranteed to be called in the context of 
             // ISchedulerThread (for Revit's case, it is the idle thread).
@@ -362,6 +374,7 @@ namespace Dynamo.Models
         /// running context.</param>
         public void Run()
         {
+            graphExecuted = true;
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check whether an engine controller is available.
@@ -418,6 +431,45 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
+        public event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
+        public virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
+        {
+            var handler = SetNodeDeltaState;
+            if (handler != null) handler(this, e);
+        }
+
+        public void GetExecutingNodes()
+        {
+            var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
+                        
+            //The Graph is executed and Show node execution is checked on the Debug menu
+            if (graphExecuted)
+            {
+                if (task.Initialize(EngineController, this) != null)
+                {
+                    task.Completed += OnPreviewGraphCompleted;
+                    scheduler.ScheduleForExecution(task);
+                }
+            }
+            //Show node exection is checked but the graph has not RUN
+            else
+            {
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs); 
+            }
+        }
+
+        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
+        {
+            var updateTask = asyncTask as PreviewGraphAsyncTask;
+            if (updateTask != null)
+            {
+                var nodeGuids = updateTask.previewGraphData;
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids,graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs);               
+            }            
+        }
+       
         #endregion
     }
 }
