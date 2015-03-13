@@ -89,7 +89,7 @@ namespace Dynamo.DSEngine
                 {
                     x.Function = this;
                     return x;
-                });
+                }).ToList();
 
             var type = funcDescParams.FunctionType;
             var inputParameters = new List<Tuple<string, string>>();
