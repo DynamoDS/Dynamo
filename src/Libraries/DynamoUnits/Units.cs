@@ -351,7 +351,7 @@ namespace DynamoUnits
             }
         }
 
-        [Obsolete("SIUnit.ConvertToHostUnits is obsolete. Please use Convert Units.", false)]
+        [Obsolete("SIUnit.ConvertToHostUnits is obsolete. Please use Convert Between Units.", false)]
         public abstract double ConvertToHostUnits();
     }
 
@@ -608,7 +608,7 @@ namespace DynamoUnits
             return length;
         }
 
-        [Obsolete("Length.ConvertToHostUnits is obsolete. Please Convert Units instead", false)]
+        [Obsolete("Length.ConvertToHostUnits is obsolete. Please use Convert Between Units.", false)]
         public override double ConvertToHostUnits()
         {
             switch (HostApplicationInternalLengthUnit)
@@ -983,7 +983,7 @@ namespace DynamoUnits
             }
         }
 
-        [Obsolete("Area.ConvertToHostUnits is obsolete. Please use Convert units instead.", false)]
+        [Obsolete("Area.ConvertToHostUnits is obsolete. Please use Convert Between Units.", false)]
         public override double ConvertToHostUnits()
         {
             switch (HostApplicationInternalAreaUnit)
@@ -1336,7 +1336,7 @@ namespace DynamoUnits
             }
         }
 
-        [Obsolete("Volume.ConvertToHostUnits is obsolete. Please use Convert Units.", false)]
+        [Obsolete("Volume.ConvertToHostUnits is obsolete. Please use Convert Between Units.", false)]
         public override double ConvertToHostUnits()
         {
             switch (VolumeUnit)

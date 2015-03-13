@@ -2542,21 +2542,7 @@ Associative_IdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                                 string rhsName = null;
                                                 ProtoCore.AST.AssociativeAST.ExprListNode dimList = null;
                                                 int dim = 0;
-                                                if (rnode is ProtoCore.AST.AssociativeAST.IdentifierNode)
-                                                {
-                                                    rhsName = rnode.Name;
-                                                    ProtoCore.AST.AssociativeAST.IdentifierNode rhsINode = rnode as ProtoCore.AST.AssociativeAST.IdentifierNode;
-                                                    if (rhsINode.ArrayDimensions != null)
-                                                    {
-                                                        dimList = ProtoCore.Utils.CoreUtils.BuildArrayExprList(rhsINode.ArrayDimensions);
-                                                        dim = dimList.list.Count;
-                                                    }
-                                                    else
-                                                    {
-                                                        dimList = new ProtoCore.AST.AssociativeAST.ExprListNode();
-                                                    }
-                                                }
-                                                else if (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
+                                                if (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
                                                 {
                                                     ProtoCore.AST.AssociativeAST.FunctionCallNode rhsFNode = rnode as ProtoCore.AST.AssociativeAST.FunctionCallNode;
                                                     node = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(node, rhsFNode, core);
