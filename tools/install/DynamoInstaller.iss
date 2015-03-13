@@ -166,6 +166,7 @@ var
   sUnInstallParam: String;
   revision: Cardinal;
   iResultCode: Integer;
+  exeVersion: String;
   sMsg: String;
   sMsg2: String;
 begin
@@ -193,6 +194,16 @@ begin
 	  MsgBox('Dynamo requires an installation of Revit 2014, Revit 2015 or Revit 2016 in order to proceed!', mbCriticalError, MB_OK);
       result := false;
     end
+
+  // if old EXE version of 0.8.0 is installed, uninstall it
+  sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{6B5FA6CA-9D69-46CF-B517-1F90C64F7C0B}_is1'
+  sUnInstallString := ''
+  exeVersion := ''
+  RegQueryStringValue(HKLM, sUnInstPath, 'UnInstallString', sUninstallString)
+  RegQueryStringValue(HKLM, sUnInstPath, 'DisplayVersion', exeVersion)
+  if (sUnInstallString <> '') and (exeVersion = '0.8.0') then
+	Exec(RemoveQuotes(sUnInstallString), '/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /UPDATE', '', SW_HIDE, ewWaitUntilTerminated, iResultCode);
+
 
   sMsg2 := ExpandConstant(' In order to proceed with the installation, you need to uninstall {#ProductName} {#Major}.{#Minor} manually.')	
   sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}');
