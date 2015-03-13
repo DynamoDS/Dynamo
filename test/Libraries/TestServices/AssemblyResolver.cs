@@ -19,10 +19,18 @@ namespace TestServices
         /// </summary>
         public void Setup()
         {
+            Setup((new TestSessionConfiguration()).DynamoCorePath);
+        }
+
+        /// <summary>
+        /// Setup the assembly resolver, specifying a core path.
+        /// </summary>
+        /// <param name="corePath"></param>
+        public void Setup(string corePath)
+        {
             if (assemblyHelper != null) return;
 
-            var testConfig = new TestSessionConfiguration();
-            assemblyHelper = new AssemblyHelper(testConfig.DynamoCorePath, null);
+            assemblyHelper = new AssemblyHelper(corePath, null);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 

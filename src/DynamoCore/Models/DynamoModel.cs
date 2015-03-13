@@ -367,6 +367,7 @@ namespace Dynamo.Models
             string Context { get; set; }
             string DynamoCorePath { get; set; }
             IPreferences Preferences { get; set; }
+            IPathResolver PathResolver { get; set; }
             bool StartInTestMode { get; set; }
             IUpdateManager UpdateManager { get; set; }
             ISchedulerThread SchedulerThread { get; set; }

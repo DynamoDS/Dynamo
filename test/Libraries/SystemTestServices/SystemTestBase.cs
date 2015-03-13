@@ -33,7 +33,6 @@ namespace SystemTestServices
         protected string workingDirectory;
         private Preloader preloader;
         private AssemblyResolver assemblyResolver;
-        private TestSessionConfiguration testConfig;
 
         #region protected properties
 
