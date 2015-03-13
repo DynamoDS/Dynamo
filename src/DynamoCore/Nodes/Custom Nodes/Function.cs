@@ -82,6 +82,62 @@ namespace Dynamo.Nodes
             element.AppendChild(outEl);
         }
 
+        /// <summary>
+        ///     Complete a definition for a proxy custom node instance 
+        ///     by adding input and output ports as far as we don't have
+        ///     a corresponding custom node workspace
+        /// </summary>
+        /// <param name="funcID">Identifier of the custom node instance</param>
+        /// <param name="inputs">Number of inputs</param>
+        /// <param name="outputs">Number of outputs</param>
+        internal void LoadNode(Guid nodeId, int inputs, int outputs)
+        {
+            GUID = nodeId;
+            
+            // make the custom node instance be in sync 
+            // with its definition if it's needed
+            if (!Controller.IsInSyncWithNode(this))
+            {
+                Controller.SyncNodeWithDefinition(this);
+            }
+            else
+            {
+                PortData data;
+                if (outputs > 0)
+                {
+                    // create outputs for the node
+                    for (int i = 0; i < outputs; i++)
+                    {
+                        data = new PortData("", "Output #" + (i + 1));
+                        if (OutPortData.Count > i)
+                            OutPortData[i] = data;
+                        else
+                            OutPortData.Add(data);
+                    }
+                }
+
+                if (inputs > 0)
+                {
+                    // create inputs for the node
+                    for (int i = 0; i < inputs; i++)
+                    {
+                        data = new PortData("", "Input #" + (i + 1));
+                        if (InPortData.Count > i)
+                            InPortData[i] = data;
+                        else
+                            InPortData.Add(data);
+                    }
+                }
+
+                RegisterAllPorts();
+            }
+
+            //argument lacing on functions should be set to disabled
+            //by default in the constructor, but for any workflow saved
+            //before this was the case, we need to ensure it here.
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.DeserializeCore(nodeElement, context); //Base implementation must be called
@@ -231,7 +287,7 @@ namespace Dynamo.Nodes
 
                 nickName = substrings[0].Trim();
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
-                object defaultValue = null;
+                AssociativeNode defaultValue = null;
 
                 if (substrings.Count() > 2)
                 {
@@ -245,25 +301,12 @@ namespace Dynamo.Nodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    AssociativeNode defaultValueNode;
-
-                    if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValueNode))
+                    if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValue))
                     {
                         this.Warning(Properties.Resources.WarningInvalidInput);
                     }
                     else
                     {
-                        if (defaultValueNode != null)
-                        {
-                            TypeSwitch.Do(
-                                defaultValueNode,
-                                TypeSwitch.Case<IntNode>(n => defaultValue = n.Value),
-                                TypeSwitch.Case<DoubleNode>(n => defaultValue = n.Value),
-                                TypeSwitch.Case<BooleanNode>(n => defaultValue = n.Value),
-                                TypeSwitch.Case<StringNode>(n => defaultValue = n.value),
-                                TypeSwitch.Default(() => defaultValue = null));
-                        }
-
                         if (identifierNode.datatype.UID == Constants.kInvalidIndex)
                         {
                             string warningMessage = String.Format(
@@ -273,9 +316,7 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
-                            // Default value not supported or invalid, so use the original
-                            // input as nickName. For example, "y = f(x)"
-                            if (defaultValueNode == null || defaultValue != null)
+                            if (defaultValue == null)
                                 nickName = identifierNode.Value;
 
                             type = identifierNode.datatype;

@@ -129,6 +129,7 @@ namespace Dynamo.Nodes
 
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
+            Value = "0";
 
             //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }

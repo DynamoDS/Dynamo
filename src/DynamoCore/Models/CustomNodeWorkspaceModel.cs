@@ -164,6 +164,12 @@ namespace Dynamo.Models
             OnDefinitionUpdated();
         }
 
+        protected override void NodeModified(NodeModel node)
+        {
+            base.NodeModified(node);
+            RequestRun();
+        }
+
         public event Action InfoChanged;
         protected virtual void OnInfoChanged()
         {
