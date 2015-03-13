@@ -377,7 +377,7 @@ namespace ProtoScript.Runners
 
         private IEnumerable<AssociativeNode> GetDeltaAstListAdded(IEnumerable<Subtree> addedSubTrees)
         {
-            var deltaAstList = new List<AssociativeNode>();
+            var deltaAstList = new List<AssociativeNode>();            
             if (addedSubTrees != null)
             {
                 foreach (var st in addedSubTrees)
@@ -962,7 +962,7 @@ namespace ProtoScript.Runners
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
-        void PreviewGraph(GraphSyncData syncData);
+        List<Guid> PreviewGraph(GraphSyncData syncData);
         void UpdateCmdLineInterpreter(string code);
         ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeId);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
@@ -1365,7 +1365,7 @@ namespace ProtoScript.Runners
         /// This API needs to be called for every delta AST preview
         /// </summary>
         /// <param name="syncData"></param>
-        public void PreviewGraph(GraphSyncData syncData)
+        public List<Guid> PreviewGraph(GraphSyncData syncData)
         {
             while (true)
             {
@@ -1373,8 +1373,7 @@ namespace ProtoScript.Runners
                 {
                     if (taskQueue.Count == 0)
                     {
-                        PreviewInternal(syncData);
-                        return;
+                        return PreviewInternal(syncData);                       
                     }
                 }
                 Thread.Sleep(1);
@@ -1693,13 +1692,14 @@ namespace ProtoScript.Runners
             PostExecution();
         }
 
-        private void PreviewInternal(GraphSyncData syncData)
+        private List<Guid> PreviewInternal(GraphSyncData syncData)
         {
             // Get the list of ASTs that will be affected by syncData
             var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
             List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
+            return cbnGuidList;
         }
 
         private void SynchronizeInternal(GraphSyncData syncData)

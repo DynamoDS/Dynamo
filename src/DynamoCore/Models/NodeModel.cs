@@ -590,7 +590,6 @@ namespace Dynamo.Models
             IsSelected = false;
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
-
         }
 
         public virtual void Dispose()
@@ -619,6 +618,7 @@ namespace Dynamo.Models
             var elNameAttrib = GetType().GetCustomAttributes<NodeNameAttribute>(false).FirstOrDefault();
             if (elNameAttrib != null)
                 NickName = elNameAttrib.Name;
+
         }
 
         #region Modification Reporting
@@ -629,7 +629,7 @@ namespace Dynamo.Models
         public event Action<NodeModel> Modified;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
-            MarkNodeAsModified(forceExecute);
+            MarkNodeAsModified(forceExecute);           
             var handler = Modified;
             if (handler != null) handler(this);
         }
@@ -1500,7 +1500,9 @@ namespace Dynamo.Models
         #endregion
 
         #region Dirty Management
-
+        //TODO: Refactor Property into Automatic with private(?) setter
+        //TODO: Add RequestRecalc() method to replace setter --steve
+       
         /// <summary>
         /// Execution scenarios for a Node to be re-executed
         /// </summary>
@@ -1541,7 +1543,6 @@ namespace Dynamo.Models
         {
             return executionHint;
         }
-
         #endregion
 
         #region Visualization Related Methods

@@ -78,6 +78,7 @@ namespace Dynamo.Models
         ///     Event that is fired when a workspace requests that a Node or Note model is
         ///     centered.
         /// </summary>
+
         public event NodeEventHandler RequestNodeCentered;
         
         /// <summary>
@@ -432,7 +433,6 @@ namespace Dynamo.Models
             get { return guid; }
         }
 
-
         #endregion
 
         #region constructors
@@ -497,6 +497,7 @@ namespace Dynamo.Models
             Disposed = null;
         }
 
+     
         #endregion
 
         #region public methods
