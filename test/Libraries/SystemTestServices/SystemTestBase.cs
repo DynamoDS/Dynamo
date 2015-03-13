@@ -30,6 +30,7 @@ namespace SystemTestServices
     {
         protected string workingDirectory;
         private Preloader preloader;
+        private TestSessionConfiguration testConfig;
 
         #region protected properties
 
@@ -53,7 +54,9 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
-            AssemblyResolver.Setup();
+            var testConfig = GetTestSessionConfiguration();
+
+            AssemblyResolver.Setup(testConfig.DynamoCorePath);
 
             SetupCore();
 
@@ -67,7 +70,17 @@ namespace SystemTestServices
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
-            StartDynamo();
+            StartDynamo(testConfig);
+        }
+
+        /// <summary>
+        /// Override this method in derived class to return a 
+        /// custom configuration.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual TestSessionConfiguration GetTestSessionConfiguration()
+        {
+            return new TestSessionConfiguration();
         }
 
         [TearDown]
@@ -122,10 +135,9 @@ namespace SystemTestServices
         /// </summary>
         protected virtual void SetupCore(){}
 
-        protected virtual void StartDynamo()
+        protected virtual void StartDynamo(TestSessionConfiguration testConfig)
         {
-            var remoteConfig = new RemoteTestSessionConfig();
-            preloader = new Preloader(remoteConfig.DynamoCorePath, remoteConfig.RequestedLibraryVersion);
+            preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
             preloader.Preload();
 
             Model = DynamoModel.Start(
