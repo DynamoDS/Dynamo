@@ -52,7 +52,8 @@ namespace TestServices
                 return;
             }
 
-            //var config = ConfigurationManager.OpenExeConfiguration(configPath);
+            // Adjust the config file map because the config file
+            // might not always be in the same directory as the dll.
             var map = new ExeConfigurationFileMap { ExeConfigFilename = configPath };
             var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
 
