@@ -90,24 +90,26 @@ namespace Dynamo.Wpf.ViewModels.Core
                         nodeViewModel.ShowExecutionPreview = false;
                         nodeViewModel.IsNodeAddedRecently = false;
                     }
-                }
-                
+                }                
             }
 
-            foreach (var nodeViewModel in Nodes)
+            foreach (Guid t in nodeGuids)
             {
-                foreach (Guid t in nodeGuids)
+                var nodeViewModel = Nodes.FirstOrDefault(x => x.NodeModel.GUID == t);
+                if (nodeViewModel != null)
                 {
-                    if (nodeViewModel.NodeModel.GUID == t)
-                    {
-                        nodeViewModel.ShowExecutionPreview = nodeViewModel.DynamoViewModel.ShowRunPreview;
-                        nodeViewModel.IsNodeAddedRecently = false;
-                    }
-                }
-                /* Color the recently added nodes */
-                if (nodeViewModel.IsNodeAddedRecently && !nodeViewModel.ShowExecutionPreview)
                     nodeViewModel.ShowExecutionPreview = nodeViewModel.DynamoViewModel.ShowRunPreview;
+                    nodeViewModel.IsNodeAddedRecently = false;
+                }
             }
+
+            /* Color the recently added nodes */
+            var addedNodes = Nodes.Where(x => x.IsNodeAddedRecently).ToList();
+            foreach (var nodes in addedNodes)
+            {
+                if (nodes.ShowExecutionPreview)
+                    nodes.ShowExecutionPreview = nodes.DynamoViewModel.ShowRunPreview;
+            }           
         }
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
