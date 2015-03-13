@@ -205,7 +205,7 @@
     <value>The index is out of the given range</value>
   </data>
   <data name="kArrayRankReduction" xml:space="preserve">
-    <value>Type conversion would cause array rank reduction. This is not permitted outside of replication. (0f001e47)<</value>
+    <value>Type conversion would cause array rank reduction. This is not permitted outside of replication. (0f001e47)</value>
   </data>
   <data name="kAssignNonCharacterToString" xml:space="preserve">
     <value>A string must be made up of characters</value>
