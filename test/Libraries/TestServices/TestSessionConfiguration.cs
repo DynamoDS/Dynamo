@@ -16,8 +16,8 @@ namespace TestServices
     {
         private const string CONFIG_FILE_NAME = "TestServices.dll.config";
 
-        public string DynamoCorePath { get; set; }
-        public LibraryVersion RequestedLibraryVersion { get; set; }
+        public string DynamoCorePath { get; private set; }
+        public LibraryVersion RequestedLibraryVersion { get; private set; }
 
         public TestSessionConfiguration()
             : this(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)){}
