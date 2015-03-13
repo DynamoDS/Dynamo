@@ -29,7 +29,6 @@ using Greg; // Dynamo package manager
 using ProtoCore;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
-using ProtoCore.AST;
 using ProtoCore.Exceptions;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
@@ -50,6 +49,7 @@ namespace Dynamo.Models
 
         private readonly string geometryFactoryPath;
         private WorkspaceModel currentWorkspace;
+
         #endregion
 
         #region events
@@ -99,7 +99,7 @@ namespace Dynamo.Models
             if (ShutdownCompleted != null)
                 ShutdownCompleted(this);
         }
-
+       
         #endregion
 
         #region static properties
@@ -194,7 +194,7 @@ namespace Dynamo.Models
         ///     threads.
         /// </summary>
         public DynamoScheduler Scheduler { get; private set; }
-        
+
         /// <summary>
         ///     The maximum amount of tesselation divisions used for geometry visualization.
         /// </summary>
@@ -287,14 +287,11 @@ namespace Dynamo.Models
         /// </summary>
         private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
 
-        /// <summary>
-        ///     The collection of visible workspaces in Dynamo
-        /// </summary>
         public IEnumerable<WorkspaceModel> Workspaces 
         {
             get { return _workspaces; } 
         }
-        
+
         #endregion
 
         #region initialization and disposal
@@ -337,7 +334,7 @@ namespace Dynamo.Models
             PreferenceSettings.Save();
 
             OnCleanup();
-            
+
             DynamoSelection.DestroyInstance();
             DynamoPathManager.DestroyInstance();
 
@@ -355,10 +352,23 @@ namespace Dynamo.Models
         {
         }
 
+        public interface IStartConfiguration
+        {
+            string Context { get; set; }
+            string DynamoCorePath { get; set; }
+            IPreferences Preferences { get; set; }
+            bool StartInTestMode { get; set; }
+            IUpdateManager UpdateManager { get; set; }
+            ISchedulerThread SchedulerThread { get; set; }
+            string GeometryFactoryPath { get; set; }
+            IAuthProvider AuthProvider { get; set; }
+            string PackageManagerAddress { get; set; }
+        }
+
         /// <summary>
-        ///     Initialization settings for DynamoModel.
+        /// Initialization settings for DynamoModel.
         /// </summary>
-        public struct StartConfiguration
+        public struct DefaultStartConfiguration : IStartConfiguration
         {
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
@@ -377,7 +387,7 @@ namespace Dynamo.Models
         /// <returns></returns>
         public static DynamoModel Start()
         {
-            return Start(new StartConfiguration());
+            return Start(new DefaultStartConfiguration());
         }
 
         /// <summary>
@@ -385,7 +395,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static DynamoModel Start(StartConfiguration configuration)
+        public static DynamoModel Start(IStartConfiguration configuration)
         {
             // where necessary, assign defaults
             if (string.IsNullOrEmpty(configuration.Context))
@@ -402,7 +412,7 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        protected DynamoModel(StartConfiguration config)
+        protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
@@ -440,7 +450,7 @@ namespace Dynamo.Models
             InitializeInstrumentationLogger();
 
             SearchModel = new NodeSearchModel();
-            SearchModel.ItemProduced += 
+            SearchModel.ItemProduced +=
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
 
             NodeFactory = new NodeFactory();
@@ -605,6 +615,9 @@ namespace Dynamo.Models
                     {
                         customNodeSearchRegistry.Remove(info.FunctionId);
                         SearchModel.Remove(searchElement);
+                        var workspacesToRemove = _workspaces.FindAll(w => w is CustomNodeWorkspaceModel
+                            && (w as CustomNodeWorkspaceModel).CustomNodeId == id);
+                        workspacesToRemove.ForEach(w => RemoveWorkspace(w));
                     }
                 };
             };
@@ -627,7 +640,7 @@ namespace Dynamo.Models
             NodeFactory.AddAlsoKnownAs(dsFuncData.Type, dsFuncData.AlsoKnownAs);
             NodeFactory.AddLoader(dsVarArgFuncData.Type, ztLoader);
             NodeFactory.AddAlsoKnownAs(dsVarArgFuncData.Type, dsVarArgFuncData.AlsoKnownAs);
-            
+
             var cbnLoader = new CodeBlockNodeLoader(LibraryServices);
             NodeFactory.AddLoader(cbnData.Type, cbnLoader);
             NodeFactory.AddFactory(cbnData.Type, cbnLoader);
@@ -725,9 +738,6 @@ namespace Dynamo.Models
 
         private static void InitializePreferences(IPreferences preferences)
         {
-            BaseUnit.LengthUnit = preferences.LengthUnit;
-            BaseUnit.AreaUnit = preferences.AreaUnit;
-            BaseUnit.VolumeUnit = preferences.VolumeUnit;
             BaseUnit.NumberFormat = preferences.NumberFormat;
         }
 
@@ -742,15 +752,6 @@ namespace Dynamo.Models
         {
             switch (e.PropertyName)
             {
-                case "LengthUnit":
-                    BaseUnit.LengthUnit = PreferenceSettings.LengthUnit;
-                    break;
-                case "AreaUnit":
-                    BaseUnit.AreaUnit = PreferenceSettings.AreaUnit;
-                    break;
-                case "VolumeUnit":
-                    BaseUnit.VolumeUnit = PreferenceSettings.VolumeUnit;
-                    break;
                 case "NumberFormat":
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
@@ -837,7 +838,7 @@ namespace Dynamo.Models
             Logger.Log("Beginning engine reset");
             ResetEngine(true);
             Logger.Log("Reset complete");
-            
+
             ((HomeWorkspaceModel)CurrentWorkspace).Run();
         }
 
@@ -906,7 +907,7 @@ namespace Dynamo.Models
                );
 
             RegisterHomeWorkspace(newWorkspace);
-            
+           
             workspace = newWorkspace;
 
             return true;
@@ -1036,14 +1037,14 @@ namespace Dynamo.Models
         public void AddNodeToCurrentWorkspace(NodeModel node, bool centered)
         {
             CurrentWorkspace.AddNode(node, centered);
-            
+
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection -- MAGN-5707
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(node);
 
             //TODO(Steve): Make sure we're not missing something with TransformCoordinates. -- MAGN-5708
         }
-        
+
         /// <summary>
         /// Copy selected ISelectable objects to the clipboard.
         /// </summary>
@@ -1192,7 +1193,7 @@ namespace Dynamo.Models
                     nodeLookup.TryGetValue(c.End.Owner.GUID, out end)
                         ? end
                         : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
-                
+
                 // Don't make a connector if either end is null.
                 where startNode != null && endNode != null
                 select
@@ -1211,7 +1212,7 @@ namespace Dynamo.Models
         public void AddToSelection(object parameters)
         {
             var node = parameters as NodeModel;
-            
+
             //don't add if the object is null
             if (node == null)
                 return;
@@ -1239,7 +1240,7 @@ namespace Dynamo.Models
 
             OnWorkspaceCleared(this, EventArgs.Empty);
         }
-        
+
         #endregion
 
         #region private methods

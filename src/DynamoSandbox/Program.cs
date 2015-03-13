@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -6,6 +7,7 @@ using System.Windows;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.ViewModels;
@@ -14,6 +16,39 @@ using DynamoUtilities;
 
 namespace DynamoSandbox
 {
+    internal class PathResolver : IPathResolver
+    {
+        private readonly List<string> additionalResolutionPaths;
+        private readonly List<string> additionalNodeDirectories;
+        private readonly List<string> preloadedLibraryPaths;
+
+        internal PathResolver(string preloaderLocation)
+        {
+            additionalResolutionPaths = new List<string>
+            {
+                preloaderLocation
+            };
+
+            additionalNodeDirectories = new List<string>();
+            preloadedLibraryPaths = new List<string>();
+        }
+
+        public IEnumerable<string> AdditionalResolutionPaths
+        {
+            get { return additionalResolutionPaths; }
+        }
+
+        public IEnumerable<string> AdditionalNodeDirectories
+        {
+            get { return additionalNodeDirectories; }
+        }
+
+        public IEnumerable<string> PreloadedLibraryPaths
+        {
+            get { return preloadedLibraryPaths; }
+        }
+    }
+
     internal class Program
     {
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
@@ -26,7 +61,7 @@ namespace DynamoSandbox
             PreloadShapeManager(ref geometryFactoryPath);
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     GeometryFactoryPath = geometryFactoryPath,
                     Preferences = PreferenceSettings.Load()
@@ -76,10 +111,12 @@ namespace DynamoSandbox
                 // DynamoSandbox.exe /c "C:\file path\file.xml"
                 // 
                 var commandFilePath = string.Empty;
+
                 for (var i = 0; i < args.Length; ++i)
                 {
-                    // Looking for '/c'
                     var arg = args[i];
+
+                    // Looking for '/c'
                     if (arg.Length != 2 || (arg[0] != '/'))
                         continue;
 

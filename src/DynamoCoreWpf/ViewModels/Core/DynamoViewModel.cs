@@ -412,7 +412,7 @@ namespace Dynamo.ViewModels
             {
                 model.DebugSettings.VerboseLogging = value;
                 RaisePropertyChanged("VerboseLogging");
-            }
+           }
         }
 
         public bool ShowDebugASTs
@@ -439,6 +439,18 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool ShowLogin { get; private set; }
 
+        private bool showRunPreview;
+        public bool ShowRunPreview
+        {
+            get { return showRunPreview; }
+            set
+            {
+                showRunPreview = value;
+                HomeSpace.GetExecutingNodes();
+                RaisePropertyChanged("ShowRunPreview");              
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration
@@ -456,44 +468,40 @@ namespace Dynamo.ViewModels
             public IBrandingResourceProvider BrandingResourceProvider { get; set; }
         }
 
-        public static DynamoViewModel Start()
+        public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
         {
-            return Start(new StartConfiguration());
+            if(startConfiguration.DynamoModel == null) 
+                startConfiguration.DynamoModel = DynamoModel.Start();
+
+            if(startConfiguration.VisualizationManager == null)
+                startConfiguration.VisualizationManager = new VisualizationManager(startConfiguration.DynamoModel);
+
+            if(startConfiguration.WatchHandler == null)
+                startConfiguration.WatchHandler = new DefaultWatchHandler(startConfiguration.VisualizationManager, 
+                    startConfiguration.DynamoModel.PreferenceSettings);
+
+            return new DynamoViewModel(startConfiguration);
         }
 
-        public static DynamoViewModel Start(StartConfiguration startConfiguration)
+        protected DynamoViewModel(StartConfiguration startConfiguration)
         {
-            var model = startConfiguration.DynamoModel ?? DynamoModel.Start();
-            var vizManager = startConfiguration.VisualizationManager ?? new VisualizationManager(model);
-            var watchHandler = startConfiguration.WatchHandler ?? new DefaultWatchHandler(vizManager,
-                model.PreferenceSettings);
-            var resourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
-
-            return new DynamoViewModel(model, watchHandler, vizManager, startConfiguration.CommandFilePath, resourceProvider, 
-                startConfiguration.ShowLogin);
-        }
-
-        protected DynamoViewModel(DynamoModel dynamoModel, IWatchHandler watchHandler,
-            IVisualizationManager vizManager, string commandFilePath, IBrandingResourceProvider resourceProvider, 
-            bool showLogin = false)
-        {
-            this.ShowLogin = showLogin;
+            this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures
-            this.model = dynamoModel;
+            this.model = startConfiguration.DynamoModel;
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
 
             UsageReportingManager.Instance.InitializeCore(this.model);
-            this.WatchHandler = watchHandler;
-            this.VisualizationManager = vizManager;
+            this.WatchHandler = startConfiguration.WatchHandler;
+            this.VisualizationManager = startConfiguration.VisualizationManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
             this.SearchViewModel = new SearchViewModel(this, model.SearchModel);
 
             // Start page should not show up during test mode.
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
-            this.BrandingResourceProvider = resourceProvider;
+            this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
             //add the initial workspace and register for future 
             //updates to the workspaces collection
@@ -509,7 +517,7 @@ namespace Dynamo.ViewModels
             SubscribeModelChangedHandlers();
             SubscribeUpdateManagerHandlers();
 
-            InitializeAutomationSettings(commandFilePath);
+            InitializeAutomationSettings(startConfiguration.CommandFilePath);
 
             InitializeDelegateCommands();
 
@@ -537,7 +545,7 @@ namespace Dynamo.ViewModels
 
         #region Event handler destroy/create
 
-        internal void UnsubscribeAllEvents()
+        protected virtual void UnsubscribeAllEvents()
         {
             UnsubscribeDispatcherEvents();
             UnsubscribeModelUiEvents();
@@ -937,14 +945,14 @@ namespace Dynamo.ViewModels
             if (workspace == HomeSpace)
             {
                 ext = ".dyn";
-                fltr = Resources.FileDialogDynamoWorkspace;
+                fltr = string.Format(Resources.FileDialogDynamoWorkspace,"*.dyn");
             }
             else
             {
                 ext = ".dyf";
-                fltr = Resources.FileDialogDynamoCustomNode;
+                fltr = string.Format(Resources.FileDialogDynamoCustomNode,"*.dyf");
             }
-            fltr += "|" + Resources.FileDialogAllFiles;
+            fltr += "|" + string.Format(Resources.FileDialogAllFiles, "*.*");
 
             fileDialog.FileName = workspace.Name + ext;
             fileDialog.AddExtension = true;
@@ -996,8 +1004,8 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = Resources.FileDialogDynamoDefinitions + "|" +
-                         Resources.FileDialogAllFiles,
+                Filter = string.Format(Resources.FileDialogDynamoDefinitions, "*.dyn; *.dyf") + "|" +
+                         string.Format(Resources.FileDialogAllFiles, "*.*"),
                 Title = Resources.OpenDynamoDefinitionDialogTitle
             };
 
@@ -1518,7 +1526,7 @@ namespace Dynamo.ViewModels
                     AddExtension = true,
                     DefaultExt = ".png",
                     FileName = Resources.FileDialogDefaultPNGName,
-                    Filter = Resources.FileDialogPNGFiles,
+                    Filter = string.Format(Resources.FileDialogPNGFiles,"*.png"),
                     Title = Resources.SaveWorkbenToImageDialogTitle
                 };
             }
@@ -1750,8 +1758,8 @@ namespace Dynamo.ViewModels
 
         public void ImportLibrary(object parameter)
         {
-            string[] fileFilter = {Resources.FileDialogLibraryFiles, Resources.FileDialogAssemblyFiles, 
-                                   Resources.FileDialogDesignScriptFiles, Resources.FileDialogAllFiles};
+            string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll, *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"), 
+                                   string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = String.Join("|", fileFilter);
             openFileDialog.Title = Resources.ImportLibraryDialogTitle;
@@ -1838,7 +1846,7 @@ namespace Dynamo.ViewModels
                     AddExtension = true,
                     DefaultExt = ".stl",
                     FileName = Resources.FileDialogDefaultSTLModelName,
-                    Filter = Resources.FileDialogSTLModels,
+                    Filter = string.Format(Resources.FileDialogSTLModels,"*.stl"),
                     Title = Resources.SaveModelToSTLDialogTitle,
                 };
             }
@@ -1857,102 +1865,6 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanExportToSTL(object parameter)
-        {
-            return true;
-        }
-
-        private void SetLengthUnit(object parameter)
-        {
-            switch (parameter.ToString())
-            {
-                case "FractionalInch":
-                    model.PreferenceSettings.LengthUnit = LengthUnit.FractionalInch;
-                    return;
-                case "DecimalInch":
-                    model.PreferenceSettings.LengthUnit = LengthUnit.DecimalInch;
-                    return;
-                case "FractionalFoot":
-                    model.PreferenceSettings.LengthUnit = LengthUnit.FractionalFoot;
-                    return;
-                case "DecimalFoot":
-                    model.PreferenceSettings.LengthUnit = LengthUnit.DecimalFoot;
-                    return;
-                case "Meter":
-                    model.PreferenceSettings.LengthUnit = LengthUnit.Meter;
-                    return;
-                case "Millimeter":
-                    model.PreferenceSettings.LengthUnit = LengthUnit.Millimeter;
-                    return;
-                case "Centimeter":
-                    model.PreferenceSettings.LengthUnit = LengthUnit.Centimeter;
-                    return;
-                default:
-                    model.PreferenceSettings.LengthUnit = LengthUnit.Meter;
-                    return;
-            }
-        }
-
-        internal bool CanSetLengthUnit(object parameter)
-        {
-            return true;
-        }
-
-        private void SetAreaUnit(object parameter)
-        {
-            switch (parameter.ToString())
-            {
-                case "SquareInch":
-                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareInch;
-                    return;
-                case "SquareFoot":
-                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareFoot;
-                    return;
-                case "SquareMillimeter":
-                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareMillimeter;
-                    return;
-                case "SquareCentimeter":
-                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareCentimeter;
-                    return;
-                case "SquareMeter":
-                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareMeter;
-                    return;
-                default:
-                    model.PreferenceSettings.AreaUnit = AreaUnit.SquareMeter;
-                    return;
-            }
-        }
-
-        internal bool CanSetAreaUnit(object parameter)
-        {
-            return true;
-        }
-
-        private void SetVolumeUnit(object parameter)
-        {
-            switch (parameter.ToString())
-            {
-                case "CubicInch":
-                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicInch;
-                    return;
-                case "CubicFoot":
-                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicFoot;
-                    return;
-                case "CubicMillimeter":
-                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicMillimeter;
-                    return;
-                case "CubicCentimeter":
-                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicCentimeter;
-                    return;
-                case "CubicMeter":
-                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicMeter;
-                    return;
-                default:
-                    model.PreferenceSettings.VolumeUnit = VolumeUnit.CubicMeter;
-                    return;
-            }
-        }
-
-        internal bool CanSetVolumeUnit(object parameter)
         {
             return true;
         }

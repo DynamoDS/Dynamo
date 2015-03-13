@@ -33,25 +33,27 @@ namespace Dynamo.DSEngine
 
         private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
-        private CodeCompletionServices codeCompletionServices; 
+        private CodeCompletionServices codeCompletionServices;
         private readonly AstBuilder astBuilder;
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
+        private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
+        private readonly DynamoModel dynamoModel;
+        private readonly ProtoCore.Core libraryCore;
         private int shortVarCounter;
-
         public bool VerboseLogging;
-        
         private readonly Object macroMutex = new Object();
 
         public static CompilationServices CompilationServices; 
 
         public EngineController(LibraryServices libraryServices, string geometryFactoryFileName, bool verboseLogging)
         {
-            this.libraryServices = libraryServices; 
+            this.libraryServices = libraryServices;
             libraryServices.LibraryLoaded += LibraryLoaded;
             CompilationServices = new CompilationServices(libraryServices.LibraryManagementCore);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
+
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
@@ -90,7 +92,7 @@ namespace Dynamo.DSEngine
         }
 
         #endregion
-        
+
         /// <summary>
         /// Get DesignScript core.
         /// </summary>
@@ -156,7 +158,7 @@ namespace Dynamo.DSEngine
                 return mirror;
             }
         }
-        
+
         /// <summary>
         /// Get a list of IGraphicItem of variable if it is a geometry object;
         /// otherwise returns null.
@@ -222,7 +224,37 @@ namespace Dynamo.DSEngine
 
             return graphSyncDataQueue.Dequeue();
         }
-        
+
+
+        /// <summary>
+        ///  This is called on the main thread from PreviewGraphSyncData
+        ///  to generate the list of node id's that will be executed on the next run
+        /// </summary>
+        /// <param name="updatedNodes">The updated nodes.</param>
+        /// <returns>This method returns the list of all reachable node id's from the given
+        /// updated nodes</returns>
+        internal List<Guid> PreviewGraphSyncData(IEnumerable<NodeModel> updatedNodes, bool verboseLogging)
+        {
+            if (updatedNodes == null)
+                return null;
+
+            var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
+            if (activeNodes.Any())
+            {
+                astBuilder.CompileToAstNodes(activeNodes, true, verboseLogging);
+            }
+
+            GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
+            List<Guid> previewGraphData = this.liveRunnerServices.PreviewGraph(graphSyncdata, verboseLogging);
+
+             lock (previewGraphQueue)
+             {
+                 previewGraphQueue.Enqueue(previewGraphData);
+             }
+            
+            return previewGraphQueue.Dequeue();
+        }
+
         /// <summary>
         /// Return true if there are graph sync data in the queue waiting for
         /// being executed.
@@ -242,7 +274,7 @@ namespace Dynamo.DSEngine
                 }
             }
         }
-        
+
         private readonly Queue<GraphSyncData> pendingCustomNodeSyncData = new Queue<GraphSyncData>();
 
         /// <summary>
@@ -323,33 +355,34 @@ namespace Dynamo.DSEngine
 
         private bool VerifyGraphSyncData(IEnumerable<NodeModel> nodes)
         {
-            GraphSyncData data = syncDataManager.GetSyncData();
+            GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
             syncDataManager.ResetStates();
 
             var reExecuteNodesIds = new HashSet<Guid>(
                 nodes.Where(n => n.NeedsForceExecution)
                      .Select(n => n.GUID));
 
-            if (reExecuteNodesIds.Any() && data.ModifiedSubtrees != null)
+            if (reExecuteNodesIds.Any() && graphSyncdata.ModifiedSubtrees != null)
             {
-                for (int i = 0; i < data.ModifiedSubtrees.Count; ++i)
+                for (int i = 0; i < graphSyncdata.ModifiedSubtrees.Count; ++i)
                 {
-                    var st = data.ModifiedSubtrees[i];
+                    var st = graphSyncdata.ModifiedSubtrees[i];
                     if (reExecuteNodesIds.Contains(st.GUID))
                     {
-                        var newSt = new Subtree(st.AstNodes, st.GUID) { ForceExecution = true };
-                        data.ModifiedSubtrees[i] = newSt;
+                        Subtree newSt = new Subtree(st.AstNodes, st.GUID);
+                        newSt.ForceExecution = true;
+                        graphSyncdata.ModifiedSubtrees[i] = newSt;
                     }
                 }
             }
 
-            if ((data.AddedSubtrees != null && data.AddedSubtrees.Count > 0) ||
-                (data.ModifiedSubtrees != null && data.ModifiedSubtrees.Count > 0) ||
-                (data.DeletedSubtrees != null && data.DeletedSubtrees.Count > 0))
+            if ((graphSyncdata.AddedSubtrees != null && graphSyncdata.AddedSubtrees.Count > 0) ||
+                (graphSyncdata.ModifiedSubtrees != null && graphSyncdata.ModifiedSubtrees.Count > 0) ||
+                (graphSyncdata.DeletedSubtrees != null && graphSyncdata.DeletedSubtrees.Count > 0))
             {
                 lock (graphSyncDataQueue)
                 {
-                    graphSyncDataQueue.Enqueue(data);
+                    graphSyncDataQueue.Enqueue(graphSyncdata);
                 }
                 return true;
             }
@@ -494,7 +527,7 @@ namespace Dynamo.DSEngine
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
         }
-        
+
         #region Implement IAstNodeContainer interface
 
         public void OnAstNodeBuilding(Guid nodeGuid)

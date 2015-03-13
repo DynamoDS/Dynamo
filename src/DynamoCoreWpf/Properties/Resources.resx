@@ -449,6 +449,16 @@
     <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&amp;#x0a;It does not contain your graph or any personal data</value>
     <comment>Setting menu | Tooltip for enable summary reporting during usage menu item</comment>
   </data>
+  <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
+    <value>Show Run Preview</value>
+    <comment>Setting menu | Show Run Preview</comment>
+  </data>
+  <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
+    <value>Execution preview is not available when running automatically</value>
+  </data>
+  <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
+    <value>Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph</value>
+  </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
     <value>Fractional Foot</value>
     <comment>Setting menu | Fractional foot</comment>
@@ -972,7 +982,7 @@ You will get a chance to save your work.</value>
   </data>
   <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
     <value>Submit Bug To Github</value>
-    <comment>Submit a but on github</comment>
+    <comment>Submit a bug on github</comment>
   </data>
   <data name="CrashPromptDialogTitle" xml:space="preserve">
     <value>Dynamo has crashed</value>
@@ -1434,13 +1444,13 @@ Do you want to install the latest Dynamo update?</value>
     <value>Show In Folder</value>
   </data>
   <data name="FileDialogAllFiles" xml:space="preserve">
-    <value>All Files (*.*)|*.*</value>
+    <value>All Files ({0})|{0}</value>
   </data>
   <data name="FileDialogAssemblyFiles" xml:space="preserve">
-    <value>Assembly Library Files (*.dll)|*.dll</value>
+    <value>Assembly Library Files ({0})|{0}</value>
   </data>
   <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
-    <value>Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml</value>
+    <value>Custom Node, DLL, XML ({0})|{0}</value>
   </data>
   <data name="FileDialogDefaultPNGName" xml:space="preserve">
     <value>Capture.png</value>
@@ -1449,25 +1459,25 @@ Do you want to install the latest Dynamo update?</value>
     <value>model.stl</value>
   </data>
   <data name="FileDialogDesignScriptFiles" xml:space="preserve">
-    <value>DesignScript Files (*.ds)|*.ds</value>
+    <value>DesignScript Files ({0})|{0}</value>
   </data>
   <data name="FileDialogDynamoCustomNode" xml:space="preserve">
-    <value>Dynamo Custom Node (*.dyf)|*.dyf</value>
+    <value>Dynamo Custom Node ({0})|{0}</value>
   </data>
   <data name="FileDialogDynamoDefinitions" xml:space="preserve">
-    <value>Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf</value>
+    <value>Dynamo Definitions ({0})|{0}</value>
   </data>
   <data name="FileDialogDynamoWorkspace" xml:space="preserve">
-    <value>Dynamo Workspace (*.dyn)|*.dyn</value>
+    <value>Dynamo Workspace ({0})|{0}</value>
   </data>
   <data name="FileDialogLibraryFiles" xml:space="preserve">
-    <value>Library Files (*.dll, *.ds)|*.dll;*.ds</value>
+    <value>Library Files ({0})|{0}</value>
   </data>
   <data name="FileDialogPNGFiles" xml:space="preserve">
-    <value>PNG Image|*.png</value>
+    <value>PNG Image|{0}</value>
   </data>
   <data name="FileDialogSTLModels" xml:space="preserve">
-    <value>STL Models|*.stl</value>
+    <value>STL Models|{0}</value>
   </data>
   <data name="InfoBubbleError" xml:space="preserve">
     <value>Error: </value>

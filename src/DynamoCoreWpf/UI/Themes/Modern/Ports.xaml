@@ -77,10 +77,8 @@
                as no mouse events are generated.This happens only for codeblock node. 
             -->
             <Rectangle Fill="Transparent"                                      
-                       SnapsToDevicePixels="True"
-                       MinWidth="26"                       
-                       IsHitTestVisible="True"                      
-                       Margin ="{Binding Path=PortModel, Converter={StaticResource SnapRegionMarginConverter}}">              
+                       SnapsToDevicePixels="True"                                         
+                       IsHitTestVisible="True">                                                         
                 <interactivity:Interaction.Triggers>
                     <views:HandlingEventTrigger EventName="MouseEnter">
                         <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
@@ -91,7 +89,13 @@
                     <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownCommand}" CommandParameter="{Binding}" />
                     </views:HandlingEventTrigger>
-                </interactivity:Interaction.Triggers>               
+                </interactivity:Interaction.Triggers>
+                <Rectangle.Margin>
+                    <MultiBinding Converter="{StaticResource SnapRegionMarginConverter}">
+                        <Binding ElementName="portNameTb" Path="ActualWidth"/>
+                        <Binding Path="PortModel"/>
+                    </MultiBinding>
+                </Rectangle.Margin>
             </Rectangle>
             <Rectangle Name="highlightOverlay"
                        Fill="White"

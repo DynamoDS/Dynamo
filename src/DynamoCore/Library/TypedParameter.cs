@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Dynamo.DSEngine;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Library
 {
@@ -13,11 +14,11 @@ namespace Dynamo.Library
     {
         private string summary;
 
-        public TypedParameter(string parameter, ProtoCore.Type type, object defaultValue = null)
+        public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null)
             : this(null, parameter, type, defaultValue) { }
 
         public TypedParameter(
-            FunctionDescriptor function, string name, ProtoCore.Type type, object defaultValue = null)
+            FunctionDescriptor function, string name, ProtoCore.Type type, AssociativeNode defaultValue = null)
         {
             if (name == null) 
                 throw new ArgumentNullException("name");
@@ -31,7 +32,7 @@ namespace Dynamo.Library
         public FunctionDescriptor Function { get; set; }
         public string Name { get; private set; }
         public ProtoCore.Type Type { get; private set; }
-        public object DefaultValue { get; private set; }
+        public AssociativeNode DefaultValue { get; private set; }
 
         public string Summary
         {
@@ -56,15 +57,9 @@ namespace Dynamo.Library
         public override string ToString()
         {
             string str = Name + ": " + DisplayTypeName;
-
             if (DefaultValue != null)
             {
-                string strDefaultValue = DefaultValue.ToString();
-                if (DefaultValue is bool)
-                {
-                    strDefaultValue = strDefaultValue.ToLower();
-                }
-                str = str + " = " + strDefaultValue;
+                str = str + " = " + DefaultValue.ToString();
             }
 
             return str;

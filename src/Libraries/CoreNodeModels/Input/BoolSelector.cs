@@ -20,6 +20,17 @@ namespace DSCoreNodesUI
             }
         }
 
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            if (updateValueParams.PropertyName == "Value")
+            {
+                Value = DeserializeValue(updateValueParams.PropertyValue);
+                return true;
+            }
+
+            return base.UpdateValueCore(updateValueParams);
+        }
+
         protected override string SerializeValue()
         {
             return Value.ToString();

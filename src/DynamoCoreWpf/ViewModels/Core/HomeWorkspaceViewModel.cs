@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 using Dynamo.Models;
@@ -62,6 +63,51 @@ namespace Dynamo.Wpf.ViewModels.Core
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted += hwm_EvaluationStarted;
             hwm.EvaluationCompleted += hwm_EvaluationCompleted;
+            hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
+        }
+
+        private void hwm_SetNodeDeltaState(object sender, DeltaComputeStateEventArgs e)
+        {
+            var nodeGuids = e.NodeGuidList;
+            // if runsettings is manual, and if the graph is not executed, then turing on showrunpreview 
+            //should turn on showexectionpreview on every node.
+            if (nodeGuids.Count == 0 && !e.GraphExecuted)
+            {
+                foreach (var nodeModel in Nodes)
+                {
+                    nodeModel.ShowExecutionPreview = DynamoViewModel.ShowRunPreview;
+                }
+            }
+
+            //if the graph is executed then set the node preview to false , provided
+            // there is no error on that node.
+            if (nodeGuids.Count == 0 && e.GraphExecuted)
+            {
+                foreach (var nodeViewModel in Nodes)
+                {
+                    if (nodeViewModel.State != ElementState.Error && nodeViewModel.State != ElementState.Warning)
+                    {
+                        nodeViewModel.ShowExecutionPreview = false;
+                        nodeViewModel.IsNodeAddedRecently = false;
+                    }
+                }
+                
+            }
+
+            foreach (var nodeViewModel in Nodes)
+            {
+                foreach (Guid t in nodeGuids)
+                {
+                    if (nodeViewModel.NodeModel.GUID == t)
+                    {
+                        nodeViewModel.ShowExecutionPreview = nodeViewModel.DynamoViewModel.ShowRunPreview && true;
+                        nodeViewModel.IsNodeAddedRecently = false;
+                    }
+                }
+                /* Color the recently added nodes */
+                if (nodeViewModel.IsNodeAddedRecently && !nodeViewModel.ShowExecutionPreview)
+                    nodeViewModel.ShowExecutionPreview = true;
+            }
         }
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
@@ -135,6 +181,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
+            hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
         }
     }
 

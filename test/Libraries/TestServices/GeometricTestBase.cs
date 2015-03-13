@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-using Dynamo;
+
 using DynamoShapeManager;
-using DynamoUtilities;
 
 using NUnit.Framework;
 
@@ -14,13 +13,14 @@ namespace TestServices
 {
     public class GeometricTestBase
     {
-        IExtensionApplication application = Application.Instance as IExtensionApplication;
-        TestExecutionSession session = new TestExecutionSession();
-
         [SetUp]
         public virtual void Setup()
         {
-            AssemblyResolver.Setup();
+            var config = GetTestSessionConfiguration();
+            var session = new TestExecutionSession(config);
+            var application = Application.Instance as IExtensionApplication;
+
+            AssemblyResolver.Setup(config.DynamoCorePath);
             application.OnBeginExecution(session);
             HostFactory.Instance.StartUp();
         }
@@ -30,6 +30,16 @@ namespace TestServices
         {
             //application.OnEndExecution(session);
             //HostFactory.Instance.ShutDown();
+        }
+
+        /// <summary>
+        /// Override this method in derived class to establish a 
+        /// custom configuration.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual TestSessionConfiguration GetTestSessionConfiguration()
+        {
+            return new TestSessionConfiguration();
         }
     }
 
@@ -42,12 +52,12 @@ namespace TestServices
     {
         private Dictionary<string, object> configValues;
         private Preloader preloader;
-        private RemoteTestSessionConfig remoteConfig;
+        private TestSessionConfiguration testConfig;
 
-        public TestExecutionSession()
+        public TestExecutionSession(TestSessionConfiguration testConfig)
         {
             configValues = new Dictionary<string, object>();
-            remoteConfig = new RemoteTestSessionConfig();
+            this.testConfig = testConfig;
         }
 
         public IConfiguration Configuration
@@ -84,7 +94,7 @@ namespace TestServices
             {
                 if (preloader != null) return preloader.GeometryFactoryPath;
 
-                preloader = new Preloader( remoteConfig.DynamoCorePath, remoteConfig.RequestedLibraryVersion);
+                preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
                 preloader.Preload();
 
                 return preloader.GeometryFactoryPath;

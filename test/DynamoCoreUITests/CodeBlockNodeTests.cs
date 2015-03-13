@@ -242,7 +242,7 @@ namespace DynamoCoreUITests
             }
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true
                 });

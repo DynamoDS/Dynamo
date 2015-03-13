@@ -872,12 +872,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void Test_Formula_InputWithUnit()
-        {
-            RunModel(@"core\formula\formula-inputWithUnit-test.dyn");
-            AssertPreviewValue("152a2a64-8c73-4e8c-a418-06ceb4ac0637", 1);
-        }
-        [Test]
         [Category("RegressionTests")]
         public void Test_IFnode_3483_1()
         {
@@ -1099,6 +1093,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("4fb0a4ef-8151-4e5f-a2e6-9c3fcd2c1e8f", new object[] { "1foo", null });
         }
 
+        [Test]
         public void TestMod()
         {
             var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsfunction\modDoesntWork.dyn");
@@ -1106,6 +1101,24 @@ namespace Dynamo.Tests
             AssertPreviewValue("77c95ace-e4f1-4119-87fc-7163f9b3b8b0", true);
             AssertPreviewValue("21f58def-725d-41c9-abc7-063cc3642420", true);
             AssertPreviewValue("dbd73c1b-0b40-4138-af69-4dd3da2de62d", true);
+        }
+
+        [Test]
+        public void TestDefaultValueAttribute()
+        {
+            DynamoUtilities.DynamoPathManager.Instance.AddPreloadLibrary("FFITarget.dll");
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueAttributeTest.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("4f0c05a7-4e52-4d60-807a-08824baa23bb", true);
+        }
+
+        [Test]
+        public void TestDefaultValueAttributeForDummyLine()
+        {
+            DynamoUtilities.DynamoPathManager.Instance.AddPreloadLibrary("FFITarget.dll");
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueAttributeForDummyLine.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("e95a634b-aab9-4b6e-bb33-2f9669381ad6", 5);
         }
     }
 
