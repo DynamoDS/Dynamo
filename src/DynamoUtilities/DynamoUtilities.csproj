@@ -44,12 +44,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyHelper.cs" />
     <Compile Include="DataMarshaler.cs" />
     <Compile Include="DynamoPathManager.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="ProductLookUp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeSwitch.cs" />
     <Compile Include="XmlHelper.cs" />
