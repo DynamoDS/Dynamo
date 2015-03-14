@@ -791,11 +791,12 @@ namespace Dynamo.Controls
         /// </summary>
         private void LoadSamplesMenu()
         {
-            if (Directory.Exists(DynamoPathManager.Instance.CommonSamples))
+            var samplesDirectory = dynamoViewModel.Model.PathManager.SamplesDirectory;
+            if (Directory.Exists(samplesDirectory))
             {
                 var sampleFiles = new System.Collections.Generic.List<string>();
-                string[] dirPaths = Directory.GetDirectories(DynamoPathManager.Instance.CommonSamples);
-                string[] filePaths = Directory.GetFiles(DynamoPathManager.Instance.CommonSamples, "*.dyn");
+                string[] dirPaths = Directory.GetDirectories(samplesDirectory);
+                string[] filePaths = Directory.GetFiles(samplesDirectory, "*.dyn");
 
                 // handle top-level files
                 if (filePaths.Any())

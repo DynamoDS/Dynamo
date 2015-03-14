@@ -65,10 +65,12 @@ namespace Dynamo.Utilities
         /// the bin/nodes directory. Add the types to the searchviewmodel and
         /// the controller's dictionaries.
         /// </summary>
+        /// <param name="nodeDirectories">Directories that contain node assemblies.</param>
         /// <param name="context"></param>
         /// <param name="modelTypes"></param>
         /// <param name="migrationTypes"></param>
-        public void LoadNodeModelsAndMigrations(string context, out List<TypeLoadData> modelTypes, out List<TypeLoadData> migrationTypes)
+        public void LoadNodeModelsAndMigrations(IEnumerable<string> nodeDirectories, 
+            string context, out List<TypeLoadData> modelTypes, out List<TypeLoadData> migrationTypes)
         {
             var loadedAssembliesByPath = new Dictionary<string, Assembly>();
             var loadedAssembliesByName = new Dictionary<string, Assembly>();
@@ -88,8 +90,7 @@ namespace Dynamo.Utilities
 
             // find all the dlls registered in all search paths
             // and concatenate with all dlls in the current directory
-            var allDynamoAssemblyPaths =
-                DynamoPathManager.Instance.Nodes.SelectMany(
+            var allDynamoAssemblyPaths = nodeDirectories.SelectMany(
                     path => Directory.GetFiles(path, "*.dll", SearchOption.TopDirectoryOnly));
 
             // add the core assembly to get things like code block nodes and watches.

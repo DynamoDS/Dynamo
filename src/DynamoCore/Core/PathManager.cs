@@ -120,13 +120,17 @@ namespace Dynamo.Core
         /// <param name="pathResolver">Reference of an IPathResolver object that
         /// supplies additional path information. This argument is optional.</param>
         /// 
-        internal PathManager(IPathResolver pathResolver)
+        internal PathManager(string corePath, IPathResolver pathResolver)
         {
-            // This method is invoked in DynamoCore.dll, dynamoCorePath 
-            // represents the directory that contains DynamoCore.dll.
-            var dynamoCorePath = Assembly.GetExecutingAssembly().Location;
-            dynamoCoreDir = Path.GetDirectoryName(dynamoCorePath);
+            if (string.IsNullOrEmpty(corePath) || !Directory.Exists(corePath))
+            {
+                // If the caller does not provide an alternative core path, 
+                // use the default folder in which DynamoCore.dll resides.
+                var dynamoCorePath = Assembly.GetExecutingAssembly().Location;
+                corePath = Path.GetDirectoryName(dynamoCorePath);
+            }
 
+            dynamoCoreDir = corePath;
             if (!File.Exists(Path.Combine(dynamoCoreDir, "DynamoCore.dll")))
             {
                 throw new Exception("Dynamo's core path could not be found. " +
