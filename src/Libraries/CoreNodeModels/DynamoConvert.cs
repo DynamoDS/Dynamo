@@ -104,8 +104,9 @@ namespace DSCoreNodesUI
       
         public DynamoConvert()
         {           
-            SelectedMetricConversion = ConversionMetricUnit.Length;           
-            InPortData.Add(new PortData("", "A numeric value for conversion."));
+            SelectedMetricConversion = ConversionMetricUnit.Length;  
+            AssociativeNode defaultNode = new DoubleNode(0.0);
+            InPortData.Add(new PortData("", "A numeric value for conversion.", defaultNode));
             OutPortData.Add(new PortData("", "A converted numeric value."));
 
             ShouldDisplayPreviewCore = true;

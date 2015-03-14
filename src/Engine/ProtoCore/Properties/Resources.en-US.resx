@@ -121,7 +121,7 @@
     <value>An attribute argument must be a constant expression</value>
   </data>
   <data name="BaseIsExpectedToCallBaseConstructor" xml:space="preserve">
-    <value>The keyword 'base' is expected here to call base constructor</value>
+    <value>The keyword 'base' is expected here to call the base class constructor</value>
   </data>
   <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
     <value>Checks if all the elements in the specified list are of the same type</value>
@@ -157,7 +157,7 @@
     <value>Failed to import {0}</value>
   </data>
   <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
-    <value>A function call is not allowed to the left hand side of an assignment</value>
+    <value>A function call is not allowed on the left hand side of an assignment</value>
   </data>
   <data name="FUNCTION_GROUP_RESOLUTION_FAILURE" xml:space="preserve">
     <value>No function called {0} could be found. Please check the name of the function</value>
@@ -178,7 +178,7 @@
     <value>Imports data from a text file containing comma separated values into two-dimensional list and also transpose the output list if specified</value>
   </data>
   <data name="ImportStatementNotSupported" xml:space="preserve">
-    <value>Imports statements are not supported in CodeBlock Nodes</value>
+    <value>Imports statements are not supported in CodeBlock Nodes, please use the Library UI instead</value>
   </data>
   <data name="InsertsAnElementIntoList" xml:space="preserve">
     <value>Inserts an element into a list at specified index</value>
@@ -196,28 +196,28 @@
     <value>File : '{0}' is already imported</value>
   </data>
   <data name="kAmbigousMethodDispatch" xml:space="preserve">
-    <value>Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}</value>
+    <value>Internal error, please report: Function could not be found on final dispatch (e5235508)</value>
   </data>
   <data name="kArgumentTypeUndefined" xml:space="preserve">
     <value>Type '{0}' of argument '{1}' is not defined</value>
   </data>
   <data name="kArrayOverIndexed" xml:space="preserve">
-    <value>Variable is over indexed</value>
+    <value>The index is outside the given range</value>
   </data>
   <data name="kArrayRankReduction" xml:space="preserve">
     <value>Type conversion would cause array rank reduction. This is not permitted outside of replication. {511ED65F-FB66-4709-BDDA-DCD5E053B87F}</value>
   </data>
   <data name="kAssignNonCharacterToString" xml:space="preserve">
-    <value>Only character can be assigned to a position in a string</value>
+    <value>A string must be made up of characters</value>
   </data>
   <data name="kAssingToThis" xml:space="preserve">
     <value>'this' is readonly and cannot be assigned to</value>
   </data>
   <data name="kCallingConstructorInConstructor" xml:space="preserve">
-    <value>Cannot call constructor '{0}()' in itself</value>
+    <value>Cannot call the constructor '{0}()' inside itself</value>
   </data>
   <data name="KCallingConstructorOnInstance" xml:space="preserve">
-    <value>Cannot call constructor '{0}()' on instance</value>
+    <value>Cannot call the constructor '{0}()' on an existing object</value>
   </data>
   <data name="kCallingNonStaticMethod" xml:space="preserve">
     <value>'{0}.{1}()' is not a static method</value>
@@ -232,34 +232,34 @@
     <value>Converting an array to {0} would cause array rank reduction and is not permitted</value>
   </data>
   <data name="kConvertDoubleToInt" xml:space="preserve">
-    <value>Converting double to int will cause possible information loss</value>
+    <value>Converting a double to an int may lose information</value>
   </data>
   <data name="kConvertNonConvertibleTypes" xml:space="preserve">
     <value>Asked to convert non-convertible types</value>
   </data>
   <data name="kCyclicDependency" xml:space="preserve">
-    <value>Cyclic dependency detected at '{0}' and '{1}'</value>
+    <value>A cyclic dependency exists between '{0}' and '{1}'</value>
   </data>
   <data name="kDeferencingNonPointer" xml:space="preserve">
-    <value>Dereferencing a non-pointer</value>
+    <value>Internal error, please report: Dereferencing a non-pointer. (3f47aacd)</value>
   </data>
   <data name="kExceptionTypeUndefined" xml:space="preserve">
-    <value>Exception type '{0}' is not defined</value>
+    <value>The exception type '{0}' is not defined</value>
   </data>
   <data name="keywordCannotBeUsedAsConstructorName" xml:space="preserve">
-    <value>\"{0}\" is a keyword, can't be used as constructor name</value>
+    <value>\"{0}\" is a keyword, it can't be used as constructor name</value>
   </data>
   <data name="keywordCantBeUsedAsIdentifier" xml:space="preserve">
-    <value>\"{0}\" is a keyword, identifier expected</value>
+    <value>\"{0}\" is a keyword, but an identifier was expected</value>
   </data>
   <data name="kFailToConverToFunction" xml:space="preserve">
-    <value>Converting other objects to a function pointer is not allowed</value>
+    <value>Converting objects to a function pointer is not allowed</value>
   </data>
   <data name="kFailToConverToNull" xml:space="preserve">
     <value>Converting other things to null is not allowed</value>
   </data>
   <data name="kFailToConverToPointer" xml:space="preserve">
-    <value>Converting other things to pointer is not allowed</value>
+    <value>Cannot convert objects to function pointers</value>
   </data>
   <data name="kFFIFailedToObtainObject" xml:space="preserve">
     <value>Failed to obtain object '{0}' for '{1}.{2}'</value>
@@ -277,7 +277,7 @@
     <value>No candidate function could be found</value>
   </data>
   <data name="kFunctionNotReturnAtAllCodePaths" xml:space="preserve">
-    <value>Method '{0}()' doesn't return at all code paths</value>
+    <value>All paths through the method '{0}()' must return a value</value>
   </data>
   <data name="kIndexOutOfRange" xml:space="preserve">
     <value>Index is out of range</value>
@@ -289,22 +289,22 @@
     <value>Argument is invalid</value>
   </data>
   <data name="kInvalidArgumentsInRangeExpression" xml:space="preserve">
-    <value>The value that used in range expression should be either integer or double</value>
+    <value>The value used in a range expression must be a number</value>
   </data>
   <data name="kInvalidBreakForFunction" xml:space="preserve">
-    <value>Statement break causes function to abnormally return null</value>
+    <value>Internal error, please report: Statement break causes function to abnormally return null. (6ced82a9)</value>
   </data>
   <data name="kInvalidContinueForFunction" xml:space="preserve">
-    <value>Statement continue cause function to abnormally return null</value>
+    <value>Internal error, please report: Statement continue cause function to abnormally return null. (fd67aaee)</value>
   </data>
   <data name="kInvalidStaticCyclicDependency" xml:space="preserve">
-    <value>Cyclic dependency detected at '{0}' and '{1}'</value>
+    <value>A cyclic dependency exists between '{0}' and '{1}'</value>
   </data>
   <data name="kInvalidThis" xml:space="preserve">
-    <value>'this' can only be used in member methods</value>
+    <value>'this' can only be used in methods that are members of a class</value>
   </data>
   <data name="kInvokeMethodOnInvalidObject" xml:space="preserve">
-    <value>Method '{0}()' is invoked on invalid object</value>
+    <value>Internal error, please report: Method '{0}()' is invoked on an invalid object. (fa006d2b)</value>
   </data>
   <data name="kMethodAlreadyDefined" xml:space="preserve">
     <value>Method '{0}()' is already defined</value>
@@ -313,22 +313,22 @@
     <value>'{0}()' has some invalid arguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
-    <value>Method '{0}()' is inaccessible</value>
+    <value>Method '{0}()' can't be reached from here</value>
   </data>
   <data name="kMethodNotFound" xml:space="preserve">
     <value>Method '{0}()' not found</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B</value>
+    <value>Internal error, please report: Method resolution failure on: {0}() - (8bc0db87)</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn't find a version of {0} that takes arguments of type {1}</value>
+    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>
   </data>
   <data name="kMethodStackOverflow" xml:space="preserve">
-    <value>Stack overflow caused by calling method '{0}()' recursively.</value>
+    <value>'{0}()' recursed until Dynamo ran out of memory, please add a base case.</value>
   </data>
   <data name="kMultipleSymbolFound" xml:space="preserve">
     <value>Multiple definitions for '{0}' are found as {1}</value>
@@ -352,7 +352,7 @@
     <value>Class '{0}' does not have a property '{1}'</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
-    <value>The amount operator cannot be used together with step operator</value>
+    <value>An amount operator cannot be used together with a step operator</value>
   </data>
   <data name="kRangeExpressionWithInvalidAmount" xml:space="preserve">
     <value>The amount of step is invalid.</value>
