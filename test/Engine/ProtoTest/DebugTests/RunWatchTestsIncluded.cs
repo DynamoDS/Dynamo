@@ -1759,7 +1759,6 @@ class VisibilityAttribute
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failure")]
         public void DebugWatch87_TestStringOperations()
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";
@@ -28155,7 +28154,6 @@ b = CreateArray ( b, count );
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failure")]
         public void DebugWatch1006_T24_Dynamic_Array_Accessing_Out_Of_Bound_Index()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -30258,7 +30256,6 @@ z=5;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failure")]
         public void DebugWatch1085_T64_Modify_itemInAnArray_1467093()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();
@@ -30404,7 +30401,6 @@ b[0]=false;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failure")]
         public void DebugWatch1093_T66_Array_CannotBeUsedToIndex1467069()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -33457,7 +33453,6 @@ t = a.foo()[0];";
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failure")]
         public void DebugWatch1212_TV101_Indexing_Into_classCall_1463234_7()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -42552,7 +42547,6 @@ b = [ Imperative ]
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failure")]
         public void DebugWatch1561_T08_Update_Array_Variable()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3988
@@ -42595,7 +42589,6 @@ e = b;
 
         [Test]
         [Category("WatchFx Tests")]
-        [Category("Failure")]
         public void DebugWatch1562_T09_Update_Across_Multiple_Imperative_Blocks()
         {
             string defectID = "MAGN-3988 Defects with Expression Interpreter Test Framework";

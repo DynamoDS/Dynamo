@@ -19,7 +19,7 @@ namespace ProtoCore.DSASM
         /// <param name="core">Core</param>
         /// <param name="procNode">Procedure node</param>
         /// <returns></returns>
-        public bool TryGetFunction(StackValue functionPointer, Core core, out ProcedureNode procNode)
+        public bool TryGetFunction(StackValue functionPointer, RuntimeCore runtimeCore, out ProcedureNode procNode)
         {
             procNode = null;
 
@@ -34,11 +34,11 @@ namespace ProtoCore.DSASM
 
                 if (classScope != Constants.kGlobalScope)
                 {
-                    procNode = core.ClassTable.ClassNodes[classScope].vtable.procList[functionIndex];
+                    procNode = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].vtable.procList[functionIndex];
                 }
                 else
                 {
-                    procNode = core.CompleteCodeBlockList[blockId].procedureTable.procList[functionIndex];
+                    procNode = runtimeCore.DSExecutable.CompleteCodeBlocks[blockId].procedureTable.procList[functionIndex];
                 }
 
                 return true;

@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -27,7 +29,10 @@ namespace SystemTestServices
     /// </summary>
     public abstract class SystemTestBase
     {
+        protected IPathResolver pathResolver;
         protected string workingDirectory;
+        private Preloader preloader;
+        private AssemblyResolver assemblyResolver;
 
         #region protected properties
 
@@ -51,7 +56,13 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
-            AssemblyResolver.Setup();
+            var testConfig = GetTestSessionConfiguration();
+
+            if (assemblyResolver == null)
+            {
+                assemblyResolver = new AssemblyResolver();
+                assemblyResolver.Setup(testConfig.DynamoCorePath);
+            }
 
             SetupCore();
 
@@ -60,14 +71,22 @@ namespace SystemTestServices
                 workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             }
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
-            StartDynamo();
+            StartDynamo(testConfig);
+        }
+
+        /// <summary>
+        /// Override this method in derived class to return a 
+        /// custom configuration.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual TestSessionConfiguration GetTestSessionConfiguration()
+        {
+            return new TestSessionConfiguration();
         }
 
         [TearDown]
@@ -90,6 +109,14 @@ namespace SystemTestServices
 
             View = null;
             Model = null;
+            preloader = null;
+            pathResolver = null;
+
+            if (assemblyResolver != null)
+            {
+                assemblyResolver.TearDown();
+                assemblyResolver = null;
+            }
 
             GC.Collect();
 
@@ -121,13 +148,17 @@ namespace SystemTestServices
         /// </summary>
         protected virtual void SetupCore(){}
 
-        protected virtual void StartDynamo()
+        protected virtual void StartDynamo(TestSessionConfiguration testConfig)
         {
+            preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
+            preloader.Preload();
+
             Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true,
-                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
+                    PathResolver = pathResolver,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             ViewModel = DynamoViewModel.Start(

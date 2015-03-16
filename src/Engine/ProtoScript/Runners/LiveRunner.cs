@@ -249,12 +249,14 @@ namespace ProtoScript.Runners
     {
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
         private ProtoCore.Core core = null;
+        private ProtoCore.RuntimeCore runtimeCore = null;
 
         public ChangeSetData csData { get; private set; }
 
         public ChangeSetComputer(ProtoCore.Core core)
         {
             this.core = core;
+            this.runtimeCore = core.__TempCoreHostForRefactoring;
             currentSubTreeList = new Dictionary<Guid, Subtree>();
         }
 
@@ -264,14 +266,14 @@ namespace ProtoScript.Runners
         /// <param name="liveCore"></param>
         /// <param name="deltaGraphNodes"></param>
         /// <returns></returns>
-        private List<GraphNode> EstimateReachableGraphNodes(Core liveCore, List<GraphNode> deltaGraphNodes)
+        private List<GraphNode> EstimateReachableGraphNodes(RuntimeCore rt, List<GraphNode> deltaGraphNodes)
         {
             List<GraphNode> reachableNodes = new List<GraphNode>();
             foreach (GraphNode executingNode in deltaGraphNodes)
             {
                 reachableNodes.AddRange(ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
                     executingNode,
-                    liveCore.CurrentExecutive.CurrentDSASMExec,
+                    rt.CurrentExecutive.CurrentDSASMExec,
                     executingNode.exprUID,
                     executingNode.modBlkUID,
                     executingNode.IsSSANode(),
@@ -296,7 +298,7 @@ namespace ProtoScript.Runners
             List<GraphNode> deltaGraphNodeList = ProtoCore.AssociativeEngine.Utils.GetGraphNodesFromAST(core.DSExecutable, astList);
             
             // Get the reachable VM graphnodes  given the modified graphnode list
-            List<GraphNode> reachableNodes = EstimateReachableGraphNodes(core, deltaGraphNodeList);
+            List<GraphNode> reachableNodes = EstimateReachableGraphNodes(runtimeCore, deltaGraphNodeList);
 
             // Append the modified nodes(deltaGraphNodeList) into the reachable list as they are also going to be executed when run
             reachableNodes.AddRange(deltaGraphNodeList);
@@ -367,7 +369,7 @@ namespace ProtoScript.Runners
 
                     core.BuildStatus.ClearWarningsForGraph(st.GUID);
 
-                    core.__TempCoreHostForRefactoring.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+                    runtimeCore.RuntimeStatus.ClearWarningsForGraph(st.GUID);
                 }
             }
             return deltaAstList;
@@ -375,7 +377,7 @@ namespace ProtoScript.Runners
 
         private IEnumerable<AssociativeNode> GetDeltaAstListAdded(IEnumerable<Subtree> addedSubTrees)
         {
-            var deltaAstList = new List<AssociativeNode>();
+            var deltaAstList = new List<AssociativeNode>();            
             if (addedSubTrees != null)
             {
                 foreach (var st in addedSubTrees)
@@ -500,7 +502,7 @@ namespace ProtoScript.Runners
                 foreach (var removedAST in csData.RemovedBinaryNodesFromModification)
                 {
                     core.BuildStatus.ClearWarningsForAst(removedAST.ID);
-                    core.__TempCoreHostForRefactoring.RuntimeStatus.ClearWarningsForAst(removedAST.ID);
+                    runtimeCore.RuntimeStatus.ClearWarningsForAst(removedAST.ID);
                 }
             }
 
@@ -956,10 +958,11 @@ namespace ProtoScript.Runners
     public interface ILiveRunner
     {
         ProtoCore.Core Core { get; }
+        ProtoCore.RuntimeCore RuntimeCore { get; }
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
-        void PreviewGraph(GraphSyncData syncData);
+        List<Guid> PreviewGraph(GraphSyncData syncData);
         void UpdateCmdLineInterpreter(string code);
         ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeId);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
@@ -1129,8 +1132,15 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
-                    runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
-                    runnerCore.Cleanup();
+                    runnerCore.__TempCoreHostForRefactoring.Cleanup();
+                    runnerCore = null;
+                }
+
+                if (runtimeCore != null)
+                {
+                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -=
+                        FFIPropertyChanged;
+                    runtimeCore.Cleanup();
                 }
 
                 terminating = true;
@@ -1140,10 +1150,15 @@ namespace ProtoScript.Runners
                     taskQueue.Clear();
                 }
 
-                // waiting for thread to finish
-                if (workerThread.IsAlive)
+                if (workerThread != null)
                 {
-                    workerThread.Join();
+                    // waiting for thread to finish
+                    if (workerThread.IsAlive)
+                    {
+                        workerThread.Join();
+                    }
+
+                    workerThread = null;
                 }
             }
         }
@@ -1161,7 +1176,9 @@ namespace ProtoScript.Runners
             runnerCore = new ProtoCore.Core(coreOptions);
             runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
             runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
-            runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
+
+            runtimeCore = runnerCore.__TempCoreHostForRefactoring;
+            runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
 
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
@@ -1292,7 +1309,7 @@ namespace ProtoScript.Runners
                     {
                         //return GetWatchValue(nodeName);
                         const int blockID = 0;
-                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runnerCore);
+                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runtimeCore, runnerCore);
                         return runtimeMirror;
                     }
                 }
@@ -1311,8 +1328,8 @@ namespace ProtoScript.Runners
             // Traverse order:
             //  Exelist, Globals symbols
 
-            ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
-            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
+            ProtoCore.DSASM.Executive exec = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runtimeCore);
             Executable exe = exec.exe;
 
             // Only display symbols defined in the default top-most langauge block;
@@ -1348,7 +1365,7 @@ namespace ProtoScript.Runners
         /// This API needs to be called for every delta AST preview
         /// </summary>
         /// <param name="syncData"></param>
-        public void PreviewGraph(GraphSyncData syncData)
+        public List<Guid> PreviewGraph(GraphSyncData syncData)
         {
             while (true)
             {
@@ -1356,8 +1373,7 @@ namespace ProtoScript.Runners
                 {
                     if (taskQueue.Count == 0)
                     {
-                        PreviewInternal(syncData);
-                        return;
+                        return PreviewInternal(syncData);                       
                     }
                 }
                 Thread.Sleep(1);
@@ -1462,7 +1478,7 @@ namespace ProtoScript.Runners
 
                     }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         }
 
@@ -1531,7 +1547,6 @@ namespace ProtoScript.Runners
 
         private ProtoRunner.ProtoVMState Execute()
         {
-            runtimeCore = runnerCore.__TempCoreHostForRefactoring;
             // runnerCore.GlobOffset is the number of global symbols that need to be allocated on the stack
             // The argument to Reallocate is the number of ONLY THE NEW global symbols as the stack needs to accomodate this delta
             int newSymbols = runnerCore.GlobOffset - deltaSymbols;
@@ -1557,7 +1572,7 @@ namespace ProtoScript.Runners
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
-                runnerCore.Cleanup();
+                runtimeCore.Cleanup();
                 ReInitializeLiveRunner();
             }
 
@@ -1573,7 +1588,7 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(code, out blockId);
             if (succeeded)
             {
-                runnerCore.RunningBlock = blockId;
+                runtimeCore.RunningBlock = blockId;
                 vmState = Execute();
             }
             return succeeded;
@@ -1586,7 +1601,7 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(astList, runnerCore, out blockId);
             if (succeeded)
             {
-                runnerCore.RunningBlock = blockId;
+                runtimeCore.RunningBlock = blockId;
                 vmState = Execute();
             }
             return succeeded;
@@ -1636,6 +1651,7 @@ namespace ProtoScript.Runners
         private void ResetForDeltaExecution()
         {
             runnerCore.ResetForDeltaExecution();
+            runtimeCore.ResetForDeltaExecution();
         }
 
         /// <summary>
@@ -1676,13 +1692,14 @@ namespace ProtoScript.Runners
             PostExecution();
         }
 
-        private void PreviewInternal(GraphSyncData syncData)
+        private List<Guid> PreviewInternal(GraphSyncData syncData)
         {
             // Get the list of ASTs that will be affected by syncData
             var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
             List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
+            return cbnGuidList;
         }
 
         private void SynchronizeInternal(GraphSyncData syncData)

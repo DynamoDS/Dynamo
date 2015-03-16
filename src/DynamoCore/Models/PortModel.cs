@@ -5,6 +5,7 @@ using System.Xml;
 
 using Dynamo.UI;
 using Dynamo.Utilities;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Models
 {
@@ -91,7 +92,7 @@ namespace Dynamo.Models
             }
         }
 
-        public string ToolTipContent { get; private set; }
+        public string ToolTipContent { get; internal set; }
 
         public string DefaultValueTip
         {
@@ -100,8 +101,10 @@ namespace Dynamo.Models
                 if (PortType == PortType.Input && Owner != null)
                 {
                     var port = Owner.InPortData[Index];
-                    if (port.HasDefaultValue)
+                    if (port.DefaultValue != null)
+                    {
                         return port.DefaultValue.ToString();
+                    }
                 }
                 return "";
             }
@@ -217,13 +220,16 @@ namespace Dynamo.Models
             IsConnected = true;
         }
 
-        public void Disconnect(ConnectorModel connector)
+        public void Disconnect(ConnectorModel connector, bool silent = false)
         {
             if (!connectors.Contains(connector))
                 return;
             
-            //throw the event for a connection
-            OnPortDisconnected();
+            //throw the event for a disconnection
+            if (!silent)
+            {
+                OnPortDisconnected();  
+            }
 
             connectors.Remove(connector);
             
@@ -278,28 +284,20 @@ namespace Dynamo.Models
     {
         public string NickName { get; set; }
         public string ToolTipString { get; set; }
-        public object DefaultValue { get; set; }
+        public AssociativeNode DefaultValue { get; set; }
         public double VerticalMargin { get; set; }
 
         public double Height { get; set; }
 
         public PortData(string nickName, string tip) : this(nickName, tip, null) { }
 
-        public PortData(string nickName, string toolTipString, object defaultValue)
+        public PortData(string nickName, string toolTipString, AssociativeNode defaultValue)
         {
             NickName = nickName;
             ToolTipString = toolTipString;
             DefaultValue = defaultValue;
             VerticalMargin = 0;
             Height = 0;
-        }
-
-        public bool HasDefaultValue 
-        {
-            get
-            {
-                return DefaultValue != null;
-            }
         }
     }
 }

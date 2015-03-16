@@ -42,6 +42,7 @@ namespace Dynamo.Search
             viewModel = searchViewModel;
             this.dynamoViewModel = dynamoViewModel;
 
+            DataContext = viewModel;
             InitializeComponent();
             Loaded += OnSearchViewLoaded;
             Unloaded += OnSearchViewUnloaded;
@@ -54,6 +55,7 @@ namespace Dynamo.Search
                     Keyboard.Focus(this.SearchTextBox);
                     var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
+                    SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
                 }
             };
 
@@ -69,8 +71,6 @@ namespace Dynamo.Search
 
         private void OnSearchViewLoaded(object sender, RoutedEventArgs e)
         {
-            DataContext = viewModel;
-
             MouseEnter += OnSearchViewMouseEnter;
             MouseLeave += OnSearchViewMouseLeave;
 
@@ -306,12 +306,14 @@ namespace Dynamo.Search
         {
             SearchIcon.Source = searchIconBitmapHover;
             SearchTextBlock.Foreground = searchForegroundBrushHover;
+            SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
         }
 
         private void OnSearchTextBoxGridMouseLeave(object sender, MouseEventArgs e)
         {
             SearchIcon.Source = searchIconBitmapNormal;
             SearchTextBlock.Foreground = searchForegroundBrushNormal;
+            SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
         }
 
         private void OnSearchCancelButtonClick(object sender, RoutedEventArgs e)

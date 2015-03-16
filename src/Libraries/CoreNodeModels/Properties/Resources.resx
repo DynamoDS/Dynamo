@@ -513,4 +513,7 @@
   <data name="ConversionNodeDescription" xml:space="preserve">
     <value>Convert between units of measure.</value>
   </data>
+  <data name="SelectFromComboBoxToolTip" xml:space="preserve">
+    <value>This is your Revit display unit settings</value>
+  </data>
 </root>

@@ -1491,7 +1491,7 @@ namespace ProtoAssociative
             // global function. 
             if ((procCallNode == null) && (procName != Constants.kFunctionPointerCall))
             {
-                procCallNode = core.GetFirstVisibleProcedure(procName, arglist, codeBlock);
+                procCallNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeBlock);
                 if (null != procCallNode)
                 {
                     type = Constants.kGlobalScope;
@@ -1539,7 +1539,7 @@ namespace ProtoAssociative
                     inferedType.UID = dotCallType.UID;
                 }
 
-                var procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
+                var procNode = CoreUtils.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
                 if (CoreUtils.IsGetter(procName))
                 {
                     EmitFunctionCall(depth, type, arglist, procNode, funcCall, true);
@@ -1580,7 +1580,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    var procNode = core.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
+                    var procNode = CoreUtils.GetFirstVisibleProcedure(Constants.kDotMethodName, null, codeBlock);
                     if (CoreUtils.IsSetter(procName))
                     {
                         EmitFunctionCall(depth, type, arglist, procNode, funcCall);
@@ -1796,7 +1796,7 @@ namespace ProtoAssociative
             // global function. 
             if ((procNode == null) && (procName != Constants.kFunctionPointerCall))
             {
-                procNode = core.GetFirstVisibleProcedure(procName, arglist, codeBlock);
+                procNode = CoreUtils.GetFirstVisibleProcedure(procName, arglist, codeBlock);
                 if (null != procNode)
                 {
                     type = ProtoCore.DSASM.Constants.kGlobalScope;
@@ -3527,7 +3527,7 @@ namespace ProtoAssociative
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
                                 ssaNode.guid = bnode.guid;
-                                ssaNode.OriginalAstID = bnode.ID;
+                                ssaNode.OriginalAstID = bnode.OriginalAstID;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
@@ -3863,7 +3863,7 @@ namespace ProtoAssociative
             if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.FepRun))
             {
                 // Save the current scope for the expression interpreter
-                globalClassIndex = core.watchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
+                globalClassIndex = runtimeCore.watchClassScope = context.MemoryState.CurrentStackFrame.ClassScope;
                 globalProcIndex = core.watchFunctionScope = context.MemoryState.CurrentStackFrame.FunctionScope;
                 int functionBlock = context.MemoryState.CurrentStackFrame.FunctionBlock;
 
@@ -4259,7 +4259,7 @@ namespace ProtoAssociative
             {
                 //check if it is a function instance
                 ProtoCore.DSASM.ProcedureNode procNode = null;
-                procNode = core.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
                 if (null != procNode)
                 {
                     if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId)
@@ -5552,33 +5552,15 @@ namespace ProtoAssociative
                 List<KeyValuePair<string, ProtoCore.Type>> argsToBeAllocated = new List<KeyValuePair<string, ProtoCore.Type>>();
                 if (null != funcDef.Signature)
                 {
-                    int argNumber = 0;
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
-                        ++argNumber;
-
-                        IdentifierNode paramNode = null;
-                        ProtoCore.AST.Node aDefaultExpression = null;
-                        if (argNode.NameNode is IdentifierNode)
-                        {
-                            paramNode = argNode.NameNode as IdentifierNode;
-                        }
-                        else if (argNode.NameNode is BinaryExpressionNode)
-                        {
-                            BinaryExpressionNode bNode = argNode.NameNode as BinaryExpressionNode;
-                            paramNode = bNode.LeftNode as IdentifierNode;
-                            aDefaultExpression = bNode;
-                        }
-                        else
-                        {
-                            Validity.Assert(false, "Check generated AST");
-                        }
-
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, gNode);
-                        argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
-                        localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
+                        var argInfo = BuildArgumentInfoFromVarDeclNode(argNode); 
                         localProcedure.argInfoList.Add(argInfo);
+
+                        var argType = BuildArgumentTypeFromVarDeclNode(argNode, gNode);
+                        localProcedure.argTypeList.Add(argType);
+
+                        argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(argInfo.Name, argType));
                     }
 
                     localProcedure.isVarArg = funcDef.Signature.IsVarArg;
@@ -5828,6 +5810,33 @@ namespace ProtoAssociative
             codeBlock.blockType = originalBlockType;
         }
 
+        private ArgumentInfo BuildArgumentInfoFromVarDeclNode(VarDeclNode argNode)
+        {
+            var argumentName = String.Empty;
+            ProtoCore.AST.Node defaultExpression = null;
+            if (argNode.NameNode is IdentifierNode)
+            {
+                argumentName = (argNode.NameNode as IdentifierNode).Value;
+            }
+            else if (argNode.NameNode is BinaryExpressionNode)
+            {
+                var bNode = argNode.NameNode as BinaryExpressionNode;
+                defaultExpression = bNode;
+                argumentName = (bNode.LeftNode as IdentifierNode).Value;
+            }
+            else
+            {
+                Validity.Assert(false, "Check generated AST");
+            }
+
+            var argInfo = new ProtoCore.DSASM.ArgumentInfo 
+            { 
+                Name = argumentName, 
+                DefaultExpression = defaultExpression,
+                Attributes = argNode.ExternalAttributes
+            };
+            return argInfo;
+        }
 
         private void EmitFunctionDefinitionNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, GraphNode graphNode = null)
         {
@@ -5894,35 +5903,15 @@ namespace ProtoAssociative
                 string functionDescription = localProcedure.name;
                 if (null != funcDef.Signature)
                 {
-                    int argNumber = 0;
                     foreach (VarDeclNode argNode in funcDef.Signature.Arguments)
                     {
-                        ++argNumber;
-
-                        IdentifierNode paramNode = null;
-                        ProtoCore.AST.Node aDefaultExpression = null;
-                        if (argNode.NameNode is IdentifierNode)
-                        {
-                            paramNode = argNode.NameNode as IdentifierNode;
-                        }
-                        else if (argNode.NameNode is BinaryExpressionNode)
-                        {
-                            BinaryExpressionNode bNode = argNode.NameNode as BinaryExpressionNode;
-                            paramNode = bNode.LeftNode as IdentifierNode;
-                            aDefaultExpression = bNode;
-                        }
-                        else
-                        {
-                            Validity.Assert(false, "Check generated AST");
-                        }
-
-                        ProtoCore.Type argType = BuildArgumentTypeFromVarDeclNode(argNode, graphNode);
-                        // We dont directly allocate arguments now
-                        argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(paramNode.Value, argType));
-                        
-                        localProcedure.argTypeList.Add(argType);
-                        ProtoCore.DSASM.ArgumentInfo argInfo = new ProtoCore.DSASM.ArgumentInfo { Name = paramNode.Value, DefaultExpression = aDefaultExpression };
+                        var argInfo = BuildArgumentInfoFromVarDeclNode(argNode);
                         localProcedure.argInfoList.Add(argInfo);
+
+                        var argType = BuildArgumentTypeFromVarDeclNode(argNode, graphNode);
+                        localProcedure.argTypeList.Add(argType);
+
+                        argsToBeAllocated.Add(new KeyValuePair<string, ProtoCore.Type>(argInfo.Name, argType));
 
                         functionDescription += argNode.ArgumentType.ToString();
                     }
@@ -8363,7 +8352,7 @@ namespace ProtoAssociative
                         }
                         if (procNode == null)
                         {
-                            procNode = core.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                            procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
                         }
                         if (procNode != null)
                         {

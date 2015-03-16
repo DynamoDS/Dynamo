@@ -8,6 +8,11 @@ namespace Dynamo.Search.SearchElements
     public abstract class SearchElementBase : BrowserInternalElement
     {
         /// <summary>
+        /// The name that is used during node creation
+        /// </summary>
+        public virtual string CreationName { get { return this.Name; } }
+
+        /// <summary>
         /// Searchable property </summary>
         /// <value>
         /// A bool indicating if the object will appear in searches </value>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autodesk.DesignScript.Runtime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -113,6 +114,13 @@ namespace FFITarget
             ln.End = b;
 
             return ln;
+        }
+
+        public static DummyLine ByStartPointEndPointWithDefault(
+            [DefaultArgumentAttribute("DummyPoint.ByCoordinates(0,0,0)")] DummyPoint p1,
+            [DefaultArgumentAttribute("DummyPoint.ByCoordinates(5,5,5)")] DummyPoint p2)
+        {
+            return ByStartPointEndPoint(p1, p2);
         }
 
         public void Dispose()

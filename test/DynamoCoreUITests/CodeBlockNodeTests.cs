@@ -34,7 +34,7 @@ namespace DynamoCoreUITests
         protected WorkspaceModel workspace = null;
         protected WorkspaceViewModel workspaceViewModel = null;
 
-        public override void Init()
+        public override void Setup()
         {
             // We do not call "base.Init()" here because we want to be able 
             // to create our own copy of Controller here with command file path.
@@ -242,7 +242,7 @@ namespace DynamoCoreUITests
             }
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true
                 });
@@ -255,8 +255,8 @@ namespace DynamoCoreUITests
                 });
 
             ViewModel.HomeSpace.RunSettings.RunType = autoRun ? 
-                RunType.Automatically : 
-                RunType.Manually;
+                RunType.Automatic : 
+                RunType.Manual;
 
             RegisterCommandCallback(commandCallback);
 

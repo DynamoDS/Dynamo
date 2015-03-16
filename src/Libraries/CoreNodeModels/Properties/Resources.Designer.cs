@@ -977,6 +977,15 @@ namespace DSCoreNodesUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This is your Revit display unit settings.
+        /// </summary>
+        internal static string SelectFromComboBoxToolTip {
+            get {
+                return ResourceManager.GetString("SelectFromComboBoxToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The selected elements..
         /// </summary>
         internal static string SelectionPortDataResultToolTip {

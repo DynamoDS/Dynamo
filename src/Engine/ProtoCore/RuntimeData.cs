@@ -64,6 +64,17 @@ namespace ProtoCore
         public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
         public List<AssociativeNode> CachedSSANodes { get; set; }
 
+        public DynamicVariableTable DynamicVarTable { get; set; }
+        public DynamicFunctionTable DynamicFuncTable { get; set; }
+        public FunctionPointerTable FuncPointerTable { get; set; }
+
+        public ContextDataManager ContextDataMngr { get; set; }
+
+        public Dictionary<string, object> Configurations { get; set; }
+
+        public Dictionary<ulong, ulong> CodeToLocation { get; set; }
+        public string CurrentDSFileName { get; set; }
+
  #endregion
 
         
@@ -113,6 +124,10 @@ namespace ProtoCore
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
             ASTToCallSiteMap = new Dictionary<int, CallSite>();
             CallsiteGuidMap = new Dictionary<Guid, int>();
+
+            ContextDataMngr = null;
+            CodeToLocation = null;
+            CurrentDSFileName = string.Empty;
         }
 
         /// <summary>

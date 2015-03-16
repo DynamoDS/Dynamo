@@ -42,6 +42,14 @@ namespace Dynamo.DSEngine
             }
         }
 
+        public ProtoCore.RuntimeCore RuntimeCore
+        {
+            get
+            {
+                return liveRunner.RuntimeCore;
+            }
+        }
+
 
         /// <summary>
         /// TPDP
@@ -72,6 +80,18 @@ namespace Dynamo.DSEngine
                 Log("LRS.UpdateGraph: " + graphData);
 
             liveRunner.UpdateGraph(graphData);
+        }
+
+        /// <summary>
+        /// Preview graph with graph sync data.
+        /// </summary>
+        /// <param name="graphData"></param>
+        public List<Guid> PreviewGraph(GraphSyncData graphData, bool verboseLogging)
+        {
+            if (verboseLogging)
+               Log("LRS.PreviewGraph: " + graphData);
+
+            return liveRunner.PreviewGraph(graphData);
         }
 
         /// <summary>
