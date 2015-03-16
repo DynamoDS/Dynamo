@@ -43,6 +43,29 @@ namespace DynamoInstallActions
             }
         }
 
+        [CustomAction]
+        public static ActionResult RemoveShortcut(Session session)
+        {
+            try
+            {
+                string startmenuFolder = session.CustomActionData["Dir"];
+                string shortcutName = string.Format("Dynamo {0}.{1}.{2}.lnk", 
+                    session.CustomActionData["Major"], session.CustomActionData["Minor"], session.CustomActionData["Rev"]);
+                string shortcut = Path.Combine(startmenuFolder, shortcutName);
+                session.Log("Shortcut path is {0}", shortcut);
+                if (File.Exists(shortcut))
+                    File.Delete(shortcut);
+                if (Directory.Exists(startmenuFolder))
+                    Directory.Delete(startmenuFolder);
+                return ActionResult.Success;
+            }
+            catch (Exception ex)
+            {
+                session.Log(ex.Message);
+                return ActionResult.Success;
+            }
+        }
+
         /// <summary>
         /// Run the Dynamo uninstaller
         /// </summary>

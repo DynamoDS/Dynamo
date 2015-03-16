@@ -6,7 +6,7 @@
            Language="1033"
            Version="$(var.Major).$(var.Minor).$(var.Rev)"
            Manufacturer="Dynamo"
-           UpgradeCode="{EFF4EBAD-E976-4EA8-A110-537D6D0B669A}">
+           UpgradeCode="{9A9BCBCC-5B1A-4B65-AC10-D822BAB5389E}">
 
     <Package InstallerVersion="200"
              Compressed="yes"
@@ -22,20 +22,22 @@
     <Binary Id="DynamoInstallActions.CA.dll"
             SourceFile="$(var.base)\src\DynamoInstallActions\bin\$(var.Configuration)\DynamoInstallActions.CA.dll" />
 
-    <CustomAction Id="UninstallDynamo"
-                Return="check"
-                Execute="deferred"
-                BinaryKey="DynamoInstallActions.CA.dll"
-                DllEntry="UninstallDynamo"
-                Impersonate="no">
-    </CustomAction>
+    <CustomAction Id="UninstallDynamo" Return="check" Execute="deferred" Impersonate="no" 
+                  BinaryKey="DynamoInstallActions.CA.dll" DllEntry="UninstallDynamo" />
 
-    <CustomAction Id="SetCustomActionDataValue" Return="check" Property="UninstallDynamo" 
+    <CustomAction Id="RemoveShortcut" Return="check" Execute="deferred" Impersonate="no" 
+                  BinaryKey="DynamoInstallActions.CA.dll" DllEntry="RemoveShortcut" />
+
+    <CustomAction Id="SetCA_Data1" Return="check" Property="UninstallDynamo"
                   Value="Major=$(var.Major);Minor=$(var.Minor);Rev=$(var.Rev)" />
+    <CustomAction Id="SetCA_Data2" Return="check" Property="RemoveShortcut"
+                  Value="Major=$(var.Major);Minor=$(var.Minor);Rev=$(var.Rev);Dir=[ApplicationProgramsFolder]" />
 
     <InstallExecuteSequence>
-      <Custom Action="SetCustomActionDataValue" Before="UninstallDynamo">NOT Installed</Custom>
+      <Custom Action="SetCA_Data1" Before="UninstallDynamo">NOT Installed</Custom>
       <Custom Action="UninstallDynamo" After="InstallInitialize">NOT Installed</Custom>
+      <Custom Action="SetCA_Data2" Before="RemoveShortcut">Installed</Custom>
+      <Custom Action="RemoveShortcut" After="InstallInitialize">Installed</Custom>
     </InstallExecuteSequence>
 
     <Property Id="ARPNOMODIFY">1</Property>
