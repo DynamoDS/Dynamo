@@ -304,17 +304,6 @@
     <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
     <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
-    <Compile Include="VisualizationManager\octree\FastSerialization.cs" />
-    <Compile Include="VisualizationManager\octree\IOctree.cs" />
-    <Compile Include="VisualizationManager\octree\Octree.cs" />
-    <Compile Include="VisualizationManager\octree\OctreeBox.cs" />
-    <Compile Include="VisualizationManager\octree\OctreeDistance.cs" />
-    <Compile Include="VisualizationManager\octree\OctreeLeaf.cs" />
-    <Compile Include="VisualizationManager\octree\OctreeNode.cs" />
-    <Compile Include="VisualizationManager\octree\Point3d.cs" />
-    <Compile Include="VisualizationManager\octree\Point3f.cs" />
-    <Compile Include="VisualizationManager\octree\Vector3d.cs" />
-    <Compile Include="VisualizationManager\octree\Vector3f.cs" />
     <Compile Include="VisualizationManager\STLExport.cs" />
     <Compile Include="VisualizationManager\VisualizationManager.cs" />
   </ItemGroup>

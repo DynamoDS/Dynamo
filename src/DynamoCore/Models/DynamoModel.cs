@@ -958,7 +958,7 @@ namespace Dynamo.Models
             if (null == CurrentWorkspace)
                 return;
 
-            OnDeletionStarted(this, EventArgs.Empty);
+            OnDeletionStarted();
 
             CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
 
@@ -1250,7 +1250,7 @@ namespace Dynamo.Models
         /// </summary>
         public void ClearCurrentWorkspace()
         {
-            OnWorkspaceClearing(this, EventArgs.Empty);
+            OnWorkspaceClearing();
 
             CurrentWorkspace.Clear();
 

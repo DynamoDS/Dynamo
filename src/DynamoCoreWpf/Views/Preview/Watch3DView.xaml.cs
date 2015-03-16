@@ -321,14 +321,14 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void VisualizationManager_ResultsReadyToVisualize(object sender, VisualizationEventArgs e)
+        private void VisualizationManager_ResultsReadyToVisualize(VisualizationEventArgs args)
         {
             if (CheckAccess())
-                RenderDrawables(e);
+                RenderDrawables(args);
             else
             {
                 // Scheduler invokes ResultsReadyToVisualize on background thread.
-                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(e)));
+                Dispatcher.BeginInvoke(new Action(() => RenderDrawables(args)));
             }
         }
 
@@ -339,13 +339,13 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void VisualizationManagerRenderComplete(object sender, RenderCompletionEventArgs e)
+        private void VisualizationManagerRenderComplete()
         {
             var executeCommand = new Action(delegate
             {
                 var vm = (IWatchViewModel)DataContext;
-                if (vm.GetBranchVisualizationCommand.CanExecute(e.TaskId))
-                    vm.GetBranchVisualizationCommand.Execute(e.TaskId);
+                if (vm.GetBranchVisualizationCommand.CanExecute(null))
+                    vm.GetBranchVisualizationCommand.Execute(null);
             });
 
             if (CheckAccess())
@@ -544,8 +544,6 @@ namespace Dynamo.Controls
             {
                 return;
             }
-
-            //Debug.WriteLine(string.Format("Rendering visuals for {0}", e.Id));
 
 #if DEBUG
             renderTimer.Start();

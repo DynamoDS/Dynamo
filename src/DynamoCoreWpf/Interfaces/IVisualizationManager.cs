@@ -1,8 +1,10 @@
-﻿using Dynamo.Models;
+﻿using System;
+
+using Dynamo.Models;
 
 namespace Dynamo.Interfaces
 {
-    public interface IVisualizationManager
+    public interface IVisualizationManager : IDisposable
     {
         /// <summary>
         /// Flag allows us to pause visualization updates.
@@ -35,7 +37,7 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// An event triggered on the completion of visualization update.
         /// </summary>
-        event RenderCompleteEventHandler RenderComplete;
+        event Action RenderComplete;
 
         /// <summary>
         /// Display a label for one or several render packages 
@@ -47,17 +49,17 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// An event triggered when there are results to visualize
         /// </summary>
-        event ResultsReadyHandler ResultsReadyToVisualize;
+        event Action<VisualizationEventArgs> ResultsReadyToVisualize;
 
         /// <summary>
-        /// Pause the visualization manager.
+        /// Stop the visualization manager.
         /// </summary>
-        void Pause();
+        void Stop();
 
         /// <summary>
         /// Unpause the visualization manager.
         /// </summary>
-        void UnPause();
+        void Start();
 
         void RequestBranchUpdate(NodeModel node);
     }

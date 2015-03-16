@@ -825,7 +825,7 @@ namespace Dynamo.ViewModels
         //    }
         //}
 
-        private void CleanUp(DynamoModel dynamoModel)
+        private void CleanUp()
         {
             UnsubscribeAllEvents();
         }
@@ -1977,6 +1977,8 @@ namespace Dynamo.ViewModels
             if (shutdownParams.CloseDynamoView)
                 OnRequestClose(this, EventArgs.Empty);
 
+            VisualizationManager.Dispose();
+
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
             {
@@ -2032,11 +2034,7 @@ namespace Dynamo.ViewModels
 
         public bool CanGetBranchVisualization(object parameter)
         {
-            if (FullscreenWatchShowing)
-            {
-                return true;
-            }
-            return false;
+            return FullscreenWatchShowing;
         }
 
         public DynamoViewModel ViewModel { get { return this; } }

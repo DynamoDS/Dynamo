@@ -6,18 +6,18 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 
 using SystemTestServices;
+
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
-
-using Dynamo.Utilities;
-using DynamoCoreUITests.Utility;
-using NUnit.Framework;
-
 using Dynamo.Selection;
-using ProtoCore.Namespace;
+using Dynamo.Utilities;
+
+using DynamoCoreUITests.Utility;
+
+using NUnit.Framework;
 
 namespace DynamoCoreUITests
 {
@@ -145,7 +145,7 @@ namespace DynamoCoreUITests
             Assert.Null(BackgroundPreview.Mesh);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;
@@ -178,13 +178,12 @@ namespace DynamoCoreUITests
             //ensure that the watch 3d is not showing the upstream
             //the render descriptions will still be around for those
             //nodes, but watch 3D will not be showing them
-            var nodeViews = View.NodeViewsInFirstWorkspace().OfNodeModelType<Watch3D>().ToList();
-
-            Assert.AreEqual(1, nodeViews.Count());
+            var nodeViews = View.NodeViewsInFirstWorkspace();
+            var watchNodes = nodeViews.OfNodeModelType<Watch3D>().ToList();
+            Assert.AreEqual(1, watchNodes.Count());
 
             var watch3DNodeView = nodeViews.First();
             var watchView = watch3DNodeView.ChildrenOfType<Watch3DView>().First();
-
             Assert.Null(watchView.Points);
         }
 
@@ -252,7 +251,7 @@ namespace DynamoCoreUITests
             //ensure that the visualization no longer contains
             //the renderables for the line node
             Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
-            Assert.AreEqual(0, BackgroundPreview.Lines.Positions.Count);
+            Assert.Null(BackgroundPreview.Lines);
         }
 
         [Test]

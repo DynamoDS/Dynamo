@@ -50,11 +50,11 @@ namespace Dynamo.Models
                 RequestLayoutUpdate(this, e);
         }
 
-        public event EventHandler WorkspaceClearing;
-        public virtual void OnWorkspaceClearing(object sender, EventArgs e)
+        public event Action WorkspaceClearing;
+        public virtual void OnWorkspaceClearing()
         {
             if (WorkspaceClearing != null)
-                WorkspaceClearing(this, e);
+                WorkspaceClearing();
         }
 
         public event EventHandler WorkspaceCleared;
@@ -82,11 +82,11 @@ namespace Dynamo.Models
             WorkspaceEvents.OnWorkspaceRemoved(obj.Guid, obj.Name);
         }
 
-        public event EventHandler DeletionStarted;
-        public virtual void OnDeletionStarted(object sender, EventArgs e)
+        public event Action DeletionStarted;
+        public virtual void OnDeletionStarted()
         {
             if (DeletionStarted != null)
-                DeletionStarted(this, e);
+                DeletionStarted();
         }
 
         public event EventHandler DeletionComplete;
@@ -99,11 +99,11 @@ namespace Dynamo.Models
         /// <summary>
         /// An event triggered when the workspace is being cleaned.
         /// </summary>
-        public event CleanupHandler CleaningUp;
+        public event Action CleaningUp;
         public virtual void OnCleanup()
         {
             if (CleaningUp != null)
-                CleaningUp(this);
+                CleaningUp();
         }
 
         public event NodeHandler RequestCancelActiveStateForNode;

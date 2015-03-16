@@ -105,7 +105,7 @@ namespace Dynamo.Nodes
         private void RenderData(object data)
         {
             View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), watch3dModel.GUID, -1));
+                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), watch3dModel.GUID));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)

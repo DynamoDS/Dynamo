@@ -1005,7 +1005,7 @@ namespace Dynamo.ViewModels
 
         private void PauseVisualizationManagerUpdates(object parameter)
         {
-            DynamoViewModel.VisualizationManager.Pause();
+            DynamoViewModel.VisualizationManager.Stop();
         }
 
         private static bool CanPauseVisualizationManagerUpdates(object parameter)
@@ -1015,7 +1015,7 @@ namespace Dynamo.ViewModels
 
         private void UnPauseVisualizationManagerUpdates(object parameter)
         {
-            DynamoViewModel.VisualizationManager.UnPause();
+            DynamoViewModel.VisualizationManager.Start();
         }
 
         private static bool CanUnPauseVisualizationManagerUpdates(object parameter)
