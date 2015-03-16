@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="ConverterTests.cs" />
+    <Compile Include="MessageLogTests.cs" />
     <Compile Include="NodeConstructionTests.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
