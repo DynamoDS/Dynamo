@@ -624,11 +624,21 @@ namespace Dynamo.Models
         #region Modification Reporting
 
         /// <summary>
+        ///     Indicate if the node should respond to Modified event. It
+        ///     always should be false, unless is temporarily set to true to 
+        ///     avoid flood of Modified event. 
+        /// </summary>
+        public bool BeSilentForNodeModification { get; set; }
+
+        /// <summary>
         ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
         public event Action<NodeModel> Modified;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
+            if (BeSilentForNodeModification)
+                return;
+
             MarkNodeAsModified(forceExecute);           
             var handler = Modified;
             if (handler != null) handler(this);
