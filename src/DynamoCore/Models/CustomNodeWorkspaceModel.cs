@@ -31,34 +31,41 @@ namespace Dynamo.Models
 
         #region Contructors
 
-        public CustomNodeWorkspaceModel(
-            string name, string category, string description, double x, double y, Guid customNodeId,
-            NodeFactory factory, ElementResolver elementResolver, string fileName="")
+        public CustomNodeWorkspaceModel( 
+            WorkspaceInfo info, 
+            NodeFactory factory)
             : this(
-                name,
-                category,
-                description,
                 factory,
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 Enumerable.Empty<AnnotationModel>(),
-                x,
-                y,
-                customNodeId, elementResolver, fileName) { }
+                info) { }
 
-        public CustomNodeWorkspaceModel(
-            string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            IEnumerable<AnnotationModel> a, 
-            double x, double y, Guid customNodeId, ElementResolver elementResolver, string fileName="") 
-            : base(name, e, n, a, x, y, factory, elementResolver, fileName)
+        public CustomNodeWorkspaceModel( 
+            NodeFactory factory, 
+            IEnumerable<NodeModel> e, 
+            IEnumerable<NoteModel> n, 
+            IEnumerable<AnnotationModel> a,
+            WorkspaceInfo info,
+            ElementResolver elementResolver = null) 
+            : base(e, n,a,info, factory)
+
         {
-            CustomNodeId = customNodeId;
             HasUnsavedChanges = false;
-            Category = category;
-            Description = description;
+
+            CustomNodeId = Guid.Parse(info.ID);
+            Category = info.Category;
+            Description = info.Description;
+
+            if (elementResolver != null)
+            {
+                ElementResolver.CopyResolutionMap(elementResolver);
+            }
 
             PropertyChanged += OnPropertyChanged;
         }
+
+        #endregion
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
@@ -72,7 +79,6 @@ namespace Dynamo.Models
             }
         }
 
-        #endregion
 
         /// <summary>
         ///     All CustomNodeDefinitions which this Custom Node depends on.
@@ -154,11 +160,17 @@ namespace Dynamo.Models
         }
         private string description;
 
-        public override void OnNodesModified()
+        protected override void RequestRun()
         {
-            base.OnNodesModified();
+            base.RequestRun();
             HasUnsavedChanges = true;
             OnDefinitionUpdated();
+        }
+
+        protected override void NodeModified(NodeModel node)
+        {
+            base.NodeModified(node);
+            RequestRun();
         }
 
         public event Action InfoChanged;

@@ -90,6 +90,7 @@ namespace ProtoTestFx
             TextOutputStream fs = new TextOutputStream(map);
 
             core = new ProtoCore.Core(options);
+
             core.Configurations.Add(ConfigurationKeys.GeometryXmlProperties, true);
             //core.Configurations.Add(ConfigurationKeys.GeometryFactory, geometryFactory);
             //core.Configurations.Add(ConfigurationKeys.PersistentManager, persistentManager);
@@ -97,10 +98,9 @@ namespace ProtoTestFx
             // By specifying this option we inject a mock Executive ('InjectionExecutive')
             // that prints stackvalues at every assignment statement
             // by overriding the POP_handler instruction - pratapa
-            core.ExecutiveProvider = new InjectionExecutiveProvider();
+            //core.ExecutiveProvider = new InjectionExecutiveProvider();
 
             core.BuildStatus.MessageHandler = fs;
-            core.RuntimeStatus.MessageHandler = fs;
 
             core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
             core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
@@ -131,7 +131,7 @@ namespace ProtoTestFx
             InjectionExecutive.ExpressionMap.Clear();
             ExecutionMirror mirror;
             Core core = TestRunnerRunOnly(includePath, code, map, "ManagedAsmGeometry.dll", "ManagedAsmPersistentManager.dll", out mirror);
-
+            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             try
             {
                 //XML Result
@@ -167,13 +167,13 @@ namespace ProtoTestFx
             }
             catch (NUnit.Framework.AssertionException e)
             {
-                core.Cleanup();
+                runtimeCore.Cleanup();
                 Assert.Fail(e.Message);
                 return;
             }
             catch (Exception e)
             {
-                core.Cleanup();
+                runtimeCore.Cleanup();
                 Assert.Fail("Error: an exception is thrown!\n\n\t" + e.Message );
                 return;
             }
@@ -181,7 +181,7 @@ namespace ProtoTestFx
             //Ensure no memory leak
             //sw.Close();
 
-            core.Cleanup();
+            runtimeCore.Cleanup();
         }
 
         public static bool RunAndCompareNoAssert(string scriptFile)

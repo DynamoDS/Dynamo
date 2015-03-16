@@ -8,7 +8,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Tests;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -935,6 +935,7 @@ namespace Dynamo
     public class SchedulerIntegrationTests : UnitTestBase
     {
         private DynamoModel dynamoModel;
+        private Preloader preloader;
         private SampleSchedulerThread schedulerThread;
         private List<string> results;
 
@@ -1191,9 +1192,10 @@ namespace Dynamo
 
         #region Test Setup, TearDown, Helper Methods
 
-        public override void Init()
+        [SetUp]
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
             StartDynamo();
 
             FakeAsyncTaskData.ResetSerialNumber();
@@ -1208,23 +1210,24 @@ namespace Dynamo
                 dynamoModel = null;
             }
 
+            preloader = null;
             base.Cleanup();
         }
 
         protected void StartDynamo()
         {
-            DynamoPathManager.Instance.InitializeCore(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+            preloader.Preload();
 
             schedulerThread = new SampleSchedulerThread();
             dynamoModel = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     // See documentation for 'SchedulerIntegrationTests' above.
                     StartInTestMode = false,
-                    SchedulerThread = schedulerThread
+                    SchedulerThread = schedulerThread,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
         }
 

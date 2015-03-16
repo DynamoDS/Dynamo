@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Dynamo.Core.Threading
 {
-    internal delegate void AsyncTaskCompletedHandler(AsyncTask asyncTask);
+    public delegate void AsyncTaskCompletedHandler(AsyncTask asyncTask);
 
     /// <summary>
     /// DynamoScheduler makes use of this comparer class to sort its internal 
@@ -58,7 +58,7 @@ namespace Dynamo.Core.Threading
             KeepOther
         }
 
-        private readonly IScheduler scheduler;
+        internal readonly IScheduler scheduler;
 
         #endregion
 

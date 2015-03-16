@@ -14,12 +14,16 @@ namespace Dynamo.Tests
     [TestFixture]
     class LibraryTests : DSEvaluationViewModelUnitTest
     {
+        private LibraryServices libraryServices;
+
         protected static bool LibraryLoaded { get; set; }
 
         [SetUp]
-        public override void Init()
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
+
+            libraryServices = ViewModel.Model.LibraryServices;
             RegisterEvents();
         }
 
@@ -68,7 +72,7 @@ namespace Dynamo.Tests
 
         private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
         {
-            var command = new DynCmd.UpdateModelValueCommand(cbn.GUID, "Code", value);
+            var command = new DynCmd.UpdateModelValueCommand(System.Guid.Empty, cbn.GUID, "Code", value);
             ViewModel.ExecuteCommand(command);
         }
 
@@ -226,39 +230,6 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void LibraryLoaded_PrecompileCBN_ShowConflictWarnings()
-        {
-            var model = ViewModel.Model;
-
-            // Create the initial code block node.
-            var codeBlockNodeOne = CreateCodeBlockNode();
-            UpdateCodeBlockNodeContent(codeBlockNodeOne, "Point.ByCoordinates();");
-
-            // We should have one code block node by now.
-            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
-
-            // Run 
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
-
-            string libraryPath = "FFITarget.dll";
-
-            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath);
-            }
-
-            // Assert that once a library with classname conflicts is loaded the CBN
-            // displays the warning
-            Assert.IsTrue(codeBlockNodeOne.ToolTipText.Contains(string.Format(
-                ProtoCore.Properties.Resources.kMultipleSymbolFoundFromName, "Point", "")));
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void DumpLibraryToXmlZeroTouchTest()
         {
             LibraryLoaded = false;
@@ -317,6 +288,27 @@ namespace Dynamo.Tests
                     // normal function.Description: Excel.ReadFromFile (file: var, sheetName: string): var[][]
                 }
             }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestDefaultArgumentAttribute()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+            }
+
+            // Get function groups for ClassFunctionality Class
+            var functions = libraryServices.GetFunctionGroups(libraryPath)
+                                            .SelectMany(x => x.Functions)
+                                            .Where(y => y.ClassName.Contains("FFITarget.TestData") && y.FunctionName.Equals("GetCircleArea"));
+
+            Assert.IsTrue(functions.Any());
+            var func = functions.First();
+
+            Assert.IsTrue(func.Parameters.First().DefaultValue.ToString().Equals("TestData.GetFloat()"));
         }
 
         #endregion

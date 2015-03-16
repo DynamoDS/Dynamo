@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
 
@@ -12,6 +13,7 @@ namespace Dynamo.ViewModels
     {
         // Automation related data members.
         private AutomationSettings automationSettings = null;
+        
 
         #region Automation Related Methods
 
@@ -114,6 +116,7 @@ namespace Dynamo.ViewModels
 
                 case "DeleteModelCommand":
                 case "CreateNodeCommand":
+                case "CreateProxyNodeCommand":
                 case "CreateNoteCommand":
                 case "CreateAnnotationCommand":
                 case "UndoRedoCommand":
@@ -159,6 +162,7 @@ namespace Dynamo.ViewModels
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":
+                case "CreateProxyNodeCommand":
                 case "CreateNoteCommand":
                 case "CreateAnnotationCommand":
                 case "SelectModelCommand":

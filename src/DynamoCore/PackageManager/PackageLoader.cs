@@ -12,13 +12,20 @@ using DynamoUtilities;
 
 namespace Dynamo.PackageManager
 {
+    public struct LoadPackageParams
+    {
+        public string Context { get; set; }
+        public bool IsTestMode { get; set; }
+        public IPreferences Preferences { get; set; }
+        public IPathManager PathManager { get; set; }
+        public LibraryServices LibraryServices { get; set; }
+        public DynamoLoader Loader { get; set; }
+        public CustomNodeManager CustomNodeManager { get; set; }
+    }
+
     public class PackageLoader : LogSourceBase
     {
         public string RootPackagesDirectory { get; private set; }
-        
-        public PackageLoader()
-            : this(Path.Combine(DynamoPathManager.Instance.MainExecPath, DynamoPathManager.Instance.Packages))
-        { }
 
         public PackageLoader(string overridePackageDirectory)
         {
@@ -33,24 +40,20 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackagesIntoDynamo(
-            IPreferences preferences, LibraryServices libraryServices, DynamoLoader loader, string context,
-            bool isTestMode, CustomNodeManager customNodeManager)
+        public void LoadPackagesIntoDynamo(LoadPackageParams loadPackageParams)
         {
-            ScanAllPackageDirectories(preferences);
+            ScanAllPackageDirectories(loadPackageParams.Preferences);
 
-            foreach (var pkg in LocalPackages)
-                DynamoPathManager.Instance.AddResolutionPath(pkg.BinaryDirectory);
+            var pathManager = loadPackageParams.PathManager;
+            if (pathManager != null)
+            {
+                foreach (var pkg in LocalPackages)
+                    pathManager.AddResolutionPath(pkg.BinaryDirectory);
+            }
 
             foreach (var pkg in LocalPackages)
             {
-                pkg.LoadIntoDynamo(
-                    loader,
-                    AsLogger(),
-                    libraryServices,
-                    context,
-                    isTestMode,
-                    customNodeManager);
+                pkg.LoadIntoDynamo(loadPackageParams, AsLogger());
             }
         }
 

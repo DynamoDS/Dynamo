@@ -44,13 +44,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoConvert.cs" />
     <Compile Include="Input\SliderBase.cs" />
     <Compile Include="Input\Double.cs" />
     <Compile Include="Input\BaseTypes.cs" />
@@ -107,6 +105,11 @@
     <ProjectReference Include="..\CoreNodes\CoreNodes.csproj">
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
+      <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
+      <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">

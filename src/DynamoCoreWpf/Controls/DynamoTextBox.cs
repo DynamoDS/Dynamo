@@ -221,6 +221,7 @@ namespace Dynamo.Nodes
                         string propName = expr.ParentBinding.Path.Path;
                         nvm.DynamoViewModel.ExecuteCommand(
                             new DynamoModel.UpdateModelValueCommand(
+                                nodeViewModel.WorkspaceViewModel.Model.Guid,
                                 nvm.NodeModel.GUID, propName, Text));
                     }
                 }
@@ -350,12 +351,14 @@ namespace Dynamo.UI.Controls
         private DispatcherTimer dispatcherTimer = new DispatcherTimer();
         private DispatcherTimer showTimer = new DispatcherTimer();
         private object nextDataContext;
+        private DynamoView mainDynamoWindow;
 
         public LibraryToolTipPopup()
         {
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
             this.CustomPopupPlacementCallback = PlacementCallback;
+            this.DataContext = null;
             this.Child = tooltip;
             this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
@@ -368,7 +371,7 @@ namespace Dynamo.UI.Controls
         // If we try to load it before, we will get null.
         private void LoadMainDynamoWindow(object sender, RoutedEventArgs e)
         {
-            var mainDynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            mainDynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             if (mainDynamoWindow == null)
                 return;
 
@@ -378,11 +381,15 @@ namespace Dynamo.UI.Controls
             mainDynamoWindow.Deactivated += (Sender, args) =>
             {
                 this.DataContext = null;
+                IsOpen = false;
             };
         }
 
         public void SetDataContext(object dataContext, bool closeImmediately = false)
         {
+            // If Dynamo window is not active, we should not show as well as hide tooltip or do any other staff.
+            if (mainDynamoWindow == null || !mainDynamoWindow.IsActive) return;
+
             if (dataContext == null)
             {
                 if (closeImmediately)
@@ -402,6 +409,7 @@ namespace Dynamo.UI.Controls
         private void OpenLibraryToolTipPopup(object sender, EventArgs e)
         {
             this.DataContext = nextDataContext;
+            IsOpen = true;
 
             // This line is needed to change position of Popup.
             // As position changed PlacementCallback is called and
@@ -417,7 +425,10 @@ namespace Dynamo.UI.Controls
         private void CloseLibraryToolTipPopup(object sender, EventArgs e)
         {
             if (!this.IsMouseOver)
+            {
                 this.DataContext = null;
+                IsOpen = false;
+            }
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)

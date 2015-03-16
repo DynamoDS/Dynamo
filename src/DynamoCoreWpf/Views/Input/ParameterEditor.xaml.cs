@@ -51,7 +51,7 @@ namespace Dynamo.UI.Controls
             var engineController = this.dynamoViewModel.Model.EngineController;
 
             return engineController.CodeCompletionServices
-                                   .SearchTypes(partialName)
+                                   .SearchTypes(partialName, dynamoViewModel.CurrentSpace.ElementResolver)
                                    .Select(x => new CodeBlockCompletionData(x));
         }
 
@@ -181,9 +181,9 @@ namespace Dynamo.UI.Controls
 
             nodeViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.UpdateModelValueCommand(
+                    nodeViewModel.WorkspaceViewModel.Model.Guid,
                     nodeViewModel.NodeModel.GUID, "InputSymbol",
                     InnerTextEditor.Text));
-
         }
 
         /// <summary>

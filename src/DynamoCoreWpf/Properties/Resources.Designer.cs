@@ -981,6 +981,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run is not available when running Automatically or Periodically..
+        /// </summary>
+        public static string DynamoViewRunButtonToolTipDisabled {
+            get {
+                return ResourceManager.GetString("DynamoViewRunButtonToolTipDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show In Folder.
         /// </summary>
         public static string DynamoViewSamplesMenuShowInFolder {
@@ -1296,6 +1305,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Run Preview.
+        /// </summary>
+        public static string DynamoViewSettingShowRunPreview {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingShowRunPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export Workspace As Image.
         /// </summary>
         public static string DynamoViewToolbarExportButtonTooltip {
@@ -1557,7 +1575,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All Files (*.*)|*.*.
+        ///   Looks up a localized string similar to All Files ({0})|{0}.
         /// </summary>
         public static string FileDialogAllFiles {
             get {
@@ -1566,7 +1584,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assembly Library Files (*.dll)|*.dll.
+        ///   Looks up a localized string similar to Assembly Library Files ({0})|{0}.
         /// </summary>
         public static string FileDialogAssemblyFiles {
             get {
@@ -1575,7 +1593,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml.
+        ///   Looks up a localized string similar to Custom Node, DLL, XML ({0})|{0}.
         /// </summary>
         public static string FileDialogCustomNodeDLLXML {
             get {
@@ -1602,7 +1620,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DesignScript Files (*.ds)|*.ds.
+        ///   Looks up a localized string similar to DesignScript Files ({0})|{0}.
         /// </summary>
         public static string FileDialogDesignScriptFiles {
             get {
@@ -1611,7 +1629,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Custom Node (*.dyf)|*.dyf.
+        ///   Looks up a localized string similar to Dynamo Custom Node ({0})|{0}.
         /// </summary>
         public static string FileDialogDynamoCustomNode {
             get {
@@ -1620,7 +1638,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf.
+        ///   Looks up a localized string similar to Dynamo Definitions ({0})|{0}.
         /// </summary>
         public static string FileDialogDynamoDefinitions {
             get {
@@ -1629,7 +1647,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Workspace (*.dyn)|*.dyn.
+        ///   Looks up a localized string similar to Dynamo Workspace ({0})|{0}.
         /// </summary>
         public static string FileDialogDynamoWorkspace {
             get {
@@ -1638,7 +1656,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Library Files (*.dll, *.ds)|*.dll;*.ds.
+        ///   Looks up a localized string similar to Library Files ({0})|{0}.
         /// </summary>
         public static string FileDialogLibraryFiles {
             get {
@@ -1647,7 +1665,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PNG Image|*.png.
+        ///   Looks up a localized string similar to PNG Image|{0}.
         /// </summary>
         public static string FileDialogPNGFiles {
             get {
@@ -1656,7 +1674,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to STL Models|*.stl.
+        ///   Looks up a localized string similar to STL Models|{0}.
         /// </summary>
         public static string FileDialogSTLModels {
             get {
@@ -2576,6 +2594,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to none.
+        /// </summary>
+        public static string NoneString {
+            get {
+                return ResourceManager.GetString("NoneString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string NoteViewContextMenuDelete {
@@ -3206,6 +3233,69 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run completed..
+        /// </summary>
+        public static string RunCompletedMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with warnings..
+        /// </summary>
+        public static string RunCompletedWithWarningsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run started....
+        /// </summary>
+        public static string RunStartedMessage {
+            get {
+                return ResourceManager.GetString("RunStartedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run whenever there is a change to the graph..
+        /// </summary>
+        public static string RunTypeToolTipAutomatically {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run whenever you press the Run button..
+        /// </summary>
+        public static string RunTypeToolTipManually {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Periodic running is disabled when there are no nodes in your graph that support it..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyDisabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run at the specified interval..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyEnabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirmation.
         /// </summary>
         public static string SaveConfirmationMessageBoxTitle {
@@ -3256,6 +3346,24 @@ namespace Dynamo.Wpf.Properties {
         public static string ShowClassicNodeLibrary {
             get {
                 return ResourceManager.GetString("ShowClassicNodeLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph.
+        /// </summary>
+        public static string ShowRunPreviewDisableToolTip {
+            get {
+                return ResourceManager.GetString("ShowRunPreviewDisableToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Execution preview is not available when running automatically.
+        /// </summary>
+        public static string ShowRunPreviewEnableToolTip {
+            get {
+                return ResourceManager.GetString("ShowRunPreviewEnableToolTip", resourceCulture);
             }
         }
         

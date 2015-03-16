@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -39,6 +40,11 @@ namespace Dynamo.UI.Views
         public LibraryView()
         {
             InitializeComponent();
+
+            // Invalidate the DataContext here because it will be set at a later 
+            // time through data binding expression. This way debugger will not 
+            // display warnings for missing properties.
+            this.DataContext = null;
         }
 
         /// <summary>
@@ -46,20 +52,26 @@ namespace Dynamo.UI.Views
         /// </summary>
         private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            // 1 case. 
-            // User presses Shift and uses mouse wheel. That means user tries to 
-            // scroll horizontally to the right side, to see the whole long name of node.
-            // So, we go further, in scrollbar, that is under this one, that's why Handled is false.
+            // Case 1: User scrolls the mouse wheel when Shift key is being held down. This 
+            // action triggers a horizontal scroll on the library view (so that lengthy names 
+            // can be revealed). Setting 'Handled' to 'false' allows the underlying scroll bar
+            // to handle the mouse wheel event.
             if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
             {
                 e.Handled = false;
                 return;
             }
 
-            // 2 case.
-            // User uses just mouse wheel. That means user wants to scroll down LibraryView.
-            // So, we just change VerticalOffset, and there is no need to go further and change something.
-            // Set Handled to true.
+            // Case 2: If the mouse is outside of the library view, but mouse wheel messages 
+            // get sent to it anyway. In such case there is nothing to change here. The 'Handled'
+            // is not set to 'true' here because the mouse wheel messages should be routed to the 
+            // ScrollViewer on tool-tip for further processing.
+            if (!(sender as UIElement).IsMouseOver)
+                return;
+
+            // Case 3: Mouse wheel without any modifier keys, it scrolls the library view 
+            // vertically. In this case 'VerticalOffset' is updated, 'Handled' is also set 
+            // so that mouse wheel message routing ends here.
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
@@ -80,7 +92,6 @@ namespace Dynamo.UI.Views
         {
             BringIntoViewCount++;
             var expanderContent = (sender as FrameworkElement);
-            expanderContent.BringIntoView(new Rect(0.0, 0.0, 100.0, 20.0));
 
             var buttons = expanderContent.ChildOfType<ListView>();
             if (buttons != null)
@@ -125,8 +136,7 @@ namespace Dynamo.UI.Views
             var selectedElement = e.OriginalSource as FrameworkElement;
             var selectedClass = selectedElement.DataContext as NodeCategoryViewModel;
             // Continue work with real class: not null, not ClassInformationViewModel.
-            if (selectedClass == null || selectedClass is ClassInformationViewModel ||
-                selectedClass.SubCategories.Count > 0)
+            if (selectedClass == null || selectedClass is ClassInformationViewModel)
                 return;
 
             // Go through all available for current top category LibraryWrapPanel.
@@ -136,8 +146,54 @@ namespace Dynamo.UI.Views
             {
                 if (wrapPanel.MakeOrClearSelection(selectedClass))
                 {
-                    e.Handled = true;
+                    // If class button was clicked, then handle, otherwise leave it.
+                    e.Handled = selectedClass.SubCategories.Count == 0;
                     selectedElement.BringIntoView();
+                }
+            }
+
+            ExpandCategory(categoryButton, selectedClass);
+            e.Handled = !(selectedClass is RootNodeCategoryViewModel);
+        }
+
+        private void ExpandCategory(TreeViewItem sender, NodeCategoryViewModel selectedClass)
+        {
+            // Get all category items.
+            var categories = sender.Items.OfType<NodeCategoryViewModel>();
+
+            // Get all current expanded categories.
+            List<NodeCategoryViewModel> allExpandedCategories = categories.
+                Where(cat => (!(cat is ClassesNodeCategoryViewModel) && cat.IsExpanded == true)).ToList();
+
+            var categoryToBeExpanded = categories.Where(cat => cat == selectedClass).FirstOrDefault();
+
+            // If categoryToBeExpanded is null, that means not category button, but class button was clicked.
+            // During loop we will find out to which category this clicked class belongs.
+            if (categoryToBeExpanded != null)
+                categoryToBeExpanded.IsExpanded = !categoryToBeExpanded.IsExpanded;
+
+            // Get expanded categories that should be collapsed.
+            var categoriesToBeCollapsed = allExpandedCategories.Remove(categoryToBeExpanded);
+
+            // Close all open categories, except one, that contains class.
+            // Or if category was clicked, also expand it and close others.
+            foreach (var categoryToBeCollapsed in allExpandedCategories)
+            {
+                // If class button was clicked.
+                if (categoryToBeExpanded == null)
+                {
+                    var categoryClasses = categoryToBeCollapsed.Items[0] as ClassesNodeCategoryViewModel;
+                    // Ensure, that this class is not part of current category.
+                    if (categoryClasses != null)
+                        if (categoryClasses.Items.Contains(selectedClass))
+                            categoryToBeCollapsed.IsExpanded = true;
+                        else
+                            categoryToBeCollapsed.IsExpanded = false;
+                }
+                // If category button was clicked.
+                else
+                {
+                    categoryToBeCollapsed.IsExpanded = false;
                 }
             }
         }
@@ -156,7 +212,7 @@ namespace Dynamo.UI.Views
         // here to ignore the immediate mouse-enter event.
         private void OnExpanderButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if ((sender as Button).DataContext is NodeSearchElement)
+            if ((sender as Button).DataContext is NodeCategoryViewModel)
             {
                 libraryToolTipPopup.SetDataContext(null, true);
                 ignoreMouseEnter = true;

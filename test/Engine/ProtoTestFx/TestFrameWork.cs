@@ -23,6 +23,8 @@ namespace ProtoTestFx.TD
     public class TestFrameWork
     {
         private static ProtoCore.Core testCore;
+        private static ProtoCore.RuntimeCore testRuntimeCore;
+
         private ExecutionMirror testMirror;
         private readonly ProtoScriptTestRunner runner;
         private static string mErrorMessage = "";
@@ -42,9 +44,15 @@ namespace ProtoTestFx.TD
             return testCore;
         }
 
+        public ProtoCore.RuntimeCore GetTestRuntimeCore()
+        {
+            return testRuntimeCore;
+        }
+
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
+
             testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
             testCore.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
             testCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(testCore));
@@ -53,8 +61,7 @@ namespace ProtoTestFx.TD
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
-//            testCore.Options.kDynamicCycleThreshold = 5;
-            
+
             //FFI registration and cleanup
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -162,7 +169,7 @@ namespace ProtoTestFx.TD
                     Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
             }
-            testMirror = runner.LoadAndExecute(pathname, testCore);
+            testMirror = runner.LoadAndExecute(pathname, testCore, out testRuntimeCore);
             SetErrorMessage(errorstring);
             return testMirror;
         }
@@ -252,7 +259,7 @@ namespace ProtoTestFx.TD
                         Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                     }
                 }
-                testMirror = runner.Execute(sourceCode, testCore);
+                testMirror = runner.Execute(sourceCode, testCore, out testRuntimeCore);
                 
                 if (dumpDS )
                 {
@@ -561,7 +568,7 @@ namespace ProtoTestFx.TD
 
         public void Verify(string dsVariable, object expectedValue, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, GetTestRuntimeCore());
             AssertValue(mirror.GetData(), expectedValue);
             //Verify(testMirror, dsVariable, expectedValue, startBlock);
         }
@@ -593,17 +600,17 @@ namespace ProtoTestFx.TD
 
         public static void VerifyRuntimeWarning(ProtoCore.Runtime.WarningID id)
         {
-            VerifyRuntimeWarning(testCore, id);
+            VerifyRuntimeWarning(testRuntimeCore, id);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.Runtime.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.RuntimeCore runtimeCore, ProtoCore.Runtime.WarningID id)
         {
-            Assert.IsTrue(core.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
+            Assert.IsTrue(runtimeCore.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyRuntimeWarningCount(int count)
         {
-            Assert.IsTrue(testCore.RuntimeStatus.WarningCount == count, mErrorMessage);
+            Assert.IsTrue(testRuntimeCore.RuntimeStatus.WarningCount == count, mErrorMessage);
         }
 
         public void VerifyProperty(string dsVariable, string propertyName, object expectedValue, int startBlock = 0)
@@ -627,7 +634,7 @@ namespace ProtoTestFx.TD
         string GetFFIObjectStringValue(string dsVariable, int startBlock = 1, int arrayIndex = -1)
         {
             var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
-            var marshaller = helper.GetMarshaller(TestFrameWork.testCore);
+            var marshaller = helper.GetMarshaller(TestFrameWork.testRuntimeCore);
             Obj val = testMirror.GetFirstValue(dsVariable, startBlock);
             StackValue sv;
 
@@ -670,14 +677,14 @@ namespace ProtoTestFx.TD
 
         public static void AssertInfinity(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             MirrorData data = mirror.GetData();
             Assert.IsTrue( Double.IsInfinity(Convert.ToDouble(data.Data)));
         }
 
         public static void AssertNan(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             MirrorData data = mirror.GetData();
             Assert.IsTrue(Double.IsNaN(Convert.ToDouble(data.Data)));
         }
@@ -740,7 +747,7 @@ namespace ProtoTestFx.TD
 
         public void AssertPointer(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             Assert.IsTrue(mirror.GetData().IsPointer);
         }
 
@@ -748,7 +755,7 @@ namespace ProtoTestFx.TD
         {
             if (testCore != null)
             {
-                testCore.Cleanup();
+                testRuntimeCore.Cleanup();
                 testCore = null;
             }
         }

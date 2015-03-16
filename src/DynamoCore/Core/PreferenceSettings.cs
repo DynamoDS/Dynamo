@@ -6,7 +6,6 @@ using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using DynamoUnits;
 
 using DynamoUtilities;
 
@@ -21,13 +20,9 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DynamoTestPath = null;
-        const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
-        private LengthUnit lengthUnit;
-        private AreaUnit areaUnit;
-        private VolumeUnit volumeUnit;
         private string numberFormat;
         private string lastUpdateDownloadPath;
-
+        
         // Variables of the settings that will be persistent
 
         #region Collect Information Settings
@@ -36,12 +31,34 @@ namespace Dynamo
         public bool IsAnalyticsReportingApproved { get; set; }
         #endregion
 
+        /// <summary>
+        /// The width of the library pane.
+        /// </summary>
         public int LibraryWidth { get; set; }
+
+        /// <summary>
+        /// The height of the console display.
+        /// </summary>
         public int ConsoleHeight { get; set; }
+
+        /// <summary>
+        /// Should connectors be visible?
+        /// </summary>
         public bool ShowConnector { get; set; }
+
+        /// <summary>
+        /// The types of connector: Bezier or Polyline.
+        /// </summary>
         public ConnectorType ConnectorType { get; set; }
+
+        /// <summary>
+        /// Should the background 3D preview be shown?
+        /// </summary>
         public bool FullscreenWatchShowing { get; set; }
 
+        /// <summary>
+        /// The decimal precision used to display numbers.
+        /// </summary>
         public string NumberFormat
         {
             get { return numberFormat; }
@@ -52,56 +69,50 @@ namespace Dynamo
             }
         }
 
-        public LengthUnit LengthUnit
-        {
-            get { return lengthUnit; }
-            set
-            {
-                lengthUnit = value;
-                RaisePropertyChanged("LengthUnit");
-            }
-        }
-
+        /// <summary>
+        /// The maximum number of recent file paths to be saved.
+        /// </summary>
         public int MaxNumRecentFiles
         {
             get { return 10; }
             set { }
         }
 
+        /// <summary>
+        /// A list of recently opened file paths.
+        /// </summary>
         public List<string> RecentFiles { get; set; }
 
+        /// <summary>
+        /// A list of packages used by the Package Manager to determine
+        /// which packages are marked for deletion.
+        /// </summary>
         public List<string> PackageDirectoriesToUninstall { get; set; }
 
-        public AreaUnit AreaUnit
-        {
-            get { return areaUnit; }
-            set
-            {
-                areaUnit = value;
-                RaisePropertyChanged("AreaUnit");
-            }
-        }
-
-        public VolumeUnit VolumeUnit
-        {
-            get { return volumeUnit; }
-            set
-            {
-                volumeUnit = value;
-                RaisePropertyChanged("VolumeUnit");
-            }
-        }
-
+        /// <summary>
+        /// The last X coordinate of the Dynamo window.
+        /// </summary>
         public double WindowX { get; set; }
+
+        /// <summary>
+        /// The last Y coordinate of the Dynamo window.
+        /// </summary>
         public double WindowY { get; set; }
+
+        /// <summary>
+        /// The last width of the Dynamo window.
+        /// </summary>
         public double WindowW { get; set; }
+
+        /// <summary>
+        /// The last height of the Dynamo window.
+        /// </summary>
         public double WindowH { get; set; }
 
-        public string LastUpdateDownloadPath
-        {
-            get { return lastUpdateDownloadPath; }
-            set { lastUpdateDownloadPath = !File.Exists(value) ? "" : value; }
-        }
+        /// <summary>
+        /// Should Dynamo use hardware acceleration if it is supported?
+        /// </summary>
+        public bool UseHardwareAcceleration { get; set; }
 
         public PreferenceSettings()
         {
@@ -119,12 +130,9 @@ namespace Dynamo
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             FullscreenWatchShowing = true;
-            LengthUnit = LengthUnit.Meter;
-            AreaUnit = DynamoUnits.AreaUnit.SquareMeter;
-            VolumeUnit = VolumeUnit.CubicMeter;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
-            LastUpdateDownloadPath = "";
+            UseHardwareAcceleration = true;
         }
 
         /// <summary>
@@ -155,12 +163,21 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Save PreferenceSettings in a default directory when no path is specified
+        /// Save PreferenceSettings in a default directory when no path is 
+        /// specified.
         /// </summary>
+        /// <param name="preferenceFilePath">The file path to save preference
+        /// settings to. If this parameter is null or empty string, preference 
+        /// settings will be saved to the default path.</param>
         /// <returns>Whether file is saved or error occurred.</returns>
-        public bool Save()
+        public bool SaveInternal(string preferenceFilePath)
         {
-            return Save(DynamoTestPath ?? GetSettingsFilePath());
+            if (!string.IsNullOrEmpty(DynamoTestPath))
+            {
+                preferenceFilePath = DynamoTestPath;
+            }
+
+            return Save(preferenceFilePath);
         }
 
         /// <summary>
@@ -191,33 +208,6 @@ namespace Dynamo
             catch (Exception) { }
 
             return settings;
-        }
-
-        /// <summary>
-        /// Return PreferenceSettings from Default XML path
-        /// </summary>
-        /// <returns>
-        /// Stored PreferenceSettings from default xml file or
-        /// Default PreferenceSettings if default xml file is not found.
-        /// </returns>
-        public static PreferenceSettings Load()
-        {
-            return Load(DynamoTestPath ?? GetSettingsFilePath());
-        }
-
-        /// <summary>
-        /// Return PreferenceSettings Default XML File Path if possible
-        /// </summary>
-        public static string GetSettingsFilePath()
-        {
-            try
-            {
-                return (Path.Combine(DynamoPathManager.Instance.AppData, DYNAMO_SETTINGS_FILE));
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
         }
     }
 }

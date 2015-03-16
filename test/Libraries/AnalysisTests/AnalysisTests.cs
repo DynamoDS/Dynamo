@@ -8,9 +8,9 @@ using Analysis.DataTypes;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
-
+using Dynamo;
 using Dynamo.Utilities;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -20,26 +20,24 @@ namespace AnalysisTests
     [TestFixture]
     public class AnalysisTests
     {
+        private TestExecutionSession executionSession;
         IExtensionApplication application = Application.Instance as IExtensionApplication;
-        TestExecutionSession session = new TestExecutionSession();
 
         [TestFixtureSetUp]
         public void SetUp()
         {
-            DynamoPathManager.Instance.InitializeCore(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
+            var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+            executionSession = new TestExecutionSession(assemblyDirectory);
 
-            application.OnBeginExecution(session);
+            application.OnBeginExecution(executionSession);
             HostFactory.Instance.StartUp();
         }
 
-        [TestFixtureSetUp]
+        [TestFixtureTearDown]
         public void TearDown()
         {
-            //HostFactory.Instance.ShutDown();
-            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.ResolveAssembly;
+            executionSession = null;
         }
 
         [Test, Category("UnitTests")]
@@ -289,10 +287,14 @@ namespace AnalysisTests
     /// </summary>
     class TestExecutionSession : IExecutionSession, IConfiguration, IDisposable
     {
-        private Dictionary<string, object> configValues;
-        public TestExecutionSession()
+        private readonly string rootModulePath;
+        private readonly Dictionary<string, object> configValues;
+        private Preloader preloader;
+
+        public TestExecutionSession(string rootModulePath)
         {
             configValues = new Dictionary<string, object>();
+            this.rootModulePath = rootModulePath;
         }
 
         public IConfiguration Configuration
@@ -310,7 +312,7 @@ namespace AnalysisTests
 
         public string RootModulePath
         {
-            get { return DynamoPathManager.Instance.MainExecPath; }
+            get { return rootModulePath; }
         }
 
         public string[] IncludeDirectories
@@ -326,7 +328,16 @@ namespace AnalysisTests
         public object GetConfigValue(string config)
         {
             if (string.Compare(ConfigurationKeys.GeometryFactory, config) == 0)
-                return Path.Combine(DynamoPathManager.Instance.LibG, "LibG.ProtoInterface.dll");
+            {
+                if (preloader == null)
+                {
+                    var exePath = Assembly.GetExecutingAssembly().Location;
+                    preloader = new Preloader(Path.GetDirectoryName(exePath));
+                    preloader.Preload();
+                }
+
+                return preloader.GeometryFactoryPath;
+            }
 
             if (configValues.ContainsKey(config))
                 return configValues[config];

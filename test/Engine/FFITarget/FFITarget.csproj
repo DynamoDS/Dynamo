@@ -51,6 +51,7 @@
     <Compile Include="ClassWithRefParams.cs" />
     <Compile Include="CodeCompletionClass.cs" />
     <Compile Include="DummyMath.cs" />
+    <Compile Include="ElementResolverTarget.cs" />
     <Compile Include="GlobalClass.cs">
       <SubType>Code</SubType>
     </Compile>

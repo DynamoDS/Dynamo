@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Dynamo.Interfaces;
 using Dynamo.UI;
 using DynamoUtilities;
 
@@ -14,7 +15,7 @@ namespace Dynamo.DSEngine
         private static Dictionary<string, bool> triedPaths = new Dictionary<string, bool>();
         private static Dictionary<string, LibraryCustomization> cache = new Dictionary<string, LibraryCustomization>();
 
-        public static LibraryCustomization GetForAssembly(string assemblyPath)
+        public static LibraryCustomization GetForAssembly(string assemblyPath, IPathManager pathManager)
         {
             if (triedPaths.ContainsKey(assemblyPath))
             {
@@ -27,12 +28,12 @@ namespace Dynamo.DSEngine
             XDocument xDocument = null;
             Assembly resAssembly = null;
 
-            if (ResolveForAssembly(assemblyPath, ref customizationPath))
+            if (ResolveForAssembly(assemblyPath, pathManager, ref customizationPath))
             {
                 xDocument = XDocument.Load(customizationPath);
             }
 
-            if (ResolveResourceAssembly(assemblyPath, out resourceAssemblyPath))
+            if (ResolveResourceAssembly(assemblyPath, pathManager, out resourceAssemblyPath))
             {
                 resAssembly = Assembly.LoadFrom(resourceAssemblyPath);
             }
@@ -51,11 +52,12 @@ namespace Dynamo.DSEngine
 
         }
 
-        public static bool ResolveForAssembly(string assemblyLocation, ref string customizationPath)
+        private static bool ResolveForAssembly(string assemblyLocation,
+            IPathManager pathManager, ref string customizationPath)
         {
             try
             {
-                if (!DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation))
+                if ((pathManager != null) && (!pathManager.ResolveLibraryPath(ref assemblyLocation)))
                 {
                     return false;
                 }
@@ -78,16 +80,26 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public static bool ResolveResourceAssembly(
+        private static bool ResolveResourceAssembly(
             string assemblyLocation,
+            IPathManager pathManager,
             out string resourceAssemblyPath)
         {
             try
             {
                 var fn = Path.GetFileNameWithoutExtension(assemblyLocation);
-                resourceAssemblyPath = fn + Configurations.ResourcesDLL;
+                // First try side-by-side search for customization dll.
+                var dirName = Path.GetDirectoryName(assemblyLocation);
+                resourceAssemblyPath = Path.Combine(dirName, fn + Configurations.IconResourcesDLL);
 
-                return DynamoPathManager.Instance.ResolveLibraryPath(ref resourceAssemblyPath);
+                if (File.Exists(resourceAssemblyPath))
+                    return true;
+                if (pathManager == null) // Can't resolve path without IPathManager.
+                    return false;
+
+                resourceAssemblyPath = fn + Configurations.IconResourcesDLL;
+                // Side-by-side customization dll not found, try other resolution paths.
+                return pathManager.ResolveLibraryPath(ref resourceAssemblyPath);
             }
             catch
             {
@@ -103,7 +115,10 @@ namespace Dynamo.DSEngine
         private readonly Assembly resourceAssembly;
         private readonly XDocument xmlDocument;
 
-        public Assembly Assembly { get { return resourceAssembly; } }
+        /// <summary>
+        /// Resources assembly. Assembly where icons are saved.
+        /// </summary>
+        public Assembly ResourceAssembly { get { return resourceAssembly; } }
 
         internal LibraryCustomization(Assembly resAssembly, XDocument document)
         {

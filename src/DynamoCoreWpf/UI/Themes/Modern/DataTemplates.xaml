@@ -3,7 +3,9 @@
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                       xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf" 
                       xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
-                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                      xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                     xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />

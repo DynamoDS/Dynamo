@@ -8,7 +8,7 @@ using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
+using DynamoShapeManager;
 using DynamoUtilities;
 
 using NUnit.Framework;
@@ -17,6 +17,8 @@ namespace DynamoCoreUITests
 {
     public class DynamoTestUIBase
     {
+        private Preloader preloader;
+
         protected DynamoViewModel ViewModel { get; set; }
         protected DynamoView View { get; set; }
         protected DynamoModel Model { get; set; }
@@ -31,21 +33,19 @@ namespace DynamoCoreUITests
         [SetUp]
         public virtual void Start()
         {
-            DynamoPathManager.Instance.InitializeCore(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+            preloader.Preload();
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
-                    StartInTestMode = true
+                    StartInTestMode = true,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             ViewModel = DynamoViewModel.Start(
@@ -82,6 +82,7 @@ namespace DynamoCoreUITests
 
             View = null;
             Model = null;
+            preloader = null;
 
             GC.Collect();
 

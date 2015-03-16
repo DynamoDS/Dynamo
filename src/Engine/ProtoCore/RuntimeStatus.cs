@@ -32,7 +32,8 @@ namespace ProtoCore
             kTypeConvertionCauseInfoLoss,
             kTypeMismatch,
             kReplicationWarning,
-            kInvalidIndexing
+            kInvalidIndexing,
+            kModuloByZero
         }
 
         public struct WarningEntry
@@ -50,26 +51,28 @@ namespace ProtoCore
 
     public class RuntimeStatus
     {
-        private ProtoCore.Core core;
+        private ProtoCore.RuntimeCore runtimeCore;
         private bool warningAsError;
         private System.IO.TextWriter output = System.Console.Out;
         private List<Runtime.WarningEntry> warnings;
 
-        public IOutputStream MessageHandler 
-        { 
-            get; set; 
+        public IOutputStream MessageHandler
+        {
+            get;
+            set;
         }
 
-        public IOutputStream WebMessageHandler 
-        { 
-            get; set; 
+        public IOutputStream WebMessageHandler
+        {
+            get;
+            set;
         }
 
-        public IEnumerable<Runtime.WarningEntry> Warnings 
-        { 
-            get 
-            { 
-                return warnings; 
+        public IEnumerable<Runtime.WarningEntry> Warnings
+        {
+            get
+            {
+                return warnings;
             }
         }
 
@@ -90,7 +93,7 @@ namespace ProtoCore
         {
             warnings.RemoveAll(w => w.ExpressionID == expressionID);
         }
-        
+
         public void ClearWarningsForGraph(Guid guid)
         {
             warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid));
@@ -101,18 +104,13 @@ namespace ProtoCore
             warnings.RemoveAll(w => w.AstID.Equals(astID));
         }
 
-        public RuntimeStatus(Core core, 
-                             bool warningAsError = false, 
+        public RuntimeStatus(RuntimeCore runtimeCore,
+                             bool warningAsError = false,
                              System.IO.TextWriter writer = null)
         {
             warnings = new List<Runtime.WarningEntry>();
             this.warningAsError = warningAsError;
-            this.core = core;
-
-            if (core.Options.WebRunner)
-            {
-                this.WebMessageHandler = new WebOutputStream(core);
-            }
+            this.runtimeCore = runtimeCore;
 
             if (writer != null)
             {
@@ -125,21 +123,21 @@ namespace ProtoCore
         {
             filename = filename ?? string.Empty;
 
-            if (!this.core.Options.IsDeltaExecution && (string.IsNullOrEmpty(filename) || 
-                line == Constants.kInvalidIndex || 
+            if (!runtimeCore.Options.IsDeltaExecution && (string.IsNullOrEmpty(filename) ||
+                line == Constants.kInvalidIndex ||
                 col == Constants.kInvalidIndex))
             {
-                CodeGen.AuditCodeLocation(core, ref filename, ref line, ref col);
+                AuditCodeLocation(ref filename, ref line, ref col);
             }
 
-            var warningMsg = string.Format(Resources.kConsoleWarningMessage, 
+            var warningMsg = string.Format(Resources.kConsoleWarningMessage,
                                            message, filename, line, col);
 
-            if (core.Options.Verbose)
+            if (runtimeCore.Options.Verbose)
             {
                 System.Console.WriteLine(warningMsg);
             }
-            
+
             if (WebMessageHandler != null)
             {
                 var outputMessage = new OutputMessage(warningMsg);
@@ -154,7 +152,7 @@ namespace ProtoCore
             }
 
             AssociativeGraph.GraphNode executingGraphNode = null;
-            var executive = core.CurrentExecutive.CurrentDSASMExec;
+            var executive = runtimeCore.CurrentExecutive.CurrentDSASMExec;
             if (executive != null)
             {
                 executingGraphNode = executive.Properties.executingGraphNode;
@@ -162,7 +160,7 @@ namespace ProtoCore
                 // internal graph node. 
                 if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
                 {
-                    executingGraphNode = core.DSExecutable.RuntimeData.ExecutingGraphnode;
+                    executingGraphNode = runtimeCore.DSExecutable.RuntimeData.ExecutingGraphnode;
                 }
             }
 
@@ -172,21 +170,148 @@ namespace ProtoCore
                 Message = message,
                 Column = col,
                 Line = line,
-                ExpressionID = core.RuntimeExpressionUID,
+                ExpressionID = runtimeCore.RuntimeExpressionUID,
                 GraphNodeGuid = executingGraphNode == null ? Guid.Empty : executingGraphNode.guid,
                 AstID = executingGraphNode == null ? Constants.kInvalidIndex : executingGraphNode.OriginalAstID,
                 Filename = filename
             };
             warnings.Add(entry);
-
-            if (core.Options.IsDeltaExecution)
-            {
-            }
         }
 
         public void LogWarning(Runtime.WarningID ID, string message)
         {
             LogWarning(ID, message, string.Empty, Constants.kInvalidIndex, Constants.kInvalidIndex);
+        }
+
+        private void AuditCodeLocation(ref string filePath, ref int line, ref int column)
+        {
+            // We don't attempt to change line and column numbers if 
+            // they are already provided (caller can force update of 
+            // them by setting either one of them to be -1).
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                if (-1 != line && (-1 != column))
+                    return;
+            }
+
+            // As we create internal functions like %dotarg() and %dot() and
+            // append them to the end of the script, it is possible that the 
+            // location is in these functions so that the pc dictionary doesn't
+            // contain pc key and return maximum line number + 1. 
+            // 
+            // Need to check if is in internal function or not, If it is, need
+            // to go back the last stack frame to get the correct pc value
+            int pc = Constants.kInvalidPC;
+            int codeBlock = 0;
+            if (runtimeCore != null)
+            {
+                pc = runtimeCore.CurrentExecutive.CurrentDSASMExec.PC;
+                codeBlock = runtimeCore.RunningBlock;
+
+                if (String.IsNullOrEmpty(filePath))
+                {
+                    filePath = runtimeCore.DSExecutable.RuntimeData.CurrentDSFileName;
+                }
+            }
+            if (runtimeCore.Options.IsDeltaExecution)
+            {
+                GetLocationByGraphNode(ref line, ref column);
+
+                if (line == Constants.kInvalidIndex)
+                    GetLocationByPC(pc, codeBlock, ref line, ref column);
+            }
+            else
+                GetLocationByPC(pc, codeBlock, ref line, ref column);
+
+        }
+
+        private void GetLocationByPC(int pc, int blk, ref int line, ref int column)
+        {
+            //--------Dictionary Structure:--------
+            //--------Name: codeToLocation---------
+            //----------KEY: ----------------------
+            //----------------mergedKey: ----------
+            //-------------------|- blk -----------
+            //-------------------|- pc ------------
+            //----------VALUE: --------------------
+            //----------------location: -----------
+            //-------------------|- line ----------
+            //-------------------|- col -----------
+
+            //Zip those integers into 64-bit ulong
+            ulong mergedKey = (((ulong)blk) << 32 | ((uint)pc));
+            ulong location = (((ulong)line) << 32 | ((uint)column));
+
+            if (runtimeCore.DSExecutable.RuntimeData.CodeToLocation.ContainsKey(mergedKey))
+            {
+                location = runtimeCore.DSExecutable.RuntimeData.CodeToLocation[mergedKey];
+            }
+
+            foreach (KeyValuePair<ulong, ulong> kv in runtimeCore.DSExecutable.RuntimeData.CodeToLocation)
+            {
+                //Conditions: within same blk && find the largest key which less than mergedKey we want to find
+                if ((((int)(kv.Key >> 32)) == blk) && (kv.Key < mergedKey))
+                {
+                    location = kv.Value;
+                }
+            }
+            //Unzip the location
+            line = ((int)(location >> 32));
+            column = ((int)(location & 0x00000000ffffffff));
+        }
+
+        private void GetLocationByGraphNode(ref int line, ref int col)
+        {
+            ulong location = (((ulong)line) << 32 | ((uint)col));
+
+            foreach (var prop in runtimeCore.InterpreterProps)
+            {
+                bool fileScope = false;
+                if (prop.executingGraphNode == null)
+                    continue;
+
+                int startpc = prop.executingGraphNode.updateBlock.startpc;
+                int endpc = prop.executingGraphNode.updateBlock.endpc;
+                int block = prop.executingGraphNode.languageBlockId;
+
+                // Determine if the current executing graph node is in an imported file scope
+                // If so, continue searching in the outer graph nodes for the line and col in the outer-most context - pratapa
+
+                for (int i = startpc; i <= endpc; ++i)
+                {
+                    var instruction = runtimeCore.DSExecutable.instrStreamList[block].instrList[i];
+                    if (instruction.debug != null)
+                    {
+                        if (instruction.debug.Location.StartInclusive.SourceLocation.FilePath != null)
+                        {
+                            fileScope = true;
+                            break;
+                        }
+                        else
+                        {
+                            fileScope = false;
+                            break;
+                        }
+                    }
+                }
+                if (fileScope)
+                    continue;
+
+
+                foreach (var kv in runtimeCore.DSExecutable.RuntimeData.CodeToLocation)
+                {
+                    if ((((int)(kv.Key >> 32)) == block) && (kv.Key >= (ulong)startpc && kv.Key <= (ulong)endpc))
+                    {
+                        location = kv.Value;
+                        line = ((int)(location >> 32));
+                        col = ((int)(location & 0x00000000ffffffff));
+                        break;
+                    }
+                }
+                if (line != -1)
+                    break;
+            }
+
         }
 
         /// <summary>
@@ -202,7 +327,7 @@ namespace ProtoCore
 
 
         public void LogMethodResolutionWarning(string methodName,
-                                               int classScope = Constants.kGlobalScope, 
+                                               int classScope = Constants.kGlobalScope,
                                                List<StackValue> arguments = null)
         {
             string message;
@@ -213,7 +338,7 @@ namespace ProtoCore
             {
                 if (classScope != Constants.kGlobalScope)
                 {
-                    string classname = core.ClassTable.ClassNodes[classScope].name;
+                    string classname = runtimeCore.DSExecutable.classTable.ClassNodes[classScope].name;
                     message = string.Format(Resources.kPropertyOfClassNotFound, classname, propertyName);
                 }
                 else
@@ -226,8 +351,8 @@ namespace ProtoCore
                 string strOp = Op.GetOpSymbol(op);
                 message = String.Format(Resources.kMethodResolutionFailureForOperator,
                                         strOp,
-                                        core.TypeSystem.GetType(arguments[0].metaData.type),
-                                        core.TypeSystem.GetType(arguments[1].metaData.type));
+                                        runtimeCore.DSExecutable.TypeSystem.GetType(arguments[0].metaData.type),
+                                        runtimeCore.DSExecutable.TypeSystem.GetType(arguments[1].metaData.type));
             }
             else
             {
@@ -235,7 +360,7 @@ namespace ProtoCore
                 sb.Append("(");
                 foreach (StackValue sv in arguments)
                 {
-                    sb.Append(core.TypeSystem.GetType(sv.metaData.type));
+                    sb.Append(runtimeCore.DSExecutable.TypeSystem.GetType(sv.metaData.type));
                     sb.Append(",");
                 }
                 String outString = sb.ToString();

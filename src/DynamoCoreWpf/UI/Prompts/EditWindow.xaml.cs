@@ -57,7 +57,7 @@ namespace Dynamo.UI.Prompts
 
                 dynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(
-                        model.GUID, propName, editText.Text));
+                        System.Guid.Empty, model.GUID, propName, editText.Text));
             }
            
             this.DialogResult = true;

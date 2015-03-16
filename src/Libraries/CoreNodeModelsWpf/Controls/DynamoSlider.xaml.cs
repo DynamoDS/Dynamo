@@ -44,7 +44,7 @@ namespace Dynamo.Wpf.Controls
 
         private void Slider_OnDragCompleted(object sender, DragCompletedEventArgs e)
         {
-            nodeModel.MarkNodeAsModified(true);
+            nodeModel.MarkNodeAsModified(true);           
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -53,6 +53,14 @@ namespace Dynamo.Wpf.Controls
             base.OnPreviewMouseLeftButtonDown(e);
             if (e.OriginalSource is Rectangle)
                 WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
+        }
+
+        private void Slider_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                ui.ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            }
         }
 
         #endregion

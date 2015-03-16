@@ -169,7 +169,8 @@ namespace Dynamo.Tests
             Assert.AreEqual(ElementState.Active, codeBlockNode.State);
 
             // Entering an invalid value will cause it to be erroneous.
-            codeBlockNode.SetCodeContent("--"); // Invalid numeric value.
+            var elementResolver = model.CurrentWorkspace.ElementResolver;
+            codeBlockNode.SetCodeContent("--", elementResolver); // Invalid numeric value.
             Assert.AreEqual(ElementState.Error, codeBlockNode.State);
             Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
 
@@ -189,7 +190,7 @@ namespace Dynamo.Tests
             Assert.IsNotEmpty(codeBlockNode.ToolTipText); // Error tooltip text.
 
             // Update to valid numeric value, should cause the node to be active.
-            codeBlockNode.SetCodeContent("1234;");
+            codeBlockNode.SetCodeContent("1234;", elementResolver);
             Assert.AreEqual(ElementState.Active, codeBlockNode.State);
             Assert.IsEmpty(codeBlockNode.ToolTipText); // Error tooltip is gone.
         }

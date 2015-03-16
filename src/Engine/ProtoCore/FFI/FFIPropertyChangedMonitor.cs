@@ -39,9 +39,9 @@ namespace ProtoFFI
 
     public class FFIPropertyChangedMonitor
     {
-        public FFIPropertyChangedMonitor(ProtoCore.Core core)
+        public FFIPropertyChangedMonitor(ProtoCore.RuntimeCore runtimeCore)
         {
-            mHostCore = core;
+            mHostCore = runtimeCore;
         }
 
         #region Implement property changed event from FFI to DS
@@ -131,7 +131,7 @@ namespace ProtoFFI
         }
 
         private Dictionary<Object, GraphNode> mFFIObjectHostGraphNode = new Dictionary<object, GraphNode>();
-        private ProtoCore.Core mHostCore;
+        private ProtoCore.RuntimeCore mHostCore;
         #endregion
 
         #region Implement property changed event from DS to FFI

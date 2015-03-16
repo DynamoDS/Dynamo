@@ -87,6 +87,10 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
+      <Name>DynamoShapeManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\logo_square_32x32.ico" />

@@ -5216,15 +5216,15 @@ v = foo(t);
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(0, astLiveRunner.RuntimeCore.RuntimeStatus.WarningCount);
 
             List<Subtree> modified = new List<Subtree>();
             modified.Add(CreateSubTreeFromCode(guid2, codes[3]));
 
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
-            Assert.AreEqual(1, astLiveRunner.Core.RuntimeStatus.WarningCount);
-            Assert.AreEqual(guid2, astLiveRunner.Core.RuntimeStatus.Warnings.First().GraphNodeGuid);
+            Assert.AreEqual(1, astLiveRunner.RuntimeCore.RuntimeStatus.WarningCount);
+            Assert.AreEqual(guid2, astLiveRunner.RuntimeCore.RuntimeStatus.Warnings.First().GraphNodeGuid);
         }
 
 
@@ -5388,7 +5388,7 @@ a = p.UpdateCount;
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(0, astLiveRunner.RuntimeCore.RuntimeStatus.WarningCount);
         }
 
         [Test]
@@ -5410,7 +5410,7 @@ a = p.UpdateCount;
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
 
-            Assert.AreEqual(0, astLiveRunner.Core.RuntimeStatus.WarningCount);
+            Assert.AreEqual(0, astLiveRunner.RuntimeCore.RuntimeStatus.WarningCount);
         }
 
         [Test]
@@ -5444,6 +5444,289 @@ a = p.UpdateCount;
             astLiveRunner.UpdateGraph(syncData);
             AssertValue("y", 1);
         }
+
+        [Test]
+        public void TestAssociativeupdateWithinFunction01()
+        {
+            // Test that there are no warnings because the unbound variable is resolved downstream
+            string code =
+            @"
+def f()
+{
+	a = 1;
+	b = a;
+	a = 10;
+	return = b;
+}
+x = f();
+            ";
+
+            Guid guid = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid, code));
+
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            AssertValue("x", 10);
+        }
+
+        [Test]
+        public void TestReExecuteScopeIf01()
+        {
+            List<string> codes = new List<string>() 
+            {
+
+@"
+a = false;
+",
+
+ @"
+a = true;
+",
+
+@"
+
+d = [Imperative]
+{
+    if(a)
+    {
+        return = [Associative]
+        {
+            e = true;
+            return = e;
+
+        }
+    }
+    else
+    {
+        return = [Associative]
+        {
+            f = false;
+            return = f;
+
+        }
+    }
+}
+"
+            };
+
+            List<Subtree> added = new List<Subtree>();
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[2]));
+
+            // Execute All
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Modify 'a 'to true
+            List<Subtree> modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[1]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Modify 'a 'to false
+            modified = new List<Subtree>();
+            modified.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+        }
+
+        [Test]
+        public void TestFalseCyclicExecution01()
+        {
+            List<string> codes = new List<string>() 
+            { 
+@"
+i = {1}; 
+j = i[0];
+"
+,
+
+@"
+j = 999;
+i = {};
+i[0] = j;
+"
+,
+@"
+i = {100}; 
+j = i[0];
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("j", 1);
+
+            // Modify guid3
+            // Disconnect input
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("j", 999);
+
+            // Modify guid3
+            // Reconnect input
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid1, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("j", 100);
+        }
+
+        [Test]
+        public void TestFalseCyclicExecution02()
+        {
+            List<string> codes = new List<string>() 
+            { 
+@"
+i = {1,2}; 
+j = i[0];
+k = i[1];
+"
+,
+
+@"
+j = 999;
+k = 999;
+i = {};
+i[0] = j;
+i[1] = k;
+"
+,
+@"
+i = {10,20}; 
+j = i[0];
+k = i[1];
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("j", 1);
+            AssertValue("k", 2);
+
+            // Modify guid3
+            // Disconnect input
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid1, codes[1]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("j", 999);
+            AssertValue("k", 999);
+
+            // Modify guid3
+            // Reconnect input
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid1, codes[2]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("j", 10);
+            AssertValue("k", 20);
+        }
+
+        [Test]
+        public void TestMAGN5477()
+        {
+            List<string> codes = new List<string>() 
+            {
+@"
+
+import(""FunctionObject.ds"");
+def foosa: var[]..[](a1 : var[]..[], a2 : var[]..[])
+{
+    p = a2;
+    q = a1;
+    r = {};
+    r[""b""] = q;
+    r[""a""] = p;
+    return = r;
+}
+"
+,
+
+@"
+x = 1;
+y = 2;
+z = 3;
+"
+
+, 
+
+@"
+i = foosa(x, y);
+j = __TryGetValueFromNestedDictionaries(i, ""b"");
+k = __TryGetValueFromNestedDictionaries(i, ""a"");
+"
+,
+
+@"
+partialVar = _SingleFunctionObject(foosa, 2, {0}, {x, null}, true);
+j = _SingleFunctionObject(__ComposeBuffered, 3, {0, 1}, {{_SingleFunctionObject(__GetOutput, 2, {1}, {null, ""b""}, true), partialVar}, 1, null}, true);
+i_out1 = _SingleFunctionObject(__ComposeBuffered, 3, {0, 1}, {{_SingleFunctionObject(__GetOutput, 2, {1}, {null, ""a""}, true), partialVar}, 1, null}, true);
+i = {};
+i[""b""] = j;
+i[""a""] = k;
+"
+,
+@"
+i = foosa(x, z);
+j = __TryGetValueFromNestedDictionaries(i, ""b"");
+k = __TryGetValueFromNestedDictionaries(i, ""a"");
+"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+            Guid guid3 = System.Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(CreateSubTreeFromCode(guid3, codes[2]));
+            var syncData = new GraphSyncData(null, added, null);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("j", 1);
+            AssertValue("k", 2);
+
+            // Modify guid3
+            // Disconnect input
+            List<Subtree> modified = new List<Subtree>();
+            Subtree subtree = CreateSubTreeFromCode(guid3, codes[3]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+
+            // Modify guid3
+            // Reconnect input
+            modified = new List<Subtree>();
+            subtree = CreateSubTreeFromCode(guid3, codes[4]);
+            modified.Add(subtree);
+            syncData = new GraphSyncData(null, null, modified);
+            astLiveRunner.UpdateGraph(syncData);
+            AssertValue("j", 1);
+            AssertValue("k", 3);
+        }
+     
     }
 
 }

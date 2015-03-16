@@ -326,6 +326,32 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Replace an item from the given list that's located at the specified index.
+        /// </summary>
+        /// <param name="list">List to replace an item in.</param>
+        /// <param name="index">Index of the item to be replaced.</param>
+        /// <param name="item">The item to insert.</param>
+        /// <returns name="list">A new list with the item replaced.</returns>
+        /// <search>replace,switch</search>
+        public static IList ReplaceItemAtIndex(IList list, int index, [ArbitraryDimensionArrayImport] object item)
+        {
+            if (index < 0)
+            {
+                index = list.Count + index;
+            }
+
+            if (index >= list.Count || index < 0)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            // copy the list, insert and return
+            var newList = new ArrayList(list);
+            newList[index] = item;
+            return newList;
+        }
+
+        /// <summary>
         ///     Gets a single sub-list from the given list, based on starting index, ending index,
         ///     and a step amount.
         /// </summary>

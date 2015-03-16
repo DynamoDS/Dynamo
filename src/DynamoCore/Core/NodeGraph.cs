@@ -16,8 +16,7 @@ namespace Dynamo.Core
         public List<NoteModel> Notes { get; private set; }
         public List<AnnotationModel> Annotations { get; private set; }
         public ElementResolver ElementResolver { get; private set; }
-    
-
+  
         private NodeGraph() { }
 
         private static IEnumerable<NodeModel> LoadNodesFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
@@ -139,36 +138,13 @@ namespace Dynamo.Core
         /// <returns></returns>
         public static NodeGraph LoadGraphFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {
-            var elementResolver = LoadElementResolver(xmlDoc);
-
             var nodes = LoadNodesFromXml(xmlDoc, nodeFactory).ToList();
             var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
             var notes = LoadNotesFromXml(xmlDoc).ToList();
             var annotations = LoadAnnotationsFromXml(xmlDoc, nodes).ToList();
 
-            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations =annotations, ElementResolver = elementResolver };
+            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations =annotations};
         }
 
-        private static ElementResolver LoadElementResolver(XmlDocument xmlDoc)
-        {
-            var nodes = xmlDoc.GetElementsByTagName("NamespaceResolutionMap");
-            
-            var resolutionMap = new Dictionary<string, KeyValuePair<string, string>>();
-            if (nodes.Count > 0)
-            {
-                foreach (XmlNode child in nodes[0].ChildNodes)
-                {
-                    if (child.Attributes != null)
-                    {
-                        XmlAttribute pName = child.Attributes["partialName"];
-                        XmlAttribute rName = child.Attributes["resolvedName"];
-                        XmlAttribute aName = child.Attributes["assemblyName"];
-                        var kvp = new KeyValuePair<string, string>(rName.Value, aName.Value);
-                        resolutionMap.Add(pName.Value, kvp);
-                    }
-                }
-            }
-            return new ElementResolver(resolutionMap);
-        }
     }
 }

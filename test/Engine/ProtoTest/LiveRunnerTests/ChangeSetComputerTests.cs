@@ -23,6 +23,15 @@ namespace ProtoTest.LiveRunner
             return new ProtoScript.Runners.LiveRunner();
         }
 
+        [SetUp]
+        public override void Setup()
+        {
+            // Create a dummy runtimeCore because these tests dont really need to execute 
+            // The base class will expect to cleanup the runtimeCore
+            base.Setup();
+            runtimeCore = new RuntimeCore(new Heap());
+        }
+
         private Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
             var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;

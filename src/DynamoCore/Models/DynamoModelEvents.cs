@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using Dynamo.Annotations;
 using Dynamo.Core;
@@ -189,7 +190,7 @@ namespace Dynamo.Models
             {
                 Action showFailureMessage = () => DisplayEngineFailureMessage(e.Error);
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
-            }
+           }
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);

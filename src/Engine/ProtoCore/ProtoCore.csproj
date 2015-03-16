@@ -108,6 +108,7 @@
     <Compile Include="CompilerUtils.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
+    <Compile Include="DebuggerProperties.cs" />
     <Compile Include="DSASM\FunctionCounter.cs" />
     <Compile Include="DSASM\DSAsmDefs.cs" />
     <Compile Include="DSASM\Interpreter.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Lang\Replication\ReplicationInstruction.cs" />
     <Compile Include="Lang\Replication\Replicator.cs" />
     <Compile Include="Lang\TraceUtils.cs" />
+    <Compile Include="Namespace\ElementRewriter.cs" />
     <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
     <Compile Include="ParserUtils.cs" />
