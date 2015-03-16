@@ -107,7 +107,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public bool HasDescription
         {
-            get { return (!string.IsNullOrEmpty(Model.Description)); }
+            get { return (!Model.Description.Equals(Dynamo.UI.Configurations.NoDescriptionAvailable)); }
         }
 
         public NodeCategoryViewModel Category { get; set; }
