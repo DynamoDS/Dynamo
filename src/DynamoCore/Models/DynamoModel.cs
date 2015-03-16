@@ -411,15 +411,7 @@ namespace Dynamo.Models
             // where necessary, assign defaults
             if (String.IsNullOrEmpty(configuration.Context))
                 configuration.Context = Core.Context.NONE;
-            if (String.IsNullOrEmpty(configuration.DynamoCorePath))
-            {
-                var asmLocation = Assembly.GetExecutingAssembly().Location;
-                configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
-            }
-
-            if (configuration.Preferences == null)
-                configuration.Preferences = new PreferenceSettings();
-
+            
             return new DynamoModel(configuration);
         }
 
