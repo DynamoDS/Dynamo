@@ -15,6 +15,7 @@ using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using Dynamo.Properties;
 using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -31,6 +32,7 @@ using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.AST;
 using ProtoCore.Exceptions;
+using Compiler = ProtoAssociative.Compiler;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
 using Utils = Dynamo.Nodes.Utilities;
@@ -381,6 +383,7 @@ namespace Dynamo.Models
             return Start(new StartConfiguration());
         }
 
+
         /// <summary>
         /// Start DynamoModel with custom configuration.  Defaults will be assigned not provided.
         /// </summary>
@@ -389,9 +392,9 @@ namespace Dynamo.Models
         public static DynamoModel Start(StartConfiguration configuration)
         {
             // where necessary, assign defaults
-            if (string.IsNullOrEmpty(configuration.Context))
+            if (String.IsNullOrEmpty(configuration.Context))
                 configuration.Context = Core.Context.NONE;
-            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
+            if (String.IsNullOrEmpty(configuration.DynamoCorePath))
             {
                 var asmLocation = Assembly.GetExecutingAssembly().Location;
                 configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
@@ -401,6 +404,123 @@ namespace Dynamo.Models
                 configuration.Preferences = new PreferenceSettings();
 
             return new DynamoModel(configuration);
+        }
+
+        struct FileVersion
+        {
+            public readonly int MajorPart;
+            public readonly int MinorPart;
+
+            public FileVersion(int majorPart, int minorPart)
+            {
+                MajorPart = majorPart;
+                MinorPart = minorPart;
+            }
+        }
+
+        private static FileVersion FindPreviousVersion(string rootFolder, FileVersionInfo currentVersionInfo)
+        {
+            int fileMajorPart = currentVersionInfo.FileMajorPart;
+            int fileMinorPart = currentVersionInfo.FileMinorPart;
+            while (fileMajorPart >= 0 && fileMinorPart > 7)
+            {
+                if (fileMinorPart == 0)
+                {
+                    fileMinorPart = 9;
+                    fileMajorPart--;
+                }
+                else
+                {
+                    fileMinorPart--;
+                }
+                var previousVersionPath = Path.Combine(rootFolder, String.Format("{0}.{1}", fileMajorPart, fileMinorPart));
+                if (Directory.Exists(previousVersionPath))
+                    break;
+                
+            }
+            return new FileVersion(fileMajorPart, fileMinorPart);
+        }
+
+        private static DynamoMigratorBase CreateMigrator(string rootFolder, int majorVersion, int minorVersion)
+        {
+            var className = "Dynamo.Core.DynamoMigrator" + majorVersion + minorVersion;
+
+            var args = new object[] { rootFolder };
+            var type = Assembly.GetExecutingAssembly().GetType(className);
+            return (DynamoMigratorBase)Activator.CreateInstance(type, args);
+        }
+
+        // Reference: https://msdn.microsoft.com/en-us/library/system.io.directoryinfo.aspx
+        private static void Copy(string sourceDirectory, string targetDirectory)
+        {
+            var diSource = new DirectoryInfo(sourceDirectory);
+            var diTarget = new DirectoryInfo(targetDirectory);
+
+            CopyAll(diSource, diTarget);
+        }
+
+        private static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            // Check if the target directory exists; if not, create it.
+            if (Directory.Exists(target.FullName) == false)
+            {
+                Directory.CreateDirectory(target.FullName);
+            }
+
+            // Copy each file into the new directory.
+            foreach (FileInfo fi in source.GetFiles())
+            {
+                Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+            }
+
+            // Copy each subdirectory using recursion.
+            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+            {
+                DirectoryInfo nextTargetSubDir =
+                    target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
+            }
+        }
+
+        public PreferenceSettings MigrateBetweenDynamoVersions()
+        {
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            var currentVersionInfo = FileVersionInfo.GetVersionInfo(assemblyPath);
+
+            // No migration required if the current version is <= version 0.7
+            if (currentVersionInfo.FileMajorPart == 0 &&
+                currentVersionInfo.FileMinorPart <= 7)
+                return null;
+
+            // Get root folder - this will be different for DynamoPro
+            var rootFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dynamo");
+            var previousVersion = FindPreviousVersion(rootFolder, currentVersionInfo);
+
+            // No migration required if no previous version exists
+            if (previousVersion.MajorPart == currentVersionInfo.FileMajorPart &&
+                previousVersion.MinorPart == currentVersionInfo.FileMinorPart)
+                return null;
+
+            // Create concrete DynamoMigratorBase object using previousVersion and reflection
+            var sourceMigrator = CreateMigrator(rootFolder, previousVersion.MajorPart, previousVersion.MinorPart);
+            Debug.Assert(sourceMigrator != null);
+            var preferenceSettingsFile = sourceMigrator.ReadPreferences();
+            
+            // get migrator object for current version
+            var targetMigrator = CreateMigrator(rootFolder, currentVersionInfo.FileMajorPart, currentVersionInfo.FileMinorPart);
+            Debug.Assert(targetMigrator != null);
+            var preferenceSettings = targetMigrator.WritePreferences(preferenceSettingsFile);
+
+            var sourceDir = sourceMigrator.CurrentVersionPath + "\\packages";
+            var targetDir = targetMigrator.CurrentVersionPath + "\\packages";
+            Copy(sourceDir, targetDir);
+
+            sourceDir = sourceMigrator.CurrentVersionPath + "\\definitions";
+            targetDir = targetMigrator.CurrentVersionPath + "\\definitions";
+            Copy(sourceDir, targetDir);
+
+            return preferenceSettings;
         }
 
         protected DynamoModel(StartConfiguration config)
@@ -440,6 +560,13 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
+            if (this.PreferenceSettings.IsFirstRun)
+            {
+                var preferenceSettings = MigrateBetweenDynamoVersions();
+                if(preferenceSettings != null)
+                    this.PreferenceSettings = preferenceSettings;
+            }
+
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced += 
                 node => ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, true));
@@ -460,10 +587,10 @@ namespace Dynamo.Models
 
             // Create a core which is used for parsing code and loading libraries
             var libraryCore =
-                new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+                new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = String.Empty });
 
-            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
-            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.kAssociative, new Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.kImperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             LibraryServices = new LibraryServices(libraryCore);
@@ -478,7 +605,7 @@ namespace Dynamo.Models
                 UpdateManager.UpdateManager.CheckForProductUpdate();
 
             Logger.Log(
-                string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
+                String.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
             var url = config.PackageManagerAddress ??
                       AssemblyConfiguration.Instance.GetAppSetting("packageManagerAddress");
@@ -534,7 +661,7 @@ namespace Dynamo.Models
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
-                        Logger.Log(String.Format(Properties.Resources.EvaluationCompleted, executionTimeSpan));
+                        Logger.Log(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
                         ExecutionEvents.OnGraphPostExecution();
                     }
                     break;
@@ -919,7 +1046,7 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            Logger.Log(Properties.Resources.WelcomeMessage);
+            Logger.Log(Resources.WelcomeMessage);
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
@@ -951,7 +1078,7 @@ namespace Dynamo.Models
 
             SearchModel.DumpLibraryToXml(fullFileName);
 
-            Logger.Log(string.Format(Properties.Resources.LibraryIsDumped, fullFileName));
+            Logger.Log(String.Format(Resources.LibraryIsDumped, fullFileName));
         }
 
         internal bool CanDumpLibraryToXml(object obj)
@@ -973,7 +1100,7 @@ namespace Dynamo.Models
                 Scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,
-                IsTestMode,string.Empty);
+                IsTestMode,String.Empty);
 
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);
@@ -1112,7 +1239,7 @@ namespace Dynamo.Models
                     var symbol = (node is Symbol
                         ? (node as Symbol).InputSymbol
                         : (node as Output).Symbol);
-                    var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
+                    var code = (String.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
                     newNode = new CodeBlockNodeModel(code, node.X, node.Y, LibraryServices);
                 }
                 else
@@ -1122,7 +1249,7 @@ namespace Dynamo.Models
                 }
 
                 newNode.ArgumentLacing = node.ArgumentLacing;
-                if (!string.IsNullOrEmpty(node.NickName))
+                if (!String.IsNullOrEmpty(node.NickName))
                     newNode.NickName = node.NickName;
 
                 nodeLookup.Add(node.GUID, newNode);
@@ -1346,10 +1473,10 @@ namespace Dynamo.Models
                 "ObsoleteFileMessage",
                 fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            string summary = Properties.Resources.FileCannotBeOpened;
+            string summary = Resources.FileCannotBeOpened;
             var description =
-                string.Format(
-                    Properties.Resources.ObsoleteFileDescription,
+                String.Format(
+                    Resources.ObsoleteFileDescription,
                     fullFilePath,
                     fileVersion,
                     currVersion);
@@ -1357,11 +1484,11 @@ namespace Dynamo.Models
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Properties.Resources.ObsoleteFileTitle,
+                Resources.ObsoleteFileTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.OKButton);
+            args.AddRightAlignedButton((int)ButtonId.Ok, Resources.OKButton);
 
             OnRequestTaskDialog(null, args);
         }
@@ -1382,21 +1509,21 @@ namespace Dynamo.Models
                 InstrumentationLogger.LogException(exception);
             }
 
-            string summary = Properties.Resources.UnhandledExceptionSummary;
+            string summary = Resources.UnhandledExceptionSummary;
 
             string description = (exception is HeapCorruptionException)
                 ? exception.Message
-                : @Properties.Resources.ExceptionIsNotHeapCorruptionDescription;
+                : Resources.ExceptionIsNotHeapCorruptionDescription;
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Properties.Resources.UnhandledExceptionTitle,
+                Resources.UnhandledExceptionTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Submit, Properties.Resources.SubmitBugButton);
-            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.ArggOKButton);
+            args.AddRightAlignedButton((int)ButtonId.Submit, Resources.SubmitBugButton);
+            args.AddRightAlignedButton((int)ButtonId.Ok, Resources.ArggOKButton);
             args.Exception = exception;
 
             OnRequestTaskDialog(null, args);
@@ -1415,23 +1542,23 @@ namespace Dynamo.Models
         /// <returns> true if the file must be opened and false otherwise </returns>
         private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Properties.Resources.UnknownVersion);
-            var currVer = ((currVersion != null) ? currVersion.ToString() : Properties.Resources.UnknownVersion);
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
+            var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
 
             InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            string summary = Properties.Resources.FutureFileSummary;
-            var description = string.Format(Properties.Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
+            string summary = Resources.FutureFileSummary;
+            var description = String.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Properties.Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
+                Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
 
-            args.AddRightAlignedButton((int)ButtonId.Cancel, Properties.Resources.CancelButton);
-            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, Properties.Resources.DownloadLatestButton);
-            args.AddRightAlignedButton((int)ButtonId.Proceed, Properties.Resources.ProceedButton);
+            args.AddRightAlignedButton((int)ButtonId.Cancel, Resources.CancelButton);
+            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, Resources.DownloadLatestButton);
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.ProceedButton);
 
             OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)ButtonId.DownloadLatest)
