@@ -586,4 +586,7 @@ value: bool = false</value>
   <data name="NothingIsSelectedWarning" xml:space="preserve">
     <value>Nothing is selected.</value>
   </data>
+  <data name="SearchTextBlockText" xml:space="preserve">
+    <value>Search Library</value>
+  </data>
 </root>
