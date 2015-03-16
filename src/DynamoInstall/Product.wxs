@@ -20,7 +20,7 @@
     <MediaTemplate EmbedCab="yes" />
 
     <Binary Id="DynamoInstallActions.CA.dll"
-            src="$(var.base)\src\DynamoInstallActions\bin\$(var.Configuration)\DynamoInstallActions.CA.dll" />
+            SourceFile="$(var.base)\src\DynamoInstallActions\bin\$(var.Configuration)\DynamoInstallActions.CA.dll" />
 
     <CustomAction Id="UninstallDynamo"
                 Return="check"
@@ -52,6 +52,7 @@
       <ComponentGroupRef Id="RELEASE"/>
       <ComponentGroupRef Id="DEFINITIONS"/>
       <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ProductRegistry" />
       <Feature Id="DYNAMO_CORE_SAMPLES"
              Title="Sample Content"
              Level="1" >
@@ -96,20 +97,24 @@
                   WorkingDirectory="DYNAMO_INSTALLDIR"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
 
-        <RegistryKey Root="HKCU" Key="Software\Dynamo\$(var.Major).$(var.Minor)" Action="createAndRemoveOnUninstall">
+        <RegistryKey Root="HKCU" Key="Software\Dynamo\$(var.Major).$(var.Minor)" ForceDeleteOnUninstall="yes">
           <RegistryValue Name="installed" Type="integer" Value="1" KeyPath="yes" />
         </RegistryKey>
+      </Component>
+    </DirectoryRef>
 
+    <DirectoryRef Id="TARGETDIR">
+      <Component Id="ProductRegistry" Guid="*" Win64="yes">
         <RegistryKey Root="HKLM"
                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.PdtName) $(var.Major).$(var.Minor)"
-              Action="createAndRemoveOnUninstall">
+                     ForceDeleteOnUninstall="yes">
           <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
           <RegistryValue Name="UninstallString" Value="MsiExec.exe" Type="string" />
           <RegistryValue Name="UninstallParam" Value="/X[ProductCode] /quiet" Type="string" />
           <RegistryValue Name="Version" Value="$(var.FullVersion)" Type="string" />
           <RegistryValue Name="RevVersion" Value="$(var.Rev)" Type="integer" />
         </RegistryKey>
-        
+
         <CreateFolder Directory="definitions" />
         <CreateFolder Directory="logs" />
         <CreateFolder Directory="packages" />
