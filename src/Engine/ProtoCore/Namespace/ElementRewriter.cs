@@ -174,7 +174,7 @@ namespace ProtoCore.Namespace
                     typedNode.datatype.UID < (int) PrimitiveType.kMaxPrimitives)
                     return;
 
-                var identListNode = CoreUtils.CreateNodeFromString(typedNode.datatype.Name);
+                var identListNode = CoreUtils.CreateNodeFromString(typedNode.TypeAlias);
 
                 // Rewrite node with resolved name
                 if (resolvedNames.Any())
