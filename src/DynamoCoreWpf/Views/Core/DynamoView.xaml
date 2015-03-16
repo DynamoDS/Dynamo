@@ -511,7 +511,7 @@
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"
                               Focusable="False"
-                              IsEnabled="True">
+                              IsEnabled="True">                   
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
                                   Name="ToggleIsUsageReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
@@ -526,6 +526,14 @@
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
                                   Focusable="False"/>
+                        <MenuItem Focusable="False" 
+                                  Name="ShowNodeExecution" 
+                                  IsCheckable="True" 
+                                  IsChecked="{Binding ShowRunPreview}" 
+                                  Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
+                                  ToolTipService.ShowOnDisabled="True" 
+                                  ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
+                                  IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>
                         
                         <!--<MenuItem Focusable="False" 
                                   Name="ShowNodeExecution" 
@@ -533,10 +541,16 @@
                                   IsChecked="{Binding ShowRunPreview}" 
                                   Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
                                   ToolTipService.ShowOnDisabled="True" 
+<<<<<<< HEAD
+                                  ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
+                                  IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>                       
+                        <MenuItem Focusable="False"
+=======
                                   ToolTip="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
                                   IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>-->
                         
                         <!--<MenuItem Focusable="False"
+>>>>>>> 8ced085d0865451a474d0f033bc4d5ca2016203b
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuLengthUnits}"
                                   Name="LengthUnitsMenu">
                             <MenuItem Focusable="False"
@@ -587,7 +601,7 @@
                                       IsChecked="{Binding PreferenceSettings.LengthUnit,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Meter, Mode=TwoWay}"
                                       Command="{Binding SetLengthUnitCommand}"
                                       CommandParameter="Meter"
-                                      Header="{x:Static p:Resources.DynamoViewSettingMenuMeter}" />
+                                       Header="{x:Static p:Resources.DynamoViewSettingMenuMeter}" />
                         </MenuItem>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuAreaUnits}"

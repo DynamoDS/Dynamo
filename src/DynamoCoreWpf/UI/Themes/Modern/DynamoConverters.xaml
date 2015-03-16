@@ -18,19 +18,37 @@
     </controls:WorkspaceBackgroundBrushConverter>
 
     <controls:MarginConverter x:Key="MarginConverter" />
-    <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
-                                      TrueBrush="#4192D9"
+
+    <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter" 
+                                      TrueBrush="#4192D9" 
                                       FalseBrush="Black">
     </controls:BooleanToBrushConverter>
+    
     <controls:BooleanToBrushConverter x:Key="PortConnectedBooleanToBrushConverter"
                                       TrueBrush="Black"
                                       FalseBrush="White">
     </controls:BooleanToBrushConverter>
-    <controls:BooleanToSelectionColorConverter x:Key="BooleanToSelectionColorConverter"
-                                               True="#4192D9"
-                                               False="#444">
+
+    <controls:BooleanToSelectionColorConverter x:Key="BooleanToSelectionColorConverter" 
+                                True="#4192D9" 
+                                False="#444">
     </controls:BooleanToSelectionColorConverter>
 
+    <controls:ConnectionStateToColorConverter x:Key="ConnectionStateToColorConverter"
+                                              ExecutionPreview="#F2930C"
+                                              Selection="#4192D9"
+                                              None="#444">
+        
+    </controls:ConnectionStateToColorConverter>
+
+    <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
+                                              ExecutionPreviewBrush="#F2930C"
+                                              SelectionBrush="#4192D9"
+                                              NoneBrush="#444">
+    </controls:ConnectionStateToBrushConverter>
+
+    <controls:ConnectionStateToVisibilityCollapsedConverter x:Key="ConnectionStateToVisibilityCollapsedConverter"/>
+                                                            
     <controls:StateToColorConverter x:Key="StateToColorConverter"
                                     HeaderBackgroundInactive="{StaticResource headerBackgroundInactive}"
                                     HeaderForegroundInactive="{StaticResource headerForegroundInactive}"
@@ -101,11 +119,13 @@
     <controls:TabSizeConverter x:Key="TabSizeConverter" />
     <controls:WarningLevelToColorConverter x:Key="WarningLevelToColorConverter" />
     <controls:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter" />
-    <controls:IsUpdateAvailableToTextConverter x:Key="IsUpdateAvailableToTextConverter" />
-    <controls:IsUpdateAvailableBrushConverter x:Key="IsUpdateAvailableBrushConverter" />
-    <controls:NumberFormatToBoolConverter x:Key="NumberFormatToBoolConverter" />
-    <controls:DoubleDisplay x:Key="DoubleDisplayConverter" />
-    <controls:IntegerDisplay x:Key="IntegerDisplayConverter" />
-    <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter" />
+    <controls:IsUpdateAvailableToTextConverter x:Key="IsUpdateAvailableToTextConverter"/>
+    <controls:IsUpdateAvailableBrushConverter x:Key="IsUpdateAvailableBrushConverter"/>
+    <controls:NumberFormatToBoolConverter x:Key="NumberFormatToBoolConverter"/>
+    <controls:DoubleDisplay x:Key="DoubleDisplayConverter"/>
+    <controls:IntegerDisplay x:Key="IntegerDisplayConverter"/>   
+    <controls:SnapRegionMarginConverter x:Key="SnapRegionMarginConverter"/>
     <controls:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+    <controls:RunPreviewConverter x:Key="RunPreviewConverter"/>
+    <controls:RunPreviewToolTipConverter x:Key="RunPreviewToolTipConverter"/>
 </ResourceDictionary>

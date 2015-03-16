@@ -39,7 +39,9 @@
 
             <Button Name="DirectionButton"
                 Grid.Column="1"
-                Content="="  
+                Content="⇄"  
+                FontWeight="Bold"
+                FontSize="13"
                 Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
                 Width="40" Command="{Binding ToggleButtonClick}"/>
 

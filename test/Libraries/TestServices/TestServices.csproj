@@ -64,7 +64,7 @@
     <Compile Include="GeometricTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestPathResolver.cs" />
-    <Compile Include="RemoteTestSessionConfig.cs" />
+    <Compile Include="TestSessionConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">

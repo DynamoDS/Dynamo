@@ -22,17 +22,13 @@ namespace Dynamo.Interfaces
         List<string> PackageDirectoriesToUninstall { get; set; }
 
         /// <summary>
-        /// Save PreferenceSettings in XML File Path if possible,
-        /// else return false
+        /// Call this method to serialize PreferenceSettings given the output 
+        /// file path.
         /// </summary>
-        /// <param name="filePath">Path of the XML File</param>
-        /// <returns>Whether file is saved or error occurred.</returns>
+        /// <param name="filePath">The full path of the output file to serialize
+        /// PreferenceSettings to.</param>
+        /// <returns>Returns true if the serialization is successful, or false 
+        /// otherwise.</returns>
         bool Save(string filePath);
-
-        /// <summary>
-        /// Save PreferenceSettings in a default directory when no path is specified
-        /// </summary>
-        /// <returns>Whether file is saved or error occurred.</returns>
-        bool Save();
     }
 }

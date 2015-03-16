@@ -19,11 +19,9 @@ using NUnit.Framework;
 using Dynamo.UI;
 using DynamoUtilities;
 using System.Reflection;
-
+using TestServices;
 using Dynamo.Wpf.ViewModels.Core;
-
 using Microsoft.Practices.Prism.Logging;
-
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DynamoCoreUITests
@@ -41,7 +39,6 @@ namespace DynamoCoreUITests
 
         // Geometry preloading related members.
         protected bool preloadGeometry;
-        protected Preloader preloader;
 
         // For access within test cases.
         protected DynamoView dynamoView = null;
@@ -53,14 +50,14 @@ namespace DynamoCoreUITests
         [SetUp]
         public override void Setup()
         {
-            // We do not call "base.Init()" here because we want to be able 
-            // to create our own copy of Controller here with command file path.
-            DynamoPathManager.Instance.InitializeCore(
-              Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
             SetupDirectories();
+
+            // We do not call "base.Init()" here because we want to be able 
+            // to create our own copy of Controller here with command file path.
+            // 
+            // base.Init();
         }
 
         [TearDown]
@@ -704,11 +701,14 @@ namespace DynamoCoreUITests
             }
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true,
+                    PathResolver = pathResolver,
                     GeometryFactoryPath = geometryFactoryPath
                 });
+
+            pathResolver = null; // Invalidate path resolver after specified.
 
             // Create the DynamoViewModel to control the view
             this.ViewModel = DynamoViewModel.Start(
@@ -1106,7 +1106,8 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void ReExecuteASTTest()
         {
-            DynamoUtilities.DynamoPathManager.Instance.AddPreloadLibrary("FFITarget.dll");
+            pathResolver = new TestPathResolver();
+            pathResolver.AddPreloadLibraryPath("FFITarget.dll");
 
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
             {
