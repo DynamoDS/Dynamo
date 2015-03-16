@@ -38,12 +38,12 @@ namespace Dynamo.UI.Controls
         public CodeBlockEditor()
         {
             InitializeComponent();
+            WatermarkLabel.Text = Properties.Resources.WatermarkLabelText;
         }
 
-        public CodeBlockEditor(NodeView nodeView)
+        public CodeBlockEditor(NodeView nodeView): this()
         {
-            InitializeComponent();
-
+           
             this.nodeViewModel = nodeView.ViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
