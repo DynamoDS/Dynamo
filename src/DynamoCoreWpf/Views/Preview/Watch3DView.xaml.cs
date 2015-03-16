@@ -594,13 +594,8 @@ namespace Dynamo.Controls
             Dispatcher.Invoke(new Action<
                 PointGeometry3D,
                 LineGeometry3D,
-                HelixToolkit.Wpf.SharpDX.MeshGeometry3D, 
-                BillboardText3D>(SendGraphicsToView), DispatcherPriority.Render,
-                               new object[] {
-                                   points, 
-                                   lines, 
-                                   mesh, 
-                                   text});
+                MeshGeometry3D, 
+                BillboardText3D>(SendGraphicsToView), DispatcherPriority.Render, points, lines, mesh, text);
 
             //DrawTestMesh();
         }
@@ -652,7 +647,7 @@ namespace Dynamo.Controls
         private void SendGraphicsToView(
             PointGeometry3D points,
             LineGeometry3D lines,
-            HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh,
+            MeshGeometry3D mesh,
             BillboardText3D text)
         {
             Points = points;
