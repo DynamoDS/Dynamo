@@ -591,11 +591,7 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            Dispatcher.Invoke(new Action<
-                PointGeometry3D,
-                LineGeometry3D,
-                MeshGeometry3D, 
-                BillboardText3D>(SendGraphicsToView), DispatcherPriority.Render, points, lines, mesh, text);
+            SendGraphicsToView(points, lines, mesh, text);
 
             //DrawTestMesh();
         }
