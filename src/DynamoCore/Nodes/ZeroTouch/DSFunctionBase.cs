@@ -23,6 +23,9 @@ namespace Dynamo.Nodes
 
             if (controller.Definition.IsObsolete)
                 Warning(controller.Definition.ObsoleteMessage, true);
+
+            if (controller.Definition.EnablesPeriodicUpdate)
+                EnablePeriodicUpdate = true;
         }
         
         public override bool IsConvertible
