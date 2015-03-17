@@ -167,23 +167,20 @@ namespace Dynamo.Core.Threading
                     var surf = graphicItem as Surface;
                     if (surf != null)
                     {
-                        surf.PerimeterCurves().ForEach(
-                                e =>
-                                    e.Tessellate(
-                                        package,
-                                        -1.0,
-                                        maxTesselationDivisions));
+                        foreach (var curve in surf.PerimeterCurves())
+                        {
+                            curve.Tessellate(package, -1.0, maxTesselationDivisions);
+                            curve.Dispose();
+                        }
                     }
 
                     var solid = graphicItem as Solid;
                     if (solid != null)
                     {
-                        solid.Edges.ForEach(
-                                e =>
-                                    e.CurveGeometry.Tessellate(
-                                        package,
-                                        -1.0,
-                                        maxTesselationDivisions));
+                        foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry)) {
+                            geom.Tessellate(package, -1.0, maxTesselationDivisions);
+                            geom.Dispose();
+                        }
                     }
                 }
                 catch (Exception e)
