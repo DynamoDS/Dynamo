@@ -22,14 +22,10 @@ namespace Dynamo.Tests
         // Test checks png images. If at least one icon is not presented, test fails.
         public void SearchForPNGFiles()
         {
-            var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
-                {
-                    GeometryFactoryPath = ""
-                });
+            var model = DynamoModel.Start();
 
             IEnumerable searchEntries = model.SearchModel.SearchEntries.OfType<NodeSearchElement>();
-            IconServices iconServices = new IconServices();
+            IconServices iconServices = new IconServices(model.PathManager);
             IconWarehouse currentWarehouse = null;
 
             List<String> missingIcons = new List<string>();
