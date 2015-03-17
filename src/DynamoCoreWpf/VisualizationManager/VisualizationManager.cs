@@ -335,11 +335,11 @@ namespace Dynamo
             var workspace = model as HomeWorkspaceModel;
             if (workspace == null) return;
 
-            foreach (var node in workspace.Nodes)
-                NodeRemovedFromHomeWorkspace(node);
-
             workspace.NodeAdded += NodeAddedToHomeWorkspace;
             workspace.NodeRemoved += NodeRemovedFromHomeWorkspace;
+
+            foreach (var node in workspace.Nodes)
+                NodeAddedToHomeWorkspace(node);
         }
 
         private void WorkspaceRemoved(WorkspaceModel model)
@@ -347,11 +347,11 @@ namespace Dynamo
             var workspace = model as HomeWorkspaceModel;
             if (workspace == null) return;
 
-            foreach (var node in workspace.Nodes)
-                NodeAddedToHomeWorkspace(node);
-
             workspace.NodeAdded -= NodeAddedToHomeWorkspace;
             workspace.NodeRemoved -= NodeRemovedFromHomeWorkspace;
+
+            foreach (var node in workspace.Nodes)
+                NodeRemovedFromHomeWorkspace(node);
         }
 
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
