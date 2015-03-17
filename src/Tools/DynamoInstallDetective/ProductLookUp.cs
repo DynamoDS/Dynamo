@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Odbc;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 using Microsoft.Win32;
 
-namespace DynamoUtilities
+namespace DynamoInstallDetective
 {
     /// <summary>
     /// Defines an installed product
@@ -126,7 +125,7 @@ namespace DynamoUtilities
         /// <summary>
         /// Product name for lookup
         /// </summary>
-        public string LookUpProductName { get; private set; }
+        public string ProductLookUpName { get; private set; }
         private readonly string fileLookup;
 
         static RegistryKey OpenKey(string key)
@@ -158,7 +157,7 @@ namespace DynamoUtilities
         /// <param name="fileLookup">file name pattern to lookup</param>
         public InstalledProductLookUp(string lookUpName, string fileLookup)
         {
-            this.LookUpProductName = lookUpName;
+            this.ProductLookUpName = lookUpName;
             this.fileLookup = fileLookup;
         }
 
@@ -195,7 +194,7 @@ namespace DynamoUtilities
         public virtual IEnumerable<string> GetProductNameList()
         {
             var key = OpenKey(REG_KEY64);
-            return key.GetSubKeyNames().Where(s => s.Contains(LookUpProductName));
+            return key.GetSubKeyNames().Where(s => s.Contains(ProductLookUpName));
         }
 
         public virtual bool ExistsAtPath(string basePath)
@@ -249,7 +248,7 @@ namespace DynamoUtilities
             InstallLocation = installLocation;
             var corePath = lookUp.GetCoreFilePathFromInstallation(InstallLocation);
             VersionInfo = lookUp.GetVersionInfoFromFile(corePath);
-            ProductName = string.Format("{0} {1}.{2}", lookUp.LookUpProductName, VersionInfo.Item1, VersionInfo.Item2);
+            ProductName = string.Format("{0} {1}.{2}", lookUp.ProductLookUpName, VersionInfo.Item1, VersionInfo.Item2);
             VersionString = string.Format("{0}.{1}.{2}.{3}", VersionInfo.Item1, VersionInfo.Item2, VersionInfo.Item3, VersionInfo.Item4);
         }
 
