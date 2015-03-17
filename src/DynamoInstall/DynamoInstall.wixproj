@@ -48,12 +48,32 @@ robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) 
 "%25WIX%25bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
 "%25WIX%25bin\heat.exe" dir $(DYNAMO_MIGRATION_NODES_PATH) -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA -var var.definitions -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
   </PropertyGroup>
-  <!--
-	To modify your build process, add your task inside one of the targets below and uncomment it.
-	Other similar extension points exist, see Wix.targets.
-	<Target Name="BeforeBuild">
-	</Target>
-	<Target Name="AfterBuild">
-	</Target>
-	-->
+  <Target Name="BeforeBuild">
+    <GetAssemblyIdentity AssemblyFiles="$(DYNAMO_HARVEST_PATH)\DynamoCore.dll">
+      <Output TaskParameter="Assemblies" ItemName="AssemblyVersions" />
+    </GetAssemblyIdentity>
+    <CreateProperty Value="%(AssemblyVersions.Version)">
+      <Output TaskParameter="Value" PropertyName="FullVersion" />
+    </CreateProperty>
+    <CreateProperty Value="$(FullVersion.Split('.')[0])">
+      <Output TaskParameter="Value" PropertyName="Major" />
+    </CreateProperty>
+    <CreateProperty Value="$(FullVersion.Split('.')[1])">
+      <Output TaskParameter="Value" PropertyName="Minor" />
+    </CreateProperty>
+    <CreateProperty Value="$(FullVersion.Split('.')[2])">
+      <Output TaskParameter="Value" PropertyName="Rev" />
+    </CreateProperty>
+    <CreateProperty Value="$(FullVersion.Split('.')[3])">
+      <Output TaskParameter="Value" PropertyName="Build" />
+    </CreateProperty>
+    <CreateProperty Value="Dynamo">
+      <Output TaskParameter="Value" PropertyName="ProductName" />
+    </CreateProperty>
+    <CreateProperty Value="FullVersion=$(FullVersion);ProductName=$(ProductName);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
+      <Output TaskParameter="Value" PropertyName="DefineConstants" />
+    </CreateProperty>
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
 </Project>
