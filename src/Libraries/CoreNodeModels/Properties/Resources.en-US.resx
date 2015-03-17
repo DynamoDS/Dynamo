@@ -500,7 +500,7 @@
   <data name="SelectFromComboBoxToolTip" xml:space="preserve">
     <value>This is your Revit display unit settings</value>
   </data>
-  <data name="ColorRangeDescription1" xml:space="preserve">
+  <data name="ColorRangeDescription" xml:space="preserve">
     <value>Get a color given a color range.</value>
     <comment>Description for Color Range</comment>
   </data>
@@ -510,10 +510,10 @@
   <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
     <value>A list of values between 0.0 and 1.0 which position the input colors along the range.</value>
   </data>
-  <data name="ColorRangePortDataResultToolTip1" xml:space="preserve">
+  <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
     <value>The selected colors.</value>
   </data>
-  <data name="ColorRangePortDataValueToolTip1" xml:space="preserve">
+  <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
     <value>A list of values between 0 and 1. These values are used to look up the color within the range.</value>
   </data>
 </root>
