@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using NUnit.Framework;
 using Dynamo.Utilities;
 using Dynamo.Models;
@@ -513,13 +514,11 @@ namespace Dynamo.Tests
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
-            string resultPath = GetSampleDirectory() + "ImportExport\\helix.csv";
+            string resultPath = GetSampleDirectory() + "Data\\helix.csv";
             // Although old path is a hard coded but that is not going to change 
             // because it is saved in DYN which we have added in Samples folder.
             filename.Value = filename.Value.Replace
-                ("C:\\ProgramData\\Dynamo\\0.7\\samples\\ImportExport\\helix.csv", resultPath);
-
-            RunCurrentModel();
+                ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\helix.csv", resultPath);
 
             const string lineNodeID = "0cde47c6-106f-4a0a-9566-872fd23a0a20";
             AssertPreviewCount(lineNodeID, 201);
@@ -530,6 +529,62 @@ namespace Dynamo.Tests
                 var point = GetPreviewValueAtIndex(lineNodeID, i) as Point;
                 Assert.IsNotNull(point);
             }
+        }
+
+        [Test, Category("SmokeTests")]
+        public void ImportExport_Data_To_Excel()
+        {
+            OpenSampleModel(@"ImportExport\ImportExport_Data To Excel.dyn");
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            string resultPath = GetSampleDirectory() + "Data\\icosohedron_points.csv";
+            // Although old path is a hard coded but that is not going to change 
+            // because it is saved in DYN which we have added in Samples folder.
+            filename.Value = filename.Value.Replace
+                ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\icosohedron_points.csv", resultPath);
+
+            //RunCurrentModel();
+
+            const string lineNodeID = "48175079-300b-4b1d-9953-e23d570dce12";
+            AssertPreviewCount(lineNodeID, 65);
+
+            // Killing excel process if there is any after running the graph.
+            Process[] procs = Process.GetProcessesByName("excel");
+            foreach (Process proc in procs)
+                proc.Kill();
+
+        }
+
+        [Test, Category("SmokeTests")]
+        public void ImportExport_Excel_to_Dynamo()
+        {
+            OpenSampleModel(@"ImportExport\ImportExport_Excel to Dynamo.dyn");
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            string resultPath = GetSampleDirectory() + "Data\\helix.xlsx";
+            // Although old path is a hard coded but that is not going to change 
+            // because it is saved in DYN which we have added in Samples folder.
+            filename.Value = filename.Value.Replace
+                ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\helix.xlsx", resultPath);
+
+            //RunCurrentModel();
+
+            const string lineNodeID = "d538c147-b79f-4f11-9c00-1efd7f9b3c09";
+            AssertPreviewCount(lineNodeID, 201);
+
+            // There should be 201 Points.
+            for (int i = 0; i <= 200; i++)
+            {
+                var point = GetPreviewValueAtIndex(lineNodeID, i) as Point;
+                Assert.IsNotNull(point);
+            }
+
+            // Killing excel process if there is any after running the graph.
+            Process[] procs = Process.GetProcessesByName("excel");
+            foreach (Process proc in procs)
+                proc.Kill();
         }
     }
 }
