@@ -815,7 +815,7 @@ namespace Dynamo.Controls
         {
             var color = new Color4(1,1,1,1);
 
-            if (color_idx < p.TriangleVertexColors.Count - 4)
+            if (color_idx <= p.TriangleVertexColors.Count-3)
             {
                 color = new Color4(
                 (float)(p.TriangleVertexColors[color_idx] / 255.0),
