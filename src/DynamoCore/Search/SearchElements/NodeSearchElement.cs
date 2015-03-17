@@ -19,7 +19,7 @@ namespace Dynamo.Search.SearchElements
 
         private readonly HashSet<string> keywords = new HashSet<string>();
         private string fullCategoryName;
-        private string description;
+        protected string description;
         private string name;
         private SearchElementGroup group;
         private string assembly;
@@ -131,7 +131,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         ///     Description of the node.
         /// </summary>
-        public string Description
+        public virtual string Description
         {
             get
             {

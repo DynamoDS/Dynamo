@@ -114,6 +114,7 @@ namespace Dynamo.DSEngine
     {
         private readonly Assembly resourceAssembly;
         private readonly XDocument xmlDocument;
+        private static Dictionary<string, string> triedNamespaces = new Dictionary<string, string>();
 
         /// <summary>
         /// Resources assembly. Assembly where icons are saved.
@@ -129,10 +130,17 @@ namespace Dynamo.DSEngine
         public string GetNamespaceCategory(string namespaceName)
         {
             var format = "string(/doc/namespaces/namespace[@name='{0}']/category)";
-            object obj = String.Empty;
-            if (xmlDocument != null)
-                obj = xmlDocument.XPathEvaluate(String.Format(format, namespaceName));
-            return obj.ToString().Trim();
+
+            if (!triedNamespaces.ContainsKey(namespaceName))
+            {
+                string obj = String.Empty;
+                if (xmlDocument != null)
+                    obj = xmlDocument.XPathEvaluate(String.Format(format, namespaceName)).ToString().Trim();
+
+                triedNamespaces.Add(namespaceName,obj);
+            }
+
+            return triedNamespaces[namespaceName];
         }
     }
 }

@@ -13,6 +13,23 @@ namespace Dynamo.Search.SearchElements
     {
         private readonly FunctionDescriptor functionDescriptor;
 
+        public override string Description
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(functionDescriptor.Description))
+                    return Dynamo.UI.Configurations.NoDescriptionAvailable;
+
+                return functionDescriptor.Description;
+            }
+            set
+            {
+                if (value == functionDescriptor.Description) return;
+                description = value;
+                OnPropertyChanged("Description");
+            }
+        }
+
         /// <summary>
         /// The name that is used during node creation
         /// </summary>
@@ -28,7 +45,6 @@ namespace Dynamo.Search.SearchElements
 
             Name = displayName;
             FullCategoryName = functionDescriptor.Category;
-            Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
 
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
