@@ -656,7 +656,7 @@ namespace Dynamo.Controls
 
         private void ConvertPoints(IRenderPackage p, PointGeometry3D points, BillboardText3D text)
         {
-            int color_idx = 0;
+            var color_idx = 0;
 
             for (int i = 0; i < p.PointVertices.Count; i += 3)
             {
@@ -672,10 +672,13 @@ namespace Dynamo.Controls
                     text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), pt));
                 }
 
-                var ptColor = SharpDX.Color4.Black;
-                if (p.PointVertexColors.Count > color_idx + 2)
+                // The default point color is black. If the point
+                // colors array is large enough, then we pull the 
+                // point color from that.
+                var ptColor = Color4.Black;
+                if (p.PointVertexColors.Count >= color_idx + 4)
                 {
-                    ptColor = new SharpDX.Color4(
+                    ptColor = new Color4(
                                         (p.PointVertexColors[color_idx] / 255.0f),
                                         (p.PointVertexColors[color_idx + 1] / 255.0f),
                                         (p.PointVertexColors[color_idx + 2] / 255.0f), 1);
