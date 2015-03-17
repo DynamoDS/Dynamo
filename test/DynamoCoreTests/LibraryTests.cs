@@ -8,6 +8,7 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Tests
 {
@@ -232,6 +233,8 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void DumpLibraryToXmlZeroTouchTest()
         {
+            var searchViewModel = new SearchViewModel(null, new NodeSearchModel());
+
             LibraryLoaded = false;
 
             string libraryPath = "DSOffice.dll";
@@ -245,8 +248,18 @@ namespace Dynamo.Tests
             }
 
             var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
+            foreach (var funcGroup in fgToCompare)
+            {
+                foreach (var functionDescriptor in funcGroup.Functions)
+                {
+                    if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
+                    {
+                        searchViewModel.Model.Add(new ZeroTouchSearchElement(functionDescriptor));
+                    }
+                }
+            }
 
-            var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
+            var document = searchViewModel.Model.ComposeXmlForLibrary();
 
             Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
 
@@ -262,7 +275,7 @@ namespace Dynamo.Tests
 
                     var category = function.Category;
                     var group = SearchElementGroup.Action;
-                    category = ViewModel.SearchViewModel.Model.ProcessNodeCategory(category, ref group);
+                    category = searchViewModel.Model.ProcessNodeCategory(category, ref group);
 
                     node = document.SelectSingleNode(string.Format(
                         "//{0}[FullCategoryName='{1}' and Name='{2}']",
