@@ -659,10 +659,8 @@ namespace Dynamo.Models
 
         public AnnotationModel AddAnnotation(double xPos, double yPos, string text, Guid id)
         {
-            var selectedNodes = DynamoSelection.Instance.Selection.Where(n => n is NodeModel)
-                .Select(n => (n as NodeModel));
-
-            var annotationModel = new AnnotationModel(selectedNodes) {GUID = id};
+           
+            var annotationModel = new AnnotationModel(this.Nodes,this.Notes) { GUID = id };
 
             var args = new ModelEventArgs(annotationModel, true);
             OnRequestNodeCentered(this, args);
@@ -1305,7 +1303,7 @@ namespace Dynamo.Models
             }
             else if (typeName.StartsWith("Dynamo.Models.AnnotationModel"))
             {
-                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData, Nodes);
+                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData, Nodes,Notes);
                 Annotations.Add(annotationModel);
             }
             else // Other node types.

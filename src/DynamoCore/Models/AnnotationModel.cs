@@ -3,17 +3,25 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using System.Collections.Generic;
 using Dynamo.Nodes;
+using ProtoCore.Lang;
+
 namespace Dynamo.Models
 {
     public class AnnotationModel : ModelBase
     {
        // private readonly INodeRepository nodeRepository;
-
+        private double xDistance = 1;
+        private double yDistance = 1;
+        private double regionX = 1;
+        private double regionY = 1;
+        private double maxWidth = 1;
+        private double maxHeight = 1;
         private string _text;
         public string Text
         {
@@ -115,24 +123,52 @@ namespace Dynamo.Models
                 if (selectedNodes != null)
                 {
                     selectedNodes = value.ToList();
-                    if (selectedNodes.Any())
-                    {
-                        foreach (var node in selectedNodes)
-                        {
-                            node.PropertyChanged += OnNodePropertyChanged;                           
-                        }
+                    //if (selectedNodes.Any())
+                    //{
+                    //    foreach (var node in selectedNodes)
+                    //    {
+                    //        node.PropertyChanged += OnNodePropertyChanged;                           
+                    //    }
 
-                        var selectedRegion = SelectRegionFromNodes(selectedNodes);
-                        this.Left = selectedRegion.X;
-                        this.Top = selectedRegion.Y;
-                        this.Width = selectedRegion.Width;
-                        this.Height = selectedRegion.Height;
-                        this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
-                    }
+                    //    var selectedRegion = SelectRegionFromNodes(selectedNodes);
+                    //    this.Left = selectedRegion.X;
+                    //    this.Top = selectedRegion.Y;
+                    //    this.Width = selectedRegion.Width;
+                    //    this.Height = selectedRegion.Height;
+                    //    this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
+                    //}
                 }              
             }
         }
 
+        private IEnumerable<NoteModel> selectedNotes;
+        public IEnumerable<NoteModel> SelectedNotes
+        {
+            get { return selectedNotes; }
+            set
+            {
+                selectedNotes = value;
+                if (selectedNotes != null)
+                {
+                    selectedNotes = value.ToList();
+                    //if (selectedNotes.Any())
+                    //{
+                    //    foreach (var note in selectedNotes)
+                    //    {
+                    //        note.PropertyChanged += OnNotePropertyChanged;
+                    //    }
+
+                    //    var selectedRegion = SelectRegionFromNotes(selectedNotes);
+                    //    this.Left = selectedRegion.X;
+                    //    this.Top = selectedRegion.Y;
+                    //    this.Width = selectedRegion.Width;
+                    //    this.Height = selectedRegion.Height;
+                    //    this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
+                    //}
+                }
+            }
+        }
+      
         private Rect2D rectRegion;
         public Rect2D RectRegion
         {
@@ -147,18 +183,19 @@ namespace Dynamo.Models
             set { isInDrag = value; }
         }
 
-        public AnnotationModel(IEnumerable<NodeModel> nodes )
+        public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes )
         {
             this.nodesInWorkspace = nodes;
             this.SelectedNodes = nodes.Where(x => x.IsSelected);
+            this.SelectedNotes = notes.Where(x => x.IsSelected);
             this.AnnotationText = "<<Double click to edit the grouping>>";
+            SelectRegionFromNodes(this.SelectedNodes);
         }
 
         private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {            
             if (!IsInDrag)
-            {
-                var node = sender as NodeModel;
+            {              
                 var selectedRegion = SelectRegionFromNodes(SelectedNodes);
                 this.Left = selectedRegion.X;
                 this.Top = selectedRegion.Y;
@@ -168,30 +205,54 @@ namespace Dynamo.Models
             }
         }
 
-        internal static Rect2D SelectRegionFromNodes(IEnumerable<NodeModel> nodes)
+        private void OnNotePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            if (!IsInDrag)
+            {               
+                var selectedRegion = SelectRegionFromNotes(SelectedNotes);
+                this.Left = selectedRegion.X;
+                this.Top = selectedRegion.Y;
+                this.Width = selectedRegion.Width;
+                this.Height = selectedRegion.Height;
+                this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
+            }
+        }
+
+        private Rect2D SelectRegionFromNodes(IEnumerable<NodeModel> nodes)
+        {
+            var test1 = nodes.ToList();
+            var test2 = this.SelectedNotes.ToList();
+
+            var test3 = test1.Cast<Object>().Concat(test2.Cast<Object>()).ToList();
+            
             var enumerable = nodes as NodeModel[] ?? nodes.ToArray();
             var nodeModels = nodes as IList<NodeModel> ?? enumerable.ToList();
             if (nodes == null || !nodeModels.Any())
-                throw new ArgumentException("nodes");
+                return new Rect2D(0, 0, 0, 0);
 
             nodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
-
-           // var maxWidth = nodeModels.ToList().Select(x => x.Width).Max();
-           // var maxHeight = nodeModels.ToList().Select(x => x.Height).Max();
-
+           
             var xNodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
             var yNodeModels = nodeModels.ToList().OrderBy(x => x.Y).ToList();
 
-            var maxWidth = xNodeModels.Last().Width;
-            var maxHeight = yNodeModels.Last().Height;
+            maxWidth = xNodeModels.Last().Width;
+            maxHeight = yNodeModels.Last().Height;
 
-            var regionX = xNodeModels.First().X - 30;
-            var regionY = yNodeModels.First().Y - 50;
+            //maxWidth = Math.Max(maxWidth, xNodeModels.Last().Width);
+           // maxHeight = Math.Max(maxHeight, yNodeModels.Last().Height);
 
-            var xDistance = xNodeModels.Last().X - regionX;
-            var yDistance = yNodeModels.Last().Y - regionY;
+            regionX = xNodeModels.First().X - 30;
+            regionY = yNodeModels.First().Y - 30;
 
+            //regionX = Math.Min(regionX, xNodeModels.First().X - 30);
+            //regionY = Math.Min(regionY, yNodeModels.First().Y - 30);
+
+            xDistance = xNodeModels.Last().X - regionX;
+            yDistance = yNodeModels.Last().Y - regionY;
+
+            //xDistance = Math.Max(xDistance,xNodeModels.Last().X - regionX);
+            //yDistance = Math.Max(yDistance, yNodeModels.Last().Y - regionY);
+           
             var region = new Rect2D
             {
                 X = regionX,
@@ -213,6 +274,51 @@ namespace Dynamo.Models
                 }
             }
          
+            return region;
+        }
+
+        private Rect2D SelectRegionFromNotes(IEnumerable<NoteModel> notes)
+        {
+            var enumerable = notes as NoteModel[] ?? notes.ToArray();
+            var noteModels = notes as IList<NoteModel> ?? enumerable.ToList();
+            if (notes == null || !noteModels.Any())
+                return new Rect2D(0,0,0,0);
+
+            noteModels = noteModels.ToList().OrderBy(x => x.X).ToList();
+
+            var xNoteModels = noteModels.ToList().OrderBy(x => x.X).ToList();
+            var yNoteModels = noteModels.ToList().OrderBy(x => x.Y).ToList();
+         
+            maxWidth = Math.Max(maxWidth, xNoteModels.Last().Width);
+            maxHeight = Math.Max(maxHeight, yNoteModels.Last().Height);
+
+            regionX = Math.Min(regionX, xNoteModels.First().X - 30);
+            regionY = Math.Min(regionY, yNoteModels.First().Y - 30);
+          
+            xDistance = Math.Max(xDistance,xNoteModels.Last().X - regionX);
+            yDistance = Math.Max(yDistance, yNoteModels.Last().Y - regionY);
+
+            var region = new Rect2D
+            {
+                X = regionX,
+                Y = regionY,
+                Width = xDistance + maxWidth,
+                Height = yDistance + maxHeight
+            };
+
+            //special case for grouping just one node
+            if (enumerable.Count() == 1)
+            {
+                var note = noteModels.ElementAt(0);
+                if (region.IntersectsWith(note.Rect))
+                {
+                    var result = region;
+                    result.Intersect(note.Rect);
+                    region.Width = region.Width + 10;
+                    region.Height = region.Height + 70;
+                }
+            }
+
             return region;
         }
 
