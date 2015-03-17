@@ -2,16 +2,13 @@
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Wpf.Services;
-using DynamoShapeManager;
 
 using NUnit.Framework;
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Media;
 
 namespace Dynamo.Tests
