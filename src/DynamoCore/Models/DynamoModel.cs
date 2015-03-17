@@ -412,111 +412,7 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        private static FileVersion FindPreviousVersion(string rootFolder, FileVersionInfo currentVersionInfo)
-        {
-            int fileMajorPart = currentVersionInfo.FileMajorPart;
-            int fileMinorPart = currentVersionInfo.FileMinorPart;
-            while (fileMajorPart >= 0 && fileMinorPart > 7)
-            {
-                if (fileMinorPart == 0)
-                {
-                    fileMinorPart = 9;
-                    fileMajorPart--;
-                }
-                else
-                {
-                    fileMinorPart--;
-                }
-                var previousVersionPath = Path.Combine(rootFolder, String.Format("{0}.{1}", fileMajorPart, fileMinorPart));
-                if (Directory.Exists(previousVersionPath))
-                    break;
-                
-            }
-            return new FileVersion(fileMajorPart, fileMinorPart);
-        }
-
-        private static DynamoMigratorBase CreateMigrator(string rootFolder, int majorVersion, int minorVersion)
-        {
-            var className = "Dynamo.Core.DynamoMigrator" + majorVersion + minorVersion;
-
-            var args = new object[] { rootFolder };
-            var type = Assembly.GetExecutingAssembly().GetType(className);
-            return (DynamoMigratorBase)Activator.CreateInstance(type, args);
-        }
-
-        // Reference: https://msdn.microsoft.com/en-us/library/system.io.directoryinfo.aspx
-        private static void Copy(string sourceDirectory, string targetDirectory)
-        {
-            var diSource = new DirectoryInfo(sourceDirectory);
-            var diTarget = new DirectoryInfo(targetDirectory);
-
-            CopyAll(diSource, diTarget);
-        }
-
-        private static void CopyAll(DirectoryInfo source, DirectoryInfo target)
-        {
-            // Check if the target directory exists; if not, create it.
-            if (Directory.Exists(target.FullName) == false)
-            {
-                Directory.CreateDirectory(target.FullName);
-            }
-
-            // Copy each file into the new directory.
-            foreach (FileInfo fi in source.GetFiles())
-            {
-                Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
-                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
-            }
-
-            // Copy each subdirectory using recursion.
-            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
-            {
-                DirectoryInfo nextTargetSubDir =
-                    target.CreateSubdirectory(diSourceSubDir.Name);
-                CopyAll(diSourceSubDir, nextTargetSubDir);
-            }
-        }
-
-        public PreferenceSettings MigrateBetweenDynamoVersions()
-        {
-            var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var currentVersionInfo = FileVersionInfo.GetVersionInfo(assemblyPath);
-
-            // No migration required if the current version is <= version 0.7
-            if (currentVersionInfo.FileMajorPart == 0 &&
-                currentVersionInfo.FileMinorPart <= 7)
-                return null;
-
-            // Get root folder - this will be different for DynamoPro
-            var rootFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dynamo");
-            var previousVersion = FindPreviousVersion(rootFolder, currentVersionInfo);
-
-            // No migration required if no previous version exists
-            if (previousVersion.MajorPart == currentVersionInfo.FileMajorPart &&
-                previousVersion.MinorPart == currentVersionInfo.FileMinorPart)
-                return null;
-
-            // Create concrete DynamoMigratorBase object using previousVersion and reflection
-            var sourceMigrator = CreateMigrator(rootFolder, previousVersion.MajorPart, previousVersion.MinorPart);
-            Debug.Assert(sourceMigrator != null);
-            var preferenceSettingsFile = sourceMigrator.ReadPreferences();
-            
-            // get migrator object for current version
-            var targetMigrator = CreateMigrator(rootFolder, currentVersionInfo.FileMajorPart, currentVersionInfo.FileMinorPart);
-            Debug.Assert(targetMigrator != null);
-            var preferenceSettings = targetMigrator.WritePreferences(preferenceSettingsFile);
-
-            var sourceDir = Path.Combine(sourceMigrator.CurrentVersionPath, "packages");
-            var targetDir = Path.Combine(targetMigrator.CurrentVersionPath, "packages");
-            Copy(sourceDir, targetDir);
-
-            sourceDir = Path.Combine(sourceMigrator.CurrentVersionPath, "definitions");
-            targetDir = Path.Combine(targetMigrator.CurrentVersionPath, "definitions");
-            Copy(sourceDir, targetDir);
-
-            return preferenceSettings;
-        }
-
+        
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -552,7 +448,10 @@ namespace Dynamo.Models
 
             if (this.PreferenceSettings.IsFirstRun)
             {
-                var preferenceSettings = MigrateBetweenDynamoVersions();
+                // Get root folder - this will be different for DynamoPro
+                var rootFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dynamo");
+                var preferenceSettings = DynamoMigratorBase.MigrateBetweenDynamoVersions(rootFolder);
+
                 if(preferenceSettings != null)
                     this.PreferenceSettings = preferenceSettings;
             }
