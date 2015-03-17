@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Media;
 
@@ -18,42 +19,6 @@ namespace Dynamo.Tests
     [TestFixture]
     internal class IconsTests
     {
-        private static string geometryFactoryPath = "";
-        private IEnumerable searchEntries;
-        private IconServices iconServices = new IconServices();
-
-        private static string ResourcePath = String.Empty;
-
-        [SetUp]
-        public void InitializeDirectoryPaths()
-        {
-            var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var relativeDir = Path.Combine(assemblyDir, @"..\..\..\src\Resources");
-            var absoluteDir = Path.GetFullPath(relativeDir);
-            Assert.IsFalse(string.IsNullOrEmpty(absoluteDir));
-            Assert.IsTrue(Directory.Exists(absoluteDir));
-            ResourcePath = absoluteDir;
-        }
-
-        [SetUp]
-        public void PreloadShapeManager()
-        {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var rootFolder = Path.GetDirectoryName(exePath);
-
-            var versions = new[]
-            {
-                LibraryVersion.Version219,
-                LibraryVersion.Version220,
-                LibraryVersion.Version221
-            };
-
-            var preloader = new Preloader(rootFolder, versions);
-            geometryFactoryPath = preloader.GeometryFactoryPath;
-        }
-
-
-
         [Test]
         [Category("UnitTests")]
         [Category("Failure")]
@@ -63,18 +28,16 @@ namespace Dynamo.Tests
             var model = DynamoModel.Start(
                 new DynamoModel.StartConfiguration()
                 {
-                    GeometryFactoryPath = geometryFactoryPath,
-                    Preferences = PreferenceSettings.Load()
+                    GeometryFactoryPath = ""
                 });
 
-            searchEntries = model.SearchModel.SearchEntries;
+            IEnumerable searchEntries = model.SearchModel.SearchEntries.OfType<NodeSearchElement>();
+            IconServices iconServices = new IconServices();
+            IconWarehouse currentWarehouse = null;
 
             List<String> missingIcons = new List<string>();
             foreach (var entry in searchEntries)
             {
-                if (!(entry is NodeSearchElement))
-                    continue;
-
                 var searchEle = entry as NodeSearchElement;
                 if (String.IsNullOrEmpty(searchEle.IconName))
                     continue;
@@ -83,13 +46,13 @@ namespace Dynamo.Tests
                 var largeIconName = searchEle.IconName + Configurations.LargeIconPostfix;
 
 
-                var warehouse = iconServices.GetForAssembly(searchEle.Assembly);
+                currentWarehouse = iconServices.GetForAssembly(searchEle.Assembly);
                 ImageSource smallIcon = null;
                 ImageSource largeIcon = null;
-                if (warehouse != null)
+                if (currentWarehouse != null)
                 {
-                    smallIcon = warehouse.LoadIconInternal(smallIconName);
-                    largeIcon = warehouse.LoadIconInternal(largeIconName);
+                    smallIcon = currentWarehouse.LoadIconInternal(smallIconName);
+                    largeIcon = currentWarehouse.LoadIconInternal(largeIconName);
                 }
 
                 if (smallIcon == null)
