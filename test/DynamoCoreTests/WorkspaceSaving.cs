@@ -762,7 +762,8 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            var oldId = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().Definition.FunctionId;
+            var cnws = model.CurrentWorkspace as CustomNodeWorkspaceModel;
+            var oldId = cnws.CustomNodeId;
 
             CustomNodeWorkspaceModel nodeWorkspace;
             Assert.IsTrue(model.CustomNodeManager.TryGetFunctionWorkspace(oldId, true, out nodeWorkspace));
