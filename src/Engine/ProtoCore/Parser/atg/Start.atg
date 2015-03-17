@@ -468,7 +468,7 @@ COMPILER DesignScriptParser
         if (File.Exists(filePath))
             return filePath;
 
-        SemErr(String.Format(Resources.noSuchFileOrDirectoryToImport,fileName));
+        SemErr(String.Format(Resources.NoSuchFileOrDirectoryToImport,fileName));
         return null;
     }
 

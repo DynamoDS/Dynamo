@@ -27,7 +27,7 @@
                                    HorizontalScrollBarVisibility="Auto" />
         </Border>
         <TextBlock x:Name="WatermarkLabel"
-                   Text="Your code goes here"
+                   
                    Foreground="#777777"
                    FontFamily="Consolas"
                    FontSize="14.67px"

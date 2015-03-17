@@ -35,6 +35,16 @@ namespace Dynamo.Interfaces
     public interface IPathManager
     {
         /// <summary>
+        /// The local directory that contains user specific data files.
+        /// </summary>
+        string UserDataDirectory { get; }
+
+        /// <summary>
+        /// The local directory that contains common data files among users.
+        /// </summary>
+        string CommonDataDirectory { get; }
+
+        /// <summary>
         /// The local directory that contains custom nodes created by the user.
         /// </summary>
         string UserDefinitions { get; }

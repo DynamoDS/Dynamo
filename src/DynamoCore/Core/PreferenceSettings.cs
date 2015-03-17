@@ -6,7 +6,6 @@ using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using DynamoUnits;
 
 using DynamoUtilities;
 
@@ -21,10 +20,6 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DynamoTestPath = null;
-        const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
-        private LengthUnit lengthUnit;
-        private AreaUnit areaUnit;
-        private VolumeUnit volumeUnit;
         private string numberFormat;
         private string lastUpdateDownloadPath;
         
@@ -94,36 +89,6 @@ namespace Dynamo
         /// </summary>
         public List<string> PackageDirectoriesToUninstall { get; set; }
 
-        public LengthUnit LengthUnit
-        {
-            get { return lengthUnit; }
-            set
-            {
-                lengthUnit = value;
-                RaisePropertyChanged("LengthUnit");
-            }
-        }
-
-        public AreaUnit AreaUnit
-        {
-            get { return areaUnit; }
-            set
-            {
-                areaUnit = value;
-                RaisePropertyChanged("AreaUnit");
-            }
-        }
-
-        public VolumeUnit VolumeUnit
-        {
-            get { return volumeUnit; }
-            set
-            {
-                volumeUnit = value;
-                RaisePropertyChanged("VolumeUnit");
-            }
-        }
-
         /// <summary>
         /// The last X coordinate of the Dynamo window.
         /// </summary>
@@ -165,9 +130,6 @@ namespace Dynamo
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             FullscreenWatchShowing = true;
-            LengthUnit = LengthUnit.Meter;
-            AreaUnit = DynamoUnits.AreaUnit.SquareMeter;
-            VolumeUnit = VolumeUnit.CubicMeter;
             PackageDirectoriesToUninstall = new List<string>();
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
@@ -201,12 +163,21 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Save PreferenceSettings in a default directory when no path is specified
+        /// Save PreferenceSettings in a default directory when no path is 
+        /// specified.
         /// </summary>
+        /// <param name="preferenceFilePath">The file path to save preference
+        /// settings to. If this parameter is null or empty string, preference 
+        /// settings will be saved to the default path.</param>
         /// <returns>Whether file is saved or error occurred.</returns>
-        public bool Save()
+        public bool SaveInternal(string preferenceFilePath)
         {
-            return Save(DynamoTestPath ?? GetSettingsFilePath());
+            if (!string.IsNullOrEmpty(DynamoTestPath))
+            {
+                preferenceFilePath = DynamoTestPath;
+            }
+
+            return Save(preferenceFilePath);
         }
 
         /// <summary>
@@ -237,33 +208,6 @@ namespace Dynamo
             catch (Exception) { }
 
             return settings;
-        }
-
-        /// <summary>
-        /// Return PreferenceSettings from Default XML path
-        /// </summary>
-        /// <returns>
-        /// Stored PreferenceSettings from default xml file or
-        /// Default PreferenceSettings if default xml file is not found.
-        /// </returns>
-        public static PreferenceSettings Load()
-        {
-            return Load(DynamoTestPath ?? GetSettingsFilePath());
-        }
-
-        /// <summary>
-        /// Return PreferenceSettings Default XML File Path if possible
-        /// </summary>
-        public static string GetSettingsFilePath()
-        {
-            try
-            {
-                return (Path.Combine(DynamoPathManager.Instance.AppData, DYNAMO_SETTINGS_FILE));
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
         }
     }
 }

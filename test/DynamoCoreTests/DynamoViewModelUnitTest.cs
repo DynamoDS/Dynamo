@@ -9,9 +9,9 @@ using DynamoShapeManager;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
-using DynamoUtilities;
 using System.Reflection;
 using System.IO;
+using TestServices;
 
 namespace Dynamo.Tests
 {
@@ -24,7 +24,8 @@ namespace Dynamo.Tests
     public class DynamoViewModelUnitTest : UnitTestBase
     {
         protected DynamoViewModel ViewModel;
-        private DynamoShapeManager.Preloader preloader;
+        protected Preloader preloader;
+        protected TestPathResolver pathResolver;
 
         [SetUp]
         public override void Setup()
@@ -94,14 +95,13 @@ namespace Dynamo.Tests
         protected void StartDynamo()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var assemblyFolder = Path.GetDirectoryName(assemblyPath);
-
-            preloader = new Preloader(assemblyFolder);
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
+                    PathResolver = pathResolver,
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath
                 });

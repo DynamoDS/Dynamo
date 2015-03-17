@@ -34,20 +34,15 @@ namespace DynamoCoreUITests
         public virtual void Start()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var assemblyFolder = Path.GetDirectoryName(assemblyPath);
-            DynamoPathManager.Instance.InitializeCore(assemblyFolder);
-
-            preloader = new Preloader(assemblyFolder);
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
-
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
             Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath

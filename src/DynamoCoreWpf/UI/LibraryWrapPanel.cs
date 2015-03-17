@@ -39,6 +39,13 @@ namespace Dynamo.Controls
                     classListView.SelectedIndex = itemIndex;
                     return true; // The call is handled.
                 }
+                else
+                {
+                    // If current item is selected item, then class button was pressed second time.
+                    // Selection should be cleaned.
+                    classListView.SelectedIndex = -1;
+                    return true;
+                }
             }
             else
             {

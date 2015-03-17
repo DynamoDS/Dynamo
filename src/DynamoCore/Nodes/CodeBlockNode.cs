@@ -219,9 +219,14 @@ namespace Dynamo.Nodes
         /// <summary>
         /// Temporary variables that generated in code.
         /// </summary>
-        public List<string> TempVariables
+        public IEnumerable<string> TempVariables
         {
             get { return tempVariables; }
+        }
+
+        public IEnumerable<Statement> CodeStatements
+        {
+            get { return codeStatements; }
         }
 
         #endregion
@@ -540,37 +545,16 @@ namespace Dynamo.Nodes
 
         private void SetOutputPorts()
         {
-            // Get all defined variables and their locations
-            var definedVars = codeStatements.Select(s => new KeyValuePair<Variable, int>(s.FirstDefinedVariable, s.StartLine))
-                                            .Where(pair => pair.Key != null)
-                                            .Select(pair => new KeyValuePair<string, int>(pair.Key.Name, pair.Value))
-                                            .OrderBy(pair => pair.Key)
-                                            .GroupBy(pair => pair.Key);
+            var allDefs = CodeBlockUtils.GetDefinitionLineIndexMap(codeStatements);
 
-            // Calc each variable's last location of definition
-            var locationMap = new Dictionary<string, int>();
-            foreach (var defs in definedVars)
-            {
-                var name = defs.FirstOrDefault().Key;
-                var loc = defs.Select(p => p.Value).Max<int>();
-                locationMap[name] = loc;
-            }
-
-            // Create output ports
-            var allDefs = locationMap.OrderBy(p => p.Value);
             if (allDefs.Any() == false)
                 return;
 
             double prevPortBottom = 0.0;
             foreach (var def in allDefs)
             {
-                // Map the given logical line index to its corresponding visual 
-                // line index. Do note that "def.Value" here is the line number 
-                // supplied by the paser, which uses 1-based line indexing so we 
-                // have to remove one from the line index.
-                // 
                 var logicalIndex = def.Value - 1;
-                
+
                 string tooltip = def.Key;
                 if (tempVariables.Contains(def.Key))
                     tooltip = Formatting.TOOL_TIP_FOR_TEMP_VARIABLE;
@@ -1023,6 +1007,8 @@ namespace Dynamo.Nodes
 
         public static IdentifierNode GetDefinedIdentifier(Node leftNode)
         {
+            if(leftNode is TypedIdentifierNode)
+                return new IdentifierNode(leftNode as IdentifierNode);
             if (leftNode is IdentifierNode)
                 return leftNode as IdentifierNode;
             else if (leftNode is IdentifierListNode)

@@ -791,7 +791,7 @@ namespace Dynamo.PackageManager
             {
                 fDialog = new OpenFileDialog()
                 {
-                    Filter = Resources.FileDialogCustomNodeDLLXML,
+                    Filter = string.Format(Resources.FileDialogCustomNodeDLLXML, "*.dyf;*.dll;*.xml"),
                     Title = Resources.AddCustomFileToPackageDialogTitle
                 };
             }
@@ -804,9 +804,10 @@ namespace Dynamo.PackageManager
             }
             else // use the definitions directory
             {
-                if (Directory.Exists(DynamoPathManager.Instance.UserDefinitions))
+                var pathManager = dynamoViewModel.Model.PathManager;
+                if (Directory.Exists(pathManager.UserDefinitions))
                 {
-                    fDialog.InitialDirectory = DynamoPathManager.Instance.UserDefinitions;
+                    fDialog.InitialDirectory = pathManager.UserDefinitions;
                 }
             }
 

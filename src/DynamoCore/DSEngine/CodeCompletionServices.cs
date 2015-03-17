@@ -137,8 +137,9 @@ namespace Dynamo.DSEngine.CodeCompletion
         ///  Matches the completion string with classes, including primitive types.
         /// </summary>
         /// <param name="stringToComplete"></param>
+        /// <param name="resolver"></param>
         /// <returns></returns>
-        internal IEnumerable<CompletionData> SearchTypes(string stringToComplete)
+        internal IEnumerable<CompletionData> SearchTypes(string stringToComplete, ElementResolver resolver = null)
         {
             var completions = new List<CompletionData>();
             var partialName = stringToComplete.ToLower();
@@ -156,7 +157,8 @@ namespace Dynamo.DSEngine.CodeCompletion
                 bool useFullyQualifiedName = classMirrorGroup.Count() > 1;
                 foreach (var classMirror in classMirrorGroup)
                 {
-                    var completionData = CompletionData.ConvertMirrorToCompletionData(classMirror, useFullyQualifiedName);
+                    var completionData = CompletionData.ConvertMirrorToCompletionData(
+                        classMirror, useFullyQualifiedName, resolver);
                     completions.Add(completionData);
                 }
             }

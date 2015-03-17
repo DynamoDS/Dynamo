@@ -108,8 +108,8 @@ namespace Dynamo.Wpf.ViewModels
         private string fullCategoryName;
         private string assembly;
         private ObservableCollection<ISearchEntryViewModel> items;
-        private ObservableCollection<NodeSearchElementViewModel> entries;
-        private ObservableCollection<NodeCategoryViewModel> subCategories;
+        private readonly ObservableCollection<NodeSearchElementViewModel> entries;
+        private readonly ObservableCollection<NodeCategoryViewModel> subCategories;
         private bool visibility;
         private bool isExpanded;
         private bool isSelected;
@@ -164,34 +164,16 @@ namespace Dynamo.Wpf.ViewModels
         public ObservableCollection<ISearchEntryViewModel> Items
         {
             get { return items; }
-            set
-            {
-                if (Equals(value, items)) return;
-                items = value;
-                RaisePropertyChanged("Items");
-            }
         }
 
         public ObservableCollection<NodeSearchElementViewModel> Entries
         {
             get { return entries; }
-            set
-            {
-                if (Equals(value, entries)) return;
-                entries = value;
-                RaisePropertyChanged("Entries");
-            }
         }
 
         public ObservableCollection<NodeCategoryViewModel> SubCategories
         {
             get { return subCategories; }
-            set
-            {
-                if (Equals(value, subCategories)) return;
-                subCategories = value;
-                RaisePropertyChanged("SubCategories");
-            }
         }
 
         public bool Visibility
@@ -263,8 +245,8 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(Expand);
 
             Name = name;
-            Entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
-            SubCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
+            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
+            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
 
             foreach (var category in SubCategories)
                 category.PropertyChanged += CategoryOnPropertyChanged;
@@ -273,7 +255,7 @@ namespace Dynamo.Wpf.ViewModels
             SubCategories.CollectionChanged += OnCollectionChanged;
             SubCategories.CollectionChanged += SubCategoriesOnCollectionChanged;
 
-            Items = new ObservableCollection<ISearchEntryViewModel>(
+            items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
 
@@ -430,7 +412,7 @@ namespace Dynamo.Wpf.ViewModels
             foreach (var item in items)
                 item.PropertyChanged -= ItemOnPropertyChanged;
 
-            Items = new ObservableCollection<ISearchEntryViewModel>(
+            items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
 
@@ -484,6 +466,22 @@ namespace Dynamo.Wpf.ViewModels
             OnRequestBitmapSource(iconRequest);
 
             return iconRequest.Icon;
+        }
+
+        public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
+        {
+            var first = SubCategories.Select((x, i) => new { x.Name, Idx = i })
+                .FirstOrDefault(
+                    x =>
+                        string.Compare(
+                            x.Name,
+                            newSubCategory.Name,
+                            StringComparison.Ordinal)
+                            >= 0);
+            if (first != null)
+                SubCategories.Insert(first.Idx, newSubCategory);
+            else
+                SubCategories.Add(newSubCategory);
         }
     }
 

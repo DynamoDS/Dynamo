@@ -51,7 +51,7 @@ namespace Dynamo.UI.Controls
             var engineController = this.dynamoViewModel.Model.EngineController;
 
             return engineController.CodeCompletionServices
-                                   .SearchTypes(partialName)
+                                   .SearchTypes(partialName, dynamoViewModel.CurrentSpace.ElementResolver)
                                    .Select(x => new CodeBlockCompletionData(x));
         }
 
