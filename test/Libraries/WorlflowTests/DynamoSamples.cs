@@ -15,7 +15,7 @@ namespace Dynamo.Tests
         public void Basics_Basic03()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Basics\Basics_Basic03.dyn");
+            OpenSampleModel(@"en-US\Basics\Basics_Basic03.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
@@ -33,7 +33,7 @@ namespace Dynamo.Tests
         public void Core_AttractorPoint()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_AttractorPoint.dyn");
+            OpenSampleModel(@"en-US\Core\Core_AttractorPoint.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
@@ -56,7 +56,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_01()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -82,7 +82,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_02()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -130,7 +130,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_03()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -164,7 +164,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_04()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -195,7 +195,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_05()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -232,7 +232,7 @@ namespace Dynamo.Tests
         public void Core_ListLacing()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_ListLacing.dyn");
+            OpenSampleModel(@"en-US\Core\Core_ListLacing.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(19, model.CurrentWorkspace.Nodes.Count);
@@ -273,7 +273,7 @@ namespace Dynamo.Tests
         public void Core_Math_01()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Math.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
@@ -300,7 +300,7 @@ namespace Dynamo.Tests
         public void Core_Math_02()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Math.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
@@ -329,7 +329,7 @@ namespace Dynamo.Tests
         public void Core_Math_03()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Math.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
@@ -356,7 +356,7 @@ namespace Dynamo.Tests
         public void Core_Math_04()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Math.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
@@ -401,7 +401,7 @@ namespace Dynamo.Tests
         public void Core_PassingFunctions()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_PassingFunctions.dyn");
+            OpenSampleModel(@"en-US\Core\Core_PassingFunctions.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
@@ -422,7 +422,7 @@ namespace Dynamo.Tests
         public void Core_Python()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Python.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Python.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
@@ -460,7 +460,7 @@ namespace Dynamo.Tests
         public void Core_RangeSyntax()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_RangeSyntax.dyn");
+            OpenSampleModel(@"en-US\Core\Core_RangeSyntax.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(35, model.CurrentWorkspace.Nodes.Count);
@@ -485,7 +485,7 @@ namespace Dynamo.Tests
         public void Core_Strings()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Strings.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Strings.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(32, model.CurrentWorkspace.Nodes.Count);
@@ -510,7 +510,7 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void ImportExport_CSV_to_Stuff()
         {
-            OpenSampleModel(@"ImportExport\ImportExport_CSV to Stuff.dyn");
+            OpenSampleModel(@"en-US\ImportExport\ImportExport_CSV to Stuff.dyn");
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
@@ -534,7 +534,7 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void ImportExport_Data_To_Excel()
         {
-            OpenSampleModel(@"ImportExport\ImportExport_Data To Excel.dyn");
+            OpenSampleModel(@"en-US\ImportExport\ImportExport_Data To Excel.dyn");
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
@@ -559,7 +559,7 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void ImportExport_Excel_to_Dynamo()
         {
-            OpenSampleModel(@"ImportExport\ImportExport_Excel to Dynamo.dyn");
+            OpenSampleModel(@"en-US\ImportExport\ImportExport_Excel to Dynamo.dyn");
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
