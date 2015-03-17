@@ -423,6 +423,9 @@ namespace Dynamo.Models
                 PathResolver = config.PathResolver
             });
 
+            // Ensure we have all directories in place.
+            pathManager.EnsureDirectoryExistence();
+
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
             DebugSettings = new DebugSettings();

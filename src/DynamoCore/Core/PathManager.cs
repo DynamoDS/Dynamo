@@ -200,17 +200,17 @@ namespace Dynamo.Core
             }
 
             // Current user specific directories.
-            userDataDir = CreateFolder(GetUserDataFolder());
+            userDataDir = GetUserDataFolder();
 
-            userDefinitions = CreateFolder(Path.Combine(userDataDir, DefinitionsDirectoryName));
-            logDirectory = CreateFolder(Path.Combine(userDataDir, LogsDirectoryName));
-            packagesDirectory = CreateFolder(Path.Combine(userDataDir, PackagesDirectoryName));
+            userDefinitions = Path.Combine(userDataDir, DefinitionsDirectoryName);
+            logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
+            packagesDirectory = Path.Combine(userDataDir, PackagesDirectoryName);
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
 
             // Common directories.
-            commonDataDir = CreateFolder(GetCommonDataFolder());
+            commonDataDir = GetCommonDataFolder();
 
-            commonDefinitions = CreateFolder(Path.Combine(commonDataDir, DefinitionsDirectoryName));
+            commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
 
             nodeDirectories = new HashSet<string>
@@ -234,6 +234,24 @@ namespace Dynamo.Core
 
             additionalResolutionPaths = new HashSet<string>();
             LoadPathsFromResolver(pathResolver);
+        }
+
+        /// <summary>
+        /// Call this method to force PathManager to create folders that it 
+        /// is referring to. This method call throws exception if any creation 
+        /// fails.
+        /// </summary>
+        internal void EnsureDirectoryExistence()
+        {
+            // User specific data folders.
+            CreateFolderIfNotExist(userDataDir);
+            CreateFolderIfNotExist(userDefinitions);
+            CreateFolderIfNotExist(logDirectory);
+            CreateFolderIfNotExist(packagesDirectory);
+
+            // Common data folders for all users.
+            CreateFolderIfNotExist(commonDataDir);
+            CreateFolderIfNotExist(commonDefinitions);
         }
 
         #endregion
@@ -288,12 +306,10 @@ namespace Dynamo.Core
                 String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
 
-        private static string CreateFolder(string folderPath)
+        private static void CreateFolderIfNotExist(string folderPath)
         {
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
-
-            return folderPath;
         }
 
         private static string GetSamplesFolder(string dataRootDirectory)
