@@ -8,13 +8,8 @@
     <ControlTemplate x:Key="LibraryThumbTemplate"
                      TargetType="{x:Type Thumb}">
         <Grid>
-            <Rectangle HorizontalAlignment="Stretch"
-                       VerticalAlignment="Stretch"
-                       Width="Auto"
-                       Height="Auto"
-                       Fill="Transparent" />
             <Border x:Name="Rectangle1"
-                    HorizontalAlignment="Stretch"
+                    HorizontalAlignment="Right"
                     VerticalAlignment="Stretch"
                     Width="7"
                     Height="Auto"
