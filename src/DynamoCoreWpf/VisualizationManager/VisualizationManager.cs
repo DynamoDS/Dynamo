@@ -6,12 +6,12 @@ using System.Diagnostics;
 using System.Linq;
 
 using Dynamo.Core.Threading;
+using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
 
 using Microsoft.Practices.Prism.ViewModel;
-using Dynamo.DSEngine;
 
 namespace Dynamo
 {
@@ -26,7 +26,7 @@ namespace Dynamo
         private string alternateContextName = "Host";
         private bool drawToAlternateContext = true;
         private bool updatingPaused;
-        private readonly DynamoModel dynamoModel;
+        protected readonly DynamoModel dynamoModel;
         private readonly List<RenderPackage> currentTaggedPackages = new List<RenderPackage>();
         private bool alternateDrawingContextAvailable;
         
@@ -496,4 +496,5 @@ namespace Dynamo
             Id = viewId; 
         }
     }
+
 }
