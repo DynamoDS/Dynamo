@@ -13,6 +13,12 @@ namespace Dynamo.Core
     {
         #region Class Private Data Members
 
+        public const string PackagesDirectoryName = "packages";
+        public const string LogsDirectoryName = "Logs";
+        public const string NodesDirectoryName = "nodes";
+        public const string DefinitionsDirectoryName = "definitions";
+        public const string PreferenceSettingsFileName = "DynamoSettings.xml";
+
         private readonly string dynamoCoreDir;
         private readonly string userDataDir;
         private readonly string commonDataDir;
@@ -31,6 +37,16 @@ namespace Dynamo.Core
         #endregion
 
         #region IPathManager Interface Implementation
+
+        public string UserDataDirectory
+        {
+            get { return userDataDir; }
+        }
+
+        public string CommonDataDirectory
+        {
+            get { return commonDataDir; }
+        }
 
         public string UserDefinitions
         {
@@ -142,20 +158,20 @@ namespace Dynamo.Core
             // Current user specific directories.
             userDataDir = CreateFolder(GetUserDataFolder());
 
-            userDefinitions = CreateFolder(Path.Combine(userDataDir, "definitions"));
-            logDirectory = CreateFolder(Path.Combine(userDataDir, "Logs"));
-            packagesDirectory = CreateFolder(Path.Combine(userDataDir, "packages"));
-            preferenceFilePath = Path.Combine(userDataDir, "DynamoSettings.xml");
+            userDefinitions = CreateFolder(Path.Combine(userDataDir, DefinitionsDirectoryName));
+            logDirectory = CreateFolder(Path.Combine(userDataDir, LogsDirectoryName));
+            packagesDirectory = CreateFolder(Path.Combine(userDataDir, PackagesDirectoryName));
+            preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
 
             // Common directories.
             commonDataDir = CreateFolder(GetCommonDataFolder());
 
-            commonDefinitions = CreateFolder(Path.Combine(commonDataDir, "definitions"));
+            commonDefinitions = CreateFolder(Path.Combine(commonDataDir, DefinitionsDirectoryName));
             samplesDirectory = GetSamplesFolder(commonDataDir);
 
             nodeDirectories = new HashSet<string>
             {
-                Path.Combine(dynamoCoreDir, "nodes")
+                Path.Combine(dynamoCoreDir, NodesDirectoryName)
             };
 
             preloadedLibraries = new HashSet<string>
