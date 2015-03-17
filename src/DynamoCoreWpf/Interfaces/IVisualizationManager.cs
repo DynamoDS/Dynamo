@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Autodesk.DesignScript.Interfaces;
+
 using Dynamo.Models;
 
 namespace Dynamo.Interfaces
@@ -22,12 +24,6 @@ namespace Dynamo.Interfaces
         /// Can be used to expose a name of the alternate context for use in the UI.
         /// </summary>
         string AlternateContextName { get; set; }
-
-        /// <summary>
-        /// The maximum number of divisions in any direction of an analytical surface 
-        /// tesselation
-        /// </summary>
-        int MaxTesselationDivisions { get; set; }
 
         /// <summary>
         /// An event triggered on the completion of visualization update.
@@ -56,6 +52,16 @@ namespace Dynamo.Interfaces
         /// </summary>
         void Start(bool update = false);
 
+        /// <summary>
+        /// Request updated visuals for a branch of the graph.
+        /// </summary>
         void RequestBranchUpdate(NodeModel node);
+
+        /// <summary>
+        /// Create an IRenderPackage object provided an IGraphicItem
+        /// </summary>
+        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
+        /// <returns>An IRenderPackage object.</returns>
+        IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem);
     }
 }

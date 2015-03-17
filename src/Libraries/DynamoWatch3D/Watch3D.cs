@@ -105,7 +105,7 @@ namespace Dynamo.Nodes
         private void RenderData(object data)
         {
             View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(PackageRenderData), watch3dModel.GUID));
+                new VisualizationEventArgs(UnpackRenderData(data).Select(this.watch3dModel.VisualizationManager.CreateRenderPackageFromGraphicItem), watch3dModel.GUID));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -123,14 +123,6 @@ namespace Dynamo.Nodes
                 foreach (var g in graphics)
                     yield return g;
             }
-        }
-
-        private RenderPackage PackageRenderData(IGraphicItem gItem)
-        {
-            var renderPackage = new RenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, this.watch3dModel.ViewModel.VisualizationManager.MaxTesselationDivisions);
-            renderPackage.ItemsCount++;
-            return renderPackage;
         }
 
         public void Dispose()

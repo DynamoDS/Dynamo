@@ -397,11 +397,11 @@ namespace Dynamo.ViewModels
 
         public int MaxTesselationDivisions
         {
-            get { return VisualizationManager.MaxTesselationDivisions; }
+            get { return model.MaxTesselationDivisions; }
             set
             {
-                VisualizationManager.MaxTesselationDivisions = value;
-                this.model.OnRequestsRedraw(this, EventArgs.Empty);
+                model.MaxTesselationDivisions = value;
+                model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
 

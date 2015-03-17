@@ -654,7 +654,7 @@ namespace Dynamo.Controls
             NotifyPropertyChanged(string.Empty);
         }
 
-        private void ConvertPoints(RenderPackage p, PointGeometry3D points, BillboardText3D text)
+        private void ConvertPoints(IRenderPackage p, PointGeometry3D points, BillboardText3D text)
         {
             int color_idx = 0;
 
@@ -667,7 +667,7 @@ namespace Dynamo.Controls
                 // DirectX convention - Y Up
                 var pt = new Vector3(x, z, -y);
 
-                if (i == 0 && p.DisplayLabels)
+                if (i == 0 && ((RenderPackage)p).DisplayLabels)
                 {
                     text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), pt));
                 }
@@ -684,14 +684,14 @@ namespace Dynamo.Controls
                 points.Positions.Add(pt);
                 points.Indices.Add(points.Positions.Count);
 
-                points.Colors.Add(p.Selected ? selectionColor : ptColor);
+                points.Colors.Add(((RenderPackage)p).Selected ? selectionColor : ptColor);
 
                 color_idx += 4;
             }
 
         }
 
-        private void ConvertLines(RenderPackage p, LineGeometry3D geom, BillboardText3D text)
+        private void ConvertLines(IRenderPackage p, LineGeometry3D geom, BillboardText3D text)
         {
             int color_idx = 0;
             var idx = 0;
@@ -708,7 +708,7 @@ namespace Dynamo.Controls
                     // DirectX convention - Y Up
                     var point = new Vector3(x1, z1, -y1);
 
-                    if (i == 0 && outerCount == 0 && p.DisplayLabels)
+                    if (i == 0 && outerCount == 0 && ((RenderPackage)p).DisplayLabels)
                     {
                         text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), point));
                     }
@@ -737,12 +737,12 @@ namespace Dynamo.Controls
                     {
                         geom.Indices.Add(geom.Indices.Count);
                         geom.Positions.Add(point);
-                        geom.Colors.Add(p.Selected ? selectionColor : startColor);
+                        geom.Colors.Add(((RenderPackage)p).Selected ? selectionColor : startColor);
                     }
 
                     geom.Indices.Add(geom.Indices.Count);
                     geom.Positions.Add(point);
-                    geom.Colors.Add(p.Selected ? selectionColor : startColor);
+                    geom.Colors.Add(((RenderPackage)p).Selected ? selectionColor : startColor);
 
                     idx += 3;
                     color_idx += 4;
@@ -752,7 +752,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void ConvertMeshes(RenderPackage p, HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh)
+        private void ConvertMeshes(IRenderPackage p, HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh)
         {
             // DirectX has a different winding than we store in
             // render packages. Re-wind triangles here...
@@ -785,7 +785,7 @@ namespace Dynamo.Controls
                 mesh.Normals.Add(cn);
                 mesh.Normals.Add(bn);
 
-                if (p.Selected)
+                if (((RenderPackage)p).Selected)
                 {
                     mesh.Colors.Add(selectionColor);
                     mesh.Colors.Add(selectionColor);
