@@ -6,18 +6,25 @@ using System.Reflection;
 using System.Resources;
 using System.Windows.Media;
 using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using Dynamo.Utilities;
 
 namespace Dynamo.Wpf.Services
 {
     public class IconServices
     {
+        private readonly IPathManager pathManager;
         private Dictionary<Assembly, IconWarehouse> warehouses =
             new Dictionary<Assembly, IconWarehouse>();
 
+        internal IconServices(IPathManager pathManager)
+        {
+            this.pathManager = pathManager;
+        }
+
         internal IconWarehouse GetForAssembly(string assemblyPath)
         {
-            var libraryCustomization = LibraryCustomizationServices.GetForAssembly(assemblyPath);
+            var libraryCustomization = LibraryCustomizationServices.GetForAssembly(assemblyPath, pathManager);
             if (libraryCustomization == null)
                 return null;
 

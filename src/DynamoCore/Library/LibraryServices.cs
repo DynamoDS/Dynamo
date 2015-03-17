@@ -39,6 +39,7 @@ namespace Dynamo.DSEngine
 
         private readonly List<string> importedLibraries = new List<string>();
 
+        private readonly IPathManager pathManager;
         public readonly ProtoCore.Core LibraryManagementCore;
 
         private class UpgradeHint
@@ -60,11 +61,12 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, UpgradeHint> priorNameHints =
             new Dictionary<string, UpgradeHint>();
 
-        public LibraryServices(ProtoCore.Core libraryManagementCore)
+        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
             LibraryManagementCore = libraryManagementCore;
+            this.pathManager = pathManager;
 
-            PreloadLibraries();
+            PreloadLibraries(pathManager.PreloadedLibraries);
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
@@ -106,9 +108,9 @@ namespace Dynamo.DSEngine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        private void PreloadLibraries()
+        private void PreloadLibraries(IEnumerable<string> preloadLibraries)
         {
-            importedLibraries.AddRange(DynamoPathManager.Instance.PreloadLibraries);
+            importedLibraries.AddRange(preloadLibraries);
 
             foreach (var library in importedLibraries)
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
@@ -354,7 +356,7 @@ namespace Dynamo.DSEngine
                 return false;
             }
 
-            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref library))
+            if (!pathManager.ResolveLibraryPath(ref library))
             {
                 string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
@@ -417,7 +419,7 @@ namespace Dynamo.DSEngine
         {
             string fullLibraryName = library;
 
-            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref fullLibraryName))
+            if (!pathManager.ResolveLibraryPath(ref fullLibraryName))
                 return;
 
             string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),
@@ -595,6 +597,7 @@ namespace Dynamo.DSEngine
                                                                 FunctionName = method.name,
                                                                 Summary = description,
                                                                 Parameters = arguments,
+                                                                PathManager = pathManager,
                                                                 ReturnType = method.returntype,
                                                                 FunctionType = FunctionType.GenericFunction,
                                                                 IsVisibleInLibrary = visibleInLibrary
@@ -605,13 +608,13 @@ namespace Dynamo.DSEngine
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            yield return new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
-            yield return new TypedParameter(null, "y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
+            yield return new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
+            yield return new TypedParameter("y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
         {
-            return new List<TypedParameter> { new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)), };
+            return new List<TypedParameter> { new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)), };
         }
 
         /// <summary>
@@ -635,12 +638,14 @@ namespace Dynamo.DSEngine
                 {
                     FunctionName = op,
                     Parameters = args,
+                    PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
                 {
                     FunctionName = Op.GetUnaryOpFunction(UnaryOperator.Not),
                     Parameters = GetUnaryFuncArgs(),
+                    PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction
                 }).AsSingleton());
 
@@ -818,6 +823,7 @@ namespace Dynamo.DSEngine
                 FunctionType = type,
                 IsVisibleInLibrary = isVisible,
                 ReturnKeys = returnKeys,
+                PathManager = pathManager,
                 IsVarArg = proc.isVarArg,
                 ObsoleteMsg = obsoleteMessage
             });

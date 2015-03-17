@@ -1007,6 +1007,8 @@ namespace Dynamo.Nodes
 
         public static IdentifierNode GetDefinedIdentifier(Node leftNode)
         {
+            if(leftNode is TypedIdentifierNode)
+                return new IdentifierNode(leftNode as IdentifierNode);
             if (leftNode is IdentifierNode)
                 return leftNode as IdentifierNode;
             else if (leftNode is IdentifierListNode)

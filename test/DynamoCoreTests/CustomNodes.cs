@@ -457,7 +457,7 @@ namespace Dynamo.Tests
         /// <summary>
         /// Run a custom node, change parameter/output/function names, run again to verify consistency
         /// </summary>
-        [Test, Category("Failure")]
+        [Test]
         public void ModificationUITesting()
         {
             // Re-use code for creating a custom node

@@ -1,42 +1,46 @@
 ﻿using System;
-using System.Linq;
-
 using Dynamo.DSEngine;
+using Dynamo.Interfaces;
 using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Library
 {
-
     /// <summary>
     ///     A tuple of parameter and its type.
     /// </summary>
     public class TypedParameter
     {
-        private string summary;
+        private IPathManager pathManager;
+        private string summary = null; // Indicating that it is not initialized.
 
         public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null)
-            : this(null, parameter, type, defaultValue) { }
-
-        public TypedParameter(
-            FunctionDescriptor function, string name, ProtoCore.Type type, AssociativeNode defaultValue = null)
         {
-            if (name == null) 
-                throw new ArgumentNullException("name");
+            if (parameter == null)
+                throw new ArgumentNullException("parameter");
 
-            Name = name;
+            Name = parameter;
             Type = type;
             DefaultValue = defaultValue;
-            Function = function;
         }
 
-        public FunctionDescriptor Function { get; set; }
+        public FunctionDescriptor Function { get; private set; }
         public string Name { get; private set; }
         public ProtoCore.Type Type { get; private set; }
         public AssociativeNode DefaultValue { get; private set; }
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetDescription()); }
+            get
+            {
+                // If 'summary' data member is 'null', it means its value has 
+                // to be repopulated. If an IPathManager is supplied, then 
+                // retrieve the description through it, otherwise set 'summary'
+                // to empty string, so it wil not keep retrieving after failing 
+                // once.
+                // 
+                return summary ?? (summary = ((pathManager != null)
+                    ? this.GetDescription(pathManager) : string.Empty));
+            }
         }
 
         public string Description
@@ -52,6 +56,16 @@ namespace Dynamo.Library
         public string DisplayTypeName
         {
             get { return Type.ToShortString(); }
+        }
+
+        public void UpdateFunctionDescriptor(FunctionDescriptor funcDesc, IPathManager pathManager)
+        {
+            Function = funcDesc;
+
+            // Setting 'summary' to 'null' so its value is retrieved later 
+            // when 'Summary' property is invoked. See 'Summary' for details.
+            summary = null;
+            this.pathManager = pathManager;
         }
 
         public override string ToString()

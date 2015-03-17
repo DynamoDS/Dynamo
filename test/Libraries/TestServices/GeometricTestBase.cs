@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Reflection;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 
@@ -13,6 +13,8 @@ namespace TestServices
 {
     public class GeometricTestBase
     {
+        private AssemblyResolver assemblyResolver;
+
         [SetUp]
         public virtual void Setup()
         {
@@ -20,7 +22,12 @@ namespace TestServices
             var session = new TestExecutionSession(config);
             var application = Application.Instance as IExtensionApplication;
 
-            AssemblyResolver.Setup(config.DynamoCorePath);
+            if (assemblyResolver == null)
+            {
+                assemblyResolver = new AssemblyResolver();
+                assemblyResolver.Setup(config.DynamoCorePath);
+            }
+
             application.OnBeginExecution(session);
             HostFactory.Instance.StartUp();
         }
@@ -30,6 +37,12 @@ namespace TestServices
         {
             //application.OnEndExecution(session);
             //HostFactory.Instance.ShutDown();
+
+            if (assemblyResolver != null)
+            {
+                assemblyResolver.TearDown();
+                assemblyResolver = null;
+            }
         }
 
         /// <summary>
@@ -75,7 +88,12 @@ namespace TestServices
 
         public string RootModulePath
         {
-            get { return AssemblyResolver.GetDynamoRootDirectory(); }
+            get
+            {
+                var assemPath = Assembly.GetExecutingAssembly().Location;
+                var assemDir = new DirectoryInfo(Path.GetDirectoryName(assemPath));
+                return assemDir.Parent.FullName;
+            }
         }
 
         public string[] IncludeDirectories

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
-
+using Dynamo.Interfaces;
 using Dynamo.Library;
 
 namespace Dynamo.DSEngine
@@ -16,22 +17,22 @@ namespace Dynamo.DSEngine
     {
         #region Public methods
 
-        public static string GetSummary(this FunctionDescriptor member)
+        public static string GetSummary(this FunctionDescriptor member, IPathManager pathManager)
         {
             XDocument xml = null;
 
             if (member.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Assembly);
+                xml = DocumentationServices.GetForAssembly(member.Assembly, pathManager);
 
             return member.GetSummary(xml);
         }
 
-        public static string GetDescription(this TypedParameter member)
+        public static string GetDescription(this TypedParameter member, IPathManager pathManager)
         {
             XDocument xml = null;
 
             if (member.Function != null && member.Function.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Function.Assembly);
+                xml = DocumentationServices.GetForAssembly(member.Function.Assembly, pathManager);
 
             return member.GetDescription(xml);
         }
@@ -41,7 +42,7 @@ namespace Dynamo.DSEngine
             XDocument xml = null;
 
             if (member.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Assembly);
+                xml = DocumentationServices.GetForAssembly(member.Assembly, member.PathManager);
 
             return member.GetSearchTags(xml);
         }

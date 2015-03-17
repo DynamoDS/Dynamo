@@ -50,10 +50,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
-            var loader = new PackageLoader();
+            var loader = new PackageLoader(PackagesDirectory);
             loader.LoadPackagesIntoDynamo(new LoadPackageParams
             {
                 Preferences = ViewModel.Model.PreferenceSettings,
@@ -61,10 +60,11 @@ namespace Dynamo.Tests
                 Loader = ViewModel.Model.Loader,
                 Context = ViewModel.Model.Context,
                 IsTestMode = true,
-                CustomNodeManager = ViewModel.Model.CustomNodeManager                
+                CustomNodeManager = ViewModel.Model.CustomNodeManager
             });
 
-            Assert.AreEqual(1, loader.LocalPackages.Count);
+            // There are four packages in "GitHub\Dynamo\test\pkgs"
+            Assert.AreEqual(4, loader.LocalPackages.Count);
         }
 
         [Test]

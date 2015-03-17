@@ -16,7 +16,7 @@ namespace Dynamo.Tests
         {
             var fn = Path.Combine(GetTestDirectory(), @"core/library/ProtoGeometry.dll");
 
-            var c = LibraryCustomizationServices.GetForAssembly(fn);
+            var c = LibraryCustomizationServices.GetForAssembly(fn, pathManager: null);
             Assert.NotNull(c);
 
             var cat = c.GetNamespaceCategory("Autodesk.DesignScript.Geometry");
