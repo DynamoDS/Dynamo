@@ -1,26 +1,28 @@
-<Workspace Version="0.7.0.42482" X="209.648687195728" Y="17.2355770422931" zoom="0.922375540385152" Description="" Category="" Name="Home">
+<Workspace Version="0.8.0.677" X="40.3825423699763" Y="357.930838899495" zoom="0.276850713044813" Name="Home" RunType="Manual" RunPeriod="100">
+  <NamespaceResolutionMap />
   <Elements>
-    <DSRevitNodesUI.FamilyTypes type="DSRevitNodesUI.FamilyTypes" guid="4fdfc107-656f-4557-9bb8-3abe69963c59" nickname="Family Types" x="-37.502313993664" y="267.022198142644" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="41" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="faae3b22-211e-4fa9-9b24-97d73ebafc76" nickname="FamilyInstance.ByPointAndLevel" x="893.887707980631" y="457.177078797393" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.FamilyInstance.ByPointAndLevel@Revit.Elements.FamilySymbol,Autodesk.DesignScript.Geometry.Point,Revit.Elements.Level" />
-    <DSRevitNodesUI.Levels type="DSRevitNodesUI.Levels" guid="3fb8c3d7-3e70-4511-b675-43d467916141" nickname="Levels" x="700.182749801736" y="584.158158073673" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="3" />
-    <DSCoreNodesUI.NumberRange type="DSCoreNodesUI.NumberRange" guid="28e1684a-488d-4553-a094-febd1afad47c" nickname="Number Range" x="101.670614274962" y="408.451062552028" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="19caff9a-e805-45b9-acb7-ca272af0f540" nickname="Code Block" x="-21.0161176525313" y="400.963274470806" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="-10;&#xA;10;&#xA;2.5;" ShouldFocus="false" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="026aadc9-644e-4e6c-b35c-bf1aec67045c" nickname="Element.SetParameterByName" x="1831.65341619802" y="453.289902510694" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.Element.SetParameterByName@string,var" />
-    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="2d1e2615-f80c-43f3-bb2d-18f9bb40d49f" nickname="String" x="1703.72150463374" y="502.154771799822" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <DSRevitNodesUI.FamilyTypes guid="4fdfc107-656f-4557-9bb8-3abe69963c59" type="DSRevitNodesUI.FamilyTypes" nickname="Family Types" x="-37.502313993664" y="267.022198142644" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="41:Photovoltaic-Panel-SolarWorld-SunModule-(235-240):SunModule SW 245 Silver Mono - 10 Deg. Angle" />
+    <Dynamo.Nodes.DSFunction guid="faae3b22-211e-4fa9-9b24-97d73ebafc76" type="Dynamo.Nodes.DSFunction" nickname="FamilyInstance.ByPointAndLevel" x="893.887707980631" y="457.177078797393" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.FamilyInstance.ByPointAndLevel@Revit.Elements.FamilySymbol,Autodesk.DesignScript.Geometry.Point,Revit.Elements.Level" />
+    <DSRevitNodesUI.Levels guid="3fb8c3d7-3e70-4511-b675-43d467916141" type="DSRevitNodesUI.Levels" nickname="Levels" x="700.182749801736" y="584.158158073673" isVisible="true" isUpstreamVisible="true" lacing="Disabled" index="3:Level 1 Living Rm." />
+    <DSCoreNodesUI.NumberRange guid="28e1684a-488d-4553-a094-febd1afad47c" type="DSCoreNodesUI.NumberRange" nickname="Number Range" x="101.670614274962" y="408.451062552028" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="19caff9a-e805-45b9-acb7-ca272af0f540" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-21.0161176525313" y="400.963274470806" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="-10;&#xA;10;&#xA;2.5;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="026aadc9-644e-4e6c-b35c-bf1aec67045c" type="Dynamo.Nodes.DSFunction" nickname="Element.SetParameterByName" x="1831.65341619802" y="453.289902510694" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.Element.SetParameterByName@string,var" />
+    <Dynamo.Nodes.StringInput guid="2d1e2615-f80c-43f3-bb2d-18f9bb40d49f" type="Dynamo.Nodes.StringInput" nickname="String" x="1703.72150463374" y="502.154771799822" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>Mark</System.String>
       <System.String value="Mark" />
     </Dynamo.Nodes.StringInput>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="220cff5c-11c2-4113-a7ba-801bf74b5b0d" nickname="Count" x="1227.9653521335" y="607.829357571064" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Count@var[]..[]" />
-    <DSCoreNodesUI.NumberSeq type="DSCoreNodesUI.NumberSeq" guid="cad8292c-dd91-4a97-8904-857392d3520e" nickname="Number Sequence" x="1459.21435245014" y="604.016661945645" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
-    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="3a14c079-bb72-407a-82ed-8044eb206330" nickname="Number" x="1353.14272779554" y="677.839890085952" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+    <Dynamo.Nodes.DSFunction guid="220cff5c-11c2-4113-a7ba-801bf74b5b0d" type="Dynamo.Nodes.DSFunction" nickname="Count" x="1227.9653521335" y="607.829357571064" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Count@var[]..[]" />
+    <DSCoreNodesUI.NumberSeq guid="cad8292c-dd91-4a97-8904-857392d3520e" type="DSCoreNodesUI.NumberSeq" nickname="Number Sequence" x="1459.21435245014" y="604.016661945645" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput guid="3a14c079-bb72-407a-82ed-8044eb206330" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="1353.14272779554" y="677.839890085952" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
       <System.Double value="1" />
     </Dynamo.Nodes.DoubleInput>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="20cc1770-5512-416d-a234-fd019b9abe82" nickname="String.FromObject" x="1643.77055564691" y="602.823740951689" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.FromObject@var" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="569b9d54-0efd-4ff3-bae8-86f529026628" nickname="Code Block" x="58" y="565" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="-10..-15..#3;" ShouldFocus="false" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b744bc6d-b4aa-4978-830b-c28506bb94a8" nickname="Flatten" x="535.519466533903" y="511.170672374278" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Flatten@var[]..[]" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="479702b3-61b5-4a33-a622-d71c31727ed8" nickname="Point.ByCoordinates" x="325.150372059115" y="513.970008278698" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="569b9d54-0efd-4ff3-bae8-86f529026628" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="58" y="565" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="-10..-15..#3;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="b744bc6d-b4aa-4978-830b-c28506bb94a8" type="Dynamo.Nodes.DSFunction" nickname="Flatten" x="535.519466533903" y="511.170672374278" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Flatten@var[]..[]" />
+    <Dynamo.Nodes.DSFunction guid="479702b3-61b5-4a33-a622-d71c31727ed8" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="325.150372059115" y="513.970008278698" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double">
       <PortInfo index="0" default="True" />
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.DSFunction>
+    <DSCoreNodesUI.StringNodes.FromObject guid="1b398dc1-46b3-488c-837b-8136a0bfca0f" type="DSCoreNodesUI.StringNodes.FromObject" nickname="String from Object" x="1650.39633841743" y="607.390140087617" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
   </Elements>
   <Connectors>
     <Dynamo.Models.ConnectorModel start="4fdfc107-656f-4557-9bb8-3abe69963c59" start_index="0" end="faae3b22-211e-4fa9-9b24-97d73ebafc76" end_index="0" portType="0" />
@@ -33,13 +35,13 @@
     <Dynamo.Models.ConnectorModel start="19caff9a-e805-45b9-acb7-ca272af0f540" start_index="2" end="28e1684a-488d-4553-a094-febd1afad47c" end_index="2" portType="0" />
     <Dynamo.Models.ConnectorModel start="2d1e2615-f80c-43f3-bb2d-18f9bb40d49f" start_index="0" end="026aadc9-644e-4e6c-b35c-bf1aec67045c" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="220cff5c-11c2-4113-a7ba-801bf74b5b0d" start_index="0" end="cad8292c-dd91-4a97-8904-857392d3520e" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="cad8292c-dd91-4a97-8904-857392d3520e" start_index="0" end="20cc1770-5512-416d-a234-fd019b9abe82" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cad8292c-dd91-4a97-8904-857392d3520e" start_index="0" end="1b398dc1-46b3-488c-837b-8136a0bfca0f" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="3a14c079-bb72-407a-82ed-8044eb206330" start_index="0" end="cad8292c-dd91-4a97-8904-857392d3520e" end_index="0" portType="0" />
     <Dynamo.Models.ConnectorModel start="3a14c079-bb72-407a-82ed-8044eb206330" start_index="0" end="cad8292c-dd91-4a97-8904-857392d3520e" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="20cc1770-5512-416d-a234-fd019b9abe82" start_index="0" end="026aadc9-644e-4e6c-b35c-bf1aec67045c" end_index="2" portType="0" />
     <Dynamo.Models.ConnectorModel start="569b9d54-0efd-4ff3-bae8-86f529026628" start_index="0" end="479702b3-61b5-4a33-a622-d71c31727ed8" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="b744bc6d-b4aa-4978-830b-c28506bb94a8" start_index="0" end="faae3b22-211e-4fa9-9b24-97d73ebafc76" end_index="1" portType="0" />
     <Dynamo.Models.ConnectorModel start="479702b3-61b5-4a33-a622-d71c31727ed8" start_index="0" end="b744bc6d-b4aa-4978-830b-c28506bb94a8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1b398dc1-46b3-488c-837b-8136a0bfca0f" start_index="0" end="026aadc9-644e-4e6c-b35c-bf1aec67045c" end_index="2" portType="0" />
   </Connectors>
   <Notes>
     <Dynamo.Models.NoteModel text="Run this graph the DynamoSample.rvt file in the Samples folder located with your Dynamo installation&#xD;&#xA;C:\ProgramData\Dynamo\0.7\samples\Revit" x="-37.9971634784209" y="73.7721428790331" />
