@@ -28,8 +28,9 @@ namespace ProtoTest.FFITests
 
             // 1 case. Method with description.
             var attributes = methodWithDesc.GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
-            if(attributes.Length >0)
-                atr = attributes[0] as NodeDescriptionAttribute;
+            Assert.IsNotNull(attributes);
+            Assert.Greater(attributes.Length, 0);
+            atr = attributes[0] as NodeDescriptionAttribute;
             arguments = methodWithDesc.GetParameters().Select(
                 arg =>
                 {
@@ -51,8 +52,8 @@ namespace ProtoTest.FFITests
             // 2 case. Method without description.
             atr = new NodeDescriptionAttribute("");
             attributes = methodWithoutDesc.GetCustomAttributes(typeof(NodeDescriptionAttribute), false);
-            if (attributes.Length > 0)
-                atr = attributes[0] as NodeDescriptionAttribute;
+            Assert.IsNotNull(attributes);
+            Assert.AreEqual(attributes.Length, 0);
             arguments = methodWithoutDesc.GetParameters().Select(
                 arg =>
                 {
