@@ -434,12 +434,18 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        public void GetExecutingNodes(bool ShowRunPreview)
+        /// <summary>
+        /// This function gets the set of nodes that will get executed in the next run.
+        /// This function will be called when the nodes are modified or when showrunpreview is set
+        /// the executing nodes will be sent via SetNodeDeltaState event.
+        /// </summary>
+        /// <param name="showRunPreview">This parameter controls the delta state computation </param>
+        public void GetExecutingNodes(bool showRunPreview)
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
                         
             //The Graph is executed and Show node execution is checked on the Settings menu
-            if (graphExecuted && ShowRunPreview)
+            if (graphExecuted && showRunPreview)
             {
                 if (task.Initialize(EngineController, this) != null)
                 {
