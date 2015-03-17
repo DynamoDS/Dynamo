@@ -418,7 +418,14 @@ namespace Dynamo.Models
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
-            pathManager = new PathManager(config.DynamoCorePath, config.PathResolver);
+            pathManager = new PathManager(new PathManagerParams
+            {
+                CorePath = config.DynamoCorePath,
+                PathResolver = config.PathResolver
+            });
+
+            // Ensure we have all directories in place.
+            pathManager.EnsureDirectoryExistence();
 
             Context = config.Context;
             IsTestMode = config.StartInTestMode;

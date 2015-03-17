@@ -9,10 +9,46 @@ using System.Globalization;
 
 namespace Dynamo.Core
 {
+    struct PathManagerParams
+    {
+        /// <summary>
+        /// Major version number to be used to form various data file paths.
+        /// If both this and MinorFileVersion are 0, then version information 
+        /// is retrieved from DynamoCore.dll.
+        /// </summary>
+        internal int MajorFileVersion { get; set; }
+
+        /// <summary>
+        /// Minor version number to be used to form various data file paths.
+        /// If both this and MajorFileVersion are 0, then version information 
+        /// is retrieved from DynamoCore.dll.
+        /// </summary>
+        internal int MinorFileVersion { get;set; }
+
+        /// <summary>
+        /// The full path of the directory that contains DynamoCore.dll.
+        /// </summary>
+        internal string CorePath { get; set; }
+
+        /// <summary>
+        /// Reference of an IPathResolver object that supplies 
+        /// additional path information. This argument is optional.
+        /// </summary>
+        internal IPathResolver PathResolver { get; set; }
+    }
+
     class PathManager : IPathManager
     {
         #region Class Private Data Members
 
+        public const string PackagesDirectoryName = "packages";
+        public const string LogsDirectoryName = "Logs";
+        public const string NodesDirectoryName = "nodes";
+        public const string DefinitionsDirectoryName = "definitions";
+        public const string PreferenceSettingsFileName = "DynamoSettings.xml";
+
+        private readonly int majorFileVersion;
+        private readonly int minorFileVersion;
         private readonly string dynamoCoreDir;
         private readonly string userDataDir;
         private readonly string commonDataDir;
@@ -31,6 +67,16 @@ namespace Dynamo.Core
         #endregion
 
         #region IPathManager Interface Implementation
+
+        public string UserDataDirectory
+        {
+            get { return userDataDir; }
+        }
+
+        public string CommonDataDirectory
+        {
+            get { return commonDataDir; }
+        }
 
         public string UserDefinitions
         {
@@ -117,11 +163,15 @@ namespace Dynamo.Core
         /// <summary>
         /// Constructs an instance of PathManager object.
         /// </summary>
-        /// <param name="pathResolver">Reference of an IPathResolver object that
-        /// supplies additional path information. This argument is optional.</param>
+        /// <param name="pathManagerParams">Parameters to configure the new 
+        /// instance of PathManager. See PathManagerParams for details of each 
+        /// field.</param>
         /// 
-        internal PathManager(string corePath, IPathResolver pathResolver)
+        internal PathManager(PathManagerParams pathManagerParams)
         {
+            var corePath = pathManagerParams.CorePath;
+            var pathResolver = pathManagerParams.PathResolver;
+
             if (string.IsNullOrEmpty(corePath) || !Directory.Exists(corePath))
             {
                 // If the caller does not provide an alternative core path, 
@@ -131,7 +181,8 @@ namespace Dynamo.Core
             }
 
             dynamoCoreDir = corePath;
-            if (!File.Exists(Path.Combine(dynamoCoreDir, "DynamoCore.dll")))
+            var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
+            if (!File.Exists(assemblyPath))
             {
                 throw new Exception("Dynamo's core path could not be found. " +
                     "If you are running Dynamo from a test, try specifying the " +
@@ -139,23 +190,33 @@ namespace Dynamo.Core
                     "TestServices.dll.config.");
             }
 
-            // Current user specific directories.
-            userDataDir = CreateFolder(GetUserDataFolder());
+            // If both major/minor versions are zero, get from assembly.
+            majorFileVersion = pathManagerParams.MajorFileVersion;
+            minorFileVersion = pathManagerParams.MinorFileVersion;
+            if (majorFileVersion == 0 && (minorFileVersion == 0))
+            {
+                var v = FileVersionInfo.GetVersionInfo(assemblyPath);
+                majorFileVersion = v.FileMajorPart;
+                minorFileVersion = v.FileMinorPart;
+            }
 
-            userDefinitions = CreateFolder(Path.Combine(userDataDir, "definitions"));
-            logDirectory = CreateFolder(Path.Combine(userDataDir, "Logs"));
-            packagesDirectory = CreateFolder(Path.Combine(userDataDir, "packages"));
-            preferenceFilePath = Path.Combine(userDataDir, "DynamoSettings.xml");
+            // Current user specific directories.
+            userDataDir = GetUserDataFolder();
+
+            userDefinitions = Path.Combine(userDataDir, DefinitionsDirectoryName);
+            logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
+            packagesDirectory = Path.Combine(userDataDir, PackagesDirectoryName);
+            preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
 
             // Common directories.
-            commonDataDir = CreateFolder(GetCommonDataFolder());
+            commonDataDir = GetCommonDataFolder();
 
-            commonDefinitions = CreateFolder(Path.Combine(commonDataDir, "definitions"));
+            commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
 
             nodeDirectories = new HashSet<string>
             {
-                Path.Combine(dynamoCoreDir, "nodes")
+                Path.Combine(dynamoCoreDir, NodesDirectoryName)
             };
 
             preloadedLibraries = new HashSet<string>
@@ -174,6 +235,24 @@ namespace Dynamo.Core
 
             additionalResolutionPaths = new HashSet<string>();
             LoadPathsFromResolver(pathResolver);
+        }
+
+        /// <summary>
+        /// Call this method to force PathManager to create folders that it 
+        /// is referring to. This method call throws exception if any creation 
+        /// fails.
+        /// </summary>
+        internal void EnsureDirectoryExistence()
+        {
+            // User specific data folders.
+            CreateFolderIfNotExist(userDataDir);
+            CreateFolderIfNotExist(userDefinitions);
+            CreateFolderIfNotExist(logDirectory);
+            CreateFolderIfNotExist(packagesDirectory);
+
+            // Common data folders for all users.
+            CreateFolderIfNotExist(commonDataDir);
+            CreateFolderIfNotExist(commonDefinitions);
         }
 
         #endregion
@@ -224,18 +303,14 @@ namespace Dynamo.Core
 
         private string GetDynamoDataFolder(Environment.SpecialFolder folder)
         {
-            var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
-            var v = FileVersionInfo.GetVersionInfo(assemblyPath);
             return Path.Combine(Environment.GetFolderPath(folder), "Dynamo",
-                String.Format("{0}.{1}", v.FileMajorPart, v.FileMinorPart));
+                String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
 
-        private static string CreateFolder(string folderPath)
+        private static void CreateFolderIfNotExist(string folderPath)
         {
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
-
-            return folderPath;
         }
 
         private static string GetSamplesFolder(string dataRootDirectory)
