@@ -20,6 +20,13 @@ namespace Dynamo.Models
 
         private bool graphExecuted;              
         public readonly bool VerboseLogging;
+       
+        /// <summary>
+        /// This is set from Dynamoviewmodel. This is required here otherwise 
+        /// preview graph will run under every context that affects some of the test.
+        /// Also preview graph should run only when showrunpreview is set to true.
+        /// </summary>        
+        public bool ShowRunPreview { get; set; }
 
         /// <summary>
         ///     Before the Workspace has been built the first time, we do not respond to 
@@ -443,7 +450,7 @@ namespace Dynamo.Models
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
                         
             //The Graph is executed and Show node execution is checked on the Debug menu
-            if (graphExecuted)
+            if (graphExecuted && ShowRunPreview)
             {
                 if (task.Initialize(EngineController, this) != null)
                 {
