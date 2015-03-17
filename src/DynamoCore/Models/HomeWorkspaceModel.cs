@@ -21,10 +21,8 @@ namespace Dynamo.Models
         private bool graphExecuted;              
         public readonly bool VerboseLogging;
        
-        /// <summary>
-        /// This is set from Dynamoviewmodel. This is required here otherwise 
-        /// preview graph will run under every context that affects some of the test.
-        /// Also preview graph should run only when showrunpreview is set to true.
+        /// <summary>        
+        /// This is used to compute the delta state of the nodes.       
         /// </summary>        
         public bool ShowRunPreview { get; set; }
 
@@ -449,7 +447,7 @@ namespace Dynamo.Models
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
                         
-            //The Graph is executed and Show node execution is checked on the Debug menu
+            //The Graph is executed and Show node execution is checked on the Settings menu
             if (graphExecuted && ShowRunPreview)
             {
                 if (task.Initialize(EngineController, this) != null)
