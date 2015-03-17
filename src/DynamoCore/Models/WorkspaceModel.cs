@@ -487,7 +487,10 @@ namespace Dynamo.Models
         public virtual void Dispose()
         {
             foreach (var node in Nodes)
+            {
                 DisposeNode(node);
+                node.Dispose();
+            }
             foreach (var connector in Connectors)
                 OnConnectorDeleted(connector);
 

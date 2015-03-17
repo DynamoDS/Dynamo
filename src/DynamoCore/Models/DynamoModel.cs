@@ -563,6 +563,11 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             }
+
+            foreach (var ws in _workspaces)
+            {
+                ws.Dispose(); 
+            }
         }
 
         /// <summary>
