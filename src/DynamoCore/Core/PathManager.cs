@@ -9,6 +9,34 @@ using System.Globalization;
 
 namespace Dynamo.Core
 {
+    struct PathManagerParams
+    {
+        /// <summary>
+        /// Major version number to be used to form various data file paths.
+        /// If both this and MinorFileVersion are 0, then version information 
+        /// is retrieved from DynamoCore.dll.
+        /// </summary>
+        internal int MajorFileVersion { get; set; }
+
+        /// <summary>
+        /// Minor version number to be used to form various data file paths.
+        /// If both this and MajorFileVersion are 0, then version information 
+        /// is retrieved from DynamoCore.dll.
+        /// </summary>
+        internal int MinorFileVersion { get;set; }
+
+        /// <summary>
+        /// The full path of the directory that contains DynamoCore.dll.
+        /// </summary>
+        internal string CorePath { get; set; }
+
+        /// <summary>
+        /// Reference of an IPathResolver object that supplies 
+        /// additional path information. This argument is optional.
+        /// </summary>
+        internal IPathResolver PathResolver { get; set; }
+    }
+
     class PathManager : IPathManager
     {
         #region Class Private Data Members
@@ -19,6 +47,8 @@ namespace Dynamo.Core
         public const string DefinitionsDirectoryName = "definitions";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
 
+        private readonly int majorFileVersion;
+        private readonly int minorFileVersion;
         private readonly string dynamoCoreDir;
         private readonly string userDataDir;
         private readonly string commonDataDir;
@@ -133,11 +163,15 @@ namespace Dynamo.Core
         /// <summary>
         /// Constructs an instance of PathManager object.
         /// </summary>
-        /// <param name="pathResolver">Reference of an IPathResolver object that
-        /// supplies additional path information. This argument is optional.</param>
+        /// <param name="pathManagerParams">Parameters to configure the new 
+        /// instance of PathManager. See PathManagerParams for details of each 
+        /// field.</param>
         /// 
-        internal PathManager(string corePath, IPathResolver pathResolver)
+        internal PathManager(PathManagerParams pathManagerParams)
         {
+            var corePath = pathManagerParams.CorePath;
+            var pathResolver = pathManagerParams.PathResolver;
+
             if (string.IsNullOrEmpty(corePath) || !Directory.Exists(corePath))
             {
                 // If the caller does not provide an alternative core path, 
@@ -147,12 +181,22 @@ namespace Dynamo.Core
             }
 
             dynamoCoreDir = corePath;
-            if (!File.Exists(Path.Combine(dynamoCoreDir, "DynamoCore.dll")))
+            var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
+            if (!File.Exists(Path.Combine(assemblyPath)))
             {
                 throw new Exception("Dynamo's core path could not be found. " +
                     "If you are running Dynamo from a test, try specifying the " +
                     "Dynamo core location in the DynamoBasePath variable in " +
                     "TestServices.dll.config.");
+            }
+
+            majorFileVersion = pathManagerParams.MajorFileVersion;
+            minorFileVersion = pathManagerParams.MinorFileVersion;
+            if (majorFileVersion == 0 && (minorFileVersion == 0))
+            {
+                var v = FileVersionInfo.GetVersionInfo(assemblyPath);
+                majorFileVersion = v.FileMajorPart;
+                minorFileVersion = v.FileMinorPart;
             }
 
             // Current user specific directories.
@@ -240,10 +284,8 @@ namespace Dynamo.Core
 
         private string GetDynamoDataFolder(Environment.SpecialFolder folder)
         {
-            var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
-            var v = FileVersionInfo.GetVersionInfo(assemblyPath);
             return Path.Combine(Environment.GetFolderPath(folder), "Dynamo",
-                String.Format("{0}.{1}", v.FileMajorPart, v.FileMinorPart));
+                String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
 
         private static string CreateFolder(string folderPath)
