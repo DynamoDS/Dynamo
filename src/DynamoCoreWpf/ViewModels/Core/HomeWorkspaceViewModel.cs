@@ -66,6 +66,17 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
         }
 
+        /// <summary>
+        /// When a node is modified, this calls the executing nodes on Homeworkspace
+        /// to compute the delta state.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public override void OnNodeModified(NodeModel obj)
+        {
+            if (DynamoViewModel.HomeSpace.RunSettings.RunType == RunType.Manual)
+                DynamoViewModel.HomeSpace.GetExecutingNodes(DynamoViewModel.ShowRunPreview);
+        }
+
         private void hwm_SetNodeDeltaState(object sender, DeltaComputeStateEventArgs e)
         {
             var nodeGuids = e.NodeGuidList;

@@ -21,11 +21,6 @@ namespace Dynamo.Models
         private bool graphExecuted;              
         public readonly bool VerboseLogging;
        
-        /// <summary>        
-        /// This is used to compute the delta state of the nodes.       
-        /// </summary>        
-        public bool ShowRunPreview { get; set; }
-
         /// <summary>
         ///     Before the Workspace has been built the first time, we do not respond to 
         ///     NodeModification events.
@@ -164,10 +159,6 @@ namespace Dynamo.Models
             {
                 RequestRun();
             }
-
-            //Find the next executing nodes on when Run-Auto is not set 
-            if (RunSettings.RunType == RunType.Manual)
-                GetExecutingNodes();
         }
 
         /// <summary>
@@ -443,7 +434,7 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        public void GetExecutingNodes()
+        public void GetExecutingNodes(bool ShowRunPreview)
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
                         
