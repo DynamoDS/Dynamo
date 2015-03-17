@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.Models;
+using Dynamo.Properties;
 
 namespace DSCoreNodesUI
 {
@@ -104,7 +105,12 @@ namespace DSCoreNodesUI
             if (attrib == null)
                 return;
 
-            SelectedIndex = ParseSelectedIndex(attrib.Value, Items);
+            selectedIndex = ParseSelectedIndex(attrib.Value, Items);
+
+            if (selectedIndex < 0)
+            {
+                Warning(Resources.NothingIsSelectedWarning);
+            }
         }
 
         public static int ParseSelectedIndex(string index, IList<DynamoDropDownItem> items)

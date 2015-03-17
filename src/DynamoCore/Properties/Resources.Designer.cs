@@ -785,6 +785,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nothing is selected..
+        /// </summary>
+        public static string NothingIsSelectedWarning {
+            get {
+                return ResourceManager.GetString("NothingIsSelectedWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a number..
         /// </summary>
         public static string NumberNodeDescription {
@@ -1073,11 +1082,56 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run whenever an input to the graph is updated..
+        /// </summary>
+        public static string RunTypeToolTipAutomatically {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run when you click the Run button..
+        /// </summary>
+        public static string RunTypeToolTipManually {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run Periodic is only available when there are nodes in the graph that support periodic update..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyDisabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run at the specified interval..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyEnabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Saving {0} ....
         /// </summary>
         public static string SavingInProgress {
             get {
                 return ResourceManager.GetString("SavingInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search Library.
+        /// </summary>
+        public static string SearchTextBlockText {
+            get {
+                return ResourceManager.GetString("SearchTextBlockText", resourceCulture);
             }
         }
         
@@ -1325,6 +1379,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your code goes here.
+        /// </summary>
+        public static string WatermarkLabelText {
+            get {
+                return ResourceManager.GetString("WatermarkLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to Dynamo!.
         /// </summary>
         public static string WelcomeMessage {
@@ -1334,7 +1397,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Workspace could not be opened..
+        ///   Looks up a localized string similar to Workbench could not be opened..
         /// </summary>
         public static string WorkbenchNotOpen {
             get {

@@ -57,7 +57,7 @@ namespace Dynamo.Tests
                 FunctionType = FunctionType.InstanceMethod
             });
 
-            parms.ForEach(x => x.Function = funcDesc);
+            parms.ForEach(x => x.UpdateFunctionDescriptor(funcDesc, null));
 
             return funcDesc;
         }

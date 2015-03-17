@@ -337,6 +337,7 @@ namespace DynamoUnits
             return x.GetType() == y.GetType() && x.Value <= y.Value;
         }
 
+        [Obsolete("SIUnit.ToSIUnit is obsolete.", false)]
         public static SIUnit ToSIUnit(object value)
         {
             return value as SIUnit;

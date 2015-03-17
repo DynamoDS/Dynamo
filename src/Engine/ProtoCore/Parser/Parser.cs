@@ -2194,6 +2194,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 				strIdent = t.val; 
 			} else SynErr(98);
 			type = core.TypeSystem.GetType(strIdent);
+			typedVar.TypeAlias = strIdent;
 			if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
 			{
 			var unknownType = new ProtoCore.Type();

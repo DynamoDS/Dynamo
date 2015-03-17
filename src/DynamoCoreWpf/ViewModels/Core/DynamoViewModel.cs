@@ -412,7 +412,7 @@ namespace Dynamo.ViewModels
             {
                 model.DebugSettings.VerboseLogging = value;
                 RaisePropertyChanged("VerboseLogging");
-            }
+           }
         }
 
         public bool ShowDebugASTs
@@ -438,6 +438,18 @@ namespace Dynamo.ViewModels
         ///     hidden to avoid inconsistencies in state.
         /// </summary>
         public bool ShowLogin { get; private set; }
+
+        private bool showRunPreview;
+        public bool ShowRunPreview
+        {
+            get { return showRunPreview; }
+            set
+            {
+                showRunPreview = value;
+                HomeSpace.GetExecutingNodes();
+                RaisePropertyChanged("ShowRunPreview");              
+            }
+        }
 
         #endregion
 
@@ -1256,7 +1268,8 @@ namespace Dynamo.ViewModels
             }
             else if (vm.Model.CurrentWorkspace is CustomNodeWorkspaceModel)
             {
-                _fileDialog.InitialDirectory = DynamoPathManager.Instance.UserDefinitions;
+                var pathManager = vm.model.PathManager;
+                _fileDialog.InitialDirectory = pathManager.UserDefinitions;
             }
 
             if (_fileDialog.ShowDialog() == DialogResult.OK)

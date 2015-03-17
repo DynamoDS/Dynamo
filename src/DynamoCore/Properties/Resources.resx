@@ -528,7 +528,7 @@ value: bool = false</value>
   </data>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
     <value>Custom node definition is not loaded!</value>
-</data>
+  </data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
     <value>Run whenever an input to the graph is updated.</value>
   </data>
@@ -582,5 +582,14 @@ value: bool = false</value>
   </data>
   <data name="IncorrectlyFormattedNodeLibraryWarning" xml:space="preserve">
     <value>Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!</value>
+  </data>
+  <data name="NothingIsSelectedWarning" xml:space="preserve">
+    <value>Nothing is selected.</value>
+  </data>
+  <data name="SearchTextBlockText" xml:space="preserve">
+    <value>Search Library</value>
+  </data>
+  <data name="WatermarkLabelText" xml:space="preserve">
+    <value>Your code goes here</value>
   </data>
 </root>

@@ -20,25 +20,24 @@ namespace AnalysisTests
     [TestFixture]
     public class AnalysisTests
     {
+        private TestExecutionSession executionSession;
         IExtensionApplication application = Application.Instance as IExtensionApplication;
-        TestExecutionSession session = new TestExecutionSession();
 
         [TestFixtureSetUp]
         public void SetUp()
         {
-            DynamoPathManager.Instance.InitializeCore(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var assemblyDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+            executionSession = new TestExecutionSession(assemblyDirectory);
 
-            application.OnBeginExecution(session);
+            application.OnBeginExecution(executionSession);
             HostFactory.Instance.StartUp();
         }
 
-        [TestFixtureSetUp]
+        [TestFixtureTearDown]
         public void TearDown()
         {
-            //HostFactory.Instance.ShutDown();
-            AppDomain.CurrentDomain.AssemblyResolve -= AssemblyHelper.ResolveAssembly;
+            executionSession = null;
         }
 
         [Test, Category("UnitTests")]
@@ -288,12 +287,14 @@ namespace AnalysisTests
     /// </summary>
     class TestExecutionSession : IExecutionSession, IConfiguration, IDisposable
     {
-        private Dictionary<string, object> configValues;
+        private readonly string rootModulePath;
+        private readonly Dictionary<string, object> configValues;
         private Preloader preloader;
 
-        public TestExecutionSession()
+        public TestExecutionSession(string rootModulePath)
         {
             configValues = new Dictionary<string, object>();
+            this.rootModulePath = rootModulePath;
         }
 
         public IConfiguration Configuration
@@ -311,7 +312,7 @@ namespace AnalysisTests
 
         public string RootModulePath
         {
-            get { return DynamoPathManager.Instance.MainExecPath; }
+            get { return rootModulePath; }
         }
 
         public string[] IncludeDirectories

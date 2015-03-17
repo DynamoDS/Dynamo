@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
+using Dynamo.Interfaces;
 using Dynamo.Library;
 
 using ProtoCore.DSASM;
@@ -64,6 +64,7 @@ namespace Dynamo.DSEngine
         public FunctionType FunctionType { get; set; }
         public bool IsVisibleInLibrary { get; set; }
         public IEnumerable<string> ReturnKeys { get; set; }
+        public IPathManager PathManager { get; set; }
         public bool IsVarArg { get; set; }
     }
 
@@ -77,9 +78,12 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
+        private readonly IPathManager pathManager;
+
         public FunctionDescriptor(FunctionDescriptorParams funcDescParams)
         {
             summary = funcDescParams.Summary;
+            pathManager = funcDescParams.PathManager;
             Assembly = funcDescParams.Assembly;
             ClassName = funcDescParams.ClassName;
             FunctionName = funcDescParams.FunctionName;
@@ -87,7 +91,7 @@ namespace Dynamo.DSEngine
             Parameters = funcDescParams.Parameters.Select(
                 x =>
                 {
-                    x.Function = this;
+                    x.UpdateFunctionDescriptor(this, pathManager);
                     return x;
                 });
 
@@ -166,7 +170,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetSummary()); }
+            get { return summary ?? (summary = this.GetSummary(pathManager)); }
         }
 
         /// <summary>
@@ -339,6 +343,8 @@ namespace Dynamo.DSEngine
             }
         }
 
+        public IPathManager PathManager { get { return pathManager; } }
+
         public override bool Equals(object obj)
         {
             if (null == obj || GetType() != obj.GetType())
@@ -361,7 +367,7 @@ namespace Dynamo.DSEngine
                     : LibraryServices.Categories.BuiltIns;
             }
 
-            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly);
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly, pathManager);
 
             if (cust != null)
             {
