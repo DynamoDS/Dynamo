@@ -759,8 +759,8 @@ namespace Dynamo.Controls
         {
             // DirectX has a different winding than we store in
             // render packages. Re-wind triangles here...
-            int color_idx = 0;
-            int pt_idx = mesh.Positions.Count;
+            var color_idx = 0;
+            var pt_idx = mesh.Positions.Count;
 
             for (int i = 0; i < p.TriangleVertices.Count; i += 9)
             {
@@ -815,7 +815,7 @@ namespace Dynamo.Controls
         {
             var color = new Color4(1,1,1,1);
 
-            if (color_idx < p.TriangleVertexColors.Count)
+            if (color_idx < p.TriangleVertexColors.Count - 4)
             {
                 color = new Color4(
                 (float)(p.TriangleVertexColors[color_idx] / 255.0),
