@@ -182,7 +182,7 @@ namespace Dynamo.Core
 
             dynamoCoreDir = corePath;
             var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
-            if (!File.Exists(Path.Combine(assemblyPath)))
+            if (!File.Exists(assemblyPath))
             {
                 throw new Exception("Dynamo's core path could not be found. " +
                     "If you are running Dynamo from a test, try specifying the " +
@@ -190,6 +190,7 @@ namespace Dynamo.Core
                     "TestServices.dll.config.");
             }
 
+            // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;
             minorFileVersion = pathManagerParams.MinorFileVersion;
             if (majorFileVersion == 0 && (minorFileVersion == 0))
