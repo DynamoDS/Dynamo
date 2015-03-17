@@ -16,6 +16,7 @@ using System.Windows.Threading;
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.DSEngine;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 
 using HelixToolkit.Wpf.SharpDX;
@@ -199,7 +200,7 @@ namespace Dynamo.Controls
             this.DirectionalLightColor = SharpDX.Color.White;
             this.DirectionalLightDirection = new Vector3(-0.5f, -1, 0);
 
-            this.RenderTechnique = Techniques.RenderBlinn;
+            this.RenderTechnique = Techniques.RenderPhong;
             this.WhiteMaterial = PhongMaterials.White;
 
             this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);

@@ -35,18 +35,6 @@ namespace Dynamo
         #region public properties
 
         /// <summary>
-        /// Flag allows us to pause visualization updates.
-        /// </summary>
-        public bool UpdatingPaused
-        {
-            get { return updatingPaused; }
-            internal set
-            {
-                updatingPaused = value;
-            }
-        }
-
-        /// <summary>
         /// Is another context available for drawing?
         /// This property can be queried indirectly by the view to enable or disable
         /// UI functionality based on whether an alternate drawing context is available.
@@ -166,6 +154,8 @@ namespace Dynamo
             dynamoModel.EvaluationCompleted += Update;
             dynamoModel.RequestsRedraw += Update;
 
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
+
             Start();
         }
 
@@ -183,8 +173,7 @@ namespace Dynamo
 #if DEBUG
             Debug.WriteLine("Visualization manager stopped.");
 #endif
-            UpdatingPaused = true;
-            UnregisterEventListeners();
+            updatingPaused = true;
         }
 
         /// <summary>
@@ -192,13 +181,14 @@ namespace Dynamo
         /// When the visualization manager is unpaused, the visualization
         /// manager begins rendering again.
         /// </summary>
-        public void Start()
+        public void Start(bool update = false)
         {
 #if DEBUG
             Debug.WriteLine("Visualization manager started.");
 #endif
-            UpdatingPaused = false;
-            RegisterEventListeners();
+            updatingPaused = false;
+            if(update)
+                OnRenderComplete();
         }
 
         /// <summary>
@@ -284,9 +274,7 @@ namespace Dynamo
         /// <param name="e"></param>
         private void StartAndUpdate(object sender, EventArgs e)
         {
-            UpdatingPaused = false;
-            RegisterEventListeners();
-            OnRenderComplete();
+            Start(true);
         }
 
         private void WorkspaceAdded(WorkspaceModel model)
@@ -355,9 +343,6 @@ namespace Dynamo
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-                return;
-
             if (updatingPaused)
                 return;
 
@@ -368,18 +353,8 @@ namespace Dynamo
 
         #region private methods
 
-        private void RegisterEventListeners()
-        {
-            DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
-
-            foreach (var n in dynamoModel.CurrentWorkspace.Nodes)
-                n.PropertyChanged += NodePropertyChanged;
-        }
-
         private void UnregisterEventListeners()
         {
-            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
-
             foreach (var n in dynamoModel.CurrentWorkspace.Nodes)
                 n.PropertyChanged -= NodePropertyChanged;
         }
@@ -468,9 +443,7 @@ namespace Dynamo
 
         private void Clear()
         {
-            // Unhook all the event listeners, and
-            // send along an empty render set to clear 
-            // all visualizations.
+            // Send along an empty render set to clear all visualizations.
             Stop();
             OnResultsReadyToVisualize(new VisualizationEventArgs(new List<RenderPackage>{}, Guid.Empty));
         }
@@ -484,6 +457,10 @@ namespace Dynamo
 
         public void Dispose()
         {
+            DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChanged;
+
+            UnregisterEventListeners();
+
             dynamoModel.WorkspaceCleared -= ClearVisualizations;
 
             dynamoModel.WorkspaceAdded -= WorkspaceAdded;
@@ -496,6 +473,7 @@ namespace Dynamo
 
             dynamoModel.EvaluationCompleted -= Update;
             dynamoModel.RequestsRedraw -= Update;
+
         }
     }
 

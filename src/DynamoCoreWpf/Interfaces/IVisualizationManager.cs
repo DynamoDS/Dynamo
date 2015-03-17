@@ -7,11 +7,6 @@ namespace Dynamo.Interfaces
     public interface IVisualizationManager : IDisposable
     {
         /// <summary>
-        /// Flag allows us to pause visualization updates.
-        /// </summary>
-        bool UpdatingPaused { get; }
-
-        /// <summary>
         /// Is another context available for drawing?
         /// This property can be queried indirectly by the view to enable or disable
         /// UI functionality based on whether an alternate drawing context is available.
@@ -59,7 +54,7 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// Unpause the visualization manager.
         /// </summary>
-        void Start();
+        void Start(bool update = false);
 
         void RequestBranchUpdate(NodeModel node);
     }
