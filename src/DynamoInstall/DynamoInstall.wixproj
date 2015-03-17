@@ -68,9 +68,9 @@ robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) 
       <Output TaskParameter="Value" PropertyName="Build" />
     </CreateProperty>
     <CreateProperty Value="Dynamo">
-      <Output TaskParameter="Value" PropertyName="PdtName" />
+      <Output TaskParameter="Value" PropertyName="ProductName" />
     </CreateProperty>
-    <CreateProperty Value="FullVersion=$(FullVersion);PdtName=$(PdtName);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
+    <CreateProperty Value="FullVersion=$(FullVersion);ProductName=$(ProductName);Major=$(Major);Minor=$(Minor);Rev=$(Rev);Build=$(Build);$(DefineConstants)">
       <Output TaskParameter="Value" PropertyName="DefineConstants" />
     </CreateProperty>
   </Target>

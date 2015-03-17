@@ -99,9 +99,9 @@ namespace DynamoInstallActions
         /// <returns></returns>
         private static bool GetUninstallString(Session session, out string UninstallString, out string UninstallParam)
         {
-            string pdt = string.Format("Dynamo {0}.{1}", session.CustomActionData["Major"], session.CustomActionData["Minor"]);
-            string keyPath = string.Format(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0}", pdt);
-            session.Log(string.Format("Product Name {0}", pdt));
+            string productName = string.Format("Dynamo {0}.{1}", session.CustomActionData["Major"], session.CustomActionData["Minor"]);
+            string keyPath = string.Format(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0}", productName);
+            session.Log(string.Format("Product Name {0}", productName));
             session.Log(string.Format("KeyPath {0}", keyPath));
 
             var key =

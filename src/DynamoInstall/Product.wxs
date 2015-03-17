@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <Product Id="*"
-           Name="$(var.PdtName) $(var.Major).$(var.Minor).$(var.Rev)"
+           Name="$(var.ProductName) $(var.Major).$(var.Minor).$(var.Rev)"
            Language="1033"
            Version="$(var.Major).$(var.Minor).$(var.Rev)"
            Manufacturer="Dynamo"
@@ -108,7 +108,7 @@
     <DirectoryRef Id="TARGETDIR">
       <Component Id="ProductRegistry" Guid="*" Win64="yes">
         <RegistryKey Root="HKLM"
-                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.PdtName) $(var.Major).$(var.Minor)"
+                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
                      ForceDeleteOnUninstall="yes">
           <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
           <RegistryValue Name="UninstallString" Value="MsiExec.exe" Type="string" />
