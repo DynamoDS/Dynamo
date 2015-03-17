@@ -446,7 +446,7 @@ namespace Dynamo.ViewModels
             set
             {
                 showRunPreview = value;
-                HomeSpace.GetExecutingNodes();
+                HomeSpace.GetExecutingNodes(showRunPreview);
                 RaisePropertyChanged("ShowRunPreview");              
             }
         }
