@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using ProtoCore.Lang;
 
@@ -47,6 +48,7 @@ namespace Dynamo.Core
             get
             {
                 // Make the default Dynamo version 0.7
+                // as we only migrate from Dynamo 0.7 onwards
                 return new FileVersion(0, 7);
             }
         }
@@ -62,7 +64,7 @@ namespace Dynamo.Core
         /// <returns> preference settings full file path </returns>
         protected virtual string ReadPreferences()
         {
-            const string preferenceSettingsFileName = "DynamoSettings.xml";
+            const string preferenceSettingsFileName = PathManager.PreferenceSettingsFileName;
             var preferenceSettingsFilePath = Path.Combine(CurrentVersionPath, preferenceSettingsFileName);
 
             return File.Exists(preferenceSettingsFilePath) ? preferenceSettingsFilePath : string.Empty;
@@ -102,9 +104,10 @@ namespace Dynamo.Core
         /// Migrates preference settings and copies packages and custom node 
         /// definitions from older versions to the currently installed Dynamo version
         /// </summary>
-        /// <returns></returns>
-        public static PreferenceSettings MigrateBetweenDynamoVersions(string rootFolder)
+        /// <returns> preference settings read from preference settings file </returns>
+        public static PreferenceSettings MigrateBetweenDynamoVersions(IPathManager pathManager)
         {
+            var rootFolder = pathManager.UserDataDirectory;
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             var currentVersionInfo = FileVersionInfo.GetVersionInfo(assemblyPath);
 
@@ -130,12 +133,12 @@ namespace Dynamo.Core
             Debug.Assert(targetMigrator != null);
             var preferenceSettings = targetMigrator.WritePreferences(preferenceSettingsFile);
 
-            var sourceDir = Path.Combine(sourceMigrator.CurrentVersionPath, "packages");
-            var targetDir = Path.Combine(targetMigrator.CurrentVersionPath, "packages");
+            var sourceDir = Path.Combine(sourceMigrator.CurrentVersionPath, PathManager.PackagesDirectoryName);
+            var targetDir = Path.Combine(targetMigrator.CurrentVersionPath, PathManager.PackagesDirectoryName);
             Copy(sourceDir, targetDir);
 
-            sourceDir = Path.Combine(sourceMigrator.CurrentVersionPath, "definitions");
-            targetDir = Path.Combine(targetMigrator.CurrentVersionPath, "definitions");
+            sourceDir = Path.Combine(sourceMigrator.CurrentVersionPath, PathManager.DefinitionsDirectoryName);
+            targetDir = Path.Combine(targetMigrator.CurrentVersionPath, PathManager.DefinitionsDirectoryName);
             Copy(sourceDir, targetDir);
 
             return preferenceSettings;
