@@ -492,18 +492,22 @@ namespace Dynamo
         #endregion
     }
 
+    /// <summary>
+    /// The VisualizationEventArgs class is used to convey RenderPackage
+    /// and identity data to handlers of the ResultsReadyToVisualize event
+    /// on the VisualizationManager.
+    /// </summary>
     public sealed class VisualizationEventArgs : EventArgs
     {
         /// <summary>
-        /// A list of render packages corresponding to 
-        /// a branch or a whole graph.
+        /// A list of render packages corresponding to a branch or a whole graph.
         /// </summary>
         public IEnumerable<IRenderPackage> Packages { get; private set; }
 
         /// <summary>
         /// The id of the view for which the description belongs.
         /// </summary>
-        public Guid Id { get; internal set; }
+        public Guid Id { get; protected set; }
 
         public VisualizationEventArgs(IEnumerable<IRenderPackage> description, Guid viewId)
         {
