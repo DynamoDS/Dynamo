@@ -29,7 +29,7 @@ namespace Dynamo.Core
     /// </summary>
     internal class DynamoMigratorBase
     {
-        protected string rootFolder;
+        protected readonly string rootFolder;
 
         /// <summary>
         /// Returns the path to the user AppData directory for the current version
@@ -201,15 +201,13 @@ namespace Dynamo.Core
             // Copy each file into the new directory.
             foreach (FileInfo fi in source.GetFiles())
             {
-                Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
                 fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
             }
 
             // Copy each subdirectory using recursion.
             foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
             {
-                DirectoryInfo nextTargetSubDir =
-                    target.CreateSubdirectory(diSourceSubDir.Name);
+                DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
                 CopyAll(diSourceSubDir, nextTargetSubDir);
             }
         }
@@ -220,7 +218,7 @@ namespace Dynamo.Core
     {
         protected override FileVersion DynamoVersion { get{return new FileVersion(0, 7);} }
 
-        public DynamoMigrator07(string rootFolder) : base(rootFolder)
+        protected DynamoMigrator07(string rootFolder) : base(rootFolder)
         {
         }
         
@@ -234,7 +232,7 @@ namespace Dynamo.Core
     {
         protected override FileVersion DynamoVersion { get { return new FileVersion(0, 8); } }
 
-        public DynamoMigrator08(string rootFolder) : base(rootFolder)
+        protected DynamoMigrator08(string rootFolder) : base(rootFolder)
         {
         }
 

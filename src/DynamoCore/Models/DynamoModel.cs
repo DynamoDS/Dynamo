@@ -450,6 +450,7 @@ namespace Dynamo.Models
             {
                 // Get root folder - this will be different for DynamoPro
                 var rootFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Dynamo");
+                //rootFolder = pathManager.UserDataDirectory;
                 var preferenceSettings = DynamoMigratorBase.MigrateBetweenDynamoVersions(rootFolder);
 
                 if(preferenceSettings != null)
