@@ -587,7 +587,6 @@ namespace Dynamo.Models
                 customNodeManager);
         }
 
-
         private void InitializeCustomNodeManager()
         {
             CustomNodeManager.MessageLogged += LogMessage;
