@@ -228,6 +228,7 @@ namespace Dynamo.Core
                 "DSIronPython.dll",
                 "FunctionObject.ds",
                 "Optimize.ds",
+                "DynamoConversions.dll",
                 "DynamoUnits.dll",
                 "Tessellation.dll",
                 "Analysis.dll"
