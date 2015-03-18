@@ -360,7 +360,7 @@ namespace Dynamo.UI.Controls
             this.CustomPopupPlacementCallback = PlacementCallback;
             this.DataContext = null;
             this.Child = tooltip;
-            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
             this.showTimer.Interval = new TimeSpan(0, 0, 0, 0, 60);
             this.showTimer.Tick += OpenLibraryToolTipPopup;

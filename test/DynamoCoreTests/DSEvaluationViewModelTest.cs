@@ -1110,6 +1110,18 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestDefaulArgumentAttributeNegative()
+        {
+            // This is to test FFITarget.TestData.MultiplyBy3NonParsableDefaultArgument() whose
+            // DefaultArgumentAttribute is invalid. In this case, we should make sure that
+            // no default argument is used, even null. So this function should be compiled to
+            // a function object and Apply() should work on it. 
+            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\invalidDefaultArgument.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("1b2fa812-960d-424c-b679-8b850abe2e26", 12);
+        }
+
+        [Test]
         public void TestDefaultValueAttributeForDummyLine()
         {
             var dynFilePath = Path.Combine(GetTestDirectory(), 

@@ -157,12 +157,12 @@ namespace Dynamo.Nodes
             if (string.IsNullOrEmpty(fullCategoryName))
                 return string.Empty;
 
-            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiterString, " " + Configurations.ShortenedCategoryDelimiter + " ");
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiterString, Configurations.ShortenedCategoryDelimiter);
 
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)
             {
-                var s = catName.Split(Configurations.ShortenedCategoryDelimiter).Select(x => x.Trim()).ToList();
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter.ToArray()).Select(x => x.Trim()).ToList();
                 if (s.Count() > 4)
                 {
                     s = new List<string>()

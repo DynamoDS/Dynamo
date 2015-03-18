@@ -66,6 +66,17 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
         }
 
+        /// <summary>
+        /// When a node is modified, this calls the executing nodes on Homeworkspace
+        /// to compute the delta state.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public override void OnNodeModified(NodeModel obj)
+        {
+            if (DynamoViewModel.HomeSpace.RunSettings.RunType == RunType.Manual)
+                DynamoViewModel.HomeSpace.GetExecutingNodes(DynamoViewModel.ShowRunPreview);
+        }
+
         private void hwm_SetNodeDeltaState(object sender, DeltaComputeStateEventArgs e)
         {
             var nodeGuids = e.NodeGuidList;
@@ -90,24 +101,26 @@ namespace Dynamo.Wpf.ViewModels.Core
                         nodeViewModel.ShowExecutionPreview = false;
                         nodeViewModel.IsNodeAddedRecently = false;
                     }
-                }
-                
+                }                
             }
 
-            foreach (var nodeViewModel in Nodes)
+            foreach (Guid t in nodeGuids)
             {
-                foreach (Guid t in nodeGuids)
+                var nodeViewModel = Nodes.FirstOrDefault(x => x.NodeModel.GUID == t);
+                if (nodeViewModel != null)
                 {
-                    if (nodeViewModel.NodeModel.GUID == t)
-                    {
-                        nodeViewModel.ShowExecutionPreview = nodeViewModel.DynamoViewModel.ShowRunPreview && true;
-                        nodeViewModel.IsNodeAddedRecently = false;
-                    }
+                    nodeViewModel.ShowExecutionPreview = nodeViewModel.DynamoViewModel.ShowRunPreview;
+                    nodeViewModel.IsNodeAddedRecently = false;
                 }
-                /* Color the recently added nodes */
-                if (nodeViewModel.IsNodeAddedRecently && !nodeViewModel.ShowExecutionPreview)
-                    nodeViewModel.ShowExecutionPreview = true;
             }
+
+            /* Color the recently added nodes */
+            var addedNodes = Nodes.Where(x => x.IsNodeAddedRecently).ToList();
+            foreach (var nodes in addedNodes)
+            {
+                if (nodes.ShowExecutionPreview)
+                    nodes.ShowExecutionPreview = nodes.DynamoViewModel.ShowRunPreview;
+            }           
         }
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
