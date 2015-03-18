@@ -15,7 +15,7 @@ using System.Collections;
 
 namespace ProtoTest.LiveRunner
 {
-    public class MemoryConsumptionTests : ProtoTestBase
+    class MemoryConsumptionTests : ProtoTestBase
     {
         private int instrStreamStart = 0;
         private int instrStreamEnd = 0;
@@ -31,8 +31,8 @@ namespace ProtoTest.LiveRunner
 
         public override void TearDown()
         {
-            base.TearDown();
             liverunner.Dispose();
+            base.TearDown();
         }
 
 
