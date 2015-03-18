@@ -119,7 +119,7 @@ namespace Dynamo.Core
         /// is thrown if rootFolder points to an invalid directory.</exception>
         public static IEnumerable<FileVersion> GetInstalledVersions(string rootFolder)
         {
-            if(rootFolder == null)
+            if(string.IsNullOrEmpty(rootFolder))
                 throw new ArgumentNullException("rootFolder");
 
             var fileVersions = new List<FileVersion>();

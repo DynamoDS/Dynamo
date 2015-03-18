@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Dynamo
 {
-    public class UserDataMigrationTests
+    public class UserDataMigrationTests : UnitTestBase
     {
         private static void VerifySortedOrder(List<FileVersion> list)
         {
@@ -91,58 +91,30 @@ namespace Dynamo
         [Category("UnitTests")]
         public void SortFileVersionList_SortedList()
         {
-            var list = new List<FileVersion>();
+            var list = new List<FileVersion>
+            {
+                new FileVersion(0, 7),
+                new FileVersion(0, 8),
+                new FileVersion(0, 0),
+                new FileVersion(0, 0),
+                new FileVersion(1, 7),
+                new FileVersion(1, 8),
+                new FileVersion(1, 9),
+                new FileVersion(2, 0),
+                new FileVersion(-1, 9),
+                new FileVersion(0, 0),
+                new FileVersion(-2, 9),
+                new FileVersion(-1, 0),
+                new FileVersion(2, -9),
+                new FileVersion(3, 0),
+                new FileVersion(2, -9),
+                new FileVersion(2, -8),
+                new FileVersion(-2, -9),
+                new FileVersion(-2, -8),
+                new FileVersion(-2, -9),
+                new FileVersion(-1, -9),
 
-            var fv1 = new FileVersion(0, 7);
-            var fv2 = new FileVersion(0, 8);
-            list.Add(fv1);
-            list.Add(fv2);
-
-            fv1 = new FileVersion(0, 0);
-            fv2 = new FileVersion(0, 0);
-            list.Add(fv1);
-            list.Add(fv2);
-
-            
-            fv1 = new FileVersion(1, 7);
-            fv2 = new FileVersion(1, 8);
-            list.Add(fv1);
-            list.Add(fv2);
-
-            fv1 = new FileVersion(1, 9);
-            fv2 = new FileVersion(2, 0);
-            list.Add(fv1);
-            list.Add(fv2);
-
-            fv1 = new FileVersion(-1, 9);
-            fv2 = new FileVersion(0, 0);
-            list.Add(fv1);
-            list.Add(fv2);
-
-            fv1 = new FileVersion(-2, 9);
-            fv2 = new FileVersion(-1, 0);
-            list.Add(fv1);
-            list.Add(fv2);
-
-            fv1 = new FileVersion(2, -9);
-            fv2 = new FileVersion(3, 0);
-            list.Add(fv1);
-            list.Add(fv2);
-
-            fv1 = new FileVersion(2, -9);
-            fv2 = new FileVersion(2, -8);
-            list.Add(fv1);
-            list.Add(fv2);
-
-            fv1 = new FileVersion(-2, -9);
-            fv2 = new FileVersion(-2, -8);
-            list.Add(fv1);
-            list.Add(fv2);
-
-            fv1 = new FileVersion(-2, -9);
-            fv2 = new FileVersion(-1, -9);
-            list.Add(fv1);
-            list.Add(fv2);
+            };
 
             list.Sort();
 
@@ -153,7 +125,7 @@ namespace Dynamo
         [Category("UnitTests")]
         public void GetSortedInstalledVersions_FromDirectoryInspection()
         {
-            var tempPath = Path.GetTempPath();
+            var tempPath = base.TempFolder;
             var uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "0.7"));
             uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "0.8"));
             uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "0.0"));
@@ -179,9 +151,9 @@ namespace Dynamo
             {
                 DynamoMigratorBase.GetInstalledVersions("");
             }
-            catch (DirectoryNotFoundException e)
+            catch (ArgumentNullException e)
             {
-                Assert.IsTrue(e.Message == "rootFolder");
+                Assert.IsTrue(e.ParamName == "rootFolder");
             }
             
             try
