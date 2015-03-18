@@ -28,8 +28,8 @@ namespace Dynamo.Tests
         [Test]
         public void TestUnicodeInStringNode()
         {
-            RunModel(@"core\unicode_test\unicodeInCBN.dyn");
-            AssertPreviewValue("2ac4c6a7-83a1-4775-b8f4-7fa9001d33f7", "<\"äö&amp;üß\">");
+            RunModel(@"core\unicode_test\unicodeInStringNode.dyn");
+            AssertPreviewValue("2ac4c6a7-83a1-4775-b8f4-7fa9001d33f7", "<\"äö&üß\">");
         }
 
         [Test]
