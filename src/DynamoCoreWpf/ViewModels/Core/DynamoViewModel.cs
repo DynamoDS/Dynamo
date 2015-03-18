@@ -1759,7 +1759,7 @@ namespace Dynamo.ViewModels
 
         public void ImportLibrary(object parameter)
         {
-            string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll, *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"), 
+            string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"), 
                                    string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = String.Join("|", fileFilter);
