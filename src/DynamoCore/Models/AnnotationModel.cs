@@ -15,13 +15,7 @@ namespace Dynamo.Models
 {
     public class AnnotationModel : ModelBase
     {
-       // private readonly INodeRepository nodeRepository;
-        private double xDistance = 1;
-        private double yDistance = 1;
-        private double regionX = 1;
-        private double regionY = 1;
-        private double maxWidth = 1;
-        private double maxHeight = 1;
+       // private readonly INodeRepository nodeRepository;       
         private string _text;
         public string Text
         {
@@ -210,14 +204,14 @@ namespace Dynamo.Models
                 var xGroupModels = groupModels.ToList().OrderBy(x => x.X).ToList();
                 var yGroupModels = groupModels.ToList().OrderBy(x => x.Y).ToList();
 
-                maxWidth = xGroupModels.Last().Width;
-                maxHeight = yGroupModels.Last().Height;
+                var maxWidth = xGroupModels.Last().Width;
+                var maxHeight = yGroupModels.Last().Height;
 
-                regionX = xGroupModels.First().X - 30;
-                regionY = yGroupModels.First().Y - 30;
+                var regionX = xGroupModels.First().X - 15;
+                var regionY = yGroupModels.First().Y - 30;
 
-                xDistance = xGroupModels.Last().X - regionX;
-                yDistance = yGroupModels.Last().Y - regionY;
+                var xDistance = xGroupModels.Last().X - regionX;
+                var yDistance = yGroupModels.Last().Y - regionY;
 
                 var region = new Rect2D
                 {
