@@ -39,6 +39,7 @@ namespace Dynamo.Models
         private bool usingDefaultValue;
         private bool defaultValueEnabled;
         private Thickness marginThickness;
+        private PortData portData;
         #endregion
 
         #region public members
@@ -51,19 +52,37 @@ namespace Dynamo.Models
 
         public string PortName
         {
-            get { return name; }
+            get { return portData.NickName; }
+        }
+
+        public string ToolTipContent 
+        {
+            get { return portData.ToolTipString; }
+        }
+
+        public PortData Data
+        {
             set
             {
-                name = value;
-                RaisePropertyChanged("PortName");
-            }
+                portData = value;
 
+                UsingDefaultValue = portData.DefaultValue != null;
+                RaisePropertyChanged("DefaultValueEnabled");
+                RaisePropertyChanged("PortName");
+                RaisePropertyChanged("TooltipContent");
+            }
         }
 
         public PortType PortType
         {
-            get { return portType; }
-            set { portType = value; }
+            get 
+            { 
+                return portType; 
+            }
+            private set
+            {
+                portType = value;
+            }
         }
 
         public NodeModel Owner
@@ -84,15 +103,15 @@ namespace Dynamo.Models
         public bool IsConnected
         {
             get
-            { return isConnected; }
-            set
+            { 
+                return isConnected; 
+            }
+            private set
             {
                 isConnected = value;
                 RaisePropertyChanged("IsConnected");
             }
         }
-
-        public string ToolTipContent { get; internal set; }
 
         public string DefaultValueTip
         {
@@ -156,12 +175,7 @@ namespace Dynamo.Models
         /// </summary>
         public bool DefaultValueEnabled
         {
-            get { return defaultValueEnabled; }
-            set
-            {
-                defaultValueEnabled = value;
-                RaisePropertyChanged("DefaultValueEnabled");
-            }
+            get { return portData.DefaultValue != null; }
         }
 
         /// <summary>
@@ -170,7 +184,7 @@ namespace Dynamo.Models
         public Thickness MarginThickness
         {
             get { return marginThickness; }
-            set
+            private set
             {
                 marginThickness = value;
                 RaisePropertyChanged("MarginThickness");
@@ -186,11 +200,12 @@ namespace Dynamo.Models
             IsConnected = false;
             PortType = portType;
             Owner = owner;
-            PortName = data.NickName;
-            UsingDefaultValue = false;
-            DefaultValueEnabled = false;
-            MarginThickness = new Thickness(0);
-            ToolTipContent = data.ToolTipString;
+            Data = data;
+
+            if (portType == Models.PortType.Input)
+                MarginThickness = new Thickness(0);
+            else
+                MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
 
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
         }

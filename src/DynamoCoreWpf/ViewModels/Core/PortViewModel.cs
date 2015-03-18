@@ -26,14 +26,7 @@ namespace Dynamo.ViewModels
 
         public string PortName
         {
-            get
-            {
-                return _port.PortName;
-            }
-            set 
-            { 
-                _port.PortName = value;
-            }
+            get { return _port.PortName; }
         }
 
         public PortType PortType
@@ -69,7 +62,6 @@ namespace Dynamo.ViewModels
         public bool DefaultValueEnabled
         {
             get { return _port.DefaultValueEnabled; }
-            set { _port.DefaultValueEnabled = value; }
         }
 
         public bool UsingDefaultValue
@@ -80,18 +72,7 @@ namespace Dynamo.ViewModels
 
         public System.Windows.Thickness MarginThickness
         {
-
             get { return _port.MarginThickness.AsWindowsType(); }
-            set
-            {
-                _port.MarginThickness = new Utilities.Thickness()
-                    {
-                        Bottom = value.Bottom,
-                        Left = value.Left,
-                        Right = value.Right,
-                        Top = value.Top
-                    };
-            }
         }
 
         public PortEventType EventType { get; set; }
