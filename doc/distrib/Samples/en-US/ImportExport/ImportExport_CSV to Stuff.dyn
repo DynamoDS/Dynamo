@@ -1,0 +1,64 @@
+<Workspace Version="0.8.0.706" X="185.726148544333" Y="392.897269907311" zoom="0.531808471379063" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSCore.File.Filename guid="f338c699-a0d3-4edf-8bc9-b48d08d90217" type="DSCore.File.Filename" nickname="File Path" x="-102.161552514321" y="-17.5611547424787" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>C:\ProgramData\Dynamo\0.8\samples\Data\helix.csv</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.StringInput guid="6fe05139-2620-4d1d-8e06-84a3d52d2635" type="Dynamo.Nodes.StringInput" nickname="String" x="392.962294416208" y="117.389184962712" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>
+</System.String>
+      <System.String value="&#xA;" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.DSFunction guid="0cde47c6-106f-4a0a-9566-872fd23a0a20" type="Dynamo.Nodes.DSFunction" nickname="Geometry.Scale" x="1997.38156369372" y="-22.1013010079409" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Geometry.Scale@double" />
+    <DSCoreNodesUI.Input.DoubleSlider guid="47fd5c56-85b7-4bec-879a-8ae7ed95afa4" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="1631.20906593889" y="122.81339098985" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>2.337</System.Double>
+      <Range min="0" max="20" step="0.1" />
+    </DSCoreNodesUI.Input.DoubleSlider>
+    <Dynamo.Nodes.DSVarArgFunction guid="6c3bf3e3-8da5-4892-969c-a58d3caa1129" type="Dynamo.Nodes.DSVarArgFunction" nickname="String.Split" x="495.329758657331" y="-17.5611547424787" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.String.Split@string,string[]" inputcount="2" />
+    <Dynamo.Nodes.DSVarArgFunction guid="7b9d9ec2-c7b6-4c65-847b-487c9b5fbf2c" type="Dynamo.Nodes.DSVarArgFunction" nickname="String.Split" x="739.598046703496" y="-11.8479498324055" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.String.Split@string,string[]" inputcount="2" />
+    <Dynamo.Nodes.StringInput guid="cc965c59-fa8f-4bdb-b009-ed559204b69f" type="Dynamo.Nodes.StringInput" nickname="String" x="639.313409829637" y="96.0256340983587" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>,</System.String>
+      <System.String value="," />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.DSFunction guid="4296714c-caa9-4833-8bb5-1aca8168bccc" type="Dynamo.Nodes.DSFunction" nickname="String.ToNumber" x="998.065812242039" y="-10.7489680733874" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.ToNumber@string" />
+    <Dynamo.Nodes.DSFunction guid="d0dc0a4b-3ccc-4717-a930-e4da7d8c68c4" type="Dynamo.Nodes.DSFunction" nickname="List.Transpose" x="1278.07129747803" y="-10.7489680733874" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Transpose@var[]..[]" />
+    <Dynamo.Nodes.DSFunction guid="b4635cf3-351a-4aea-89bd-0492fbbfc57a" type="Dynamo.Nodes.DSFunction" nickname="List.GetItemAtIndex" x="1460.88930661204" y="-10.7489680733874" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
+    <Dynamo.Nodes.DSFunction guid="2d49c2cb-6b66-4974-8267-d6a156b24f31" type="Dynamo.Nodes.DSFunction" nickname="List.FirstItem" x="1467.68890164336" y="-97.6943252019653" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.FirstItem@var[]..[]" />
+    <Dynamo.Nodes.DSFunction guid="e5258d84-a769-4406-9abc-d5e55e7c10b6" type="Dynamo.Nodes.DSFunction" nickname="List.LastItem" x="1464.96572557473" y="106.543879945254" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.LastItem@var[]..[]" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="7b5467e1-1abe-455e-8944-897a7fc16900" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="1311.53367752036" y="88.2569327515367" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="3b5acd42-58a7-45d5-ba65-86fbae644634" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="1665.11916661901" y="-26.8917474175959" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <DSCore.File.FileObject guid="afa1c120-63ae-4bcf-992c-9af8fc2a7b76" type="DSCore.File.FileObject" nickname="File.FromPath" x="178.046959337216" y="-17.5611547424787" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction guid="078c73d2-9b69-4299-bb8b-86120b23909a" type="Dynamo.Nodes.DSFunction" nickname="File.ReadText" x="312.120450172441" y="-17.5611547424787" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.IO.File.ReadText@var" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f338c699-a0d3-4edf-8bc9-b48d08d90217" start_index="0" end="afa1c120-63ae-4bcf-992c-9af8fc2a7b76" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6fe05139-2620-4d1d-8e06-84a3d52d2635" start_index="0" end="6c3bf3e3-8da5-4892-969c-a58d3caa1129" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="47fd5c56-85b7-4bec-879a-8ae7ed95afa4" start_index="0" end="0cde47c6-106f-4a0a-9566-872fd23a0a20" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6c3bf3e3-8da5-4892-969c-a58d3caa1129" start_index="0" end="7b9d9ec2-c7b6-4c65-847b-487c9b5fbf2c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7b9d9ec2-c7b6-4c65-847b-487c9b5fbf2c" start_index="0" end="4296714c-caa9-4833-8bb5-1aca8168bccc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc965c59-fa8f-4bdb-b009-ed559204b69f" start_index="0" end="7b9d9ec2-c7b6-4c65-847b-487c9b5fbf2c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4296714c-caa9-4833-8bb5-1aca8168bccc" start_index="0" end="d0dc0a4b-3ccc-4717-a930-e4da7d8c68c4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d0dc0a4b-3ccc-4717-a930-e4da7d8c68c4" start_index="0" end="2d49c2cb-6b66-4974-8267-d6a156b24f31" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d0dc0a4b-3ccc-4717-a930-e4da7d8c68c4" start_index="0" end="b4635cf3-351a-4aea-89bd-0492fbbfc57a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d0dc0a4b-3ccc-4717-a930-e4da7d8c68c4" start_index="0" end="e5258d84-a769-4406-9abc-d5e55e7c10b6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b4635cf3-351a-4aea-89bd-0492fbbfc57a" start_index="0" end="3b5acd42-58a7-45d5-ba65-86fbae644634" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2d49c2cb-6b66-4974-8267-d6a156b24f31" start_index="0" end="3b5acd42-58a7-45d5-ba65-86fbae644634" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e5258d84-a769-4406-9abc-d5e55e7c10b6" start_index="0" end="3b5acd42-58a7-45d5-ba65-86fbae644634" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7b5467e1-1abe-455e-8944-897a7fc16900" start_index="0" end="b4635cf3-351a-4aea-89bd-0492fbbfc57a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3b5acd42-58a7-45d5-ba65-86fbae644634" start_index="0" end="0cde47c6-106f-4a0a-9566-872fd23a0a20" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="afa1c120-63ae-4bcf-992c-9af8fc2a7b76" start_index="0" end="078c73d2-9b69-4299-bb8b-86120b23909a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="078c73d2-9b69-4299-bb8b-86120b23909a" start_index="0" end="6c3bf3e3-8da5-4892-969c-a58d3caa1129" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Adjust the overall distribution&#xD;&#xA;of the coordinate points" x="1992.49667197426" y="-80.0317646843745" />
+    <Dynamo.Models.NoteModel text="Browse a CSV file that has numbers &#xD;&#xA;in x, y, and z coordinate space" x="-86.1615525143213" y="90.2776890227735" />
+    <Dynamo.Models.NoteModel text="Split the String on &#xD;&#xA;A carriage return &lt;enter&gt;" x="459.365889553434" y="-67.9357047254215" />
+    <Dynamo.Models.NoteModel text="Split the String on Comma" x="726.603754120277" y="-56.1055100214671" />
+    <Dynamo.Models.NoteModel text="Group X, Y, &amp; Z components" x="1253.37976685541" y="-50.0503474346067" />
+    <Dynamo.Models.NoteModel text="CSV files supply Strings, not numbers" x="950.286195984002" y="-52.002676215709" />
+  </Notes>
+</Workspace>
