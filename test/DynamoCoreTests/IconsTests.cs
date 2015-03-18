@@ -27,6 +27,7 @@ namespace Dynamo.Tests
             IEnumerable searchEntries = model.SearchModel.SearchEntries.OfType<NodeSearchElement>();
             IconServices iconServices = new IconServices(model.PathManager);
             IconWarehouse currentWarehouse = null;
+            var currentWarehouseAssembly = string.Empty;
 
             List<String> missingIcons = new List<string>();
             foreach (var entry in searchEntries)
@@ -39,7 +40,13 @@ namespace Dynamo.Tests
                 var largeIconName = searchEle.IconName + Configurations.LargeIconPostfix;
 
 
-                currentWarehouse = iconServices.GetForAssembly(searchEle.Assembly);
+                // Only retrieve the icon warehouse for different assembly.
+                if (currentWarehouseAssembly != searchEle.Assembly)
+                {
+                    currentWarehouseAssembly = searchEle.Assembly;
+                    currentWarehouse = iconServices.GetForAssembly(searchEle.Assembly);
+                }
+
                 ImageSource smallIcon = null;
                 ImageSource largeIcon = null;
                 if (currentWarehouse != null)
