@@ -187,7 +187,7 @@ namespace Dynamo.Core
         /// <returns> preference settings read from preference settings file </returns>
         public static PreferenceSettings MigrateBetweenDynamoVersions(IPathManager pathManager)
         {
-            var userDataDir = pathManager.UserDataDirectory;
+            var userDataDir = Path.GetDirectoryName(pathManager.UserDataDirectory);
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             var currentVersionInfo = FileVersionInfo.GetVersionInfo(assemblyPath);
 
@@ -362,7 +362,7 @@ namespace Dynamo.Core
     {
         protected override FileVersion DynamoVersion { get{return new FileVersion(0, 7);} }
 
-        protected DynamoMigrator07(string rootFolder) : base(rootFolder)
+        public DynamoMigrator07(string rootFolder) : base(rootFolder)
         {
         }
 
@@ -386,7 +386,7 @@ namespace Dynamo.Core
     {
         protected override FileVersion DynamoVersion { get { return new FileVersion(0, 8); } }
 
-        protected DynamoMigrator08(string rootFolder) : base(rootFolder)
+        public DynamoMigrator08(string rootFolder) : base(rootFolder)
         {
         }
 

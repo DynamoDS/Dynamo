@@ -455,8 +455,15 @@ namespace Dynamo.Models
 
             if (this.PreferenceSettings.IsFirstRun)
             {
-                var preferenceSettings = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager);
-
+                PreferenceSettings preferenceSettings = null;
+                try
+                {
+                    preferenceSettings = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e.Message);
+                }
                 if(preferenceSettings != null)
                     this.PreferenceSettings = preferenceSettings;
             }
