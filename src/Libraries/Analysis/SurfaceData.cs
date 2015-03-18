@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Configuration;
+using System.Text;
+using System.Threading;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
@@ -170,14 +173,16 @@ namespace Analysis
 
             // Use ASM's tesselation routine to tesselate
             // the surface. 
-            Surface.Tessellate(package, tol, maxGridLines);
+            //Surface.Tessellate(package, tol, maxGridLines);
+
+            GridTesselate(Surface, package, 10, 10);
 
             DebugTime(sw, "Ellapsed for tessellation.");
 
-            int colorCount = 0;
-            int uvCount = 0;
+            var colorCount = 0;
+            var uvCount = 0;
 
-            for (int i = 0; i < package.TriangleVertices.Count; i += 3)
+            for (var i = 0; i < package.TriangleVertices.Count; i += 3)
             {
                 var uvu = package.TriangleUVs[uvCount];
                 var uvv = package.TriangleUVs[uvCount + 1];
@@ -205,6 +210,258 @@ namespace Analysis
             Debug.WriteLine("{0}:{1}", sw.Elapsed, message);
             sw.Reset();
             sw.Start();
+        }
+
+        private void GridTesselate(Surface surface, IRenderPackage package, int uDiv, int vDiv)
+        {
+            var points = new Point[uDiv+1, vDiv+1];
+            var normals = new Vector[uDiv+1, vDiv+1];
+            var uvs = new UV[uDiv+1, vDiv+1];
+
+            // Lay down a grid of points
+            for(var i=0; i <= uDiv; i+=1)
+            {
+                for (var j = 0; j <= vDiv; j += 1)
+                {
+                    var u = (double)i/uDiv;
+                    var v = (double)j/vDiv;
+                    var pt = Surface.PointAtParameter(u, v);
+                    var uv = UV.ByCoordinates(u, v);
+                    var n = Surface.NormalAtPoint(pt);
+
+                    points[i, j] = pt;
+                    normals[i, j] = n;
+                    uvs[i, j] = uv;
+                }
+            }
+
+            var simpleMesh = new SimpleMesh();
+
+            for (var i = 0; i < uDiv; i += 1)
+            {
+                for (var j = 0; j < vDiv; j += 1)
+                {
+                    var a = points[i, j];
+                    var b = points[i + 1, j];
+                    var c = points[i + 1, j + 1];
+                    var d = points[i, j + 1];
+
+                    var an = normals[i, j];
+                    var bn = normals[i + 1, j];
+                    var cn = normals[i + 1, j + 1];
+                    var dn = normals[i, j + 1];
+
+                    var auv = uvs[i, j];
+                    var buv = uvs[i + 1, j];
+                    var cuv = uvs[i + 1, j + 1];
+                    var duv = uvs[i, j + 1];
+
+                    simpleMesh.AddTriangle(a, b, c, an, bn, cn, auv, buv, cuv);
+                    simpleMesh.AddTriangle(a, c, d, an, cn, dn, auv, cuv, duv);
+                }
+            }
+
+            // Cull triangles that aren't fully on the surface
+            var badTris = simpleMesh.Triangles.Where(tri=>tri.DoesNotHaveAllPointsOnSurface(Surface)).ToArray();
+            for (var i = badTris.Count() - 1; i >= 0; i--)
+            {
+                simpleMesh.RemoveTriangle(badTris[i]);
+            }
+
+            foreach (var tri in simpleMesh.Triangles)
+            {
+                foreach (var v in tri.Vertices)
+                {
+                    package.PushTriangleVertex(v.Point.X, v.Point.Y, v.Point.Z);
+                    package.PushTriangleVertexNormal(v.Normal.X, v.Normal.Y, v.Normal.Z);
+                    package.PushTriangleVertexUV(v.UV.U, v.UV.V);
+                    package.PushTriangleVertexColor(0, 0, 0, 255);
+                }
+            }
+            foreach (var edge in simpleMesh.Edges)
+            {
+                var a = edge.Start.Point;
+                var b = edge.End.Point;
+                package.PushLineStripVertex(a.X, a.Y, a.Z);
+                package.PushLineStripVertex(b.X, b.Y, b.Z);
+
+                if (edge.IsOpenEdge)
+                {
+                    package.PushLineStripVertexColor(255, 0, 0, 255);
+                    package.PushLineStripVertexColor(255, 0, 0, 255);
+                }
+                else
+                {
+                    package.PushLineStripVertexColor(100, 100, 100, 255);
+                    package.PushLineStripVertexColor(100, 100, 100, 255);
+                }
+                
+                package.PushLineStripVertexCount(2);
+            }
+        }
+    }
+
+    public class SimpleMesh
+    {
+        public List<Triangle> Triangles { get; private set; }
+        public List<Vertex> Vertices { get; private set; }
+        public List<Edge> Edges { get; private set; }
+
+        public SimpleMesh()
+        {
+            Triangles = new List<Triangle>();    
+            Vertices = new List<Vertex>();
+            Edges = new List<Edge>();
+        }
+
+        public void AddTriangle(Point ptA, Point ptB, Point ptC, 
+            Vector nA, Vector nB, Vector nC, 
+            UV uvA, UV uvB, UV uvC)
+        {
+            // Create vertices
+            var a = FindOrCreateVertex(ptA, nA, uvA);
+            var b = FindOrCreateVertex(ptB, nB, uvB);
+            var c = FindOrCreateVertex(ptC, nC, uvC);
+
+            // Create the triangle
+            var tri = new Triangle(a, b, c);
+            Triangles.Add(tri);
+
+            // Create edges
+            var ea = FindOrCreateEdge(a, b);
+            var eb = FindOrCreateEdge(b, c);
+            var ec = FindOrCreateEdge(c, a);
+
+            // Link edges -> triangle
+            ea.Triangles.Add(tri);
+            eb.Triangles.Add(tri);
+            ec.Triangles.Add(tri);
+
+            // Link triangle -> edges
+            tri.Edges.Add(ea);
+            tri.Edges.Add(eb);
+            tri.Edges.Add(ec);
+        }
+
+        public void RemoveTriangle(Triangle triangle)
+        {
+            // Unlink from edges and delete orphans
+            foreach (var edge in triangle.Edges)
+            {
+                edge.Triangles.Remove(triangle);
+                if (!edge.Triangles.Any())
+                {
+                    Edges.Remove(edge);
+                }
+            }
+
+            // Unlink from vertices and delete orphans
+            foreach (var vert in triangle.Vertices)
+            {
+                vert.Triangles.Remove(triangle);
+                if (!vert.Triangles.Any())
+                {
+                    Vertices.Remove(vert);
+                }
+            }
+
+            Triangles.Remove(triangle);
+        }
+
+        private Edge FindOrCreateEdge(Vertex a, Vertex b)
+        {
+            var foundEdge =
+                Edges.FirstOrDefault(e => e.Start == a && e.End == b || e.Start == b && e.End == a);
+
+            if (foundEdge != null) return foundEdge;
+
+            foundEdge = new Edge(a, b);
+            Edges.Add(foundEdge);
+
+            return foundEdge;
+        }
+
+        private Vertex FindOrCreateVertex(Point pt, Vector normal, UV uv)
+        {
+            var foundVertex = Vertices.FirstOrDefault(v => v.Point.IsAlmostEqualTo(pt));
+            if (foundVertex != null) return foundVertex;
+
+            foundVertex = new Vertex(pt, normal, uv);
+            Vertices.Add(foundVertex);
+
+            return foundVertex;
+        }
+
+        public class Vertex
+        {
+            public Point Point { get; private set; }
+            public Vector Normal { get; private set; }
+            public UV UV { get; private set; }
+
+            public List<Triangle> Triangles { get; private set; }
+            public List<Edge> Edges { get; private set; }
+ 
+            public Vertex(Point point, Vector normal, UV uv)
+            {
+                Triangles = new List<Triangle>();
+                Edges = new List<Edge>();
+
+                Point = point;
+                Normal = normal;
+                UV = uv;
+            }
+        }
+
+        public class Edge
+        {
+            public List<Triangle> Triangles { get; private set; }
+            public Vertex Start { get; private set; }
+            public Vertex End { get; private set; }
+
+            public bool IsOpenEdge
+            {
+                get { return Triangles.Count() == 1; }
+            }
+
+            public Edge(Vertex start, Vertex end)
+            {
+                Triangles = new List<Triangle>();
+                
+                Start = start;
+                End = end;
+
+                // Link vertices -> edge
+                start.Edges.Add(this);
+                end.Edges.Add(this);
+            }
+        }
+
+        public class Triangle
+        {
+            public List<Vertex> Vertices { get; private set; }
+            public List<Edge> Edges { get; private set; }
+
+            public Triangle(Vertex a, Vertex b, Vertex c)
+            {
+                Vertices = new List<Vertex>();
+                Edges = new List<Edge>();
+
+                Vertices.Add(a);
+                Vertices.Add(b);
+                Vertices.Add(c);
+
+                a.Triangles.Add(this);
+                b.Triangles.Add(this);
+                c.Triangles.Add(this);
+            }
+        }
+    }
+
+    public static class SimpleMeshExtensions
+    {
+        public static bool DoesNotHaveAllPointsOnSurface(this SimpleMesh.Triangle triangle, Surface surf)
+        {
+            return triangle.Vertices.All(v => !v.Point.DoesIntersect(surf));
         }
     }
 }
