@@ -587,20 +587,20 @@ namespace Dynamo.Models
                 customNodeManager);
         }
 
+
         private void InitializeCustomNodeManager()
         {
             CustomNodeManager.MessageLogged += LogMessage;
 
-            var customNodeSearchRegistry = new Dictionary<Guid, CustomNodeSearchElement>(); 
+            var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
-                if (customNodeSearchRegistry.ContainsKey(info.FunctionId)) return;
+                if (customNodeSearchRegistry.Contains(info.FunctionId))
+                    return;
 
+                customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
                 SearchModel.Add(searchElement);
-
-                customNodeSearchRegistry.Add(info.FunctionId, searchElement);
-
                 CustomNodeManager.InfoUpdated += newInfo =>
                 {
                     if (info.FunctionId == newInfo.FunctionId)
