@@ -291,7 +291,7 @@ namespace Dynamo.Core
 
         private string GetUserDataFolder(IPathResolver pathResolver)
         {
-            if (pathResolver != null && pathResolver.UserDataRootFolder != string.Empty)
+            if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.UserDataRootFolder))
                 return GetDynamoDataFolder(pathResolver.UserDataRootFolder);
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -300,7 +300,7 @@ namespace Dynamo.Core
 
         private string GetCommonDataFolder(IPathResolver pathResolver)
         {
-            if (pathResolver != null && pathResolver.CommonDataRootFolder != string.Empty)
+            if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.CommonDataRootFolder))
                 return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
 
             var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
