@@ -131,7 +131,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         ///     Description of the node.
         /// </summary>
-        public virtual string Description
+        public string Description
         {
             get
             {

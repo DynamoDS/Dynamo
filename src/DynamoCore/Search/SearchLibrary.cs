@@ -23,6 +23,7 @@ namespace Dynamo.Search
         {
             Add(entry, entry.Name);
             Add(entry, entry.SearchTags, .5);
+            Add(entry, entry.Description, .1);
         }
 
         /// <summary>
