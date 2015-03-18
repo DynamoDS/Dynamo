@@ -476,7 +476,20 @@ namespace Dynamo.Tests
 
             
         }
-        
-        
+
+        [Test, Category("RegressionTests")]
+        public void Defect5561_ListCombineCrash_AddingArrayToSingleItem()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5561
+            DynamoModel model = ViewModel.Model;
+            string openPath = Path.Combine(GetTestDirectory(), 
+                        @"core\DynamoDefects\5561_ListCombineCrash_AddingArrayToSingleItem.dyn");
+            RunModel(openPath);
+
+            AssertPreviewCount("d24b1f14-c31e-4ee9-9a1b-e3ebfbb936ba", 101);
+            var combinedValue = GetPreviewValueAtIndex("d24b1f14-c31e-4ee9-9a1b-e3ebfbb936ba", 0);
+            Assert.IsNotNull(combinedValue);
+
+        }
     }
 }
