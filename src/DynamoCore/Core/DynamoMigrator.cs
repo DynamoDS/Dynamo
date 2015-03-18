@@ -4,10 +4,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
 using System.Xml.Serialization;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Lang;
 
 namespace Dynamo.Core
@@ -27,7 +29,7 @@ namespace Dynamo.Core
         {
             return thisVersion.MajorPart < otherVersion.MajorPart ||
                    thisVersion.MajorPart == otherVersion.MajorPart && thisVersion.MinorPart < otherVersion.MinorPart;
-   }
+        }
 
         public static bool operator >(FileVersion thisVersion, FileVersion otherVersion)
         {
@@ -64,6 +66,8 @@ namespace Dynamo.Core
     /// The naming convention for derived classes is "DynamoMigrator{MajorVersion}{MinorVersion}"
     /// For e.g. derived migrator class for verion 0.7 is "DynamoMigrator07"
     /// Derived migrator class for version 0.8 is "DynamoMigrator08" and so on.
+    /// Constructors of classes derived from DynamoMigratorBase need to be public
+    /// as their instances are created through reflection.
     /// </summary>
     internal class DynamoMigratorBase
     {
@@ -234,13 +238,13 @@ namespace Dynamo.Core
         /// thrown if rootFolder is null or an empty string.</exception>
         /// <exception cref="System.IO.DirectoryNotFoundException">This exception
         /// is thrown if rootFolder points to an invalid directory.</exception>
-        internal static IEnumerable<FileVersion> GetInstalledVersions(string rootFolder)
+        public static IEnumerable<FileVersion> GetInstalledVersions(string rootFolder)
         {
-            if (rootFolder == null)
+            if(string.IsNullOrEmpty(rootFolder))
                 throw new ArgumentNullException("rootFolder");
 
             var fileVersions = new List<FileVersion>();
-            if (!Directory.Exists(rootFolder))
+            if(!Directory.Exists(rootFolder))
                 throw new DirectoryNotFoundException("rootFolder");
 
             var subDirs = Directory.EnumerateDirectories(rootFolder);
@@ -249,11 +253,11 @@ namespace Dynamo.Core
                 var dirName = new DirectoryInfo(subDir).Name;
 
                 var versions = dirName.Split('.');
-                if (versions.Length < 2)
+                if(versions.Length < 2)
                     continue;
 
                 int majorVersion;
-                if (!Int32.TryParse(versions[0], out majorVersion))
+                if (!Int32.TryParse(versions[0], out majorVersion)) 
                     continue;
 
                 int minorVersion;
@@ -360,8 +364,6 @@ namespace Dynamo.Core
     {
         protected override FileVersion DynamoVersion { get{return new FileVersion(0, 7);} }
 
-        // Constructors of classes derived from DynamoMigratorBase need to be public
-        // as their instances are created through reflection
         public DynamoMigrator07(string rootFolder) : base(rootFolder)
         {
         }
@@ -407,5 +409,4 @@ namespace Dynamo.Core
             base.MigrateDefinitions(sourceMigrator);
         }
     }
-
 }
