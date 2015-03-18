@@ -146,21 +146,21 @@ namespace Dynamo
         {
             var tempPath = Path.GetTempPath();
             var uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "0.7"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "0.8"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "0.0"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "1.7"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "1.8"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "1.9"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "2.0"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "-1.9"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "-2.9"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "-1.0"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "3.0"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "2.-9"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "2.-8"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "-2.-9"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "-2.-8"));
-            uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "-1.-9"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "0.8"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "0.0"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "1.7"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "1.8"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "1.9"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "2.0"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "-1.9"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "-2.9"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "-1.0"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "3.0"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "2.-9"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "2.-8"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "-2.-9"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "-2.-8"));
+            uniqueDirectory = Directory.CreateDirectory(Path.Combine(tempPath, "-1.-9"));
 
             var versionList = DynamoMigratorBase.GetInstalledVersions(tempPath).ToList();
 
