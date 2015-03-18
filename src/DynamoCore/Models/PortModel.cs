@@ -31,14 +31,8 @@ namespace Dynamo.Models
         #endregion
 
         #region private fields
-        bool isConnected;
-        NodeModel owner;
-        PortType portType;
-        string name;
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
         private bool usingDefaultValue;
-        private bool defaultValueEnabled;
-        private Thickness marginThickness;
         private PortData portData;
         #endregion
 
@@ -60,73 +54,24 @@ namespace Dynamo.Models
             get { return portData.ToolTipString; }
         }
 
-        public PortData Data
-        {
-            set
-            {
-                portData = value;
-
-                UsingDefaultValue = portData.DefaultValue != null;
-                RaisePropertyChanged("DefaultValueEnabled");
-                RaisePropertyChanged("PortName");
-                RaisePropertyChanged("TooltipContent");
-            }
-        }
-
         public PortType PortType
         {
-            get 
-            { 
-                return portType; 
-            }
-            private set
-            {
-                portType = value;
-            }
+            get; private set;
         }
 
         public NodeModel Owner
         {
-            get { return owner; }
-            set
-            {
-                owner = value;
-                RaisePropertyChanged("Owner");
-            }
+            get; private set;
         }
 
         public int Index
         {
-            get { return owner.GetPortIndexAndType(this, out portType); }
+            get { return Owner.GetPortModelIndex(this); }
         }
 
         public bool IsConnected
         {
-            get
-            { 
-                return isConnected; 
-            }
-            private set
-            {
-                isConnected = value;
-                RaisePropertyChanged("IsConnected");
-            }
-        }
-
-        public string DefaultValueTip
-        {
-            get
-            {
-                if (PortType == PortType.Input && Owner != null)
-                {
-                    var port = Owner.InPortData[Index];
-                    if (port.DefaultValue != null)
-                    {
-                        return port.DefaultValue.ToString();
-                    }
-                }
-                return "";
-            }
+            get; private set;
         }
 
         /// <summary>
@@ -142,15 +87,15 @@ namespace Dynamo.Models
                 double halfHeight = Height * 0.5;
                 const double headerHeight = 25;
 
-                double offset = owner.GetPortVerticalOffset(this);
-                double y = owner.Y + headerHeight + 5 + halfHeight + offset;
+                double offset = Owner.GetPortVerticalOffset(this);
+                double y = Owner.Y + headerHeight + 5 + halfHeight + offset;
 
-                switch (portType)
+                switch (PortType)
                 {
                     case PortType.Input:
-                        return new Point2D(owner.X, y);
+                        return new Point2D(Owner.X, y);
                     case PortType.Output:
-                        return new Point2D(owner.X + owner.Width, y);
+                        return new Point2D(Owner.X + Owner.Width, y);
                 }
 
                 return new Point2D();
@@ -183,12 +128,7 @@ namespace Dynamo.Models
         /// </summary>
         public Thickness MarginThickness
         {
-            get { return marginThickness; }
-            private set
-            {
-                marginThickness = value;
-                RaisePropertyChanged("MarginThickness");
-            }
+            get; private set;
         }
 
         public SnapExtensionEdges extensionEdges { get; set; }        
@@ -200,14 +140,25 @@ namespace Dynamo.Models
             IsConnected = false;
             PortType = portType;
             Owner = owner;
-            Data = data;
 
-            if (portType == Models.PortType.Input)
+            SetPortData(data);
+
+            if (PortType == Models.PortType.Input)
                 MarginThickness = new Thickness(0);
             else
                 MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
 
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
+        }
+
+        public void SetPortData(PortData data)
+        {
+            portData = data;
+
+            UsingDefaultValue = portData.DefaultValue != null;
+            RaisePropertyChanged("DefaultValueEnabled");
+            RaisePropertyChanged("PortName");
+            RaisePropertyChanged("TooltipContent");
         }
 
         /// <summary>

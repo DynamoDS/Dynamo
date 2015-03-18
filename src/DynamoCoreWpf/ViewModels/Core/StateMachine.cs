@@ -726,12 +726,11 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
-                    PortType portType = PortType.Input;
                     Guid nodeId = portModel.Owner.GUID;
-                    int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
+                    int portIndex = portModel.Owner.GetPortModelIndex(portModel);
 
                     var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
-                    var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portType, mode);
+                    var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portModel.PortType, mode);
                     owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
                     if (null != owningWorkspace.activeConnector)
@@ -746,13 +745,12 @@ namespace Dynamo.ViewModels
                     // Check if connection is valid
                     if (owningWorkspace.CheckActiveConnectorCompatibility(portViewModel))
                     {
-                        PortType portType = PortType.Input;
                         Guid nodeId = portModel.Owner.GUID;
-                        int portIndex = portModel.Owner.GetPortIndexAndType(portModel, out portType);
+                        int portIndex = portModel.Owner.GetPortModelIndex(portModel);
 
                         var mode = DynamoModel.MakeConnectionCommand.Mode.End;
                         var command = new DynamoModel.MakeConnectionCommand(nodeId, 
-                            portIndex, portType, mode);
+                            portIndex, portModel.PortType, mode);
                         owningWorkspace.DynamoViewModel.ExecuteCommand(command);
 
                         owningWorkspace.CurrentCursor = null;

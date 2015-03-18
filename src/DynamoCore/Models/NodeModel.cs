@@ -993,24 +993,12 @@ namespace Dynamo.Models
 
         #region Port Management
 
-        internal int GetPortIndexAndType(PortModel portModel, out PortType portType)
+        internal int GetPortModelIndex(PortModel portModel)
         {
-            int index = inPorts.IndexOf(portModel);
-            if (-1 != index)
-            {
-                portType = PortType.Input;
-                return index;
-            }
-
-            index = outPorts.IndexOf(portModel);
-            if (-1 != index)
-            {
-                portType = PortType.Output;
-                return index;
-            }
-
-            portType = PortType.Input;
-            return -1; // No port found.
+            if (portModel.PortType == PortType.Input)
+                return InPorts.IndexOf(portModel);
+            else
+                return OutPorts.IndexOf(portModel);
         }
 
         /// <summary>
@@ -1024,8 +1012,7 @@ namespace Dynamo.Models
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;
-            PortType portType;
-            int index = GetPortIndexAndType(portModel, out portType);
+            int index = GetPortModelIndex(portModel);
 
             //If the port was not found, then it should have just been deleted. Return from function
             if (index == -1)
@@ -1033,7 +1020,7 @@ namespace Dynamo.Models
 
             double portHeight = portModel.Height;
 
-            switch (portType)
+            switch (portModel.PortType)
             {
                 case PortType.Input:
                     for (int i = 0; i < index; i++)
@@ -1181,7 +1168,7 @@ namespace Dynamo.Models
                     if (inPorts.Count > index)
                     {
                         p = inPorts[index];
-                        p.Data = data;
+                        p.SetPortData(data);
                     }
                     else
                     {
@@ -1208,7 +1195,7 @@ namespace Dynamo.Models
                     if (outPorts.Count > index)
                     {
                         p = outPorts[index];
-                        p.Data = data;
+                        p.SetPortData(data);
                     }
                     else
                     {

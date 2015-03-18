@@ -657,12 +657,11 @@ namespace Dynamo.Nodes
                     {
                         foreach (var startPortModel in (inportConnections[varName] as List<PortModel>))
                         {
-                            PortType p;
                             NodeModel startNode = startPortModel.Owner;
                             var connector = ConnectorModel.Make(
                                 startNode,
                                 this,
-                                startNode.GetPortIndexAndType(startPortModel, out p),
+                                startNode.GetPortModelIndex(startPortModel),
                                 i);
                         }
                         outportConnections[varName] = null;
@@ -689,10 +688,9 @@ namespace Dynamo.Nodes
                     {
                         foreach (var endPortModel in (outportConnections[varName] as List<PortModel>))
                         {
-                            PortType p;
                             NodeModel endNode = endPortModel.Owner;
                             var connector = ConnectorModel.Make(this, endNode, i,
-                                endNode.GetPortIndexAndType(endPortModel, out p));
+                                endNode.GetPortModelIndex(endPortModel));
                         }
                         outportConnections[varName] = null;
                     }
@@ -717,10 +715,9 @@ namespace Dynamo.Nodes
                 {
                     foreach (PortModel endPortModel in (outportConnections[index] as List<PortModel>))
                     {
-                        PortType p;
                         NodeModel endNode = endPortModel.Owner;
                         var connector = ConnectorModel.Make(this, endNode, index,
-                            endNode.GetPortIndexAndType(endPortModel, out p));
+                            endNode.GetPortModelIndex(endPortModel));
                     }
                     outportConnections[index] = null;
                     undefinedIndices.Remove(index);
@@ -743,13 +740,12 @@ namespace Dynamo.Nodes
             {
                 foreach (PortModel endPortModel in unusedConnections[0])
                 {
-                    PortType p;
                     NodeModel endNode = endPortModel.Owner;
                     ConnectorModel connector = ConnectorModel.Make(
                         this,
                         endNode,
                         undefinedIndices[0],
-                        endNode.GetPortIndexAndType(endPortModel, out p));
+                        endNode.GetPortModelIndex(endPortModel));
                 }
                 undefinedIndices.RemoveAt(0);
                 unusedConnections.RemoveAt(0);
