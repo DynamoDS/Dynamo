@@ -22,6 +22,10 @@ namespace ProtoCore.Utils
         /// file name when failed to loate the given file</returns>
         public static string GetDSFullPathName(string fileName, Options options = null)
         {
+            // trim white space chars
+            var trimChars = new[] {'\n','\t','\r',' '};
+            fileName = fileName.Trim(trimChars);
+
             //1.  First search at .exe module directory, in case files of the same name exists in the following directories.
             //    The .exe module directory is of highest priority.
             //    CodeBase is used here because Assembly.Location does not work quite well when the module is shallow-copied in nunit test.

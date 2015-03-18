@@ -51,6 +51,7 @@
     <Compile Include="ClassWithRefParams.cs" />
     <Compile Include="CodeCompletionClass.cs" />
     <Compile Include="DummyMath.cs" />
+    <Compile Include="DummyZeroTouchClass.cs" />
     <Compile Include="ElementResolverTarget.cs" />
     <Compile Include="GlobalClass.cs">
       <SubType>Code</SubType>
@@ -72,6 +73,10 @@
     <Compile Include="TestUpdateCount.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
