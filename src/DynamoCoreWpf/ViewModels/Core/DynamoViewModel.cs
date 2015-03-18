@@ -899,7 +899,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanAddAnnotation(object parameter)
         {
-            return true;
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
         private void WorkspaceAdded(WorkspaceModel item)
