@@ -727,7 +727,7 @@ namespace Dynamo.ViewModels
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
                     Guid nodeId = portModel.Owner.GUID;
-                    int portIndex = portModel.Owner.GetPortModelIndex(portModel);
+                    int portIndex = portModel.Index;
 
                     var mode = DynamoModel.MakeConnectionCommand.Mode.Begin;
                     var command = new DynamoModel.MakeConnectionCommand(nodeId, portIndex, portModel.PortType, mode);
@@ -746,7 +746,7 @@ namespace Dynamo.ViewModels
                     if (owningWorkspace.CheckActiveConnectorCompatibility(portViewModel))
                     {
                         Guid nodeId = portModel.Owner.GUID;
-                        int portIndex = portModel.Owner.GetPortModelIndex(portModel);
+                        int portIndex = portModel.Index;
 
                         var mode = DynamoModel.MakeConnectionCommand.Mode.End;
                         var command = new DynamoModel.MakeConnectionCommand(nodeId, 

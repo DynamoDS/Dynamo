@@ -661,7 +661,7 @@ namespace Dynamo.Nodes
                             var connector = ConnectorModel.Make(
                                 startNode,
                                 this,
-                                startNode.GetPortModelIndex(startPortModel),
+                                startPortModel.Index,
                                 i);
                         }
                         outportConnections[varName] = null;
@@ -689,8 +689,7 @@ namespace Dynamo.Nodes
                         foreach (var endPortModel in (outportConnections[varName] as List<PortModel>))
                         {
                             NodeModel endNode = endPortModel.Owner;
-                            var connector = ConnectorModel.Make(this, endNode, i,
-                                endNode.GetPortModelIndex(endPortModel));
+                            var connector = ConnectorModel.Make(this, endNode, i, endPortModel.Index);
                         }
                         outportConnections[varName] = null;
                     }
@@ -716,8 +715,7 @@ namespace Dynamo.Nodes
                     foreach (PortModel endPortModel in (outportConnections[index] as List<PortModel>))
                     {
                         NodeModel endNode = endPortModel.Owner;
-                        var connector = ConnectorModel.Make(this, endNode, index,
-                            endNode.GetPortModelIndex(endPortModel));
+                        var connector = ConnectorModel.Make(this, endNode, index, endPortModel.Index);
                     }
                     outportConnections[index] = null;
                     undefinedIndices.Remove(index);
@@ -745,7 +743,7 @@ namespace Dynamo.Nodes
                         this,
                         endNode,
                         undefinedIndices[0],
-                        endNode.GetPortModelIndex(endPortModel));
+                        endPortModel.Index);
                 }
                 undefinedIndices.RemoveAt(0);
                 unusedConnections.RemoveAt(0);

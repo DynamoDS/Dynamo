@@ -1012,7 +1012,7 @@ namespace Dynamo.Models
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;
-            int index = GetPortModelIndex(portModel);
+            int index = portModel.Index;
 
             //If the port was not found, then it should have just been deleted. Return from function
             if (index == -1)
