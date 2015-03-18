@@ -51,7 +51,13 @@ namespace Dynamo.Models
 
         public string ToolTipContent 
         {
-            get { return portData.ToolTipString; }
+            get 
+            {
+                string useDefaultArgument = string.Empty;
+                if (!UsingDefaultValue && DefaultValueEnabled)
+                    useDefaultArgument = " (disabled)";
+                return portData.ToolTipString + useDefaultArgument; 
+            }
         }
 
         public PortType PortType
@@ -112,6 +118,7 @@ namespace Dynamo.Models
             {
                 usingDefaultValue = value; 
                 RaisePropertyChanged("UsingDefaultValue");
+                RaisePropertyChanged("ToolTipContent");
             }
         }
 
