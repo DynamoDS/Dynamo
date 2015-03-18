@@ -591,19 +591,23 @@ namespace Dynamo.Models
         {
             CustomNodeManager.MessageLogged += LogMessage;
 
-            var customNodeSearchRegistry = new HashSet<Guid>();
+            var customNodeSearchRegistry = new Dictionary<Guid, CustomNodeSearchElement>(); 
             CustomNodeManager.InfoUpdated += info =>
             {
-                if (customNodeSearchRegistry.Contains(info.FunctionId))
-                    return;
+                if (customNodeSearchRegistry.ContainsKey(info.FunctionId)) return;
 
-                customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
                 SearchModel.Add(searchElement);
+
+                customNodeSearchRegistry.Add(info.FunctionId, searchElement);
+
                 CustomNodeManager.InfoUpdated += newInfo =>
                 {
                     if (info.FunctionId == newInfo.FunctionId)
+                    {
                         searchElement.SyncWithCustomNodeInfo(newInfo);
+                        SearchModel.Update(searchElement);
+                    }
                 };
                 CustomNodeManager.CustomNodeRemoved += id =>
                 {
