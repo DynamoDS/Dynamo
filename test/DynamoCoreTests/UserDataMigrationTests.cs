@@ -22,6 +22,15 @@ namespace Dynamo
 
         [Test]
         [Category("UnitTests")]
+        public void FileVersionMajorMinorParts()
+        {
+            var fileVersion = new FileVersion(12, 34);
+            Assert.AreEqual(12, fileVersion.MajorPart);
+            Assert.AreEqual(34, fileVersion.MinorPart);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void FileVersionCompare_Sorting()
         {
             var fv1 = new FileVersion(0, 7);
