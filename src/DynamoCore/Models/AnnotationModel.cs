@@ -123,20 +123,13 @@ namespace Dynamo.Models
                 if (selectedNodes != null)
                 {
                     selectedNodes = value.ToList();
-                    //if (selectedNodes.Any())
-                    //{
-                    //    foreach (var node in selectedNodes)
-                    //    {
-                    //        node.PropertyChanged += OnNodePropertyChanged;                           
-                    //    }
-
-                    //    var selectedRegion = SelectRegionFromNodes(selectedNodes);
-                    //    this.Left = selectedRegion.X;
-                    //    this.Top = selectedRegion.Y;
-                    //    this.Width = selectedRegion.Width;
-                    //    this.Height = selectedRegion.Height;
-                    //    this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
-                    //}
+                    if (selectedNodes.Any())
+                    {
+                        foreach (var node in selectedNodes)
+                        {
+                            node.PropertyChanged += OnNodePropertyChanged;
+                        }
+                    }
                 }              
             }
         }
@@ -151,20 +144,13 @@ namespace Dynamo.Models
                 if (selectedNotes != null)
                 {
                     selectedNotes = value.ToList();
-                    //if (selectedNotes.Any())
-                    //{
-                    //    foreach (var note in selectedNotes)
-                    //    {
-                    //        note.PropertyChanged += OnNotePropertyChanged;
-                    //    }
-
-                    //    var selectedRegion = SelectRegionFromNotes(selectedNotes);
-                    //    this.Left = selectedRegion.X;
-                    //    this.Top = selectedRegion.Y;
-                    //    this.Width = selectedRegion.Width;
-                    //    this.Height = selectedRegion.Height;
-                    //    this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
-                    //}
+                    if (selectedNotes.Any())
+                    {
+                        foreach (var note in selectedNotes)
+                        {
+                            note.PropertyChanged += OnNotePropertyChanged;
+                        }
+                    }
                 }
             }
         }
@@ -189,139 +175,79 @@ namespace Dynamo.Models
             this.SelectedNodes = nodes.Where(x => x.IsSelected);
             this.SelectedNotes = notes.Where(x => x.IsSelected);
             this.AnnotationText = "<<Double click to edit the grouping>>";
-            SelectRegionFromNodes(this.SelectedNodes);
+            SelectRegionFromNodes(this.SelectedNodes, this.SelectedNotes);
         }
 
         private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {            
             if (!IsInDrag)
             {              
-                var selectedRegion = SelectRegionFromNodes(SelectedNodes);
-                this.Left = selectedRegion.X;
-                this.Top = selectedRegion.Y;
-                this.Width = selectedRegion.Width;
-                this.Height = selectedRegion.Height;
-                this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);                
+               SelectRegionFromNodes(SelectedNodes,SelectedNotes);                          
             }
         }
 
         private void OnNotePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (!IsInDrag)
-            {               
-                var selectedRegion = SelectRegionFromNotes(SelectedNotes);
-                this.Left = selectedRegion.X;
-                this.Top = selectedRegion.Y;
-                this.Width = selectedRegion.Width;
-                this.Height = selectedRegion.Height;
+            {
+                SelectRegionFromNodes(SelectedNodes, SelectedNotes);               
+            }
+        }
+
+        private void SelectRegionFromNodes(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
+        {
+            var nodesList = nodes.ToList();
+            var notesList = notes.ToList();
+
+            var combinedList = nodesList.Concat(notesList.Cast<ModelBase>()).ToList();
+          
+            //var enumerable = nodes as NodeModel[] ?? nodes.ToArray();
+            //var nodeModels = nodes as IList<NodeModel> ?? enumerable.ToList();
+            if (combinedList.Any())
+            {
+                var groupModels = combinedList.OrderBy(x => x.X).ToList();
+
+                var xGroupModels = groupModels.ToList().OrderBy(x => x.X).ToList();
+                var yGroupModels = groupModels.ToList().OrderBy(x => x.Y).ToList();
+
+                maxWidth = xGroupModels.Last().Width;
+                maxHeight = yGroupModels.Last().Height;
+
+                regionX = xGroupModels.First().X - 30;
+                regionY = yGroupModels.First().Y - 30;
+
+                xDistance = xGroupModels.Last().X - regionX;
+                yDistance = yGroupModels.Last().Y - regionY;
+
+                var region = new Rect2D
+                {
+                    X = regionX,
+                    Y = regionY,
+                    Width = xDistance + maxWidth,
+                    Height = yDistance + maxHeight
+                };
+
+                //special case for grouping just one node
+                //if (enumerable.Count() == 1)
+                //{
+                //    var node = nodeModels.ElementAt(0);
+                //    if (region.IntersectsWith(node.Rect))
+                //    {
+                //        var result = region;
+                //        result.Intersect(node.Rect);
+                //        region.Width = region.Width + 10;
+                //        region.Height = region.Height + 70;
+                //    }
+                //}
+
+                this.Left = region.X;
+                this.Top = region.Y;
+                this.Width = region.Width;
+                this.Height = region.Height;
                 this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
             }
         }
-
-        private Rect2D SelectRegionFromNodes(IEnumerable<NodeModel> nodes)
-        {
-            var test1 = nodes.ToList();
-            var test2 = this.SelectedNotes.ToList();
-
-            var test3 = test1.Cast<Object>().Concat(test2.Cast<Object>()).ToList();
-            
-            var enumerable = nodes as NodeModel[] ?? nodes.ToArray();
-            var nodeModels = nodes as IList<NodeModel> ?? enumerable.ToList();
-            if (nodes == null || !nodeModels.Any())
-                return new Rect2D(0, 0, 0, 0);
-
-            nodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
-           
-            var xNodeModels = nodeModels.ToList().OrderBy(x => x.X).ToList();
-            var yNodeModels = nodeModels.ToList().OrderBy(x => x.Y).ToList();
-
-            maxWidth = xNodeModels.Last().Width;
-            maxHeight = yNodeModels.Last().Height;
-
-            //maxWidth = Math.Max(maxWidth, xNodeModels.Last().Width);
-           // maxHeight = Math.Max(maxHeight, yNodeModels.Last().Height);
-
-            regionX = xNodeModels.First().X - 30;
-            regionY = yNodeModels.First().Y - 30;
-
-            //regionX = Math.Min(regionX, xNodeModels.First().X - 30);
-            //regionY = Math.Min(regionY, yNodeModels.First().Y - 30);
-
-            xDistance = xNodeModels.Last().X - regionX;
-            yDistance = yNodeModels.Last().Y - regionY;
-
-            //xDistance = Math.Max(xDistance,xNodeModels.Last().X - regionX);
-            //yDistance = Math.Max(yDistance, yNodeModels.Last().Y - regionY);
-           
-            var region = new Rect2D
-            {
-                X = regionX,
-                Y = regionY,
-                Width = xDistance + maxWidth,
-                Height = yDistance + maxHeight
-            };
-
-            //special case for grouping just one node
-            if (enumerable.Count() == 1)
-            {
-                var node = nodeModels.ElementAt(0);
-                if (region.IntersectsWith(node.Rect))
-                {
-                    var result = region;
-                    result.Intersect(node.Rect);
-                    region.Width = region.Width + 10;
-                    region.Height = region.Height + 70;
-                }
-            }
-         
-            return region;
-        }
-
-        private Rect2D SelectRegionFromNotes(IEnumerable<NoteModel> notes)
-        {
-            var enumerable = notes as NoteModel[] ?? notes.ToArray();
-            var noteModels = notes as IList<NoteModel> ?? enumerable.ToList();
-            if (notes == null || !noteModels.Any())
-                return new Rect2D(0,0,0,0);
-
-            noteModels = noteModels.ToList().OrderBy(x => x.X).ToList();
-
-            var xNoteModels = noteModels.ToList().OrderBy(x => x.X).ToList();
-            var yNoteModels = noteModels.ToList().OrderBy(x => x.Y).ToList();
-         
-            maxWidth = Math.Max(maxWidth, xNoteModels.Last().Width);
-            maxHeight = Math.Max(maxHeight, yNoteModels.Last().Height);
-
-            regionX = Math.Min(regionX, xNoteModels.First().X - 30);
-            regionY = Math.Min(regionY, yNoteModels.First().Y - 30);
-          
-            xDistance = Math.Max(xDistance,xNoteModels.Last().X - regionX);
-            yDistance = Math.Max(yDistance, yNoteModels.Last().Y - regionY);
-
-            var region = new Rect2D
-            {
-                X = regionX,
-                Y = regionY,
-                Width = xDistance + maxWidth,
-                Height = yDistance + maxHeight
-            };
-
-            //special case for grouping just one node
-            if (enumerable.Count() == 1)
-            {
-                var note = noteModels.ElementAt(0);
-                if (region.IntersectsWith(note.Rect))
-                {
-                    var result = region;
-                    result.Intersect(note.Rect);
-                    region.Width = region.Width + 10;
-                    region.Height = region.Height + 70;
-                }
-            }
-
-            return region;
-        }
-
+    
         private void DeserializeNodeModels()
         {
             var listOfNodes = new List<NodeModel>();
@@ -397,5 +323,5 @@ namespace Dynamo.Models
                 }
             }
         }
-    }
+    }   
 }

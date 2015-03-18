@@ -107,6 +107,12 @@ namespace Dynamo.Nodes
                             new DynCmd.SelectModelCommand(nodes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
                     }
 
+                    foreach (var notes in dataContext.SelectedNotes)
+                    {
+                        ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                            new DynCmd.SelectModelCommand(notes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
+                    }
+
                     var point = e.GetPosition(parentCanvas);
                     var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
                     var command = new DynCmd.DragSelectionCommand(point.AsDynamoType(), operation);

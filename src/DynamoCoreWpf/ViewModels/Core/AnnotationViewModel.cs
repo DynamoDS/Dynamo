@@ -104,6 +104,11 @@ namespace Dynamo.ViewModels
             get { return _annotationModel.SelectedNodes; }
         }
 
+        public IEnumerable<NoteModel> SelectedNotes
+        {
+            get { return _annotationModel.SelectedNotes; }
+        }
+
         public bool IsInDrag
         {
             get { return _annotationModel.IsInDrag; }
