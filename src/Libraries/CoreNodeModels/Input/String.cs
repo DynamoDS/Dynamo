@@ -18,7 +18,7 @@ namespace DSCoreNodesUI
             string value = updateValueParams.PropertyValue;
             if (name == "Value")
             {
-                Value = HttpUtility.HtmlEncode(value);
+                Value = value; 
                 return true;
             }
 
