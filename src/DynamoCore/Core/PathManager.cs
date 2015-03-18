@@ -201,7 +201,7 @@ namespace Dynamo.Core
             }
 
             // Current user specific directories.
-            userDataDir = GetUserDataFolder();
+            userDataDir = GetUserDataFolder(pathResolver);
 
             userDefinitions = Path.Combine(userDataDir, DefinitionsDirectoryName);
             logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
@@ -209,7 +209,7 @@ namespace Dynamo.Core
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
 
             // Common directories.
-            commonDataDir = GetCommonDataFolder();
+            commonDataDir = GetCommonDataFolder(pathResolver);
 
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
@@ -289,21 +289,27 @@ namespace Dynamo.Core
             }
         }
 
-        private string GetUserDataFolder()
+        private string GetUserDataFolder(IPathResolver pathResolver)
         {
-            var folder = Environment.SpecialFolder.ApplicationData;
-            return GetDynamoDataFolder(folder);
+            if (pathResolver != null && pathResolver.UserDataRootFolder != string.Empty)
+                return GetDynamoDataFolder(pathResolver.UserDataRootFolder);
+
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo"));
         }
 
-        private string GetCommonDataFolder()
+        private string GetCommonDataFolder(IPathResolver pathResolver)
         {
-            var folder = Environment.SpecialFolder.CommonApplicationData;
-            return GetDynamoDataFolder(folder);
+            if (pathResolver != null && pathResolver.CommonDataRootFolder != string.Empty)
+                return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
+
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo"));
         }
 
-        private string GetDynamoDataFolder(Environment.SpecialFolder folder)
+        private string GetDynamoDataFolder(string folder)
         {
-            return Path.Combine(Environment.GetFolderPath(folder), "Dynamo",
+            return Path.Combine(folder,
                 String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
 
