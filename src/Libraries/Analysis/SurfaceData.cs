@@ -237,9 +237,70 @@ namespace Analysis
                 }
             }
 
-            var simpleMesh = new SimpleMesh();
+            sw.Start();
+            var simpleMesh = ConstructGridMesh(uDiv, vDiv, points, normals, uvs);
+            DebugTime(sw, "adding triangles");
 
             sw.Start();
+            CullTrianglesNotOnSurface(simpleMesh);
+            DebugTime(sw, "culling");
+            
+            // Get the collection of triangles which have open edges
+            var openVertsStart = simpleMesh.Edges.Where(e => e.IsOpenEdge).Select(e=>e.Start).Distinct();
+            var openVerts = simpleMesh.Edges.Where(e => e.IsOpenEdge).Select(e => e.End).Distinct().Concat(openVertsStart);
+            var openTris = openVerts.SelectMany(v => v.Triangles).ToArray();
+
+            sw.Start();
+            var curves = Surface.PerimeterCurves();
+            var lineSegments = TesselateCurve(curves, uDiv);
+            curves.ForEach(c => c.Dispose());
+            DebugTime(sw, "line segments");
+
+            sw.Start();
+            var xSects = new List<Point>();
+            foreach (var line in lineSegments)
+            {
+                for (var i = openTris.Count() - 1; i >= 0; i--)
+                {
+                    var tri = openTris[i];
+                    var proj = line.PullOntoPlane(tri.Plane);
+
+                    //package.PushLineStripVertex(line.StartPoint.X, line.StartPoint.Y, line.StartPoint.Z);
+                    //package.PushLineStripVertex(line.EndPoint.X, line.EndPoint.Y, line.EndPoint.Z);
+                    //package.PushLineStripVertexColor(0,255,0,255);
+                    //package.PushLineStripVertexColor(0, 255, 0, 255);
+                    //package.PushLineStripVertexCount(2);
+
+                    foreach (var edge in tri.Edges)
+                    {
+                        var pt = edge.Intersect(proj);
+                        if (pt == null) continue;
+
+                        simpleMesh.SplitEdgeAtPoint(edge, pt, Surface.NormalAtPoint(pt), Surface.UVParameterAtPoint(pt));
+                        xSects.Add(pt);
+                    }
+
+                    proj.Dispose();
+                }
+            }
+
+            lineSegments.ForEach(seg => seg.Dispose());
+            DebugTime(sw, "intersecting");
+
+            sw.Start();
+            CullTrianglesNotOnSurface(simpleMesh);
+            Debug.WriteLine(sw, "culling");
+
+            PushIntersectionPointsIntoPackage(package, xSects);
+            PushMeshTrianglesIntoPackage(package, simpleMesh);
+            PushMeshEdgesIntoPackage(package, simpleMesh);
+        }
+
+        private static SimpleMesh ConstructGridMesh(
+            int uDiv, int vDiv, Point[,] points, Vector[,] normals, UV[,] uvs)
+        {
+            var simpleMesh = new SimpleMesh();
+
             for (var i = 0; i < uDiv; i += 1)
             {
                 for (var j = 0; j < vDiv; j += 1)
@@ -263,104 +324,21 @@ namespace Analysis
                     simpleMesh.AddTriangle(a, c, d, an, cn, dn, auv, cuv, duv);
                 }
             }
-            DebugTime(sw, "adding triangles.");
 
-            sw.Start();
-            // Cull triangles that aren't fully on the surface
-            var badTris = simpleMesh.Triangles.Where(tri => tri.DoesNotHaveAllPointsOnSurface(Surface)).ToArray();
-            for (var i = badTris.Count() - 1; i >= 0; i--)
-            {
-                simpleMesh.RemoveTriangle(badTris[i]);
-            }
-            DebugTime(sw, "culling.");
-            
-            // Get the collection of triangles which have open edges
-            var openVertsStart = simpleMesh.Edges.Where(e => e.IsOpenEdge).Select(e=>e.Start).Distinct();
-            var openVerts = simpleMesh.Edges.Where(e => e.IsOpenEdge).Select(e => e.End).Distinct().Concat(openVertsStart);
+            return simpleMesh;
+        }
 
-            var openTris = openVerts.SelectMany(v => v.Triangles).ToArray();
-            //var openTris = simpleMesh.Triangles.Where(tri => tri.Edges.Any(e => e.IsOpenEdge)).ToArray();
-
-            var xSects = new List<Point>();
-
-            sw.Start();
-            // Tesselate the Surface's perimeter curves.
-            var curves = Surface.PerimeterCurves();
-
-            var segPoints = new List<Tuple<Point,Point>>();
-            foreach (var curve in curves)
-            {
-                if (curve is Line)
-                {
-                    //lineSegments.Add(curve);
-                    segPoints.Add(new Tuple<Point, Point>(curve.StartPoint, curve.EndPoint));
-                }
-                else
-                {
-                    var step = 1.0 / 30;
-                    for (var t = 0.0; t < 1.0; t += step)
-                    {
-                        // Create a line segment
-                        var a = curve.PointAtParameter(t);
-                        var b = curve.PointAtParameter(t + step);
-                        //var line = Line.ByStartPointEndPoint(a, b);
-                        //lineSegments.Add(line);
-                        segPoints.Add(new Tuple<Point, Point>(a,b));
-                    }
-                }
-            }
-            
-            DebugTime(sw, "line segments.");
-
-            sw.Start();
-            foreach (var set in segPoints)
-            {
-                // Test against each open tri's edges
-                for (var i = openTris.Count() - 1; i >= 0; i--)
-                {
-                    var tri = openTris[i];
-
-                    //var proj = line.PullOntoPlane(tri.Plane);
-                    var a = set.Item1.Project(tri.Plane, tri.Plane.Normal);
-                    var b = set.Item2.Project(tri.Plane, tri.Plane.Normal);
-                    //package.PushLineStripVertex(line.StartPoint.X, line.StartPoint.Y, line.StartPoint.Z);
-                    //package.PushLineStripVertex(line.EndPoint.X, line.EndPoint.Y, line.EndPoint.Z);
-                    //package.PushLineStripVertexColor(0,255,0,255);
-                    //package.PushLineStripVertexColor(0, 255, 0, 255);
-                    //package.PushLineStripVertexCount(2);
-
-                    foreach (var edge in tri.Edges)
-                    {
-                        var pt = edge.Intersect(Line.ByStartPointEndPoint(a,b));
-                        if (pt == null) continue;
-
-                        simpleMesh.SplitEdgeAtPoint(edge, pt, Surface.NormalAtPoint(pt), Surface.UVParameterAtPoint(pt));
-                        xSects.Add(pt);
-                    }
-
-                    proj.Dispose();
-                }
-            }
-
-            curves.ForEach(c=>c.Dispose());
-            lineSegments.ForEach(seg => seg.Dispose());
-
-            DebugTime(sw, "intersecting");
-
-            sw.Start();
-            badTris = simpleMesh.Triangles.Where(tri => tri.DoesNotHaveAllPointsOnSurface(Surface)).ToArray();
-            for (var i = badTris.Count() - 1; i >= 0; i--)
-            {
-                simpleMesh.RemoveTriangle(badTris[i]);
-            }
-            Debug.WriteLine(sw, "culling");
-
+        private static void PushIntersectionPointsIntoPackage(IRenderPackage package, List<Point> xSects)
+        {
             foreach (var xSect in xSects)
             {
                 package.PushPointVertex(xSect.X, xSect.Y, xSect.Z);
                 package.PushPointVertexColor(255, 0, 0, 255);
             }
+        }
 
+        private static void PushMeshTrianglesIntoPackage(IRenderPackage package, SimpleMesh simpleMesh)
+        {
             foreach (var tri in simpleMesh.Triangles)
             {
                 foreach (var v in tri.Vertices)
@@ -371,7 +349,10 @@ namespace Analysis
                     package.PushTriangleVertexColor(0, 0, 0, 255);
                 }
             }
+        }
 
+        private static void PushMeshEdgesIntoPackage(IRenderPackage package, SimpleMesh simpleMesh)
+        {
             foreach (var edge in simpleMesh.Edges)
             {
                 var a = edge.Start.Point;
@@ -389,9 +370,45 @@ namespace Analysis
                     package.PushLineStripVertexColor(100, 100, 100, 255);
                     package.PushLineStripVertexColor(100, 100, 100, 255);
                 }
-                
+
                 package.PushLineStripVertexCount(2);
             }
+        }
+
+        private static List<Line> TesselateCurve(IEnumerable<Curve> curves, int div)
+        {
+            var lineSegments = new List<Line>();
+            foreach (var curve in curves)
+            {
+                var line = curve as Line;
+                if (line != null)
+                {
+                    lineSegments.Add(line);
+                }
+                else
+                {
+                    var step = 1.0/div;
+                    for (var t = 0.0; t < 1.0; t += step)
+                    {
+                        // Create a line segment
+                        var a = curve.PointAtParameter(t);
+                        var b = curve.PointAtParameter(t + step);
+                        line = Line.ByStartPointEndPoint(a, b);
+                        lineSegments.Add(line);
+                        lineSegments.Add(line);
+                    }
+                }
+            }
+            return lineSegments;
+        }
+
+        private void CullTrianglesNotOnSurface(SimpleMesh simpleMesh)
+        {
+            // Cull triangles that aren't fully on the surface
+            var badTris =
+                simpleMesh.Triangles.Where(tri => tri.DoesNotHaveAllPointsOnSurface(Surface)).ToArray();
+            for (var i = badTris.Count() - 1; i >= 0; i--)
+                simpleMesh.RemoveTriangle(badTris[i]);
         }
     }
 
