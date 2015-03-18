@@ -60,19 +60,51 @@ namespace Dynamo.Core
     /// <summary>
     /// Base class for all versions of Dynamo classes relating to
     /// migrating preferences, packages and definitions from older versions
+    /// For version specific migration, derived classes will override base class methods
+    /// The naming convention for derived classes is "DynamoMigrator{MajorVersion}{MinorVersion}"
+    /// For e.g. derived migrator class for verion 0.7 is "DynamoMigrator07"
+    /// Derived migrator class for version 0.8 is "DynamoMigrator08" and so on.
     /// </summary>
     internal class DynamoMigratorBase
     {
         protected readonly string rootFolder;
 
+        #region virtual properties
         /// <summary>
         /// Returns the path to the user AppData directory for the current version
         /// </summary>
-        protected string CurrentVersionPath
+        protected virtual string CurrentVersionPath
         {
             get
             {
                 return Path.Combine(rootFolder, String.Format("{0}.{1}", DynamoVersion.MajorPart, DynamoVersion.MinorPart));
+            }
+        }
+
+        protected virtual string PackagesDirectory
+        {
+            get
+            {
+                return Path.Combine(this.CurrentVersionPath, PathManager.PackagesDirectoryName);
+            }
+        }
+
+        protected virtual string DefinitionsDirectory
+        {
+            get
+            {
+                return Path.Combine(this.CurrentVersionPath, PathManager.DefinitionsDirectoryName);
+            }
+        }
+
+        protected virtual string PreferenceSettingsFilePath
+        {
+            get
+            {
+                const string preferenceSettingsFileName = PathManager.PreferenceSettingsFileName;
+                var preferenceSettingsFilePath = Path.Combine(CurrentVersionPath, preferenceSettingsFileName);
+
+                return File.Exists(preferenceSettingsFilePath) ? preferenceSettingsFilePath : string.Empty;
             }
         }
 
@@ -86,10 +118,97 @@ namespace Dynamo.Core
             }
         }
 
+        #endregion
+
         protected DynamoMigratorBase(string rootFolder)
         {
             this.rootFolder = rootFolder;
         }
+
+        #region virtual methods
+
+        /// <summary>
+        /// Reads preference settings from input file and deserializes it into 
+        /// PreferenceSettings object in memory
+        /// This function can be overridden by version specific migrator classes
+        /// </summary>
+        /// <param name="sourceMigrator"> source migrator version from which to migrate from </param>
+        /// <returns> returns the deserialized settings object </returns>
+        protected virtual PreferenceSettings WritePreferences(DynamoMigratorBase sourceMigrator)
+        {
+            string preferenceSettingsFilePath = sourceMigrator.PreferenceSettingsFilePath;
+            PreferenceSettings settings = null;
+            if (string.IsNullOrEmpty(preferenceSettingsFilePath))
+                return null;
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(PreferenceSettings));
+
+                using (var fs = new FileStream(preferenceSettingsFilePath, FileMode.Open, FileAccess.Read))
+                {
+                    settings = serializer.Deserialize(fs) as PreferenceSettings;
+                    fs.Close(); // Release file lock
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return settings;
+        }
+
+        /// <summary>
+        /// Migrates packages from source migrator version to current version
+        /// This function can be overridden by version specific migrator classes
+        /// </summary>
+        /// <param name="sourceMigrator"> source migrator version from which to migrate from </param>
+        protected virtual void MigratePackages(DynamoMigratorBase sourceMigrator)
+        {
+            Copy(sourceMigrator.PackagesDirectory, this.PackagesDirectory);
+        }
+
+        /// <summary>
+        /// Migrates custom node definitions from source migrator version to current version
+        /// This function can be overridden by version specific migrator classes
+        /// </summary>
+        /// <param name="sourceMigrator"> source migrator version from which to migrate from </param>
+        protected virtual void MigrateDefinitions(DynamoMigratorBase sourceMigrator)
+        {
+            Copy(sourceMigrator.DefinitionsDirectory, this.DefinitionsDirectory);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Migrates preference settings and copies packages and custom node 
+        /// definitions from the last but one version to the currently installed Dynamo version
+        /// </summary>
+        /// <returns> preference settings read from preference settings file </returns>
+        public static PreferenceSettings MigrateBetweenDynamoVersions(IPathManager pathManager)
+        {
+            var userDataDir = pathManager.UserDataDirectory;
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            var currentVersionInfo = FileVersionInfo.GetVersionInfo(assemblyPath);
+
+            // No migration required if the current version is <= version 0.7
+            if (currentVersionInfo.FileMajorPart == 0 &&
+                currentVersionInfo.FileMinorPart <= 7)
+                return null;
+
+            var versions = GetInstalledVersions(userDataDir).ToList();
+            if (versions.Count() < 2)
+                return null; // No need for migration
+
+            var previousVersion = versions[1];
+            var currentVersion = versions[0];
+            Debug.Assert(currentVersion.MajorPart == currentVersionInfo.FileMajorPart
+                && currentVersion.MinorPart == currentVersionInfo.FileMinorPart);
+
+            return Migrate(userDataDir, previousVersion, currentVersion);
+        }
+
+        #region static APIs
 
         /// <summary>
         /// Get a list of file version objects given a root folder. Assuming the 
@@ -115,13 +234,13 @@ namespace Dynamo.Core
         /// thrown if rootFolder is null or an empty string.</exception>
         /// <exception cref="System.IO.DirectoryNotFoundException">This exception
         /// is thrown if rootFolder points to an invalid directory.</exception>
-        public static IEnumerable<FileVersion> GetInstalledVersions(string rootFolder)
+        internal static IEnumerable<FileVersion> GetInstalledVersions(string rootFolder)
         {
-            if(rootFolder == null)
+            if (rootFolder == null)
                 throw new ArgumentNullException("rootFolder");
 
             var fileVersions = new List<FileVersion>();
-            if(!Directory.Exists(rootFolder))
+            if (!Directory.Exists(rootFolder))
                 throw new DirectoryNotFoundException("rootFolder");
 
             var subDirs = Directory.EnumerateDirectories(rootFolder);
@@ -130,11 +249,11 @@ namespace Dynamo.Core
                 var dirName = new DirectoryInfo(subDir).Name;
 
                 var versions = dirName.Split('.');
-                if(versions.Length < 2)
+                if (versions.Length < 2)
                     continue;
 
                 int majorVersion;
-                if (!Int32.TryParse(versions[0], out majorVersion)) 
+                if (!Int32.TryParse(versions[0], out majorVersion))
                     continue;
 
                 int minorVersion;
@@ -149,122 +268,46 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Reads the preference settings for the currently installed Dynamo version
+        /// Given a root user data directory, this migrates user preferences,
+        /// packages and custom node definition files from one installed version
+        /// into another
         /// </summary>
-        /// <returns> preference settings full file path </returns>
-        protected virtual string ReadPreferences()
-        {
-            const string preferenceSettingsFileName = PathManager.PreferenceSettingsFileName;
-            var preferenceSettingsFilePath = Path.Combine(CurrentVersionPath, preferenceSettingsFileName);
-
-            return File.Exists(preferenceSettingsFilePath) ? preferenceSettingsFilePath : string.Empty;
-        }
-
-        /// <summary>
-        /// Reads preference settings from input file and deserializes it into 
-        /// PreferenceSettings object in memory
-        /// </summary>
-        /// <param name="preferenceSettingsFilePath"></param>
-        /// <returns> returns the deserialized settings object </returns>
-        protected virtual PreferenceSettings WritePreferences(string preferenceSettingsFilePath)
-        {
-            PreferenceSettings settings = null;
-            if (string.IsNullOrEmpty(preferenceSettingsFilePath))
-                return null;
-
-            try
-            {
-                var serializer = new XmlSerializer(typeof(PreferenceSettings));
-
-                using (var fs = new FileStream(preferenceSettingsFilePath, FileMode.Open, FileAccess.Read))
-                {
-                    settings = serializer.Deserialize(fs) as PreferenceSettings;
-                    fs.Close(); // Release file lock
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
-            return settings;
-        }
-
-        /// <summary>
-        /// Migrates preference settings and copies packages and custom node 
-        /// definitions from older versions to the currently installed Dynamo version
-        /// </summary>
+        /// <param name="userDataDir"> root user data directory </param>
+        /// <param name="fromVersion"> source Dynamo version from which to migrate </param>
+        /// <param name="toVersion"> target Dynamo version into which to migrate </param>
         /// <returns> preference settings read from preference settings file </returns>
-        public static PreferenceSettings MigrateBetweenDynamoVersions(IPathManager pathManager)
+        internal static PreferenceSettings Migrate(string userDataDir, FileVersion fromVersion, FileVersion toVersion)
         {
-            var rootFolder = pathManager.UserDataDirectory;
-            var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var currentVersionInfo = FileVersionInfo.GetVersionInfo(assemblyPath);
-
-            // No migration required if the current version is <= version 0.7
-            if (currentVersionInfo.FileMajorPart == 0 &&
-                currentVersionInfo.FileMinorPart <= 7)
-                return null;
-
-            var versions = GetInstalledVersions(rootFolder);
-
-            var previousVersion = FindPreviousVersion(rootFolder, currentVersionInfo);
-
-            // No migration required if no previous version exists
-            if (previousVersion.MajorPart == currentVersionInfo.FileMajorPart &&
-                previousVersion.MinorPart == currentVersionInfo.FileMinorPart)
-                return null;
-
             // Create concrete DynamoMigratorBase object using previousVersion and reflection
-            var sourceMigrator = CreateMigrator(rootFolder, previousVersion.MajorPart, previousVersion.MinorPart);
+            var sourceMigrator = CreateMigrator(userDataDir, fromVersion);
             Debug.Assert(sourceMigrator != null);
-            var preferenceSettingsFile = sourceMigrator.ReadPreferences();
 
             // get migrator object for current version
-            var targetMigrator = CreateMigrator(rootFolder, currentVersionInfo.FileMajorPart, currentVersionInfo.FileMinorPart);
+            var targetMigrator = CreateMigrator(userDataDir, toVersion);
             Debug.Assert(targetMigrator != null);
-            var preferenceSettings = targetMigrator.WritePreferences(preferenceSettingsFile);
+            var preferenceSettings = targetMigrator.WritePreferences(sourceMigrator);
 
-            var sourceDir = Path.Combine(sourceMigrator.CurrentVersionPath, PathManager.PackagesDirectoryName);
-            var targetDir = Path.Combine(targetMigrator.CurrentVersionPath, PathManager.PackagesDirectoryName);
-            Copy(sourceDir, targetDir);
+            targetMigrator.MigratePackages(sourceMigrator);
 
-            sourceDir = Path.Combine(sourceMigrator.CurrentVersionPath, PathManager.DefinitionsDirectoryName);
-            targetDir = Path.Combine(targetMigrator.CurrentVersionPath, PathManager.DefinitionsDirectoryName);
-            Copy(sourceDir, targetDir);
+            targetMigrator.MigrateDefinitions(sourceMigrator);
 
             return preferenceSettings;
         }
 
-        private static FileVersion FindPreviousVersion(string rootFolder, FileVersionInfo currentVersionInfo)
+        /// <summary>
+        /// Given a root user directory, this creates an instance of the migrator
+        /// depending on the input version using reflection. Returns the default
+        /// migrator (DynamoMigratorBase) if version specific migrator does not exist
+        /// </summary>
+        /// <param name="userDataDir"> root user data directory </param>
+        /// <param name="version"> input version for which migrator instance is created </param>
+        /// <returns> instance of migrator specific to input version. </returns>
+        internal static DynamoMigratorBase CreateMigrator(string userDataDir, FileVersion version)
         {
-            int fileMajorPart = currentVersionInfo.FileMajorPart;
-            int fileMinorPart = currentVersionInfo.FileMinorPart;
-            while (fileMajorPart >= 0 && fileMinorPart > 7)
-            {
-                if (fileMinorPart == 0)
-                {
-                    fileMinorPart = 9;
-                    fileMajorPart--;
-                }
-                else
-                {
-                    fileMinorPart--;
-                }
-                var previousVersionPath = Path.Combine(rootFolder, String.Format("{0}.{1}", fileMajorPart, fileMinorPart));
-                if (Directory.Exists(previousVersionPath))
-                    break;
-
-            }
-            return new FileVersion(fileMajorPart, fileMinorPart);
-        }
-
-        private static DynamoMigratorBase CreateMigrator(string rootFolder, int majorVersion, int minorVersion)
-        {
-            var className = "Dynamo.Core.DynamoMigrator" + majorVersion + minorVersion;
+            var className = "Dynamo.Core.DynamoMigrator" + version.MajorPart + version.MinorPart;
             const string baseClass = "Dynamo.Core.DynamoMigratorBase";
 
-            var args = new object[] { rootFolder };
+            var args = new object[] { userDataDir };
             var type = Assembly.GetExecutingAssembly().GetType(className);
             var baseType = Assembly.GetExecutingAssembly().GetType(baseClass);
 
@@ -272,9 +315,13 @@ namespace Dynamo.Core
                 return (DynamoMigratorBase)Activator.CreateInstance(type, args);
             else
             {
-                return (DynamoMigratorBase) Activator.CreateInstance(baseType);
+                return (DynamoMigratorBase) Activator.CreateInstance(baseType, args);
             }
         }
+
+        #endregion
+
+        #region private methods
 
         // Reference: https://msdn.microsoft.com/en-us/library/system.io.directoryinfo.aspx
         private static void Copy(string sourceDirectory, string targetDirectory)
@@ -307,6 +354,8 @@ namespace Dynamo.Core
             }
         }
 
+        #endregion
+
     }
 
     internal class DynamoMigrator07 : DynamoMigratorBase
@@ -316,8 +365,18 @@ namespace Dynamo.Core
         protected DynamoMigrator07(string rootFolder) : base(rootFolder)
         {
         }
-        
-        protected override PreferenceSettings WritePreferences(string preferenceSettingsFilePath)
+
+        protected override PreferenceSettings WritePreferences(DynamoMigratorBase sourceMigrator)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void MigratePackages(DynamoMigratorBase sourceMigrator)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void MigrateDefinitions(DynamoMigratorBase sourceMigrator)
         {
             throw new NotImplementedException();
         }
@@ -331,14 +390,22 @@ namespace Dynamo.Core
         {
         }
 
-        protected override string ReadPreferences()
+        // These overridden functions are strictly not required as they simply duplicate base class functionality
+        // They are implemented here simply to serve as templates for further class extensions from DynamoMigratorBase
+        protected override PreferenceSettings WritePreferences(DynamoMigratorBase sourceMigrator)
         {
-            throw new NotImplementedException();
+            return base.WritePreferences(sourceMigrator);
         }
 
-        protected override PreferenceSettings WritePreferences(string preferenceSettingsFilePath)
+        protected override void MigratePackages(DynamoMigratorBase sourceMigrator)
         {
-            return base.WritePreferences(preferenceSettingsFilePath);
+            base.MigratePackages(sourceMigrator);
+        }
+
+        protected override void MigrateDefinitions(DynamoMigratorBase sourceMigrator)
+        {
+            base.MigrateDefinitions(sourceMigrator);
         }
     }
+
 }

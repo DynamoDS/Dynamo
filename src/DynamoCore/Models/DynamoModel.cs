@@ -455,8 +455,6 @@ namespace Dynamo.Models
 
             if (this.PreferenceSettings.IsFirstRun)
             {
-                // Get root folder - this will be different for DynamoPro
-                var rootFolder = pathManager.UserDataDirectory;
                 var preferenceSettings = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager);
 
                 if(preferenceSettings != null)
