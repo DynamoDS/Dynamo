@@ -19,7 +19,7 @@ namespace Dynamo.Search.SearchElements
 
         private readonly HashSet<string> keywords = new HashSet<string>();
         private string fullCategoryName;
-        protected string description;
+        private string description;
         private string name;
         private SearchElementGroup group;
         private string assembly;

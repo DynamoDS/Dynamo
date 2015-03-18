@@ -22,12 +22,6 @@ namespace Dynamo.Search.SearchElements
 
                 return functionDescriptor.Description;
             }
-            set
-            {
-                if (value == functionDescriptor.Description) return;
-                description = value;
-                OnPropertyChanged("Description");
-            }
         }
 
         /// <summary>
