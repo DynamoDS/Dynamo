@@ -34,10 +34,9 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// This property represents the root folder where user specific data files 
         /// are stored. If this property returns a null or empty string, then 
-        /// PathManager falls back to using "%ProgramData%\Dynamo". If this property
-        /// returns a string that does not represent a valid folder, a 
-        /// DirectoryNotFoundException is thrown. Note that this path should not 
-        /// include the version number as it will be appended by PathManager.
+        /// PathManager falls back to using "%ProgramData%\Dynamo". Note that this 
+        /// path should not include the version number as it will be appended by
+        /// PathManager.
         /// </summary>
         string UserDataRootFolder { get; }
 
@@ -45,10 +44,8 @@ namespace Dynamo.Interfaces
         /// This property represents the root folder where application common data 
         /// files (i.e. shared among all users on the same machine) are stored. If 
         /// this property returns a null or empty string, then PathManager falls 
-        /// back to using "%AppData%\Dynamo". If this property returns a string 
-        /// that does not represent a valid folder, a DirectoryNotFoundException 
-        /// is thrown. Note that this path should not include the version number 
-        /// as it will be appended by PathManager.
+        /// back to using "%AppData%\Dynamo". Note that this path should not 
+        /// include the version number as it will be appended by PathManager.
         /// </summary>
         string CommonDataRootFolder { get; }
     }
