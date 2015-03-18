@@ -313,10 +313,8 @@ namespace Dynamo.Core
 
             if(type != null)
                 return (DynamoMigratorBase)Activator.CreateInstance(type, args);
-            else
-            {
-                return (DynamoMigratorBase) Activator.CreateInstance(baseType, args);
-            }
+            
+            return new DynamoMigratorBase(userDataDir);
         }
 
         #endregion
@@ -362,6 +360,8 @@ namespace Dynamo.Core
     {
         protected override FileVersion DynamoVersion { get{return new FileVersion(0, 7);} }
 
+        // Constructors of classes derived from DynamoMigratorBase need to be public
+        // as their instances are created through reflection
         public DynamoMigrator07(string rootFolder) : base(rootFolder)
         {
         }
