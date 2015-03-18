@@ -37,12 +37,24 @@ namespace Dynamo.Core
                    thisVersion.MajorPart == otherVersion.MajorPart && thisVersion.MinorPart > otherVersion.MinorPart;
         }
 
+        public static bool operator >=(FileVersion thisVersion, FileVersion otherVersion)
+        {
+            return thisVersion > otherVersion ||
+                   thisVersion.MajorPart == otherVersion.MajorPart && thisVersion.MinorPart == otherVersion.MinorPart;
+        }
+
+        public static bool operator <=(FileVersion thisVersion, FileVersion otherVersion)
+        {
+            return thisVersion < otherVersion ||
+                   thisVersion.MajorPart == otherVersion.MajorPart && thisVersion.MinorPart == otherVersion.MinorPart;
+        }
+
         public int CompareTo(FileVersion other)
         {
             if (this > other)
-                return 1;
-            if (this < other)
                 return -1;
+            if (this < other)
+                return 1;
             return 0;
         }
     }
@@ -82,23 +94,44 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Returns a list of all the installed versions of Dynamo in the system
+        /// Get a list of file version objects given a root folder. Assuming the 
+        /// following folders exist:
+        /// 
+        ///     e:\some\path\0.4
+        ///     e:\some\path\0.75
+        ///     e:\some\path\1.82
+        /// 
+        /// Calling this method with "e:\\some\\path" would return an ordered 
+        /// list in the following way (from largest number to smallest number):
+        /// 
+        ///     { FileVersion(1, 82), FileVersion(0, 75), FileVersion(0, 4) }
+        /// 
         /// </summary>
-        /// <param name="rootFolder"> full path to user data folder </param>
-        /// <returns></returns>
+        /// <param name="rootFolder">The root folder under which versioned sub-
+        /// folders are expected to be found. This argument must represent a valid
+        /// local directory.</param>
+        /// <returns>Return a list of FileVersion objects, ordered by newest 
+        /// version to the oldest version. If no versioned sub-folder exists, then 
+        /// the returned list is empty.</returns>
+        /// <exception cref="System.ArgumentNullException">This exception is 
+        /// thrown if rootFolder is null or an empty string.</exception>
+        /// <exception cref="System.IO.DirectoryNotFoundException">This exception
+        /// is thrown if rootFolder points to an invalid directory.</exception>
         public static IEnumerable<FileVersion> GetInstalledVersions(string rootFolder)
         {
             if(rootFolder == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException("rootFolder");
 
             var fileVersions = new List<FileVersion>();
             if(!Directory.Exists(rootFolder))
-                throw new DirectoryNotFoundException();
+                throw new DirectoryNotFoundException("rootFolder");
 
             var subDirs = Directory.EnumerateDirectories(rootFolder);
             foreach (var subDir in subDirs)
             {
-                var versions = subDir.Split('.');
+                var dirName = new DirectoryInfo(subDir).Name;
+
+                var versions = dirName.Split('.');
                 if(versions.Length < 2)
                     continue;
 
