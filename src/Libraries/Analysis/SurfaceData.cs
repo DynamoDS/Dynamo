@@ -175,7 +175,7 @@ namespace Analysis
             // the surface. 
             //Surface.Tessellate(package, tol, maxGridLines);
 
-            GridTesselate(Surface, package, 10, 10);
+            GridTesselate(Surface, package, 30, 30);
 
             DebugTime(sw, "Ellapsed for tessellation.");
 
@@ -214,6 +214,8 @@ namespace Analysis
 
         private void GridTesselate(Surface surface, IRenderPackage package, int uDiv, int vDiv)
         {
+            var sw = new Stopwatch();
+
             var points = new Point[uDiv+1, vDiv+1];
             var normals = new Vector[uDiv+1, vDiv+1];
             var uvs = new UV[uDiv+1, vDiv+1];
@@ -237,6 +239,7 @@ namespace Analysis
 
             var simpleMesh = new SimpleMesh();
 
+            sw.Start();
             for (var i = 0; i < uDiv; i += 1)
             {
                 for (var j = 0; j < vDiv; j += 1)
@@ -260,12 +263,102 @@ namespace Analysis
                     simpleMesh.AddTriangle(a, c, d, an, cn, dn, auv, cuv, duv);
                 }
             }
+            DebugTime(sw, "adding triangles.");
 
+            sw.Start();
             // Cull triangles that aren't fully on the surface
-            var badTris = simpleMesh.Triangles.Where(tri=>tri.DoesNotHaveAllPointsOnSurface(Surface)).ToArray();
+            var badTris = simpleMesh.Triangles.Where(tri => tri.DoesNotHaveAllPointsOnSurface(Surface)).ToArray();
             for (var i = badTris.Count() - 1; i >= 0; i--)
             {
                 simpleMesh.RemoveTriangle(badTris[i]);
+            }
+            DebugTime(sw, "culling.");
+            
+            // Get the collection of triangles which have open edges
+            var openVertsStart = simpleMesh.Edges.Where(e => e.IsOpenEdge).Select(e=>e.Start).Distinct();
+            var openVerts = simpleMesh.Edges.Where(e => e.IsOpenEdge).Select(e => e.End).Distinct().Concat(openVertsStart);
+
+            var openTris = openVerts.SelectMany(v => v.Triangles).ToArray();
+            //var openTris = simpleMesh.Triangles.Where(tri => tri.Edges.Any(e => e.IsOpenEdge)).ToArray();
+
+            var xSects = new List<Point>();
+
+            sw.Start();
+            // Tesselate the Surface's perimeter curves.
+            var curves = Surface.PerimeterCurves();
+
+            var segPoints = new List<Tuple<Point,Point>>();
+            foreach (var curve in curves)
+            {
+                if (curve is Line)
+                {
+                    //lineSegments.Add(curve);
+                    segPoints.Add(new Tuple<Point, Point>(curve.StartPoint, curve.EndPoint));
+                }
+                else
+                {
+                    var step = 1.0 / 30;
+                    for (var t = 0.0; t < 1.0; t += step)
+                    {
+                        // Create a line segment
+                        var a = curve.PointAtParameter(t);
+                        var b = curve.PointAtParameter(t + step);
+                        //var line = Line.ByStartPointEndPoint(a, b);
+                        //lineSegments.Add(line);
+                        segPoints.Add(new Tuple<Point, Point>(a,b));
+                    }
+                }
+            }
+            
+            DebugTime(sw, "line segments.");
+
+            sw.Start();
+            foreach (var set in segPoints)
+            {
+                // Test against each open tri's edges
+                for (var i = openTris.Count() - 1; i >= 0; i--)
+                {
+                    var tri = openTris[i];
+
+                    //var proj = line.PullOntoPlane(tri.Plane);
+                    var a = set.Item1.Project(tri.Plane, tri.Plane.Normal);
+                    var b = set.Item2.Project(tri.Plane, tri.Plane.Normal);
+                    //package.PushLineStripVertex(line.StartPoint.X, line.StartPoint.Y, line.StartPoint.Z);
+                    //package.PushLineStripVertex(line.EndPoint.X, line.EndPoint.Y, line.EndPoint.Z);
+                    //package.PushLineStripVertexColor(0,255,0,255);
+                    //package.PushLineStripVertexColor(0, 255, 0, 255);
+                    //package.PushLineStripVertexCount(2);
+
+                    foreach (var edge in tri.Edges)
+                    {
+                        var pt = edge.Intersect(Line.ByStartPointEndPoint(a,b));
+                        if (pt == null) continue;
+
+                        simpleMesh.SplitEdgeAtPoint(edge, pt, Surface.NormalAtPoint(pt), Surface.UVParameterAtPoint(pt));
+                        xSects.Add(pt);
+                    }
+
+                    proj.Dispose();
+                }
+            }
+
+            curves.ForEach(c=>c.Dispose());
+            lineSegments.ForEach(seg => seg.Dispose());
+
+            DebugTime(sw, "intersecting");
+
+            sw.Start();
+            badTris = simpleMesh.Triangles.Where(tri => tri.DoesNotHaveAllPointsOnSurface(Surface)).ToArray();
+            for (var i = badTris.Count() - 1; i >= 0; i--)
+            {
+                simpleMesh.RemoveTriangle(badTris[i]);
+            }
+            Debug.WriteLine(sw, "culling");
+
+            foreach (var xSect in xSects)
+            {
+                package.PushPointVertex(xSect.X, xSect.Y, xSect.Z);
+                package.PushPointVertexColor(255, 0, 0, 255);
             }
 
             foreach (var tri in simpleMesh.Triangles)
@@ -278,6 +371,7 @@ namespace Analysis
                     package.PushTriangleVertexColor(0, 0, 0, 255);
                 }
             }
+
             foreach (var edge in simpleMesh.Edges)
             {
                 var a = edge.Start.Point;
@@ -343,6 +437,28 @@ namespace Analysis
             tri.Edges.Add(ec);
         }
 
+        public void AddTriangle(Vertex a, Vertex b, Vertex c)
+        {
+            // Create the triangle
+            var tri = new Triangle(a, b, c);
+            Triangles.Add(tri);
+
+            // Create edges
+            var ea = FindOrCreateEdge(a, b);
+            var eb = FindOrCreateEdge(b, c);
+            var ec = FindOrCreateEdge(c, a);
+
+            // Link edges -> triangle
+            ea.Triangles.Add(tri);
+            eb.Triangles.Add(tri);
+            ec.Triangles.Add(tri);
+
+            // Link triangle -> edges
+            tri.Edges.Add(ea);
+            tri.Edges.Add(eb);
+            tri.Edges.Add(ec);
+        }
+
         public void RemoveTriangle(Triangle triangle)
         {
             // Unlink from edges and delete orphans
@@ -366,6 +482,33 @@ namespace Analysis
             }
 
             Triangles.Remove(triangle);
+        }
+
+        public void SplitEdgeAtPoint(Edge edge, Point pt, Vector normal, UV uv)
+        {
+            // Create a new vertex
+            var newVertex = new Vertex(pt, normal, uv);
+            Vertices.Add(newVertex);
+
+            Edge e1, e2, e3, e4;
+            Triangle t1, t2;
+
+            for(var i=0; i<edge.Triangles.Count(); i++)
+            {
+                var tri = edge.Triangles[i];
+
+                //// Find the far vertex on the triangle
+                var farVert = tri.Vertices.FirstOrDefault(v => v != edge.Start && v != edge.End);
+                
+                AddTriangle(newVertex, edge.End, farVert);
+                AddTriangle(newVertex, farVert, edge.Start);
+            }
+
+            // Remove the old trianges
+            for (var i = edge.Triangles.Count() - 1; i >= 0; i--)
+            {
+                RemoveTriangle(edge.Triangles[i]);
+            }
         }
 
         private Edge FindOrCreateEdge(Vertex a, Vertex b)
@@ -418,6 +561,11 @@ namespace Analysis
             public Vertex Start { get; private set; }
             public Vertex End { get; private set; }
 
+            public Vector Direction
+            {
+                get { return Vector.ByTwoPoints(End.Point, Start.Point); }
+            }
+
             public bool IsOpenEdge
             {
                 get { return Triangles.Count() == 1; }
@@ -426,7 +574,6 @@ namespace Analysis
             public Edge(Vertex start, Vertex end)
             {
                 Triangles = new List<Triangle>();
-                
                 Start = start;
                 End = end;
 
@@ -434,12 +581,33 @@ namespace Analysis
                 start.Edges.Add(this);
                 end.Edges.Add(this);
             }
+
+            public Point Intersect(Curve curve)
+            {
+                var edgeLine = Line.ByStartPointEndPoint(Start.Point, End.Point);
+                var xSect = edgeLine.Intersect(curve);
+                if (!xSect.Any()) return null;
+
+                var ptXSect = xSect.First() as Point;
+                return ptXSect;
+            }
         }
 
         public class Triangle
         {
             public List<Vertex> Vertices { get; private set; }
             public List<Edge> Edges { get; private set; }
+
+            public Plane Plane
+            {
+                get
+                {
+                    return Plane.ByThreePoints(
+                        Vertices[0].Point,
+                        Vertices[1].Point,
+                        Vertices[2].Point);
+                }
+            }
 
             public Triangle(Vertex a, Vertex b, Vertex c)
             {
