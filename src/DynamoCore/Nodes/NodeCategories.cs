@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
                                             s[s.Count - 2],
                                             s[s.Count - 1]
                                         };
-                    catName = String.Join(" " + Configurations.ShortenedCategoryDelimiter + " ", s);
+                    catName = String.Join(Configurations.ShortenedCategoryDelimiter, s);
                 }
             }
 
