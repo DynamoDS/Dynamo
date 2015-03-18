@@ -130,7 +130,7 @@ namespace Dynamo.Models
             }
         }
 
-        public Rect2D Rect
+        public virtual Rect2D Rect
         {
             get{return new Rect2D(x,y,width,height);}
         }

@@ -163,6 +163,11 @@ namespace Dynamo.Models
             set { isInDrag = value; }
         }
 
+        public override Rect2D Rect
+        {
+            get { return this.RectRegion; }
+        }
+
         public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes )
         {
             this.nodesInWorkspace = nodes;
@@ -238,7 +243,7 @@ namespace Dynamo.Models
                 this.Top = region.Y;
                 this.Width = region.Width;
                 this.Height = region.Height;
-                this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);
+                this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);          
             }
         }
     

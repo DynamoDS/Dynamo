@@ -151,7 +151,7 @@ namespace Dynamo.ViewModels
                     break; 
                 case "RectRegion":
                     RaisePropertyChanged("RectRegion");
-                    break;
+                    break;              
             }
         }      
     }

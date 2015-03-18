@@ -79,139 +79,30 @@ namespace Dynamo.Nodes
         }
      
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {           
-            var dataContext = this.DataContext as AnnotationViewModel;
-            var view = sender as AnnotationView;
-            if (view != null) Panel.SetZIndex(view, 9999);
-            Mouse.Capture(view);
-            if (dataContext != null)
+        {
+            System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+
+            foreach (var nodes in this.ViewModel.SelectedNodes)
             {
-                dataContext.IsInDrag = true;
-            
-                if (e.ClickCount == 1)
-                {
-                    var undoRecorder = ViewModel.WorkspaceViewModel.Model.UndoRecorder;
-                    WorkspaceModel.RecordModelForModification(ViewModel.AnnotationModel, undoRecorder);
-                    this.AnnotationRectangle.StrokeDashArray = new DoubleCollection() {2};
-                    CanMoveGroup = true;
-                    this.CaptureMouse();
-                    xAnnotationViewPos = Canvas.GetLeft(view);
-                    var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");
-                    xCanvasPos = e.GetPosition(parentCanvas).X;
-                    yAnnotationViewPos = Canvas.GetTop(view);
-                    yCanvasPos = e.GetPosition(parentCanvas).Y;
-
-                    foreach (var nodes in dataContext.SelectedNodes)
-                    {
-                        ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                            new DynCmd.SelectModelCommand(nodes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
-                    }
-
-                    foreach (var notes in dataContext.SelectedNotes)
-                    {
-                        ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                            new DynCmd.SelectModelCommand(notes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
-                    }
-
-                    var point = e.GetPosition(parentCanvas);
-                    var operation = DynCmd.DragSelectionCommand.Operation.BeginDrag;
-                    var command = new DynCmd.DragSelectionCommand(point.AsDynamoType(), operation);
-                    ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-                }
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(nodes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
             }
-            if (e.ClickCount >= 2)
+
+            foreach (var notes in this.ViewModel.SelectedNotes)
             {
-                OnEditItemClick(this, null);
-            }
-            e.Handled = true;
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(notes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
+            }  
         }
      
-        private void AnnotationView_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            var dataContext = this.DataContext as AnnotationViewModel;
-            this.AnnotationRectangle.StrokeDashArray = new DoubleCollection() {};
-            var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");          
-            var point = e.GetPosition(parentCanvas);
-            var operation = DynCmd.DragSelectionCommand.Operation.EndDrag;
-            var command = new DynCmd.DragSelectionCommand(point.AsDynamoType(), operation);
-            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-          
-            Mouse.Capture(null);           
-            CanMoveGroup = false;         
-            DynamoSelection.Instance.ClearSelection();
-            if (dataContext != null) dataContext.IsInDrag = false;
-            e.Handled = true;
-        }
-
         private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             DynamoSelection.Instance.ClearSelection();
             System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
-        }
-
-        private void AnnotationView_OnMouseMove(object sender, MouseEventArgs e)
-        {          
-            if (CanMoveGroup)
-            {
-                var parentCanvas = FindChild<Canvas>(Application.Current.MainWindow, "backgroundCanvas");
-
-                double x = e.GetPosition(parentCanvas).X;
-                double y = e.GetPosition(parentCanvas).Y;
-                xAnnotationViewPos += x - xCanvasPos;
-                Canvas.SetLeft(this, xAnnotationViewPos);
-                xCanvasPos = x;
-                yAnnotationViewPos += y - yCanvasPos;
-                Canvas.SetTop(this, yAnnotationViewPos);
-                yCanvasPos = y;                
-            }
-
-            e.Handled = true;
-        }
-
-        public static T FindChild<T>(DependencyObject parent, string childName)
-                                  where T : DependencyObject
-        {
-            // Confirm parent and childName are valid. 
-            if (parent == null) return null;
-
-            T foundChild = null;
-
-            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < childrenCount; i++)
-            {
-                var child = VisualTreeHelper.GetChild(parent, i);
-                // If the child is not of the request child type child
-                T childType = child as T;
-                if (childType == null)
-                {
-                    // recursively drill down the tree
-                    foundChild = FindChild<T>(child, childName);
-
-                    // If the child is found, break so we do not overwrite the found child. 
-                    if (foundChild != null) break;
-                }
-                else if (!string.IsNullOrEmpty(childName))
-                {
-                    var frameworkElement = child as FrameworkElement;
-                    // If the child's name is set for search
-                    if (frameworkElement != null && frameworkElement.Name == childName)
-                    {
-                        // if the child's name is of the request name
-                        foundChild = (T)child;
-                        break;
-                    }
-                }
-                else
-                {
-                    // child element found.
-                    foundChild = (T)child;
-                    break;
-                }
-            }
-
-            return foundChild;
-        }
+        }    
     }
 }

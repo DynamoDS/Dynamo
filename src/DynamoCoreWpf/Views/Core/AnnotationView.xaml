@@ -8,10 +8,8 @@
              MinWidth="10"
              MinHeight="10"
              Height="Auto" Width="Auto" Visibility="Visible"             
-             MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                      
-             MouseLeftButtonUp="AnnotationView_OnMouseLeftButtonUp" 
-             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"
-             MouseMove="AnnotationView_OnMouseMove"             
+             MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
+             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"                        
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">
     <UserControl.Resources>
