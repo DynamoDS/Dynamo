@@ -418,13 +418,14 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.kGetKeys:
                     {
                         StackValue array = formalParameters[0];
-                        StackValue[] result = ArrayUtils.GetKeys(array, runtimeCore);
-                        if (null == result)
+                        if (!array.IsArray)
                         {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                             ret = StackValue.Null;
                         }
                         else
                         {
+                            var result = ArrayUtils.GetKeys(array, runtimeCore);
                             ret = rmem.Heap.AllocateArray(result, null);
                         }
                         break;
@@ -434,6 +435,7 @@ namespace ProtoCore.Lang
                         StackValue array = formalParameters[0];
                         if (!array.IsArray)
                         {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                             ret = StackValue.Null;
                         }
                         else

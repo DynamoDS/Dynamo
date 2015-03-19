@@ -115,7 +115,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCurrentWorkspace(object m)
         {
-            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel;
+            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel && HasAuthProvider;
         }
 
         public void PublishNewPackage(object m)
@@ -170,7 +170,7 @@ namespace Dynamo.ViewModels
         public bool CanPublishSelectedNodes(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is Function);
+                   DynamoSelection.Instance.Selection.All(x => x is Function) && HasAuthProvider;;
         }
 
         private void ShowNodePublishInfo()
@@ -204,7 +204,6 @@ namespace Dynamo.ViewModels
 
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
-
 
         public List<PackageManagerSearchElement> ListAll()
         {

@@ -1100,6 +1100,7 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
 				)
 				(.
 						type = core.TypeSystem.GetType(strIdent);
+						typedVar.TypeAlias = strIdent;
 						if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
 						{
 							var unknownType = new ProtoCore.Type();

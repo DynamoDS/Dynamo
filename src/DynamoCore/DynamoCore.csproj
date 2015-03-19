@@ -110,6 +110,7 @@ limitations under the License.
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
+    <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
     <Compile Include="Core\PathManager.cs" />
@@ -343,7 +344,7 @@ xcopy  /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
 xcopy  /Y "$(SolutionDir)..\extern\LibG_221\*" "$(OutputPath)libg_221\"
 xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
-xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples" "$(OutputPath)samples\$(UICulture)\"
+xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples\*" "$(OutputPath)samples\"
 copy /Y $(SolutionDir)..\README.md $(OutputPath)$(UICulture)\README.txt</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
