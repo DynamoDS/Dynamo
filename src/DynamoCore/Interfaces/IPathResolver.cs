@@ -30,10 +30,45 @@ namespace Dynamo.Interfaces
         /// null.
         /// </summary>
         IEnumerable<string> PreloadedLibraryPaths { get; }
+
+        /// <summary>
+        /// This property represents the root folder where user specific data files 
+        /// are stored. If this property returns a null or empty string, then 
+        /// PathManager falls back to using "%ProgramData%\Dynamo". If this property
+        /// returns a string that does not represent an existing folder, PathManager 
+        /// will attempt to create a new directory. If the property does not represent
+        /// a valid path string, an exception will be thrown by the underlying system 
+        /// IO API invoked. Note that this path should not include the version number 
+        /// as it will be appended by PathManager.
+        /// </summary>
+        string UserDataRootFolder { get; }
+
+        /// <summary>
+        /// This property represents the root folder where application common data 
+        /// files (i.e. shared among all users on the same machine) are stored. If 
+        /// this property returns a null or empty string, then PathManager falls 
+        /// back to using "%AppData%\Dynamo". If this property returns a string 
+        /// that does not represent an existing folder, PathManager will attempt 
+        /// to create a new directory. If the property does not represent a valid 
+        /// path string, an exception will be thrown by the underlying system IO 
+        /// API invoked. Note that this path should not include the version number 
+        /// as it will be appended by PathManager.
+        /// </summary>
+        string CommonDataRootFolder { get; }
     }
 
     public interface IPathManager
     {
+        /// <summary>
+        /// The local directory that contains user specific data files.
+        /// </summary>
+        string UserDataDirectory { get; }
+
+        /// <summary>
+        /// The local directory that contains common data files among users.
+        /// </summary>
+        string CommonDataDirectory { get; }
+
         /// <summary>
         /// The local directory that contains custom nodes created by the user.
         /// </summary>

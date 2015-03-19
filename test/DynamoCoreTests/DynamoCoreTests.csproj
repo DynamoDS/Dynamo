@@ -68,9 +68,11 @@
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="ConverterTests.cs" />
+    <Compile Include="IconsTests.cs" />
     <Compile Include="NodeConstructionTests.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
+    <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUnitTests.cs" />
@@ -100,6 +102,7 @@
     <Compile Include="UnicodeTest.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
+    <Compile Include="UserDataMigrationTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />

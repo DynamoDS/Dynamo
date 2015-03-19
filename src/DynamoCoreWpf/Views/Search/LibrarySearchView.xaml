@@ -559,8 +559,7 @@
                                                                FontSize="12"
                                                                Margin="16,8,0,8">
                                                             <Run Text="{Binding Prefix, Mode=OneWay}"
-                                                                 MouseDown="OnPrefixTextBlockMouseDown" />
-                                                            <Run Text="{Binding GroupName, Mode=OneWay}">
+                                                                 MouseDown="OnPrefixTextBlockMouseDown" /><Run Text="{Binding GroupName, Mode=OneWay}">
                                                                 <Run.Style>
                                                                    <Style TargetType="{x:Type Run}">
                                                                     <Setter Property="Foreground"

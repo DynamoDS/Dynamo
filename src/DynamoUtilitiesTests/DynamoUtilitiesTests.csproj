@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Moq, Version=4.2.1312.1622, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Moq\Moq.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
       <Private>False</Private>
@@ -50,6 +54,7 @@
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="DataMarshalerTests.cs" />
+    <Compile Include="ProductLookUpTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XmlHelperTests.cs" />
   </ItemGroup>
@@ -58,6 +63,10 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\DynamoInstallDetective\DynamoInstallDetective.csproj">
+      <Project>{98692887-b389-4f73-a71a-9fc516738dab}</Project>
+      <Name>DynamoInstallDetective</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

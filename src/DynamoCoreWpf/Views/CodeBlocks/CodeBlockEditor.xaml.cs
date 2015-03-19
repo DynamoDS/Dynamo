@@ -38,12 +38,12 @@ namespace Dynamo.UI.Controls
         public CodeBlockEditor()
         {
             InitializeComponent();
+            WatermarkLabel.Text = Properties.Resources.WatermarkLabelText;
         }
 
-        public CodeBlockEditor(NodeView nodeView)
+        public CodeBlockEditor(NodeView nodeView): this()
         {
-            InitializeComponent();
-
+           
             this.nodeViewModel = nodeView.ViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
@@ -84,7 +84,7 @@ namespace Dynamo.UI.Controls
                 dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.GetCompletionsOnType(
-                code, stringToComplete, dynamoViewModel.HomeSpace.ElementResolver).
+                code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver).
                 Select(x => new CodeBlockCompletionData(x));
         }
 
@@ -101,7 +101,7 @@ namespace Dynamo.UI.Controls
             var engineController = dynamoViewModel.EngineController;
 
             return engineController.CodeCompletionServices.GetFunctionSignatures(
-                code, functionName, functionPrefix, dynamoViewModel.HomeSpace.ElementResolver).
+                code, functionName, functionPrefix, dynamoViewModel.CurrentSpace.ElementResolver).
                 Select(x => new CodeBlockInsightItem(x));
         }
 

@@ -45,8 +45,6 @@ namespace Dynamo.Tests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-
-            GC.Collect();
         }
 
         #region COM
