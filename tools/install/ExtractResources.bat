@@ -1,4 +1,4 @@
-echo off
+@echo off
 set cwd=%~dp0
 echo %cwd%
 
@@ -11,8 +11,14 @@ IF /I "%2"=="x86" set OPT_Platform=x86
 
 set binroot=%cwd%..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\
 set wwlroot=%binroot%wwl\
-echo %binroot%
-echo %wwlroot%
+
+echo .
+echo -------------------------------------------------------------------------------
+echo BIN folder: %binroot%
+echo WWL folder: %wwlroot%
+echo -------------------------------------------------------------------------------
+echo .
+rd /s/q %wwlroot%
 mkdir %wwlroot%
 
 robocopy "%binroot%\en-US"                    "%wwlroot%\en-US"                  *.resources.dll *.xml
