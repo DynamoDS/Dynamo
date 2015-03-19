@@ -36,6 +36,9 @@
     <DocumentationFile>..\..\..\bin\AnyCPU\Release\$(UICulture)\Analysis.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MIConvexHull">
+      <HintPath>..\..\..\extern\miconvexhull_fa9850525460\MIConvexHull\bin\Debug\MIConvexHull.dll</HintPath>
+    </Reference>
     <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
@@ -74,6 +77,10 @@
       <Project>{87550b2b-6cb8-461e-8965-dfafe3aafb5c}</Project>
       <Name>CoreNodes</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Tesellation\Tessellation.csproj">
+      <Project>{d6279651-d099-4f8d-a319-5bf12ed9f269}</Project>
+      <Name>Tessellation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
