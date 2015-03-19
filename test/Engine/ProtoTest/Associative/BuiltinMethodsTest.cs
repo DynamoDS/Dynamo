@@ -830,6 +830,16 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", null);
         }
+
+        [Test]
+        public void TestGetKeysFromNonArray()
+        {
+            string code = @"
+x = 1;
+k = GetKeys(x);";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("k", null);
+        }
     }
 
     class MathematicalFunctionMethodsTest
