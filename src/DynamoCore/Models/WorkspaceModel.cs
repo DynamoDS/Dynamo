@@ -657,6 +657,11 @@ namespace Dynamo.Models
             return noteModel;
         }
 
+        public void AddAnnotation(AnnotationModel annotationModel)
+        {
+            Annotations.Add(annotationModel);
+        }
+
         public AnnotationModel AddAnnotation(double xPos, double yPos, string text, Guid id)
         {
            

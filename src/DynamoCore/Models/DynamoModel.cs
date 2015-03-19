@@ -1119,6 +1119,7 @@ namespace Dynamo.Models
             var nodes = ClipBoard.OfType<NodeModel>();
             var connectors = ClipBoard.OfType<ConnectorModel>();
             var notes = ClipBoard.OfType<NoteModel>();
+            var annotations = ClipBoard.OfType<AnnotationModel>();
 
             var minX = Double.MaxValue;
             var minY = Double.MaxValue;
@@ -1225,6 +1226,23 @@ namespace Dynamo.Models
                     ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
 
             createdModels.AddRange(newConnectors);
+
+            //Grouping depends on the selected node models. 
+            //so adding the group after nodes / notes are added to workspace.
+            var newAnnotations = new List<AnnotationModel>();
+            foreach (var annotation in annotations)
+            {
+                var annotationModel = new AnnotationModel(newNodeModels, newNoteModels) {GUID = Guid.NewGuid()};
+                newAnnotations.Add(annotationModel);              
+            }
+
+            // Add the new Annotation's to the Workspace
+            foreach (var newAnnotation in newAnnotations)
+            {
+                CurrentWorkspace.AddAnnotation(newAnnotation);
+                createdModels.Add(newAnnotation);
+                AddToSelection(newAnnotation);
+            }
 
             // Record models that are created as part of the command.
             CurrentWorkspace.RecordCreatedModels(createdModels);
