@@ -102,7 +102,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Fired when this NodeModel is disposed.
         /// </summary>
-        public event Action Disposed;
+        public event Action<NodeModel> Disposed;
 
         /// <summary>
         ///     Called by nodes for behavior that they want to dispatch on the UI thread
@@ -596,7 +596,7 @@ namespace Dynamo.Models
         {
             var handler = Disposed;
             if (handler != null)
-                handler();
+                handler(this);
         }
 
         /// <summary>

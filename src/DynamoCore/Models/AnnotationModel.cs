@@ -122,12 +122,13 @@ namespace Dynamo.Models
                         foreach (var node in selectedNodes)
                         {
                             node.PropertyChanged += OnNodePropertyChanged;
+                            node.Disposed +=node_Disposed;
                         }
                     }
                 }              
             }
         }
-
+      
         private IEnumerable<NoteModel> selectedNotes;
         public IEnumerable<NoteModel> SelectedNotes
         {
@@ -143,12 +144,13 @@ namespace Dynamo.Models
                         foreach (var note in selectedNotes)
                         {
                             note.PropertyChanged += OnNotePropertyChanged;
+                            note.Disposed +=note_Disposed;
                         }
                     }
                 }
             }
         }
-      
+       
         private Rect2D rectRegion;
         public Rect2D RectRegion
         {
@@ -193,6 +195,26 @@ namespace Dynamo.Models
             }
         }
 
+        private void node_Disposed(NodeModel node)
+        {
+            var nodesList = this.SelectedNodes.ToList();
+            bool remove = nodesList.Remove(node);
+            if (remove)
+            {
+                SelectRegionFromNodes(nodesList, this.SelectedNotes);
+            }
+        }
+
+        private void note_Disposed(NoteModel note)
+        {
+            var notesList = this.SelectedNotes.ToList();
+            bool remove = notesList.Remove(note);
+            if (remove)
+            {
+                SelectRegionFromNodes(this.SelectedNodes, notesList);
+            }
+        }
+
         private void SelectRegionFromNodes(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
         {
             var nodesList = nodes.ToList();
@@ -209,10 +231,10 @@ namespace Dynamo.Models
                 var xGroupModels = groupModels.ToList().OrderBy(x => x.X).ToList();
                 var yGroupModels = groupModels.ToList().OrderBy(x => x.Y).ToList();
 
-                var maxWidth = xGroupModels.Last().Width;
-                var maxHeight = yGroupModels.Last().Height;
+                var maxWidth = xGroupModels.Max(x => x.Width);
+                var maxHeight = yGroupModels.Max(y => y.Height);
 
-                var regionX = xGroupModels.First().X - 15;
+                var regionX = xGroupModels.First().X - 30;
                 var regionY = yGroupModels.First().Y - 30;
 
                 var xDistance = xGroupModels.Last().X - regionX;

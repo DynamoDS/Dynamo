@@ -173,7 +173,7 @@ namespace Dynamo.Core
                 }
             };
             InfoUpdated += infoUpdatedHandler;
-            node.Disposed += () =>
+            node.Disposed += delegate
             {
                 if (!disposed)
                     InfoUpdated -= infoUpdatedHandler;
@@ -196,7 +196,7 @@ namespace Dynamo.Core
                 node.Category = info.Category;
             };
             workspace.InfoChanged += infoChangedHandler;
-            node.Disposed += () =>
+            node.Disposed += delegate
             {
                 workspace.DefinitionUpdated -= defUpdatedHandler;
                 workspace.InfoChanged -= infoChangedHandler;
