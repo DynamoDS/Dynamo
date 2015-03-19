@@ -9,30 +9,37 @@ using Dynamo.Search.SearchElements;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.ViewModels;
+using ProtoCore;
+using Dynamo.Core;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class LibraryTests : DSEvaluationViewModelUnitTest
+    class LibraryTests 
     {
         private LibraryServices libraryServices;
+        private ProtoCore.Core libraryCore;
+        private PathManager pathManager = new PathManager(null, null);
 
         protected static bool LibraryLoaded { get; set; }
 
         [SetUp]
-        public override void Setup()
+        public void Setup()
         {
-            base.Setup();
+            libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
+            libraryServices = new LibraryServices(libraryCore, pathManager);
 
-            libraryServices = ViewModel.Model.LibraryServices;
             RegisterEvents();
         }
 
         [TearDown]
-        public override void Cleanup()
+        public void Cleanup()
         {
             UnRegisterEvents();
-            base.Cleanup();
+            libraryServices.Dispose();
         }
 
         private void RegisterEvents()
@@ -59,22 +66,6 @@ namespace Dynamo.Tests
                 Assert.Fail("Failed to load library: " + a.LibraryPath);
             else
                 Assert.Fail("Failed to load library");
-        }
-
-        private CodeBlockNodeModel CreateCodeBlockNode()
-        {
-            var cbn = new CodeBlockNodeModel(ViewModel.Model.LibraryServices);
-
-            var command = new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false);
-            ViewModel.ExecuteCommand(command);
-
-            return cbn;
-        }
-
-        private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
-        {
-            var command = new DynCmd.UpdateModelValueCommand(System.Guid.Empty, cbn.GUID, "Code", value);
-            ViewModel.ExecuteCommand(command);
         }
 
         #region Test cases
