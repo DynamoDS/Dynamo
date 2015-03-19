@@ -36,8 +36,9 @@
     <DocumentationFile>..\..\..\bin\AnyCPU\Release\$(UICulture)\Analysis.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MIConvexHull">
-      <HintPath>..\..\..\extern\miconvexhull_fa9850525460\MIConvexHull\bin\Debug\MIConvexHull.dll</HintPath>
+    <Reference Include="MIConvexHull, Version=1.0.10.1021, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\MIConvexHull\MIConvexHull.dll</HintPath>
     </Reference>
     <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
