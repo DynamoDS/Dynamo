@@ -47,13 +47,19 @@ namespace Dynamo.Library
         {
             get
             {
-                string typeValueExpression = DisplayTypeName;
-                if (DefaultValue != null)
-                    typeValueExpression = typeValueExpression + " = " + DefaultValue.ToString();
+                string description = string.Empty;
+                if (!string.IsNullOrEmpty(summary))
+                    description = description + summary + "\n\n";
 
-                return !String.IsNullOrEmpty(Summary)
-                    ? Summary + " (" + typeValueExpression + ")"
-                    : typeValueExpression;
+                description = description + DisplayTypeName;
+
+                if (DefaultValue != null)
+                    description = String.Format("{0}\n{1} : {2}", 
+                                                description, 
+                                                Properties.Resources.DefaultValue, 
+                                                DefaultValue.ToString());
+
+                return description;
             }
         }
 

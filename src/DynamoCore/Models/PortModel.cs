@@ -55,7 +55,7 @@ namespace Dynamo.Models
             {
                 string useDefaultArgument = string.Empty;
                 if (!UsingDefaultValue && DefaultValueEnabled)
-                    useDefaultArgument = " (disabled)";
+                    useDefaultArgument = " " + Properties.Resources.DefaultValueDisabled;
                 return portData.ToolTipString + useDefaultArgument; 
             }
         }
