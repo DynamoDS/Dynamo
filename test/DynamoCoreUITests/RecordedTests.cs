@@ -78,8 +78,6 @@ namespace DynamoCoreUITests
             }
 
             preloader = null; // Invalid preloader object for the test.
-
-            GC.Collect();
         }
 
         #endregion
