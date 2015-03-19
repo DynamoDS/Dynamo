@@ -1462,9 +1462,12 @@ namespace Dynamo.Models
                 if (subNode.Name == "PortInfo")
                 {
                     int index = int.Parse(subNode.Attributes["index"].Value);
-                    portInfoProcessed.Add(index);
-                    bool def = bool.Parse(subNode.Attributes["default"].Value);
-                    inPorts[index].UsingDefaultValue = def;
+                    if (index < InPorts.Count)
+                    {
+                        portInfoProcessed.Add(index);
+                        bool def = bool.Parse(subNode.Attributes["default"].Value);
+                        inPorts[index].UsingDefaultValue = def;
+                    }
                 }
             }
 
