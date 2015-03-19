@@ -22,7 +22,7 @@ rd /s/q %wwlroot%
 mkdir %wwlroot%
 
 robocopy "%binroot%\en-US"                    "%wwlroot%\en-US"                  *.resources.dll *.xml
-robocopy "%binroot%\libg_locale"              "%wwlroot%\libg_locale"            /e
+robocopy "%binroot%\libg_locale\en_US"        "%wwlroot%\libg_locale\en_US"      /e
 robocopy "%binroot%\nodes\en-US"              "%wwlroot%\nodes\en-US"            *.resources.dll *.xml
 robocopy "%binroot%\samples\en-US"            "%wwlroot%\samples\en-US"          /e
 
