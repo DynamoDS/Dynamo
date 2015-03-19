@@ -34,8 +34,8 @@ namespace Dynamo.Search.SearchElements
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
             outputParameters = new List<string>() { functionDescriptor.ReturnType };
 
-            foreach (var tag in functionDescriptor.GetSearchTags())
-                SearchKeywords.Add(tag);
+            /*foreach (var tag in functionDescriptor.GetSearchTags())
+                SearchKeywords.Add(tag);*/
 
             iconName = GetIconName();
         }

@@ -38,8 +38,9 @@ namespace Dynamo.Library
                 // to empty string, so it wil not keep retrieving after failing 
                 // once.
                 // 
-                return summary ?? (summary = ((pathManager != null)
-                    ? this.GetDescription(pathManager) : string.Empty));
+                /*return summary ?? (summary = ((pathManager != null)
+                    ? this.GetDescription(pathManager) : string.Empty));*/
+                return "";
             }
         }
 

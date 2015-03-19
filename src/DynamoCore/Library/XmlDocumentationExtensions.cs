@@ -15,40 +15,6 @@ namespace Dynamo.DSEngine
     /// </summary>
     public static class XmlDocumentationExtensions
     {
-        #region Public methods
-
-        public static string GetSummary(this FunctionDescriptor member, IPathManager pathManager)
-        {
-            XDocument xml = null;
-
-            if (member.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Assembly, pathManager);
-
-            return member.GetSummary(xml);
-        }
-
-        public static string GetDescription(this TypedParameter member, IPathManager pathManager)
-        {
-            XDocument xml = null;
-
-            if (member.Function != null && member.Function.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Function.Assembly, pathManager);
-
-            return member.GetDescription(xml);
-        }
-
-        public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member)
-        {
-            XDocument xml = null;
-
-            if (member.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Assembly, member.PathManager);
-
-            return member.GetSearchTags(xml);
-        }
-
-        #endregion
-
         #region Overloads specifying XDocument
 
         public static string GetDescription(this TypedParameter parameter, XDocument xml)

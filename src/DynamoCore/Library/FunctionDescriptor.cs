@@ -170,7 +170,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetSummary(pathManager)); }
+            get { return summary ?? (summary = this.GetSummary()); }
         }
 
         /// <summary>
