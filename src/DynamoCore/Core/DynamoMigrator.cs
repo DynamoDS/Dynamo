@@ -338,13 +338,16 @@ namespace Dynamo.Core
         {
         }
 
+        // These overridden functions are strictly not required as they simply duplicate base class functionality
+        // They are implemented here simply to serve as templates for further class extensions from DynamoMigratorBase
         protected override PreferenceSettings ReadPreferences()
         {
-            throw new NotImplementedException();
+            return base.ReadPreferences();
         }
 
         protected override DynamoMigratorBase MigrateFrom(DynamoMigratorBase sourceMigrator)
         {
+            // We should not be migrating from a previous version into Dynamo 0.7
             throw new NotImplementedException();
         }
     }
