@@ -455,17 +455,17 @@ namespace Dynamo.Models
 
             if (this.PreferenceSettings.IsFirstRun)
             {
-                PreferenceSettings preferenceSettings = null;
+                DynamoMigratorBase migrator = null;
                 try
                 {
-                    preferenceSettings = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager);
+                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
                 }
                 catch (Exception e)
                 {
                     Logger.Log(e.Message);
                 }
-                if(preferenceSettings != null)
-                    this.PreferenceSettings = preferenceSettings;
+                if (migrator != null)
+                    this.PreferenceSettings = migrator.PreferenceSettings;
             }
 
             SearchModel = new NodeSearchModel();
