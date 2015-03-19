@@ -30,7 +30,13 @@ namespace Dynamo.Nodes
         private bool canRepositionNode;
         
         public AnnotationView()
-        {           
+        {
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
+
             InitializeComponent();
             Loaded += AnnotationView_Loaded;
             BindingErrorTraceListener.SetTrace();
@@ -79,7 +85,8 @@ namespace Dynamo.Nodes
         }
      
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
+        { 
+            DynamoSelection.Instance.ClearSelection();
             System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));

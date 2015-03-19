@@ -115,6 +115,19 @@ namespace Dynamo.ViewModels
             set { _annotationModel.IsInDrag = value; }
         }
 
+        public PreviewState PreviewState
+        {
+            get
+            {               
+                if (_annotationModel.IsSelected)
+                {
+                    return PreviewState.Selection;
+                }
+
+                return PreviewState.None;
+            }
+        }
+
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {            
             _annotationModel = model;           
@@ -151,7 +164,10 @@ namespace Dynamo.ViewModels
                     break; 
                 case "RectRegion":
                     RaisePropertyChanged("RectRegion");
-                    break;              
+                    break;  
+                case "IsSelected":
+                    RaisePropertyChanged("PreviewState");
+                    break;
             }
         }      
     }

@@ -131,13 +131,28 @@
                     </ListBox.Items>
                 </ListBox>
             </ContextMenu>
-        </Grid.ContextMenu>       
+        </Grid.ContextMenu>
+        <Rectangle Name="selectionBorder"                  
+                   Fill="Transparent"
+                   Width="{Binding Width}" 
+                   Height= "{Binding Height}"  
+                   Stroke="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
+                   StrokeThickness="2"
+                   IsHitTestVisible="False"
+                   Canvas.ZIndex="41"
+                   Margin="-1">
+            <Rectangle.Visibility>
+                <Binding Path="PreviewState"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}">
+                </Binding>
+            </Rectangle.Visibility>
+        </Rectangle>
         <Rectangle  Name="AnnotationRectangle"
                     Margin="10" 
                     Width="{Binding Width}" 
-                    Height= "{Binding Height}"
-                    Stroke="Black"
-                    StrokeThickness="1"
+                    Height= "{Binding Height}"                   
                     IsHitTestVisible="True"
                     Opacity="0.5"                     
                     >
