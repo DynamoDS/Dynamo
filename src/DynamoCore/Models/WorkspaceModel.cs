@@ -487,10 +487,8 @@ namespace Dynamo.Models
         public virtual void Dispose()
         {
             foreach (var node in Nodes)
-            {
                 DisposeNode(node);
-                node.Dispose();
-            }
+
             foreach (var connector in Connectors)
                 OnConnectorDeleted(connector);
 
@@ -630,6 +628,7 @@ namespace Dynamo.Models
             model.ConnectorAdded -= OnConnectorAdded;
             model.Modified -= NodeModified;
             OnNodeRemoved(model);
+            model.Dispose();
         }
 
         public void AddNote(NoteModel note, bool centered)
