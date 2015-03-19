@@ -41,10 +41,22 @@ namespace DynamoAddinGenerator
     {
         public string Folder { get; set; }
 
-        public DynamoInstall(string folder)
+        internal DynamoInstall(string folder)
         {
             Folder = folder;
         }
+
+        public static DynamoInstall GetDynamoInstall(string debugPath)
+        {
+            return DynamoExistsAtPath(debugPath) ? new DynamoInstall(debugPath) : null;
+        }
+
+        private static bool DynamoExistsAtPath(string basePath)
+        {
+            return Directory.Exists(basePath) && Directory.GetFiles(basePath, "*DynamoCore.dll").Any();
+        }
+
+        
     }
 
     /// <summary>
@@ -60,48 +72,6 @@ namespace DynamoAddinGenerator
         public DynamoInstallCollection(IEnumerable<IDynamoInstall> installs)
         {
             Installs = installs;
-        }
-
-        /// <summary>
-        /// Find a Dynamo install by checking for the existence of one of the
-        /// install directories, and ensuring that it contains DynamoCore.
-        /// </summary>
-        /// <returns></returns>
-        public static List<IDynamoInstall> FindDynamoInstalls(string debugPath = null)
-        {
-            var installs = new List<IDynamoInstall>();
-
-            if (DynamoExistsAtPath(DynamoVersions.dynamo_063))
-            {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_063));
-            }
-
-            if (DynamoExistsAtPath(DynamoVersions.dynamo_071_x86))
-            {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_071_x86));
-            }
-
-            if (DynamoExistsAtPath(DynamoVersions.dynamo_071_x64))
-            {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_071_x64));
-            }
-
-            if (DynamoExistsAtPath(DynamoVersions.dynamo_07x))
-            {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_07x));
-            }
-
-            if (!string.IsNullOrEmpty(debugPath))
-            {
-                installs.Add(new DynamoInstall(debugPath));
-            }
-
-            return installs;
-        }
-
-        private static bool DynamoExistsAtPath(string basePath)
-        {
-            return Directory.Exists(basePath) && Directory.GetFiles(basePath,"*DynamoCore.dll").Any();
         }
 
         public IDynamoInstall GetLatest()
@@ -128,35 +98,14 @@ namespace DynamoAddinGenerator
         /// DynamoAddinData constructor.
         /// </summary>
         /// <param name="product">A revit product to target for addin creation.</param>
-        /// <param name="latestDynamoFolder">The newest Dynamo version installed on the machine.</param>
+        /// <param name="latestDynamoInstall">The newest Dynamo version installed on the machine.</param>
         public DynamoAddinData(IRevitProduct product, IDynamoInstall latestDynamoInstall)
         {
-            var subfolder = "";
-            if (latestDynamoInstall.Folder == DynamoVersions.dynamo_063)
-            {
-                ClassName = "Dynamo.Applications.DynamoRevitApp";
-                AssemblyPath = Path.Combine(latestDynamoInstall.Folder, "DynamoRevit.dll");
-            }
-            else
-            {
-                ClassName = "Dynamo.Applications.DynamoRevitApp";
-                var assemblyName = "DynamoRevitDS.dll";
-                switch (product.VersionString)
-                {
-                    case "Revit2014":
-                        subfolder = "Revit_2014";
-                        ClassName = "Dynamo.Applications.VersionLoader";
-                        assemblyName = "DynamoRevitVersionSelector.dll";
-                        break;
-                    case "Revit2015":
-                        subfolder = "Revit_2015";
-                        break;
-                    case "Revit2016":
-                        subfolder = "Revit_2016";
-                        break;
-                }
-                AssemblyPath = Path.Combine(latestDynamoInstall.Folder, subfolder, assemblyName);
-            }
+            var subfolder = product.VersionString.Insert(5, "_");
+            ClassName = "Dynamo.Applications.VersionLoader";
+            const string assemblyName = "DynamoRevitVersionSelector.dll";
+
+            AssemblyPath = Path.Combine(latestDynamoInstall.Folder, subfolder, assemblyName);
 
             RevitSubfolder = subfolder;
             AddinPath = Path.Combine(product.AddinsFolder, "Dynamo.addin");

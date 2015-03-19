@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using Autodesk.RevitAddIns;
@@ -18,6 +19,11 @@ namespace DynamoAddinGenerator
                 // First argument should be the debug assembly path
                 debugPath = args[0];
             }
+            else
+            {
+                var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                debugPath = Path.GetDirectoryName(assemblyPath);
+            }
 
             var allProducts = RevitProductUtility.GetAllInstalledRevitProducts();
             var prodColl = new RevitProductCollection(allProducts.Select(x=>new DynamoRevitProduct(x)));
@@ -27,18 +33,17 @@ namespace DynamoAddinGenerator
                 return;
             }
 
-            var installs = DynamoInstallCollection.FindDynamoInstalls(debugPath);
-            var dynamoColl = new DynamoInstallCollection(installs);
-            if (!dynamoColl.Installs.Any())
+            var dynamo = DynamoInstall.GetDynamoInstall(debugPath);
+            if (null == dynamo)
             {
-                Console.WriteLine("There were no Dynamo installations found.");
+                Console.WriteLine("No Dynamo installation found at {0}.", debugPath);
                 DeleteExistingAddins(prodColl);
                 return;
             }
 
             DeleteExistingAddins(prodColl);
 
-            GenerateAddins(prodColl, dynamoColl);
+            GenerateAddins(prodColl, dynamo);
         }
 
         /// <summary>
@@ -89,23 +94,14 @@ namespace DynamoAddinGenerator
         /// versions of Revit.
         /// </summary>
         /// <param name="products">A collection of revit installs.</param>
-        /// <param name="dynamos">A collection of dynamo installs.</param>
-        internal static void GenerateAddins(IRevitProductCollection products, IDynamoInstallCollection dynamos)
+        /// <param name="dynamo">Dynamo installation for which addin to be generated.</param>
+        internal static void GenerateAddins(IRevitProductCollection products, IDynamoInstall dynamo)
         {
             foreach (var prod in products.Products)
             {
                 Console.WriteLine("Generating addins in {0}", prod.AddinsFolder);
 
-                var addinData = new DynamoAddinData(prod, dynamos.GetLatest());
-
-                if (prod.ProductName == "Vasari Beta 3")
-                {
-                    // Change the addin path because the AddinUtility 
-                    // reports this incorrectly for vasari
-                    var dir = Path.GetDirectoryName(addinData.AddinPath);
-                    var newDir = dir.Replace("Revit", "Vasari");
-                    addinData.AddinPath = Path.Combine(newDir, Path.GetFileName(addinData.AddinPath));
-                }
+                var addinData = new DynamoAddinData(prod, dynamo);
 
                 GenerateDynamoAddin(addinData);
             }
