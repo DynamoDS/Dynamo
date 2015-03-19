@@ -765,18 +765,24 @@ namespace ProtoCore.Utils
         /// Traverses the identifierlist argument until class name resolution succeeds or fails.
         /// </summary>
         /// <param name="classTable"></param>
-        /// <param name="identList"></param>
+        /// <param name="identifier"></param>
         /// <returns></returns>
-        public static string[] GetResolvedClassName(ClassTable classTable, IdentifierListNode identList)
+        public static string[] GetResolvedClassName(ClassTable classTable, AssociativeNode identifier)
         {
-            string[] classNames = classTable.GetAllMatchingClasses(GetIdentifierStringUntilFirstParenthesis(identList));
+            var identList = identifier as IdentifierListNode;
+            var identifierNode = identifier as IdentifierNode;
+            Validity.Assert(identList != null || identifierNode != null);
+
+            string partialName = identList != null ? GetIdentifierStringUntilFirstParenthesis(identList) : identifier.Name;
+
+            string[] classNames = classTable.GetAllMatchingClasses(partialName);
 
             // Failed to find the first time
             // Attempt to remove identifiers in the identifierlist until we find a class or not
             while (0 == classNames.Length)
             {
                 // Move to the left node
-                AssociativeNode leftNode = identList.LeftNode;
+                AssociativeNode leftNode = identList != null ? identList.LeftNode : identifierNode;
                 if (leftNode is IdentifierListNode)
                 {
                     identList = leftNode as IdentifierListNode;
@@ -784,8 +790,7 @@ namespace ProtoCore.Utils
                 }
                 if (leftNode is IdentifierNode)
                 {
-                    var identNode = leftNode as IdentifierNode;
-                    classNames = classTable.GetAllMatchingClasses(identNode.Name);
+                    classNames = classTable.GetAllMatchingClasses(leftNode.Name);
                     break;
                 }
                 else
@@ -812,6 +817,41 @@ namespace ProtoCore.Utils
             
             var classNode = classTable.ClassNodes[ci];
             return classNode.ExternLib;
+        }
+
+        /// <summary>
+        /// Given a name or string of names, this creates an IdentifierNode or IdentifierListNode
+        /// e.g. Creates an IdentifierNode from A and IdentifierListNode from A.B
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static AssociativeNode CreateNodeFromString(string name)
+        {
+            string[] strIdentList = name.Split('.');
+
+            if (strIdentList.Length == 1)
+            {
+                return new IdentifierNode(strIdentList[0]);
+            }
+
+            var newIdentList = new IdentifierListNode
+            {
+                LeftNode = new IdentifierNode(strIdentList[0]),
+                RightNode = new IdentifierNode(strIdentList[1]),
+                Optr = Operator.dot
+            };
+            for (var n = 2; n < strIdentList.Length; ++n)
+            {
+                var subIdentList = new IdentifierListNode
+                {
+                    LeftNode = newIdentList,
+                    RightNode = new IdentifierNode(strIdentList[n]),
+                    Optr = Operator.dot
+                };
+                newIdentList = subIdentList;
+            }
+
+            return newIdentList;
         }
 
         /// <summary>

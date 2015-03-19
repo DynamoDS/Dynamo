@@ -6,12 +6,12 @@ using Autodesk.DesignScript.Runtime;
 
 namespace SampleLibraryZeroTouch
 {
-    [EnablesPeriodicUpdate(true)]
-    public class  PeriodicUpdater : IDisposable, IGraphicItem
+    
+    public class  PointField : IDisposable, IGraphicItem
     {
         private List<double> vertexCoords = new List<double>();
 
-        private PeriodicUpdater(double t)
+        private PointField(double t)
         {
             for (double x = -5; x <= 5; x += 0.5)
             {
@@ -24,9 +24,10 @@ namespace SampleLibraryZeroTouch
                 }
             }
         }
-        public static PeriodicUpdater ByParameter(double t)
+
+        public static PointField ByParameter(double t)
         {
-            return new PeriodicUpdater(t);
+            return new PointField(t);
         }
 
         public void Dispose()

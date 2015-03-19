@@ -704,7 +704,16 @@ namespace Dynamo.DSEngine
             LibraryManagementCore.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             LibraryManagementCore.IsParsingCodeBlockNode = true;
 
-            var astNode = ParserUtils.ParseWithCore(defaultExpression + ";", LibraryManagementCore);
+            ProtoCore.AST.Node astNode = null ;
+            try
+            {
+                astNode = ParserUtils.ParseWithCore(defaultExpression + ";", LibraryManagementCore);
+            }
+            catch (ProtoCore.BuildHaltException ex)
+            {
+                Log("Failed to parse default argument attribute \"" + defaultExpression + "\" for parameter: " + arg.Name);
+            }
+
             if (astNode != null)
             {
                 var cbn = astNode as CodeBlockNode;
@@ -787,14 +796,15 @@ namespace Dynamo.DSEngine
                 }
             }
 
-            IEnumerable<TypedParameter> arguments = proc.argInfoList.Zip(
+            List<TypedParameter> arguments = proc.argInfoList.Zip(
                 proc.argTypeList,
                 (arg, argType) =>
                 {
                     AssociativeNode defaultArgumentNode;
                     // Default argument specified by DefaultArgumentAttribute
                     // takes higher priority
-                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) && arg.IsDefault)
+                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) 
+                        && arg.IsDefault)
                     {
                         var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)
@@ -804,7 +814,7 @@ namespace Dynamo.DSEngine
                     }
 
                     return new TypedParameter(arg.Name, argType, defaultArgumentNode);
-                });
+                }).ToList();
 
             IEnumerable<string> returnKeys = null;
             if (proc.MethodAttribute != null)

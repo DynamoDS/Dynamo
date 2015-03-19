@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <Product Id="3594373A-F8C0-40DF-ACBD-D4AF085C4189"
-           Name="Dynamo 0.8.0"
+  <Product Id="*"
+           Name="$(var.ProductName) $(var.Major).$(var.Minor).$(var.Rev)"
            Language="1033"
-           Version="0.8.0"
+           Version="$(var.Major).$(var.Minor).$(var.Rev)"
            Manufacturer="Dynamo"
-           UpgradeCode="733f1d21-d745-47aa-bbb5-4a39b5996e4e">
+           UpgradeCode="{9A9BCBCC-5B1A-4B65-AC10-D822BAB5389E}">
 
     <Package InstallerVersion="200"
              Compressed="yes"
@@ -20,26 +20,33 @@
     <MediaTemplate EmbedCab="yes" />
 
     <Binary Id="DynamoInstallActions.CA.dll"
-            src="$(var.base)\src\DynamoInstallActions\bin\$(var.Configuration)\DynamoInstallActions.CA.dll" />
+            SourceFile="$(var.base)\src\DynamoInstallActions\bin\$(var.Configuration)\DynamoInstallActions.CA.dll" />
 
-    <CustomAction Id="UninstallDynamo07"
-                Return="check"
-                Execute="immediate"
-                BinaryKey="DynamoInstallActions.CA.dll"
-                DllEntry="UninstallDynamo07" >
-    </CustomAction>
+    <CustomAction Id="UninstallDynamo" Return="check" Execute="deferred" Impersonate="no" 
+                  BinaryKey="DynamoInstallActions.CA.dll" DllEntry="UninstallDynamo" />
+
+    <CustomAction Id="RemoveShortcut" Return="check" Execute="deferred" Impersonate="no" 
+                  BinaryKey="DynamoInstallActions.CA.dll" DllEntry="RemoveShortcut" />
+
+    <CustomAction Id="SetCA_Data1" Return="check" Property="UninstallDynamo"
+                  Value="Major=$(var.Major);Minor=$(var.Minor);Rev=$(var.Rev)" />
+    <CustomAction Id="SetCA_Data2" Return="check" Property="RemoveShortcut"
+                  Value="Major=$(var.Major);Minor=$(var.Minor);Rev=$(var.Rev);Dir=[ApplicationProgramsFolder]" />
 
     <InstallExecuteSequence>
-      <Custom Action="UninstallDynamo07" Before="CostInitialize">NOT Installed</Custom>
+      <Custom Action="SetCA_Data1" Before="UninstallDynamo">NOT Installed</Custom>
+      <Custom Action="UninstallDynamo" After="InstallInitialize">NOT Installed</Custom>
+      <Custom Action="SetCA_Data2" Before="RemoveShortcut">Installed</Custom>
+      <Custom Action="RemoveShortcut" After="InstallInitialize">Installed</Custom>
     </InstallExecuteSequence>
 
-    <Property Id='ARPNOMODIFY'>1</Property>
+    <Property Id="ARPNOMODIFY">1</Property>
     
     <!--<UIRef Id="WixUI_FeatureTree"/>
     <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
 
-    <Property Id='DYNAMO_INSTALLDIR'></Property>
-    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo 0.8" After="LaunchConditions"></SetProperty>
+    <Property Id="DYNAMO_INSTALLDIR"></Property>
+    <SetProperty Id="DYNAMO_INSTALLDIR" Value="[ProgramFiles64Folder]\Dynamo $(var.Major).$(var.Minor)" After="LaunchConditions"></SetProperty>
 
     <Feature Id="DYNAMO_CORE_FEATURE"
              Title="Dynamo Core"
@@ -47,6 +54,7 @@
       <ComponentGroupRef Id="RELEASE"/>
       <ComponentGroupRef Id="DEFINITIONS"/>
       <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ProductRegistry" />
       <Feature Id="DYNAMO_CORE_SAMPLES"
              Title="Sample Content"
              Level="1" >
@@ -66,10 +74,17 @@
       </Directory>
       <Directory Id="DYNAMO_INSTALLDIR"/>
       <Directory Id="CommonAppDataFolder">
-        <Directory Id="ADESK_DATA" Name="Autodesk">
-        </Directory>
         <Directory Id="DYNAMO_PROGDATA" Name="Dynamo">
-          <Directory Id="PROGDATA" Name="0.8"/>
+          <Directory Id="PROGDATA" Name="$(var.Major).$(var.Minor)"/>
+        </Directory>
+      </Directory>
+      <Directory Id="AppDataFolder">
+        <Directory Id="DYNAMO_APPDATA" Name="Dynamo">
+          <Directory Id="APPDATA" Name="$(var.Major).$(var.Minor)">
+            <Directory Id="definitions" Name="definitions" />
+            <Directory Id="logs" Name="Logs" />
+            <Directory Id="packages" Name="packages" />
+          </Directory>
         </Directory>
       </Directory>
     </Directory>
@@ -78,20 +93,39 @@
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10" Win64="yes">
         <Shortcut Id="ApplicationStartMenuShortcut"
-                  Name="Dynamo"
+                  Name="Dynamo $(var.Major).$(var.Minor).$(var.Rev)"
                   Description="Dynamo Sandbox"
                   Target="[DYNAMO_INSTALLDIR]\DynamoSandbox.exe"
                   WorkingDirectory="DYNAMO_INSTALLDIR"/>
         <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue Root="HKCU" Key="Software\Dynamo\0.8" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-        <RegistryKey Root="HKLM"
-                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]"
-              Action="createAndRemoveOnUninstall">
-          <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
-          <RegistryValue Name="DisplayName" Value="[ProductName]" Type="string"/>
-          <RegistryValue Name="DisplayVersion" Value="[ProductVersion]" Type="string"/>
+
+        <RegistryKey Root="HKCU" Key="Software\Dynamo\$(var.Major).$(var.Minor)" ForceDeleteOnUninstall="yes">
+          <RegistryValue Name="installed" Type="integer" Value="1" KeyPath="yes" />
         </RegistryKey>
-        
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="TARGETDIR">
+      <Component Id="ProductRegistry" Guid="*" Win64="yes">
+        <RegistryKey Root="HKLM"
+                     Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
+                     ForceDeleteOnUninstall="yes">
+          <RegistryValue Name="InstallLocation" Value="[DYNAMO_INSTALLDIR]" Type="string" />
+          <RegistryValue Name="UninstallString" Value="MsiExec.exe" Type="string" />
+          <RegistryValue Name="UninstallParam" Value="/X[ProductCode] /quiet" Type="string" />
+          <RegistryValue Name="Version" Value="$(var.FullVersion)" Type="string" />
+          <RegistryValue Name="RevVersion" Value="$(var.Rev)" Type="integer" />
+        </RegistryKey>
+
+        <CreateFolder Directory="definitions" />
+        <CreateFolder Directory="logs" />
+        <CreateFolder Directory="packages" />
+
+        <RemoveFolder Id="RemoveDefinitionsDir" Directory="definitions" On="uninstall" />
+        <RemoveFolder Id="RemoveLogsDir" Directory="logs" On="uninstall" />
+        <RemoveFolder Id="RemovePackagesDir" Directory="packages" On="uninstall" />
+        <RemoveFolder Id="RemoveAppDataDir" Directory="APPDATA" On="uninstall" />
+        <RemoveFolder Id="RemoveDynamoAppDataDir" Directory="DYNAMO_APPDATA" On="uninstall" />
       </Component>
     </DirectoryRef>
   </Fragment>

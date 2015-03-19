@@ -58,8 +58,6 @@ namespace Dynamo.Tests
             }
 
             base.Cleanup();
-
-            GC.Collect();
         }
 
         private void RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)

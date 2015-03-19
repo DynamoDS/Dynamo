@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -18,7 +19,6 @@ namespace Dynamo.Nodes
             : base(controller)
         {
             ArgumentLacing = LacingStrategy.Shortest;
-            Description = Controller.Description;
             Category = Controller.Category;
 
             if (controller.Definition.IsObsolete)
@@ -26,6 +26,11 @@ namespace Dynamo.Nodes
 
             if (controller.Definition.EnablesPeriodicUpdate)
                 EnablePeriodicUpdate = true;
+
+            string signature = String.Empty;
+            if (Controller.Definition is FunctionDescriptor)
+                signature = Controller.Definition.Signature;
+            Description = String.IsNullOrEmpty(Controller.Description) ? signature : Controller.Description + "\n\n" + signature;
         }
         
         public override bool IsConvertible

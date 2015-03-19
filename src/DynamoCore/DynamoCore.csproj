@@ -110,6 +110,7 @@ limitations under the License.
     <Compile Include="Core\CrashPromptArgs.cs" />
     <Compile Include="Core\DebugSettings.cs" />
     <Compile Include="Core\Context.cs" />
+    <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
     <Compile Include="Core\PathManager.cs" />
@@ -323,28 +324,17 @@ limitations under the License.
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
-copy "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)\$(UICulture)\License.rtf"
-copy "$(SolutionDir)..\tools\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
-IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>mkdir "$(OutputPath)\dll"
-copy /Y "$(SolutionDir)..\extern\LibG\x64\Release\*" "$(OutputPath)\dll"
-</PostBuildEvent>
-    <PostBuildEvent>xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
+    <PostBuildEvent>copy /Y "$(SolutionDir)..\README.md" "$(OutputPath)README.txt"
+xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.xml" "$(OutputPath)\$(UICulture)"
 xcopy /Y /e "$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" "$(OutputPath)\$(UICulture)"
-xcopy  /Y /e "$(SolutionDir)..\extern\ProtoGeometry\libg_locale\*" "$(OutputPath)libg_locale\"
-xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)\$(UICulture)"
-xcopy  /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
-xcopy  /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
-xcopy  /Y "$(SolutionDir)..\extern\LibG_221\*" "$(OutputPath)libg_221\"
+xcopy /Y /e "$(SolutionDir)..\extern\ProtoGeometry\libg_locale\*" "$(OutputPath)libg_locale\"
+xcopy /Y "$(SolutionDir)..\extern\LibG_219\*" "$(OutputPath)libg_219\"
+xcopy /Y "$(SolutionDir)..\extern\LibG_220\*" "$(OutputPath)libg_220\"
+xcopy /Y "$(SolutionDir)..\extern\LibG_221\*" "$(OutputPath)libg_221\"
 xcopy /Y "$(SolutionDir)..\extern\SimplexNoise\*" "$(OutputPath)"
-xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples" "$(OutputPath)samples\$(UICulture)\"
-copy /Y $(SolutionDir)..\README.md $(OutputPath)$(UICulture)\README.txt</PostBuildEvent>
+xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples\*" "$(OutputPath)samples\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

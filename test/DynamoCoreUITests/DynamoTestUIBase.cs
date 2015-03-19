@@ -84,8 +84,6 @@ namespace DynamoCoreUITests
             Model = null;
             preloader = null;
 
-            GC.Collect();
-
             try
             {
                 var directory = new DirectoryInfo(TempFolder);

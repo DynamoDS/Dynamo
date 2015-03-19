@@ -433,6 +433,8 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class TypedIdentifierNode : IdentifierNode
     {
+        public string TypeAlias { get; set; }
+
         public TypedIdentifierNode()
         {
         }

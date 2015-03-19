@@ -94,7 +94,7 @@ namespace Dynamo.DSEngine
                 {
                     x.UpdateFunctionDescriptor(this, pathManager);
                     return x;
-                });
+                }).ToList();
 
             var type = funcDescParams.FunctionType;
             var inputParameters = new List<Tuple<string, string>>();
