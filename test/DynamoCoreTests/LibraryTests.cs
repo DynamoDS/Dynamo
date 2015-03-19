@@ -19,7 +19,7 @@ namespace Dynamo.Tests
     {
         private LibraryServices libraryServices;
         private ProtoCore.Core libraryCore;
-        private PathManager pathManager = new PathManager(null, null);
+        private PathManager pathManager = new PathManager(new PathManagerParams());
 
         protected static bool LibraryLoaded { get; set; }
 
