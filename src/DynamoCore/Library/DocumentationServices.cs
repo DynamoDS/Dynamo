@@ -32,10 +32,21 @@ namespace Dynamo.DSEngine
             var assemblyName = member.Assembly;
             var fullyQualifiedName = GetMemberElementName(member);
 
+            // Case for operators.
+            if (assemblyName == null)
+                return String.Empty;
+
+            if (!_triedPaths.ContainsKey(assemblyName))
+                LoadDataFromXml(member);
+
             if (documentNodes.ContainsKey(fullyQualifiedName))
                 return documentNodes[fullyQualifiedName].Summary;
-            else
-                LoadDataFromXml(member);
+
+            // Fallback for overloaded methods.
+            var keyForOverloaded = documentNodes.Keys.
+                Where(key => key.Contains(member.ClassName + "." + member.FunctionName)).FirstOrDefault();
+            if (keyForOverloaded != null)
+                return documentNodes[keyForOverloaded].Summary;
 
             return String.Empty;
         }
@@ -162,12 +173,6 @@ namespace Dynamo.DSEngine
             return File.Exists(documentationPath);
         }
 
-        private static void CreateMemberDocumentNode(string assembly, string fullyQualifiedName)
-        {
-            var memberDocNode = new MemberDocumentNode(fullyQualifiedName);
-            documentNodes.Add(memberDocNode.FullyQualifiedName, memberDocNode);
-        }
-
         #region Fully qualified name creation
 
         private static string PrimitiveMap(string s)
@@ -198,9 +203,6 @@ namespace Dynamo.DSEngine
             char prefixCode;
 
             string memberName = member.ClassName + "." + member.FunctionName;
-            int a = 0;
-            if (member.FunctionName == "ImportFromSAT")
-                a = 1;
 
             switch (member.Type)
             {
