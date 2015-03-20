@@ -33,7 +33,7 @@ namespace Dynamo.Models
         private bool displayLabels;
         private bool isUpstreamVisible;
         private bool isVisible;
-        private bool enablePeriodicUpdate;
+        private bool canUpdatePeriodically;
         private string nickName;
         private ElementState state;
         private string toolTipText = "";
@@ -452,13 +452,13 @@ namespace Dynamo.Models
             }
         }
 
-        public bool EnablePeriodicUpdate
+        public bool CanUpdatePeriodically
         {
-            get { return enablePeriodicUpdate; }
+            get { return canUpdatePeriodically; }
             set
             {
-                enablePeriodicUpdate = value;
-                RaisePropertyChanged("EnablePeriodicUpdate");
+                canUpdatePeriodically = value;
+                RaisePropertyChanged("CanUpdatePeriodically");
             }
         }
 

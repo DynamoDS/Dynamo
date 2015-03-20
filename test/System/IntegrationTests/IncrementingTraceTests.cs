@@ -192,11 +192,11 @@ x = 1;
 
             // Create import CBN and call test class
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));  // import
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));  // x
-            added.Add(CreateSubTreeFromCode(guid3, codes[2]));  // y
-            added.Add(CreateSubTreeFromCode(guid4, codes[3]));  // call function
-            added.Add(CreateSubTreeFromCode(guid5, codes[5]));  // i
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));  // import
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));  // x
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, codes[2]));  // y
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[3]));  // call function
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, codes[5]));  // i
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -207,7 +207,7 @@ x = 1;
            
             // Modify the variable input to the function
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid4, codes[4]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, codes[4]));
 
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
@@ -235,7 +235,7 @@ x = 1;
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -247,7 +247,7 @@ x = 1;
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, codes[1]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -260,7 +260,7 @@ x = 1;
             // Redefine the CBN
             List<Subtree> modified = new List<Subtree>();
 
-            modified.Add(CreateSubTreeFromCode(guid2, codes[2]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[2]));
 
             syncData = new GraphSyncData(null, null, modified);
             astLiveRunner.UpdateGraph(syncData);
@@ -298,7 +298,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -311,7 +311,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -343,7 +343,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -367,7 +367,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1..3;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..3;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -407,7 +407,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -431,7 +431,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1..2;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..2;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -469,7 +469,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -493,7 +493,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1..2;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..2;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -517,7 +517,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, "x = 1..3;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = 1..3;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -558,7 +558,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -582,7 +582,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1..4;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..4;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -610,7 +610,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, "x = 1..3;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = 1..3;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -814,7 +814,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -827,7 +827,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -858,7 +858,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -888,7 +888,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1..3;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..3;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -928,7 +928,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -952,7 +952,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1..2;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..2;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -990,7 +990,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -1014,7 +1014,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1..2;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..2;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1038,7 +1038,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, "x = 1..3;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = 1..3;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1079,7 +1079,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -1103,7 +1103,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1..4;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..4;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1131,7 +1131,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, "x = 1..3;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = 1..3;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1333,7 +1333,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -1362,7 +1362,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1..3;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..3;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1415,7 +1415,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -1428,7 +1428,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, "x = 1;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1445,7 +1445,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             //Force exception to be thrown
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, "fail = true;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "fail = true;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1460,7 +1460,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new  CBN
             Guid guid4 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid4, "fail = false;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "fail = false;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1475,7 +1475,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new  CBN
             Guid guid5 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid5, "x = 10;"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, "x = 10;"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1517,7 +1517,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -1535,7 +1535,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             //Force exception to be thrown
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, "fail = {true, true, true};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "fail = {true, true, true};"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1550,7 +1550,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             // Simulate a new  CBN
             Guid guid4 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid4, "fail = {false, false, false};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "fail = {false, false, false};"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1589,7 +1589,7 @@ mtcAID = mtcA.ID;";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -1607,7 +1607,7 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, "x = {44, 54}; fail = {false, true};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = {44, 54}; fail = {false, true};"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1622,7 +1622,7 @@ mtcAID = mtcA.ID;";
             // Simulate a new  CBN
             Guid guid4 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid4, "x = {47, 67}; fail = {false, false};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "x = {47, 67}; fail = {false, false};"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1639,7 +1639,7 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid5 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid5, "x = {4, 5, 6};")); //shortest lacing will cap this to 2 values
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, "x = {4, 5, 6};")); //shortest lacing will cap this to 2 values
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1681,7 +1681,7 @@ mtcAID = mtcA.ID;";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -1699,7 +1699,7 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid3 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid3, "x = {44, 54};"));// fail = {false, false};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid3, "x = {44, 54};"));// fail = {false, false};"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1714,7 +1714,7 @@ mtcAID = mtcA.ID;";
             // Simulate a new  CBN
             Guid guid4 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid4, "x = {47, 67};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid4, "x = {47, 67};"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1731,7 +1731,7 @@ mtcAID = mtcA.ID;";
             //Force exception to be thrown
             Guid guid5 = System.Guid.NewGuid();
             added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid5, "x = {4, 5, 6};"));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid5, "x = {4, 5, 6};"));
 
 
             syncData = new GraphSyncData(null, added, null);
@@ -1771,7 +1771,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
             // Simulate a new new CBN
             Guid guid1 = System.Guid.NewGuid();
-            added.Add(CreateSubTreeFromCode(guid1, setupCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
             var syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
@@ -1788,7 +1788,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                     // Simulate a new new CBN
                     Guid guid2 = System.Guid.NewGuid();
                     added = new List<Subtree>();
-                    added.Add(CreateSubTreeFromCode(guid2, "x = 1;"));
+                    added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1;"));
 
 
                     syncData = new GraphSyncData(null, added, null);
@@ -1818,23 +1818,11 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
         {
             Guid guid2 = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid2, newCode));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, newCode));
 
 
             GraphSyncData syncData = new GraphSyncData(null, added, null);
             astLiveRunner.UpdateGraph(syncData);
         }
-
-        private Subtree CreateSubTreeFromCode(Guid guid, string code)
-        {
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
-            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
-            return subtree;
-        }
-
-
-
-
-
     }
 }

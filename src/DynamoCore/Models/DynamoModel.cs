@@ -412,12 +412,20 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
+        
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
-            pathManager = new PathManager(config.DynamoCorePath, config.PathResolver);
+            pathManager = new PathManager(new PathManagerParams
+            {
+                CorePath = config.DynamoCorePath,
+                PathResolver = config.PathResolver
+            });
+
+            // Ensure we have all directories in place.
+            pathManager.EnsureDirectoryExistence();
 
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
@@ -444,6 +452,21 @@ namespace Dynamo.Models
 
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
+
+            if (this.PreferenceSettings.IsFirstRun)
+            {
+                DynamoMigratorBase migrator = null;
+                try
+                {
+                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e.Message);
+                }
+                if (migrator != null)
+                    this.PreferenceSettings = migrator.PreferenceSettings;
+            }
 
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
@@ -562,6 +585,11 @@ namespace Dynamo.Models
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+            }
+
+            foreach (var ws in _workspaces)
+            {
+                ws.Dispose(); 
             }
         }
 
@@ -704,7 +732,8 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-            AddZeroTouchNodesToSearch(functionGroups);
+            if (!DynamoModel.IsTestMode)
+                AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif

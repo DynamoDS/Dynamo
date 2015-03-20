@@ -101,7 +101,12 @@
             ShowCoordinateSystem="False"
             RenderTechnique="{Binding RenderTechnique}"
             Camera="{Binding Camera}" RotationSensitivity="1"
-            IsShadowMappingEnabled="{Binding ShowShadows}" UseDefaultGestures="False" IsInertiaEnabled="False" IsChangeFieldOfViewEnabled="False" SpinReleaseTime="0" ShowFieldOfView="False" >
+            IsShadowMappingEnabled="{Binding ShowShadows}" 
+            UseDefaultGestures="False" 
+            IsInertiaEnabled="False" 
+            IsChangeFieldOfViewEnabled="False" 
+            SpinReleaseTime="0" 
+            ShowFieldOfView="False">
 
             <hx:ShadowMap3D x:Name="shadowMap" Resolution="{Binding ShadowMapResolution}" />
             <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>

@@ -56,7 +56,7 @@ namespace Dynamo
 
         private WorkspaceModel OpenWorkspaceFromSampleFile()
         {
-            var examplePath = Path.Combine(GetSampleDirectory(), @"Basics\Basics_Basic01.dyn");
+            var examplePath = Path.Combine(GetSampleDirectory(), @"en-US\Basics\Basics_Basic01.dyn");
             ViewModel.Model.OpenFileFromPath(examplePath);
             return ViewModel.Model.CurrentWorkspace;
         }

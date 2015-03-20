@@ -17,10 +17,10 @@ namespace Dynamo.Models
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
+        private bool graphExecuted;
 
-        private bool graphExecuted;              
         public readonly bool VerboseLogging;
-
+       
         /// <summary>
         ///     Before the Workspace has been built the first time, we do not respond to 
         ///     NodeModification events.
@@ -29,6 +29,12 @@ namespace Dynamo.Models
 
         public RunSettings RunSettings { get; protected set; }
        
+        /// <summary>
+        /// Evaluation count is incremented whenever the graph is evaluated. 
+        /// It is set to zero when the graph is Cleared.
+        /// </summary>
+        public long EvaluationCount { get; private set; }
+
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
@@ -54,6 +60,7 @@ namespace Dynamo.Models
             bool isTestMode)
             : base(e, n, info, factory)
         {
+            EvaluationCount = 0;
 
             RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 
@@ -159,10 +166,6 @@ namespace Dynamo.Models
             {
                 RequestRun();
             }
-
-            //Find the next executing nodes on when Run-Auto is not set 
-            if (RunSettings.RunType == RunType.Manual)
-                GetExecutingNodes();
         }
 
         /// <summary>
@@ -173,6 +176,7 @@ namespace Dynamo.Models
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();
+            EvaluationCount = 0;
         }
 
         /// <summary>
@@ -204,7 +208,7 @@ namespace Dynamo.Models
 
         private void PulseMakerRunStarted()
         {
-            var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
+            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
             MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
@@ -354,6 +358,8 @@ namespace Dynamo.Models
                 ? new EvaluationCompletedEventArgs(true)
                 : new EvaluationCompletedEventArgs(true, task.Exception);
 
+            EvaluationCount ++;
+
             OnEvaluationCompleted(e);
         }
 
@@ -438,12 +444,18 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        public void GetExecutingNodes()
+        /// <summary>
+        /// This function gets the set of nodes that will get executed in the next run.
+        /// This function will be called when the nodes are modified or when showrunpreview is set
+        /// the executing nodes will be sent via SetNodeDeltaState event.
+        /// </summary>
+        /// <param name="showRunPreview">This parameter controls the delta state computation </param>
+        public void GetExecutingNodes(bool showRunPreview)
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
                         
-            //The Graph is executed and Show node execution is checked on the Debug menu
-            if (graphExecuted)
+            //The Graph is executed and Show node execution is checked on the Settings menu
+            if (graphExecuted && showRunPreview)
             {
                 if (task.Initialize(EngineController, this) != null)
                 {

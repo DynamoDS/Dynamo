@@ -216,7 +216,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("list2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank))
                     },
                     ID = BuiltInMethods.MethodID.kConcat,
-                    MethodAttributes = new MethodAttributes(true, Resources.UseListJoinNode){Description  = Resources.ReturnsConcatenatingList}
+                    MethodAttributes = new MethodAttributes(true, false, Resources.UseListJoinNode){Description  = Resources.ReturnsConcatenatingList}
                     //MAGN-3382 MethodAttributes = new MethodAttributes(true),
                 },
 
@@ -854,7 +854,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)),
                     }.ToList(),
                     ID = BuiltInMethods.MethodID.kToString,
-                    MethodAttributes = new MethodAttributes(true, "This node is obsolete, please use \"String from Object\""),
+                    MethodAttributes = new MethodAttributes(true, false, "This node is obsolete, please use \"String from Object\""),
                 },
 
                 new BuiltInMethod

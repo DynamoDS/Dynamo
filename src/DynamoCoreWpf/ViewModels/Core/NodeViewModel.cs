@@ -202,15 +202,15 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return nodeLogic.EnablePeriodicUpdate
+                return nodeLogic.CanUpdatePeriodically
                     ? Visibility.Visible
                     : Visibility.Collapsed;
             }
         }
         public bool EnablePeriodicUpdate
         {
-            get { return nodeLogic.EnablePeriodicUpdate; }
-            set { nodeLogic.EnablePeriodicUpdate = value; }
+            get { return nodeLogic.CanUpdatePeriodically; }
+            set { nodeLogic.CanUpdatePeriodically = value; }
         }
 
         public bool ShowsVisibilityToggles
@@ -536,7 +536,7 @@ namespace Dynamo.ViewModels
                 case "ForceReExecuteOfNode":
                     RaisePropertyChanged("WillForceReExecuteOfNode");
                     break;             
-                case "EnablePeriodicUpdate":
+                case "CanUpdatePeriodically":
                     RaisePropertyChanged("EnablePeriodicUpdate");
                     RaisePropertyChanged("PeriodicUpdateVisibility");
                     break;
