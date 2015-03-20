@@ -195,7 +195,7 @@ namespace Dynamo.Controls
             this.ShowShadows = false;
             
             // setup lighting            
-            this.AmbientLightColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
+            this.AmbientLightColor = new Color4(0.1f, 0.1f, 0.1f, 1.0f);
 
             this.DirectionalLightColor = SharpDX.Color.White;
             this.DirectionalLightDirection = new Vector3(-0.5f, -1, 0);
@@ -210,7 +210,8 @@ namespace Dynamo.Controls
             {
                 Position = new Point3D(10, 10, 10),
                 LookDirection = new Vector3D(-10, -10, -10),
-                UpDirection = new Vector3D(0, 1, 0)
+                UpDirection = new Vector3D(0, 1, 0),
+                FarPlaneDistance = 500000
             };
 
             DrawGrid();
