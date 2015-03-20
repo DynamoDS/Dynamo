@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
@@ -8,6 +9,11 @@ namespace DSCore
     {
         public static string WebRequestByUrl(string url)
         {
+            if (url == null)
+            {
+                throw new ArgumentException("The url cannot be null.");
+            }
+
             //send a webrequest to the URL
             // Initialize the WebRequest.
             var myRequest = System.Net.WebRequest.Create(url);

@@ -108,6 +108,10 @@
                          Converter="{StaticResource BackgroundPreviewGestureConverter}"
                          ConverterParameter="IsOrbiting" />
             </HelixToolkit:HelixViewport3D.RotateGesture2>
+            <HelixToolkit:HelixViewport3D.Camera>
+                <PerspectiveCamera FarPlaneDistance="5000000" UpDirection="0,0,1" Position="10,10,10" LookDirection="-1,-1,-1">
+                </PerspectiveCamera>
+            </HelixToolkit:HelixViewport3D.Camera>
             <ModelVisual3D>
                 <HelixToolkit:LightVisual3D>
                     <HelixToolkit:DefaultLights>
