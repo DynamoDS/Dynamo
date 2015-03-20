@@ -562,11 +562,7 @@ namespace Dynamo.Models
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
-                        var ws = currentWorkspace as HomeWorkspaceModel;
-                        if (ws != null && ws.RunSettings.RunType != RunType.Periodic)
-                        {
-                            Logger.Log(String.Format(Properties.Resources.EvaluationCompleted, executionTimeSpan));
-                        }
+                        Debug.WriteLine(String.Format(Properties.Resources.EvaluationCompleted, executionTimeSpan));
 
                         ExecutionEvents.OnGraphPostExecution();
                     }
