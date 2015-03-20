@@ -114,6 +114,16 @@ namespace Dynamo.Interfaces
         IEnumerable<string> PreloadedLibraries { get; }
 
         /// <summary>
+        /// Major version of assembly file
+        /// </summary>
+        int MajorFileVersion { get; }
+
+        /// <summary>
+        /// Minor version of assembly file
+        /// </summary>
+        int MinorFileVersion { get; }
+
+        /// <summary>
         /// Call this method to add additional path for consideration when path 
         /// resolution take place.
         /// </summary>
