@@ -417,7 +417,14 @@ namespace Dynamo.Models
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
-            pathManager = new PathManager(config.DynamoCorePath, config.PathResolver);
+            pathManager = new PathManager(new PathManagerParams
+            {
+                CorePath = config.DynamoCorePath,
+                PathResolver = config.PathResolver
+            });
+
+            // Ensure we have all directories in place.
+            pathManager.EnsureDirectoryExistence();
 
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
@@ -563,6 +570,11 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             }
+
+            foreach (var ws in _workspaces)
+            {
+                ws.Dispose(); 
+            }
         }
 
         /// <summary>
@@ -704,7 +716,8 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-            AddZeroTouchNodesToSearch(functionGroups);
+            if (!DynamoModel.IsTestMode)
+                AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
 
 namespace DynamoShapeManager
 {
@@ -23,53 +25,37 @@ namespace DynamoShapeManager
         /// of preference. This argument cannot be null or empty.</param>
         /// <param name="location">The full path of the directory in which targeted
         /// ASM binaries are found. This argument cannot be null.</param>
-        /// <returns>Returns a zero based index into the versions list if any 
-        /// installed ASM is found, or -1 otherwise.</returns>
+        /// <returns>Returns LibraryVersion of ASM if any installed ASM is found, 
+        /// or None otherwise.</returns>
         /// 
-        public static int GetInstalledAsmVersion(IEnumerable<LibraryVersion> versions, ref string location)
+        public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location)
         {
-            if ((versions == null) || !versions.Any())
+            if ((versions == null) || versions.Count <= 0)
                 throw new ArgumentNullException("versions");
             if (location == null)
                 throw new ArgumentNullException("location");
 
             location = string.Empty;
 
-            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            var baseSearchDirectory = Path.Combine(programFiles, "Autodesk");
-
             try
             {
-                var root = new DirectoryInfo(baseSearchDirectory);
-                var subDirs = root.GetDirectories();
-                var directories = subDirs.Where(d => d.Name.Contains("Revit")
-                    || d.Name.Contains("Vasari")).ToList();
+                var installations = GetAsmInstallations();
 
-                if (!directories.Any())
-                    return -1;
-
-                int versionIndex = -1;
-                foreach (var version in versions)
+                foreach (KeyValuePair<string, Tuple<int,int,int,int>> install in installations)
                 {
-                    versionIndex++;
-                    var assemblyName = string.Format("ASMAHL{0}A.DLL", ((int) version));
-
-                    foreach (var directoryInfo in directories)
+                    if (versions.Exists(v => (int)v == install.Value.Item1))
                     {
-                        if (directoryInfo.GetFiles(assemblyName).Length <= 0)
-                            continue;
-
-                        location = directoryInfo.FullName;
-                        return versionIndex;
+                        location = install.Key;
+                        return (LibraryVersion)install.Value.Item1;
                     }
                 }
             }
             catch (Exception)
             {
-                return -1;
+                return LibraryVersion.None;
             }
 
-            return -1;
+            return LibraryVersion.None;
         }
 
         /// <summary>
@@ -156,6 +142,25 @@ namespace DynamoShapeManager
             }
 
             return assemblyPath;
+        }
+
+        private static IEnumerable GetAsmInstallations()
+        {
+            string installDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assembly = Assembly.LoadFrom(Path.Combine(installDir, "DynamoInstallDetective.dll"));
+            var type = assembly.GetType("DynamoInstallDetective.Utilities");
+
+            var installationsMethod = type.GetMethod(
+                "FindProductInstallations",
+                BindingFlags.Public | BindingFlags.Static);
+
+            if (installationsMethod == null)
+            {
+                throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
+            }
+
+            var methodParams = new object[] { "Autodesk", "ASMAHL*.dll" };
+            return installationsMethod.Invoke(null, methodParams) as IEnumerable;
         }
     }
 }

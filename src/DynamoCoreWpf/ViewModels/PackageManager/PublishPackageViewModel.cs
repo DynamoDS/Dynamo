@@ -791,7 +791,8 @@ namespace Dynamo.PackageManager
             {
                 fDialog = new OpenFileDialog()
                 {
-                    Filter = string.Format(Resources.FileDialogCustomNodeDLLXML, "*.dyf;*.dll;*.xml"),
+                    Filter = string.Format(Resources.FileDialogCustomNodeDLLXML, "*.dyf;*.dll;*.xml") + "|" +
+                         string.Format(Resources.FileDialogAllFiles, "*.*"),
                     Title = Resources.AddCustomFileToPackageDialogTitle
                 };
             }

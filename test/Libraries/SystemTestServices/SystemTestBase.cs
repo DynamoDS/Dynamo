@@ -118,8 +118,6 @@ namespace SystemTestServices
                 assemblyResolver = null;
             }
 
-            GC.Collect();
-
             try
             {
                 var directory = new DirectoryInfo(TempFolder);

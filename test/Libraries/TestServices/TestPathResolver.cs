@@ -38,5 +38,15 @@ namespace TestServices
         {
             get { return preloadedLibraryPaths; }
         }
+
+        public string UserDataRootFolder
+        {
+            get { return string.Empty; }
+        }
+
+        public string CommonDataRootFolder
+        {
+            get { return string.Empty; }
+        }
     }
 }

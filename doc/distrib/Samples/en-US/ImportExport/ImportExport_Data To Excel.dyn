@@ -1,0 +1,48 @@
+<Workspace Version="0.8.0.706" X="761.639973569609" Y="-68.7262892989265" zoom="0.767272747272974" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="48175079-300b-4b1d-9953-e23d570dce12" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="222.212117893843" y="457.062054843618" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="fcb1697c-24ce-4f38-bfd0-972fb16f7340" type="Dynamo.Nodes.DSFunction" nickname="Math.Cos" x="-25.7039169624567" y="389.724955920528" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="DSCoreNodes.dll" function="DSCore.Math.Cos@double" />
+    <Dynamo.Nodes.DSFunction guid="40425554-d397-47a3-b310-3d1ebc008aaf" type="Dynamo.Nodes.DSFunction" nickname="Math.Sin" x="-26.8384414682942" y="486.256981517113" isVisible="true" isUpstreamVisible="true" lacing="Longest" assembly="DSCoreNodes.dll" function="DSCore.Math.Sin@double" />
+    <Dynamo.Nodes.StringInput guid="22f47a56-fc22-4990-8183-7a4f8ac81055" type="Dynamo.Nodes.StringInput" nickname="String" x="730.729723405822" y="260.610265519358" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>helix</System.String>
+      <System.String value="helix" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.DoubleInput guid="393b5972-8a68-408f-b34a-23d08740d298" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="722.125610899177" y="321.293015210892" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <DSCore.File.Filename guid="06751245-56b4-4d48-a4a1-832dc0eca24e" type="DSCore.File.Filename" nickname="File Path" x="547.13285214786" y="167.491111150313" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>C:\ProgramData\Dynamo\0.8\samples\Data\icosohedron_points.csv</System.String>
+    </DSCore.File.Filename>
+    <Dynamo.Nodes.DSFunction guid="53ee9988-6ed7-497f-92d8-2132f1a76ae3" type="Dynamo.Nodes.DSFunction" nickname="List.Transpose" x="621.246002241678" y="461.125503329612" isVisible="true" isUpstreamVisible="true" lacing="Disabled" assembly="DSCoreNodes.dll" function="DSCore.List.Transpose@var[]..[]" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="cea06e7f-ebe2-4823-ac60-f77905b03451" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="392.261474160315" y="459.453771319994" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{pt.X,pt.Y,pt.Z};" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="3a4a72e8-c461-44d5-974b-576089c5709a" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-423.657783484074" y="507.685729227286" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..(360*numCircles)..10;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="3a36b093-c135-4a9c-8b60-6b32f4ffeee0" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="0.376627305667398" y="576.382494833701" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="x/100;" ShouldFocus="false" />
+    <DSCoreNodesUI.Input.DoubleSlider guid="50a10873-504c-452c-90bf-ba99110aad24" type="DSCoreNodesUI.Input.DoubleSlider" nickname="Number Slider" x="-758.909161221281" y="509.579073606876" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>1.793</System.Double>
+      <Range min="0" max="5" step="0.1" />
+    </DSCoreNodesUI.Input.DoubleSlider>
+    <Dynamo.Nodes.DSFunction guid="f236e4bd-2c1c-4846-b632-ff318f3cab42" type="Dynamo.Nodes.DSFunction" nickname="Excel.WriteToFile" x="886.488728395189" y="241.864407838795" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSOffice.dll" function="DSOffice.Excel.WriteToFile@string,string,int,int,var[][]" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="48175079-300b-4b1d-9953-e23d570dce12" start_index="0" end="cea06e7f-ebe2-4823-ac60-f77905b03451" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fcb1697c-24ce-4f38-bfd0-972fb16f7340" start_index="0" end="48175079-300b-4b1d-9953-e23d570dce12" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="40425554-d397-47a3-b310-3d1ebc008aaf" start_index="0" end="48175079-300b-4b1d-9953-e23d570dce12" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22f47a56-fc22-4990-8183-7a4f8ac81055" start_index="0" end="f236e4bd-2c1c-4846-b632-ff318f3cab42" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="393b5972-8a68-408f-b34a-23d08740d298" start_index="0" end="f236e4bd-2c1c-4846-b632-ff318f3cab42" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="393b5972-8a68-408f-b34a-23d08740d298" start_index="0" end="f236e4bd-2c1c-4846-b632-ff318f3cab42" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="06751245-56b4-4d48-a4a1-832dc0eca24e" start_index="0" end="f236e4bd-2c1c-4846-b632-ff318f3cab42" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="53ee9988-6ed7-497f-92d8-2132f1a76ae3" start_index="0" end="f236e4bd-2c1c-4846-b632-ff318f3cab42" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cea06e7f-ebe2-4823-ac60-f77905b03451" start_index="0" end="53ee9988-6ed7-497f-92d8-2132f1a76ae3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3a4a72e8-c461-44d5-974b-576089c5709a" start_index="0" end="40425554-d397-47a3-b310-3d1ebc008aaf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3a4a72e8-c461-44d5-974b-576089c5709a" start_index="0" end="fcb1697c-24ce-4f38-bfd0-972fb16f7340" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3a4a72e8-c461-44d5-974b-576089c5709a" start_index="0" end="3a36b093-c135-4a9c-8b60-6b32f4ffeee0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3a36b093-c135-4a9c-8b60-6b32f4ffeee0" start_index="0" end="48175079-300b-4b1d-9953-e23d570dce12" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="50a10873-504c-452c-90bf-ba99110aad24" start_index="0" end="3a4a72e8-c461-44d5-974b-576089c5709a" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
