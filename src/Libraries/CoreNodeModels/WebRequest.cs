@@ -24,12 +24,12 @@ namespace DSCoreNodesUI
             InPortData.Add(new PortData("url", Resources.WebRequestPortDataUrlToolTip));
             OutPortData.Add(new PortData("result", Resources.WebRequestPortDataResultToolTip));
             RegisterAllPorts();
+
+            CanUpdatePeriodically = true;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            OnNodeModified();
-
             var functionCall = AstFactory.BuildFunctionCall(new Func<string, string>(Web.WebRequestByUrl), inputAstNodes);
 
             return new[] {AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionCall)};

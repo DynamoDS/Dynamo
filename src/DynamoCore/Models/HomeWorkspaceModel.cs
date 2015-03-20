@@ -17,8 +17,8 @@ namespace Dynamo.Models
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
+        private bool graphExecuted;
 
-        private bool graphExecuted;              
         public readonly bool VerboseLogging;
        
         /// <summary>
@@ -29,6 +29,12 @@ namespace Dynamo.Models
 
         public RunSettings RunSettings { get; protected set; }
        
+        /// <summary>
+        /// Evaluation count is incremented whenever the graph is evaluated. 
+        /// It is set to zero when the graph is Cleared.
+        /// </summary>
+        public long EvaluationCount { get; private set; }
+
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
@@ -54,6 +60,7 @@ namespace Dynamo.Models
             bool isTestMode)
             : base(e, n, info, factory)
         {
+            EvaluationCount = 0;
 
             RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 
@@ -169,6 +176,7 @@ namespace Dynamo.Models
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();
+            EvaluationCount = 0;
         }
 
         /// <summary>
@@ -200,7 +208,7 @@ namespace Dynamo.Models
 
         private void PulseMakerRunStarted()
         {
-            var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
+            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
             MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
@@ -349,6 +357,8 @@ namespace Dynamo.Models
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
                 ? new EvaluationCompletedEventArgs(true)
                 : new EvaluationCompletedEventArgs(true, task.Exception);
+
+            EvaluationCount ++;
 
             OnEvaluationCompleted(e);
         }
