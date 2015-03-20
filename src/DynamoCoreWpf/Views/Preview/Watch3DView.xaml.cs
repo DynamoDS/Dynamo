@@ -211,7 +211,6 @@ namespace Dynamo.Controls
                 Position = new Point3D(10, 10, 10),
                 LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
-                FarPlaneDistance = 500000
             };
 
             DrawGrid();
