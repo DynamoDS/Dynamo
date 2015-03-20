@@ -46,6 +46,11 @@ namespace DynamoAddinGenerator
         {
             Folder = folder;
         }
+
+        public static bool PathEquals(string path1, string path2)
+        {
+            return string.Equals(Path.GetFullPath(path1), Path.GetFullPath(path2), StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     /// <summary>
@@ -111,7 +116,7 @@ namespace DynamoAddinGenerator
             var subfolder = product.VersionString.Insert(5, "_");
 
             //Pre 0.7.x release
-            if (latestDynamoInstall.Folder == DynamoVersions.dynamo_063)
+            if (DynamoInstall.PathEquals(latestDynamoInstall.Folder,DynamoVersions.dynamo_063))
             {
                 ClassName = "Dynamo.Applications.DynamoRevitApp";
                 AssemblyPath = Path.Combine(latestDynamoInstall.Folder, "DynamoRevit.dll");
@@ -145,7 +150,7 @@ namespace DynamoAddinGenerator
             foreach (var p in products)
             {
                 //If the current product is being uninstalled, don't generate addin data
-                if (string.Equals(p.InstallLocation, dynamoUninstallPath))
+                if (DynamoInstall.PathEquals(p.InstallLocation, dynamoUninstallPath))
                     continue;
 
                 var path = Path.Combine(p.InstallLocation, "DynamoRevit.dll");
