@@ -754,10 +754,12 @@ namespace Dynamo.DSEngine
 
             // MethodAttribute's HiddenInLibrary has higher priority than
             // ClassAttribute's HiddenInLibrary
-            bool isVisible = true;
+            var isVisible = true;
+            var canUpdatePeriodically = false;
             if (methodAttribute != null)
             {
                 isVisible = !methodAttribute.HiddenInLibrary;
+                canUpdatePeriodically = methodAttribute.CanUpdatePeriodically;
             }
             else
             {
@@ -835,7 +837,8 @@ namespace Dynamo.DSEngine
                 ReturnKeys = returnKeys,
                 PathManager = pathManager,
                 IsVarArg = proc.isVarArg,
-                ObsoleteMsg = obsoleteMessage
+                ObsoleteMsg = obsoleteMessage,
+                CanUpdatePeriodically = canUpdatePeriodically
             });
 
             AddImportedFunctions(library, new[] { function });
