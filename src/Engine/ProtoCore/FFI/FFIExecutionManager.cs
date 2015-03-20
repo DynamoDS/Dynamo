@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using ProtoCore;
@@ -29,14 +30,44 @@ namespace ProtoFFI
             }
         }
 
+        Dictionary<FileInfo, Assembly> mAssemblyCache = new Dictionary<FileInfo, Assembly>();
+        internal void AddToAssemblyCache(FileInfo fileInfo, Assembly assem)
+        {
+            if (fileInfo == null)
+            {
+                throw new ArgumentNullException("fileInfo");
+            }
+
+            if (assem == null)
+            {
+                throw new ArgumentNullException("assem");
+            }
+
+            if (mAssemblyCache.ContainsKey(fileInfo))
+            {
+                throw new InvalidOperationException("An assembly with the same filename has already been added!");
+            }
+
+            mAssemblyCache.Add(fileInfo, assem);
+        }
+
         public Assembly LoadAssembly(string name)
         {
             System.Diagnostics.Debug.Write("Trying to load assembly: " + name);
-            if (System.IO.File.Exists(name))
+
+            if (!System.IO.File.Exists(name))
             {
-                return Assembly.LoadFrom(name);
+                throw new System.IO.FileNotFoundException();
             }
-            throw new System.IO.FileNotFoundException();
+
+            var info = new FileInfo(name);
+            if (mAssemblyCache.ContainsKey(info))
+            {
+                System.Diagnostics.Debug.Write(String.Format("Reading {0} from assembly cache", name));
+                return mAssemblyCache[info];
+            }
+
+            return Assembly.LoadFrom(name);
         }
 
         public IExecutionSession GetSession(RuntimeCore runtimeCore)

@@ -129,11 +129,12 @@ namespace Dynamo.PackageManager
         /// <param name="filename">The filename of a DLL</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns true if success, false if BadImageFormatException (i.e. not a managed assembly)</returns>
-        internal static bool TryLoadFrom(string filename, out Assembly assem)
+        internal static bool TryLoad(string filename, out Assembly assem)
         {
             try
             {
-                assem = Assembly.LoadFrom(filename);
+                var raw = File.ReadAllBytes(filename);
+                assem = Assembly.Load(raw);
                 return true;
             }
             catch (BadImageFormatException)
