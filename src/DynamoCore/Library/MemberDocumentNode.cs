@@ -6,12 +6,38 @@ namespace Dynamo.DSEngine
     class MemberDocumentNode
     {
         private readonly string fullyQualifiedName;
+        private string summary;
+        private string searchTags;
         private readonly Dictionary<string, string> parameters;
 
-        internal string FullyQualifiedName { get { return fullyQualifiedName; } }
-        internal string Summary { get; set; }
-        internal string SearchTags { get; set; }
-        internal IDictionary<string, string> Parameters { get { return parameters; } }
+        public string FullyQualifiedName { get { return fullyQualifiedName; } }
+        public string Summary 
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(summary))
+                    return String.Empty;
+                return summary;
+            }
+            set
+            {
+                summary = value;
+            }
+        }
+        public string SearchTags
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(searchTags))
+                    return String.Empty;
+                return searchTags;
+            }
+            set
+            {
+                searchTags = value;
+            }
+        }
+        public IDictionary<string, string> Parameters { get { return parameters; } }
 
         /// <summary>
         /// Constructs an instance of MemberDocumentNode object from its 
@@ -28,7 +54,7 @@ namespace Dynamo.DSEngine
         /// 
         /// </param>
         /// 
-        internal MemberDocumentNode(string memberName)
+        public MemberDocumentNode(string memberName)
         {
             fullyQualifiedName = memberName;
             parameters = new Dictionary<string, string>();
@@ -39,14 +65,9 @@ namespace Dynamo.DSEngine
             parameters = new Dictionary<string, string>();
         }
 
-        internal void AddParameter(string name, string description)
+        public void AddParameter(string name, string description)
         {
             parameters[name] = description;
-        }
-
-        internal static string MakeFullyQualifiedName(string assemblyName, string memberName)
-        {
-            return string.Format("{0}.{1}", assemblyName, memberName);
         }
     }
 }

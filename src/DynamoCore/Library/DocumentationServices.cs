@@ -90,6 +90,16 @@ namespace Dynamo.DSEngine
             return GetProperty(parameter.Function, "description", parameter.Name);
         }
 
+        public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member)
+        {
+            if (member.Assembly == null) 
+                return new List<string>();
+
+            return GetProperty(member, "search").Split(',')
+                .Select(x => x.Trim())
+                .Where(x => x != String.Empty);
+        }
+
         private static string GetProperty(FunctionDescriptor fDescr, string property, string paramName = "")
         {
             var assemblyName = fDescr.Assembly;
@@ -127,7 +137,15 @@ namespace Dynamo.DSEngine
                             return documentNodes[keyForOverloaded].Parameters[paramName];
 
                     return String.Empty;
+                case "search":
+                    if (documentNodes.ContainsKey(fullyQualifiedName))
+                        return documentNodes[fullyQualifiedName].SearchTags;
 
+                    // Fallback for overloaded methods.
+                    if (keyForOverloaded != null)
+                        return documentNodes[keyForOverloaded].SearchTags;
+
+                    return String.Empty;
                 default:
                     return String.Empty;
             }
@@ -176,6 +194,10 @@ namespace Dynamo.DSEngine
                                 currentTag = XmlTagType.Parameter;
                                 break;
 
+                            case "search":
+                                currentTag = XmlTagType.SearchTags;
+                                break;
+
                             default:
                                 currentTag = XmlTagType.None;
                                 break;
@@ -189,6 +211,9 @@ namespace Dynamo.DSEngine
                                 break;
                             case XmlTagType.Parameter:
                                 currentDocNode.Parameters.Add(currentParamName, reader.Value);
+                                break;
+                            case XmlTagType.SearchTags:
+                                currentDocNode.SearchTags = reader.Value;
                                 break;
                         }
 
