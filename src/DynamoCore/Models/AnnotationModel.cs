@@ -228,18 +228,16 @@ namespace Dynamo.Models
             {
                 var groupModels = combinedList.OrderBy(x => x.X).ToList();
 
-                var xGroupModels = groupModels.ToList().OrderBy(x => x.X).ToList();
-                var yGroupModels = groupModels.ToList().OrderBy(x => x.Y).ToList();
+                var maxWidth = groupModels.Max(x => x.Width);
+                var maxHeight = groupModels.Max(y => y.Height);
 
-                var maxWidth = xGroupModels.Max(x => x.Width);
-                var maxHeight = yGroupModels.Max(y => y.Height);
+                var regionX = groupModels.Min(x => x.X) - 10;
+                var regionY = groupModels.Min(y => y.Y) - 10;
 
-                var regionX = xGroupModels.First().X - 30;
-                var regionY = yGroupModels.First().Y - 30;
+                var xDistance = groupModels.Max(x => x.X) - regionX;
+                var yDistance = groupModels.Max(x => x.Y) - regionY;
 
-                var xDistance = xGroupModels.Last().X - regionX;
-                var yDistance = yGroupModels.Last().Y - regionY;
-
+               
                 var region = new Rect2D
                 {
                     X = regionX,
