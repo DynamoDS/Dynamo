@@ -134,7 +134,7 @@ Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; Wo
 Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
 
 [UninstallRun]
-Filename: "{app}\DynamoAddinGenerator.exe"; Flags: runhidden;
+Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: "/uninstall ""{app}"""; Flags: runhidden;
 
 [Icons]
 Name: "{group}\{#ProductName} {#ProductVersion}"; Filename: "{app}\DynamoSandbox.exe"
@@ -185,6 +185,7 @@ begin
   // we'll need these files to check for a revit installation
   ExtractTemporaryFile('RevitInstallDetective.exe');
   ExtractTemporaryFile('RevitAddinUtility.dll');
+  ExtractTemporaryFile('DynamoInstallDetective.dll');
   ExtractTemporaryFile('DynamoAddinGenerator.exe');
 
   result := true
