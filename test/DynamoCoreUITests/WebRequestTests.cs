@@ -1,13 +1,14 @@
 ﻿using System.IO;
+using System.Net;
 
 using SystemTestServices;
-
-using DSCoreNodesUI;
 
 using Dynamo.Models;
 using Dynamo.Tests;
 
 using NUnit.Framework;
+
+using WebRequest = DSCoreNodesUI.WebRequest;
 
 namespace DynamoCoreUITests
 {
@@ -17,6 +18,11 @@ namespace DynamoCoreUITests
         [Test]
         public void WebRequest()
         {
+            if (!CheckForInternetConnection())
+            {
+                Assert.Inconclusive("Not connected to the internet.");
+            }
+
             var openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\web_request\WebRequest.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
@@ -37,6 +43,22 @@ namespace DynamoCoreUITests
             System.Threading.Thread.Sleep(1000);
 
             Assert.Greater(ws.EvaluationCount, 3);
+        }
+
+        public static bool CheckForInternetConnection()
+        {
+            try
+            {
+                using (var client = new WebClient())
+                using (var stream = client.OpenRead("http://www.google.com"))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
