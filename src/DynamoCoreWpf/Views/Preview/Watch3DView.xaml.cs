@@ -58,7 +58,7 @@ namespace Dynamo.Controls
         private LineGeometry3D _grid;
         private RenderTechnique renderTechnique;
         private HelixToolkit.Wpf.SharpDX.Camera camera;
-        private SharpDX.Color4 selectionColor = new Color4(0,1,1,1);
+        private SharpDX.Color4 selectionColor = new Color4(0,158.0f/255.0f,1,1);
         private bool showShadows;
 
 #if DEBUG
