@@ -5,6 +5,7 @@ using System.Xml;
 using System.Linq;
 using Dynamo.Interfaces;
 using DynamoUtilities;
+using Dynamo.Library;
 
 namespace Dynamo.DSEngine
 {
@@ -103,6 +104,30 @@ namespace Dynamo.DSEngine
             return String.Empty;
         }
 
+        public static string GetDescription(this TypedParameter parameter)
+        {
+            var assemblyName = parameter.Function.Assembly;
+            var fullyQualifiedName = GetMemberElementName(parameter.Function);
+
+            // Case for operators.
+            if (assemblyName == null)
+                return String.Empty;
+
+            if (!_triedPaths.ContainsKey(assemblyName))
+                LoadDataFromXml(parameter.Function);
+
+            if (documentNodes.ContainsKey(fullyQualifiedName))
+                return documentNodes[fullyQualifiedName].Summary;
+
+            // Fallback for overloaded methods.
+            var keyForOverloaded = documentNodes.Keys.
+                Where(key => key.Contains(parameter.Function.ClassName + "." + parameter.Function.FunctionName)).FirstOrDefault();
+            if (keyForOverloaded != null)
+                return documentNodes[keyForOverloaded].Parameters[parameter.Name];
+
+            return String.Empty;
+        }
+
         private static void LoadDataFromXml(FunctionDescriptor member)
         {
             XmlReader reader;
@@ -115,6 +140,7 @@ namespace Dynamo.DSEngine
 
             MemberDocumentNode currentDocNode = new MemberDocumentNode();
             XmlTagType currentTag = XmlTagType.None;
+            string currentParamName = String.Empty;
 
             while (reader.Read())
             {
@@ -124,26 +150,25 @@ namespace Dynamo.DSEngine
                         switch (reader.Name)
                         {
                             case "member":
-                                if (reader.HasAttributes)
+                                // Find attribute "name".
+                                if (reader.MoveToAttribute("name"))
                                 {
-                                    // Find attribute "name".
-                                    while (reader.MoveToNextAttribute())
-                                    {
-                                        if (reader.Name == "name")
-                                        {
-                                            currentDocNode = new MemberDocumentNode(reader.Value);
-                                            documentNodes.Add(currentDocNode.FullyQualifiedName, currentDocNode);
-                                            currentTag = XmlTagType.Member;
-                                        }
-                                    }
+                                    currentDocNode = new MemberDocumentNode(reader.Value);
+                                    documentNodes.Add(currentDocNode.FullyQualifiedName, currentDocNode);
                                 }
+                                currentTag = XmlTagType.Member;
                                 break;
 
                             case "summary":
-                                if (reader.Name == "summary")
+                                currentTag = XmlTagType.Summary;
+                                break;
+
+                            case "param":
+                                if (reader.MoveToAttribute("name"))
                                 {
-                                    currentTag = XmlTagType.Summary;
+                                    currentParamName = reader.Value;
                                 }
+                                currentTag = XmlTagType.Parameter;
                                 break;
 
                             default:
@@ -156,6 +181,9 @@ namespace Dynamo.DSEngine
                         {
                             case XmlTagType.Summary:
                                 currentDocNode.Summary = reader.Value;
+                                break;
+                            case XmlTagType.Parameter:
+                                currentDocNode.Parameters.Add(currentParamName, reader.Value);
                                 break;
                         }
 
