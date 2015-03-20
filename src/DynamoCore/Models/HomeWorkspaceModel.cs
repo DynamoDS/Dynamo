@@ -200,7 +200,7 @@ namespace Dynamo.Models
 
         private void PulseMakerRunStarted()
         {
-            var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
+            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
             MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 

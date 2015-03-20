@@ -63,7 +63,7 @@ namespace Dynamo.DSEngine
         public ProtoCore.Type ReturnType { get; set; }
         public FunctionType FunctionType { get; set; }
         public bool IsVisibleInLibrary { get; set; }
-        public bool EnablesPeriodicUpdate { get; set; }
+        public bool CanUpdatePeriodically { get; set; }
         public IEnumerable<string> ReturnKeys { get; set; }
         public IPathManager PathManager { get; set; }
         public bool IsVarArg { get; set; }
@@ -120,7 +120,7 @@ namespace Dynamo.DSEngine
             IsVarArg = funcDescParams.IsVarArg;
             IsVisibleInLibrary = funcDescParams.IsVisibleInLibrary;
             ObsoleteMessage = funcDescParams.ObsoleteMsg;
-            EnablesPeriodicUpdate = funcDescParams.EnablesPeriodicUpdate;
+            CanUpdatePeriodically = funcDescParams.CanUpdatePeriodically;
         }
 
         public bool IsOverloaded { get; set; }
@@ -324,7 +324,7 @@ namespace Dynamo.DSEngine
         /// <summary>
         /// This attribute sets whether the function enables periodic update of the workspace.
         /// </summary>
-        public bool EnablesPeriodicUpdate { get; private set; }
+        public bool CanUpdatePeriodically { get; private set; }
 
         public string UnqualifedClassName
         {

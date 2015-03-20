@@ -1314,9 +1314,9 @@ namespace ProtoFFI
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
                 }
-                else if (attr is EnablesPeriodicUpdate)
+                else if (attr is CanUpdatePeriodicallyAttribute)
                 {
-                    EnablesPeriodicUpdate = (attr as EnablesPeriodicUpdate).PeriodicUpdateEnabled;
+                    CanUpdatePeriodically = (attr as CanUpdatePeriodicallyAttribute).CanUpdatePeriodically;
                 }
             }
         }
