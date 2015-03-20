@@ -25,7 +25,7 @@ namespace DSCoreNodesUI
             OutPortData.Add(new PortData("result", Resources.WebRequestPortDataResultToolTip));
             RegisterAllPorts();
 
-            EnablePeriodicUpdate = true;
+            CanUpdatePeriodically = true;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
