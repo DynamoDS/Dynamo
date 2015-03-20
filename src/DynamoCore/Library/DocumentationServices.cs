@@ -87,7 +87,7 @@ namespace Dynamo.DSEngine
 
         public static string GetDescription(this TypedParameter parameter)
         {
-            return GetProperty(parameter.Function, "summary", parameter.Name);
+            return GetProperty(parameter.Function, "description", parameter.Name);
         }
 
         private static string GetProperty(FunctionDescriptor fDescr, string property, string paramName = "")
@@ -118,11 +118,13 @@ namespace Dynamo.DSEngine
 
                 case "description":
                     if (documentNodes.ContainsKey(fullyQualifiedName))
-                        return documentNodes[fullyQualifiedName].Parameters[paramName];
+                        if (documentNodes[fullyQualifiedName].Parameters.ContainsKey(paramName))
+                            return documentNodes[fullyQualifiedName].Parameters[paramName];
 
                     // Fallback for overloaded methods.
                     if (keyForOverloaded != null)
-                        return documentNodes[keyForOverloaded].Parameters[paramName];
+                        if (documentNodes[keyForOverloaded].Parameters.ContainsKey(paramName))
+                            return documentNodes[keyForOverloaded].Parameters[paramName];
 
                     return String.Empty;
 
