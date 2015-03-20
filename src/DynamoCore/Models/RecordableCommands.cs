@@ -1475,7 +1475,7 @@ namespace Dynamo.Models
     // {
     //     #region Public Class Methods
     // 
-    //     internal XxxYyyCommand()
+    //     public XxxYyyCommand()
     //     {
     //     }
     // 
