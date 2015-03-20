@@ -28,9 +28,14 @@ namespace Dynamo.DSEngine
         /// 
         /// </param>
         /// 
-        internal MemberDocumentNode(string assemblyName, string memberName)
+        internal MemberDocumentNode(string memberName)
         {
-            fullyQualifiedName = MakeFullyQualifiedName(assemblyName, memberName);
+            fullyQualifiedName = memberName;
+            parameters = new Dictionary<string, string>();
+        }
+
+        public MemberDocumentNode()
+        {
             parameters = new Dictionary<string, string>();
         }
 

@@ -79,6 +79,23 @@ namespace ProtoCore
             }
         }
 
+        public string FullTypeName
+        {
+            get
+            {
+                string typename = Name;
+                if (string.IsNullOrEmpty(typename))
+                {
+                    typename = TypeSystem.GetPrimitTypeName((PrimitiveType)UID);
+                    if (string.IsNullOrEmpty(typename))
+                        typename = DSDefinitions.Keyword.Var;
+                }
+                if(RankString.Equals("[]"))
+                    typename = "System.Collections.Generic.IEnumerable{" + typename + "}";
+                return typename;
+            }
+        }
+
         public bool Equals(Type type)
         {
             return this.Name == type.Name && this.UID == type.UID && this.rank == type.rank;

@@ -42,8 +42,72 @@ namespace Dynamo.DSEngine
 
         private static void LoadDataFromXml(FunctionDescriptor member)
         {
-            if (member.Assembly != null)
-                GetForAssembly(member.Assembly, member.PathManager);
+            XmlReader reader;
+            if (member.Assembly == null)
+                return;
+
+            reader = GetForAssembly(member.Assembly, member.PathManager);
+            if (reader == null)
+                return;
+
+            MemberDocumentNode currentDocNode = new MemberDocumentNode();
+            XmlTagType currentTag = XmlTagType.None;
+
+            while (reader.Read())
+            {
+                switch (reader.NodeType)
+                {
+                    case XmlNodeType.Element:
+                        switch (reader.Name)
+                        {
+                            case "member":
+                                if (reader.HasAttributes)
+                                {
+                                    // Find attribute "name".
+                                    while (reader.MoveToNextAttribute())
+                                    {
+                                        if (reader.Name == "name")
+                                        {
+                                            currentDocNode = new MemberDocumentNode(reader.Value);
+                                            documentNodes.Add(currentDocNode.FullyQualifiedName, currentDocNode);
+                                            currentTag = XmlTagType.Member;
+                                        }
+                                    }
+                                }
+                                break;
+
+                            case "summary":
+                                if (reader.Name == "summary")
+                                {
+                                    currentTag = XmlTagType.Summary;
+                                }
+                                break;
+
+                            default:
+                                currentTag = XmlTagType.None;
+                                break;
+                        }
+                        break;
+                    case XmlNodeType.Text:
+                        switch (currentTag)
+                        {
+                            case XmlTagType.Summary:
+                                currentDocNode.Summary = reader.Value;
+                                break;
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        private enum XmlTagType
+        {
+            None,
+            Member,
+            Summary,
+            Parameter,
+            SearchTags
         }
 
         private static XmlReader GetForAssembly(string assemblyPath, IPathManager pathManager)
@@ -100,7 +164,7 @@ namespace Dynamo.DSEngine
 
         private static void CreateMemberDocumentNode(string assembly, string fullyQualifiedName)
         {
-            var memberDocNode = new MemberDocumentNode(assembly, fullyQualifiedName);
+            var memberDocNode = new MemberDocumentNode(fullyQualifiedName);
             documentNodes.Add(memberDocNode.FullyQualifiedName, memberDocNode);
         }
 
@@ -134,6 +198,9 @@ namespace Dynamo.DSEngine
             char prefixCode;
 
             string memberName = member.ClassName + "." + member.FunctionName;
+            int a = 0;
+            if (member.FunctionName == "ImportFromSAT")
+                a = 1;
 
             switch (member.Type)
             {
@@ -148,7 +215,7 @@ namespace Dynamo.DSEngine
                     // parameters are listed according to their type, not their name
                     string paramTypesList = String.Join(
                         ",",
-                        member.Parameters.Select(x => x.Type.ToShortString()).Select(PrimitiveMap).ToArray()
+                        member.Parameters.Select(x => x.Type.FullTypeName).Select(PrimitiveMap).ToArray()
                         );
 
                     if (!String.IsNullOrEmpty(paramTypesList)) memberName += "(" + paramTypesList + ")";
