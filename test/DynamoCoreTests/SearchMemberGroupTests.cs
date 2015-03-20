@@ -17,7 +17,7 @@ namespace Dynamo.Tests
             memberGroup = new SearchMemberGroup(string.Empty);
             Assert.AreEqual(string.Empty, memberGroup.Prefix);
 
-            var delimiter = Configurations.CategoryDelimiterWithSpaces;
+            var delimiter = Configurations.ShortenedCategoryDelimiter;
             var fullyQualifiedName = "Builtin Functions" + delimiter + "Actions";
 
             memberGroup = new SearchMemberGroup(fullyQualifiedName);

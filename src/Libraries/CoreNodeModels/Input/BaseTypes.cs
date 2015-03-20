@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
 
             if (name == "Value")
             {
-                Value = HttpUtility.HtmlEncode(value);
+                Value = value; 
                 return true; // UpdateValueCore handled.
             }
 
@@ -48,21 +48,13 @@ namespace Dynamo.Nodes
             return base.UpdateValueCore(updateValueParams);
         }
 
-        protected override string SerializeValue()
-        {
-            return HttpUtility.HtmlEncode(Value);
-        }
-
-        protected override string DeserializeValue(string val)
-        {
-            return HttpUtility.HtmlDecode(val);
-        }
-
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.SerializeCore(nodeElement, context);
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(string).FullName);
-            outEl.SetAttribute("value", SerializeValue().ToString(CultureInfo.InvariantCulture));
+
+            var helper = new XmlElementHelper(outEl);
+            helper.SetAttribute("value", SerializeValue());
             nodeElement.AppendChild(outEl);
         }
 

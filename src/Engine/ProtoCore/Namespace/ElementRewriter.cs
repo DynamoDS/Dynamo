@@ -11,8 +11,15 @@ using System.Text;
 namespace ProtoCore.Namespace
 {
 
-    public static class ElementRewriter
+    public class ElementRewriter
     {
+        private readonly ClassTable classTable;
+        
+        internal ElementRewriter(ClassTable classTable)
+        {
+            this.classTable = classTable;
+        }
+
         /// <summary>
         /// Lookup namespace resolution map to substitute 
         /// partial classnames with their fully qualified names in ASTs.
@@ -25,17 +32,18 @@ namespace ProtoCore.Namespace
         public static void RewriteElementNames(ClassTable classTable,
             ElementResolver elementResolver, IEnumerable<Node> astNodes)
         {
+            var elementRewriter = new ElementRewriter(classTable);
             foreach (var node in astNodes)
             {
                 var astNode = node as AssociativeNode;
                 if (astNode == null)
                     continue;
 
-                LookupResolvedNameAndRewriteAst(classTable, elementResolver, ref astNode);
+                elementRewriter.LookupResolvedNameAndRewriteAst(elementResolver, ref astNode);
             }
         }
 
-        internal static void LookupResolvedNameAndRewriteAst(ClassTable classTable, ElementResolver elementResolver, 
+        internal void LookupResolvedNameAndRewriteAst(ElementResolver elementResolver, 
             ref AssociativeNode astNode)
         {
             Debug.Assert(elementResolver != null);
@@ -46,7 +54,17 @@ namespace ProtoCore.Namespace
             var resolvedNames = new Queue<string>();
             foreach (var identifier in classIdentifiers)
             {
-                var partialName = CoreUtils.GetIdentifierExceptMethodName(identifier);
+                string partialName = string.Empty;
+                var identifierList = identifier as IdentifierListNode;
+                if (identifierList != null)
+                {
+                    partialName = CoreUtils.GetIdentifierExceptMethodName(identifierList);    
+                }
+                else
+                {
+                    partialName = identifier.Name;
+                }
+                
                 var resolvedName = elementResolver.LookupResolvedName(partialName);
                 if (string.IsNullOrEmpty(resolvedName))
                 {
@@ -73,12 +91,13 @@ namespace ProtoCore.Namespace
                 resolvedNames.Enqueue(resolvedName);
             }
             
-            RewriteAstWithResolvedName(ref astNode, resolvedNames);
+            if(resolvedNames.Any())
+                RewriteAstWithResolvedName(ref astNode, resolvedNames);
         }
 
-        internal static IEnumerable<IdentifierListNode> GetClassIdentifiers(AssociativeNode astNode)
+        internal IEnumerable<AssociativeNode> GetClassIdentifiers(AssociativeNode astNode)
         {
-            var classIdentifiers = new List<IdentifierListNode>();
+            var classIdentifiers = new List<AssociativeNode>();
             var resolvedNames = new Queue<string>();
             DfsTraverse(ref astNode, classIdentifiers, resolvedNames);
             return classIdentifiers;
@@ -90,14 +109,14 @@ namespace ProtoCore.Namespace
         /// </summary>
         /// <param name="astNode"></param>
         /// <param name="resolvedNames"> fully qualified class identifier list </param>
-        private static void RewriteAstWithResolvedName(ref AssociativeNode astNode, Queue<string> resolvedNames)
+        private void RewriteAstWithResolvedName(ref AssociativeNode astNode, Queue<string> resolvedNames)
         {
             DfsTraverse(ref astNode, null, resolvedNames);
         }
 
         #region private utility methods
 
-        private static void DfsTraverse(ref AssociativeNode astNode, ICollection<IdentifierListNode> classIdentifiers, 
+        private void DfsTraverse(ref AssociativeNode astNode, ICollection<AssociativeNode> classIdentifiers, 
             Queue<string> resolvedNames)
         {
             if (astNode is BinaryExpressionNode)
@@ -146,6 +165,58 @@ namespace ProtoCore.Namespace
                 inlineNode.FalseExpression = falseBody;
                 inlineNode.TrueExpression = trueBody;
             }
+            else if (astNode is TypedIdentifierNode)
+            {
+                var typedNode = astNode as TypedIdentifierNode;
+
+                // If type is primitive type
+                if (typedNode.datatype.UID != (int)PrimitiveType.kInvalidType &&
+                    typedNode.datatype.UID < (int) PrimitiveType.kMaxPrimitives)
+                    return;
+
+                var identListNode = CoreUtils.CreateNodeFromString(typedNode.TypeAlias);
+
+                // Rewrite node with resolved name
+                if (resolvedNames.Any())
+                {
+                    if (identListNode is IdentifierNode)
+                    {
+                        identListNode = RewriteIdentifierListNode(identListNode, resolvedNames);
+                    }
+                    else
+                        DfsTraverse(ref identListNode, classIdentifiers, resolvedNames);
+
+                    var identListString = identListNode.ToString();
+                    int indx = identListString.LastIndexOf('.');
+                    string name = indx >= 0 ? identListString.Remove(indx) : identListString;
+
+                    var type = new Type
+                    {
+                        Name = name,
+                        UID = classTable.IndexOf(name),
+                        rank = typedNode.datatype.rank
+                    };
+
+                    typedNode = new TypedIdentifierNode
+                    {
+                        Name = astNode.Name,
+                        Value = astNode.Name,
+                        datatype = type
+                    };
+
+                    NodeUtils.CopyNodeLocation(typedNode, astNode);
+                    astNode = typedNode;
+                }
+                else if (identListNode is IdentifierNode)
+                {
+                    classIdentifiers.Add(identListNode);
+                }
+                else
+                {
+                    DfsTraverse(ref identListNode, classIdentifiers, resolvedNames);
+                }
+                
+            }
             else if (astNode is IdentifierListNode)
             {
                 var identListNode = astNode as IdentifierListNode;
@@ -167,39 +238,25 @@ namespace ProtoCore.Namespace
 
         }
 
-        private static IdentifierListNode RewriteIdentifierListNode(IdentifierListNode identListNode, Queue<string> resolvedNames)
+        private static AssociativeNode RewriteIdentifierListNode(AssociativeNode identifier, Queue<string> resolvedNames)
         {
             var resolvedName = resolvedNames.Dequeue();
 
             // if resolved name is null or empty, return the identifier list node as is
             if (string.IsNullOrEmpty(resolvedName))
-                return identListNode;
+                return identifier;
 
-            string[] strIdentList = resolvedName.Split('.');
-            Validity.Assert(strIdentList.Length >= 2);
+            var newIdentList = CoreUtils.CreateNodeFromString(resolvedName);
+            Validity.Assert(newIdentList is IdentifierListNode);
 
-            var newIdentList = new IdentifierListNode
-            {
-                LeftNode = new IdentifierNode(strIdentList[0]),
-                RightNode = new IdentifierNode(strIdentList[1]),
-                Optr = Operator.dot
-            };
-            for (var n = 2; n < strIdentList.Length; ++n)
-            {
-                var subIdentList = new IdentifierListNode
-                {
-                    LeftNode = newIdentList,
-                    RightNode = new IdentifierNode(strIdentList[n]),
-                    Optr = Operator.dot
-                };
-                newIdentList = subIdentList;
-            }
+            var identListNode = identifier as IdentifierListNode;
+            AssociativeNode rightNode = identListNode != null ? identListNode.RightNode : identifier;
 
             // The last ident list for the functioncall or identifier rhs
             var lastIdentList = new IdentifierListNode
             {
                 LeftNode = newIdentList,
-                RightNode = identListNode.RightNode,
+                RightNode = rightNode,
                 Optr = Operator.dot
             };
 

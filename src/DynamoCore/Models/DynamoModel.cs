@@ -48,6 +48,7 @@ namespace Dynamo.Models
         #region private members
 
         private readonly string geometryFactoryPath;
+        private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
 
         #endregion
@@ -158,6 +159,13 @@ namespace Dynamo.Models
         {
             get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
         }
+
+        /// <summary>
+        ///     The path manager that configures path information required for 
+        ///     Dynamo to function properly. See IPathManager interface for more 
+        ///     details.
+        /// </summary>
+        public IPathManager PathManager { get { return pathManager; } }
 
         /// <summary>
         ///     The context that Dynamo is running under.
@@ -331,13 +339,11 @@ namespace Dynamo.Models
         protected virtual void ShutDownCore(bool shutdownHost)
         {
             Dispose();
-            PreferenceSettings.Save();
+            PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
 
             OnCleanup();
 
             DynamoSelection.DestroyInstance();
-            DynamoPathManager.DestroyInstance();
-
             InstrumentationLogger.End();
 
             if (Scheduler != null)
@@ -357,6 +363,7 @@ namespace Dynamo.Models
             string Context { get; set; }
             string DynamoCorePath { get; set; }
             IPreferences Preferences { get; set; }
+            IPathResolver PathResolver { get; set; }
             bool StartInTestMode { get; set; }
             IUpdateManager UpdateManager { get; set; }
             ISchedulerThread SchedulerThread { get; set; }
@@ -373,6 +380,7 @@ namespace Dynamo.Models
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
             public IPreferences Preferences { get; set; }
+            public IPathResolver PathResolver { get; set; }
             public bool StartInTestMode { get; set; }
             public IUpdateManager UpdateManager { get; set; }
             public ISchedulerThread SchedulerThread { get; set; }
@@ -400,34 +408,29 @@ namespace Dynamo.Models
             // where necessary, assign defaults
             if (string.IsNullOrEmpty(configuration.Context))
                 configuration.Context = Core.Context.NONE;
-            if (string.IsNullOrEmpty(configuration.DynamoCorePath))
-            {
-                var asmLocation = Assembly.GetExecutingAssembly().Location;
-                configuration.DynamoCorePath = Path.GetDirectoryName(asmLocation);
-            }
-
-            if (configuration.Preferences == null)
-                configuration.Preferences = new PreferenceSettings();
 
             return new DynamoModel(configuration);
         }
 
+        
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
-            string context = config.Context;
-            IPreferences preferences = config.Preferences;
-            string corePath = config.DynamoCorePath;
-            bool testMode = config.StartInTestMode;
+            pathManager = new PathManager(new PathManagerParams
+            {
+                CorePath = config.DynamoCorePath,
+                PathResolver = config.PathResolver
+            });
 
-            DynamoPathManager.Instance.InitializeCore(corePath);
+            // Ensure we have all directories in place.
+            pathManager.EnsureDirectoryExistence();
 
-            Context = context;
-            IsTestMode = testMode;
+            Context = config.Context;
+            IsTestMode = config.StartInTestMode;
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, DynamoPathManager.Instance.Logs);
+            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
 
             MigrationManager = new MigrationManager(DisplayFutureFileMessage, DisplayObsoleteFileMessage);
             MigrationManager.MessageLogged += LogMessage;
@@ -439,6 +442,7 @@ namespace Dynamo.Models
 
             geometryFactoryPath = config.GeometryFactoryPath;
 
+            IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
             var settings = preferences as PreferenceSettings;
             if (settings != null)
             {
@@ -448,6 +452,21 @@ namespace Dynamo.Models
 
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
+
+            if (this.PreferenceSettings.IsFirstRun)
+            {
+                DynamoMigratorBase migrator = null;
+                try
+                {
+                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e.Message);
+                }
+                if (migrator != null)
+                    this.PreferenceSettings = migrator.PreferenceSettings;
+            }
 
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
@@ -462,7 +481,7 @@ namespace Dynamo.Models
             Loader = new DynamoLoader();
             Loader.MessageLogged += LogMessage;
 
-            PackageLoader = new PackageLoader();
+            PackageLoader = new PackageLoader(pathManager.PackagesDirectory);
             PackageLoader.MessageLogged += LogMessage;
 
             DisposeLogic.IsShuttingDown = false;
@@ -475,7 +494,7 @@ namespace Dynamo.Models
             libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
-            LibraryServices = new LibraryServices(libraryCore);
+            LibraryServices = new LibraryServices(libraryCore, pathManager);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
@@ -566,6 +585,11 @@ namespace Dynamo.Models
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+            }
+
+            foreach (var ws in _workspaces)
+            {
+                ws.Dispose(); 
             }
         }
 
@@ -683,7 +707,8 @@ namespace Dynamo.Models
 
             List<TypeLoadData> modelTypes;
             List<TypeLoadData> migrationTypes;
-            Loader.LoadNodeModelsAndMigrations(Context, out modelTypes, out migrationTypes);
+            Loader.LoadNodeModelsAndMigrations(pathManager.NodeDirectories,
+                Context, out modelTypes, out migrationTypes);
 
             // Load NodeModels
             foreach (var type in modelTypes)
@@ -707,7 +732,8 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-            AddZeroTouchNodesToSearch(functionGroups);
+            if (!DynamoModel.IsTestMode)
+                AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
@@ -718,6 +744,7 @@ namespace Dynamo.Models
             PackageLoader.LoadPackagesIntoDynamo(new LoadPackageParams
             {
                 Preferences = preferences,
+                PathManager = pathManager,
                 LibraryServices = LibraryServices,
                 Loader = Loader,
                 Context = Context,
@@ -726,14 +753,38 @@ namespace Dynamo.Models
             });
 
             // Load local custom nodes
-            CustomNodeManager.AddUninitializedCustomNodesInPath(DynamoPathManager.Instance.UserDefinitions, IsTestMode);
-            CustomNodeManager.AddUninitializedCustomNodesInPath(DynamoPathManager.Instance.CommonDefinitions, IsTestMode);
+            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitions, IsTestMode);
+            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
         private void InitializeInstrumentationLogger()
         {
             if (IsTestMode == false)
                 InstrumentationLogger.Start(this);
+        }
+
+        private IPreferences CreateOrLoadPreferences(IPreferences preferences)
+        {
+            if (preferences != null) // If there is preference settings provided...
+                return preferences;
+
+            // Is order for test cases not to interfere with the regular preference 
+            // settings xml file, a test case usually specify a temporary xml file 
+            // path from where preference settings are to be loaded. If that value 
+            // is not set, then fall back to the file path specified in PathManager.
+            // 
+            var xmlFilePath = PreferenceSettings.DynamoTestPath;
+            if (string.IsNullOrEmpty(xmlFilePath))
+                xmlFilePath = pathManager.PreferenceFilePath;
+
+            if (File.Exists(xmlFilePath))
+            {
+                // If the specified xml file path exists, load it.
+                return PreferenceSettings.Load(xmlFilePath);
+            }
+
+            // Otherwise make a default preference settings object.
+            return new PreferenceSettings();
         }
 
         private static void InitializePreferences(IPreferences preferences)
@@ -954,9 +1005,8 @@ namespace Dynamo.Models
 
         internal void DumpLibraryToXml(object parameter)
         {
-            string directory = DynamoPathManager.Instance.Logs;
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
-            string fullFileName = Path.Combine(directory, fileName);
+            string fullFileName = Path.Combine(pathManager.LogDirectory, fileName);
 
             SearchModel.DumpLibraryToXml(fullFileName);
 

@@ -8,6 +8,7 @@ using System.Threading;
 
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
@@ -30,9 +31,10 @@ namespace SystemTestServices
     /// </summary>
     public abstract class SystemTestBase
     {
+        protected IPathResolver pathResolver;
         protected string workingDirectory;
         private Preloader preloader;
-        private TestSessionConfiguration testConfig;
+        private AssemblyResolver assemblyResolver;
 
         #region protected properties
 
@@ -58,7 +60,11 @@ namespace SystemTestServices
         {
             var testConfig = GetTestSessionConfiguration();
 
-            AssemblyResolver.Setup(testConfig.DynamoCorePath);
+            if (assemblyResolver == null)
+            {
+                assemblyResolver = new AssemblyResolver();
+                assemblyResolver.Setup(testConfig.DynamoCorePath);
+            }
 
             SetupCore();
 
@@ -106,8 +112,13 @@ namespace SystemTestServices
             View = null;
             Model = null;
             preloader = null;
+            pathResolver = null;
 
-            GC.Collect();
+            if (assemblyResolver != null)
+            {
+                assemblyResolver.TearDown();
+                assemblyResolver = null;
+            }
 
             try
             {
@@ -146,8 +157,8 @@ namespace SystemTestServices
                 new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
+                    PathResolver = pathResolver,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             ViewModel = DynamoViewModel.Start(

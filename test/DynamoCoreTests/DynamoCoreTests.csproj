@@ -68,9 +68,11 @@
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="ConverterTests.cs" />
+    <Compile Include="IconsTests.cs" />
     <Compile Include="NodeConstructionTests.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
+    <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUnitTests.cs" />
@@ -100,6 +102,7 @@
     <Compile Include="UnicodeTest.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
+    <Compile Include="UserDataMigrationTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
@@ -181,6 +184,10 @@
     <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
       <Name>SystemTestServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj">
+      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
+      <Name>TestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

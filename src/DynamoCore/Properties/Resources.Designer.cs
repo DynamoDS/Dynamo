@@ -1127,6 +1127,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SEARCH LIBRARY.
+        /// </summary>
+        public static string SearchTextBlockText {
+            get {
+                return ResourceManager.GetString("SearchTextBlockText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creates a string..
         /// </summary>
         public static string StringNodeDescription {
@@ -1366,6 +1375,15 @@ namespace Dynamo.Properties {
         public static string WarningInvalidInput {
             get {
                 return ResourceManager.GetString("WarningInvalidInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your code goes here.
+        /// </summary>
+        public static string WatermarkLabelText {
+            get {
+                return ResourceManager.GetString("WatermarkLabelText", resourceCulture);
             }
         }
         

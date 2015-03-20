@@ -88,9 +88,8 @@ namespace DynamoShapeManager
             var versionList = versions.ToList();
 
             shapeManagerPath = string.Empty; // Folder that contains ASM binaries.
-            var index = Utilities.GetInstalledAsmVersion(versions, ref shapeManagerPath);
-            version = ((index >= 0) ? versionList[index] : LibraryVersion.None);
-
+            version = Utilities.GetInstalledAsmVersion(versionList, ref shapeManagerPath);
+            
             var libGFolderName = string.Format("libg_{0}", ((int) version));
             preloaderLocation = Path.Combine(rootFolder, libGFolderName);
             geometryFactoryPath = Path.Combine(preloaderLocation,
