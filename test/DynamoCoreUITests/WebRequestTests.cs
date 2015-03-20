@@ -42,7 +42,7 @@ namespace DynamoCoreUITests
             ws.RunSettings.RunType = RunType.Periodic;
             System.Threading.Thread.Sleep(1000);
 
-            Assert.Greater(ws.EvaluationCount, 3);
+            Assert.Greater(ws.EvaluationCount, 1);
         }
 
         public static bool CheckForInternetConnection()
