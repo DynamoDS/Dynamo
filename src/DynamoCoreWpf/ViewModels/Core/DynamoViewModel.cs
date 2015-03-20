@@ -2155,20 +2155,21 @@ namespace Dynamo.ViewModels
         private void ShowNewDesignOptionDialogAndMakeDesignOption(object parameter)
         {
             //trigger the event to request the display
-            //of the function name dialogue
+            //of the design option name dialogue
             var args = new DesignOptionNamePromptEventArgs();
-            this.Model.OnRequestsFunctionNamePrompt(this, args);
+            this.Model.OnRequestsDesignOptionNamePrompt(this, args);
 
             if (args.Success)
-            {
-                this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
-                    args.Name, args.Category, args.Description, true));
+            {   
+                //TODO exectute actually creating the designoptions object on the workspace
+                //this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
+                  //  args.Name, args.Category, args.Description, true));
                 this.ShowStartPage = false;
             }
         }
         private bool CanShowNewDesignOptionDialog(object parameter)
         {
-            return true;
+            return DynamoSelection.Instance.Selection.Count > 0;
         }
 
         public DynamoViewModel ViewModel { get { return this; } }

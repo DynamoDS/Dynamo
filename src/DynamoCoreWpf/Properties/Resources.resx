@@ -1526,4 +1526,16 @@ Do you want to install the latest Dynamo update?</value>
   <data name="NoneString" xml:space="preserve">
     <value>none</value>
   </data>
+  <data name="DesignOptionsWindowDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DesignOptionsWindowDescriptionHint" xml:space="preserve">
+    <value>Enter a description of this design options state</value>
+  </data>
+  <data name="DesignOptionsWindowName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DesignOptionsWindowTitle" xml:space="preserve">
+    <value> Design Options Properties</value>
+  </data>
 </root>

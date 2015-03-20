@@ -686,6 +686,77 @@ namespace Dynamo.Controls
             e.Success = true;
         }
 
+        /// <summary>
+        /// Handles the request for the presentation of the design options name prompt
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void DynamoViewModelRequestDesignOptionsNamePrompt (object sender, DesignOptionNamePromptEventArgs e)
+        {
+            ShowNewDesignOptionsDialog(e);
+        }
+
+        /// <summary>
+        /// Presents the design options name dialogue. Returns true if the user enters
+        /// a designoptions name/timestamp and description.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public void ShowNewDesignOptionsDialog(DesignOptionNamePromptEventArgs e)
+        {
+            string error = "";
+
+            do
+            {
+              
+                var dialog = new DesignOptionsPrompt()
+                {
+                    DescriptionInput = { Text = e.Description },
+                    nameView = { Text = e.Name },
+                    nameBox = { Text = e.Name },
+                    // center the prompt
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+               
+                if (dialog.ShowDialog() != true)
+                {
+                    e.Success = false;
+                    return;
+                }
+
+                if (String.IsNullOrEmpty(dialog.Text))
+                {
+                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName,
+                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                //TODO add a check that the design options state we're saving has
+                //a unique name...
+                //else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
+                //{
+                //    error = "A built-in node with the given name already exists.";
+                //    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
+                //                                   MessageBoxImage.Error);
+                //}
+
+              
+                else
+                {
+                    error = "";
+                }
+
+                e.Name = dialog.Text;
+                e.Description = dialog.Description;
+
+            } while (!error.Equals(""));
+
+            e.Success = true;
+        }
+
         private void WindowClosing(object sender, CancelEventArgs e)
         {
             // Test cases that make use of views (e.g. recorded tests) have 
