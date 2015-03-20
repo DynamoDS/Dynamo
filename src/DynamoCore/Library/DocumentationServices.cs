@@ -82,50 +82,53 @@ namespace Dynamo.DSEngine
 
         public static string GetSummary(this FunctionDescriptor member)
         {
-            var assemblyName = member.Assembly;
-            var fullyQualifiedName = GetMemberElementName(member);
-
-            // Case for operators.
-            if (assemblyName == null)
-                return String.Empty;
-
-            if (!_triedPaths.ContainsKey(assemblyName))
-                LoadDataFromXml(member);
-
-            if (documentNodes.ContainsKey(fullyQualifiedName))
-                return documentNodes[fullyQualifiedName].Summary;
-
-            // Fallback for overloaded methods.
-            var keyForOverloaded = documentNodes.Keys.
-                Where(key => key.Contains(member.ClassName + "." + member.FunctionName)).FirstOrDefault();
-            if (keyForOverloaded != null)
-                return documentNodes[keyForOverloaded].Summary;
-
-            return String.Empty;
+            return GetProperty(member,"summary");   
         }
 
         public static string GetDescription(this TypedParameter parameter)
         {
-            var assemblyName = parameter.Function.Assembly;
-            var fullyQualifiedName = GetMemberElementName(parameter.Function);
+            return GetProperty(parameter.Function, "summary", parameter.Name);
+        }
+
+        private static string GetProperty(FunctionDescriptor fDescr, string property, string paramName = "")
+        {
+            var assemblyName = fDescr.Assembly;
+            var fullyQualifiedName = GetMemberElementName(fDescr);
 
             // Case for operators.
             if (assemblyName == null)
                 return String.Empty;
-
             if (!_triedPaths.ContainsKey(assemblyName))
-                LoadDataFromXml(parameter.Function);
+                LoadDataFromXml(fDescr);
 
-            if (documentNodes.ContainsKey(fullyQualifiedName))
-                return documentNodes[fullyQualifiedName].Summary;
-
-            // Fallback for overloaded methods.
             var keyForOverloaded = documentNodes.Keys.
-                Where(key => key.Contains(parameter.Function.ClassName + "." + parameter.Function.FunctionName)).FirstOrDefault();
-            if (keyForOverloaded != null)
-                return documentNodes[keyForOverloaded].Parameters[parameter.Name];
+                        Where(key => key.Contains(fDescr.ClassName + "." + fDescr.FunctionName)).FirstOrDefault();
 
-            return String.Empty;
+            switch (property)
+            {
+                case "summary":
+                    if (documentNodes.ContainsKey(fullyQualifiedName))
+                        return documentNodes[fullyQualifiedName].Summary;
+
+                    // Fallback for overloaded methods.
+                    if (keyForOverloaded != null)
+                        return documentNodes[keyForOverloaded].Summary;
+
+                    return String.Empty;
+
+                case "description":
+                    if (documentNodes.ContainsKey(fullyQualifiedName))
+                        return documentNodes[fullyQualifiedName].Parameters[paramName];
+
+                    // Fallback for overloaded methods.
+                    if (keyForOverloaded != null)
+                        return documentNodes[keyForOverloaded].Parameters[paramName];
+
+                    return String.Empty;
+
+                default:
+                    return String.Empty;
+            }
         }
 
         private static void LoadDataFromXml(FunctionDescriptor member)
