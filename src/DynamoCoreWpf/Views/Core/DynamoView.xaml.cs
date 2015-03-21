@@ -367,6 +367,9 @@ namespace Dynamo.Controls
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt += DynamoViewModelRequestsFunctionNamePrompt;
 
+            //DesignOptions Name Prompt
+            dynamoViewModel.Model.RequestDesignOptionNamePrompt += DynamoViewModelRequestDesignOptionsNamePrompt;
+
             dynamoViewModel.RequestClose += DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage += DynamoViewModelRequestSaveImage;
             dynamoViewModel.SidebarClosed += DynamoViewModelSidebarClosed;
@@ -795,6 +798,9 @@ namespace Dynamo.Controls
 
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
+
+            //DesignOptions Name Prompt
+            dynamoViewModel.Model.RequestDesignOptionNamePrompt += DynamoViewModelRequestDesignOptionsNamePrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
@@ -1280,5 +1286,6 @@ namespace Dynamo.Controls
 
             e.Handled = true;
         }
+
     }
 }

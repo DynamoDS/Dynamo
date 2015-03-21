@@ -771,6 +771,7 @@ namespace Dynamo.ViewModels
             PublishSelectedNodesCommand.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
+            ShowNewDesignOptionDialogCommand.RaiseCanExecuteChanged();
         }
 
         void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)

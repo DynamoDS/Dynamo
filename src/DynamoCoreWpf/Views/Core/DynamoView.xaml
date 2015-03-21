@@ -336,6 +336,10 @@
                                   Command="{Binding AddNoteCommand}"
                                   Name="noteMenuItem"
                                   InputGestureText="Ctrl + W" />
+                        <MenuItem Header="Create New Input Parameter State"
+                                      Command="{Binding ShowNewDesignOptionDialogCommand}"
+                                      Name="newDesignOptions"
+                                      Focusable="False" />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
                                   Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
