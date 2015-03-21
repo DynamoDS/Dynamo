@@ -30,6 +30,31 @@ namespace Dynamo.Interfaces
         /// null.
         /// </summary>
         IEnumerable<string> PreloadedLibraryPaths { get; }
+
+        /// <summary>
+        /// This property represents the root folder where user specific data files 
+        /// are stored. If this property returns a null or empty string, then 
+        /// PathManager falls back to using "%ProgramData%\Dynamo". If this property
+        /// returns a string that does not represent an existing folder, PathManager 
+        /// will attempt to create a new directory. If the property does not represent
+        /// a valid path string, an exception will be thrown by the underlying system 
+        /// IO API invoked. Note that this path should not include the version number 
+        /// as it will be appended by PathManager.
+        /// </summary>
+        string UserDataRootFolder { get; }
+
+        /// <summary>
+        /// This property represents the root folder where application common data 
+        /// files (i.e. shared among all users on the same machine) are stored. If 
+        /// this property returns a null or empty string, then PathManager falls 
+        /// back to using "%AppData%\Dynamo". If this property returns a string 
+        /// that does not represent an existing folder, PathManager will attempt 
+        /// to create a new directory. If the property does not represent a valid 
+        /// path string, an exception will be thrown by the underlying system IO 
+        /// API invoked. Note that this path should not include the version number 
+        /// as it will be appended by PathManager.
+        /// </summary>
+        string CommonDataRootFolder { get; }
     }
 
     public interface IPathManager
@@ -87,6 +112,16 @@ namespace Dynamo.Interfaces
         /// A list of node assembly names to be preloaded with Dynamo.
         /// </summary>
         IEnumerable<string> PreloadedLibraries { get; }
+
+        /// <summary>
+        /// Major version of assembly file
+        /// </summary>
+        int MajorFileVersion { get; }
+
+        /// <summary>
+        /// Minor version of assembly file
+        /// </summary>
+        int MinorFileVersion { get; }
 
         /// <summary>
         /// Call this method to add additional path for consideration when path 

@@ -12,6 +12,8 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
+
 using DynamoShapeManager;
 using DynamoUtilities;
 
@@ -117,8 +119,6 @@ namespace SystemTestServices
                 assemblyResolver.TearDown();
                 assemblyResolver = null;
             }
-
-            GC.Collect();
 
             try
             {
@@ -232,6 +232,11 @@ namespace SystemTestServices
         protected static bool IsFuzzyEqual(double d0, double d1, double tol)
         {
             return System.Math.Abs(d0 - d1) < tol;
+        }
+
+        protected void AssertEvaluationCount(HomeWorkspaceModel homeWorkspace, int expected)
+        {
+            Assert.AreEqual(homeWorkspace.EvaluationCount, expected);
         }
 
         #endregion

@@ -24,6 +24,9 @@ namespace Dynamo.Nodes
             if (controller.Definition.IsObsolete)
                 Warning(controller.Definition.ObsoleteMessage, true);
 
+            if (controller.Definition.CanUpdatePeriodically)
+                CanUpdatePeriodically = true;
+
             string signature = String.Empty;
             if (Controller.Definition is FunctionDescriptor)
                 signature = Controller.Definition.Signature;

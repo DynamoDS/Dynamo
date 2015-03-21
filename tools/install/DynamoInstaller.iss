@@ -70,7 +70,7 @@ Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Comp
 Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: temp\bin\lang\*; DestDir: {app}\; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
-Source: temp\bin\lang\{#locale}\README.txt; DestDir: {app}\{#locale}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore
+Source: temp\bin\README.txt; DestDir: {app}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore
 
 ;Revit 2014
 Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2014
@@ -134,7 +134,7 @@ Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; Wo
 Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
 
 [UninstallRun]
-Filename: "{app}\DynamoAddinGenerator.exe"; Flags: runhidden;
+Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: "/uninstall ""{app}"""; Flags: runhidden;
 
 [Icons]
 Name: "{group}\{#ProductName} {#ProductVersion}"; Filename: "{app}\DynamoSandbox.exe"
@@ -185,6 +185,7 @@ begin
   // we'll need these files to check for a revit installation
   ExtractTemporaryFile('RevitInstallDetective.exe');
   ExtractTemporaryFile('RevitAddinUtility.dll');
+  ExtractTemporaryFile('DynamoInstallDetective.dll');
   ExtractTemporaryFile('DynamoAddinGenerator.exe');
 
   result := true
