@@ -28,7 +28,7 @@ namespace DynamoShapeManager
         /// <returns>Returns LibraryVersion of ASM if any installed ASM is found, 
         /// or None otherwise.</returns>
         /// 
-        public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location)
+        public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location, string rootFolder)
         {
             if ((versions == null) || versions.Count <= 0)
                 throw new ArgumentNullException("versions");
@@ -39,7 +39,7 @@ namespace DynamoShapeManager
 
             try
             {
-                var installations = GetAsmInstallations();
+                var installations = GetAsmInstallations(rootFolder);
 
                 foreach (KeyValuePair<string, Tuple<int,int,int,int>> install in installations)
                 {
@@ -144,10 +144,9 @@ namespace DynamoShapeManager
             return assemblyPath;
         }
 
-        private static IEnumerable GetAsmInstallations()
+        private static IEnumerable GetAsmInstallations(string rootFolder)
         {
-            string installDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var assembly = Assembly.LoadFrom(Path.Combine(installDir, "DynamoInstallDetective.dll"));
+            var assembly = Assembly.LoadFrom(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
             var type = assembly.GetType("DynamoInstallDetective.Utilities");
 
             var installationsMethod = type.GetMethod(
