@@ -20,7 +20,7 @@
 
         <StackPanel Margin="15">
 
-            <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.DesignOptionsPropertyWindowTitle}"/>
+            <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.DesignOptionsWindowTitle}"/>
             <Label Content="{x:Static p:Resources.CustomNodePropertyWindowName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                 <Label.ToolTip>
                     <TextBlock>A unique name for the node.</TextBlock>
