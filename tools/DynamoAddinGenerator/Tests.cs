@@ -60,19 +60,6 @@ namespace DynamoAddinGenerator
         }
 
         [Test]
-        public void AddinData_063()
-        {
-            var prod = CreateRevit2014();
-            var latest = MockDynamoInstall(DynamoVersions.dynamo_063);
-
-            var addinData = new DynamoAddinData(prod, latest);
-
-            Assert.AreEqual(addinData.AddinPath, Path.Combine(prod.AddinsFolder, "Dynamo.addin"));
-            Assert.AreEqual(addinData.AssemblyPath, Path.Combine(DynamoVersions.dynamo_063, "DynamoRevit.dll"));
-            Assert.AreEqual(addinData.ClassName, "Dynamo.Applications.DynamoRevit");
-        }
-
-        [Test]
         public void AddinData_071a()
         {
             var prod = CreateRevit2014();

@@ -4,6 +4,7 @@ using System.Runtime.Serialization;
 
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
+using Autodesk.DesignScript.Geometry;
 
 using DynamoServices;
 
@@ -18,18 +19,20 @@ namespace SampleLibraryZeroTouch
     // you want to carry over between evaluations.
     public class  PeriodicUpdateExample : IGraphicItem
     {
-        private List<double> vertexCoords = new List<double>();
+        private Point[,] vertexCoords;
+        private const int width = 20;
+        private const int length = 20;
 
         private PeriodicUpdateExample(double t, int id)
         {
-            for (double x = -5; x <= 5; x += 0.5)
+            vertexCoords = new Point[width, length];
+
+            for (var x = 0; x < width; x += 1)
             {
-                for (double y = -5; y <= 5; y += 0.5)
+                for (var y = 0; y < length; y += 1)
                 {
                     var z = Math.Sin(Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2)) - t);
-                    vertexCoords.Add(x);
-                    vertexCoords.Add(y);
-                    vertexCoords.Add(z);
+                    vertexCoords[x, y] = Point.ByCoordinates(x, y, z);
                 }
             }
 
@@ -75,7 +78,35 @@ namespace SampleLibraryZeroTouch
 
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
-            package.PointVertices = vertexCoords;
+            for (var i = 0; i < width - 1; i++)
+            {
+                for (var j = 0; j < length - 1; j++)
+                {
+                    var a = vertexCoords[i , j];
+                    var b = vertexCoords[i , j + 1];
+                    var c = vertexCoords[i + 1, j];
+                    var d = vertexCoords[i + 1, j + 1];
+
+                    var v1 = Vector.ByTwoPoints(b, a).Cross(Vector.ByTwoPoints(c, b));
+                    var v2 = Vector.ByTwoPoints(c, d).Cross(Vector.ByTwoPoints(b, d));
+
+                    PushTriangleVertex(package, a, v1);
+                    PushTriangleVertex(package, b, v1);
+                    PushTriangleVertex(package, c, v1);
+
+                    PushTriangleVertex(package, d, v2);
+                    PushTriangleVertex(package, c, v2);
+                    PushTriangleVertex(package, b, v2);
+
+                }
+            }
+        }
+
+        private void PushTriangleVertex(IRenderPackage package, Point p, Vector n)
+        {
+            package.PushTriangleVertex(p.X, p.Y, p.Z);
+            package.PushTriangleVertexColor(255, 255, 0, 255);
+            package.PushTriangleVertexNormal(n.X,n.Y,n.Z);
         }
     }
 
