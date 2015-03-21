@@ -7,7 +7,7 @@ using Autodesk.DesignScript.Runtime;
 namespace FFITarget
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class FooClassAttribute : Attribute
+    class FooClassAttribute : Attribute
     {
         public FooClassAttribute()
         {

@@ -477,8 +477,9 @@ namespace ProtoCore.DSASM
             StackValue value = new StackValue();
             value.optype = AddressType.ArrayKey;
             value.opdata = index;
+            value.metaData = array.metaData;
 
-            Validity.Assert(array.IsArray);
+            Validity.Assert(array.IsArray || array.IsString);
             value.opdata_d = (int)array.opdata;
 
             return value;
@@ -719,7 +720,11 @@ namespace ProtoCore.DSASM
                 return false;
             }
 
-            array = StackValue.BuildArrayPointer((int)RawDoubleValue);
+            if (this.metaData.type == (int)PrimitiveType.kTypeString)
+                array = StackValue.BuildString((long)RawDoubleValue);
+            else
+                array = StackValue.BuildArrayPointer((long)RawDoubleValue);
+
             index = (int)this.opdata;
 
             return true;
@@ -732,9 +737,8 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
-        public StackValue ToBoolean(Core core)
+        public StackValue ToBoolean(RuntimeCore runtimeCore)
         {
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             switch (optype)
             {
                 case AddressType.Boolean:

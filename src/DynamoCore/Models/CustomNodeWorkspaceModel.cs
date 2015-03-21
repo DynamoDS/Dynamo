@@ -33,22 +33,20 @@ namespace Dynamo.Models
 
         public CustomNodeWorkspaceModel( 
             WorkspaceInfo info, 
-            NodeFactory factory, 
-            ElementResolver elementResolver)
+            NodeFactory factory)
             : this(
                 factory,
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
-                info,
-                elementResolver) { }
+                info) { }
 
         public CustomNodeWorkspaceModel( 
             NodeFactory factory, 
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             WorkspaceInfo info,
-            ElementResolver elementResolver) 
-            : base(e, n, info, factory, elementResolver)
+            ElementResolver elementResolver = null) 
+            : base(e, n, info, factory)
         {
             HasUnsavedChanges = false;
 
@@ -56,8 +54,15 @@ namespace Dynamo.Models
             Category = info.Category;
             Description = info.Description;
 
+            if (elementResolver != null)
+            {
+                ElementResolver.CopyResolutionMap(elementResolver);
+            }
+
             PropertyChanged += OnPropertyChanged;
         }
+
+        #endregion
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
@@ -71,7 +76,6 @@ namespace Dynamo.Models
             }
         }
 
-        #endregion
 
         /// <summary>
         ///     All CustomNodeDefinitions which this Custom Node depends on.
@@ -153,11 +157,17 @@ namespace Dynamo.Models
         }
         private string description;
 
-        public override void OnNodesModified()
+        protected override void RequestRun()
         {
-            base.OnNodesModified();
+            base.RequestRun();
             HasUnsavedChanges = true;
             OnDefinitionUpdated();
+        }
+
+        protected override void NodeModified(NodeModel node)
+        {
+            base.NodeModified(node);
+            RequestRun();
         }
 
         public event Action InfoChanged;

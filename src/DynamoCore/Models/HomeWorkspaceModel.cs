@@ -9,8 +9,6 @@ using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 
-using ProtoCore.Namespace;
-
 namespace Dynamo.Models
 {
     public class HomeWorkspaceModel : WorkspaceModel
@@ -19,8 +17,23 @@ namespace Dynamo.Models
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
+        private bool graphExecuted;
+
+        public readonly bool VerboseLogging;
+       
+        /// <summary>
+        ///     Before the Workspace has been built the first time, we do not respond to 
+        ///     NodeModification events.
+        /// </summary>
+        private bool silenceNodeModifications = true;
 
         public RunSettings RunSettings { get; protected set; }
+       
+        /// <summary>
+        /// Evaluation count is incremented whenever the graph is evaluated. 
+        /// It is set to zero when the graph is Cleared.
+        /// </summary>
+        public long EvaluationCount { get; private set; }
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
@@ -33,7 +46,7 @@ namespace Dynamo.Models
                 Enumerable.Empty<NoteModel>(),
                 new WorkspaceInfo(){FileName = fileName, Name = "Home"},
                 verboseLogging, 
-                isTestMode, new ElementResolver()) { }
+                isTestMode) { }
 
         public HomeWorkspaceModel(
             EngineController engine, 
@@ -44,10 +57,11 @@ namespace Dynamo.Models
             IEnumerable<NoteModel> n, 
             WorkspaceInfo info, 
             bool verboseLogging,
-            bool isTestMode, 
-            ElementResolver elementResolver)
-            : base(e, n, info, factory, elementResolver)
+            bool isTestMode)
+            : base(e, n, info, factory)
         {
+            EvaluationCount = 0;
+
             RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 
             PreloadedTraceData = traceData;
@@ -64,6 +78,7 @@ namespace Dynamo.Models
             {
                 EngineController.MessageLogged -= Log;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+                EngineController.Dispose();
             }
 
             if (pulseMaker == null) return;
@@ -120,23 +135,36 @@ namespace Dynamo.Models
             EngineController.NodeDeleted(node);
         }
 
+        
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            MarkNodesAsModified(Nodes);
+            MarkNodesAsModifiedAndRequestRun(Nodes);
         }
 
-        public override void OnNodesModified()
+        /// <summary>
+        ///     Invoked when a change to the workspace that requires re-execution
+        ///     has taken place.  If in run-automatic, a new run will take place,
+        ///     otherwise nothing will happen.
+        /// </summary>
+        protected override void RequestRun()
         {
-            base.OnNodesModified();
+            base.RequestRun();
 
-            // When Dynamo is shut down, the workspace is cleared, which results
-            // in Modified() being called. But, we don't want to run when we are
-            // shutting down so we check whether an engine controller is available.
-            if (RunSettings.RunType != RunType.Manually && EngineController != null)
+            if (RunSettings.RunType != RunType.Manual)
             {
                 Run();
+            }
+        }
+
+        protected override void NodeModified(NodeModel node)
+        {
+            base.NodeModified(node);
+
+            if (!silenceNodeModifications)
+            {
+                RequestRun();
             }
         }
 
@@ -148,6 +176,7 @@ namespace Dynamo.Models
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();
+            EvaluationCount = 0;
         }
 
         /// <summary>
@@ -165,7 +194,7 @@ namespace Dynamo.Models
                 pulseMaker = new PulseMaker();
             }
 
-            pulseMaker.RunStarted += pulseMaker_RunStarted;
+            pulseMaker.RunStarted += PulseMakerRunStarted;
             EvaluationCompleted += pulseMaker.OnRunExpressionCompleted;
 
             if (pulseMaker.TimerPeriod != 0)
@@ -177,25 +206,10 @@ namespace Dynamo.Models
             pulseMaker.Start(milliseconds);
         }
 
-        private void pulseMaker_RunStarted()
+        private void PulseMakerRunStarted()
         {
-            var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
-            MarkNodesAsModifiedAndUpdate(nodesToUpdate);
-        }
-
-        private void MarkNodesAsModifiedAndUpdate(object state)
-        {
-            var nodesToUpdate = state as IEnumerable<NodeModel>;
-
-            if (nodesToUpdate == null) return;
-
-            // Dirty selective nodes so they get included for evaluation.
-            foreach (var nodeToUpdate in nodesToUpdate)
-            {
-                nodeToUpdate.MarkNodeAsModified(true);
-            }
-
-            OnNodesModified();
+            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
+            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
         /// <summary>
@@ -206,7 +220,7 @@ namespace Dynamo.Models
         {
             if (pulseMaker == null || (pulseMaker.TimerPeriod == 0)) return;
 
-            pulseMaker.RunStarted -= pulseMaker_RunStarted;
+            pulseMaker.RunStarted -= PulseMakerRunStarted;
             EvaluationCompleted -= pulseMaker.OnRunExpressionCompleted;
             pulseMaker.Stop();
         }
@@ -252,27 +266,32 @@ namespace Dynamo.Models
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                MarkNodesAsModified(Nodes); 
+                MarkNodesAsModifiedAndRequestRun(Nodes); 
             }
 
-            if (RunSettings.RunType == RunType.Automatically)
+            if (RunSettings.RunType == RunType.Automatic)
                 Run();
         }
 
         /// <summary>
-        /// Mark all nodes as modified. 
+        /// Mark the input nodes as modified
         /// </summary>
-        /// <param name="nodes"></param>
-        public void MarkNodesAsModified(IEnumerable<NodeModel> nodes)
+        /// <param name="nodes">The nodes to modify</param>
+        /// <param name="forceExecute">The argument to NodeModel.MarkNodeAsModified</param>
+        public void MarkNodesAsModifiedAndRequestRun(IEnumerable<NodeModel> nodes, bool forceExecute = false)
         {
             if (nodes == null)
                 throw new ArgumentNullException("nodes");
 
             foreach (var node in nodes)
-                node.MarkNodeAsModified();
+            {
+                node.MarkNodeAsModified(forceExecute);
+            } 
 
             if (nodes.Any())
-                OnNodesModified();
+            {
+                RequestRun();
+            } 
         }
 
         /// <summary>
@@ -316,7 +335,9 @@ namespace Dynamo.Models
 
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
-                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+            {
+                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);                
+            }
 
             foreach (var node in Nodes)
             {
@@ -326,6 +347,9 @@ namespace Dynamo.Models
             // Notify listeners (optional) of completion.
             RunSettings.RunEnabled = true; // Re-enable 'Run' button.
 
+            //set the node execution preview to false;
+            OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
+
             // This method is guaranteed to be called in the context of 
             // ISchedulerThread (for Revit's case, it is the idle thread).
             // Dispatch the failure message display for execution on UI thread.
@@ -333,6 +357,8 @@ namespace Dynamo.Models
             EvaluationCompletedEventArgs e = task.Exception == null || IsTestMode
                 ? new EvaluationCompletedEventArgs(true)
                 : new EvaluationCompletedEventArgs(true, task.Exception);
+
+            EvaluationCount ++;
 
             OnEvaluationCompleted(e);
         }
@@ -354,6 +380,15 @@ namespace Dynamo.Models
         /// running context.</param>
         public void Run()
         {
+            graphExecuted = true;
+            // When Dynamo is shut down, the workspace is cleared, which results
+            // in Modified() being called. But, we don't want to run when we are
+            // shutting down so we check whether an engine controller is available.
+            if (this.EngineController == null)
+            {
+                return;
+            }
+
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
@@ -373,6 +408,11 @@ namespace Dynamo.Models
             {
                 task.Completed += OnUpdateGraphCompleted;
                 RunSettings.RunEnabled = false; // Disable 'Run' button.
+
+                // The workspace has been built for the first time
+                silenceNodeModifications = false;
+
+                OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
             }
             else
@@ -383,13 +423,65 @@ namespace Dynamo.Models
             }
         }
 
+        public event EventHandler<EventArgs> EvaluationStarted;
+        public virtual void OnEvaluationStarted(EventArgs e)
+        {
+            var handler = EvaluationStarted;
+            if (handler != null) handler(this, e);
+        }
+
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
-        protected virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
+        public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
         }
 
+        public event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
+        public virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
+        {
+            var handler = SetNodeDeltaState;
+            if (handler != null) handler(this, e);
+        }
+
+        /// <summary>
+        /// This function gets the set of nodes that will get executed in the next run.
+        /// This function will be called when the nodes are modified or when showrunpreview is set
+        /// the executing nodes will be sent via SetNodeDeltaState event.
+        /// </summary>
+        /// <param name="showRunPreview">This parameter controls the delta state computation </param>
+        public void GetExecutingNodes(bool showRunPreview)
+        {
+            var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
+                        
+            //The Graph is executed and Show node execution is checked on the Settings menu
+            if (graphExecuted && showRunPreview)
+            {
+                if (task.Initialize(EngineController, this) != null)
+                {
+                    task.Completed += OnPreviewGraphCompleted;
+                    scheduler.ScheduleForExecution(task);
+                }
+            }
+            //Show node exection is checked but the graph has not RUN
+            else
+            {
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs); 
+            }
+        }
+
+        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
+        {
+            var updateTask = asyncTask as PreviewGraphAsyncTask;
+            if (updateTask != null)
+            {
+                var nodeGuids = updateTask.previewGraphData;
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids,graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs);               
+            }            
+        }
+       
         #endregion
     }
 }

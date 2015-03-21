@@ -9,9 +9,9 @@ using DynamoShapeManager;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
-using DynamoUtilities;
 using System.Reflection;
 using System.IO;
+using TestServices;
 
 namespace Dynamo.Tests
 {
@@ -24,11 +24,13 @@ namespace Dynamo.Tests
     public class DynamoViewModelUnitTest : UnitTestBase
     {
         protected DynamoViewModel ViewModel;
-        private DynamoShapeManager.Preloader preloader;
+        protected Preloader preloader;
+        protected TestPathResolver pathResolver;
 
-        public override void Init()
+        [SetUp]
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
             StartDynamo();
         }
 
@@ -39,8 +41,12 @@ namespace Dynamo.Tests
                 preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
+                if (ViewModel == null)
+                    return;
+
                 var shutdownParams = new DynamoViewModel.ShutdownParams(
-                    shutdownHost: false, allowCancellation: false);
+                    shutdownHost: false,
+                    allowCancellation: false);
 
                 ViewModel.PerformShutdownSequence(shutdownParams);
                 ViewModel.RequestUserSaveWorkflow -= RequestUserSaveWorkflow;
@@ -52,8 +58,6 @@ namespace Dynamo.Tests
             }
 
             base.Cleanup();
-
-            GC.Collect();
         }
 
         private void RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
@@ -89,15 +93,13 @@ namespace Dynamo.Tests
         protected void StartDynamo()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var assemblyFolder = Path.GetDirectoryName(assemblyPath);
-            DynamoPathManager.Instance.InitializeCore(assemblyFolder);
-
-            preloader = new Preloader(assemblyFolder);
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
+                    PathResolver = pathResolver,
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
@@ -214,11 +216,28 @@ namespace Dynamo.Tests
 
         }
 
+        /// <summary>
+        /// Used to reflect on runtime data such as values of a variable
+        /// </summary>
+        /// <param name="varName"></param>
+        /// <returns></returns>
         protected RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(varName));
             return mirror;
+        }
+
+        /// <summary>
+        /// Used to reflect on static data such as classes and class members
+        /// </summary>
+        /// <param name="varName"></param>
+        /// <returns></returns>
+        protected ClassMirror GetClassMirror(string className)
+        {
+            ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
+            var classMirror = new ClassMirror(className, core);
+            return classMirror;
         }
 
     }

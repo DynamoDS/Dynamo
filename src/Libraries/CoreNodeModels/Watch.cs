@@ -19,6 +19,12 @@ namespace Dynamo.Nodes
         public event Action<Object> EvaluationComplete;
         public new object CachedValue;
 
+        /// <summary>
+        ///     Has the Watch node been run once?  If not, the CachedValue
+        ///     is technically not accurate.
+        /// </summary>
+        public bool HasRunOnce { get; private set; }
+
         public Watch()
         {
             InPortData.Add(new PortData("", "Node to evaluate."));
@@ -29,6 +35,7 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             ShouldDisplayPreviewCore = false;
+            HasRunOnce = false;
         }
 
         protected override void OnBuilt()
@@ -46,6 +53,7 @@ namespace Dynamo.Nodes
         private void OnEvaluationComplete(object obj)
         {
             this.CachedValue = obj;
+            this.HasRunOnce = true;
 
             if (EvaluationComplete != null)
             {

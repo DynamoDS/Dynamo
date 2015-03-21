@@ -296,13 +296,14 @@ namespace Dynamo.Controls
         }
     }
 
-    public class SnapRegionMarginConverter : IValueConverter
+    public class SnapRegionMarginConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
+        public object Convert(object[] values, Type targetType, object parameter,
           CultureInfo culture)
         {
             Thickness thickness = new Thickness(0, 0, 0, 0);
-            PortModel port = value as PortModel;
+            var actualWidth = (double)values[0];
+            PortModel port = values[1] as PortModel;
             if (port != null)
             {
                 PortType type = port.PortType;
@@ -313,33 +314,61 @@ namespace Dynamo.Controls
                 switch (type)
                 {
                     case PortType.Input:
-                        thickness = new Thickness(left - 25, top + 3, right + 0, bottom + 3);
+                        thickness = new Thickness(left - 25, top + 3, right + actualWidth, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom - 10);
+                            thickness = new Thickness(left - 25, top - 10, right + actualWidth, bottom - 10);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
-                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom + 3);
+                            thickness = new Thickness(left - 25, top - 10, right + actualWidth, bottom + 3);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
+                            thickness = new Thickness(left - 25, top + 3, right + actualWidth, bottom - 10);
                         break;
 
                     case PortType.Output:
-                        thickness = new Thickness(left + 0, top + 3, right - 25, bottom + 3);
+                        thickness = new Thickness(left + actualWidth, top + 3, right - 25, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left + 0, top - 10, right - 25, bottom - 10);
+                            thickness = new Thickness(left + actualWidth, top - 10, right - 25, bottom - 10);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
-                            thickness = new Thickness(left + 0, top - 10, right - 25, bottom + 3);
+                            thickness = new Thickness(left + actualWidth, top - 10, right - 25, bottom + 3);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left + 0, top + 3, right - 25, bottom - 10);
+                            thickness = new Thickness(left + actualWidth, top + 3, right - 25, bottom - 10);
                         break;
                 }
             }
             return thickness;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter,
+        public object[] ConvertBack(object value, Type[] targetType, object parameter,
          CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null;
+        }
+    }
+
+    public class RunPreviewConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var runEnabled = (bool)value;
+            return runEnabled;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class RunPreviewToolTipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var dynamicRunEnabled = (bool)value;
+            return dynamicRunEnabled ? Resources.ShowRunPreviewDisableToolTip : Resources.ShowRunPreviewEnableToolTip;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
         }
     }
 
@@ -487,6 +516,86 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ConnectionStateToBrushConverter : IValueConverter
+    {
+        public SolidColorBrush ExecutionPreviewBrush { get; set; }
+        public SolidColorBrush NoneBrush { get; set; }
+        public SolidColorBrush SelectionBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return ExecutionPreviewBrush;
+                case PreviewState.None:
+                    return NoneBrush;
+                case PreviewState.Selection:
+                    return SelectionBrush;
+                default:
+                    return NoneBrush;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToColorConverter : IValueConverter
+    {
+        public Color ExecutionPreview { get; set; }
+        public Color None { get; set; }
+        public Color Selection { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return ExecutionPreview;
+                case PreviewState.None:
+                    return None;
+                case PreviewState.Selection:
+                    return Selection;
+                default:
+                    return None;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return Visibility.Visible;
+                case PreviewState.None:
+                    return Visibility.Collapsed;
+                case PreviewState.Selection:
+                    return Visibility.Visible;
+                default:
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class BooleanToSelectionColorConverter : IValueConverter
     {
         public Color True { get; set; }
@@ -584,7 +693,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return HeaderBackgroundInactive;
                 case ElementState.Active: return HeaderBackgroundActive;
-                case ElementState.Warning: return HeaderBackgroundWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return HeaderBackgroundWarning;
                 case ElementState.Error: return HeaderBackgroundError;
                 case ElementState.AstBuildBroken: return HeaderBackgroundBroken;
             }
@@ -598,7 +709,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return HeaderForegroundInactive;
                 case ElementState.Active: return HeaderForegroundActive;
-                case ElementState.Warning: return HeaderForegroundWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return HeaderForegroundWarning;
                 case ElementState.Error: return HeaderForegroundError;
                 case ElementState.AstBuildBroken: return HeaderForegroundBroken;
             }
@@ -612,7 +725,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return HeaderBorderInactive;
                 case ElementState.Active: return HeaderBorderActive;
-                case ElementState.Warning: return HeaderBorderWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return HeaderBorderWarning;
                 case ElementState.Error: return HeaderBorderError;
                 case ElementState.AstBuildBroken: return HeaderBorderBroken;
             }
@@ -626,7 +741,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return OuterBorderInactive;
                 case ElementState.Active: return OuterBorderActive;
-                case ElementState.Warning: return OuterBorderWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return OuterBorderWarning;
                 case ElementState.Error: return OuterBorderError;
                 case ElementState.AstBuildBroken: return OuterBorderBroken;
             }
@@ -640,7 +757,9 @@ namespace Dynamo.Controls
             {
                 case ElementState.Dead: return BodyBackgroundInactive;
                 case ElementState.Active: return BodyBackgroundActive;
-                case ElementState.Warning: return BodyBackgroundWarning;
+                case ElementState.Warning:
+                case ElementState.PersistentWarning:
+                    return BodyBackgroundWarning;
                 case ElementState.Error: return BodyBackgroundError;
                 case ElementState.AstBuildBroken: return BodyBackgroundBroken;
             }
@@ -1463,13 +1582,13 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            return value == null ? "" : HttpUtility.HtmlDecode(value.ToString());
+            return value == null ? "" : value.ToString(); 
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
-            return HttpUtility.HtmlEncode(value.ToString());
+            return value.ToString();
         }
     }
 
@@ -1906,7 +2025,8 @@ namespace Dynamo.Controls
             if (string.IsNullOrEmpty(incomingString))
                 throw new ArgumentException("value string should not be empty.");
 
-            var numberOfPoints = incomingString.Count(x => x == Configurations.CategoryDelimiter);
+            var c = Configurations.CategoryDelimiterString[0];
+            var numberOfPoints = incomingString.Count(x => x == c);
             if (numberOfPoints == 0)
                 return new Thickness(5, 0, 0, 0);
 

@@ -8,26 +8,38 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.ViewModels;
+using ProtoCore;
+using Dynamo.Core;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class LibraryTests : DSEvaluationViewModelUnitTest
+    class LibraryTests 
     {
+        private LibraryServices libraryServices;
+        private ProtoCore.Core libraryCore;
+        private PathManager pathManager = new PathManager(new PathManagerParams());
+
         protected static bool LibraryLoaded { get; set; }
 
         [SetUp]
-        public override void Init()
+        public void Setup()
         {
-            base.Init();
+            libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
+            libraryServices = new LibraryServices(libraryCore, pathManager);
+
             RegisterEvents();
         }
 
         [TearDown]
-        public override void Cleanup()
+        public void Cleanup()
         {
             UnRegisterEvents();
-            base.Cleanup();
+            libraryServices.Dispose();
         }
 
         private void RegisterEvents()
@@ -54,22 +66,6 @@ namespace Dynamo.Tests
                 Assert.Fail("Failed to load library: " + a.LibraryPath);
             else
                 Assert.Fail("Failed to load library");
-        }
-
-        private CodeBlockNodeModel CreateCodeBlockNode()
-        {
-            var cbn = new CodeBlockNodeModel(ViewModel.Model.LibraryServices);
-
-            var command = new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false);
-            ViewModel.ExecuteCommand(command);
-
-            return cbn;
-        }
-
-        private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
-        {
-            var command = new DynCmd.UpdateModelValueCommand(System.Guid.Empty, cbn.GUID, "Code", value);
-            ViewModel.ExecuteCommand(command);
         }
 
         #region Test cases
@@ -226,41 +222,10 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void LibraryLoaded_PrecompileCBN_ShowConflictWarnings()
-        {
-            var model = ViewModel.Model;
-
-            // Create the initial code block node.
-            var codeBlockNodeOne = CreateCodeBlockNode();
-            UpdateCodeBlockNodeContent(codeBlockNodeOne, "Point.ByCoordinates();");
-
-            // We should have one code block node by now.
-            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
-
-            // Run 
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
-
-            string libraryPath = "FFITarget.dll";
-
-            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath);
-            }
-
-            // Assert that once a library with classname conflicts is loaded the CBN
-            // displays the warning
-            Assert.IsTrue(codeBlockNodeOne.ToolTipText.Contains(string.Format(
-                ProtoCore.Properties.Resources.kMultipleSymbolFoundFromName, "Point", "")));
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void DumpLibraryToXmlZeroTouchTest()
         {
+            var searchViewModel = new SearchViewModel(null, new NodeSearchModel());
+
             LibraryLoaded = false;
 
             string libraryPath = "DSOffice.dll";
@@ -274,8 +239,18 @@ namespace Dynamo.Tests
             }
 
             var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
+            foreach (var funcGroup in fgToCompare)
+            {
+                foreach (var functionDescriptor in funcGroup.Functions)
+                {
+                    if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
+                    {
+                        searchViewModel.Model.Add(new ZeroTouchSearchElement(functionDescriptor));
+                    }
+                }
+            }
 
-            var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
+            var document = searchViewModel.Model.ComposeXmlForLibrary();
 
             Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
 
@@ -291,7 +266,7 @@ namespace Dynamo.Tests
 
                     var category = function.Category;
                     var group = SearchElementGroup.Action;
-                    category = ViewModel.SearchViewModel.Model.ProcessNodeCategory(category, ref group);
+                    category = searchViewModel.Model.ProcessNodeCategory(category, ref group);
 
                     node = document.SelectSingleNode(string.Format(
                         "//{0}[FullCategoryName='{1}' and Name='{2}']",
@@ -317,6 +292,27 @@ namespace Dynamo.Tests
                     // normal function.Description: Excel.ReadFromFile (file: var, sheetName: string): var[][]
                 }
             }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestDefaultArgumentAttribute()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+            }
+
+            // Get function groups for ClassFunctionality Class
+            var functions = libraryServices.GetFunctionGroups(libraryPath)
+                                            .SelectMany(x => x.Functions)
+                                            .Where(y => y.ClassName.Contains("FFITarget.TestData") && y.FunctionName.Equals("GetCircleArea"));
+
+            Assert.IsTrue(functions.Any());
+            var func = functions.First();
+
+            Assert.IsTrue(func.Parameters.First().DefaultValue.ToString().Equals("TestData.GetFloat()"));
         }
 
         #endregion

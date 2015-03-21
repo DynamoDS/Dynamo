@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Documents;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
 using Dynamo.ViewModels;
@@ -14,22 +17,66 @@ using DynamoUtilities;
 
 namespace DynamoSandbox
 {
+    internal class PathResolver : IPathResolver
+    {
+        private readonly List<string> additionalResolutionPaths;
+        private readonly List<string> additionalNodeDirectories;
+        private readonly List<string> preloadedLibraryPaths;
+
+        internal PathResolver(string preloaderLocation)
+        {
+            additionalResolutionPaths = new List<string>
+            {
+                preloaderLocation
+            };
+
+            additionalNodeDirectories = new List<string>();
+            preloadedLibraryPaths = new List<string>();
+        }
+
+        public IEnumerable<string> AdditionalResolutionPaths
+        {
+            get { return additionalResolutionPaths; }
+        }
+
+        public IEnumerable<string> AdditionalNodeDirectories
+        {
+            get { return additionalNodeDirectories; }
+        }
+
+        public IEnumerable<string> PreloadedLibraryPaths
+        {
+            get { return preloadedLibraryPaths; }
+        }
+
+        public string UserDataRootFolder 
+        {
+            get { return string.Empty; }
+        }
+
+        public string CommonDataRootFolder
+        { 
+            get { return string.Empty; }
+        }
+    }
+
     internal class Program
     {
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var rootFolder = Path.GetDirectoryName(exePath);
-            DynamoPathManager.Instance.InitializeCore(rootFolder);
-
             var geometryFactoryPath = string.Empty;
-            PreloadShapeManager(ref geometryFactoryPath);
+            var preloaderLocation = string.Empty;
+            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+
+            // TODO(PATHMANAGER): Do we really libg_xxx folder on resolution path?
+            // If not, PathResolver will be completely redundant so please remove it.
+            var pathResolver = new PathResolver(preloaderLocation);
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
-                    GeometryFactoryPath = geometryFactoryPath,
-                    Preferences = PreferenceSettings.Load()
+                    PathResolver = pathResolver,
+                    GeometryFactoryPath = geometryFactoryPath
                 });
 
             viewModel = DynamoViewModel.Start(
@@ -45,7 +92,7 @@ namespace DynamoSandbox
             app.Run(view);
         }
 
-        private static void PreloadShapeManager(ref string geometryFactoryPath)
+        private static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
         {
             var exePath = Assembly.GetExecutingAssembly().Location;
             var rootFolder = Path.GetDirectoryName(exePath);
@@ -60,9 +107,7 @@ namespace DynamoSandbox
             var preloader = new Preloader(rootFolder, versions);
             preloader.Preload();
             geometryFactoryPath = preloader.GeometryFactoryPath;
-
-            // TODO(PATHMANAGER): Do we really libg_xxx folder on resolution path?
-            DynamoPathManager.Instance.AddResolutionPath(preloader.PreloaderLocation);
+            preloaderLocation = preloader.PreloaderLocation;
         }
 
         [STAThread]
@@ -76,10 +121,12 @@ namespace DynamoSandbox
                 // DynamoSandbox.exe /c "C:\file path\file.xml"
                 // 
                 var commandFilePath = string.Empty;
+
                 for (var i = 0; i < args.Length; ++i)
                 {
-                    // Looking for '/c'
                     var arg = args[i];
+
+                    // Looking for '/c'
                     if (arg.Length != 2 || (arg[0] != '/'))
                         continue;
 

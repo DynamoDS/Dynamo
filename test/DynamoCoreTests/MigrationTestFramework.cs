@@ -49,6 +49,9 @@ namespace Dynamo.Tests
             var dyns = di.GetFiles("*.dyn");
             foreach (var fileInfo in dyns)
             {
+                if (fileInfo.FullName.Contains("FAILURE"))
+                    continue;
+
                 testParameters.Add(fileInfo.FullName);        
             }
 

@@ -446,13 +446,13 @@ namespace ProtoCore.Lang.Replication
         /// <param name="replicationInstructions"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static List<List<StackValue>> ComputeAllReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, Core core)
+        public static List<List<StackValue>> ComputeAllReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
         {
             List<List<StackValue>> ret; //= new List<List<StackValue>>();
 
             //First approximation generates possibilities that may never actually exist, due to 
 
-            ret = ComputeReducedParamsSuperset(formalParams, replicationInstructions, core);
+            ret = ComputeReducedParamsSuperset(formalParams, replicationInstructions, runtimeCore);
 
             return ret;
 
@@ -461,9 +461,8 @@ namespace ProtoCore.Lang.Replication
 
         }
 
-        public static List<List<StackValue>> ComputeReducedParamsSuperset(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, Core core)
+        public static List<List<StackValue>> ComputeReducedParamsSuperset(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
         {
-
             //Compute the reduced Type args
             List<List<StackValue>> reducedParams = new List<List<StackValue>>();
 
@@ -489,7 +488,7 @@ namespace ProtoCore.Lang.Replication
                         {
 
                             //Array arr = formalParams[index].Payload as Array;
-                            HeapElement he = ArrayUtils.GetHeapElement(basicList[index], core);
+                            HeapElement he = ArrayUtils.GetHeapElement(basicList[index], runtimeCore);
 
                             Validity.Assert(he.Stack != null);
 
@@ -498,7 +497,7 @@ namespace ProtoCore.Lang.Replication
                                 reducedSV = StackValue.Null;
                             else
                             {
-                                var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], core).Values;
+                                var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], runtimeCore).Values;
 
                                 List<List<StackValue>> clonedList = new List<List<StackValue>>();
 
@@ -545,7 +544,7 @@ namespace ProtoCore.Lang.Replication
                     {
 
                         //Array arr = formalParams[index].Payload as Array;
-                        HeapElement he = ArrayUtils.GetHeapElement(basicList[index], core);
+                        HeapElement he = ArrayUtils.GetHeapElement(basicList[index], runtimeCore);
 
 
 
@@ -559,7 +558,7 @@ namespace ProtoCore.Lang.Replication
                             reducedSV = StackValue.Null;
                         else
                         {
-                            var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], core).Values;
+                            var arrayStats = ArrayUtils.GetTypeExamplesForLayer(basicList[index], runtimeCore).Values;
 
                             List<List<StackValue>> clonedList = new List<List<StackValue>>();
 
@@ -605,9 +604,8 @@ namespace ProtoCore.Lang.Replication
         /// <param name="formalParams"></param>
         /// <param name="replicationInstructions"></param>
         /// <returns></returns>
-        public static List<StackValue> EstimateReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, Core core)
+        public static List<StackValue> EstimateReducedParams(List<StackValue> formalParams, List<ReplicationInstruction> replicationInstructions, RuntimeCore runtimeCore)
         {
-
             //Compute the reduced Type args
             List<StackValue> reducedParamTypes = new List<StackValue>();
 
@@ -629,7 +627,7 @@ namespace ProtoCore.Lang.Replication
                         {
 
                             //Array arr = formalParams[index].Payload as Array;
-                            HeapElement he = ArrayUtils.GetHeapElement(reducedParamTypes[index], core);
+                            HeapElement he = ArrayUtils.GetHeapElement(reducedParamTypes[index], runtimeCore);
 
 
 
@@ -664,7 +662,7 @@ namespace ProtoCore.Lang.Replication
                     if (target.IsArray)
                     {
                         //ProtoCore.DSASM.Mirror.DsasmArray arr = formalParams[index].Payload as ProtoCore.DSASM.Mirror.DsasmArray;
-                        HeapElement he = ArrayUtils.GetHeapElement(reducedParamTypes[index], core);
+                        HeapElement he = ArrayUtils.GetHeapElement(reducedParamTypes[index], runtimeCore);
 
                         //It is a collection, so cast it to an array and pull the type of the first element
                         //@TODO(luke): Deal with sparse arrays, if the first element is null this will explode
@@ -745,7 +743,7 @@ namespace ProtoCore.Lang.Replication
        
 
 
-        public static List<List<ReplicationInstruction>> BuildReplicationCombinations(List<ReplicationInstruction> providedControl, List<StackValue> formalParams, Core core)
+        public static List<List<ReplicationInstruction>> BuildReplicationCombinations(List<ReplicationInstruction> providedControl, List<StackValue> formalParams, RuntimeCore runtimeCore)
         {
 
             
@@ -761,7 +759,7 @@ namespace ProtoCore.Lang.Replication
 
             for (int i = 0; i < formalParams.Count; i++)
             {
-                int itemMaxDepth = GetMaxReductionDepth(formalParams[i], core);
+                int itemMaxDepth = GetMaxReductionDepth(formalParams[i], runtimeCore);
 
                 if (itemMaxDepth > 0)
                     reducibles.Add(i);
@@ -831,7 +829,7 @@ namespace ProtoCore.Lang.Replication
                 {
                     bool append = true;
                     for (int i = 0; i < list.Count; i++)
-                        if (list[i] > GetMaxReductionDepth(formalParams[i], core))
+                        if (list[i] > GetMaxReductionDepth(formalParams[i], runtimeCore))
                         {
                             append = false;
                             break;
@@ -909,9 +907,9 @@ namespace ProtoCore.Lang.Replication
         /// <param name="sv"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static int GetMaxReductionDepth(StackValue sv, Core core)
+        public static int GetMaxReductionDepth(StackValue sv, RuntimeCore runtimeCore)
         {
-            return RecursiveProtectGetMaxReductionDepth(sv, core, 0);
+            return RecursiveProtectGetMaxReductionDepth(sv, runtimeCore, 0);
             
         }
 
@@ -923,7 +921,7 @@ namespace ProtoCore.Lang.Replication
         /// <param name="core"></param>
         /// <param name="depthCount"></param>
         /// <returns></returns>
-        private static int RecursiveProtectGetMaxReductionDepth(StackValue sv, Core core, int depthCount)
+        private static int RecursiveProtectGetMaxReductionDepth(StackValue sv, RuntimeCore runtimeCore, int depthCount)
         {
             Validity.Assert(depthCount < 1000, 
                 "StackOverflow protection trap. This is almost certainly a VM cycle-in-array bug. {0B530165-2E38-431D-88D9-56B0636364CD}");
@@ -935,10 +933,10 @@ namespace ProtoCore.Lang.Replication
             int maxReduction = 0;
 
             //De-ref the sv
-            HeapElement he = ProtoCore.Utils.ArrayUtils.GetHeapElement(sv, core);
+            HeapElement he = ProtoCore.Utils.ArrayUtils.GetHeapElement(sv, runtimeCore);
             foreach (var subSv in he.VisibleItems)
             {
-                maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, core, depthCount+1));
+                maxReduction = Math.Max(maxReduction, RecursiveProtectGetMaxReductionDepth(subSv, runtimeCore, depthCount + 1));
             }
 
             return 1 + maxReduction;   

@@ -807,7 +807,10 @@ namespace ProtoFFI
             foreach (var parameter in parameters)
             {
                 var paramNode = ParseArgumentDeclaration(parameter.Name, parameter.ParameterType);
-                if (parameter.IsDefined(typeof(Autodesk.DesignScript.Runtime.ArbitraryDimensionArrayImportAttribute), false))
+
+                var ffiAttribute = new FFIParamAttributes(parameter);
+                paramNode.ExternalAttributes = ffiAttribute;
+                if (ffiAttribute.IsArbitraryDimensionArray)
                 {
                     var argType = paramNode.ArgumentType;
                     argType.rank = ProtoCore.DSASM.Constants.kArbitraryRank;
@@ -1311,8 +1314,59 @@ namespace ProtoFFI
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
                 }
+                else if (attr is CanUpdatePeriodicallyAttribute)
+                {
+                    CanUpdatePeriodically = (attr as CanUpdatePeriodicallyAttribute).CanUpdatePeriodically;
+                }
             }
         }
 
+    }
+
+    /// <summary>
+    /// A parameter's attributes.
+    /// </summary>
+    public class FFIParamAttributes: ProtoCore.AST.AssociativeAST.ExternalAttributes
+    {
+        public bool IsArbitraryDimensionArray
+        {
+            get
+            {
+                object isArbitraryRank;
+                if (TryGetAttribute("ArbitraryDimensionArrayImportAttribute", out isArbitraryRank))
+                    return (bool)isArbitraryRank;
+                else
+                    return false;
+            }
+        }
+
+        public string DefaultArgumentExpression 
+        { 
+            get
+            {
+                object defaultExpression = null;
+                if (TryGetAttribute("DefaultArgumentAttribute", out defaultExpression))
+                    return defaultExpression as string;
+                else
+                    return null;
+            }
+        }
+
+        public FFIParamAttributes(ParameterInfo parameter)
+        {
+            var attributes = parameter.GetCustomAttributes(false);
+            foreach (var attr in attributes)
+            {
+                if (attr is DefaultArgumentAttribute)
+                {
+                    string defaultExpression = (attr as DefaultArgumentAttribute).ArgumentExpression;
+                    AddAttribute("DefaultArgumentAttribute", defaultExpression);
+                }
+                else if (attr is ArbitraryDimensionArrayImportAttribute)
+                {
+                    AddAttribute("ArbitraryDimensionArrayImportAttribute", true);
+                }
+            }
+        }
     }
 }

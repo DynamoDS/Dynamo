@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using Autodesk.RevitAddIns;
+using DynamoInstallDetective;
 
 namespace DynamoAddinGenerator
 {
@@ -13,12 +15,23 @@ namespace DynamoAddinGenerator
 
         static void Main(string[] args)
         {
-            if (args.Length > 0)
+            bool uninstall = false;
+            foreach (string s in args)
             {
-                // First argument should be the debug assembly path
-                debugPath = args[0];
+                if (s == @"/uninstall")
+                    uninstall = true;
+                else if(Directory.Exists(s))
+                    debugPath = s;
             }
 
+            if(uninstall && string.IsNullOrEmpty(debugPath))
+            {
+                //just use the executing assembly location
+                var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                debugPath = Path.GetDirectoryName(assemblyPath);
+            }
+
+            
             var allProducts = RevitProductUtility.GetAllInstalledRevitProducts();
             var prodColl = new RevitProductCollection(allProducts.Select(x=>new DynamoRevitProduct(x)));
             if (!prodColl.Products.Any())
@@ -27,18 +40,17 @@ namespace DynamoAddinGenerator
                 return;
             }
 
-            var installs = DynamoInstallCollection.FindDynamoInstalls(debugPath);
-            var dynamoColl = new DynamoInstallCollection(installs);
-            if (!dynamoColl.Installs.Any())
+            var dynamos = DynamoProducts.FindDynamoInstallations(debugPath);
+            if (!dynamos.Products.Any())
             {
-                Console.WriteLine("There were no Dynamo installations found.");
+                Console.WriteLine("No Dynamo installation found at {0}.", debugPath);
                 DeleteExistingAddins(prodColl);
                 return;
             }
 
             DeleteExistingAddins(prodColl);
 
-            GenerateAddins(prodColl, dynamoColl);
+            GenerateAddins(prodColl, dynamos, uninstall ? debugPath : string.Empty);
         }
 
         /// <summary>
@@ -89,25 +101,18 @@ namespace DynamoAddinGenerator
         /// versions of Revit.
         /// </summary>
         /// <param name="products">A collection of revit installs.</param>
-        /// <param name="dynamos">A collection of dynamo installs.</param>
-        internal static void GenerateAddins(IRevitProductCollection products, IDynamoInstallCollection dynamos)
+        /// <param name="dynamos">DynamoProducts, a collection of installed Dynamo
+        /// on this system.</param>
+        /// <param name="dynamoUninstallPath">Path of Dynamo being uninstalled</param>
+        internal static void GenerateAddins(IRevitProductCollection products, DynamoProducts dynamos, string dynamoUninstallPath = "")
         {
             foreach (var prod in products.Products)
             {
                 Console.WriteLine("Generating addins in {0}", prod.AddinsFolder);
 
-                var addinData = new DynamoAddinData(prod, dynamos.GetLatest());
-
-                if (prod.ProductName == "Vasari Beta 3")
-                {
-                    // Change the addin path because the AddinUtility 
-                    // reports this incorrectly for vasari
-                    var dir = Path.GetDirectoryName(addinData.AddinPath);
-                    var newDir = dir.Replace("Revit", "Vasari");
-                    addinData.AddinPath = Path.Combine(newDir, Path.GetFileName(addinData.AddinPath));
-                }
-
-                GenerateDynamoAddin(addinData);
+                var addinData = DynamoAddinData.Create(prod, dynamos, dynamoUninstallPath);
+                if(null != addinData)
+                    GenerateDynamoAddin(addinData);
             }
         }
 

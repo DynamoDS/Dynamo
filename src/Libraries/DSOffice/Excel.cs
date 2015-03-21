@@ -134,9 +134,6 @@ namespace DSOffice
 
                 }
 
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-
                 _app = null;
             }
         }

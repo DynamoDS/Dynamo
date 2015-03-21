@@ -104,7 +104,10 @@ namespace Dynamo.ViewModels
 
         public bool IsSelected
         {
-            get { return nodeLogic.IsSelected; }
+            get
+            {
+                return nodeLogic.IsSelected;
+            }
         }
 
         public string NickName
@@ -199,15 +202,15 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return nodeLogic.EnablePeriodicUpdate
+                return nodeLogic.CanUpdatePeriodically
                     ? Visibility.Visible
                     : Visibility.Collapsed;
             }
         }
         public bool EnablePeriodicUpdate
         {
-            get { return nodeLogic.EnablePeriodicUpdate; }
-            set { nodeLogic.EnablePeriodicUpdate = value; }
+            get { return nodeLogic.CanUpdatePeriodically; }
+            set { nodeLogic.CanUpdatePeriodically = value; }
         }
 
         public bool ShowsVisibilityToggles
@@ -276,6 +279,52 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool showExectionPreview;
+        public bool ShowExecutionPreview
+        {
+            get
+            {
+                return showExectionPreview;
+            }
+            set
+            {
+                showExectionPreview = value;
+                RaisePropertyChanged("ShowExecutionPreview");
+                RaisePropertyChanged("PreviewState");
+            }
+        }
+
+        public PreviewState PreviewState
+        {
+            get
+            {
+                if (ShowExecutionPreview)
+                {
+                    return PreviewState.ExecutionPreview;
+                }
+
+                if (NodeModel.IsSelected)
+                {
+                    return PreviewState.Selection;
+                }
+
+                return PreviewState.None;
+            }
+        }
+
+        private bool isNodeNewlyAdded;
+        public bool IsNodeAddedRecently
+        {
+            get
+            {
+                return isNodeNewlyAdded;
+            }
+            set
+            {
+                isNodeNewlyAdded = value;
+            }
+        }
+
         #endregion
 
         #region events
@@ -314,7 +363,7 @@ namespace Dynamo.ViewModels
         {
             this.WorkspaceViewModel = workspaceViewModel;
             this.DynamoViewModel = workspaceViewModel.DynamoViewModel;
-
+           
             nodeLogic = logic;
             
             //respond to collection changed events to sadd
@@ -340,6 +389,8 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.EngineController.AstBuilt += EngineController_AstBuilt;
             }
+            ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
+            IsNodeAddedRecently = true;
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -448,6 +499,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
+                    RaisePropertyChanged("PreviewState");
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -481,8 +533,8 @@ namespace Dynamo.ViewModels
                     break;
                 case "ForceReExecuteOfNode":
                     RaisePropertyChanged("WillForceReExecuteOfNode");
-                    break;
-                case "EnablePeriodicUpdate":
+                    break;             
+                case "CanUpdatePeriodically":
                     RaisePropertyChanged("EnablePeriodicUpdate");
                     RaisePropertyChanged("PeriodicUpdateVisibility");
                     break;

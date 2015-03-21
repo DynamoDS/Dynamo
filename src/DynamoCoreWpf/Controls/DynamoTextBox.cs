@@ -358,8 +358,9 @@ namespace Dynamo.UI.Controls
             this.Placement = PlacementMode.Custom;
             this.AllowsTransparency = true;
             this.CustomPopupPlacementCallback = PlacementCallback;
+            this.DataContext = null;
             this.Child = tooltip;
-            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
             this.showTimer.Interval = new TimeSpan(0, 0, 0, 0, 60);
             this.showTimer.Tick += OpenLibraryToolTipPopup;
@@ -380,13 +381,14 @@ namespace Dynamo.UI.Controls
             mainDynamoWindow.Deactivated += (Sender, args) =>
             {
                 this.DataContext = null;
+                IsOpen = false;
             };
         }
 
         public void SetDataContext(object dataContext, bool closeImmediately = false)
         {
             // If Dynamo window is not active, we should not show as well as hide tooltip or do any other staff.
-            if (!mainDynamoWindow.IsActive) return;
+            if (mainDynamoWindow == null || !mainDynamoWindow.IsActive) return;
 
             if (dataContext == null)
             {
@@ -407,6 +409,7 @@ namespace Dynamo.UI.Controls
         private void OpenLibraryToolTipPopup(object sender, EventArgs e)
         {
             this.DataContext = nextDataContext;
+            IsOpen = true;
 
             // This line is needed to change position of Popup.
             // As position changed PlacementCallback is called and
@@ -422,7 +425,10 @@ namespace Dynamo.UI.Controls
         private void CloseLibraryToolTipPopup(object sender, EventArgs e)
         {
             if (!this.IsMouseOver)
+            {
                 this.DataContext = null;
+                IsOpen = false;
+            }
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
