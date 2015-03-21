@@ -283,5 +283,11 @@ namespace ProtoCore
             return ts;
         }
 
+        public void SetValue(int astID, StackValue sv)
+        {
+            ExecutionInstance.CurrentDSASMExec.SetAssociativeUpateRegister(sv);
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodeDirty(this, astID);
+        }
+
     }
 }

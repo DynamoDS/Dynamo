@@ -53,6 +53,11 @@ namespace ProtoCore.DSASM
         public StackValue SX { get; set; }
         public StackValue TX { get; set; }
 
+        public void SetAssociativeUpateRegister(StackValue sv)
+        {
+            LX = sv;
+        }
+
         //public ProtoCore.AssociativeGraph.GraphNode executingGraphNode { get; private set; }
         public InterpreterProperties Properties { get; set; }
 

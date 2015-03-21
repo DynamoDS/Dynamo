@@ -15,6 +15,7 @@ using System.Collections;
 
 namespace ProtoTest.LiveRunner
 {
+    
     class MemoryConsumptionTests : ProtoTestBase
     {
         private int instrStreamStart = 0;
@@ -65,6 +66,45 @@ namespace ProtoTest.LiveRunner
             instrStreamEnd = runtimeDiagnostics.GetExecutableInstructionCount();
 
             Assert.AreEqual(instrStreamStart, instrStreamEnd);
+        }
+
+
+        [Test]
+        [Category("Failure")]
+        public void TestPeriodicUpdate01()
+        {
+            int rhs = 0;
+            string code = String.Format("a = {0};", rhs.ToString());
+
+            Guid guid = System.Guid.NewGuid();
+
+            // First run
+            // a = 1
+            List<Subtree> added = new List<Subtree>();
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, code));
+            var syncData = new GraphSyncData(null, added, null);
+            liverunner.UpdateGraph(syncData);
+            instrStreamStart = runtimeDiagnostics.GetExecutableInstructionCount();
+
+            List<Subtree> modified = null;
+
+            const int maxUpdate = 10000;
+            for (int n = 1; n < maxUpdate; ++n)
+            {
+                // Modify a
+                code = String.Format("a = {0};", n.ToString());
+                modified = new List<Subtree>();
+                modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, code));
+                syncData = new GraphSyncData(null, null, modified);
+                liverunner.UpdateGraph(syncData);
+            }
+
+            instrStreamEnd = runtimeDiagnostics.GetExecutableInstructionCount();
+
+            System.Console.WriteLine("instrStreamStart: {0}", instrStreamStart);
+            System.Console.WriteLine("instrStreamEnd: {0}", instrStreamEnd);
+
+            //Assert.AreEqual(instrStreamStart, instrStreamEnd);
         }
     }
 }

@@ -1647,6 +1647,7 @@ namespace ProtoCore.AST.AssociativeAST
         public AssociativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
         public AssociativeNode RightNode { get; set; }
+        public bool IsInputExpression { get; set; }
 
         // These properties are used only for the GraphUI ProtoAST
         public uint Guid { get; set; }
@@ -1666,6 +1667,7 @@ namespace ProtoCore.AST.AssociativeAST
             LeftNode = left;
             Optr = optr;
             RightNode = right;
+            IsInputExpression = false;
         }
 
         public BinaryExpressionNode(BinaryExpressionNode rhs) : base(rhs)
@@ -1686,6 +1688,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
+            IsInputExpression = rhs.IsInputExpression;
         }
 
         /// <summary>
@@ -1709,6 +1712,7 @@ namespace ProtoCore.AST.AssociativeAST
              Optr = Operator.assign;
              LeftNode = lhs;
              RightNode = NodeUtils.Clone(rhs);
+             IsInputExpression = false;
              
          }
 

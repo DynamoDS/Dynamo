@@ -2889,6 +2889,7 @@ namespace ProtoAssociative
 
                 BinaryExpressionNode bnode = new BinaryExpressionNode(leftNode, rightNode, ProtoCore.DSASM.Operator.assign);
                 bnode.isSSAAssignment = isSSAAssignment;
+                bnode.IsInputExpression = astBNode.IsInputExpression;
 
                 astlist.Add(bnode);
                 ssaStack.Push(bnode);
@@ -8562,6 +8563,20 @@ namespace ProtoAssociative
                             symbolnode.SetStaticType(castType);
                         }
                         castType = symbolnode.staticType;
+
+
+                        if (bnode.IsInputExpression)
+                        {
+                            StackValue regLX = StackValue.BuildRegister(Registers.LX);
+                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regLX);
+                            EmitPop(regLX, globalClassIndex);
+
+                            graphNode.updateBlock.updateStartPC = pc;
+
+                            EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regLX);
+                            EmitPush(regLX);
+                        }
+
                         EmitPushVarData(runtimeIndex, dimensions, castType.UID, castType.rank);
 
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)

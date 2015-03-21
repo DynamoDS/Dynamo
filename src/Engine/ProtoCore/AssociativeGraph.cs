@@ -488,6 +488,27 @@ namespace ProtoCore.AssociativeEngine
             return nodesInScope[indexOfDirtyNode + 1];
         }
 
+       
+
+        public static void MarkGraphNodeDirty(RuntimeCore runtimeCore, int astID)
+        {
+            Executable exe = runtimeCore.DSExecutable;
+            foreach (var gnode in exe.instrStreamList[0].dependencyGraph.GraphList)
+            {
+                if (gnode.isActive && gnode.OriginalAstID == astID)
+                {
+                    gnode.isDirty = true;
+                    gnode.isActive = true;
+
+                    if (gnode.updateBlock.updateStartPC != Constants.kInvalidIndex)
+                    {
+                        gnode.updateBlock.startpc = gnode.updateBlock.updateStartPC;
+                    }
+                    break;
+                }
+            }
+        }
+
         /// <summary>
         ///  Finds all graphnodes associated with each AST and marks them dirty. Returns the first dirty node
         /// </summary>
@@ -582,11 +603,13 @@ namespace ProtoCore.AssociativeGraph
     {
         public int startpc { get; set; }
         public int endpc { get; set; }
+        public int updateStartPC { get; set; }
 
         public UpdateBlock()
         {
             startpc = Constants.kInvalidIndex;
             endpc = Constants.kInvalidIndex;
+            updateStartPC = Constants.kInvalidIndex;
         }
     }
 
