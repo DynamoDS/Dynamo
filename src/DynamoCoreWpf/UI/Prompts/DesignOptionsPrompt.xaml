@@ -31,7 +31,7 @@
 
             <Label Content="{x:Static p:Resources.DesignOptionsWindowDescription}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
                 <Label.ToolTip>
-                    <TextBlock>A description that helps people understand what the node might be used for.</TextBlock>
+                    <TextBlock>A description of what the input state sets the graph to.</TextBlock>
                 </Label.ToolTip>
             </Label>
             <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" 
