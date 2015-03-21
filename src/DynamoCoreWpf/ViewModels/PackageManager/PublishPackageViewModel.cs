@@ -881,7 +881,7 @@ namespace Dynamo.PackageManager
 
                 // we're not sure if this is a managed assembly or not
                 // we try to load it, if it fails - we add it as an additional file
-                var result = PackageLoader.TryLoadFrom(filename, out assem);
+                var result = PackageLoader.TryLoad(filename, out assem);
                 if (result)
                 {
                     Assemblies.Add(new PackageAssembly()

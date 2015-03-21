@@ -15,12 +15,14 @@ using Dynamo.Utilities;
 using Greg.Requests;
 
 using Newtonsoft.Json;
+using ProtoFFI;
 using String = System.String;
 
 namespace Dynamo.PackageManager
 {
     public class PackageAssembly
     {
+        public FileInfo FileInfo { get; set; }
         public bool IsNodeLibrary { get; set; }
         public Assembly Assembly { get; set; }
 
@@ -255,30 +257,33 @@ namespace Dynamo.PackageManager
             var assemblies = LoadAssembliesInBinDirectory();
 
             // filter the assemblies
-            var zeroTouchAssemblies = new List<Assembly>();
-            var nodeModelAssemblies = new List<Assembly>();
+            var zeroTouchAssemblies = new List<PackageAssembly>();
+            var nodeModelAssemblies = new List<PackageAssembly>();
 
             // categorize the assemblies to load, skipping the ones that are not identified as node libraries
-            foreach (var assem in assemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly))
+            foreach (var pkgAssem in assemblies.Where(x => x.IsNodeLibrary))
             {
-                if (loader.ContainsNodeModelSubType(assem))
-                    nodeModelAssemblies.Add(assem);
+                if (loader.ContainsNodeModelSubType(pkgAssem.Assembly))
+                    nodeModelAssemblies.Add(pkgAssem);
                 else
-                    zeroTouchAssemblies.Add(assem);
+                    zeroTouchAssemblies.Add(pkgAssem);
             }
 
             // load the zero touch assemblies
             var libraryServices = loadPackageParams.LibraryServices;
             foreach (var zeroTouchAssem in zeroTouchAssemblies)
-                libraryServices.ImportLibrary(zeroTouchAssem.Location);
+            {
+                FFIExecutionManager.Instance.AddToAssemblyCache(zeroTouchAssem.FileInfo, zeroTouchAssem.Assembly);
+                libraryServices.ImportLibrary(zeroTouchAssem.FileInfo.FullName);
+            }
 
             // load the node model assemblies
             var context = loadPackageParams.Context;
             var nodes = nodeModelAssemblies.SelectMany(
-                assem =>
+                pkgAssem =>
                 {
                     var assemblyNodes = new List<TypeLoadData>();
-                    loader.LoadNodesFromAssembly(assem, context, assemblyNodes, new List<TypeLoadData>());
+                    loader.LoadNodesFromAssembly(pkgAssem.Assembly, context, assemblyNodes, new List<TypeLoadData>());
                     return assemblyNodes;
                 });
 
@@ -327,7 +332,7 @@ namespace Dynamo.PackageManager
                 Assembly assem;
 
                 // dll files may be un-managed, skip those
-                var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                var result = PackageLoader.TryLoad(assemFile.FullName, out assem);
                 if (result)
                 {
                     // IsNodeLibrary may fail, we store the warnings here and then show
@@ -335,6 +340,7 @@ namespace Dynamo.PackageManager
 
                     assemblies.Add(new PackageAssembly()
                     {
+                        FileInfo = assemFile,
                         Assembly = assem,
                         IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
                     });
