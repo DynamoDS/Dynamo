@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -88,6 +89,56 @@ namespace ProtoCore.Namespace
             return index == given.Length;
         }
 
+        public static Dictionary<Symbol, string> GetShortestUniqueNames(
+            IEnumerable<Symbol> symbolList)
+        {
+            var shortNamespaces = new Dictionary<Symbol, string>();
+            var enumerable = symbolList as Symbol[] ?? symbolList.ToArray();
+            foreach (var symbol in enumerable)
+            {
+                string shortName = null;
+                var namespaces = symbol.namespaces;
+                for (int i = 0; i < namespaces.Length - 1; ++i)
+                {
+                    var partialName = namespaces[i] + '.' + symbol.symbolname;
+                    var sym = enumerable.Where(s => s != symbol && s.Matches(partialName));
+                    // if the namespace is unique to symbol
+                    if (!sym.Any())
+                    {
+                        // Assign name as short name for symbol
+                        shortName = partialName;
+                        break;
+                    }   
+                }
+                if (string.IsNullOrEmpty(shortName))
+                {
+                    shortName = GetNextShortestUniqueName(symbol, enumerable);
+                    Debug.Assert(!string.IsNullOrEmpty(shortName));
+                }
+                Debug.Assert(!shortNamespaces.ContainsKey(symbol));
+                shortNamespaces.Add(symbol, shortName);
+            }
+            return shortNamespaces;
+        }
+
+        private static string GetNextShortestUniqueName(Symbol symbol,
+            IEnumerable<Symbol> symbolList)
+        {
+            var namespaces = symbol.namespaces;
+            for (int i = 0; i < namespaces.Length - 2; ++i)
+            {
+                for (int j = i + 1; j < namespaces.Length - 1; ++j)
+                {
+                    var partialName = namespaces[i] + '.' + namespaces[j]
+                        + '.' + symbol.symbolname;
+                    var sym = symbolList.Where(s => s != symbol && s.Matches(partialName));
+                    if (!sym.Any())
+                        return partialName;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// Checks equality based on FullName
         /// </summary>
@@ -100,6 +151,28 @@ namespace ProtoCore.Namespace
                 return false;
 
             return this.FullName.Equals(symbol.FullName);
+        }
+
+        /// <summary>
+        /// Equality operator overload to have same equality behaviour as object.Equals() override
+        /// </summary>
+        /// <param name="thisSymbol"></param>
+        /// <param name="otherSymbol"></param>
+        /// <returns></returns>
+        public static bool operator ==(Symbol thisSymbol, Symbol otherSymbol)
+        {
+            return object.Equals(thisSymbol, otherSymbol);
+        }
+
+        /// <summary>
+        /// Inequality operator overload is needed for every equality operator overload
+        /// </summary>
+        /// <param name="thisSymbol"></param>
+        /// <param name="otherSymbol"></param>
+        /// <returns></returns>
+        public static bool operator !=(Symbol thisSymbol, Symbol otherSymbol)
+        {
+            return !(thisSymbol == otherSymbol);
         }
 
         /// <summary>
@@ -122,7 +195,7 @@ namespace ProtoCore.Namespace
         /// <summary>
         /// Table for all symbols
         /// </summary>
-        private Dictionary<string, HashSet<Symbol>> symbolTable;
+        private readonly Dictionary<string, HashSet<Symbol>> symbolTable;
 
         /// <summary>
         /// Constructor
@@ -177,7 +250,7 @@ namespace ProtoCore.Namespace
             string symbolName = partialName.Split('.').Last();
             HashSet<Symbol> symbols = GetAllSymbols(symbolName);
             if (null == symbols)
-                throw new System.Collections.Generic.KeyNotFoundException(string.Format("Failed to get unique matching symbol for {0}.", partialName));
+                throw new KeyNotFoundException(string.Format("Failed to get unique matching symbol for {0}.", partialName));
 
             return symbols.Where((Symbol sym) => sym.Matches(partialName)).ToArray();
         }
@@ -201,7 +274,7 @@ namespace ProtoCore.Namespace
 
             var symbols = GetMatchingSymbols(partialName);
             if (symbols == null || symbols.Length != 1)
-                throw new System.Collections.Generic.KeyNotFoundException(string.Format("Failed to get unique matching symbol for {0}.", partialName));
+                throw new KeyNotFoundException(string.Format("Failed to get unique matching symbol for {0}.", partialName));
 
             return symbols.First().FullName;
         }

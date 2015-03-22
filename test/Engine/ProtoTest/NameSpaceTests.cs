@@ -135,5 +135,39 @@ namespace ProtoTest
             Assert.IsFalse(table.TryGetUniqueSymbol("Com.Point", out symbol));
             Assert.IsFalse(table.TryGetUniqueSymbol("Point", out symbol));
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetShortestUniqueNamespaces_FromNamespaceList()
+        {
+            var namespaceList = new List<Symbol>
+            {
+                new Symbol("Autodesk.DesignScript.Geometry.Point"),
+                new Symbol("Rhino.Geometry.Point")
+            };
+            var shortNamespaces = Symbol.GetShortestUniqueNames(namespaceList);
+
+            Assert.AreEqual(2, shortNamespaces.Count);
+            Assert.AreEqual("Autodesk.Point", shortNamespaces[namespaceList[0]]);
+            Assert.AreEqual("Rhino.Point", shortNamespaces[namespaceList[1]]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetShortestUniqueNamespaces_FromComplexNamespaceList()
+        {
+            var namespaceList = new List<Symbol>
+            {
+                new Symbol("A.B.C.D.E"),
+                new Symbol("X.Y.A.B.E.C.E"),
+                new Symbol("X.Y.A.C.B.E")
+            };
+            var shortNamespaces = Symbol.GetShortestUniqueNames(namespaceList);
+
+            Assert.AreEqual(3, shortNamespaces.Count);
+            Assert.AreEqual("D.E", shortNamespaces[namespaceList[0]]);
+            Assert.AreEqual("E.E", shortNamespaces[namespaceList[1]]);
+            Assert.AreEqual("C.B.E", shortNamespaces[namespaceList[2]]);
+        }
     }
 }
