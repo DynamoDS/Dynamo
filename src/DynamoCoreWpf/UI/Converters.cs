@@ -19,6 +19,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
 using RestSharp.Contrib;
+using System.Text;
 
 namespace Dynamo.Controls
 {
@@ -1823,19 +1824,25 @@ namespace Dynamo.Controls
                         return text.Insert(text.LastIndexOf(".") + 1, "\n");
                     return text;
                 case "ClassButton":
-                    text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
-                    if (text.Length > Configurations.MaxLengthRowClassButtonTitle)
+                    string originalName = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
+                    text = originalName;
+                    int maxRowLength = Configurations.MaxLengthRowClassButtonTitle;
+                    if (text.Length > maxRowLength)
                     {
-                        if (text.IndexOf(" ") != -1)
+                        if (text.IndexOf(" ") != -1 && text.IndexOf(" ") <= maxRowLength)
                             text = text.Insert(text.IndexOf(" ") + 1, "\n");
-                        if (text.Length > Configurations.MaxLengthClassButtonTitle)
+                        if (text.Length > Configurations.MaxLengthClassButtonTitle || text.IndexOf(" ") > maxRowLength)
                         {
                             // If title is too long, we can cat it.
-                            string shortName = String.Empty;
-                            shortName = text.Substring(0, Configurations.MaxLengthRowClassButtonTitle);
-                            shortName = shortName + Configurations.TwoDots + "\n" + Configurations.TwoDots;
-                            shortName = shortName + text.Substring(text.Length - Configurations.MaxLengthRowClassButtonTitle);
-                            return shortName;
+                            StringBuilder shortName = new StringBuilder();
+                            shortName.Append(originalName.Substring(0, maxRowLength));
+                            shortName.Append(Configurations.TwoDots + "\n" + Configurations.TwoDots);
+                            string prefix = text.Substring(text.Length - maxRowLength);
+                            if (prefix.IndexOf(" ") != -1)
+                                shortName.Append(prefix.Substring(prefix.IndexOf(" ") + 1));
+                            else
+                                shortName.Append(prefix);
+                            return shortName.ToString();
                         }
                     }
                     return text;
