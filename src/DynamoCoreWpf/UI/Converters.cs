@@ -1829,8 +1829,16 @@ namespace Dynamo.Controls
                     int maxRowLength = Configurations.MaxLengthRowClassButtonTitle;
                     if (text.Length > maxRowLength)
                     {
-                        if (text.IndexOf(" ") != -1 && text.IndexOf(" ") <= maxRowLength)
-                            text = text.Insert(text.IndexOf(" ") + 1, "\n");
+                        if (text.IndexOf(" ") != -1)
+                        {
+                            // If clas name is like "Cooooooool Name", then this truncation is wrong.
+                            if (text.IndexOf(" ") <= maxRowLength)
+                                text = text.Insert(text.IndexOf(" ") + 1, "\n");
+                        }
+                        else
+                            //If class name doesn't have spaces. E.g. "Namenamename"
+                            text = text.Substring(0, maxRowLength) + Configurations.TwoDots;
+
                         if (text.Length > Configurations.MaxLengthClassButtonTitle || text.IndexOf(" ") > maxRowLength)
                         {
                             // If title is too long, we can cat it.

@@ -195,7 +195,7 @@ namespace Dynamo.UI
 
         #region Class button
         public const int MaxLengthClassButtonTitle = 18;
-        public const int MaxLengthRowClassButtonTitle = 7; // How many characters can be in one row.
+        public const int MaxLengthRowClassButtonTitle = 8; // How many characters can be in one row.
         public const string TwoDots = "..";
         #endregion
 
