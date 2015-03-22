@@ -1829,9 +1829,14 @@ namespace Dynamo.Controls
                         if (text.IndexOf(" ") != -1)
                             text = text.Insert(text.IndexOf(" ") + 1, "\n");
                         if (text.Length > Configurations.MaxLengthClassButtonTitle)
+                        {
                             // If title is too long, we can cat it.
-                            text = text.Substring(0, Configurations.MaxLengthClassButtonTitle - 3) +
-                                Configurations.TwoDots;
+                            string shortName = String.Empty;
+                            shortName = text.Substring(0, Configurations.MaxLengthRowClassButtonTitle);
+                            shortName = shortName + Configurations.TwoDots + "\n" + Configurations.TwoDots;
+                            shortName = shortName + text.Substring(text.Length - Configurations.MaxLengthRowClassButtonTitle);
+                            return shortName;
+                        }
                     }
                     return text;
 
