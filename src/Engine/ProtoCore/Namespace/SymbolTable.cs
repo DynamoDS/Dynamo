@@ -6,6 +6,83 @@ using System.Text;
 
 namespace ProtoCore.Namespace
 {
+    public static class PermuteUtils
+    {
+        /// <summary>
+        /// Returns an enumeration of enumerators, one for each permutation of the input.
+        /// E.g. given an input array: {A, B, C, D, E}, and count of 2, 
+        /// this returns the following permutations in the same order:
+        /// { AB, AC, AD, AE, BC, BD, BE, CD, CE, DE }
+        /// </summary>
+        /// <typeparam name="T">type of input collection member</typeparam>
+        /// <param name="list">input collection to choose permutations from</param>
+        /// <param name="count">Number of items to return permutations of</param>
+        /// <returns>All possible permuatations of the input list picking (count) items at a time</returns>
+        public static IEnumerable<IEnumerable<T>> Permute<T>(IEnumerable<T> list, int count)
+        {
+            if (count == 0)
+            {
+                yield return new T[0];
+            }
+            else
+            {
+                int startingElementIndex = 0;
+                foreach (T startingElement in list)
+                {
+                    IEnumerable<T> remainingItems = AllExceptLesser(list, startingElementIndex);
+
+                    foreach (IEnumerable<T> permutationOfRemainder in Permute(remainingItems, count - 1))
+                    {
+                        yield return Concat<T>(
+                            new T[] { startingElement },
+                            permutationOfRemainder);
+                    }
+                    startingElementIndex += 1;
+                }
+            }
+        }
+
+        // Enumerates over contents of both lists.
+        private static IEnumerable<T> Concat<T>(IEnumerable<T> a, IEnumerable<T> b)
+        {
+            foreach (T item in a) { yield return item; }
+            foreach (T item in b) { yield return item; }
+        }
+
+        // Enumerates over all items in the input, skipping over the item
+        // with the specified offset and the items occuring before it in the input collection
+        private static IEnumerable<T> AllExceptLesser<T>(IEnumerable<T> input, int indexToSkip)
+        {
+            int index = 0;
+            foreach (T item in input)
+            {
+                if (index > indexToSkip) yield return item;
+                index += 1;
+            }
+        }
+
+        /// <summary>
+        /// Given a generic enumerable collection of items,
+        /// returns all but the last item in the collection
+        /// </summary>
+        /// <typeparam name="T">Type of member in collection</typeparam>
+        /// <param name="source">input collection</param>
+        /// <returns>new collection of all except the last item in the input collection</returns>
+        public static IEnumerable<T> AllButLast<T>(IEnumerable<T> source)
+        {
+            var enumerator = source.GetEnumerator();
+            bool first = true;
+            T prev = default(T);
+            while (enumerator.MoveNext())
+            {
+                if (!first)
+                    yield return prev;
+                first = false;
+                prev = enumerator.Current;
+            }
+        }        
+    }
+
     /// <summary>
     /// Symbol class : It represents a symbol with namespace.
     /// </summary>
@@ -89,6 +166,31 @@ namespace ProtoCore.Namespace
             return index == given.Length;
         }
 
+        // Print out the permutations of the input 
+        private static IEnumerable<string> ComputeNamePermutations<T>(IEnumerable<T> input, int count)
+        {
+            var stringList = new List<string>();
+            foreach (IEnumerable<T> permutation in PermuteUtils.Permute<T>(input, count))
+            {
+                string partialName = string.Empty;
+                foreach (T i in permutation)
+                {
+                    if (!string.IsNullOrEmpty(partialName))
+                        partialName += '.';
+                    partialName += i;
+                }
+                stringList.Add(partialName);
+            }
+            return stringList;
+        }
+
+        /// <summary>
+        /// Given a list of conflicting namespaces, finds the shortest partial name for a namespace
+        /// that can be resolved uniquely. For example, given {"A.B.C.D.E", "X.Y.A.B.E.C.E", "X.Y.A.C.B.E"},
+        /// all with the same class E, their shortest unique names would be: {"D.E", "E.E", "C.B.E"}
+        /// </summary>                                               
+        /// <param name="symbolList">Input list of conflicting namespaces (having same class name)</param>
+        /// <returns>Map of Symbol vs. short name</returns>
         public static Dictionary<Symbol, string> GetShortestUniqueNames(
             IEnumerable<Symbol> symbolList)
         {
@@ -97,46 +199,31 @@ namespace ProtoCore.Namespace
             foreach (var symbol in enumerable)
             {
                 string shortName = null;
-                var namespaces = symbol.namespaces;
-                for (int i = 0; i < namespaces.Length - 1; ++i)
+                var namespaces = PermuteUtils.AllButLast(symbol.namespaces);
+                var input = namespaces as string[] ?? namespaces.ToArray();
+                for (int i = 1; i <= input.Length; ++i)
                 {
-                    var partialName = namespaces[i] + '.' + symbol.symbolname;
-                    var sym = enumerable.Where(s => s != symbol && s.Matches(partialName));
-                    // if the namespace is unique to symbol
-                    if (!sym.Any())
+                    var partialNameCombinations = ComputeNamePermutations(input, i);
+                    foreach (var partialNameCombination in partialNameCombinations)
                     {
-                        // Assign name as short name for symbol
-                        shortName = partialName;
+                        //var partialName = namespaces[i] + '.' + symbol.symbolname;
+                        var partialName = partialNameCombination + '.' + symbol.symbolname;
+                        var sym = enumerable.Where(s => s != symbol && s.Matches(partialName));
+                        // if the namespace is unique to symbol
+                        if (!sym.Any())
+                        {
+                            // Assign name as short name for symbol
+                            shortName = partialName;
+                            break;
+                        }  
+                    }
+                    if(!string.IsNullOrEmpty(shortName))
                         break;
-                    }   
-                }
-                if (string.IsNullOrEmpty(shortName))
-                {
-                    shortName = GetNextShortestUniqueName(symbol, enumerable);
-                    Debug.Assert(!string.IsNullOrEmpty(shortName));
                 }
                 Debug.Assert(!shortNamespaces.ContainsKey(symbol));
                 shortNamespaces.Add(symbol, shortName);
             }
             return shortNamespaces;
-        }
-
-        private static string GetNextShortestUniqueName(Symbol symbol,
-            IEnumerable<Symbol> symbolList)
-        {
-            var namespaces = symbol.namespaces;
-            for (int i = 0; i < namespaces.Length - 2; ++i)
-            {
-                for (int j = i + 1; j < namespaces.Length - 1; ++j)
-                {
-                    var partialName = namespaces[i] + '.' + namespaces[j]
-                        + '.' + symbol.symbolname;
-                    var sym = symbolList.Where(s => s != symbol && s.Matches(partialName));
-                    if (!sym.Any())
-                        return partialName;
-                }
-            }
-            return null;
         }
 
         /// <summary>
