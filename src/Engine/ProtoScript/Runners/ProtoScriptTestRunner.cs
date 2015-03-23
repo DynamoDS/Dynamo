@@ -345,9 +345,8 @@ namespace ProtoScript.Runners
             return null;
         }
 
-        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
+        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCore)
         {
-            ProtoCore.RuntimeCore runtimeCore = null;
             return Execute(sourcecode, core, out runtimeCore);
         }
 
