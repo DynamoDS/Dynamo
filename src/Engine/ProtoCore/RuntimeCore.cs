@@ -285,7 +285,7 @@ namespace ProtoCore
 
         public void SetValue(int astID, StackValue sv)
         {
-            ExecutionInstance.CurrentDSASMExec.SetAssociativeUpateRegister(sv);
+            ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
             ProtoCore.AssociativeEngine.Utils.MarkGraphNodeDirty(this, astID);
         }
 

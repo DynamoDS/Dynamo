@@ -53,7 +53,7 @@ namespace ProtoCore.DSASM
         public StackValue SX { get; set; }
         public StackValue TX { get; set; }
 
-        public void SetAssociativeUpateRegister(StackValue sv)
+        public void SetAssociativeUpdateRegister(StackValue sv)
         {
             LX = sv;
         }
