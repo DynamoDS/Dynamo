@@ -14,6 +14,9 @@ using DynamoCoreUITests.Utility;
 using NUnit.Framework;
 
 using Dynamo.Selection;
+using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
+
 using ProtoCore.Namespace;
 
 namespace DynamoCoreUITests
@@ -352,6 +355,32 @@ namespace DynamoCoreUITests
         }
 
         [Test]
+        public void VisualizationShouldBeClearedWhenNewWorkspaceIsOpened()
+        {
+            var model = ViewModel.Model;
+            var openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_points.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            // Make sure the workspace is running automatically.
+            // Flipping the mode here will cause it to run.
+            var hws = model.CurrentWorkspace as HomeWorkspaceModel;
+            hws.RunSettings.RunType = RunType.Automatic;
+
+            // Ensure we have some geometry
+            Assert.Greater(BackgroundPreview.Points.Count, 0);
+
+            // Open a new file. It doesn't matter if the new file
+            // is saved in Manual or Automatic, the act of clearing
+            // the home workspace should cause the visualization manager
+            // to request all views to clear themselves.
+
+            openPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\visualization\ASM_thicken.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(BackgroundPreview.Points.Count, 0);
+
+        }
+
+        [Test]
         public void VisualizationsAreCreatedForCustomNodes()
         {
             CustomNodeInfo info;
@@ -457,7 +486,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        public void CustomNodeShouldNotHasGeometryPreview()
+        public void CustomNodeShouldNotHaveGeometryPreview()
         {
             // Regression test for defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5165
             // To verify when some geometry nodes are converted to custom node,
