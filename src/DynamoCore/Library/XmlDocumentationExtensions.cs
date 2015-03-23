@@ -102,10 +102,11 @@ namespace Dynamo.DSEngine
             return sb.ToString();
         }
 
-        private static string GetMemberElement(FunctionDescriptor fDescr, string property, XmlReader xml, string paramName = "")
+        private static string GetMemberElement(FunctionDescriptor function,
+            string property, XmlReader xml, string paramName = "")
         {
-            var assemblyName = fDescr.Assembly;
-            var fullyQualifiedName = GetMemberElementName(fDescr);
+            var assemblyName = function.Assembly;
+            var fullyQualifiedName = GetMemberElementName(function);
             if (!documentNodes.ContainsKey(fullyQualifiedName))
                 LoadDataFromXml(xml);
 
@@ -114,7 +115,7 @@ namespace Dynamo.DSEngine
                 return String.Empty;
 
             var keyForOverloaded = documentNodes.Keys.
-                        Where(key => key.Contains(fDescr.ClassName + "." + fDescr.FunctionName)).FirstOrDefault();
+                        Where(key => key.Contains(function.ClassName + "." + function.FunctionName)).FirstOrDefault();
 
             switch (property)
             {
