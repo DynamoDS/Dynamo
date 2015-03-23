@@ -524,12 +524,9 @@ namespace ProtoCore
             {
                 get
                 {
-                    if (alias == null)
-                    {
-                        alias = ClassName.Split('.').Last();
-                    }
-                    return alias;
+                    return alias ?? (alias = ClassName.Split('.').Last());
                 }
+                set { alias = value; }
             }
 
             private LibraryMirror libraryMirror = null;
