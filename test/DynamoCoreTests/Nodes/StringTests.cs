@@ -19,6 +19,18 @@ namespace Dynamo.Tests
 {
     class StringTests : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",
+                "DSCoreNodes.dll",
+                "FunctionObject.ds"
+            });
+
+            base.Setup();
+        }
+
         string localDynamoStringTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}
 
         #region concat string test cases  

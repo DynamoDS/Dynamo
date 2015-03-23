@@ -21,6 +21,12 @@ namespace Dynamo.Tests
 {
     internal class CustomNodes : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[] { "ProtoGeometry.dll" });
+            base.Setup();
+        }
+
         [Test]
         public void CanCollapseNodesAndGetSameResult()
         {
