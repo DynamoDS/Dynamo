@@ -193,25 +193,35 @@ namespace Dynamo.UI.Views
                         if (categoryClasses.Items.Contains(selectedClass))
                         {
                             categoryToBeCollapsed.IsExpanded = true;
+                            // Selected class has been found! Collapse all other sub categories.
                             foreach (var ele in categoryToBeCollapsed.SubCategories.Where(cat => cat.IsExpanded == true))
                                 ele.IsExpanded = false;
                         }
                         else
+                            // If there is no sub categories, we can be sure, 
+                            // that selected class is not inside.
                             if (categoryToBeCollapsed.SubCategories.Count == 0)
                                 categoryToBeCollapsed.IsExpanded = false;
+                            // If there are some sub categories, we have to check:
+                            // is selected class inside of one of these sub categories?
                             else
                                 categoryToBeCollapsed.IsExpanded = ExpandCategory(categoryToBeCollapsed.Items.OfType<NodeCategoryViewModel>(), selectedClass);
                     }
+                    // If categoryClasses == null, that means there are no classes. 
+                    // It can be when namespace is inside of another namespace.
                     else
                     {
                         categoryToBeCollapsed.IsExpanded = ExpandCategory(categoryToBeCollapsed.Items.OfType<NodeCategoryViewModel>(), selectedClass);
                     }
                 }
+                // If category button was clicked.
                 else
                 {
                     categoryToBeCollapsed.IsExpanded = ExpandCategory(categoryToBeCollapsed.Items.OfType<NodeCategoryViewModel>(), selectedClass);
                 }
 
+                // As soon as categoryToBeCollapsed is true, 
+                // we can be sure, that this category contains selected class.
                 hasSelectedClassBeenFound = hasSelectedClassBeenFound || categoryToBeCollapsed.IsExpanded;
             }
 
