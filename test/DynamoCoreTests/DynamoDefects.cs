@@ -17,6 +17,18 @@ namespace Dynamo.Tests
     [TestFixture]
     class DynamoDefects : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new []
+            {
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "FunctionObject.ds",
+            });
+
+            base.Setup();
+        }
+
         // Note: Pelase only add test cases those are related to defects.
 
         [Test, Category("RegressionTests")]
