@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using NUnit.Framework;
-using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using System.Collections.Generic;
@@ -12,7 +10,19 @@ namespace Dynamo.Tests
 {
 	class ListTests : DSEvaluationViewModelUnitTest
 	{
-		string listTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "list"); } }
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",
+                "DSCoreNodes.dll",
+                "FunctionObject.ds",
+            });
+
+            base.Setup();
+        }
+
+	    string listTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "list"); } }
 
 		#region Test Build Sublist  
 
