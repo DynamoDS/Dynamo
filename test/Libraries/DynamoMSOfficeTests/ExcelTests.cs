@@ -19,6 +19,12 @@ namespace Dynamo.Tests
         [SetUp]
         public override void Setup()
         {
+            PreloadLibraries(new[]
+            {
+                "DSCoreNodes.dll",
+                "DSOffice.dll"
+            });
+
             base.Setup();
 
             // In unit-test scenario we are redirecting 'PreferenceSettings' to 
