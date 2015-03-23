@@ -1,4 +1,5 @@
-﻿using Dynamo.Utilities;
+﻿using System.Diagnostics;
+using Dynamo.Utilities;
 using ProtoCore.DSDefinitions;
 using ProtoCore.Mirror;
 using System;
@@ -114,14 +115,33 @@ namespace Dynamo.DSEngine.CodeCompletion
             {
                 if (group.Count() > 1)
                 {
+                    var namespaces = @group.Select(x => new Symbol(x.ClassName)).ToList();
+                    var shortNames = Symbol.GetShortestUniqueNames(namespaces);
+                    Debug.Assert(shortNames.Count() == group.Count());
+                    group.Zip(shortNames, (first, second) =>
+                    {
+                        first.Alias = second.Value;
+                        return first;
+                    });
+                    for (int i = 0; i < group.Count(); i++)
+                    {
+                        var cm = group.ElementAt(i);
+                        cm.Alias = shortNames.ElementAt(i).Value;
+                    }
+
                     completions.AddRange(group.
                         Where(x => !x.IsHiddenInLibrary).
-                        Select(x =>CompletionData.ConvertMirrorToCompletionData(x, useFullyQualifiedName: true, resolver: resolver)));
+                        Select(
+                            x =>
+                                CompletionData.ConvertMirrorToCompletionData(x, useFullyQualifiedName: true,
+                                    resolver: resolver)));
                 }
                 else
+                {
                     completions.AddRange(group.
                         Where(x => !x.IsHiddenInLibrary).
                         Select(x => CompletionData.ConvertMirrorToCompletionData(x)));
+                }
             }
 
             // Add matching builtin methods
@@ -319,7 +339,7 @@ namespace Dynamo.DSEngine.CodeCompletion
                 shortName = resolver.LookupShortName(mirror.ClassName);
             }
 
-            return string.IsNullOrEmpty(shortName) ? mirror.ClassName : shortName;
+            return string.IsNullOrEmpty(shortName) ? mirror.Alias : shortName;
         }
     }
 }
