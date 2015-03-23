@@ -293,7 +293,7 @@ namespace DynamoInstallDetective
         {
             Products =
                 lookUp.GetProductNameList()
-                    .Select(lookUp.GetProductFromProductName)
+                    .Select(lookUp.GetProductFromProductName).Distinct()
                     .Where(p => p != null).OrderBy(p => p);
         }
     }
@@ -322,8 +322,9 @@ namespace DynamoInstallDetective
         {
             var products = new List<IInstalledProduct>();
             var debugProduct = lookUp.GetProductFromInstallPath(debugPath);
-            
-            products.AddRange(LookUpDynamoProducts(lookUp)
+
+            products.AddRange(
+                LookUpDynamoProducts(lookUp).Distinct()
                     .Where(p => p != null && p.CompareTo(debugProduct) != 0));
             
             if (null != debugProduct)

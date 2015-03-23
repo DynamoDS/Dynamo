@@ -118,6 +118,16 @@ namespace Dynamo.Core
             get { return preloadedLibraries; }
         }
 
+        public int MajorFileVersion
+        {
+            get { return majorFileVersion; }
+        }
+
+        public int MinorFileVersion
+        {
+            get { return minorFileVersion; }
+        }
+
         public void AddResolutionPath(string path)
         {
             if (string.IsNullOrEmpty(path))

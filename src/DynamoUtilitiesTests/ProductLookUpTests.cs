@@ -34,6 +34,28 @@ namespace DynamoUtilitiesTests
         }
 
         [Test, Category("ProductLookUp"), Category("UnitTests")]
+        public void GetDistinctInstalledProducts()
+        {
+            var products = new Dictionary<string, Tuple<int, int, int, int>>
+            {
+                { "A", Tuple.Create(0, 1, 2, 3) },
+                { "B", Tuple.Create(0, 1, 3, 4) },
+                { "C", Tuple.Create(1, 2, 3, 4) },
+                { "D", Tuple.Create(1, 0, 3, 4) },
+                { "E", null },
+                { "F", Tuple.Create(1, 2, 3, 4) },
+                { "G", Tuple.Create(1, 0, 3, 4) }
+            };
+            var lookUp = SetUpProductLookUp(products, null);
+
+            var p = new InstalledProducts();
+            p.LookUpAndInitProducts(lookUp);
+
+            Assert.AreEqual("1.2.3.4", p.GetLatestProduct().VersionString);
+            Assert.AreEqual(4, p.Products.Count());
+        }
+
+        [Test, Category("ProductLookUp"), Category("UnitTests")]
         public void GetInstalledDynamoProducts()
         {
             const string myPath = @"C:\MyXYZ\";

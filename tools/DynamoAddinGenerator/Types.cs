@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.RevitAddIns;
+using DynamoInstallDetective;
 
 namespace DynamoAddinGenerator
 {
@@ -45,6 +46,11 @@ namespace DynamoAddinGenerator
         {
             Folder = folder;
         }
+
+        public static bool PathEquals(string path1, string path2)
+        {
+            return string.Equals(Path.GetFullPath(path1), Path.GetFullPath(path2), StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     /// <summary>
@@ -63,45 +69,20 @@ namespace DynamoAddinGenerator
         }
 
         /// <summary>
-        /// Find a Dynamo install by checking for the existence of one of the
-        /// install directories, and ensuring that it contains DynamoCore.
+        /// Finds all Dynamo installations on the system by looking at registry
+        /// and install directories, and ensuring that it contains DynamoCore.
         /// </summary>
-        /// <returns></returns>
-        public static List<IDynamoInstall> FindDynamoInstalls(string debugPath = null)
+        /// <returns>List of IDynamoInstall</returns>
+        public static IEnumerable<IDynamoInstall> FindDynamoInstalls(string debugPath)
         {
-            var installs = new List<IDynamoInstall>();
+            var dynamos = DynamoProducts.FindDynamoInstallations(debugPath);
 
-            if (DynamoExistsAtPath(DynamoVersions.dynamo_063))
+            foreach (IInstalledProduct product in dynamos.Products)
             {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_063));
+                string[] files = Directory.GetFiles(product.InstallLocation, "DynamoRevit*.dll");
+                string[] dirs = Directory.GetDirectories(product.InstallLocation, "Revit*");
+                if (dirs.Any() || files.Any()) yield return new DynamoInstall(product.InstallLocation);
             }
-
-            if (DynamoExistsAtPath(DynamoVersions.dynamo_071_x86))
-            {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_071_x86));
-            }
-
-            if (DynamoExistsAtPath(DynamoVersions.dynamo_071_x64))
-            {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_071_x64));
-            }
-
-            if (DynamoExistsAtPath(DynamoVersions.dynamo_07x))
-            {
-                installs.Add(new DynamoInstall(DynamoVersions.dynamo_07x));
-            }
-
-            if (!string.IsNullOrEmpty(debugPath))
-            {
-                installs.Add(new DynamoInstall(debugPath));
-            }
-
-            return installs;
-        }
-
-        private static bool DynamoExistsAtPath(string basePath)
-        {
-            return Directory.Exists(basePath) && Directory.GetFiles(basePath,"*DynamoCore.dll").Any();
         }
 
         public IDynamoInstall GetLatest()
@@ -128,38 +109,62 @@ namespace DynamoAddinGenerator
         /// DynamoAddinData constructor.
         /// </summary>
         /// <param name="product">A revit product to target for addin creation.</param>
-        /// <param name="latestDynamoFolder">The newest Dynamo version installed on the machine.</param>
-        public DynamoAddinData(IRevitProduct product, IDynamoInstall latestDynamoInstall)
+        /// <param name="latestDynamoInstall">The newest Dynamo version installed on the machine.</param>
+        internal DynamoAddinData(IRevitProduct product, IDynamoInstall latestDynamoInstall)
         {
-            var subfolder = "";
-            if (latestDynamoInstall.Folder == DynamoVersions.dynamo_063)
+            //Convert Revit2014 to Revit_2014
+            var subfolder = product.VersionString.Insert(5, "_");
+
+            //Pre 0.7.x release
+            if (DynamoInstall.PathEquals(latestDynamoInstall.Folder,DynamoVersions.dynamo_063))
             {
                 ClassName = "Dynamo.Applications.DynamoRevitApp";
                 AssemblyPath = Path.Combine(latestDynamoInstall.Folder, "DynamoRevit.dll");
             }
             else
             {
-                ClassName = "Dynamo.Applications.DynamoRevitApp";
-                var assemblyName = "DynamoRevitDS.dll";
-                switch (product.VersionString)
-                {
-                    case "Revit2014":
-                        subfolder = "Revit_2014";
-                        ClassName = "Dynamo.Applications.VersionLoader";
-                        assemblyName = "DynamoRevitVersionSelector.dll";
-                        break;
-                    case "Revit2015":
-                        subfolder = "Revit_2015";
-                        break;
-                    case "Revit2016":
-                        subfolder = "Revit_2016";
-                        break;
-                }
+                ClassName = "Dynamo.Applications.VersionLoader";
+                const string assemblyName = "DynamoRevitVersionSelector.dll";
+
                 AssemblyPath = Path.Combine(latestDynamoInstall.Folder, subfolder, assemblyName);
             }
 
             RevitSubfolder = subfolder;
             AddinPath = Path.Combine(product.AddinsFolder, "Dynamo.addin");
+        }
+
+        /// <summary>
+        /// Creates DynamoAddinData to generate addin for given Revit product
+        /// based on latest Dynamo installed on the system.
+        /// </summary>
+        /// <param name="revit">Revit Product for which addin to be generated </param>
+        /// <param name="dynamos">Dynamo products installed on the system</param>
+        /// <param name="dynamoUninstallPath">dynamo path being uninstalled, can be 
+        /// null or empty string</param>
+        /// <returns>DynamoAddinData</returns>
+        public static DynamoAddinData Create(IRevitProduct revit, DynamoProducts dynamos, string dynamoUninstallPath)
+        {
+            //Iterate in reverse order to find the first dynamo that is supported for
+            //this revit product
+            var products = dynamos.Products.Reverse();
+            foreach (var p in products)
+            {
+                //If the current product is being uninstalled, don't generate addin data
+                if (DynamoInstall.PathEquals(p.InstallLocation, dynamoUninstallPath))
+                    continue;
+
+                var path = Path.Combine(p.InstallLocation, "DynamoRevit.dll");
+                //Should be 0.6.3 only supported for Revit2014
+                if(File.Exists(path) && revit.VersionString == "Revit2014") 
+                    return new DynamoAddinData(revit, new DynamoInstall(p.InstallLocation));
+
+                var subfolder = revit.VersionString.Insert(5, "_");
+                path = Path.Combine(p.InstallLocation, subfolder, "DynamoRevitVersionSelector.dll");
+                if (File.Exists(path))
+                    return new DynamoAddinData(revit, new DynamoInstall(p.InstallLocation));
+            }
+
+            return null;
         }
     }
 

@@ -49,7 +49,7 @@ robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) 
 "%25WIX%25bin\heat.exe" dir $(DYNAMO_MIGRATION_NODES_PATH) -cg DEFINITIONS -gg -scom -sreg -dr PROGDATA -var var.definitions -t "$(ProjectDir)Definitions.xsl" -out "$(ProjectDir)Definitions.wxs"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="BeforeBuild">
-    <GetAssemblyIdentity AssemblyFiles="$(DYNAMO_HARVEST_PATH)\DynamoCore.dll">
+    <GetAssemblyIdentity AssemblyFiles="$(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration)\DynamoCore.dll">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersions" />
     </GetAssemblyIdentity>
     <CreateProperty Value="%(AssemblyVersions.Version)">

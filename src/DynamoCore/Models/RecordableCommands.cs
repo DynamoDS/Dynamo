@@ -1140,13 +1140,13 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             [JsonConstructor]
-            internal ModelEventCommand(string modelGuid, string eventName)
+            public ModelEventCommand(string modelGuid, string eventName)
                 : base(modelGuid)
             {
                 EventName = eventName;
             }
 
-            internal ModelEventCommand(Guid modelGuid, string eventName)
+            public ModelEventCommand(Guid modelGuid, string eventName)
                 : base(modelGuid)
             {
                 EventName = eventName;
@@ -1364,14 +1364,14 @@ namespace Dynamo.Models
             }
 
             [JsonConstructor]
-            internal CreateCustomNodeCommand(string nodeId, string name,
+            public CreateCustomNodeCommand(string nodeId, string name,
                 string category, string description, bool makeCurrent)
                 : base(nodeId)
             {
                 SetProperties(name, category, description, makeCurrent);
             }
 
-            internal CreateCustomNodeCommand(Guid nodeId, string name,
+            public CreateCustomNodeCommand(Guid nodeId, string name,
                 string category, string description, bool makeCurrent)
                 : base(nodeId)
             {
@@ -1475,7 +1475,7 @@ namespace Dynamo.Models
     // {
     //     #region Public Class Methods
     // 
-    //     internal XxxYyyCommand()
+    //     public XxxYyyCommand()
     //     {
     //     }
     // 

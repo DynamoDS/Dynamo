@@ -412,6 +412,7 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
+        
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -451,6 +452,21 @@ namespace Dynamo.Models
 
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
+
+            if (this.PreferenceSettings.IsFirstRun)
+            {
+                DynamoMigratorBase migrator = null;
+                try
+                {
+                    migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e.Message);
+                }
+                if (migrator != null)
+                    this.PreferenceSettings = migrator.PreferenceSettings;
+            }
 
             SearchModel = new NodeSearchModel();
             SearchModel.ItemProduced +=
@@ -546,7 +562,8 @@ namespace Dynamo.Models
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
-                        Logger.Log(String.Format(Properties.Resources.EvaluationCompleted, executionTimeSpan));
+                        Debug.WriteLine(String.Format(Properties.Resources.EvaluationCompleted, executionTimeSpan));
+
                         ExecutionEvents.OnGraphPostExecution();
                     }
                     break;
