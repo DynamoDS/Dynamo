@@ -68,11 +68,11 @@ namespace DynamoShapeManager
         /// Constructs a preloader object to help preload a specific version of 
         /// shape manager.
         /// </summary>
-        /// <param name="rootFolder">Full path of the directory that contains 
-        /// LibG_xxx folder, where 'xxx' represents the library version. In a 
-        /// typical setup this would be the same directory that contains Dynamo 
-        /// core modules. This must represent a valid directory.
-        /// </param>
+        /// <param name="rootFolder">This method makes use of DynamoInstallDetective
+        /// to determine the installation location of various Autodesk products. This 
+        /// argument is not optional and must represent the full path to the folder 
+        /// which contains DynamoInstallDetective.dll. An exception is thrown if the 
+        /// assembly cannot be located.</param>
         /// <param name="versions">A list of version numbers to check for in order 
         /// of preference. This argument cannot be null or empty.</param>
         /// 
