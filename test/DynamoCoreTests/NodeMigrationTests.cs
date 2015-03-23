@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 using Dynamo.Nodes;
 using NUnit.Framework;
 using DSCoreNodesUI;
-using Dynamo.Utilities;
 using System.Xml;
 
 namespace Dynamo.Tests
 {
-    public class NodeMigrationTests : Dynamo.Tests.DSEvaluationViewModelUnitTest
+    public class NodeMigrationTests : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "FunctionObject.ds",
+            });
+
+            base.Setup();
+        }
+
         #region Dynamo Core Node Migration Tests
 
         [Test]
