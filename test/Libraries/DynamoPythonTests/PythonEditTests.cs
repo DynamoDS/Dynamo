@@ -16,6 +16,12 @@ namespace Dynamo.Tests
 {
     public class PythonEditTests : DynamoViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[] { "DSIronPython.dll" });
+            base.Setup();
+        }
+
         [Test]
         public void PythonScriptEdit_WorkspaceChangesReflected()
         {
