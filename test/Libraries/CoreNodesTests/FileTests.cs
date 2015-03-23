@@ -11,7 +11,6 @@ using Dynamo.Nodes;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using NUnit.Framework;
-using TestServices;
 using Color = DSCore.Color;
 using Directory = System.IO.Directory;
 using File = DSCore.IO.File;
@@ -374,11 +373,7 @@ namespace Dynamo.Tests
     {
         public override void Setup()
         {
-            if (pathResolver == null)
-                pathResolver = new TestPathResolver();
-
-            pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
-
+            PreloadLibraries(new[] { "DSCoreNodes.dll" });
             base.Setup(); // Setup DynamoModel in this call.
         }
 

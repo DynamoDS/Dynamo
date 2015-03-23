@@ -90,6 +90,17 @@ namespace Dynamo.Tests
             }
         }
 
+        protected void PreloadLibraries(IEnumerable<string> preloadedLibraries)
+        {
+            if (pathResolver == null)
+                pathResolver = new TestPathResolver();
+
+            foreach (var preloadedLibrary in preloadedLibraries)
+            {
+                pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+            }
+        }
+
         protected void StartDynamo()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
