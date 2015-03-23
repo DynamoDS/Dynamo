@@ -1560,4 +1560,10 @@ Many thanks!</value>
   <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
     <value>_Zoom to Fit</value>
   </data>
+  <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
+    <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while Dynamo is not running and try again.  </value>
+  </data>
+  <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
+    <value>Cannot update assembly!</value>
+  </data>
 </root>
