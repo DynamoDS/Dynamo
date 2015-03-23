@@ -6,6 +6,7 @@ using System.Text;
 
 namespace ProtoCore.Namespace
 {
+    // Reference: http://www.interact-sw.co.uk/iangblog/2004/09/16/permuterate
     public static class PermuteUtils
     {
         /// <summary>
