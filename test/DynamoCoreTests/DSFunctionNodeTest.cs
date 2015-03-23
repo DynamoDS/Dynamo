@@ -14,6 +14,12 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSFunctionNodeTest : DynamoViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[] { "DSCoreNodes.dll" });
+            base.Setup();
+        }
+
         [Test]
         public void TestLoadingFunctions()
         {
