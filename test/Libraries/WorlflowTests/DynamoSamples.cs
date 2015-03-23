@@ -11,6 +11,20 @@ namespace Dynamo.Tests
 {
     class DynamoSamples : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",     // Required for Watch node.
+                "ProtoGeometry.dll",    // Required for Surface.
+                "DSCoreNodes.dll",      // Required for built-in nodes.
+                "DSIronPython.dll",     // Required for Python tests.
+                "FunctionObject.ds",    // Required for partially applied nodes.
+            });
+
+            base.Setup(); // Setup DynamoModel in this call.
+        }
+
         [Test, Category("SmokeTests")]
         public void Basics_Basic03()
         {
