@@ -67,7 +67,7 @@ namespace Dynamo.Wpf.NodeViewCustomizations
              /* Raise the call only when both the dropdown has the value */
             if (converterViewModel.SelectedFromConversion != null
                && converterViewModel.SelectedToConversion != null)
-                nodeModel.OnNodeModified();
+                nodeModel.OnNodeModified(true);
         }
 
         void OnSelectConversionFromChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -75,7 +75,7 @@ namespace Dynamo.Wpf.NodeViewCustomizations
             /* Raise the call only when both the dropdown has the value */
             if (converterViewModel.SelectedFromConversion != null
                 && converterViewModel.SelectedToConversion != null)
-                nodeModel.OnNodeModified();
+                nodeModel.OnNodeModified(true);
         }
 
         public void Dispose()
