@@ -16,6 +16,7 @@ namespace Dynamo.Tests
         [SetUp]
         public override void Setup()
         {
+            PreloadLibraries(new[] { "DSCoreNodes.dll" });
             base.Setup();
             libraryServices = ViewModel.Model.LibraryServices;
         }

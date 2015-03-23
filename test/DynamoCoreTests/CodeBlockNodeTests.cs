@@ -21,6 +21,17 @@ namespace Dynamo.Tests
 {
     class CodeBlockNodeTests : DynamoViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new []
+            {
+                "DSCoreNodes.dll",
+                "ProtoGeometry.dll"
+            });
+
+            base.Setup();
+        }
+
 #if false
         [Test]
         public void TestVariableClass()
