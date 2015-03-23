@@ -411,7 +411,6 @@ namespace Dynamo.Models
 
             return new DynamoModel(configuration);
         }
-
         
         protected DynamoModel(IStartConfiguration config)
         {

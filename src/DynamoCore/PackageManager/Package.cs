@@ -41,9 +41,11 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "dyf"); }
         }
 
+        private string shadowCopyDirectory;
+
         public string BinaryDirectory
         {
-            get { return Path.Combine(RootDirectory, "bin"); }
+            get { return shadowCopyDirectory ?? Path.Combine(RootDirectory, "bin"); }
         }
 
         public string ExtraDirectory
@@ -99,7 +101,6 @@ namespace Dynamo.PackageManager
 
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
-
 
         /// <summary>
         ///     Determines if there are binaries in the package
@@ -215,6 +216,39 @@ namespace Dynamo.PackageManager
             {
                 Log("Exception when attempting to load package " + Name + " from " + RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
+            }
+        }
+
+        internal void ShadowCopyAssemblies(IPathManager pathManager)
+        {
+            if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return;
+
+            // TODO : turn "bin" and "packageshadows" into constants
+            var originalBinDirectory = new DirectoryInfo(Path.Combine(RootDirectory, "bin"));
+            if (!originalBinDirectory.Exists) return;
+
+            var shadowDir = new DirectoryInfo(Path.Combine(pathManager.UserDataDirectory, "packageshadows"));
+            if (!shadowDir.Exists) shadowDir.Create();
+
+            var dirInfo = new DirectoryInfo(Path.Combine(shadowDir.FullName, this.Name));
+            if (!dirInfo.Exists) dirInfo.Create();
+
+            this.shadowCopyDirectory = dirInfo.FullName;
+
+            ShadowCopyAssembliesCore(originalBinDirectory, shadowDir);
+        }
+
+        private static void ShadowCopyAssembliesCore(DirectoryInfo originalBinDirectory, DirectoryInfo shadowCopyDirectory)
+        {
+            var fileInfos =
+                from fi in originalBinDirectory.EnumerateFiles()
+                let ext = fi.Extension.ToLower()
+                where ext == ".dll" || ext == ".xml"
+                select fi;
+
+            foreach (var file in fileInfos)
+            {
+                File.Copy(file.FullName, Path.Combine(shadowCopyDirectory.FullName, file.Name));
             }
         }
 

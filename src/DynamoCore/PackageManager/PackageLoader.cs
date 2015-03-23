@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
@@ -48,7 +50,14 @@ namespace Dynamo.PackageManager
             if (pathManager != null)
             {
                 foreach (var pkg in LocalPackages)
+                {
+                    pkg.ShadowCopyAssemblies(pathManager);
+                } 
+
+                foreach (var pkg in LocalPackages)
+                {
                     pathManager.AddResolutionPath(pkg.BinaryDirectory);
+                }    
             }
 
             foreach (var pkg in LocalPackages)
