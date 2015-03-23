@@ -25,11 +25,20 @@ namespace DynamoShapeManager
         /// of preference. This argument cannot be null or empty.</param>
         /// <param name="location">The full path of the directory in which targeted
         /// ASM binaries are found. This argument cannot be null.</param>
+        /// <param name="rootFolder">This method makes use of DynamoInstallDetective
+        /// to determine the installation location of various Autodesk products. This 
+        /// argument is not optional and must represent the full path to the folder 
+        /// which contains DynamoInstallDetective.dll. An exception is thrown if the 
+        /// assembly cannot be located.</param>
         /// <returns>Returns LibraryVersion of ASM if any installed ASM is found, 
         /// or None otherwise.</returns>
         /// 
         public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location, string rootFolder)
         {
+            if (string.IsNullOrEmpty(rootFolder))
+                throw new ArgumentNullException("rootFolder");
+            if (!Directory.Exists(rootFolder))
+                throw new DirectoryNotFoundException(rootFolder);
             if ((versions == null) || versions.Count <= 0)
                 throw new ArgumentNullException("versions");
             if (location == null)
