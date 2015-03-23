@@ -1141,8 +1141,8 @@ namespace Dynamo.Models
                         var node = model as NodeModel;
                         Debug.Assert(Nodes.Contains(node));
 
-                        bool silentFlag = node.BeSilentForNodeModification;
-                        node.BeSilentForNodeModification = true;
+                        bool silentFlag = node.RaisesModificationEvents;
+                        node.RaisesModificationEvents = false;
 
                         // Note that AllConnectors is duplicated as a separate list 
                         // by calling its "ToList" method. This is the because the 
@@ -1154,7 +1154,7 @@ namespace Dynamo.Models
                             undoRecorder.RecordDeletionForUndo(conn);
                         }
 
-                        node.BeSilentForNodeModification = silentFlag;
+                        node.RaisesModificationEvents = silentFlag;
 
                         // Take a snapshot of the node before it goes away.
                         undoRecorder.RecordDeletionForUndo(node);

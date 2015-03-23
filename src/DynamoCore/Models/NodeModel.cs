@@ -590,6 +590,8 @@ namespace Dynamo.Models
             IsSelected = false;
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
+
+            RaisesModificationEvents = true;
         }
 
         public virtual void Dispose()
@@ -624,11 +626,11 @@ namespace Dynamo.Models
         #region Modification Reporting
 
         /// <summary>
-        ///     Indicate if the node should respond to Modified event. It
-        ///     always should be false, unless is temporarily set to true to 
+        ///     Indicate if the node should respond to NodeModified event. It
+        ///     always should be true, unless is temporarily set to false to 
         ///     avoid flood of Modified event. 
         /// </summary>
-        public bool BeSilentForNodeModification { get; set; }
+        public bool RaisesModificationEvents { get; set; }
 
         /// <summary>
         ///     Event fired when the node's DesignScript AST should be recompiled
@@ -636,7 +638,7 @@ namespace Dynamo.Models
         public event Action<NodeModel> Modified;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
-            if (BeSilentForNodeModification)
+            if (!RaisesModificationEvents)
                 return;
 
             MarkNodeAsModified(forceExecute);           
