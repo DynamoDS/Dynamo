@@ -39,7 +39,7 @@ namespace Dynamo.Library
                 // once.
                 // 
                 return summary ?? (summary = ((pathManager != null)
-                    ? this.GetDescription() : string.Empty));
+                    ? this.GetDescription(pathManager) : string.Empty));
             }
         }
 
