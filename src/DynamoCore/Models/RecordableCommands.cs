@@ -1468,39 +1468,113 @@ namespace Dynamo.Models
             }
 
             #endregion
-        }
-    }
 
-    // public class XxxYyyCommand : RecordableCommand
-    // {
-    //     #region Public Class Methods
-    // 
-    //     public XxxYyyCommand()
-    //     {
-    //     }
-    // 
-    //     internal static XxxYyyCommand DeserializeCore(XmlElement element)
-    //     {
-    //         throw new NotImplementedException();
-    //     }
-    // 
-    //     #endregion
-    // 
-    //     #region Public Command Properties
-    //     #endregion
-    // 
-    //     #region Protected Overridable Methods
-    // 
-    //     protected override void ExecuteCore(DynamoModel dynamoModel)
-    //     {
-    //         throw new NotImplementedException();
-    //     }
-    // 
-    //     protected override void SerializeCore(XmlElement element)
-    //     {
-    //         throw new NotImplementedException();
-    //     }
-    // 
-    //     #endregion
-    // }
+
+        }
+
+        [DataContract]
+        public class CreateDesignStateFromSelectionCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public CreateDesignStateFromSelectionCommand(string name, string description, List<Guid> currentSelectionIDS )
+            {
+                DesignStateName = name;
+                DesignStateDescription = description;
+                SelectedNodesIDs = currentSelectionIDS;
+            }
+
+            internal static CreateDesignStateFromSelectionCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                List<Guid> IDS = new List<Guid>();
+                foreach (XmlElement child in element.ChildNodes)
+                {
+                    if (child.Name == "IDS")
+                    {
+                        foreach(var idstring in child)
+                        {
+                            IDS.Add( Guid.Parse(idstring.ToString()));
+                        }
+                    }
+                }
+                if (IDS.Count<1)
+                {
+                    throw new ArgumentNullException("No IDs were deserialized during load of designstate creation command");
+                }
+                
+                return new CreateDesignStateFromSelectionCommand(helper.ReadString("name"), helper.ReadString("description"),IDS);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal string DesignStateName { get; set; }
+            internal string DesignStateDescription { get; set; }
+            internal List<Guid> SelectedNodesIDs { get; set; }
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.CreateDesignStateImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("name", DesignStateName);
+                helper.SetAttribute("description", DesignStateDescription);
+                //add a new element for the ids we 
+               var idselement= element.OwnerDocument.CreateElement("IDS");
+               element.AppendChild(idselement);
+                foreach(var ID in SelectedNodesIDs)
+                {
+                    idselement.AppendChild(idselement.OwnerDocument.CreateElement(ID.ToString()));
+                }
+               
+            }
+
+            #endregion
+        }
+
+
+
+        // public class XxxYyyCommand : RecordableCommand
+        // {
+        //     #region Public Class Methods
+        // 
+        //     public XxxYyyCommand()
+        //     {
+        //     }
+        // 
+        //     internal static XxxYyyCommand DeserializeCore(XmlElement element)
+        //     {
+        //         throw new NotImplementedException();
+        //     }
+        // 
+        //     #endregion
+        // 
+        //     #region Public Command Properties
+        //     #endregion
+        // 
+        //     #region Protected Overridable Methods
+        // 
+        //     protected override void ExecuteCore(DynamoModel dynamoModel)
+        //     {
+        //         throw new NotImplementedException();
+        //     }
+        // 
+        //     protected override void SerializeCore(XmlElement element)
+        //     {
+        //         throw new NotImplementedException();
+        //     }
+        // 
+        //     #endregion
+        // }
+    }
 }

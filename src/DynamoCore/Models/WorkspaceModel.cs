@@ -61,6 +61,7 @@ namespace Dynamo.Models
         private bool hasUnsavedChanges;
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
+        protected readonly DesignOptionsSetModel designOptionSet = new DesignOptionsSetModel();
         private readonly UndoRedoRecorder undoRecorder;
         private Guid guid;
 
@@ -696,6 +697,17 @@ namespace Dynamo.Models
             this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
         }
 
+        //TODO wrap this in a recordable command...
+        internal void CreateDesignStateFromSelection(string name, string description, List<Guid> IDSToSave)
+        {
+
+            //lookup the nodes by their ID, can also check that we find all of them....
+            var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID)).ToList();
+ 	        //access the designOptionsSet and add a new state based on the current selection
+            designOptionSet.CreateNewState(name, description, nodesFromIDs);
+            HasUnsavedChanges = true;
+        }
+
         #endregion
 
         #region private/internal methods
@@ -713,6 +725,7 @@ namespace Dynamo.Models
                 return false;
 
             SerializeSessionData(document, core);
+
 
             try
             {
@@ -807,6 +820,10 @@ namespace Dynamo.Models
                     note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
                 }
 
+                //save the designOptionsSet into the dyn file as a seperate element on the root
+                var designOptions =  designOptionSet.Serialize(xmlDoc,SaveContext.File);
+                root.AppendChild(designOptions);
+               
                 return true;
             }
             catch (Exception ex)
@@ -1447,5 +1464,6 @@ namespace Dynamo.Models
             }
         }
         #endregion
-    }
+    
+}
 }

@@ -2045,13 +2045,10 @@ namespace Dynamo.ViewModels
             //of the design option name dialogue
             var args = new DesignOptionNamePromptEventArgs();
             this.Model.OnRequestsDesignOptionNamePrompt(this, args);
-
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             if (args.Success)
-            {   
-                //TODO exectute actually creating the designoptions object on the workspace
-                //this.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(Guid.NewGuid(),
-                  //  args.Name, args.Category, args.Description, true));
-                this.ShowStartPage = false;
+            {
+                this.ExecuteCommand(new DynamoModel.CreateDesignStateFromSelectionCommand(args.Name, args.Description,IDS));
             }
         }
         private bool CanShowNewDesignOptionDialog(object parameter)
