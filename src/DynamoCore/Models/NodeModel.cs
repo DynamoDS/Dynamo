@@ -590,6 +590,8 @@ namespace Dynamo.Models
             IsSelected = false;
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
+
+            RaisesModificationEvents = true;
         }
 
         public virtual void Dispose()
@@ -624,11 +626,21 @@ namespace Dynamo.Models
         #region Modification Reporting
 
         /// <summary>
+        ///     Indicate if the node should respond to NodeModified event. It
+        ///     always should be true, unless is temporarily set to false to 
+        ///     avoid flood of Modified event. 
+        /// </summary>
+        public bool RaisesModificationEvents { get; set; }
+
+        /// <summary>
         ///     Event fired when the node's DesignScript AST should be recompiled
         /// </summary>
         public event Action<NodeModel> Modified;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
+            if (!RaisesModificationEvents)
+                return;
+
             MarkNodeAsModified(forceExecute);           
             var handler = Modified;
             if (handler != null) handler(this);
@@ -1462,9 +1474,12 @@ namespace Dynamo.Models
                 if (subNode.Name == "PortInfo")
                 {
                     int index = int.Parse(subNode.Attributes["index"].Value);
-                    portInfoProcessed.Add(index);
-                    bool def = bool.Parse(subNode.Attributes["default"].Value);
-                    inPorts[index].UsingDefaultValue = def;
+                    if (index < InPorts.Count)
+                    {
+                        portInfoProcessed.Add(index);
+                        bool def = bool.Parse(subNode.Attributes["default"].Value);
+                        inPorts[index].UsingDefaultValue = def;
+                    }
                 }
             }
 
