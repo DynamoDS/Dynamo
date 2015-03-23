@@ -146,7 +146,12 @@ namespace DynamoShapeManager
 
         private static IEnumerable GetAsmInstallations(string rootFolder)
         {
-            var assembly = Assembly.LoadFrom(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
+            var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
+            if (!File.Exists(assemblyPath))
+                throw new FileNotFoundException(assemblyPath);
+
+            var assembly = Assembly.LoadFrom(assemblyPath);
+
             var type = assembly.GetType("DynamoInstallDetective.Utilities");
 
             var installationsMethod = type.GetMethod(
