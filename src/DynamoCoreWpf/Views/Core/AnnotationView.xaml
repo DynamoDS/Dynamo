@@ -3,10 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
-             MinWidth="10"
-             MinHeight="10"
+             mc:Ignorable="d"                          
              Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
              MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"                        
@@ -100,7 +97,10 @@
             </Setter>
         </Style>
     </UserControl.Resources>
-    <Grid Name="AnnotationGrid">
+    <Grid Name="AnnotationGrid" Height="Auto">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>            
+        </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem  Header="Ungroup"
@@ -149,8 +149,7 @@
                 </Binding>
             </Rectangle.Visibility>
         </Rectangle>
-        <Rectangle  Name="AnnotationRectangle"
-                    Margin="10" 
+        <Rectangle  Name="AnnotationRectangle"                     
                     Width="{Binding Width}" 
                     Height= "{Binding Height}"                   
                     IsHitTestVisible="True"
@@ -160,25 +159,24 @@
                 <SolidColorBrush Color="{Binding BackGroundColor}"></SolidColorBrush>
             </Rectangle.Fill>
         </Rectangle>
-        <TextBlock 
-            Grid.Row="0"
-            Background="Transparent"
-            Text ="{Binding AnnotationText, Mode=TwoWay}"             
-            Padding="12,8,0,0"                        
-            MaxWidth="{Binding Width}"            
-            TextWrapping="Wrap">
-        </TextBlock>
-        <!--<TextBox 
-            Visibility="{Binding MakeTextBoxVisible}"
-            Text ="{Binding AnnotationText,Mode=TwoWay}"
-            Padding="12,8,0,0"
-            Margin="1"
-            MinHeight="10"
-            TextWrapping="Wrap"            
-            MaxWidth="{Binding Width}"
-            IsHitTestVisible="True" 
-            MouseLeave="UIElement_OnMouseLeave">
-        </TextBox>-->
-
+        <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="50" MaxWidth="{Binding Width}" 
+              Margin="0,0,0,0"
+              VerticalAlignment="Top">
+            <Grid MaxWidth="{Binding Width}" Height="Auto" VerticalAlignment="Bottom">
+                <TextBlock x:Name="GroupTextBlock"                                     
+                    Text ="{Binding AnnotationText, Mode=TwoWay}"                                                  
+                    MaxWidth="{Binding Width}"                    
+                    TextWrapping="Wrap" MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
+                </TextBlock>
+                <TextBox 
+                    x:Name="GroupTextBox"
+                    Visibility="Collapsed"
+                    Text ="{Binding AnnotationText,Mode=TwoWay}"                                                    
+                    TextWrapping="Wrap"            
+                    MaxWidth="{Binding Width}"                   
+                    MouseLeave="UIElement_OnMouseLeave">
+                </TextBox>               
+            </Grid>
+        </Grid>              
     </Grid>
 </UserControl>

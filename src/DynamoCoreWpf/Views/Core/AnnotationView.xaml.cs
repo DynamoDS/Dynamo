@@ -110,6 +110,22 @@ namespace Dynamo.Nodes
             System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
-        }    
+        }
+
+        private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.GroupTextBox.Visibility = Visibility.Visible;
+            this.GroupTextBlock.Visibility = Visibility.Collapsed;
+            e.Handled = true;
+        }
+
+        private void UIElement_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            this.GroupTextBox.Visibility = Visibility.Collapsed;
+            this.GroupTextBlock.Visibility = Visibility.Visible;
+            this.TextBlockGrid.Height = this.GroupTextBox.ExtentHeight;
+            var annotationviewmodel = this.DataContext as AnnotationViewModel;           
+            e.Handled = true;
+        }
     }
 }

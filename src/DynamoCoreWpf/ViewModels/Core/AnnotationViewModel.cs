@@ -38,6 +38,7 @@ namespace Dynamo.ViewModels
         public Double Height
         {
             get { return _annotationModel.Height; }
+            set { _annotationModel.Height = value; }
         }
 
         public Double Top

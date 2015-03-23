@@ -232,7 +232,7 @@ namespace Dynamo.Models
                 var maxHeight = groupModels.Max(y => y.Height);
 
                 var regionX = groupModels.Min(x => x.X) - 10;
-                var regionY = groupModels.Min(y => y.Y) - 10;
+                var regionY = groupModels.Min(y => y.Y) - 0;
 
                 var xDistance = groupModels.Max(x => x.X) - regionX;
                 var yDistance = groupModels.Max(x => x.Y) - regionY;
@@ -242,8 +242,8 @@ namespace Dynamo.Models
                 {
                     X = regionX,
                     Y = regionY,
-                    Width = xDistance + maxWidth,
-                    Height = yDistance + maxHeight
+                    Width = xDistance + maxWidth + 10,
+                    Height = yDistance + maxHeight + 10
                 };
 
                 //special case for grouping just one node
