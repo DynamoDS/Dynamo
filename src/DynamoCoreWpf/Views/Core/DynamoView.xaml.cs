@@ -536,7 +536,7 @@ namespace Dynamo.Controls
         {
             if (!string.IsNullOrEmpty(e.Path))
             {
-                var control = WpfUtilities.ChildOfType<DragCanvas>(this, null);
+                var control = WpfUtilities.ChildOfType<ZoomBorder>(this, "zoomBorder");
 
                 double width = 1;
                 double height = 1;
@@ -555,8 +555,8 @@ namespace Dynamo.Controls
                     height = Math.Max(n.Y + n.Height, height);
                 }
 
-                var rtb = new RenderTargetBitmap(Math.Max(1, (int)width),
-                                                  Math.Max(1, (int)height),
+                var rtb = new RenderTargetBitmap(Math.Max((int)control.ActualWidth, (int)width),
+                                                  Math.Max((int)control.ActualHeight, (int)height),
                                                   96,
                                                   96,
                                                   PixelFormats.Default);
@@ -791,11 +791,12 @@ namespace Dynamo.Controls
         /// </summary>
         private void LoadSamplesMenu()
         {
-            if (Directory.Exists(DynamoPathManager.Instance.CommonSamples))
+            var samplesDirectory = dynamoViewModel.Model.PathManager.SamplesDirectory;
+            if (Directory.Exists(samplesDirectory))
             {
                 var sampleFiles = new System.Collections.Generic.List<string>();
-                string[] dirPaths = Directory.GetDirectories(DynamoPathManager.Instance.CommonSamples);
-                string[] filePaths = Directory.GetFiles(DynamoPathManager.Instance.CommonSamples, "*.dyn");
+                string[] dirPaths = Directory.GetDirectories(samplesDirectory);
+                string[] filePaths = Directory.GetFiles(samplesDirectory, "*.dyn");
 
                 // handle top-level files
                 if (filePaths.Any())

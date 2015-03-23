@@ -18,7 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
-using DynCmd = Dynamo.Models.DynamoModel;
+﻿using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.UI.Controls
 {
@@ -38,12 +38,12 @@ namespace Dynamo.UI.Controls
         public CodeBlockEditor()
         {
             InitializeComponent();
+            WatermarkLabel.Text = Properties.Resources.WatermarkLabelText;
         }
 
-        public CodeBlockEditor(NodeView nodeView)
+        public CodeBlockEditor(NodeView nodeView): this()
         {
-            InitializeComponent();
-
+           
             this.nodeViewModel = nodeView.ViewModel;
             this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
@@ -83,7 +83,8 @@ namespace Dynamo.UI.Controls
             var engineController =
                 dynamoViewModel.EngineController;
 
-            return engineController.CodeCompletionServices.GetCompletionsOnType(code, stringToComplete).
+            return engineController.CodeCompletionServices.GetCompletionsOnType(
+                code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver).
                 Select(x => new CodeBlockCompletionData(x));
         }
 
@@ -91,15 +92,16 @@ namespace Dynamo.UI.Controls
         {
             var engineController = dynamoViewModel.EngineController;
 
-            return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid).
-                Select(x => new CodeBlockCompletionData(x));
+            return engineController.CodeCompletionServices.SearchCompletions(stringToComplete, guid,
+                dynamoViewModel.CurrentSpace.ElementResolver).Select(x => new CodeBlockCompletionData(x));
         }
 
         internal IEnumerable<CodeBlockInsightItem> GetFunctionSignatures(string code, string functionName, string functionPrefix)
         {
             var engineController = dynamoViewModel.EngineController;
 
-            return engineController.CodeCompletionServices.GetFunctionSignatures(code, functionName, functionPrefix).
+            return engineController.CodeCompletionServices.GetFunctionSignatures(
+                code, functionName, functionPrefix, dynamoViewModel.CurrentSpace.ElementResolver).
                 Select(x => new CodeBlockInsightItem(x));
         }
 
@@ -276,6 +278,7 @@ namespace Dynamo.UI.Controls
                 }
                 else if (completionWindow == null && (char.IsLetterOrDigit(e.Text[0]) || e.Text[0] == '_'))
                 {
+                    
                     // Begin completion while typing only if the previous character already typed in
                     // is a white space or non-alphanumeric character
                     if (startPos > 1 && char.IsLetterOrDigit(InternalEditor.Document.GetCharAt(startPos - 2)))
@@ -431,9 +434,7 @@ namespace Dynamo.UI.Controls
           
             if (cb == null || cb.Code != null && text.Equals(cb.Code))
                 OnRequestReturnFocusToSearch();
-            else
-                this.InnerTextEditor.Text = (DataContext as CodeBlockNodeModel).Code;
-
+            
             if (text == "")
             {
                 nodeViewModel.DynamoViewModel.ExecuteCommand(

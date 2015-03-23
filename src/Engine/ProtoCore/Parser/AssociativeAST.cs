@@ -433,6 +433,8 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class TypedIdentifierNode : IdentifierNode
     {
+        public string TypeAlias { get; set; }
+
         public TypedIdentifierNode()
         {
         }
@@ -975,6 +977,7 @@ namespace ProtoCore.AST.AssociativeAST
             NameNode = NodeUtils.Clone(rhs.NameNode);
             access = rhs.access;
             IsStatic = rhs.IsStatic;
+            ExternalAttributes = rhs.ExternalAttributes;
         }
 
         public List<AssociativeNode> Attributes { get; set; }
@@ -983,6 +986,7 @@ namespace ProtoCore.AST.AssociativeAST
         public AssociativeNode NameNode { get; set; }
         public ProtoCore.CompilerDefinitions.AccessSpecifier access { get; set; }
         public bool IsStatic { get; set; }
+        public ExternalAttributes ExternalAttributes { get; set; }
 
         public override string ToString()
         {
@@ -1264,6 +1268,7 @@ namespace ProtoCore.AST.AssociativeAST
     public class MethodAttributes
     {
         public bool HiddenInLibrary { get; protected set; }
+        public bool CanUpdatePeriodically { get; protected set; }
         public IEnumerable<string> ReturnKeys
         {
             get
@@ -1280,10 +1285,31 @@ namespace ProtoCore.AST.AssociativeAST
         /// </summary>
         public string Description { get; set; }
 
-        public MethodAttributes(bool hiddenInLibrary = false, string msg = "")
+        public MethodAttributes(bool hiddenInLibrary = false, bool canUpdatePeriodically = false, string msg = "")
         {
             HiddenInLibrary = hiddenInLibrary;
+            CanUpdatePeriodically = canUpdatePeriodically;
             ObsoleteMessage = msg;
+        }
+    }
+
+    public class ExternalAttributes
+    {
+        private Dictionary<String, object> attributes;
+
+        public ExternalAttributes()
+        {
+            attributes = new Dictionary<string, object>();
+        }
+
+        public bool TryGetAttribute(string attribute, out object value)
+        {
+            return attributes.TryGetValue(attribute, out value);
+        }
+
+        public void AddAttribute(string attribute, object value)
+        {
+            attributes[attribute] = value;
         }
     }
 

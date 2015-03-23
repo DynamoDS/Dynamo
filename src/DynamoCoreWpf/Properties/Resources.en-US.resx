@@ -133,6 +133,32 @@
     <value>(Up-to-date)</value>
     <comment>To indicate Dynamo is up to date</comment>
   </data>
+  <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
+    <value>Add Custom Node, Library, or XML file to Package...</value>
+  </data>
+  <data name="AddFileToPackageDialogTitle" xml:space="preserve">
+    <value>Add File to Package...</value>
+  </data>
+  <data name="AutodeskSignIn" xml:space="preserve">
+    <value>Autodesk Sign In</value>
+  </data>
+  <data name="BrowserWindowLoading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="BuildVersionNonNegative" xml:space="preserve">
+    <value>You must provide a Build version as a non-negative integer.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
+    <value>Cannot Download Package</value>
+  </data>
+  <data name="CannotSubmitPackage" xml:space="preserve">
+    <value>You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.</value>
+    <comment>ErrorString</comment>
+  </data>
   <data name="ContextMenuEditCustomNode" xml:space="preserve">
     <value>Edit Custom Node...</value>
     <comment>Context menu item</comment>
@@ -169,9 +195,90 @@
     <value>Publish This Custom Node...</value>
     <comment>Context menu item</comment>
   </data>
+  <data name="ContinueButton" xml:space="preserve">
+    <value>Continue</value>
+    <comment>Continue to use Dynamo</comment>
+  </data>
+  <data name="ConverterMessageCurrentOffset" xml:space="preserve">
+    <value>Current offset X: {0}, Y: {1}</value>
+  </data>
+  <data name="ConverterMessageTransformOrigin" xml:space="preserve">
+    <value>Transform origin X: {0}, Y: {1}</value>
+  </data>
+  <data name="ConverterMessageZoom" xml:space="preserve">
+    <value>Zoom : {0}</value>
+  </data>
+  <data name="CrashPromptDialogCopyButton" xml:space="preserve">
+    <value>Copy</value>
+    <comment>Copy crash details</comment>
+  </data>
+  <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
+    <value>Uh oh... something went wrong and dynamo has crashed, sorry about that.
+
+You will get a chance to save your work.</value>
+  </data>
+  <data name="CrashPromptDialogDetailButton" xml:space="preserve">
+    <value>Details</value>
+    <comment>Click it to display crash details</comment>
+  </data>
+  <data name="CrashPromptDialogOpenFolderButton" xml:space="preserve">
+    <value>Open Folder</value>
+    <comment>Open folder that contains crash report</comment>
+  </data>
+  <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
+    <value>Submit Bug To Github</value>
+    <comment>Submit a bug on github</comment>
+  </data>
+  <data name="CrashPromptDialogTitle" xml:space="preserve">
+    <value>Dynamo has crashed</value>
+  </data>
+  <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
+    <value>Custom Node Property Error</value>
+  </data>
+  <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
+    <value>Category</value>
+    <comment>Label - specify custom node category</comment>
+  </data>
+  <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
+    <value>Description</value>
+    <comment>Label - custom node description</comment>
+  </data>
+  <data name="CustomNodePropertyWindowDescriptionHint" xml:space="preserve">
+    <value>Description of Custom Node</value>
+    <comment>Text box hint</comment>
+  </data>
+  <data name="CustomNodePropertyWindowName" xml:space="preserve">
+    <value>Name</value>
+    <comment>Label - specify custom node name</comment>
+  </data>
+  <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
+    <value>Name of Custom Node</value>
+    <comment>Text box hint</comment>
+  </data>
+  <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
+    <value>Custom Node Properties</value>
+    <comment>Dialog name</comment>
+  </data>
+  <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Deprecating Package</value>
+  </data>
+  <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
+    <value>Description must be longer than 10 characters.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
+    <value>Download Warning</value>
+  </data>
+  <data name="DynamoUpdateAvailabeToolTip" xml:space="preserve">
+    <value>A Dynamo update is available. Click to install.</value>
+  </data>
   <data name="DynamoViewCancelButtonTooltip" xml:space="preserve">
     <value>Cancel Run (Shift+F5)</value>
     <comment>Cancel button tooltip</comment>
+  </data>
+  <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
+    <value>Clear</value>
+    <comment>Clear log</comment>
   </data>
   <data name="DynamoViewDebugMenu" xml:space="preserve">
     <value>Debug</value>
@@ -277,6 +384,9 @@
     <value>_Select All</value>
     <comment>Edit menu | Select all nodes</comment>
   </data>
+  <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
+    <value>_Select Neighbors</value>
+  </data>
   <data name="DynamoViewEditMenuUndo" xml:space="preserve">
     <value>_Undo</value>
     <comment>Edit menu | Undo</comment>
@@ -353,6 +463,10 @@
     <value>_Report A Bug</value>
     <comment>Help menu | Report a bug</comment>
   </data>
+  <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
+    <value>Show In Folder</value>
+    <comment>Help menu | Show in Folder</comment>
+  </data>
   <data name="DynamoViewHepMenuSamples" xml:space="preserve">
     <value>Samples</value>
     <comment>Help menu | Samples</comment>
@@ -392,6 +506,12 @@
   <data name="DynamoViewRunButtonTooltip" xml:space="preserve">
     <value>Run Workflow (F5)</value>
     <comment>Run button tooltip</comment>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
+    <value>Run is not available when running Automatically or Periodically.</value>
+  </data>
+  <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
+    <value>Show In Folder</value>
   </data>
   <data name="DynamoViewSettingMenu" xml:space="preserve">
     <value>_Settings</value>
@@ -448,6 +568,16 @@
   <data name="DynamoViewSettingMenuEnableSummaryReportingTooltip" xml:space="preserve">
     <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&amp;#x0a;It does not contain your graph or any personal data</value>
     <comment>Setting menu | Tooltip for enable summary reporting during usage menu item</comment>
+  </data>
+  <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
+    <value>Show Run Preview</value>
+    <comment>Setting menu | Show Run Preview</comment>
+  </data>
+  <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
+    <value>Execution preview is not available when running automatically</value>
+  </data>
+  <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
+    <value>Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph</value>
   </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
     <value>Fractional Foot</value>
@@ -633,356 +763,6 @@
     <value>Zoom Out (Mouse wheel up)</value>
     <comment>View menu | Zoom out</comment>
   </data>
-  <data name="NodeContextMenuDelete" xml:space="preserve">
-    <value>Delete</value>
-    <comment>Context menu for selected node - delete selected node</comment>
-  </data>
-  <data name="NodeContextMenuHelp" xml:space="preserve">
-    <value>Help...</value>
-    <comment>Display help message for this node</comment>
-  </data>
-  <data name="NodeContextMenuLacing" xml:space="preserve">
-    <value>Lacing</value>
-    <comment>Context menu for selected node</comment>
-  </data>
-  <data name="NodeContextMenuLacingCrossProduct" xml:space="preserve">
-    <value>Cross Product</value>
-    <comment>Lacing strategy: use cross product for two lists</comment>
-  </data>
-  <data name="NodeContextMenuLacingFirst" xml:space="preserve">
-    <value>First</value>
-    <comment>Lacing strategy: use the first list</comment>
-  </data>
-  <data name="NodeContextMenuLacingLongest" xml:space="preserve">
-    <value>Longest</value>
-    <comment>Lacing strategy: use the longest list</comment>
-  </data>
-  <data name="NodeContextMenuLacingShortest" xml:space="preserve">
-    <value>Shortest</value>
-    <comment>Lacing strategy: use the shortest list</comment>
-  </data>
-  <data name="NodeContextMenuPreview" xml:space="preserve">
-    <value>Preview</value>
-    <comment>Context menu item - preview geometry</comment>
-  </data>
-  <data name="NodeContextMenuPreviewUpstream" xml:space="preserve">
-    <value>Preview Upstream</value>
-    <comment>Context menu item - preview geometry of upstream nodes</comment>
-  </data>
-  <data name="NodeContextMenuRenameNode" xml:space="preserve">
-    <value>Rename Node...</value>
-    <comment>Context menu item - rename this node</comment>
-  </data>
-  <data name="NodeContextMenuShowLabels" xml:space="preserve">
-    <value>Show Labels</value>
-    <comment>Context menu item - show labels</comment>
-  </data>
-  <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
-    <value>CATEGORY</value>
-    <comment>Category label</comment>
-  </data>
-  <data name="NodeHelpWindowNodeDescription" xml:space="preserve">
-    <value>DESCRIPTION</value>
-    <comment>Description label</comment>
-  </data>
-  <data name="NodeHelpWindowNodeInput" xml:space="preserve">
-    <value>INPUTS</value>
-    <comment>Input label</comment>
-  </data>
-  <data name="NodeHelpWindowNodeOutput" xml:space="preserve">
-    <value>OUTPUTS</value>
-    <comment>Output label</comment>
-  </data>
-  <data name="NodeHelpWindowNodeType" xml:space="preserve">
-    <value>NODE TYPE</value>
-    <comment>Title label</comment>
-  </data>
-  <data name="StartPageAsk" xml:space="preserve">
-    <value>ASK</value>
-  </data>
-  <data name="StartPageCode" xml:space="preserve">
-    <value>CODE</value>
-  </data>
-  <data name="StartPageDiscussionForum" xml:space="preserve">
-    <value>Discussion forum</value>
-  </data>
-  <data name="StartPageFiles" xml:space="preserve">
-    <value>FILES</value>
-  </data>
-  <data name="StartPageGithubRepository" xml:space="preserve">
-    <value>Github repository</value>
-  </data>
-  <data name="StartPageMoreSamples" xml:space="preserve">
-    <value>More Samples</value>
-  </data>
-  <data name="StartPageNewCustomNode" xml:space="preserve">
-    <value>Custom Node</value>
-    <comment>Start page | New custom node</comment>
-  </data>
-  <data name="StartPageNewFile" xml:space="preserve">
-    <value>New</value>
-    <comment>Start page | New </comment>
-  </data>
-  <data name="StartPageOpenFile" xml:space="preserve">
-    <value>Open</value>
-    <comment>Start page | Open files</comment>
-  </data>
-  <data name="StartPageRecent" xml:space="preserve">
-    <value>RECENT</value>
-  </data>
-  <data name="StartPageReference" xml:space="preserve">
-    <value>REFERENCE</value>
-  </data>
-  <data name="StartPageSamples" xml:space="preserve">
-    <value>SAMPLES</value>
-  </data>
-  <data name="StartPageSendIssues" xml:space="preserve">
-    <value>Send issues</value>
-  </data>
-  <data name="StartPageShowSamples" xml:space="preserve">
-    <value>Show Samples In Folder</value>
-  </data>
-  <data name="StartPageStart" xml:space="preserve">
-    <value>Start</value>
-  </data>
-  <data name="StartPageVideoTutorials" xml:space="preserve">
-    <value>Video Tutorials</value>
-    <comment>Start page | Link to videos</comment>
-  </data>
-  <data name="StartPageVisitDynamoBim" xml:space="preserve">
-    <value>Visit www.dynamobim.org</value>
-    <comment>Start page | Link to DynamoBIM</comment>
-  </data>
-  <data name="StartPageAdvancedTutorials" xml:space="preserve">
-    <value>Advanced Tutorials</value>
-    <comment>Start page | Link to tutorials</comment>
-  </data>
-  <data name="AddFileToPackageDialogTitle" xml:space="preserve">
-    <value>Add File to Package...</value>
-  </data>
-  <data name="CancelButton" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
-    <value>Cannot Download Package</value>
-  </data>
-  <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
-    <value>Custom Node Property Error</value>
-  </data>
-  <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
-    <value>Category</value>
-    <comment>Label - specify custom node category</comment>
-  </data>
-  <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Label - custom node description</comment>
-  </data>
-  <data name="CustomNodePropertyWindowDescriptionHint" xml:space="preserve">
-    <value>Description of Custom Node</value>
-    <comment>Text box hint</comment>
-  </data>
-  <data name="CustomNodePropertyWindowName" xml:space="preserve">
-    <value>Name</value>
-    <comment>Label - specify custom node name</comment>
-  </data>
-  <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
-    <value>Name of Custom Node</value>
-    <comment>Text box hint</comment>
-  </data>
-  <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
-    <value>Custom Node Properties</value>
-    <comment>Dialog name</comment>
-  </data>
-  <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
-    <value>Deprecating Package</value>
-  </data>
-  <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
-    <value>Show In Folder</value>
-    <comment>Help menu | Show in Folder</comment>
-  </data>
-  <data name="ImportLibraryDialogTitle" xml:space="preserve">
-    <value>Import Library</value>
-  </data>
-  <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
-    <value>Dynamo has already installed {0}.
-
-Dynamo will attempt to uninstall this package before installing.</value>
-  </data>
-  <data name="MessageConfirmToInstallPackage" xml:space="preserve">
-    <value>Are you sure you want to install {0} {1} ?</value>
-    <comment>Message box content</comment>
-  </data>
-  <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
-    <value>You have unsaved changes to custom node workspace: "{0}".
-
-Would you like to save your changes?</value>
-  </data>
-  <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
-    <value>You have unsaved changes to the Home workspace.
-
-Would you like to save your changes?</value>
-  </data>
-  <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
-    <value>You have unsaved changes to {0}.
-
-Would you like to save your changes?</value>
-  </data>
-  <data name="MessageConfirmToUninstallPackage" xml:space="preserve">
-    <value>Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
-
-You can always redownload the package.</value>
-  </data>
-  <data name="MessageCustomNodeNameExist" xml:space="preserve">
-    <value>A built-in node with the given name already exists.</value>
-  </data>
-  <data name="MessageCustomNodeNeedNewCategory" xml:space="preserve">
-    <value>You must enter a new category or choose one from the existing categories.</value>
-  </data>
-  <data name="MessageCustomNodeNoName" xml:space="preserve">
-    <value>You must supply a name.</value>
-  </data>
-  <data name="MessageFailedToDownloadPackage" xml:space="preserve">
-    <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
-    <comment>Message box content</comment>
-  </data>
-  <data name="MessageFailedToUninstall" xml:space="preserve">
-    <value>Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
-  </data>
-  <data name="MessageFailToUninstallPackage" xml:space="preserve">
-    <value>Dynamo failed to uninstall the package: {0}.  The package may need to be reinstalled manually.</value>
-    <comment>Message box content</comment>
-  </data>
-  <data name="MessageFileNotFound" xml:space="preserve">
-    <value>File not found: {0}</value>
-    <comment>Message box content</comment>
-  </data>
-  <data name="MessageGettingNodeError" xml:space="preserve">
-    <value>There was a problem getting the node from the workspace.</value>
-    <comment>Message box content</comment>
-  </data>
-  <data name="MessageNeedToRestart" xml:space="preserve">
-    <value>Dynamo and its host application must restart before uninstall takes effect.</value>
-  </data>
-  <data name="MessagePackageContainPythonScript" xml:space="preserve">
-    <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
-  </data>
-  <data name="MessagePackageNewerDynamo" xml:space="preserve">
-    <value>The following packages use a newer version of Dynamo than you are currently using:
-
-{0}
-
-Do you want to continue?</value>
-  </data>
-  <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
-    <value>You must select at least one custom node.</value>
-    <comment>Message box content</comment>
-  </data>
-  <data name="MessageSelectSymbolNotFound" xml:space="preserve">
-    <value>The selected symbol was not found in the workspace</value>
-    <comment>Message box content</comment>
-  </data>
-  <data name="MessageSubmitSameNamePackage" xml:space="preserve">
-    <value>The node is part of the dynamo package called "{0}" - do you want to submit a new version of this package?
-
-If not, this node will be moved to the new package you are creating."</value>
-    <comment>Message box content</comment>
-  </data>
-  <data name="MessageToDeprecatePackage" xml:space="preserve">
-    <value>Are you sure you want to deprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for. 
-
-You can always undeprecate the package.</value>
-  </data>
-  <data name="MessageToUndeprecatePackage" xml:space="preserve">
-    <value>Are you sure you want to undeprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.
-
-You can always re-deprecate the package.</value>
-  </data>
-  <data name="MessageUninstallToContinue" xml:space="preserve">
-    <value>Dynamo needs to uninstall {0} to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.</value>
-  </data>
-  <data name="MessageUnintallToContinue2" xml:space="preserve">
-    <value>Dynamo needs to uninstall {0} to continue but it contains binaries already loaded into Dynamo.  It's now marked for removal, but you'll need to first restart Dynamo.</value>
-  </data>
-  <data name="OKButton" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
-    <value>Open Dynamo Definition...</value>
-  </data>
-  <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
-    <value>Package Download Confirmation</value>
-    <comment>Message box title</comment>
-  </data>
-  <data name="PackageDownloadErrorMessageBoxTitle" xml:space="preserve">
-    <value>Package Download Error</value>
-    <comment>Message box title</comment>
-  </data>
-  <data name="PackageDownloadMessageBoxTitle" xml:space="preserve">
-    <value>Package Download</value>
-  </data>
-  <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
-    <value>Package Uses Newer Version of Dynamo!</value>
-  </data>
-  <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
-    <value>Package Warning</value>
-    <comment>Message box title</comment>
-  </data>
-  <data name="SaveConfirmationMessageBoxTitle" xml:space="preserve">
-    <value>Confirmation</value>
-  </data>
-  <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
-    <value>Save your model to STL.</value>
-  </data>
-  <data name="SaveWorkbenToImageDialogTitle" xml:space="preserve">
-    <value>Save your Workbench to an Image</value>
-  </data>
-  <data name="SelectionErrorMessageBoxTitle" xml:space="preserve">
-    <value>Selection Error</value>
-    <comment>Message box title</comment>
-  </data>
-  <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
-    <value>Removing Package Deprecation</value>
-  </data>
-  <data name="UninstallFailureMessageBoxTitle" xml:space="preserve">
-    <value>Uninstall Failure</value>
-  </data>
-  <data name="UninstallingPackageMessageBoxTitle" xml:space="preserve">
-    <value>Uninstalling Package</value>
-  </data>
-  <data name="ContinueButton" xml:space="preserve">
-    <value>Continue</value>
-    <comment>Continue to use Dynamo</comment>
-  </data>
-  <data name="CrashPromptDialogCopyButton" xml:space="preserve">
-    <value>Copy</value>
-    <comment>Copy crash details</comment>
-  </data>
-  <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
-    <value>Uh oh... something went wrong and dynamo has crashed, sorry about that.
-
-You will get a chance to save your work.</value>
-  </data>
-  <data name="CrashPromptDialogDetailButton" xml:space="preserve">
-    <value>Details</value>
-    <comment>Click it to display crash details</comment>
-  </data>
-  <data name="CrashPromptDialogOpenFolderButton" xml:space="preserve">
-    <value>Open Folder</value>
-    <comment>Open folder that contains crash report</comment>
-  </data>
-  <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
-    <value>Submit Bug To Github</value>
-    <comment>Submit a but on github</comment>
-  </data>
-  <data name="CrashPromptDialogTitle" xml:space="preserve">
-    <value>Dynamo has crashed</value>
-  </data>
-  <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
-    <value>Download Warning</value>
-  </data>
-  <data name="DynamoUpdateAvailabeToolTip" xml:space="preserve">
-    <value>A Dynamo update is available. Click to install.</value>
-  </data>
   <data name="EditNodeWindowTitle" xml:space="preserve">
     <value>Edit Node Name</value>
     <comment>Dialog for editing a node's name</comment>
@@ -992,6 +772,45 @@ You will get a chance to save your work.</value>
   </data>
   <data name="EditWindowTitle" xml:space="preserve">
     <value>Set value...</value>
+  </data>
+  <data name="FileDialogAllFiles" xml:space="preserve">
+    <value>All Files ({0})|{0}</value>
+  </data>
+  <data name="FileDialogAssemblyFiles" xml:space="preserve">
+    <value>Assembly Library Files ({0})|{0}</value>
+  </data>
+  <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
+    <value>Custom Node, DLL, XML ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDefaultPNGName" xml:space="preserve">
+    <value>Capture.png</value>
+  </data>
+  <data name="FileDialogDefaultSTLModelName" xml:space="preserve">
+    <value>model.stl</value>
+  </data>
+  <data name="FileDialogDesignScriptFiles" xml:space="preserve">
+    <value>DesignScript Files ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDynamoCustomNode" xml:space="preserve">
+    <value>Dynamo Custom Node ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDynamoDefinitions" xml:space="preserve">
+    <value>Dynamo Definitions ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDynamoWorkspace" xml:space="preserve">
+    <value>Dynamo Workspace ({0})|{0}</value>
+  </data>
+  <data name="FileDialogLibraryFiles" xml:space="preserve">
+    <value>Library Files ({0})|{0}</value>
+  </data>
+  <data name="FileDialogPNGFiles" xml:space="preserve">
+    <value>PNG Image|{0}</value>
+  </data>
+  <data name="FileDialogSTLModels" xml:space="preserve">
+    <value>STL Models|{0}</value>
+  </data>
+  <data name="FilePathConverterNoFileSelected" xml:space="preserve">
+    <value>No file selected.</value>
   </data>
   <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
     <value>Sample Left Button</value>
@@ -1004,47 +823,25 @@ You will get a chance to save your work.</value>
   <data name="GenericTaskDialogTitle" xml:space="preserve">
     <value>Generic Task Dialog</value>
   </data>
-  <data name="UsageReportPromptDialogConsent" xml:space="preserve">
-    <value>I give my consent for Autodesk to collect information on how I use Dynamo.</value>
-  </data>
-  <data name="UsageReportPromptDialogFeatureUsage" xml:space="preserve">
-    <value>The features and commands you use in Dynamo</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart1" xml:space="preserve">
-    <value>We would like to collect some information about how Dynamo is used.
-
-Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.
-
-The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).
-
-The information being collected is:</value>
-  </data>
-  <data name="UsageReportPromptDialogMessagePart2" xml:space="preserve">
-    <value>It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting 'Enable usability data reporting' in the settings menu of the UI.
-
-ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK.
-
-Many thanks!</value>
-  </data>
-  <data name="UsageReportPromptDialogNodeUsage" xml:space="preserve">
-    <value>The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime).
-</value>
-  </data>
-  <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement to collect usability data on your use of Dynamo</value>
-  </data>
-  <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
-    <value>Clear</value>
-    <comment>Clear log</comment>
-  </data>
-  <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
-    <value>_Select Neighbors</value>
-  </data>
-  <data name="FilePathConverterNoFileSelected" xml:space="preserve">
-    <value>No file selected.</value>
-  </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
     <value>Hide Classic Node Library</value>
+  </data>
+  <data name="ImportLibraryDialogTitle" xml:space="preserve">
+    <value>Import Library</value>
+  </data>
+  <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
+    <value>Enable background 3D preview navigation (Ctrl + G)</value>
+    <comment>Enable background 3D preview navigation</comment>
+  </data>
+  <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
+    <value>Enable graph view navigation (Ctrl + G)</value>
+    <comment>Enable graph view navigation</comment>
+  </data>
+  <data name="InfoBubbleError" xml:space="preserve">
+    <value>Error: </value>
+  </data>
+  <data name="InfoBubbleWarning" xml:space="preserve">
+    <value>Warning: </value>
   </data>
   <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
     <value>Additional Files</value>
@@ -1118,6 +915,12 @@ Many thanks!</value>
   <data name="InstalledPackageViewTitle" xml:space="preserve">
     <value>Installed Packages</value>
   </data>
+  <data name="InstallMessageCaption" xml:space="preserve">
+    <value>Install Dynamo</value>
+  </data>
+  <data name="InvalidLoginUrl" xml:space="preserve">
+    <value>Invalid URL for login page!</value>
+  </data>
   <data name="LacingCrossProductToolTip" xml:space="preserve">
     <value>For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}.</value>
   </data>
@@ -1146,6 +949,218 @@ Many thanks!</value>
   <data name="LibraryViewTitle" xml:space="preserve">
     <value>Library</value>
   </data>
+  <data name="MajorVersionNonNegative" xml:space="preserve">
+    <value>You must provide a Major version as a non-negative integer.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
+    <value>Dynamo has already installed {0}.
+
+Dynamo will attempt to uninstall this package before installing.</value>
+  </data>
+  <data name="MessageConfirmToInstallPackage" xml:space="preserve">
+    <value>Are you sure you want to install {0} {1} ?</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
+    <value>You have unsaved changes to custom node workspace: "{0}".
+
+Would you like to save your changes?</value>
+  </data>
+  <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
+    <value>You have unsaved changes to the Home workspace.
+
+Would you like to save your changes?</value>
+  </data>
+  <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
+    <value>You have unsaved changes to {0}.
+
+Would you like to save your changes?</value>
+  </data>
+  <data name="MessageConfirmToUninstallPackage" xml:space="preserve">
+    <value>Are you sure you want to uninstall {0} ?  This will delete the packages root directory.
+
+You can always redownload the package.</value>
+  </data>
+  <data name="MessageCustomNodeNameExist" xml:space="preserve">
+    <value>A built-in node with the given name already exists.</value>
+  </data>
+  <data name="MessageCustomNodeNeedNewCategory" xml:space="preserve">
+    <value>You must enter a new category or choose one from the existing categories.</value>
+  </data>
+  <data name="MessageCustomNodeNoName" xml:space="preserve">
+    <value>You must supply a name.</value>
+  </data>
+  <data name="MessageFailedToApplyCustomization" xml:space="preserve">
+    <value>Failed to apply NodeViewCustomization for {0}</value>
+  </data>
+  <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
+    <value>'AttachmentToRowColumnConverter' expects a 'ConverterParameter' value to be either 'Row' or 'Column'</value>
+  </data>
+  <data name="MessageFailedToAutocomple" xml:space="preserve">
+    <value>Failed to perform code block autocomplete with exception:</value>
+  </data>
+  <data name="MessageFailedToDownloadPackage" xml:space="preserve">
+    <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageFailedToFindNodeById" xml:space="preserve">
+    <value>No node could be found with that Id.</value>
+  </data>
+  <data name="MessageFailedToOpenFile" xml:space="preserve">
+    <value>Error opening file: </value>
+  </data>
+  <data name="MessageFailedToSaveAsImage" xml:space="preserve">
+    <value>Failed to save the Workspace as image.</value>
+  </data>
+  <data name="MessageFailedToUninstall" xml:space="preserve">
+    <value>Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
+  </data>
+  <data name="MessageFailToUninstallPackage" xml:space="preserve">
+    <value>Dynamo failed to uninstall the package: {0}.  The package may need to be reinstalled manually.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageFileNotFound" xml:space="preserve">
+    <value>File not found: {0}</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageGettingNodeError" xml:space="preserve">
+    <value>There was a problem getting the node from the workspace.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageLoadingTime" xml:space="preserve">
+    <value>{0} elapsed for loading Dynamo main window.</value>
+  </data>
+  <data name="MessageNeedToRestart" xml:space="preserve">
+    <value>Dynamo and its host application must restart before uninstall takes effect.</value>
+  </data>
+  <data name="MessageNodeWithNullFunction" xml:space="preserve">
+    <value>There is a null function definition for this node.</value>
+  </data>
+  <data name="MessageNoNodeDescription" xml:space="preserve">
+    <value>No description provided</value>
+  </data>
+  <data name="MessagePackageContainPythonScript" xml:space="preserve">
+    <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
+  </data>
+  <data name="MessagePackageNewerDynamo" xml:space="preserve">
+    <value>The following packages use a newer version of Dynamo than you are currently using:
+
+{0}
+
+Do you want to continue?</value>
+  </data>
+  <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
+    <value>You must select at least one custom node.</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageSelectSymbolNotFound" xml:space="preserve">
+    <value>The selected symbol was not found in the workspace</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageSubmitSameNamePackage" xml:space="preserve">
+    <value>The node is part of the dynamo package called "{0}" - do you want to submit a new version of this package?
+
+If not, this node will be moved to the new package you are creating."</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageToDeprecatePackage" xml:space="preserve">
+    <value>Are you sure you want to deprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for. 
+
+You can always undeprecate the package.</value>
+  </data>
+  <data name="MessageToUndeprecatePackage" xml:space="preserve">
+    <value>Are you sure you want to undeprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.
+
+You can always re-deprecate the package.</value>
+  </data>
+  <data name="MessageUninstallToContinue" xml:space="preserve">
+    <value>Dynamo needs to uninstall {0} to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.</value>
+  </data>
+  <data name="MessageUnintallToContinue2" xml:space="preserve">
+    <value>Dynamo needs to uninstall {0} to continue but it contains binaries already loaded into Dynamo.  It's now marked for removal, but you'll need to first restart Dynamo.</value>
+  </data>
+  <data name="MessageUnsavedChanges0" xml:space="preserve">
+    <value>The following workspaces have not been saved:</value>
+  </data>
+  <data name="MessageUnsavedChanges1" xml:space="preserve">
+    <value>. Please save them and try again.</value>
+  </data>
+  <data name="MinorVersionNonNegative" xml:space="preserve">
+    <value>You must provide a Minor version as a non-negative integer.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="NameNeedMoreCharacters" xml:space="preserve">
+    <value>Name must be at least 3 characters.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="NodeContextMenuDelete" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Context menu for selected node - delete selected node</comment>
+  </data>
+  <data name="NodeContextMenuHelp" xml:space="preserve">
+    <value>Help...</value>
+    <comment>Display help message for this node</comment>
+  </data>
+  <data name="NodeContextMenuLacing" xml:space="preserve">
+    <value>Lacing</value>
+    <comment>Context menu for selected node</comment>
+  </data>
+  <data name="NodeContextMenuLacingCrossProduct" xml:space="preserve">
+    <value>Cross Product</value>
+    <comment>Lacing strategy: use cross product for two lists</comment>
+  </data>
+  <data name="NodeContextMenuLacingFirst" xml:space="preserve">
+    <value>First</value>
+    <comment>Lacing strategy: use the first list</comment>
+  </data>
+  <data name="NodeContextMenuLacingLongest" xml:space="preserve">
+    <value>Longest</value>
+    <comment>Lacing strategy: use the longest list</comment>
+  </data>
+  <data name="NodeContextMenuLacingShortest" xml:space="preserve">
+    <value>Shortest</value>
+    <comment>Lacing strategy: use the shortest list</comment>
+  </data>
+  <data name="NodeContextMenuPreview" xml:space="preserve">
+    <value>Preview</value>
+    <comment>Context menu item - preview geometry</comment>
+  </data>
+  <data name="NodeContextMenuPreviewUpstream" xml:space="preserve">
+    <value>Preview Upstream</value>
+    <comment>Context menu item - preview geometry of upstream nodes</comment>
+  </data>
+  <data name="NodeContextMenuRenameNode" xml:space="preserve">
+    <value>Rename Node...</value>
+    <comment>Context menu item - rename this node</comment>
+  </data>
+  <data name="NodeContextMenuShowLabels" xml:space="preserve">
+    <value>Show Labels</value>
+    <comment>Context menu item - show labels</comment>
+  </data>
+  <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
+    <value>CATEGORY</value>
+    <comment>Category label</comment>
+  </data>
+  <data name="NodeHelpWindowNodeDescription" xml:space="preserve">
+    <value>DESCRIPTION</value>
+    <comment>Description label</comment>
+  </data>
+  <data name="NodeHelpWindowNodeInput" xml:space="preserve">
+    <value>INPUTS</value>
+    <comment>Input label</comment>
+  </data>
+  <data name="NodeHelpWindowNodeOutput" xml:space="preserve">
+    <value>OUTPUTS</value>
+    <comment>Output label</comment>
+  </data>
+  <data name="NodeHelpWindowNodeType" xml:space="preserve">
+    <value>NODE TYPE</value>
+    <comment>Title label</comment>
+  </data>
+  <data name="NoneString" xml:space="preserve">
+    <value>none</value>
+  </data>
   <data name="NoteViewContextMenuDelete" xml:space="preserve">
     <value>Delete</value>
     <comment>Delete note </comment>
@@ -1153,6 +1168,23 @@ Many thanks!</value>
   <data name="NoteViewContextMenuEdit" xml:space="preserve">
     <value>Edit...</value>
     <comment>Edit note</comment>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
+    <value>Open Dynamo Definition...</value>
+  </data>
+  <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
+    <value>Package Download Confirmation</value>
+    <comment>Message box title</comment>
+  </data>
+  <data name="PackageDownloadErrorMessageBoxTitle" xml:space="preserve">
+    <value>Package Download Error</value>
+    <comment>Message box title</comment>
+  </data>
+  <data name="PackageDownloadMessageBoxTitle" xml:space="preserve">
+    <value>Package Download</value>
   </data>
   <data name="PackageDownloadStateDownloaded" xml:space="preserve">
     <value>Downloaded</value>
@@ -1174,6 +1206,14 @@ Many thanks!</value>
   </data>
   <data name="PackageManagerWebSiteButton" xml:space="preserve">
     <value>Package Manager Website</value>
+  </data>
+  <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
+    <value>The name of the package cannot contain /,\, or *.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
+    <value>Your package must contain at least one file.</value>
+    <comment>ErrorString</comment>
   </data>
   <data name="PackageSearchStateNoResult" xml:space="preserve">
     <value>Search returned no results!</value>
@@ -1288,6 +1328,13 @@ Many thanks!</value>
   <data name="PackageUploadStateUploading" xml:space="preserve">
     <value>Uploading...</value>
   </data>
+  <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
+    <value>Package Uses Newer Version of Dynamo!</value>
+  </data>
+  <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
+    <value>Package Warning</value>
+    <comment>Message box title</comment>
+  </data>
   <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
     <value>Use Default Value</value>
   </data>
@@ -1348,186 +1395,14 @@ Many thanks!</value>
   <data name="PublishPackageViewTitle" xml:space="preserve">
     <value>Publish a Dynamo Package</value>
   </data>
-  <data name="ShowClassicNodeLibrary" xml:space="preserve">
-    <value>Show Classic Node Library</value>
+  <data name="RunCompletedMessage" xml:space="preserve">
+    <value>Run completed.</value>
   </data>
-  <data name="UnknowDateFormat" xml:space="preserve">
-    <value>Unknown date format</value>
+  <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
+    <value>Run completed with warnings.</value>
   </data>
-  <data name="Watch3DViewContextMenuPan" xml:space="preserve">
-    <value>_Pan</value>
-  </data>
-  <data name="Watch3DViewContextMenuRotate" xml:space="preserve">
-    <value>_Rotate</value>
-  </data>
-  <data name="Watch3DViewContextMenuSwitchView" xml:space="preserve">
-    <value>Switch to Node _View</value>
-  </data>
-  <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
-    <value>_Zoom to Fit</value>
-  </data>
-  <data name="BuildVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Build version as a non-negative integer.</value>
-    <comment>ErrorString</comment>
-  </data>
-  <data name="CannotSubmitPackage" xml:space="preserve">
-    <value>You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.</value>
-    <comment>ErrorString</comment>
-  </data>
-  <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
-    <value>Description must be longer than 10 characters.</value>
-    <comment>ErrorString</comment>
-  </data>
-  <data name="MajorVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Major version as a non-negative integer.</value>
-    <comment>ErrorString</comment>
-  </data>
-  <data name="MinorVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Minor version as a non-negative integer.</value>
-    <comment>ErrorString</comment>
-  </data>
-  <data name="NameNeedMoreCharacters" xml:space="preserve">
-    <value>Name must be at least 3 characters.</value>
-    <comment>ErrorString</comment>
-  </data>
-  <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
-    <value>The name of the package cannot contain /,\, or *.</value>
-    <comment>ErrorString</comment>
-  </data>
-  <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
-    <value>Your package must contain at least one file.</value>
-    <comment>ErrorString</comment>
-  </data>
-  <data name="UpdateMessage" xml:space="preserve">
-    <value>An update is available for Dynamo.
-Installing the latest update requires Dynamo and any host applications to close.
-Do you want to install the latest Dynamo update?</value>
-  </data>
-  <data name="VersionValueGreaterThan0" xml:space="preserve">
-    <value>At least one of your version values must be greater than 0.</value>
-    <comment>ErrorString</comment>
-  </data>
-  <data name="InstallMessageCaption" xml:space="preserve">
-    <value>Install Dynamo</value>
-  </data>
-  <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
-    <value>Enable background 3D preview navigation (Ctrl + G)</value>
-    <comment>Enable background 3D preview navigation</comment>
-  </data>
-  <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
-    <value>Enable graph view navigation (Ctrl + G)</value>
-    <comment>Enable graph view navigation</comment>
-  </data>
-  <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
-    <value>Add Custom Node, Library, or XML file to Package...</value>
-  </data>
-  <data name="ConverterMessageCurrentOffset" xml:space="preserve">
-    <value>Current offset X: {0}, Y: {1}</value>
-  </data>
-  <data name="ConverterMessageTransformOrigin" xml:space="preserve">
-    <value>Transform origin X: {0}, Y: {1}</value>
-  </data>
-  <data name="ConverterMessageZoom" xml:space="preserve">
-    <value>Zoom : {0}</value>
-  </data>
-  <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
-    <value>Show In Folder</value>
-  </data>
-  <data name="FileDialogAllFiles" xml:space="preserve">
-    <value>All Files (*.*)|*.*</value>
-  </data>
-  <data name="FileDialogAssemblyFiles" xml:space="preserve">
-    <value>Assembly Library Files (*.dll)|*.dll</value>
-  </data>
-  <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
-    <value>Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml</value>
-  </data>
-  <data name="FileDialogDefaultPNGName" xml:space="preserve">
-    <value>Capture.png</value>
-  </data>
-  <data name="FileDialogDefaultSTLModelName" xml:space="preserve">
-    <value>model.stl</value>
-  </data>
-  <data name="FileDialogDesignScriptFiles" xml:space="preserve">
-    <value>DesignScript Files (*.ds)|*.ds</value>
-  </data>
-  <data name="FileDialogDynamoCustomNode" xml:space="preserve">
-    <value>Dynamo Custom Node (*.dyf)|*.dyf</value>
-  </data>
-  <data name="FileDialogDynamoDefinitions" xml:space="preserve">
-    <value>Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf</value>
-  </data>
-  <data name="FileDialogDynamoWorkspace" xml:space="preserve">
-    <value>Dynamo Workspace (*.dyn)|*.dyn</value>
-  </data>
-  <data name="FileDialogLibraryFiles" xml:space="preserve">
-    <value>Library Files (*.dll, *.ds)|*.dll;*.ds</value>
-  </data>
-  <data name="FileDialogPNGFiles" xml:space="preserve">
-    <value>PNG Image|*.png</value>
-  </data>
-  <data name="FileDialogSTLModels" xml:space="preserve">
-    <value>STL Models|*.stl</value>
-  </data>
-  <data name="InfoBubbleError" xml:space="preserve">
-    <value>Error: </value>
-  </data>
-  <data name="InfoBubbleWarning" xml:space="preserve">
-    <value>Warning: </value>
-  </data>
-  <data name="MessageFailedToApplyCustomization" xml:space="preserve">
-    <value>Failed to apply NodeViewCustomization for {0}</value>
-  </data>
-  <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
-    <value>'AttachmentToRowColumnConverter' expects a 'ConverterParameter' value to be either 'Row' or 'Column'</value>
-  </data>
-  <data name="MessageFailedToAutocomple" xml:space="preserve">
-    <value>Failed to perform code block autocomplete with exception:</value>
-  </data>
-  <data name="MessageFailedToFindNodeById" xml:space="preserve">
-    <value>No node could be found with that Id.</value>
-  </data>
-  <data name="MessageFailedToOpenFile" xml:space="preserve">
-    <value>Error opening file: </value>
-  </data>
-  <data name="MessageFailedToSaveAsImage" xml:space="preserve">
-    <value>Failed to save the Workspace as image.</value>
-  </data>
-  <data name="MessageLoadingTime" xml:space="preserve">
-    <value>{0} elapsed for loading Dynamo main window.</value>
-  </data>
-  <data name="MessageNodeWithNullFunction" xml:space="preserve">
-    <value>There is a null function definition for this node.</value>
-  </data>
-  <data name="MessageNoNodeDescription" xml:space="preserve">
-    <value>No description provided</value>
-  </data>
-  <data name="MessageUnsavedChanges0" xml:space="preserve">
-    <value>The following workspaces have not been saved:</value>
-  </data>
-  <data name="MessageUnsavedChanges1" xml:space="preserve">
-    <value>. Please save them and try again.</value>
-  </data>
-  <data name="SearchViewTopResult" xml:space="preserve">
-    <value>Top Result</value>
-  </data>
-  <data name="TooltipCurrentIndex" xml:space="preserve">
-    <value>{0} of {1}</value>
-  </data>
-  <data name="AutodeskSignIn" xml:space="preserve">
-    <value>Autodesk Sign In</value>
-  </data>
-  <data name="BrowserWindowLoading" xml:space="preserve">
-    <value>Loading...</value>
-  </data>
-  <data name="InvalidLoginUrl" xml:space="preserve">
-    <value>Invalid URL for login page!</value>
-  </data>
-  <data name="NoneString" xml:space="preserve">
-    <value>none</value>
-  </data>
-  <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
-    <value>Run is not available when running Automatically or Periodically.</value>
+  <data name="RunStartedMessage" xml:space="preserve">
+    <value>Run started...</value>
   </data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
     <value>Run whenever there is a change to the graph.</value>
@@ -1541,13 +1416,148 @@ Do you want to install the latest Dynamo update?</value>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
     <value>Run at the specified interval.</value>
   </data>
-  <data name="RunCompletedMessage" xml:space="preserve">
-    <value>Run completed.</value>
+  <data name="SaveConfirmationMessageBoxTitle" xml:space="preserve">
+    <value>Confirmation</value>
   </data>
-  <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
-    <value>Run completed with warnings.</value>
+  <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
+    <value>Save your model to STL.</value>
   </data>
-  <data name="RunStartedMessage" xml:space="preserve">
-    <value>Run started...</value>
+  <data name="SaveWorkbenToImageDialogTitle" xml:space="preserve">
+    <value>Save your Workbench to an Image</value>
+  </data>
+  <data name="SearchViewTopResult" xml:space="preserve">
+    <value>Top Result</value>
+  </data>
+  <data name="SelectionErrorMessageBoxTitle" xml:space="preserve">
+    <value>Selection Error</value>
+    <comment>Message box title</comment>
+  </data>
+  <data name="ShowClassicNodeLibrary" xml:space="preserve">
+    <value>Show Classic Node Library</value>
+  </data>
+  <data name="StartPageAdvancedTutorials" xml:space="preserve">
+    <value>Advanced Tutorials</value>
+    <comment>Start page | Link to tutorials</comment>
+  </data>
+  <data name="StartPageAsk" xml:space="preserve">
+    <value>ASK</value>
+  </data>
+  <data name="StartPageCode" xml:space="preserve">
+    <value>CODE</value>
+  </data>
+  <data name="StartPageDiscussionForum" xml:space="preserve">
+    <value>Discussion forum</value>
+  </data>
+  <data name="StartPageFiles" xml:space="preserve">
+    <value>FILES</value>
+  </data>
+  <data name="StartPageGithubRepository" xml:space="preserve">
+    <value>Github repository</value>
+  </data>
+  <data name="StartPageMoreSamples" xml:space="preserve">
+    <value>More Samples</value>
+  </data>
+  <data name="StartPageNewCustomNode" xml:space="preserve">
+    <value>Custom Node</value>
+    <comment>Start page | New custom node</comment>
+  </data>
+  <data name="StartPageNewFile" xml:space="preserve">
+    <value>New</value>
+    <comment>Start page | New </comment>
+  </data>
+  <data name="StartPageOpenFile" xml:space="preserve">
+    <value>Open</value>
+    <comment>Start page | Open files</comment>
+  </data>
+  <data name="StartPageRecent" xml:space="preserve">
+    <value>RECENT</value>
+  </data>
+  <data name="StartPageReference" xml:space="preserve">
+    <value>REFERENCE</value>
+  </data>
+  <data name="StartPageSamples" xml:space="preserve">
+    <value>SAMPLES</value>
+  </data>
+  <data name="StartPageSendIssues" xml:space="preserve">
+    <value>Send issues</value>
+  </data>
+  <data name="StartPageShowSamples" xml:space="preserve">
+    <value>Show Samples In Folder</value>
+  </data>
+  <data name="StartPageStart" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StartPageVideoTutorials" xml:space="preserve">
+    <value>Video Tutorials</value>
+    <comment>Start page | Link to videos</comment>
+  </data>
+  <data name="StartPageVisitDynamoBim" xml:space="preserve">
+    <value>Visit www.dynamobim.org</value>
+    <comment>Start page | Link to DynamoBIM</comment>
+  </data>
+  <data name="TooltipCurrentIndex" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Removing Package Deprecation</value>
+  </data>
+  <data name="UninstallFailureMessageBoxTitle" xml:space="preserve">
+    <value>Uninstall Failure</value>
+  </data>
+  <data name="UninstallingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Uninstalling Package</value>
+  </data>
+  <data name="UnknowDateFormat" xml:space="preserve">
+    <value>Unknown date format</value>
+  </data>
+  <data name="UpdateMessage" xml:space="preserve">
+    <value>An update is available for Dynamo.
+Installing the latest update requires Dynamo and any host applications to close.
+Do you want to install the latest Dynamo update?</value>
+  </data>
+  <data name="UsageReportPromptDialogConsent" xml:space="preserve">
+    <value>I give my consent for Autodesk to collect information on how I use Dynamo.</value>
+  </data>
+  <data name="UsageReportPromptDialogFeatureUsage" xml:space="preserve">
+    <value>The features and commands you use in Dynamo</value>
+  </data>
+  <data name="UsageReportPromptDialogMessagePart1" xml:space="preserve">
+    <value>We would like to collect some information about how Dynamo is used.
+
+Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.
+
+The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).
+
+The information being collected is:</value>
+  </data>
+  <data name="UsageReportPromptDialogMessagePart2" xml:space="preserve">
+    <value>It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting 'Enable usability data reporting' in the settings menu of the UI.
+
+ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK.
+
+Many thanks!</value>
+  </data>
+  <data name="UsageReportPromptDialogNodeUsage" xml:space="preserve">
+    <value>The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime).
+</value>
+  </data>
+  <data name="UsageReportPromptDialogTitle" xml:space="preserve">
+    <value>Agreement to collect usability data on your use of Dynamo</value>
+  </data>
+  <data name="VersionValueGreaterThan0" xml:space="preserve">
+    <value>At least one of your version values must be greater than 0.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="Watch3DViewContextMenuPan" xml:space="preserve">
+    <value>_Pan</value>
+  </data>
+  <data name="Watch3DViewContextMenuRotate" xml:space="preserve">
+    <value>_Rotate</value>
+  </data>
+  <data name="Watch3DViewContextMenuSwitchView" xml:space="preserve">
+    <value>Switch to Node _View</value>
+  </data>
+  <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
+    <value>_Zoom to Fit</value>
   </data>
 </root>

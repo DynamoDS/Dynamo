@@ -333,7 +333,7 @@ namespace DSCore
         /// <param name="item">The item to insert.</param>
         /// <returns name="list">A new list with the item replaced.</returns>
         /// <search>replace,switch</search>
-        public static IList ReplaceItemAtIndex(IList list, int index, object item)
+        public static IList ReplaceItemAtIndex(IList list, int index, [ArbitraryDimensionArrayImport] object item)
         {
             if (index < 0)
             {

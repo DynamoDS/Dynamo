@@ -322,6 +322,17 @@ namespace ProtoTest.Associative
         }
 
         [Test]
+        //Test "LoadCSV"
+        public void BIM24_LoadCSV()
+        {
+            // ensure that white space is trimmed from the path
+            String code =
+@"a = ""\n \r\t../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test1.csv\r\r\n "";b = ImportFromCSV(a);x = b[0][2];";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x", 3.0);
+        }
+
+        [Test]
         //Test "Count"
         public void BIM24_Count()
         {
@@ -818,6 +829,16 @@ r = __TryGetValueFromNestedDictionaries(a, ""nonexist"");
 ";
             var mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("r", null);
+        }
+
+        [Test]
+        public void TestGetKeysFromNonArray()
+        {
+            string code = @"
+x = 1;
+k = GetKeys(x);";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("k", null);
         }
     }
 

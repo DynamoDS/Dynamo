@@ -475,6 +475,18 @@ namespace FFITarget
         {
             return radius * radius * Math.PI;
         }
+
+        public static int MultiplyBy2WithWrongDefaultArgument(
+            [DefaultArgumentAttribute("TestData.NonExistFunction()")] int x)
+        {
+            return x * 2;
+        }
+
+        public static int MultiplyBy3NonParsableDefaultArgument(
+           [DefaultArgumentAttribute("%!48asfasd4")] int x)
+        {
+            return x * 3;
+        }
     }
 
     internal class InternalClass

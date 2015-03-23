@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 using Dynamo.Models;
@@ -62,6 +63,64 @@ namespace Dynamo.Wpf.ViewModels.Core
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted += hwm_EvaluationStarted;
             hwm.EvaluationCompleted += hwm_EvaluationCompleted;
+            hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
+        }
+
+        /// <summary>
+        /// When a node is modified, this calls the executing nodes on Homeworkspace
+        /// to compute the delta state.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public override void OnNodeModified(NodeModel obj)
+        {
+            if (DynamoViewModel.HomeSpace.RunSettings.RunType == RunType.Manual)
+                DynamoViewModel.HomeSpace.GetExecutingNodes(DynamoViewModel.ShowRunPreview);
+        }
+
+        private void hwm_SetNodeDeltaState(object sender, DeltaComputeStateEventArgs e)
+        {
+            var nodeGuids = e.NodeGuidList;
+            // if runsettings is manual, and if the graph is not executed, then turing on showrunpreview 
+            //should turn on showexectionpreview on every node.
+            if (nodeGuids.Count == 0 && !e.GraphExecuted)
+            {
+                foreach (var nodeModel in Nodes)
+                {
+                    nodeModel.ShowExecutionPreview = DynamoViewModel.ShowRunPreview;
+                }
+            }
+
+            //if the graph is executed then set the node preview to false , provided
+            // there is no error on that node.
+            if (nodeGuids.Count == 0 && e.GraphExecuted)
+            {
+                foreach (var nodeViewModel in Nodes)
+                {
+                    if (nodeViewModel.State != ElementState.Error && nodeViewModel.State != ElementState.Warning)
+                    {
+                        nodeViewModel.ShowExecutionPreview = false;
+                        nodeViewModel.IsNodeAddedRecently = false;
+                    }
+                }                
+            }
+
+            foreach (Guid t in nodeGuids)
+            {
+                var nodeViewModel = Nodes.FirstOrDefault(x => x.NodeModel.GUID == t);
+                if (nodeViewModel != null)
+                {
+                    nodeViewModel.ShowExecutionPreview = nodeViewModel.DynamoViewModel.ShowRunPreview;
+                    nodeViewModel.IsNodeAddedRecently = false;
+                }
+            }
+
+            /* Color the recently added nodes */
+            var addedNodes = Nodes.Where(x => x.IsNodeAddedRecently).ToList();
+            foreach (var nodes in addedNodes)
+            {
+                if (nodes.ShowExecutionPreview)
+                    nodes.ShowExecutionPreview = nodes.DynamoViewModel.ShowRunPreview;
+            }           
         }
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
@@ -135,6 +194,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             var hwm = (HomeWorkspaceModel)Model;
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
+            hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
         }
     }
 

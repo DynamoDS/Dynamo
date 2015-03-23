@@ -5,30 +5,53 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:conversions="clr-namespace:DynamoConversions;assembly=DynamoConversions"  
              xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
-             mc:Ignorable="d" 
-             d:DesignHeight="30" Width="247.2">
+             mc:Ignorable="d" Width="250" Height="Auto">
 
-    <Grid Height="{x:Static ui2:Configurations.PortHeightInPixels}"  Width="Auto" >        
-        <StackPanel Orientation="Horizontal">           
-            <ComboBox Name="SelectConversionFrom"                
-                ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"
-                Width="100"   
-                Margin="1,0,0,0"
+    <Grid Width="Auto" Height="Auto">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <ComboBox Name="SelectConversionMetric"                
+                ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionMetricDictionary}, Path=Keys}"   
+                Grid.Row="0"
+                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
+                SelectedItem="{Binding SelectedMetricConversion}"/>
+        
+        <Grid Grid.Row="1">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <ComboBox Name="SelectConversionFrom" 
+                Grid.Column="0"
+                ItemsSource="{Binding SelectedFromConversionSource}"
+                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"                                        
+                ToolTip="{Binding SelectionFromBoxToolTip}"
+                ToolTipService.ShowOnDisabled="True" 
+                IsEnabled="{Binding IsSelectionFromBoxEnabled}"
                 SelectedItem="{Binding SelectedFromConversion}"/>
 
             <Button Name="DirectionButton"
-                Content="="          
-                Margin="1,0,0,0"
+                Grid.Column="1"
+                Content="⇄"  
+                FontWeight="Bold"
+                FontSize="13"
+                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
                 Width="40" Command="{Binding ToggleButtonClick}"/>
 
-            <ComboBox x:Name="SelectConversionTo"        	
-        	ItemsSource="{Binding Source={x:Static conversions:Conversions.ConversionDictionary}, Path=Keys}"
-        	Width="100"  
-            Margin="1,0,0,0"
-        	SelectedItem="{Binding SelectedToConversion}"/>
+            <ComboBox x:Name="SelectConversionTo"   
+                Grid.Column="2"
+        	    ItemsSource="{Binding SelectedToConversionSource}"
+                Height ="{x:Static ui2:Configurations.PortHeightInPixels}"                       
+        	    SelectedItem="{Binding SelectedToConversion}"/>
 
-        </StackPanel>
+        </Grid>
 
-      
     </Grid>
 </UserControl>

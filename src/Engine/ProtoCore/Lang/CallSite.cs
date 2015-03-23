@@ -538,6 +538,52 @@ namespace ProtoCore
 
             #endregion
 
+            #region Case 1a: Replicate only according to the replication guides, but with a sub-typing match
+
+            {
+                log.AppendLine("Case 1a: Replication guides + auto-replication + no cases");
+
+
+                List<ReplicationInstruction> replicationOption = replicationControl.Instructions;
+                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
+
+                    log.AppendLine("Attempting replication control: " + rc);
+
+                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
+                                                                                              rc.Instructions, runtimeCore);
+                    int resolutionFailures;
+
+                    Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
+                        context, reducedParams, stackFrame, runtimeCore,
+                        out resolutionFailures);
+
+
+                    if (resolutionFailures == 0)
+                    {
+
+                        log.AppendLine("Resolution succeeded against FEP Cluster");
+                        foreach (FunctionEndPoint fep in lookups.Keys)
+                            log.AppendLine("\t - " + fep);
+
+                        List<FunctionEndPoint> feps = new List<FunctionEndPoint>();
+                        feps.AddRange(lookups.Keys);
+
+                        //log.AppendLine("Resolution completed in " + sw.ElapsedMilliseconds + "ms");
+                        if (runtimeCore.Options.DumpFunctionResolverLogic)
+                            runtimeCore.DSExecutable.EventSink.PrintMessage(log.ToString());
+
+                        //Otherwise we have a cluster of FEPs that can be used to dispatch the array
+                        resolvesFeps = feps;
+                        replicationInstructions = rc.Instructions;
+
+                        return;
+                    }
+                }
+            
+
+            #endregion
+
+
             #region Case 2: Replication with no type cast
 
             {

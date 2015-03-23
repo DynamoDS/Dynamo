@@ -32,7 +32,7 @@ namespace DynamoCoreUITests
             var homeSpace = GetHomeSpace();
             var node = new DoubleInput();
             Model.AddNodeToCurrentWorkspace(node, true);
-            node.EnablePeriodicUpdate = true;
+            node.CanUpdatePeriodically = true;
             homeSpace.RunSettings.RunType = RunType.Periodic;
             Assert.False((View.RunSettingsControl.RunButton.IsEnabled));
         }
@@ -55,7 +55,7 @@ namespace DynamoCoreUITests
         [Test]
         public void PeriodicEnabledWithPeriodicNodes()
         {
-            var node = new DoubleInput { EnablePeriodicUpdate = true };
+            var node = new DoubleInput { CanUpdatePeriodically = true };
 
             var homeSpace = GetHomeSpace();
             homeSpace.AddNode(node, true);

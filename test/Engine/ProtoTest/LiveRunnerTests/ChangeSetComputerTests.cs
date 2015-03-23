@@ -49,7 +49,7 @@ namespace ProtoTest.LiveRunner
 
             Guid guid = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
             var syncData = new GraphSyncData(null, added, null);
          
@@ -85,7 +85,7 @@ namespace ProtoTest.LiveRunner
 
             Guid guid = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
             var syncData = new GraphSyncData(null, added, null);
 
@@ -122,7 +122,7 @@ namespace ProtoTest.LiveRunner
 
             Guid guid = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
             var syncData = new GraphSyncData(null, added, null);
 
@@ -159,7 +159,7 @@ namespace ProtoTest.LiveRunner
 
             Guid guid = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
 
             var syncData = new GraphSyncData(null, added, null);
 
@@ -198,7 +198,7 @@ namespace ProtoTest.LiveRunner
             // Add node
             Guid guid = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
 
             // Get astlist from ChangeSetComputer
@@ -207,7 +207,7 @@ namespace ProtoTest.LiveRunner
 
             // Modify contents
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
@@ -243,7 +243,7 @@ namespace ProtoTest.LiveRunner
             // Add nodes a = 1, b = 1
             Guid guid = System.Guid.NewGuid();
             List<Subtree> added = new List<Subtree>();
-            added.Add(CreateSubTreeFromCode(guid, codes[0]));
+            added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[0]));
             var syncData = new GraphSyncData(null, added, null);
 
             // Get astlist from ChangeSetComputer
@@ -252,7 +252,7 @@ namespace ProtoTest.LiveRunner
 
             // Modify contents to c = 1
             List<Subtree> modified = new List<Subtree>();
-            modified.Add(CreateSubTreeFromCode(guid, codes[1]));
+            modified.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid, codes[1]));
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer

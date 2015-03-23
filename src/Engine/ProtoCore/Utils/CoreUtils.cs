@@ -2,6 +2,7 @@
 using ProtoCore.DSASM;
 using System.Collections.Generic;
 using ProtoCore.AST.AssociativeAST;
+using System;
 
 namespace ProtoCore.Utils
 {
@@ -735,30 +736,61 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
+        /// Retrieves the string format of the identifier list from left to right, leaving out any symbols after the last identifier.
+        /// Given: A.B()
+        ///     Return: "A"
+        /// Given: A.B.C()[0]
+        ///     Return: "A.B"
+        /// Given: A.B().C
+        ///     Return: "A"
+        /// Given: A.B[0].C
+        ///     Return: "A.B[0].C"
+        /// </summary>
+        /// <param name="identList"></param>
+        /// <returns></returns>
+        public static string GetIdentifierExceptMethodName(ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
+        {
+            Validity.Assert(null != identList);
+            string identListString = identList.ToString();
+            int removeIndex = identListString.IndexOf('(');
+            if (removeIndex > 0)
+            {
+                identListString = identListString.Remove(removeIndex);
+                identListString = identListString.Remove(identListString.LastIndexOf('.'));
+            }
+            return identListString;
+        }
+
+        /// <summary>
         /// Traverses the identifierlist argument until class name resolution succeeds or fails.
         /// </summary>
         /// <param name="classTable"></param>
-        /// <param name="identList"></param>
+        /// <param name="identifier"></param>
         /// <returns></returns>
-        public static string[] GetResolvedClassName(ProtoCore.DSASM.ClassTable classTable, ProtoCore.AST.AssociativeAST.IdentifierListNode identList)
+        public static string[] GetResolvedClassName(ClassTable classTable, AssociativeNode identifier)
         {
-            string[] classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
+            var identList = identifier as IdentifierListNode;
+            var identifierNode = identifier as IdentifierNode;
+            Validity.Assert(identList != null || identifierNode != null);
+
+            string partialName = identList != null ? GetIdentifierStringUntilFirstParenthesis(identList) : identifier.Name;
+
+            string[] classNames = classTable.GetAllMatchingClasses(partialName);
 
             // Failed to find the first time
             // Attempt to remove identifiers in the identifierlist until we find a class or not
             while (0 == classNames.Length)
             {
                 // Move to the left node
-                AssociativeNode leftNode = identList.LeftNode;
+                AssociativeNode leftNode = identList != null ? identList.LeftNode : identifierNode;
                 if (leftNode is IdentifierListNode)
                 {
                     identList = leftNode as IdentifierListNode;
-                    classNames = classTable.GetAllMatchingClasses(ProtoCore.Utils.CoreUtils.GetIdentifierStringUntilFirstParenthesis(identList));
+                    classNames = classTable.GetAllMatchingClasses(GetIdentifierStringUntilFirstParenthesis(identList));
                 }
                 if (leftNode is IdentifierNode)
                 {
-                    IdentifierNode identNode = leftNode as IdentifierNode;
-                    classNames = classTable.GetAllMatchingClasses(identNode.Name);
+                    classNames = classTable.GetAllMatchingClasses(leftNode.Name);
                     break;
                 }
                 else
@@ -767,6 +799,59 @@ namespace ProtoCore.Utils
                 }
             }
             return classNames;
+        }
+
+        /// <summary>
+        /// Given a partial class name, get assembly to which the class belongs
+        /// </summary>
+        /// <param name="classTable"> class table in Core </param>
+        /// <param name="className"> class name </param>
+        /// <returns> assembly to which the class belongs </returns>
+        public static string GetAssemblyFromClassName(ClassTable classTable, string className)
+        {
+            //throw new NotImplementedException();
+            var ci = classTable.IndexOf(className);
+
+            if (ci == ProtoCore.DSASM.Constants.kInvalidIndex) 
+                return string.Empty;
+            
+            var classNode = classTable.ClassNodes[ci];
+            return classNode.ExternLib;
+        }
+
+        /// <summary>
+        /// Given a name or string of names, this creates an IdentifierNode or IdentifierListNode
+        /// e.g. Creates an IdentifierNode from A and IdentifierListNode from A.B
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static AssociativeNode CreateNodeFromString(string name)
+        {
+            string[] strIdentList = name.Split('.');
+
+            if (strIdentList.Length == 1)
+            {
+                return new IdentifierNode(strIdentList[0]);
+            }
+
+            var newIdentList = new IdentifierListNode
+            {
+                LeftNode = new IdentifierNode(strIdentList[0]),
+                RightNode = new IdentifierNode(strIdentList[1]),
+                Optr = Operator.dot
+            };
+            for (var n = 2; n < strIdentList.Length; ++n)
+            {
+                var subIdentList = new IdentifierListNode
+                {
+                    LeftNode = newIdentList,
+                    RightNode = new IdentifierNode(strIdentList[n]),
+                    Optr = Operator.dot
+                };
+                newIdentList = subIdentList;
+            }
+
+            return newIdentList;
         }
 
         /// <summary>

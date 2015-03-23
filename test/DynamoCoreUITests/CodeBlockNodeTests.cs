@@ -60,8 +60,6 @@ namespace DynamoCoreUITests
                 this.ViewModel = null;
                 this.commandCallback = null;
             }
-
-            GC.Collect();
         }
 
         #endregion
@@ -242,7 +240,7 @@ namespace DynamoCoreUITests
             }
 
             var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true
                 });

@@ -8,9 +8,12 @@ using System.Threading;
 
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Tests;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
+
 using DynamoShapeManager;
 using DynamoUtilities;
 
@@ -28,8 +31,10 @@ namespace SystemTestServices
     /// </summary>
     public abstract class SystemTestBase
     {
+        protected IPathResolver pathResolver;
         protected string workingDirectory;
         private Preloader preloader;
+        private AssemblyResolver assemblyResolver;
 
         #region protected properties
 
@@ -53,7 +58,13 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
-            AssemblyResolver.Setup();
+            var testConfig = GetTestSessionConfiguration();
+
+            if (assemblyResolver == null)
+            {
+                assemblyResolver = new AssemblyResolver();
+                assemblyResolver.Setup(testConfig.DynamoCorePath);
+            }
 
             SetupCore();
 
@@ -67,7 +78,17 @@ namespace SystemTestServices
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
-            StartDynamo();
+            StartDynamo(testConfig);
+        }
+
+        /// <summary>
+        /// Override this method in derived class to return a 
+        /// custom configuration.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual TestSessionConfiguration GetTestSessionConfiguration()
+        {
+            return new TestSessionConfiguration();
         }
 
         [TearDown]
@@ -91,8 +112,13 @@ namespace SystemTestServices
             View = null;
             Model = null;
             preloader = null;
+            pathResolver = null;
 
-            GC.Collect();
+            if (assemblyResolver != null)
+            {
+                assemblyResolver.TearDown();
+                assemblyResolver = null;
+            }
 
             try
             {
@@ -122,18 +148,17 @@ namespace SystemTestServices
         /// </summary>
         protected virtual void SetupCore(){}
 
-        protected virtual void StartDynamo()
+        protected virtual void StartDynamo(TestSessionConfiguration testConfig)
         {
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            preloader = new Preloader(Path.GetDirectoryName(exePath));
+            preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
             preloader.Preload();
 
             Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
+                    PathResolver = pathResolver,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             ViewModel = DynamoViewModel.Start(
@@ -207,6 +232,11 @@ namespace SystemTestServices
         protected static bool IsFuzzyEqual(double d0, double d1, double tol)
         {
             return System.Math.Abs(d0 - d1) < tol;
+        }
+
+        protected void AssertEvaluationCount(HomeWorkspaceModel homeWorkspace, int expected)
+        {
+            Assert.AreEqual(homeWorkspace.EvaluationCount, expected);
         }
 
         #endregion

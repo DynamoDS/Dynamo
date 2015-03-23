@@ -54,7 +54,7 @@ Imperative_languageblock<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                             }
                                             else {
                                                 langblock.codeblock.language = ProtoCore.Language.kInvalid; 
-                                                errors.SemErr(t.line, t.col, String.Format(Resources.invalidLanguageBlockIdentifier, t.val));
+                                                errors.SemErr(t.line, t.col, String.Format(Resources.InvalidLanguageBlockIdentifier, t.val));
                                             }
                                         .)
     {
@@ -147,7 +147,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             kw_break 
             (.
                 if (la.kind != _endline)
-                    SynErr(Resources.semiColonExpected);
+                    SynErr(Resources.SemiColonExpected);
             .)
             endline
         )     (. node = new ProtoCore.AST.ImperativeAST.BreakNode(); NodeUtils.SetNodeLocation(node, t); .)
@@ -156,7 +156,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             kw_continue 
             (.
                 if (la.kind != _endline)
-                   SynErr(Resources.semiColonExpected);
+                   SynErr(Resources.SemiColonExpected);
             .)
             endline
         )  (. node = new ProtoCore.AST.ImperativeAST.ContinueNode(); NodeUtils.SetNodeLocation(node, t); .)
@@ -169,7 +169,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             Imperative_expr<out node> 
             (.
                 if (la.kind != _endline)
-                   SynErr(Resources.semiColonExpected);
+                   SynErr(Resources.SemiColonExpected);
             .)
             endline
         )
@@ -177,7 +177,7 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         (
             (.
                 if (la.kind != _endline)
-                   SynErr(Resources.semiColonExpected);
+                   SynErr(Resources.SemiColonExpected);
             .)
             endline 
         )
@@ -193,7 +193,7 @@ Imperative_ThrowStatement<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                                 (. throwNode.expression = expression; .)
                                 (.
                                     if (la.kind != _endline)
-                                       SynErr(Resources.semiColonExpected);
+                                       SynErr(Resources.SemiColonExpected);
                                 .)
     endline
                                 (. node = throwNode; .)
@@ -380,7 +380,7 @@ Imperative_assignstmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                             Imperative_expr<out rhsNode>        
                             (.
                                 if (la.kind != _endline)
-                                   SynErr(Resources.semiColonExpected);
+                                   SynErr(Resources.SemiColonExpected);
                             .)
                             endline
                         )
@@ -782,7 +782,7 @@ Imperative_Char<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
 =
     char            (. 
                         if (t.val.Length <= 2) {
-                            errors.SemErr(t.line, t.col, Resources.emptyCharacterLiteral);
+                            errors.SemErr(t.line, t.col, Resources.EmptyCharacterLiteral);
                         }
 
                         node = new ProtoCore.AST.ImperativeAST.CharNode() 
@@ -892,7 +892,7 @@ Imperative_Ident<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                     int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
                     if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
                     {
-                        SynErr(String.Format(Resources.invalidReturnStatement, la.val)); 
+                        SynErr(String.Format(Resources.InvalidReturnStatement, la.val)); 
                     }        
                     var = BuildImperativeIdentifier(t.val, (ProtoCore.PrimitiveType)ltype);
                     NodeUtils.SetNodeLocation(var, t);
@@ -1244,7 +1244,7 @@ Imperative_functionalMethodBodySingleStatement<.out List<ProtoCore.AST.Imperativ
 
                                         (.
                                             if (la.kind != _endline)
-                                               SynErr(Resources.semiColonExpected);
+                                               SynErr(Resources.SemiColonExpected);
                                         .)
     endline
 .

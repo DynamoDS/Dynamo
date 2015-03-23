@@ -674,7 +674,6 @@
                     <Button.Template>
                         <ControlTemplate>
                             <Border x:Name="container"
-                                    Background="#282828"
                                     BorderBrush="#555555"
                                     BorderThickness="1">
                                 <Grid x:Name="inner">
@@ -708,12 +707,12 @@
                                             Property="Foreground"
                                             Value="#AAABAB" />
                                 </Trigger>
-                                <Trigger Property="Button.IsPressed"
-                                         Value="True">
+                                <DataTrigger Binding="{Binding ContextMenu.IsOpen, RelativeSource={RelativeSource Self}}"
+                                             Value="True">
                                     <Setter TargetName="container"
                                             Property="Background"
                                             Value="#222222" />
-                                </Trigger>
+                                </DataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Button.Template>

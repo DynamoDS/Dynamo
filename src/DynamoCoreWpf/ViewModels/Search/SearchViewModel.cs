@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -54,7 +55,7 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
-        private IconServices iconServices = new IconServices();
+        private readonly IconServices iconServices;
 
         /// <summary>
         ///     Maximum number of items to show in search.
@@ -204,6 +205,12 @@ namespace Dynamo.ViewModels
         {
             Model = model;
             this.dynamoViewModel = dynamoViewModel;
+
+            IPathManager pathManager = null;
+            if (dynamoViewModel != null && (dynamoViewModel.Model != null))
+                pathManager = dynamoViewModel.Model.PathManager;
+
+            iconServices = new IconServices(pathManager);
 
             MaxNumSearchResults = 15;
 
@@ -510,8 +517,7 @@ namespace Dynamo.ViewModels
                         }
                     }
 
-                    target.SubCategories.Add(newTarget);
-                    target.SubCategories = new ObservableCollection<NodeCategoryViewModel>(target.SubCategories.OrderBy(x => x.Name));
+                    target.InsertSubCategory(newTarget);
 
                     // Proceed to insert the new entry under 'newTarget' category with the remaining 
                     // name stack. In the first iteration this would have been 'MyNamespace.MyClass'.
