@@ -110,19 +110,17 @@ namespace Dynamo.DSEngine.CodeCompletion
                 Where(x => x.Alias.ToLower().Contains(stringToComplete.ToLower())).
                     GroupBy(x => x.Alias);
 
-            // For those class names that have collisions, list their fully qualified names in completion window
             foreach (var group in groups)
             {
+                // For those class names that have collisions, use shorter names
                 if (group.Count() > 1)
                 {
+                    // For colliding namespaces, compute shortest unique names for each
                     var namespaces = @group.Select(x => new Symbol(x.ClassName)).ToList();
                     var shortNames = Symbol.GetShortestUniqueNames(namespaces);
                     Debug.Assert(shortNames.Count() == group.Count());
-                    group.Zip(shortNames, (first, second) =>
-                    {
-                        first.Alias = second.Value;
-                        return first;
-                    });
+
+                    // Update class mirror (group) Alias with short name computed above
                     for (int i = 0; i < group.Count(); i++)
                     {
                         var cm = group.ElementAt(i);
@@ -133,7 +131,7 @@ namespace Dynamo.DSEngine.CodeCompletion
                         Where(x => !x.IsHiddenInLibrary).
                         Select(
                             x =>
-                                CompletionData.ConvertMirrorToCompletionData(x, useFullyQualifiedName: true,
+                                CompletionData.ConvertMirrorToCompletionData(x, useShorterName: true,
                                     resolver: resolver)));
                 }
                 else
@@ -301,7 +299,7 @@ namespace Dynamo.DSEngine.CodeCompletion
         }
 
 
-        internal static CompletionData ConvertMirrorToCompletionData(StaticMirror mirror, bool useFullyQualifiedName = false, 
+        internal static CompletionData ConvertMirrorToCompletionData(StaticMirror mirror, bool useShorterName = false, 
             ElementResolver resolver = null)
         {
             var method = mirror as MethodMirror;
@@ -324,7 +322,7 @@ namespace Dynamo.DSEngine.CodeCompletion
             var classMirror = mirror as ClassMirror;
             if (classMirror != null)
             {
-                string className = useFullyQualifiedName ? GetShortClassName(classMirror, resolver) : classMirror.Alias;
+                string className = useShorterName ? GetShortClassName(classMirror, resolver) : classMirror.Alias;
                 return new CompletionData(className, CompletionType.Class);
             }
             else
