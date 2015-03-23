@@ -345,11 +345,6 @@ namespace ProtoScript.Runners
             return null;
         }
 
-        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, out ProtoCore.RuntimeCore runtimeCore)
-        {
-            return Execute(sourcecode, core, out runtimeCore);
-        }
-
         /// <summary>
         /// Load and execute the DS code in the specified file
         /// </summary>
