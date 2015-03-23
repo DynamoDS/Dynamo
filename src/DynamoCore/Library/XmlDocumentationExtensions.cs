@@ -58,7 +58,7 @@ namespace Dynamo.DSEngine
             if (xml == null) return String.Empty;
 
             return GetMemberElement(parameter.Function,
-                "description", xml).CleanUpDocString();
+                "description", xml, parameter.Name).CleanUpDocString();
         }
 
         public static string GetSummary(this FunctionDescriptor member, XmlReader xml)
