@@ -9,14 +9,24 @@ namespace DSCore
     {
         public static string WebRequestByUrl(string url)
         {
-            if (url == null)
+            if (string.IsNullOrEmpty(url))
             {
                 throw new ArgumentException("The url cannot be null.");
             }
 
+            Uri uriResult;
+            var result = Uri.TryCreate(url, UriKind.Absolute, out uriResult)
+                          && (uriResult.Scheme == Uri.UriSchemeHttp
+                              || uriResult.Scheme == Uri.UriSchemeHttps);
+
+            if (!result)
+            {
+                throw new UriFormatException("The specified url is invalid.");
+            }
+
             //send a webrequest to the URL
             // Initialize the WebRequest.
-            var myRequest = System.Net.WebRequest.Create(url);
+            var myRequest = System.Net.WebRequest.Create(uriResult);
 
             string responseFromServer;
 

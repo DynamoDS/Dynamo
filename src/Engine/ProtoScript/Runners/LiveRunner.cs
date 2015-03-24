@@ -253,10 +253,10 @@ namespace ProtoScript.Runners
 
         public ChangeSetData csData { get; private set; }
 
-        public ChangeSetComputer(ProtoCore.Core core)
+        public ChangeSetComputer(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
             this.core = core;
-            this.runtimeCore = core.__TempCoreHostForRefactoring;
+            this.runtimeCore = runtimeCore;
             currentSubTreeList = new Dictionary<Guid, Subtree>();
         }
 
@@ -1117,7 +1117,7 @@ namespace ProtoScript.Runners
             staticContext = new ProtoCore.CompileTime.Context();
 
             terminating = false;
-            changeSetComputer = new ChangeSetComputer(runnerCore);
+            changeSetComputer = new ChangeSetComputer(runnerCore, runtimeCore);
             changeSetApplier = new ChangeSetApplier();
         }
 
@@ -1132,7 +1132,7 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
-                    runnerCore.__TempCoreHostForRefactoring.Cleanup();
+                    runtimeCore.Cleanup();
                     runnerCore = null;
                 }
 
@@ -1177,9 +1177,6 @@ namespace ProtoScript.Runners
             runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
             runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
 
-            runtimeCore = runnerCore.__TempCoreHostForRefactoring;
-            runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
-
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
             foreach (var item in configuration.PassThroughConfiguration)
@@ -1188,6 +1185,30 @@ namespace ProtoScript.Runners
             }
 
             vmState = null;
+
+            CreateRuntimeCore();
+        }
+
+        /// <summary>
+        /// Cretes a new instance of the RuntimeCore object
+        /// </summary>
+        private void CreateRuntimeCore()
+        {
+            runtimeCore = new ProtoCore.RuntimeCore(runnerCore.Heap);
+            runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
+            runtimeCore.RuntimeStatus.MessageHandler = runnerCore.BuildStatus.MessageHandler;
+        }
+
+        /// <summary>
+        /// Setup the RuntimeCore for the next execution cycle
+        /// </summary>
+        private void SetupRuntimeCoreForExecution()
+        {
+            // the entry point of live execution is the global scope block
+            runtimeCore.RunningBlock = 0;
+            runtimeCore.WatchSymbolList = runnerCore.watchSymbolList;
+            runtimeCore.SetProperties(runnerCore.Options, runnerCore.DSExecutable, runnerCore.DebuggerProperties);
+            runtimeCore.RegisterDllTypes(runnerCore.DllTypesToLoad);
         }
 
         private void FFIPropertyChanged(FFIPropertyChangedEventArgs arg)
@@ -1512,7 +1533,7 @@ namespace ProtoScript.Runners
         {
             Dictionary<string, bool> execFlagList = null;
 
-            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList, Constants.kInvalidIndex, null);
+            staticContext.SetData(code, new Dictionary<string, object>(), execFlagList);
 
             bool succeeded = runner.Compile(staticContext, runnerCore, out blockId);
             if (succeeded)
@@ -1568,7 +1589,8 @@ namespace ProtoScript.Runners
 
             try
             {
-                runner.Execute(runnerCore, 0, compileContext, runtimeContext);
+                SetupRuntimeCoreForExecution();
+                runner.ExecuteLive(runnerCore, runtimeCore, compileContext, runtimeContext);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
@@ -1578,7 +1600,7 @@ namespace ProtoScript.Runners
 
             // ExecutionMirror mirror = new ExecutionMirror(runnerCore.CurrentExecutive.CurrentDSASMExec, runnerCore);
 
-            return new ProtoRunner.ProtoVMState(runnerCore);
+            return new ProtoRunner.ProtoVMState(runnerCore, runtimeCore);
         }
 
         private bool CompileAndExecute(string code)
@@ -1760,7 +1782,7 @@ namespace ProtoScript.Runners
             deltaSymbols = 0;
             InitCore();
             staticContext = new ProtoCore.CompileTime.Context();
-            changeSetComputer = new ChangeSetComputer(runnerCore);
+            changeSetComputer = new ChangeSetComputer(runnerCore, runtimeCore);
             CLRModuleType.ClearTypes();
         }
 
