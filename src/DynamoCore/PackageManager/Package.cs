@@ -264,13 +264,11 @@ namespace Dynamo.PackageManager
                     // IsNodeLibrary may fail, we store the warnings here and then show
                     IList<ILogMessage> warnings = new List<ILogMessage>();
 
-                    var pkgAssem = new PackageAssembly()
+                    assemblies.Add(new PackageAssembly()
                     {
                         Assembly = assem,
                         IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
-                    };
-
-                    assemblies.Add(pkgAssem);
+                    });
 
                     warnings.ToList().ForEach(this.Log);
                 }
