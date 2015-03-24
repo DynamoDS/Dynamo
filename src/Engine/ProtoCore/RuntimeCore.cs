@@ -97,6 +97,24 @@ namespace ProtoCore
             RuntimeStatus = new ProtoCore.RuntimeStatus(this);
         }
 
+        /// <summary>
+        /// Setup before execution
+        /// This function needs to be called before attempting to execute the RuntimeCore
+        /// It will initialize the runtime execution data and configuration
+        /// </summary>
+        /// <param name="compileCore"></param>
+        /// <param name="context"></param>
+        public void SetupForExecution(ProtoCore.Core compileCore, ProtoCore.Runtime.Context context = null)
+        {
+            RuntimeMemory.PushFrameForGlobals(compileCore.GlobOffset);
+            RunningBlock = 0;
+            RuntimeStatus.MessageHandler = compileCore.BuildStatus.MessageHandler;
+            WatchSymbolList = compileCore.watchSymbolList;
+            SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
+            RegisterDllTypes(compileCore.DllTypesToLoad);
+            NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+        }
+
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
         {
             this.Context = context;
@@ -104,6 +122,19 @@ namespace ProtoCore
             this.Options = runtimeOptions;
             this.DebugProps = debugProps;
             this.ExprInterpreterExe = exprInterpreterExe;
+        }
+
+        /// <summary>
+        /// Register imported dll types
+        /// These types are initialzed from Importing dlls
+        /// </summary>
+        /// <param name="dllTypes"></param>
+        public void RegisterDllTypes(List<System.Type> dllTypes)
+        {
+            foreach (System.Type type in dllTypes)
+            {
+                FFIExecutionManager.Instance.RegisterExtensionApplicationType(this, type);
+            }
         }
 
         public IExecutiveProvider ExecutiveProvider { get; set; }
