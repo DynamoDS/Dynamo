@@ -1564,6 +1564,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while Dynamo is not running and try again.</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
-    <value>Cannot update assembly!</value>
+    <value>Cannot update assembly</value>
   </data>
 </root>
