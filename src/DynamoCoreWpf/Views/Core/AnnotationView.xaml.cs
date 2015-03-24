@@ -6,14 +6,12 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using GraphLayout;
 using DynCmd = Dynamo.Models.DynamoModel;
-using Dynamo.UI.Prompts;
 using Dynamo.Selection;
 using Dynamo.Models;
 
@@ -48,25 +46,10 @@ namespace Dynamo.Nodes
             //Set the height of Textblock based on the content.
             if (ViewModel != null)
             {
-                ViewModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
+                ViewModel.AnnotationModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
             }
         }
 
-        private void OnEditItemClick(object sender, RoutedEventArgs e)
-        {
-            // Setup a binding with the edit window's text field
-            var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
-            var editWindow = new EditWindow(dynamoViewModel, true);
-            editWindow.BindToProperty(DataContext, new Binding("AnnotationText")
-            {
-                Mode = BindingMode.TwoWay,
-                Source = (DataContext as AnnotationViewModel),
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            editWindow.ShowDialog();
-        }
-       
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems == null || (e.AddedItems.Count <= 0))
@@ -96,17 +79,11 @@ namespace Dynamo.Nodes
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
 
-            foreach (var nodes in this.ViewModel.SelectedNodes)
+            foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
             {
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(nodes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
+                    new DynCmd.SelectModelCommand(models.GUID, Dynamo.Utilities.ModifierKeys.Shift));
             }
-
-            foreach (var notes in this.ViewModel.SelectedNotes)
-            {
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(notes.GUID, Dynamo.Utilities.ModifierKeys.Shift));
-            }  
         }
      
         private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -128,7 +105,7 @@ namespace Dynamo.Nodes
         {           
             if (ViewModel != null)
             {
-                ViewModel.TextBlockHeight = GroupTextBox.ActualHeight;
+                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBox.ActualHeight;
             }           
         }
 

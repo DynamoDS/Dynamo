@@ -17,6 +17,8 @@ namespace Dynamo.Models
     {
         private double initialTop;        
         private double initialHeight;
+        private string modelGuids { get; set; }
+        private readonly IEnumerable<ModelBase> modelsInWorkspace;
         private string _text;
         public string Text
         {
@@ -94,74 +96,39 @@ namespace Dynamo.Models
                 RaisePropertyChanged("BackGroundColor");
             }
         }
-       
-        private string nodeGuids { get; set; }
-
-        private IEnumerable<NodeModel> nodesInWorkspace;
-
-        public IEnumerable<NodeModel> NodesInWorkspace
+              
+        private IEnumerable<ModelBase> selectedModels;
+        public IEnumerable<ModelBase> SelectedModels
         {
-            get
-            {
-                return nodesInWorkspace;                
-            }
-            set { nodesInWorkspace = value; }
-        }
-
-        private IEnumerable<NodeModel> selectedNodes;
-        public IEnumerable<NodeModel> SelectedNodes
-        {
-            get { return selectedNodes; }
+            get { return selectedModels; }
             set
             {
-                selectedNodes = value;
-                if (selectedNodes != null)
+                selectedModels = value.ToList(); ;
+                if (selectedModels != null && selectedModels.Any())
                 {
-                    selectedNodes = value.ToList();
-                    if (selectedNodes.Any())
+                    foreach (var model in selectedModels)
                     {
-                        foreach (var node in selectedNodes)
+                        model.PropertyChanged +=model_PropertyChanged;
+                        if (model is NodeModel)
                         {
-                            node.PropertyChanged += OnNodePropertyChanged;
-                            node.Disposed +=node_Disposed;
+                            var nodeModel = model as NodeModel;
+                            nodeModel.Disposed += node_Disposed;
                         }
-                    }
-                }              
-            }
-        }
-      
-        private IEnumerable<NoteModel> selectedNotes;
-        public IEnumerable<NoteModel> SelectedNotes
-        {
-            get { return selectedNotes; }
-            set
-            {
-                selectedNotes = value;
-                if (selectedNotes != null)
-                {
-                    selectedNotes = value.ToList();
-                    if (selectedNotes.Any())
-                    {
-                        foreach (var note in selectedNotes)
+
+                        if (model is NoteModel)
                         {
-                            note.PropertyChanged += OnNotePropertyChanged;
-                            note.Disposed +=note_Disposed;
+                            var noteModel = model as NoteModel;
+                            noteModel.Disposed += note_Disposed;
                         }
                     }
                 }
             }
+            
         }
-       
-        private Rect2D rectRegion;
-        public Rect2D RectRegion
-        {
-            get { return rectRegion; }
-            set { rectRegion = value; }
-        }
-      
+
         public override Rect2D Rect
         {
-            get { return this.RectRegion; }
+            get { return new Rect2D(this.Left, this.Top, this.Width, this.Height); }
         }
 
         private Double textBlockHeight;
@@ -177,72 +144,59 @@ namespace Dynamo.Models
         }
 
         public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes )
-        {
-            this.nodesInWorkspace = nodes;
-            this.SelectedNodes = nodes.Where(x => x.IsSelected);
-            this.SelectedNotes = notes.Where(x => x.IsSelected);
-            this.AnnotationText = "<<Double click to edit the grouping>>";
-            SelectRegionFromNodes(this.SelectedNodes, this.SelectedNotes);
+        {                      
+            this.AnnotationText = "<<click to edit the grouping>>";
+            var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
+            var noteModels = notes as NoteModel[] ?? notes.ToArray();
+
+            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();
+           
+            CreateGroupingOnModels(SelectedModels);
         }
 
-        private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "X":
-                    SelectRegionFromNodes(SelectedNodes, SelectedNotes);
-                    break;
-                case "Y":
-                    SelectRegionFromNodes(SelectedNodes, SelectedNotes);
-                    break;
-            }
-        }
 
-        private void OnNotePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
                 case "X":
-                    SelectRegionFromNodes(SelectedNodes, SelectedNotes);
+                    CreateGroupingOnModels(SelectedModels);
                     break;
                 case "Y":
-                    SelectRegionFromNodes(SelectedNodes, SelectedNotes);
+                    CreateGroupingOnModels(SelectedModels);
                     break;
             }
         }
-
+          
         private void node_Disposed(NodeModel node)
         {
-            var nodesList = this.SelectedNodes.ToList();
+            var nodesList = this.SelectedModels.ToList();
             bool remove = nodesList.Remove(node);
             if (remove)
             {
-                SelectRegionFromNodes(nodesList, this.SelectedNotes);
+                CreateGroupingOnModels(SelectedModels);
             }
         }
 
         private void note_Disposed(NoteModel note)
         {
-            var notesList = this.SelectedNotes.ToList();
+            var notesList = this.SelectedModels.ToList();
             bool remove = notesList.Remove(note);
             if (remove)
             {
-                SelectRegionFromNodes(this.SelectedNodes, notesList);
+                CreateGroupingOnModels(SelectedModels);
             }
         }
 
-        private void SelectRegionFromNodes(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
+        private void CreateGroupingOnModels(IEnumerable<ModelBase> selectedModels)
         {
-            var nodesList = nodes.ToList();
-            var notesList = notes.ToList();
-
-            var combinedList = nodesList.Concat(notesList.Cast<ModelBase>()).ToList();
+            var selectedModelsList = selectedModels.ToList();
           
             //var enumerable = nodes as NodeModel[] ?? nodes.ToArray();
             //var nodeModels = nodes as IList<NodeModel> ?? enumerable.ToList();
-            if (combinedList.Any())
+            if (selectedModelsList.Any())
             {
-                var groupModels = combinedList.OrderBy(x => x.X).ToList();
+                var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
 
                 var maxWidth = groupModels.Max(x => x.Width);
                 var maxHeight = groupModels.Max(y => y.Height);
@@ -280,25 +234,25 @@ namespace Dynamo.Models
                 this.Width = region.Width;
                 this.Height = region.Height;
                 this.initialTop = region.Y;
-                this.initialHeight = region.Height;
-                this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);          
+                this.initialHeight = region.Height;               
             }
         }
     
-        private void DeserializeNodeModels()
+        private void DeserializeGroup()
         {
-            var listOfNodes = new List<NodeModel>();          
-            foreach (var objGuid in nodeGuids.Split(','))
+            var listOfModels = new List<ModelBase>();
+            foreach (var objGuid in modelGuids.Split(','))
             {
                 Guid result;
                 if (Guid.TryParse(objGuid, out result))
-                    if (NodesInWorkspace != null)
+                    if (SelectedModels != null)
                     {
-                        var model = NodesInWorkspace.FirstOrDefault(x => x.GUID == result);                        
-                        listOfNodes.Add(model);
+                        var model = SelectedModels.FirstOrDefault(x => x.GUID == result);
+                        listOfModels.Add(model);
                     }
             }
-            this.SelectedNodes = listOfNodes;          
+            SelectedModels = listOfModels;
+            CreateGroupingOnModels(SelectedModels);
         }
 
         #region Command Framework Supporting Methods
@@ -329,7 +283,7 @@ namespace Dynamo.Models
             helper.SetAttribute("width", this.Width);
             helper.SetAttribute("height", this.Height);
             helper.SetAttribute("annotationColor", (this.BackGroundColor == null ? "" : this.BackGroundColor.ToString()));
-            helper.SetAttribute("NodeModelGUIDs", string.Join(",", this.SelectedNodes.Select(x => x.GUID)));
+            helper.SetAttribute("ModelGUIDs", string.Join(",", this.SelectedModels.Select(x => x.GUID)));           
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -342,20 +296,19 @@ namespace Dynamo.Models
             this.Width = helper.ReadDouble("width", 0.0);
             this.Height = helper.ReadDouble("height", 0.0);
             this.BackGroundColor = helper.ReadString("annotationColor", "");
-            nodeGuids = helper.ReadString("NodeModelGUIDs", "");
-            DeserializeNodeModels();
-            this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);           
+            modelGuids = helper.ReadString("ModelGUIDs", "");           
+            DeserializeGroup();           
         }
 
         #endregion
 
         public virtual void Dispose()
         {
-            if (this.SelectedNodes.Any())
+            if (this.SelectedModels.Any())
             {
-                foreach (var node in this.SelectedNodes)
+                foreach (var model in this.SelectedModels)
                 {
-                    node.PropertyChanged -= OnNodePropertyChanged;
+                    model.PropertyChanged -= model_PropertyChanged;
                 }
             }
         }

@@ -162,8 +162,7 @@
         </Rectangle>
         <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 
               Margin="0,0,0,0"
-              VerticalAlignment="Top">
-            <Grid MaxWidth="{Binding Width}" Height="Auto" VerticalAlignment="Bottom">
+              VerticalAlignment="Top">           
                 <TextBlock x:Name="GroupTextBlock"                                     
                     Text ="{Binding AnnotationText, Mode=TwoWay}"                                                  
                     MaxWidth="{Binding Width}"  
@@ -179,8 +178,7 @@
                     MinHeight="20"                   
                     TextChanged="GroupTextBox_OnTextChanged"
                     >
-                </TextBox>               
-            </Grid>
+                </TextBox>                         
         </Grid>              
     </Grid>
 </UserControl>

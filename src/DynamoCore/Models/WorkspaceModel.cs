@@ -662,10 +662,12 @@ namespace Dynamo.Models
             Annotations.Add(annotationModel);
         }
 
-        public AnnotationModel AddAnnotation(double xPos, double yPos, string text, Guid id)
+        public AnnotationModel AddAnnotation(string text, Guid id)
         {
-           
-            var annotationModel = new AnnotationModel(this.Nodes,this.Notes) { GUID = id };
+            var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
+            var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
+
+            var annotationModel = new AnnotationModel(selectedNodes, selectedNotes) { GUID = id };
 
             var args = new ModelEventArgs(annotationModel, true);
             OnRequestNodeCentered(this, args);
@@ -846,7 +848,7 @@ namespace Dynamo.Models
                     annotation.SetAttribute("width", this.Width.ToString(CultureInfo.InvariantCulture));
                     annotation.SetAttribute("height", this.Height.ToString(CultureInfo.InvariantCulture));
                     annotation.SetAttribute("annotationColor", (n.BackGroundColor == null ? "" : n.BackGroundColor.ToString()));
-                    annotation.SetAttribute("NodeModelGUIDs", string.Join(",", n.SelectedNodes.Select(z => z.GUID)));
+                    annotation.SetAttribute("ModelGUIDs", string.Join(",", n.SelectedModels.Select(z => z.GUID)));
                 }
 
                 return true;

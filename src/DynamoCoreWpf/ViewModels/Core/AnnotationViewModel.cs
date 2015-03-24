@@ -79,17 +79,7 @@ namespace Dynamo.ViewModels
                 _annotationModel.AnnotationText = value;                
             }
         }
-
-        private int _textBlockHeight;
-        public double TextBlockHeight
-        {
-            get { return _annotationModel.TextBlockHeight; }
-            set
-            {
-                _annotationModel.TextBlockHeight = value;
-            }
-        }
-
+       
         private Color _backGroundColor;
         public Color BackGroundColor
         {
@@ -106,22 +96,7 @@ namespace Dynamo.ViewModels
                 _annotationModel.BackGroundColor = value.ToString();                
             }
         }
-
-        public Rect2D RectRegion
-        {
-            get { return _annotationModel.RectRegion; }
-        }
-
-        public IEnumerable<NodeModel> SelectedNodes
-        {
-            get { return _annotationModel.SelectedNodes; }
-        }
-
-        public IEnumerable<NoteModel> SelectedNotes
-        {
-            get { return _annotationModel.SelectedNotes; }
-        }
-       
+        
         public PreviewState PreviewState
         {
             get
