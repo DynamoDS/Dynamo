@@ -18,6 +18,20 @@ namespace ProtoTest.LiveRunner
 {
     class PreviewChangeSetTests : ProtoTestBase
     {
+        private ProtoScript.Runners.LiveRunner liveRunner = null;
+        public override void Setup()
+        {
+            base.Setup();
+            liveRunner = new ProtoScript.Runners.LiveRunner();
+            runtimeCore = liveRunner.RuntimeCore;
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+            liveRunner.Dispose();
+        }
+
         [Test]
         public void TestPreviewModify1Node01()
         {
@@ -41,7 +55,6 @@ namespace ProtoTest.LiveRunner
             Guid guid2 = System.Guid.NewGuid();
 
             // Create and run the graph  [a = 1;] and [x = a; y = x;]
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
@@ -55,7 +68,7 @@ namespace ProtoTest.LiveRunner
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
@@ -95,7 +108,6 @@ namespace ProtoTest.LiveRunner
             Guid guid3 = System.Guid.NewGuid();
 
             // Create and run the graph 
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
@@ -110,7 +122,7 @@ namespace ProtoTest.LiveRunner
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the preview guids (affected graphs)
@@ -156,7 +168,6 @@ namespace ProtoTest.LiveRunner
             Guid guid4 = System.Guid.NewGuid();
 
             // Create and run the graph 
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
@@ -174,7 +185,7 @@ namespace ProtoTest.LiveRunner
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
@@ -225,7 +236,6 @@ namespace ProtoTest.LiveRunner
             Guid guid5 = System.Guid.NewGuid();
 
             // Create and run the graph 
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
@@ -244,7 +254,7 @@ namespace ProtoTest.LiveRunner
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
@@ -282,7 +292,6 @@ namespace ProtoTest.LiveRunner
             Guid guid3 = System.Guid.NewGuid();
 
             // Create and run the graph  
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
@@ -297,7 +306,7 @@ namespace ProtoTest.LiveRunner
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
@@ -341,7 +350,6 @@ namespace ProtoTest.LiveRunner
             Guid guid4 = System.Guid.NewGuid();
 
             // Create and run the graph  
-            ProtoScript.Runners.LiveRunner liveRunner = new ProtoScript.Runners.LiveRunner();
             List<Subtree> added = new List<Subtree>();
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]));
             added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]));
@@ -357,7 +365,7 @@ namespace ProtoTest.LiveRunner
             syncData = new GraphSyncData(null, null, modified);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(liveRunner.Core, liveRunner.RuntimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get the the preview guids (affected graphs)
