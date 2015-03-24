@@ -147,7 +147,8 @@ namespace ProtoScript.Runners
         private void ApplyChangeSetModified(ChangeSetData changeSet)
         {
             ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
-            DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
+
+//            DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
 
             // Set new value for modified ASTs
             SetValueForModifiedNodes(changeSet.ModifiedNodesForRuntimeSetValue);
@@ -441,6 +442,7 @@ namespace ProtoScript.Runners
                             if (bnode != null)
                             {
                                 bnode.guid = st.GUID;
+                                bnode.IsInputExpression = ProtoCore.Utils.CoreUtils.IsPrimitiveASTNode(bnode.RightNode) ? true : false;
                             }
 
                             SetNestedLanguageBlockASTGuids(st.GUID, new List<ProtoCore.AST.Node>() { bnode });
@@ -634,9 +636,10 @@ namespace ProtoScript.Runners
                 }
 
                 // Get modified statements
-                var modifiedASTList = GetModifiedNodes(modifiedSubTrees[n]);
+                var modifiedASTList = GetModifiedNodes(modifiedSubTrees[n], out csData.ModifiedNodesForRuntimeSetValue);
                 modifiedSubTrees[n].ModifiedAstNodes.Clear();
                 modifiedSubTrees[n].ModifiedAstNodes.AddRange(modifiedASTList);
+                modifiedSubTrees[n].ModifiedAstNodes.AddRange(csData.ModifiedNodesForRuntimeSetValue);
                 deltaAstList.AddRange(modifiedASTList);
 
                 foreach (AssociativeNode node in modifiedASTList)
@@ -645,9 +648,19 @@ namespace ProtoScript.Runners
                     if (bnode != null)
                     {
                         bnode.guid = modifiedSubTrees[n].GUID;
+                        bnode.IsInputExpression = ProtoCore.Utils.CoreUtils.IsPrimitiveASTNode(bnode.RightNode) ? true : false;
                     }
-
                     SetNestedLanguageBlockASTGuids(modifiedSubTrees[n].GUID, new List<ProtoCore.AST.Node>() { bnode });
+                }
+
+                // Handle modified primitives
+                foreach (AssociativeNode node in csData.ModifiedNodesForRuntimeSetValue)
+                {
+                    var bnode = node as BinaryExpressionNode;
+                    Validity.Assert(bnode != null);
+                    {
+                        bnode.guid = modifiedSubTrees[n].GUID;
+                    }
                 }
             }
             return deltaAstList;
@@ -764,8 +777,9 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
-        private List<AssociativeNode> GetModifiedNodes(Subtree subtree)
+        private List<AssociativeNode> GetModifiedNodes(Subtree subtree, out List<AssociativeNode> modifiedPrimitiveAssignment)
         {
+            modifiedPrimitiveAssignment = new List<AssociativeNode>();
             Subtree st;
             if (!currentSubTreeList.TryGetValue(subtree.GUID, out st) || st.AstNodes == null)
             {
@@ -795,18 +809,23 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
-                    // node is modifed as it does not match any existing
-                    modifiedASTList.Add(node);
-
                     BinaryExpressionNode bnode = node as BinaryExpressionNode;
                     if (null != bnode)
                     {
                         if (bnode.RightNode is LanguageBlockNode)
                         {
+                            modifiedASTList.Add(node);
                             csData.ModifiedNestedLangBlock.Add(bnode);
+                        }
+                        else if (CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
+                        {
+                            // A modified primitive is not re-compiled and executed
+                            // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
+                            modifiedPrimitiveAssignment.Add(bnode);
                         }
                         else if (bnode.LeftNode is IdentifierNode)
                         {
+                            modifiedASTList.Add(node);
                             string lhsName = (bnode.LeftNode as IdentifierNode).Name;
                             Validity.Assert(null != lhsName && string.Empty != lhsName);
                             if (CoreUtils.IsSSATemp(lhsName))
@@ -843,6 +862,34 @@ namespace ProtoScript.Runners
             return modifiedASTList;
         }
 
+        private List<AssociativeNode> GetModifiedPrimitives(List<AssociativeNode> prevASTList, List<AssociativeNode> newASTList)
+        {
+            List<AssociativeNode> modifiedPrimitives = new List<AssociativeNode>();
+
+            // For every previous AST
+            foreach (AssociativeNode newNode in newASTList)
+            {
+                // Check if the new AST exists in the previously cached ast list
+                bool newNodeFound = false;
+                foreach (AssociativeNode prevNode in prevASTList)
+                {
+                    if (newNode.Equals(prevNode))
+                    {
+                        newNodeFound = true;
+                        break;
+                    }
+                }
+
+                BinaryExpressionNode bNode = newNode as BinaryExpressionNode;
+                bool isNewNodePrimitive = bNode != null && CoreUtils.IsPrimitiveASTNode(bNode.RightNode);
+                if (!newNodeFound && isNewNodePrimitive)
+                {
+                    modifiedPrimitives.Add(newNode);
+                }
+            }
+
+            return modifiedPrimitives;
+        }
 
         /// <summary>
         /// Get the ASTs from the previous list that no longer exist in the new list
