@@ -54,7 +54,7 @@ namespace ProtoTest.LiveRunner
             var syncData = new GraphSyncData(null, added, null);
          
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core, runtimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get expected ASTList
@@ -90,7 +90,7 @@ namespace ProtoTest.LiveRunner
             var syncData = new GraphSyncData(null, added, null);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core, runtimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get expected ASTList
@@ -127,7 +127,7 @@ namespace ProtoTest.LiveRunner
             var syncData = new GraphSyncData(null, added, null);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core, runtimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get expected ASTList
@@ -164,7 +164,7 @@ namespace ProtoTest.LiveRunner
             var syncData = new GraphSyncData(null, added, null);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core, runtimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Get expected ASTList
@@ -202,7 +202,7 @@ namespace ProtoTest.LiveRunner
             var syncData = new GraphSyncData(null, added, null);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core, runtimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Modify contents
@@ -247,7 +247,7 @@ namespace ProtoTest.LiveRunner
             var syncData = new GraphSyncData(null, added, null);
 
             // Get astlist from ChangeSetComputer
-            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core);
+            ChangeSetComputer changeSetState = new ProtoScript.Runners.ChangeSetComputer(core, runtimeCore);
             List<AssociativeNode> astList = changeSetState.GetDeltaASTList(syncData);
 
             // Modify contents to c = 1

@@ -97,7 +97,7 @@ namespace ProtoScript.Runners
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                context.SetData(string.Empty, new Dictionary<string, object>(), null, Constants.kInvalidIndex, null);
+                context.SetData(string.Empty, new Dictionary<string, object>(), null);
                 ProtoCore.Language id = globalBlock.language;
 
                 
@@ -118,6 +118,13 @@ namespace ProtoScript.Runners
             return buildSucceeded;
         }
 
+        private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core, int runningBlock)
+        {
+            ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
+            runtimeCore.SetupForExecution(core, new ProtoCore.Runtime.Context());
+            return runtimeCore;
+        }
+
         /// <summary>
         /// Execute the data stored in core
         /// This is the entry point of all DS code to be executed
@@ -129,17 +136,13 @@ namespace ProtoScript.Runners
         public ProtoCore.RuntimeCore Execute(
             ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
         {
-            //========================Generate runtimecore here===============================//
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core, runningBlock);
 
-            // Move these core setup to runtime core 
-            runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
-            runtimeCore.RunningBlock = runningBlock;
-            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
+            //Start the timer       
+            runtimeCore.StartTimer();
 
             try
             {
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
                 foreach (ProtoCore.DSASM.CodeBlock codeblock in core.CodeBlockList)
                 {
                     // Comment Jun:
@@ -162,6 +165,53 @@ namespace ProtoScript.Runners
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
             catch 
+            {
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                throw;
+            }
+            return runtimeCore;
+        }
+
+        /// <summary>
+        /// ExecuteLive is called by the live runner where a persistent RuntimeCore is provided
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="runningBlock"></param>
+        /// <param name="staticContext"></param>
+        /// <param name="runtimeContext"></param>
+        /// <returns></returns>
+        public ProtoCore.RuntimeCore ExecuteLive(
+            ProtoCore.Core core,
+            ProtoCore.RuntimeCore runtimeCore, 
+            ProtoCore.CompileTime.Context staticContext, 
+            ProtoCore.Runtime.Context runtimeContext)
+        {
+            try
+            {
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+                foreach (ProtoCore.DSASM.CodeBlock codeblock in core.CodeBlockList)
+                {
+                    // Comment Jun:
+                    // On first bounce, the stackframe depth is initialized to -1 in the Stackfame constructor.
+                    // Passing it to bounce() increments it so the first depth is always 0
+                    ProtoCore.DSASM.StackFrame stackFrame = new ProtoCore.DSASM.StackFrame(core.GlobOffset);
+                    stackFrame.FramePointer = runtimeCore.RuntimeMemory.FramePointer;
+
+                    // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
+                    // Register TX is used for this.
+                    StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                    stackFrame.TX = svCallConvention;
+
+                    // Initialize the entry point interpreter
+                    int locals = 0; // This is the global scope, there are no locals
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
+                }
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+            }
+            catch
             {
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
                 throw;
@@ -295,12 +345,6 @@ namespace ProtoScript.Runners
             return null;
         }
 
-        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
-        {
-            ProtoCore.RuntimeCore runtimeCore = null;
-            return Execute(sourcecode, core, out runtimeCore);
-        }
-
         /// <summary>
         /// Load and execute the DS code in the specified file
         /// </summary>
@@ -324,8 +368,6 @@ namespace ProtoScript.Runners
 
             string strSource = reader.ReadToEnd();
             reader.Dispose();
-            //Start the timer       
-            runtimeCore.StartTimer();
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;

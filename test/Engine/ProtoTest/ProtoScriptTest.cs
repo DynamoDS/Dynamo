@@ -9,7 +9,7 @@ namespace ProtoTest
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
             fsr.Execute(
-@"[Imperative]{	x = 987654321;	[Associative]	{		 px = 1234321;	}}", core);
+@"[Imperative]{	x = 987654321;	[Associative]	{		 px = 1234321;	}}", core, out runtimeCore);
         }
     }
 
@@ -25,7 +25,7 @@ namespace ProtoTest
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 fsr.Execute(
-    @"[imperative{    a = 3}", core);
+    @"[imperative{    a = 3}", core, out runtimeCore);
             });
         }
         [Test]
@@ -36,7 +36,7 @@ namespace ProtoTest
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 fsr.Execute(
-    @"[{    a = 3}", core);
+    @"[{    a = 3}", core, out runtimeCore);
             });
         }
         [Test]
@@ -47,7 +47,7 @@ namespace ProtoTest
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 fsr.Execute(
-    @"[associative]{	a = 1;	}", core);
+    @"[associative]{	a = 1;	}", core, out runtimeCore);
             });
         }
     }
