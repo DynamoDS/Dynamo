@@ -177,7 +177,7 @@ namespace Dynamo.UI.Views
             }
 
             // Get expanded categories that should be collapsed.
-            var categoriesToBeCollapsed = allExpandedCategories.Remove(categoryToBeExpanded);
+            allExpandedCategories.Remove(categoryToBeExpanded);
 
             // Close all open categories, except one, that contains class.
             // Or if category was clicked, also expand it and close others.
@@ -198,6 +198,7 @@ namespace Dynamo.UI.Views
                                 ele.IsExpanded = false;
                         }
                         else
+                        {
                             // If there is no sub categories, we can be sure, 
                             // that selected class is not inside.
                             if (categoryToBeCollapsed.SubCategories.Count == 0)
@@ -206,6 +207,7 @@ namespace Dynamo.UI.Views
                             // is selected class inside of one of these sub categories?
                             else
                                 categoryToBeCollapsed.IsExpanded = ExpandCategory(categoryToBeCollapsed.Items.OfType<NodeCategoryViewModel>(), selectedClass);
+                        }
                     }
                     // If categoryClasses == null, that means there are no classes. 
                     // It can be when namespace is inside of another namespace.
