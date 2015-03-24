@@ -113,6 +113,7 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> DeletedBinaryExprASTNodes;
         public List<AssociativeNode> DeletedFunctionDefASTNodes;
         public List<AssociativeNode> RemovedBinaryNodesFromModification;
+        public List<AssociativeNode> ModifiedNodesForRuntimeSetValue;
         public List<AssociativeNode> RemovedFunctionDefNodesFromModification;
         public List<AssociativeNode> ForceExecuteASTList;
         public List<AssociativeNode> ModifiedFunctions;
@@ -125,10 +126,13 @@ namespace ProtoScript.Runners
     public class ChangeSetApplier
     {
         private ProtoCore.Core core = null;
-        public void Apply(ProtoCore.Core core, ChangeSetData changeSet)
+        private RuntimeCore runtimeCore = null;
+
+        public void Apply(ProtoCore.Core core, RuntimeCore runtimeCore, ChangeSetData changeSet)
         {
             Validity.Assert(null != changeSet);
             this.core = core;
+            this.runtimeCore = runtimeCore;
             ApplyChangeSetDeleted(changeSet);
             ApplyChangeSetModified(changeSet);
             ApplyChangeSetForceExecute(changeSet);
@@ -144,6 +148,9 @@ namespace ProtoScript.Runners
         {
             ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
+
+            // Set new value for modified ASTs
+            SetValueForModifiedNodes(changeSet.ModifiedNodesForRuntimeSetValue);
             
             // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
@@ -171,6 +178,46 @@ namespace ProtoScript.Runners
                 {
                     core.SetNewEntryPoint(firstDirtyNode.updateBlock.startpc);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Get the StackValue to be set at runtime
+        /// The StackValue can be a primitive or an object
+        /// Currently, only primitives are supported
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private StackValue GetStackValueForRuntime(AssociativeNode node)
+        {
+            BinaryExpressionNode bnode = node as BinaryExpressionNode;
+            Validity.Assert(bnode != null);
+            Validity.Assert(bnode.Optr == Operator.assign);
+
+            StackValue svSet = StackValue.BuildNull();
+            if (ProtoCore.Utils.CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
+            {
+                svSet = ProtoCore.Utils.CoreUtils.BuildStackValueForPrimitive(bnode.RightNode);
+            }
+            else
+            {
+                // Build or retrieve a DS Pointer (object) and set it here
+                // DS Pointer must be created and set on the DS heap)
+                svSet = StackValue.BuildNull();
+            }
+            return svSet;
+        }
+
+        /// <summary>
+        /// Sets a new rhs for binary asts that were modified
+        /// </summary>
+        /// <param name="modifiedNodes"></param>
+        private void SetValueForModifiedNodes(List<AssociativeNode> modifiedNodes)
+        {
+            foreach (AssociativeNode node in modifiedNodes)
+            {
+                StackValue sv = GetStackValueForRuntime(node);
+                runtimeCore.SetValue(node.ID, sv);
             }
         }
 
@@ -568,6 +615,7 @@ namespace ProtoScript.Runners
         {
             var deltaAstList = new List<AssociativeNode>();
             csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
+            csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>();
             csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
             csData.ModifiedFunctions = new List<AssociativeNode>();
             csData.ForceExecuteASTList = new List<AssociativeNode>();
@@ -1739,7 +1787,7 @@ namespace ProtoScript.Runners
             changeSetComputer.UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
-            changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
+            changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
         }
