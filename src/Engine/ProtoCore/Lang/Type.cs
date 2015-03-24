@@ -139,7 +139,7 @@ namespace ProtoCore
                 primitiveTypeNames[PrimitiveType.kTypeVoid] = DSDefinitions.Keyword.Void;
                 primitiveTypeNames[PrimitiveType.kTypeArray] = DSDefinitions.Keyword.Array;
                 primitiveTypeNames[PrimitiveType.kTypeHostEntityID] = "hostentityid";
-                primitiveTypeNames[PrimitiveType.kTypePointer] = "pointer_reserved";
+                primitiveTypeNames[PrimitiveType.kTypePointer] = DSDefinitions.Keyword.PointerReserved;
                 primitiveTypeNames[PrimitiveType.kTypeFunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
                 primitiveTypeNames[PrimitiveType.kTypeReturn] = "return_reserved";
             }
@@ -279,7 +279,7 @@ namespace ProtoCore
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeHostEntityID);
             //
             //
-            cnode = new ClassNode { name = "pointer_reserved", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.PointerReserved, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
             // if convert operator to method call, without the following statement, 
             // a = b.c + d.e will fail, b.c and d.e are resolved as pointer and _add method requires two integer
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
