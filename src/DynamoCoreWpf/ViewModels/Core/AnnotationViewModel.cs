@@ -38,13 +38,21 @@ namespace Dynamo.ViewModels
         public Double Height
         {
             get { return _annotationModel.Height; }
-            set { _annotationModel.Height = value; }
+            set
+            {
+                _annotationModel.Height = value;
+                RaisePropertyChanged("Height");
+            }
         }
 
         public Double Top
         {
             get { return _annotationModel.Top; }
-            set { _annotationModel.Top = value; }
+            set
+            {
+                _annotationModel.Top = value;
+                RaisePropertyChanged("Top");
+            }
         }
        
         public Double Left
@@ -71,11 +79,15 @@ namespace Dynamo.ViewModels
                 _annotationModel.AnnotationText = value;                
             }
         }
-       
-        private int _textBoxWidth;
-        public double TextBoxHeight
+
+        private int _textBlockHeight;
+        public double TextBlockHeight
         {
-            get { return this.Height; }
+            get { return _annotationModel.TextBlockHeight; }
+            set
+            {
+                _annotationModel.TextBlockHeight = value;
+            }
         }
 
         private Color _backGroundColor;
@@ -109,13 +121,7 @@ namespace Dynamo.ViewModels
         {
             get { return _annotationModel.SelectedNotes; }
         }
-
-        public bool IsInDrag
-        {
-            get { return _annotationModel.IsInDrag; }
-            set { _annotationModel.IsInDrag = value; }
-        }
-
+       
         public PreviewState PreviewState
         {
             get
@@ -132,8 +138,7 @@ namespace Dynamo.ViewModels
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {            
             _annotationModel = model;           
-            this.WorkspaceViewModel = workspaceViewModel;            
-            this.IsInDrag = false;                
+            this.WorkspaceViewModel = workspaceViewModel;                                     
             model.PropertyChanged += model_PropertyChanged;
         }
        

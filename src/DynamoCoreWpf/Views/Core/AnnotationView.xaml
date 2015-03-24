@@ -6,7 +6,8 @@
              mc:Ignorable="d"                          
              Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
-             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"                        
+             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"
+             MouseLeave="AnnotationView_OnMouseLeave"
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">
     <UserControl.Resources>
@@ -159,13 +160,14 @@
                 <SolidColorBrush Color="{Binding BackGroundColor}"></SolidColorBrush>
             </Rectangle.Fill>
         </Rectangle>
-        <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="50" MaxWidth="{Binding Width}" 
+        <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 
               Margin="0,0,0,0"
               VerticalAlignment="Top">
             <Grid MaxWidth="{Binding Width}" Height="Auto" VerticalAlignment="Bottom">
                 <TextBlock x:Name="GroupTextBlock"                                     
                     Text ="{Binding AnnotationText, Mode=TwoWay}"                                                  
-                    MaxWidth="{Binding Width}"                    
+                    MaxWidth="{Binding Width}"  
+                    MinHeight="20"                       
                     TextWrapping="Wrap" MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
                 </TextBlock>
                 <TextBox 
@@ -173,8 +175,10 @@
                     Visibility="Collapsed"
                     Text ="{Binding AnnotationText,Mode=TwoWay}"                                                    
                     TextWrapping="Wrap"            
-                    MaxWidth="{Binding Width}"                   
-                    MouseLeave="UIElement_OnMouseLeave">
+                    MaxWidth="{Binding Width}" 
+                    MinHeight="20"                   
+                    TextChanged="GroupTextBox_OnTextChanged"
+                    >
                 </TextBox>               
             </Grid>
         </Grid>              

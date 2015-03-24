@@ -39,12 +39,17 @@ namespace Dynamo.Nodes
 
             InitializeComponent();
             Loaded += AnnotationView_Loaded;
-            BindingErrorTraceListener.SetTrace();
+            BindingErrorTraceListener.SetTrace();                      
         }
 
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewModel = this.DataContext as AnnotationViewModel;          
+            ViewModel = this.DataContext as AnnotationViewModel;
+            //Set the height of Textblock based on the content.
+            if (ViewModel != null)
+            {
+                ViewModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
+            }
         }
 
         private void OnEditItemClick(object sender, RoutedEventArgs e)
@@ -119,13 +124,18 @@ namespace Dynamo.Nodes
             e.Handled = true;
         }
 
-        private void UIElement_OnMouseLeave(object sender, MouseEventArgs e)
+        private void GroupTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {           
+            if (ViewModel != null)
+            {
+                ViewModel.TextBlockHeight = GroupTextBox.ActualHeight;
+            }           
+        }
+
+        private void AnnotationView_OnMouseLeave(object sender, MouseEventArgs e)
         {
             this.GroupTextBox.Visibility = Visibility.Collapsed;
-            this.GroupTextBlock.Visibility = Visibility.Visible;
-            this.TextBlockGrid.Height = this.GroupTextBox.ExtentHeight;
-            var annotationviewmodel = this.DataContext as AnnotationViewModel;           
-            e.Handled = true;
+            this.GroupTextBlock.Visibility = Visibility.Visible; 
         }
     }
 }

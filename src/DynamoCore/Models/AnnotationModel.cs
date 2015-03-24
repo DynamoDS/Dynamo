@@ -15,7 +15,8 @@ namespace Dynamo.Models
 {
     public class AnnotationModel : ModelBase
     {
-       // private readonly INodeRepository nodeRepository;       
+        private double initialTop;        
+        private double initialHeight;
         private string _text;
         public string Text
         {
@@ -157,17 +158,22 @@ namespace Dynamo.Models
             get { return rectRegion; }
             set { rectRegion = value; }
         }
-
-        private bool isInDrag;
-        public bool IsInDrag
-        {
-            get { return isInDrag; }
-            set { isInDrag = value; }
-        }
-
+      
         public override Rect2D Rect
         {
             get { return this.RectRegion; }
+        }
+
+        private Double textBlockHeight;
+        public Double TextBlockHeight
+        {
+            get { return textBlockHeight; }
+            set
+            {
+                textBlockHeight = value;
+                Top = initialTop - textBlockHeight;
+                Height = initialHeight + textBlockHeight;
+            }
         }
 
         public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes )
@@ -180,18 +186,28 @@ namespace Dynamo.Models
         }
 
         private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {            
-            if (!IsInDrag)
-            {              
-               SelectRegionFromNodes(SelectedNodes,SelectedNotes);                          
+        {
+            switch (e.PropertyName)
+            {
+                case "X":
+                    SelectRegionFromNodes(SelectedNodes, SelectedNotes);
+                    break;
+                case "Y":
+                    SelectRegionFromNodes(SelectedNodes, SelectedNotes);
+                    break;
             }
         }
 
         private void OnNotePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (!IsInDrag)
+            switch (e.PropertyName)
             {
-                SelectRegionFromNodes(SelectedNodes, SelectedNotes);               
+                case "X":
+                    SelectRegionFromNodes(SelectedNodes, SelectedNotes);
+                    break;
+                case "Y":
+                    SelectRegionFromNodes(SelectedNodes, SelectedNotes);
+                    break;
             }
         }
 
@@ -232,7 +248,7 @@ namespace Dynamo.Models
                 var maxHeight = groupModels.Max(y => y.Height);
 
                 var regionX = groupModels.Min(x => x.X) - 10;
-                var regionY = groupModels.Min(y => y.Y) - 0;
+                var regionY = groupModels.Min(y => y.Y) - TextBlockHeight;
 
                 var xDistance = groupModels.Max(x => x.X) - regionX;
                 var yDistance = groupModels.Max(x => x.Y) - regionY;
@@ -263,14 +279,15 @@ namespace Dynamo.Models
                 this.Top = region.Y;
                 this.Width = region.Width;
                 this.Height = region.Height;
+                this.initialTop = region.Y;
+                this.initialHeight = region.Height;
                 this.RectRegion = new Rect2D(this.Left, this.Top, this.Width, this.Height);          
             }
         }
     
         private void DeserializeNodeModels()
         {
-            var listOfNodes = new List<NodeModel>();
-            this.isInDrag = false;
+            var listOfNodes = new List<NodeModel>();          
             foreach (var objGuid in nodeGuids.Split(','))
             {
                 Guid result;
