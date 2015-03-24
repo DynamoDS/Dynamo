@@ -60,8 +60,6 @@ namespace DynamoCoreUITests
                 this.ViewModel = null;
                 this.commandCallback = null;
             }
-
-            GC.Collect();
         }
 
         #endregion

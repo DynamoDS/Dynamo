@@ -1268,6 +1268,7 @@ namespace ProtoCore.AST.AssociativeAST
     public class MethodAttributes
     {
         public bool HiddenInLibrary { get; protected set; }
+        public bool CanUpdatePeriodically { get; protected set; }
         public IEnumerable<string> ReturnKeys
         {
             get
@@ -1284,9 +1285,10 @@ namespace ProtoCore.AST.AssociativeAST
         /// </summary>
         public string Description { get; set; }
 
-        public MethodAttributes(bool hiddenInLibrary = false, string msg = "")
+        public MethodAttributes(bool hiddenInLibrary = false, bool canUpdatePeriodically = false, string msg = "")
         {
             HiddenInLibrary = hiddenInLibrary;
+            CanUpdatePeriodically = canUpdatePeriodically;
             ObsoleteMessage = msg;
         }
     }

@@ -1,0 +1,60 @@
+<Workspace Version="0.8.0.684" X="-825.795211885203" Y="260.422628559574" zoom="0.24992337438047" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="ae19e8bc-88c0-4d17-bca8-a4160f943d62" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="3581.10710930312" y="749.084618781856" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="478096b5-ca63-4618-8b01-571e2a96314e" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="3425.74325370254" y="734.524619497286" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..#8..4;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="f2067c8e-4288-455e-bbeb-e0118a8a74f6" type="Dynamo.Nodes.DSFunction" nickname="Circle.ByCenterPointRadius" x="4203.32721617242" y="750.612368956374" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="bdd09435-9333-49d8-af89-0bf65dee59ef" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="4102.98967768923" y="812.585109543448" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1.5;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="25f3149e-7268-44fa-b231-ffc053f2335d" type="Dynamo.Nodes.Watch" nickname="Watch" x="3779.5373297572" y="750.676336564008" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction guid="d69a177b-a50b-4b3f-9f79-bca36df5e1d5" type="Dynamo.Nodes.DSFunction" nickname="List.GetItemAtIndex" x="4901.58748475413" y="561.577398027748" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="a8cf636f-e12a-40a1-a379-6fc5dac1ea68" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="4759.77754366835" y="590.679975502263" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..2;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="2abb7d97-6b23-4b26-91af-c11407503a66" type="Dynamo.Nodes.DSFunction" nickname="Curve.Extrude" x="5558.31513988697" y="568.829548498671" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.Extrude@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="30d84351-d1c3-4a72-99eb-3708f2f68f46" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="5453.15882294258" y="643.882970629645" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="3;" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="1ac2cabd-67ec-4708-a0df-afb9abc786b0" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="5466.78169030257" y="1042.86315052899" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="-3;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="b842e66f-ff66-439f-a629-b5c81c7666b6" type="Dynamo.Nodes.DSFunction" nickname="List.GetItemAtIndex" x="4740.41175426177" y="1032.7496128695" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
+    <Dynamo.Nodes.DSFunction guid="44b197d9-25e2-4afe-96d2-badc82b0e37d" type="Dynamo.Nodes.DSFunction" nickname="Curve.Extrude" x="5571.93800724695" y="967.809728398021" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.Extrude@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="c08aa26c-a9e8-46ba-b89f-83e472059046" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="4630.40302008254" y="1053.4834516844" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1..2;" ShouldFocus="false" />
+    <DSCore.Map guid="8bac3283-e952-4072-9963-eb762f0a7d49" type="DSCore.Map" nickname="List.Map" x="4929.45123901967" y="966.970192132089" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="e4babf32-f004-4cb5-8d8f-03a20c73557a" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="3424.23038263875" y="832.432412380937" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..#5..4;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="05749e63-32cb-4b22-b5bc-ed1c347cd9cb" type="Dynamo.Nodes.Watch" nickname="Watch" x="5121.06508856184" y="562.841475446039" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch guid="a9d641fc-33e8-47c0-a765-9533c434bfcc" type="Dynamo.Nodes.Watch" nickname="Watch" x="5122.23309903771" y="964.620617369044" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ae19e8bc-88c0-4d17-bca8-a4160f943d62" start_index="0" end="25f3149e-7268-44fa-b231-ffc053f2335d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="478096b5-ca63-4618-8b01-571e2a96314e" start_index="0" end="ae19e8bc-88c0-4d17-bca8-a4160f943d62" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f2067c8e-4288-455e-bbeb-e0118a8a74f6" start_index="0" end="d69a177b-a50b-4b3f-9f79-bca36df5e1d5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f2067c8e-4288-455e-bbeb-e0118a8a74f6" start_index="0" end="8bac3283-e952-4072-9963-eb762f0a7d49" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bdd09435-9333-49d8-af89-0bf65dee59ef" start_index="0" end="f2067c8e-4288-455e-bbeb-e0118a8a74f6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="25f3149e-7268-44fa-b231-ffc053f2335d" start_index="0" end="f2067c8e-4288-455e-bbeb-e0118a8a74f6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d69a177b-a50b-4b3f-9f79-bca36df5e1d5" start_index="0" end="05749e63-32cb-4b22-b5bc-ed1c347cd9cb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a8cf636f-e12a-40a1-a379-6fc5dac1ea68" start_index="0" end="d69a177b-a50b-4b3f-9f79-bca36df5e1d5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="30d84351-d1c3-4a72-99eb-3708f2f68f46" start_index="0" end="2abb7d97-6b23-4b26-91af-c11407503a66" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1ac2cabd-67ec-4708-a0df-afb9abc786b0" start_index="0" end="44b197d9-25e2-4afe-96d2-badc82b0e37d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b842e66f-ff66-439f-a629-b5c81c7666b6" start_index="0" end="8bac3283-e952-4072-9963-eb762f0a7d49" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c08aa26c-a9e8-46ba-b89f-83e472059046" start_index="0" end="b842e66f-ff66-439f-a629-b5c81c7666b6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8bac3283-e952-4072-9963-eb762f0a7d49" start_index="0" end="a9d641fc-33e8-47c0-a765-9533c434bfcc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4babf32-f004-4cb5-8d8f-03a20c73557a" start_index="0" end="ae19e8bc-88c0-4d17-bca8-a4160f943d62" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="05749e63-32cb-4b22-b5bc-ed1c347cd9cb" start_index="0" end="2abb7d97-6b23-4b26-91af-c11407503a66" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a9d641fc-33e8-47c0-a765-9533c434bfcc" start_index="0" end="44b197d9-25e2-4afe-96d2-badc82b0e37d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="This list of points is organized in a hierarchical structure--it's a list of lists.  The grid was made with 8 points in the X-direction and 5 in the Y-direction.  This list represents 8 lists of 5 things, or lists of columns of points." x="3782.72863726522" y="637.804900116234" />
+    <Dynamo.Models.NoteModel text="Draw a circle around each point." x="4168.85852609423" y="698.253535453535" />
+    <Dynamo.Models.NoteModel text="From the nested list of circles, items {1,2} are chosen.  Dynamo nodes will always act on a list &quot;from the outside in,&quot; or from the highest level to the lowest level.&#xD;&#xA;&#xD;&#xA;Selecting items 1 and 2 from the list will return list #1 and list #2 from the original nested list structure." x="4773.4193233943" y="424.510541559189" />
+    <Dynamo.Models.NoteModel text="List.GetItemAtIndex can be used as a function and passed TO EACH list.  &#xD;&#xA;&#xD;&#xA;To turn List.GetItemAtIndex into a function, the list input is left UNSATISFIED and the node's output is passed to the function input for the List.Map node.  The List.Map function then takes the #1 and #2 item FROM EACH list rather than the first two lists." x="4754.87402941826" y="819.666865847019" />
+    <Dynamo.Models.NoteModel text="The selected data still exists in the same structure it did before I selected it by mapping." x="5117.03169281953" y="493.377001777663" />
+    <Dynamo.Models.NoteModel text="This list of circles is extruded up." x="5485.25419747392" y="514.17074321697" />
+    <Dynamo.Models.NoteModel text="This list of circles is extruded down." x="5475.79639710157" y="915.044178564507" />
+    <Dynamo.Models.NoteModel text="PASSING FUNCTIONS&#xD;&#xA;&#xD;&#xA;Dynamo is a functional language, which means that ACTIONS can be treated in the same way that OBJECTS are.  Most nodes in Dynamo can be turned into a function and used in a very precise way on a set of data.  &#xD;&#xA;&#xD;&#xA;Making a function and passing a function is like speaking the command &quot;Run for 20 minutes!&quot; but specifying later on who you are talking to.&#xD;&#xA;&#xD;&#xA;In this example, a grid of circles is represented in a complex structure.  The command to select a set of circles is used directly, and then the command is passed instead as a function to lower levels of data for a different result." x="3427.2604599744" y="337.124829832297" />
+  </Notes>
+</Workspace>

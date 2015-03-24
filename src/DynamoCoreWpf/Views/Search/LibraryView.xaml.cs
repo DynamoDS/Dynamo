@@ -185,10 +185,7 @@ namespace Dynamo.UI.Views
                     var categoryClasses = categoryToBeCollapsed.Items[0] as ClassesNodeCategoryViewModel;
                     // Ensure, that this class is not part of current category.
                     if (categoryClasses != null)
-                        if (categoryClasses.Items.Contains(selectedClass))
-                            categoryToBeCollapsed.IsExpanded = true;
-                        else
-                            categoryToBeCollapsed.IsExpanded = false;
+                        categoryToBeCollapsed.IsExpanded = categoryClasses.Items.Contains(selectedClass);
                 }
                 // If category button was clicked.
                 else

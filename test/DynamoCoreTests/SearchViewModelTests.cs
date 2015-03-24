@@ -71,8 +71,8 @@ namespace Dynamo.Tests
             categoryName = "Cat1 Cat" + Configurations.CategoryDelimiterString + "Cat2 Cat" +
                                     Configurations.CategoryDelimiterString + "Cat3";
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
-            Assert.AreEqual("Cat1 Cat " + Configurations.ShortenedCategoryDelimiter + " Cat2 Cat " +
-                                      Configurations.ShortenedCategoryDelimiter + " Cat3", result);
+            Assert.AreEqual("Cat1 Cat" + Configurations.ShortenedCategoryDelimiter + "Cat2 Cat" +
+                                      Configurations.ShortenedCategoryDelimiter + "Cat3", result);
 
             categoryName = "TenSymbol" + Configurations.CategoryDelimiterString +
                            "TenSymbol" + Configurations.CategoryDelimiterString +
@@ -81,11 +81,11 @@ namespace Dynamo.Tests
                            "TenSymbol" + Configurations.CategoryDelimiterString +
                            "MoreSymbols";
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
-            Assert.AreEqual("TenSymbol " + Configurations.ShortenedCategoryDelimiter +
-                           " ... " + Configurations.ShortenedCategoryDelimiter +
-                           " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
-                           " TenSymbol " + Configurations.ShortenedCategoryDelimiter +
-                           " MoreSymbols", result);
+            Assert.AreEqual("TenSymbol" + Configurations.ShortenedCategoryDelimiter +
+                           "..." + Configurations.ShortenedCategoryDelimiter +
+                           "TenSymbol" + Configurations.ShortenedCategoryDelimiter +
+                           "TenSymbol" + Configurations.ShortenedCategoryDelimiter +
+                           "MoreSymbols", result);
         }
 
         #region InsertEntry tests

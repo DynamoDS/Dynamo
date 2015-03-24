@@ -318,8 +318,9 @@ namespace Dynamo.PackageManager
             if (!Directory.Exists(BinaryDirectory))
                 return assemblies;
 
-            // use the pkg header to determine which assemblies to load and prevent multiple enumeration
-            var nodeLibraries = Header.node_libraries.ToList();
+            // Use the pkg header to determine which assemblies to load and prevent multiple enumeration
+            // In earlier packages, this field could be null, which is correctly handled by IsNodeLibrary
+            var nodeLibraries = Header.node_libraries;
             
             foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
             {
