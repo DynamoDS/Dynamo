@@ -37,7 +37,7 @@ namespace ProtoScript.Runners
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                context.SetData(string.Empty, null, null, currentBlockID, runtimeCore.RuntimeMemory);
+                context.SetExprInterpreterProperties(currentBlockID, runtimeCore.RuntimeMemory, runtimeCore.watchClassScope, runtimeCore.DebugProps);
                 ProtoCore.Language id = globalBlock.language;
 
                 runtimeCore.ExprInterpreterExe.iStreamCanvas = new InstructionStream(globalBlock.language, Core);
