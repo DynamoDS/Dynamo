@@ -51,7 +51,7 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "extra"); }
         }
 
-        public bool Loaded { get; private set; }
+        public bool Loaded { get; internal set; }
 
         private bool typesVisibleInManager;
         public bool TypesVisibleInManager
@@ -194,30 +194,6 @@ namespace Dynamo.PackageManager
 
         }
 
-        /// <summary>
-        /// Load the Package into Dynamo.  
-        /// </summary>
-        /// <param name="loadPackageParams"></param>
-        /// <param name="logger"></param>
-        public void LoadIntoDynamo(LoadPackageParams loadPackageParams, ILogger logger)
-        {
-            // Prevent duplicate loads
-            if (Loaded) return;
-
-            try
-            {
-                LoadAssembliesIntoDynamo(loadPackageParams);
-                LoadCustomNodesIntoDynamo(loadPackageParams);
-                EnumerateAdditionalFiles();
-                Loaded = true;
-            }
-            catch (Exception e)
-            {
-                Log("Exception when attempting to load package " + Name + " from " + RootDirectory);
-                Log(e.GetType() + ": " + e.Message);
-            }
-        }
-
         public void EnumerateAdditionalFiles()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return;
@@ -239,51 +215,6 @@ namespace Dynamo.PackageManager
                 return new List<string>();
 
             return Directory.EnumerateFiles(RootDirectory, "*.dll", SearchOption.AllDirectories);
-        }
-
-        private void LoadCustomNodesIntoDynamo(LoadPackageParams loadPackageParams)
-        {
-            var loader = loadPackageParams.CustomNodeManager;
-            var isTestMode = loadPackageParams.IsTestMode;
-            foreach (var info in loader.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
-                LoadedCustomNodes.Add(info);
-        }
-
-        private void LoadAssembliesIntoDynamo(LoadPackageParams loadPackageParams)
-        {
-            var loader = loadPackageParams.Loader;
-            var assemblies = LoadAssembliesInBinDirectory();
-
-            // filter the assemblies
-            var zeroTouchAssemblies = new List<Assembly>();
-            var nodeModelAssemblies = new List<Assembly>();
-
-            // categorize the assemblies to load, skipping the ones that are not identified as node libraries
-            foreach (var assem in assemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly))
-            {
-                if (loader.ContainsNodeModelSubType(assem))
-                    nodeModelAssemblies.Add(assem);
-                else
-                    zeroTouchAssemblies.Add(assem);
-            }
-
-            // load the zero touch assemblies
-            var libraryServices = loadPackageParams.LibraryServices;
-            foreach (var zeroTouchAssem in zeroTouchAssemblies)
-                libraryServices.ImportLibrary(zeroTouchAssem.Location);
-
-            // load the node model assemblies
-            var context = loadPackageParams.Context;
-            var nodes = nodeModelAssemblies.SelectMany(
-                assem =>
-                {
-                    var assemblyNodes = new List<TypeLoadData>();
-                    loader.LoadNodesFromAssembly(assem, context, assemblyNodes, new List<TypeLoadData>());
-                    return assemblyNodes;
-                });
-
-            foreach (var node in nodes)
-                LoadedTypes.Add(node.Type);
         }
 
         /// <summary>
@@ -308,10 +239,10 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Loads all possible assemblies in node library and returns the list of loaded node library assemblies
+        ///     Enumerates all assemblies in the package
         /// </summary>
         /// <returns>The list of all node library assemblies</returns>
-        private IEnumerable<PackageAssembly> LoadAssembliesInBinDirectory()
+        internal IEnumerable<PackageAssembly> EnumerateAssembliesInBinDirectory()
         {
             var assemblies = new List<PackageAssembly>();
 
@@ -333,11 +264,13 @@ namespace Dynamo.PackageManager
                     // IsNodeLibrary may fail, we store the warnings here and then show
                     IList<ILogMessage> warnings = new List<ILogMessage>();
 
-                    assemblies.Add(new PackageAssembly()
+                    var pkgAssem = new PackageAssembly()
                     {
                         Assembly = assem,
                         IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
-                    });
+                    };
+
+                    assemblies.Add(pkgAssem);
 
                     warnings.ToList().ForEach(this.Log);
                 }
