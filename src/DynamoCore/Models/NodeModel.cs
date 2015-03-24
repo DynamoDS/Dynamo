@@ -1905,7 +1905,14 @@ namespace Dynamo.Models
             var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
             if (prop != null && prop.PropertyType == typeof(String))
             {
-                ElementDescription = (string)prop.GetValue(null, null);
+                try
+                {
+                    ElementDescription = (string) prop.GetValue(null, null);
+                }
+                catch (Exception e)
+                {
+                    throw e.InnerException;
+                }
             }
             else
             {

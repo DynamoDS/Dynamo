@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
@@ -14,17 +16,15 @@ namespace Dynamo.PackageManager
 {
     public struct LoadPackageParams
     {
-        public string Context { get; set; }
-        public bool IsTestMode { get; set; }
         public IPreferences Preferences { get; set; }
         public IPathManager PathManager { get; set; }
-        public LibraryServices LibraryServices { get; set; }
-        public DynamoLoader Loader { get; set; }
-        public CustomNodeManager CustomNodeManager { get; set; }
     }
 
     public class PackageLoader : LogSourceBase
     {
+        private readonly ObservableCollection<Package> localPackages = new ObservableCollection<Package>();
+        public ObservableCollection<Package> LocalPackages { get { return localPackages; } }
+
         public string RootPackagesDirectory { get; private set; }
 
         public PackageLoader(string overridePackageDirectory)
@@ -32,15 +32,96 @@ namespace Dynamo.PackageManager
             RootPackagesDirectory = overridePackageDirectory;
             if (!Directory.Exists(RootPackagesDirectory))
                 Directory.CreateDirectory(RootPackagesDirectory);
+
+            localPackages.CollectionChanged += LocalPackagesChanged;
         }
 
-        private readonly ObservableCollection<Package> localPackages = new ObservableCollection<Package>();
-        public ObservableCollection<Package> LocalPackages { get { return localPackages; } }
+        private void LocalPackagesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var p = e.NewItems[0] as Package;
+                if (p == null) return;
+
+                p.MessageLogged += OnPackageMessageLogged;
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                var p = e.NewItems[0] as Package;
+                if (p == null) return;
+
+                p.MessageLogged -= OnPackageMessageLogged;
+            }
+        }
+
+        private void OnPackageMessageLogged(ILogMessage obj)
+        {
+            Log(obj);
+        }
+
+        internal event Action<Assembly> RequestLoadNodeLibrary;
+        private void OnRequestLoadNodeLibrary(Assembly assem)
+        {
+            if (RequestLoadNodeLibrary != null)
+            {
+                RequestLoadNodeLibrary(assem);
+            }
+        }
+
+        internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory)
+        {
+            if (RequestLoadCustomNodeDirectory != null)
+            {
+                return RequestLoadCustomNodeDirectory(directory);
+            }
+
+            return new List<CustomNodeInfo>();
+        }
+
+        /// <summary>
+        ///     Load the package into Dynamo (including all node libraries and custom nodes)
+        ///     and add to LocalPackages
+        /// </summary>
+        public void Load(Package package)
+        {
+            if (!this.LocalPackages.Contains(package))
+            {
+                this.LocalPackages.Add(package);
+            }
+
+            // Prevent duplicate loads
+            if (package.Loaded) return;
+
+            try
+            {
+                // load node libraries
+                foreach (var assem in package.EnumerateAssembliesInBinDirectory())
+                {
+                    if (assem.IsNodeLibrary)
+                    {
+                        OnRequestLoadNodeLibrary(assem.Assembly);
+                    }
+                }
+
+                // load custom nodes
+                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory);
+                package.LoadedCustomNodes.AddRange(customNodes);
+
+                package.EnumerateAdditionalFiles();
+                package.Loaded = true;
+            }
+            catch (Exception e)
+            {
+                Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
+                Log(e.GetType() + ": " + e.Message);
+            }
+        }
 
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackagesIntoDynamo(LoadPackageParams loadPackageParams)
+        public void LoadAll(LoadPackageParams loadPackageParams)
         {
             ScanAllPackageDirectories(loadPackageParams.Preferences);
 
@@ -48,12 +129,14 @@ namespace Dynamo.PackageManager
             if (pathManager != null)
             {
                 foreach (var pkg in LocalPackages)
+                {
                     pathManager.AddResolutionPath(pkg.BinaryDirectory);
+                }
             }
 
             foreach (var pkg in LocalPackages)
             {
-                pkg.LoadIntoDynamo(loadPackageParams, AsLogger());
+                Load(pkg);
             }
         }
 
