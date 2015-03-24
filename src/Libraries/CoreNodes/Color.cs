@@ -372,8 +372,8 @@ namespace DSCore
         public static ColorRange1D ByColorsAndParameters(
             IList<Color> colors, IList<double> parameters)
         {
-            var colorList = colors as Color[] ?? colors.ToArray();
-            var colorParams = parameters as double[] ?? parameters.ToArray();
+            var colorList = colors == null ? new Color[] {} : colors.ToArray();
+            var colorParams = parameters == null ? new double[] {} : parameters.ToArray();
 
             // Fill in defaults if non-matching sets of inputs are supplied
 

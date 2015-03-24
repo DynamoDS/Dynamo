@@ -50,17 +50,53 @@ namespace Dynamo.Wpf.Nodes
                     IEnumerable<Color> colors = null;
                     IEnumerable<double> values = null;
 
-                    colors = startMirror == null ? 
-                        new List<Color>{DSCore.Color.ByARGB(255, 192, 192, 192)} : 
-                        startMirror.GetData().GetElements().Select(e=>e.Data).Cast<Color>();
+                    if (startMirror == null ||  startMirror.GetData() == null)
+                    {
+                        colors = new List<Color> { DSCore.Color.ByARGB(255, 255, 255, 255) };
+                    }
+                    else
+                    {
+                        var data = startMirror.GetData();
+                        if (data.IsCollection)
+                        {
+                            colors = data.GetElements().Select(e => e.Data).Cast<Color>();
+                        }
+                        else
+                        {
+                            var color = data.Data as Color;
+                            colors = color == null ? 
+                                new List<Color> { DSCore.Color.ByARGB(255,255,255,255)}: 
+                                new List<Color>{color};
+                            
+                        }
+                        
+                    }
 
                     try
                     {
-                        values =
-                            endMirror.GetData()
-                                .GetElements()
-                                .Select(e => e.Data)
-                                .Select(d=>Convert.ToDouble(d,CultureInfo.InvariantCulture));
+                        if (endMirror == null || endMirror.GetData() == null)
+                        {
+                            values = new List<double> { 0.0 };
+                        }
+                        else
+                        {
+                            var data = endMirror.GetData();
+                            if (data.IsCollection)
+                            {
+                                values = data.
+                                    GetElements().
+                                    Select(e => e.Data).
+                                    Select(d=>Convert.ToDouble(d,CultureInfo.InvariantCulture));
+                            }
+                            else
+                            {
+                                var value = Convert.ToDouble(data.Data, CultureInfo.InvariantCulture);
+                                values = value == null ?
+                                    new List<double> { 0.0 } :
+                                    new List<double> { value };
+
+                            }
+                        }
                     }
                     catch
                     {
