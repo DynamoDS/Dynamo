@@ -38,8 +38,6 @@ UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\DynamoInstaller.ico
 UninstallDisplayName={#ProductName} {#ProductVersion}
 UsePreviousAppDir=no
-#define locale "en-US"
-;TODO check user locale and show the corresponding README
 
 [Dirs]
 Name: "{app}\libg_219"
