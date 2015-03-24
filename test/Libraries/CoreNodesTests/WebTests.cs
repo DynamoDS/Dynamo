@@ -21,5 +21,12 @@ namespace DSCoreNodesTests
         {
             Assert.Throws<UriFormatException>(()=>Web.WebRequestByUrl("ThisIsNotAUrl"));
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WebRequest_EmptyUrl()
+        {
+            Assert.Throws<ArgumentException>(() => Web.WebRequestByUrl(""));
+        }
     }
 }
