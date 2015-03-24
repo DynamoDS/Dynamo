@@ -22,8 +22,13 @@ namespace Dynamo.PackageManager
 
     public class PackageLoader : LogSourceBase
     {
-        private readonly ObservableCollection<Package> localPackages = new ObservableCollection<Package>();
-        public ObservableCollection<Package> LocalPackages { get { return localPackages; } }
+        internal event Action<Assembly> RequestLoadNodeLibrary;
+        internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        internal event Action<Package> PackageAdded;
+        internal event Action<Package> PackageRemoved;
+
+        private readonly List<Package> localPackages = new List<Package>();
+        public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
         public string RootPackagesDirectory { get; private set; }
 
@@ -32,25 +37,41 @@ namespace Dynamo.PackageManager
             RootPackagesDirectory = overridePackageDirectory;
             if (!Directory.Exists(RootPackagesDirectory))
                 Directory.CreateDirectory(RootPackagesDirectory);
-
-            localPackages.CollectionChanged += LocalPackagesChanged;
         }
 
-        private void LocalPackagesChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void OnPackageAdded(Package pkg)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            if (PackageAdded != null)
             {
-                var p = e.NewItems[0] as Package;
-                if (p == null) return;
-
-                p.MessageLogged += OnPackageMessageLogged;
+                PackageAdded(pkg);
             }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                var p = e.NewItems[0] as Package;
-                if (p == null) return;
+        }
 
-                p.MessageLogged -= OnPackageMessageLogged;
+        private void OnPackageRemoved(Package pkg)
+        {
+            if (PackageRemoved != null)
+            {
+                PackageRemoved(pkg);
+            }
+        }
+
+        internal void Add(Package pkg)
+        {
+            if (!this.localPackages.Contains(pkg))
+            {
+                this.localPackages.Add(pkg);
+                pkg.MessageLogged += OnPackageMessageLogged;
+                OnPackageAdded(pkg);
+            }
+        }
+
+        internal void Remove(Package pkg)
+        {
+            if (this.localPackages.Contains(pkg))
+            {
+                this.localPackages.Remove(pkg);
+                pkg.MessageLogged -= OnPackageMessageLogged;
+                OnPackageRemoved(pkg);
             }
         }
 
@@ -59,7 +80,7 @@ namespace Dynamo.PackageManager
             Log(obj);
         }
 
-        internal event Action<Assembly> RequestLoadNodeLibrary;
+        
         private void OnRequestLoadNodeLibrary(Assembly assem)
         {
             if (RequestLoadNodeLibrary != null)
@@ -68,7 +89,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        
         private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory)
         {
             if (RequestLoadCustomNodeDirectory != null)
@@ -85,10 +106,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Load(Package package)
         {
-            if (!this.LocalPackages.Contains(package))
-            {
-                this.LocalPackages.Add(package);
-            }
+            this.Add(package);
 
             // Prevent duplicate loads
             if (package.Loaded) return;
@@ -172,7 +190,7 @@ namespace Dynamo.PackageManager
                 // prevent duplicates
                 if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
                 {
-                    LocalPackages.Add(discoveredPkg);
+                    this.Add(discoveredPkg);
                     return discoveredPkg; // success
                 }
                 throw new Exception(String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));

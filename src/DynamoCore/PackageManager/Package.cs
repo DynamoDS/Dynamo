@@ -386,7 +386,7 @@ namespace Dynamo.PackageManager
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
-                packageLoader.LocalPackages.Remove(this);
+                packageLoader.Remove(this);
                 Directory.Delete(RootDirectory, true);
             }
             catch (Exception e)

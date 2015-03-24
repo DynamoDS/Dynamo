@@ -50,7 +50,7 @@ namespace Dynamo.Tests
             });
 
             // There are four packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(4, loader.LocalPackages.Count);
+            Assert.AreEqual(4, loader.LocalPackages.Count());
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace Dynamo.Tests
                 Preferences = ViewModel.Model.PreferenceSettings           
             });
 
-            Assert.AreEqual(0, loader.LocalPackages.Count);
+            Assert.AreEqual(0, loader.LocalPackages.Count());
         }
 
         [Test]
