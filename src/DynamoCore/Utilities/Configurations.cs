@@ -209,6 +209,7 @@ namespace Dynamo.UI
         public const string CategoryGroupQuery = "Query";
         public const string CategoryDelimiterString = ".";
         public const string ShortenedCategoryDelimiter = "-";
+        public const string CategoryDelimiterWithSpaces = " - ";
 
         public const string ClassesDefaultName = "Classes";
 
