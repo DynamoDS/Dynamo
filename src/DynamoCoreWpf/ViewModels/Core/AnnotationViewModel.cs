@@ -6,10 +6,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Dynamo.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Utilities;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
@@ -139,13 +135,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "BackGroundColor":
                     RaisePropertyChanged("BackGroundColor");
-                    break;
-                case "SelectedNodes":
-                    RaisePropertyChanged("SelectedNodes");
-                    break; 
-                case "RectRegion":
-                    RaisePropertyChanged("RectRegion");
-                    break;  
+                    break;                              
                 case "IsSelected":
                     RaisePropertyChanged("PreviewState");
                     break;

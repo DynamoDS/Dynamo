@@ -1,24 +1,18 @@
 ﻿
 using System;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Xml;
-using Dynamo.Interfaces;
 using Dynamo.Utilities;
 using System.Collections.Generic;
-using Dynamo.Nodes;
-using ProtoCore.Lang;
 
 namespace Dynamo.Models
 {
     public class AnnotationModel : ModelBase
     {
-        private double initialTop;        
-        private double initialHeight;
-        private string modelGuids { get; set; }
-        private readonly IEnumerable<ModelBase> modelsInWorkspace;
+        #region Properties
+        private double initialTop; //required to calculate the TOP position in a group         
+        private double initialHeight; //required to calculate the HEIGHT of a group 
+        private string modelGuids { get; set; }        
         private string _text;
         public string Text
         {
@@ -126,6 +120,11 @@ namespace Dynamo.Models
             
         }
 
+        /// <summary>
+        /// Overriding the Rect from Modelbase
+        /// This gets the actual RECT of the group. 
+        /// This is required to make the group as ILocatable.
+        /// </summary>      
         public override Rect2D Rect
         {
             get { return new Rect2D(this.Left, this.Top, this.Width, this.Height); }
@@ -142,6 +141,8 @@ namespace Dynamo.Models
                 Height = initialHeight + textBlockHeight;
             }
         }
+
+        #endregion
 
         public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes )
         {                      
@@ -167,7 +168,11 @@ namespace Dynamo.Models
                     break;
             }
         }
-          
+
+        /// <summary>
+        /// Recalculate the group when a node is disposed
+        /// </summary>
+        /// <param name="node">The node.</param>
         private void node_Disposed(NodeModel node)
         {
             var nodesList = this.SelectedModels.ToList();
@@ -178,6 +183,10 @@ namespace Dynamo.Models
             }
         }
 
+        /// <summary>
+        /// Recaluclate the group when a note is disposed
+        /// </summary>
+        /// <param name="note">The note.</param>
         private void note_Disposed(NoteModel note)
         {
             var notesList = this.SelectedModels.ToList();
@@ -188,26 +197,30 @@ namespace Dynamo.Models
             }
         }
 
-        private void CreateGroupingOnModels(IEnumerable<ModelBase> selectedModels)
+        /// <summary>
+        /// Creates the grouping on selected models.
+        /// </summary>
+        /// <param name="selectedModels">The selected models.</param>
+        private void CreateGroupingOnModels(IEnumerable<ModelBase> models)
         {
-            var selectedModelsList = selectedModels.ToList();
+            var selectedModelsList = models.ToList();
           
-            //var enumerable = nodes as NodeModel[] ?? nodes.ToArray();
-            //var nodeModels = nodes as IList<NodeModel> ?? enumerable.ToList();
             if (selectedModelsList.Any())
             {
-                var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
+               var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
 
                 var maxWidth = groupModels.Max(x => x.Width);
                 var maxHeight = groupModels.Max(y => y.Height);
 
                 var regionX = groupModels.Min(x => x.X) - 10;
                 var regionY = groupModels.Min(y => y.Y) - TextBlockHeight;
-
+             
                 var xDistance = groupModels.Max(x => x.X) - regionX;
                 var yDistance = groupModels.Max(x => x.Y) - regionY;
 
-               
+                // InitialTop is used to store the Y value without the Textblock height
+                this.initialTop = groupModels.Min(y => y.Y);
+
                 var region = new Rect2D
                 {
                     X = regionX,
@@ -215,29 +228,20 @@ namespace Dynamo.Models
                     Width = xDistance + maxWidth + 10,
                     Height = yDistance + maxHeight + 10
                 };
-
-                //special case for grouping just one node
-                //if (enumerable.Count() == 1)
-                //{
-                //    var node = nodeModels.ElementAt(0);
-                //    if (region.IntersectsWith(node.Rect))
-                //    {
-                //        var result = region;
-                //        result.Intersect(node.Rect);
-                //        region.Width = region.Width + 10;
-                //        region.Height = region.Height + 70;
-                //    }
-                //}
-
-                this.Left = region.X;
+             
+                this.Left = region.X;              
                 this.Top = region.Y;
                 this.Width = region.Width;
-                this.Height = region.Height;
-                this.initialTop = region.Y;
+                this.Height = region.Height; 
+                //Initial Height is required to store the Actual height of the group.
                 this.initialHeight = region.Height;               
             }
         }
-    
+
+        /// <summary>
+        /// Deserializes the model guids from XML
+        /// and creates group on those model guids.
+        /// </summary>
         private void DeserializeGroup()
         {
             var listOfModels = new List<ModelBase>();
@@ -254,22 +258,6 @@ namespace Dynamo.Models
             SelectedModels = listOfModels;
             CreateGroupingOnModels(SelectedModels);
         }
-
-        #region Command Framework Supporting Methods
-
-        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
-        {
-            string name = updateValueParams.PropertyName;
-            string value = updateValueParams.PropertyValue;
-
-            if (name != "AnnotationText")
-                return base.UpdateValueCore(updateValueParams);
-
-            AnnotationText = value;
-            return true;
-        }
-
-        #endregion
 
         #region Serialization/Deserialization Methods
 
@@ -290,7 +278,7 @@ namespace Dynamo.Models
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);
-            this.AnnotationText = helper.ReadString("text", "<<Double click to edit the grouping>>");
+            this.AnnotationText = helper.ReadString("text", "<<Click to edit the grouping>>");
             this.Left = helper.ReadDouble("left", 0.0);
             this.Top = helper.ReadDouble("top", 0.0);
             this.Width = helper.ReadDouble("width", 0.0);

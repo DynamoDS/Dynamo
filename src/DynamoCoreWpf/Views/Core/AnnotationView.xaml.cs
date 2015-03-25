@@ -22,10 +22,7 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class AnnotationView : IViewModelView<AnnotationViewModel>
     {
-        public AnnotationViewModel ViewModel { get; private set; }
-        private bool CanMoveGroup;
-        double xAnnotationViewPos, xCanvasPos, yAnnotationViewPos, yCanvasPos;
-        private bool canRepositionNode;
+        public AnnotationViewModel ViewModel { get; private set; }       
         
         public AnnotationView()
         {
@@ -71,11 +68,17 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);               
             }
         }
-     
+
+        /// <summary>
+        /// Handles the OnMouseLeftButtonDown event of the AnnotationView control.
+        /// Selects the models inside the group
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         { 
             DynamoSelection.Instance.ClearSelection();
-            System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+            var annotationGuid = this.ViewModel.AnnotationModel.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
 
@@ -98,9 +101,17 @@ namespace Dynamo.Nodes
         {
             this.GroupTextBox.Visibility = Visibility.Visible;
             this.GroupTextBlock.Visibility = Visibility.Collapsed;
+            this.GroupTextBox.Focus();
+            this.GroupTextBox.SelectAll();
             e.Handled = true;
         }
 
+        /// <summary>
+        /// Handles the OnTextChanged event of the GroupTextBox control.
+        /// Calculates the height of a Group based on the height of textblock
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="TextChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {           
             if (ViewModel != null)
