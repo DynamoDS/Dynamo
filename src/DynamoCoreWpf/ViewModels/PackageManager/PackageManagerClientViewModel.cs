@@ -261,24 +261,9 @@ namespace Dynamo.ViewModels
 
                             if (packageDownloadHandle.Extract(DynamoViewModel.Model, out dynPkg))
                             {
-                                var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
+                                var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
+                                DynamoViewModel.Model.PackageLoader.Load(p);
 
-                                var loader = DynamoViewModel.Model.Loader;
-                                var logger = DynamoViewModel.Model.Logger;
-                                var libraryServices = DynamoViewModel.EngineController.LibraryServices;
-
-                                var loadPackageParams = new LoadPackageParams
-                                {
-                                    Loader = loader,
-                                    LibraryServices = libraryServices,
-                                    Context = DynamoViewModel.Model.Context,
-                                    IsTestMode = DynamoModel.IsTestMode,
-                                    CustomNodeManager = DynamoViewModel.Model.CustomNodeManager
-                                };
-
-                                downloadPkg.LoadIntoDynamo(loadPackageParams, logger);
-
-                                DynamoViewModel.Model.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                             }
                         }
