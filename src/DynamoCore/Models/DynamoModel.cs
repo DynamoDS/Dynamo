@@ -706,35 +706,15 @@ namespace Dynamo.Models
             // Initialize all nodes inside of this assembly.
             InitializeIncludedNodes();
 
-            List<TypeLoadData> modelTypes;
-            List<TypeLoadData> migrationTypes;
-            Loader.LoadNodeModelsAndMigrations(pathManager.NodeDirectories,
-                Context, out modelTypes, out migrationTypes);
+            LoadNodeModelsAndMigrations(pathManager.NodeDirectories);
 
-            // Load NodeModels
-            foreach (var type in modelTypes)
+            if (!DynamoModel.IsTestMode)
             {
-                // Protect ourselves from exceptions thrown by malformed third party nodes.
-                try
-                {
-                    NodeFactory.AddTypeFactoryAndLoader(type.Type);
-                    NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
-                    AddNodeTypeToSearch(type);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(e);
-                }
+                // Import Zero Touch libraries if it is not in unit tests.
+                var functionGroups = LibraryServices.GetAllFunctionGroups();
+                AddZeroTouchNodesToSearch(functionGroups);
             }
 
-            // Load migrations
-            foreach (var type in migrationTypes)
-                MigrationManager.AddMigrationType(type);
-
-            // Import Zero Touch libs
-            var functionGroups = LibraryServices.GetAllFunctionGroups();
-            if (!DynamoModel.IsTestMode)
-                AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
 #endif
@@ -752,6 +732,11 @@ namespace Dynamo.Models
                 IsTestMode = IsTestMode,
                 CustomNodeManager = CustomNodeManager
             });
+
+            // Reload possible nodes from package binary directories.
+            var packageDirectories = PackageLoader.LocalPackages.Select(
+                localPackages => localPackages.BinaryDirectory).ToList();
+            LoadNodeModelsAndMigrations(packageDirectories);
 
             // Load local custom nodes
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitions, IsTestMode);
@@ -786,6 +771,33 @@ namespace Dynamo.Models
 
             // Otherwise make a default preference settings object.
             return new PreferenceSettings();
+        }
+
+        private void LoadNodeModelsAndMigrations(IEnumerable<string> directories)
+        {
+            List<TypeLoadData> modelTypes, migrationTypes;
+            Loader.LoadNodeModelsAndMigrations(directories,
+                Context, out modelTypes, out migrationTypes);
+
+            // Load NodeModels
+            foreach (var type in modelTypes)
+            {
+                // Protect ourselves from exceptions thrown by malformed third party nodes.
+                try
+                {
+                    NodeFactory.AddTypeFactoryAndLoader(type.Type);
+                    NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
+                    AddNodeTypeToSearch(type);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e);
+                }
+            }
+
+            // Load migrations
+            foreach (var type in migrationTypes)
+                MigrationManager.AddMigrationType(type);
         }
 
         private static void InitializePreferences(IPreferences preferences)
