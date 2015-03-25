@@ -943,7 +943,9 @@ namespace Dynamo.PackageManager
                 var files = GetAllFiles().ToList();
 
                 if (isNewPackage)
-                    dynamoViewModel.Model.PackageLoader.LocalPackages.Add(Package);
+                {
+                    dynamoViewModel.Model.PackageLoader.Add(Package);
+                }
 
                 Package.AddAssemblies(Assemblies);
 
