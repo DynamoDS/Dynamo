@@ -708,6 +708,44 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TruncateRowsTest()
+        {
+            IEnumerable<string> result;
+            IEnumerable<string> original;
+            //1. When original is null, 0
+            //2. When original is ("Aaa", "Bbbb"), maxCharacters = 3
+            //3. When original is ("Day", "Of", "Week"), maxCharacters = 8
+            //4. When original is ("Surface", "Analysis Data"), maxCharacters = 8
+            //5. When original is ("Coordinate", "System"), maxCharacters = 8
+
+            // case 1
+            Assert.Throws<ArgumentException>(() =>
+            {
+                Dynamo.Nodes.Utilities.TruncateRows(null, 0);
+            });
+
+            // case 2
+            original = new List<string>() { "Aaa", "Bbbb" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 3);
+            Assert.AreEqual(new List<string>() { "Aaa", "..bbb" }, result);
+
+            // case 3
+            original = new List<string>() { "Day", "Of", "Week" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 8);
+            Assert.AreEqual(new List<string>() { "Day", "Of", "Week" }, result);
+
+            // case 4
+            original = new List<string>() { "Surface", "Analysis Data" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 8);
+            Assert.AreEqual(new List<string>() { "Surface", "..Data" }, result);
+
+            // case 5
+            original = new List<string>() { "Coordinate", "System" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 8);
+            Assert.AreEqual(new List<string>() { "Coordina..", "System" }, result);
+        }
+
+        [Test]
         public void NormalizeAsResourceNameTest()
         {
             string testingSTR = string.Empty;

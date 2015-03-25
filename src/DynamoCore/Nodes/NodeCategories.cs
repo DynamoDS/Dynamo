@@ -540,6 +540,68 @@ namespace Dynamo.Nodes
             return resultRows;
         }
 
+        /// <summary>
+        /// Trincate rows by adding dots, e.g. ("Surface", "Analysis Data") => ("Surface..","..Data")
+        /// </summary>
+        /// <param name="rows">Incomming rows</param>
+        /// <param name="maxCharacters">Max number characters per row</param>
+        internal static IEnumerable<string> TruncateRows(IEnumerable<string> rows, int maxCharacters)
+        {
+            if (rows == null || maxCharacters <= 0)
+                throw new ArgumentException();
+            if (rows.Count() == 0)
+                return rows;
+            List<string> resultRows = new List<string>();
+
+            // If there is just 1 row.
+            if (rows.Count() == 1)
+            {
+                var row = rows.ElementAt(0);
+                if (row.Length < maxCharacters)
+                    resultRows.Add(row);
+                else
+                    resultRows.Add(row.Substring(row.Length - maxCharacters, maxCharacters) + Configurations.TwoDots);
+                return resultRows;
+            }
+
+            string currentRow;
+            var lastRow = rows.Last();
+            foreach (var row in rows)
+            {
+                if (row.Length > maxCharacters)
+                {
+                    string partOfRow;
+                    int spaceIndex = row.LastIndexOf(" ") + 1;
+
+                    if (row.Length - spaceIndex >= maxCharacters)
+                    {
+                        // If it's last row, cut from the beginning.
+                        if (row == lastRow)
+                            partOfRow = row.Substring(row.Length - maxCharacters, maxCharacters);
+                        // If it isn't last row, cut from the end.
+                        else
+                            partOfRow = row.Substring(spaceIndex, maxCharacters);
+                    }
+                    // If there is space between words, then use last word.
+                    else
+                        partOfRow = row.Substring(spaceIndex);
+
+                    if (row != lastRow)
+                        currentRow = String.Concat(partOfRow, Configurations.TwoDots);
+                    else
+                        currentRow = String.Concat(Configurations.TwoDots, partOfRow);
+                }
+                else
+                {
+                    currentRow = row;
+                }
+                resultRows.Add(currentRow);
+                currentRow = String.Empty;
+            }
+
+            return resultRows;
+        }
+
         internal static string NormalizeAsResourceName(string resource)
         {
             if (string.IsNullOrWhiteSpace(resource))
