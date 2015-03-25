@@ -325,7 +325,7 @@ namespace Dynamo.TestInfrastructure
                         }
                     }
 
-                    if (!DynamoLoader.IsNodeSubType(t) && 
+                    if (!NodeModelAssemblyLoader.IsNodeSubType(t) && 
                         t.Namespace != "Dynamo.Nodes") /*&& attribs.Length > 0*/
                         continue;
 
