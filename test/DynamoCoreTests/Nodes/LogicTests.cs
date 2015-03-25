@@ -265,6 +265,18 @@ namespace Dynamo.Tests
     {
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
 
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",
+                "DSCoreNodes.dll",
+
+            });
+
+            base.Setup();
+        }
+
         [Test]
         public void testAnd_NumberInput()
         {
