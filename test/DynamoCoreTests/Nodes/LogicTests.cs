@@ -8,6 +8,17 @@ namespace Dynamo.Tests
     [TestFixture]
     class ComparisonTests : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",
+                "DSCoreNodes.dll",
+            });
+
+            base.Setup();
+        }
+
         private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "comparison"); } }
 
         [Test]
