@@ -10,6 +10,12 @@ namespace Dynamo.Tests
     [TestFixture]
     class WorkflowTests : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[] { "DSCoreNodes.dll" });
+            base.Setup();
+        }
+
         // Note: Only add test cases those are related to ASM Geometry.
         // Always create a region while creating tests for new Geometry type.
 
