@@ -640,7 +640,10 @@ namespace Dynamo.Models
                 CustomNodeManager.InfoUpdated += newInfo =>
                 {
                     if (info.FunctionId == newInfo.FunctionId)
+                    {
                         searchElement.SyncWithCustomNodeInfo(newInfo);
+                        SearchModel.Update(searchElement);
+                    }
                 };
                 CustomNodeManager.CustomNodeRemoved += id =>
                 {
