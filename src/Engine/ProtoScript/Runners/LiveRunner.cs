@@ -33,12 +33,14 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> AstNodes;
         public List<AssociativeNode> ModifiedAstNodes;
         public bool ForceExecution;
+        public bool IsInput;
 
         public Subtree(List<AssociativeNode> astNodes, System.Guid guid)
         {
             GUID = guid;
             AstNodes = astNodes;
             ForceExecution = false;
+            IsInput = false;
             ModifiedAstNodes = new List<AssociativeNode>();
         }
 
@@ -211,15 +213,23 @@ namespace ProtoScript.Runners
 
         /// <summary>
         /// Sets a new rhs for binary asts that were modified
+        /// Sets the VM entry point
         /// </summary>
         /// <param name="modifiedNodes"></param>
         private void SetValueForModifiedNodes(List<AssociativeNode> modifiedNodes)
         {
+            int entryPoint = Constants.kInvalidIndex;
             foreach (AssociativeNode node in modifiedNodes)
             {
                 StackValue sv = GetStackValueForRuntime(node);
-                runtimeCore.SetValue((node as BinaryExpressionNode).OriginalAstID, sv);
+                int startPC = runtimeCore.SetValue((node as BinaryExpressionNode).OriginalAstID, sv);
+                if (entryPoint == Constants.kInvalidIndex)
+                {
+                    entryPoint = startPC;
+                }
             }
+            Validity.Assert(entryPoint != Constants.kInvalidIndex);
+            core.SetNewEntryPoint(entryPoint);
         }
 
 
@@ -442,7 +452,7 @@ namespace ProtoScript.Runners
                             if (bnode != null)
                             {
                                 bnode.guid = st.GUID;
-                                bnode.IsInputExpression = ProtoCore.Utils.CoreUtils.IsPrimitiveASTNode(bnode.RightNode) ? true : false;
+                                bnode.IsInputExpression = st.IsInput;
                             }
 
                             SetNestedLanguageBlockASTGuids(st.GUID, new List<ProtoCore.AST.Node>() { bnode });
@@ -540,18 +550,17 @@ namespace ProtoScript.Runners
             if (cachedTreeExists && oldSubTree.AstNodes != null)
             {
                 List<AssociativeNode> removedNodes = null;
-                if (!st.ForceExecution)
+                if (st.IsInput)
+                {
+                    removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                    (modifiedASTList[0] as BinaryExpressionNode).OriginalAstID = (removedNodes[0] as BinaryExpressionNode).OriginalAstID;
+                }
+                else if (!st.ForceExecution)
                 {
                     removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                     // We only need the removed binary ASTs
                     // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
-
-                    // Jun: Remove this hack before merge
-                    csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode && !(n as BinaryExpressionNode).IsInputExpression));
-                    //csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
-
-                    (modifiedASTList[0] as BinaryExpressionNode).OriginalAstID = (removedNodes[0] as BinaryExpressionNode).OriginalAstID;
-
+                    csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
                 }
 
                 foreach (var removedAST in csData.RemovedBinaryNodesFromModification)
@@ -784,9 +793,9 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
-        private List<AssociativeNode> GetModifiedNodes(Subtree subtree, out List<AssociativeNode> modifiedPrimitiveAssignment)
+        private List<AssociativeNode> GetModifiedNodes(Subtree subtree, out List<AssociativeNode> modifiedInputAST)
         {
-            modifiedPrimitiveAssignment = new List<AssociativeNode>();
+            modifiedInputAST = new List<AssociativeNode>();
             Subtree st;
             if (!currentSubTreeList.TryGetValue(subtree.GUID, out st) || st.AstNodes == null)
             {
@@ -819,16 +828,16 @@ namespace ProtoScript.Runners
                     BinaryExpressionNode bnode = node as BinaryExpressionNode;
                     if (null != bnode)
                     {
-                        if (bnode.RightNode is LanguageBlockNode)
-                        {
-                            modifiedASTList.Add(node);
-                            csData.ModifiedNestedLangBlock.Add(bnode);
-                        }
-                        else if (CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
+                        if (st.IsInput)
                         {
                             // A modified primitive is not re-compiled and executed
                             // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
-                            modifiedPrimitiveAssignment.Add(bnode);
+                            modifiedInputAST.Add(bnode);
+                        }
+                        else if (bnode.RightNode is LanguageBlockNode)
+                        {
+                            modifiedASTList.Add(node);
+                            csData.ModifiedNestedLangBlock.Add(bnode);
                         }
                         else if (bnode.LeftNode is IdentifierNode)
                         {

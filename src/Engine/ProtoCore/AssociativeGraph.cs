@@ -491,15 +491,17 @@ namespace ProtoCore.AssociativeEngine
        
 
         /// <summary>
-        /// Marks a graphnode dirty
+        /// Marks a graphnode dirty and returns the graphnode
         /// </summary>
         /// <param name="runtimeCore"></param>
         /// <param name="astID"></param>
         /// <returns></returns>
-        public static void MarkGraphNodeDirty(RuntimeCore runtimeCore, int astID)
+        public static AssociativeGraph.GraphNode MarkGraphNodeDirty(RuntimeCore runtimeCore, int astID)
         {
             Executable exe = runtimeCore.DSExecutable;
-            foreach (var gnode in exe.instrStreamList[0].dependencyGraph.GraphList)
+            List<AssociativeGraph.GraphNode> nodesInScope = 
+                exe.instrStreamList[0].dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+            foreach (var gnode in nodesInScope)
             {
                 if (gnode.isActive && gnode.OriginalAstID == astID)
                 {
@@ -509,10 +511,11 @@ namespace ProtoCore.AssociativeEngine
                     if (gnode.updateBlock.updateStartPC != Constants.kInvalidIndex)
                     {
                         gnode.updateBlock.startpc = gnode.updateBlock.updateStartPC;
-                        break;
                     }
+                    return gnode;
                 }
             }
+            return null;
         }
 
         /// <summary>

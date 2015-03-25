@@ -316,15 +316,17 @@ namespace ProtoCore
 
         /// <summary>
         /// Set the value of a variable at runtime
+        /// Returns the entry pc
         /// </summary>
         /// <param name="astID"></param>
         /// <param name="sv"></param>
         /// <returns></returns>
-        public void SetValue(int astID, StackValue sv)
+        public int SetValue(int astID, StackValue sv)
         {
             ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
-            ProtoCore.AssociativeEngine.Utils.MarkGraphNodeDirty(this, astID);
+            AssociativeGraph.GraphNode gnode =  ProtoCore.AssociativeEngine.Utils.MarkGraphNodeDirty(this, astID);
+            Validity.Assert(gnode != null);
+            return gnode.updateBlock.startpc;
         }
-
     }
 }
