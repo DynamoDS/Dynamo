@@ -1824,34 +1824,19 @@ namespace Dynamo.Controls
                         return text.Insert(text.LastIndexOf(".") + 1, "\n");
                     return text;
                 case "ClassButton":
-                    string originalName = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
-                    text = originalName;
+                    string original = text;
+                    text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
+
                     int maxRowLength = Configurations.MaxLengthRowClassButtonTitle;
+                    int maxRowNumbers = Configurations.MaxRowNumber;
+
                     if (text.Length > maxRowLength)
                     {
-                        // If clas name is like "Cooooooool Name", then this truncation is wrong.
-                        if (text.IndexOf(" ") != -1)
-                        {
-                            if (text.IndexOf(" ") <= maxRowLength)
-                                text = text.Insert(text.IndexOf(" ") + 1, "\n");
-                        }
-                        //If class name doesn't have spaces. E.g. "Naaaaaaaaame"
-                        else
-                            text = text.Substring(0, maxRowLength) + Configurations.TwoDots;
-
-                        if (text.Length > Configurations.MaxLengthClassButtonTitle || text.IndexOf(" ") > maxRowLength)
-                        {
-                            // If title is too long, we can cat it.
-                            StringBuilder shortName = new StringBuilder();
-                            shortName.Append(originalName.Substring(0, maxRowLength));
-                            shortName.Append(Configurations.TwoDots + "\n" + Configurations.TwoDots);
-                            string prefix = text.Substring(text.Length - maxRowLength);
-                            if (prefix.IndexOf(" ") != -1)
-                                shortName.Append(prefix.Substring(prefix.IndexOf(" ") + 1));
-                            else
-                                shortName.Append(prefix);
-                            return shortName.ToString();
-                        }
+                        var words = Dynamo.Nodes.Utilities.WrapText(original, maxRowLength);
+                        if (words.Count() > maxRowNumbers)
+                            words = Dynamo.Nodes.Utilities.ReduceRowCount(words, maxRowNumbers, maxRowLength);
+                        words = Dynamo.Nodes.Utilities.TruncateRows(words, maxRowLength);
+                        text = String.Join("\n", words);
                     }
                     return text;
 

@@ -477,14 +477,7 @@ namespace Dynamo.Nodes
                     words.Add(currentWord.ToString());
                     currentWord.Clear();
                 }
-                if (currentWord.Length < maxCharacters)
-                    currentWord.Append(curr);
-                else
-                {
-                    words.Add(currentWord.ToString());
-                    currentWord.Clear();
-                    currentWord.Append(curr);
-                }
+                currentWord.Append(curr);
             }
             // Add last word.
             words.Add(currentWord.ToString());
@@ -503,7 +496,7 @@ namespace Dynamo.Nodes
         {
             if (rows == null || maxRows <= 0 || maxCharacters <= 0)
                 throw new ArgumentException();
-            if (rows.Count() == 0)
+            if (rows.Count() == 0 || rows.Count() == maxRows)
                 return rows;
             List<string> resultRows = new List<string>();
 
@@ -557,10 +550,10 @@ namespace Dynamo.Nodes
             if (rows.Count() == 1)
             {
                 var row = rows.ElementAt(0);
-                if (row.Length < maxCharacters)
+                if (row.Length <= maxCharacters)
                     resultRows.Add(row);
                 else
-                    resultRows.Add(row.Substring(row.Length - maxCharacters, maxCharacters) + Configurations.TwoDots);
+                    resultRows.Add(row.Substring(0,maxCharacters) + Configurations.TwoDots);
                 return resultRows;
             }
 
