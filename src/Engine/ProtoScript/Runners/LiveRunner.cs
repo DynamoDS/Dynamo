@@ -179,7 +179,7 @@ namespace ProtoScript.Runners
                 // Otherwise the entrypoint is set by the code generator when the new ASTs are compiled
                 if (!changeSet.ContainsDeltaAST)
                 {
-                    core.SetNewEntryPoint(firstDirtyNode.updateBlock.startpc);
+                    runtimeCore.SetStartPC(firstDirtyNode.updateBlock.startpc);
                 }
             }
         }
@@ -218,18 +218,18 @@ namespace ProtoScript.Runners
         /// <param name="modifiedNodes"></param>
         private void SetValueForModifiedNodes(List<AssociativeNode> modifiedNodes)
         {
-            int entryPoint = Constants.kInvalidIndex;
-            foreach (AssociativeNode node in modifiedNodes)
+            // Currently only supports 1 input node
+            Validity.Assert(modifiedNodes.Count <= 1);
+
+            if (modifiedNodes.Count > 0)
             {
+                AssociativeNode node = modifiedNodes[0];
+
                 StackValue sv = GetStackValueForRuntime(node);
                 int startPC = runtimeCore.SetValue((node as BinaryExpressionNode).OriginalAstID, sv);
-                if (entryPoint == Constants.kInvalidIndex)
-                {
-                    entryPoint = startPC;
-                }
+                Validity.Assert(startPC != Constants.kInvalidIndex);
+                runtimeCore.SetStartPC(startPC);
             }
-            Validity.Assert(entryPoint != Constants.kInvalidIndex);
-            core.SetNewEntryPoint(entryPoint);
         }
 
 
@@ -1731,12 +1731,18 @@ namespace ProtoScript.Runners
         {
             // TODO Jun: Revisit all the Compile functions and remove the blockId out argument
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(astList, runnerCore, out blockId);
+            bool succeeded = true;
+            if (astList.Count > 0)
+            {
+                succeeded = Compile(astList, runnerCore, out blockId);
+            }
+
             if (succeeded)
             {
                 runtimeCore.RunningBlock = blockId;
                 vmState = Execute();
             }
+            runtimeCore.SetStartPC(Constants.kInvalidPC);
             return succeeded;
         }
 

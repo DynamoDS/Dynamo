@@ -95,6 +95,7 @@ namespace ProtoCore
             ExecutiveProvider = new ExecutiveProvider();
 
             RuntimeStatus = new ProtoCore.RuntimeStatus(this);
+            StartPC = Constants.kInvalidPC;
         }
 
         /// <summary>
@@ -140,6 +141,7 @@ namespace ProtoCore
         public IExecutiveProvider ExecutiveProvider { get; set; }
         public Executive ExecutionInstance { get; private set; }
         public Executive CurrentExecutive { get; private set; }
+        public int StartPC { get; private set; }
 
         // Execution properties
         public Executable DSExecutable { get; private set; }
@@ -327,6 +329,11 @@ namespace ProtoCore
             AssociativeGraph.GraphNode gnode =  ProtoCore.AssociativeEngine.Utils.MarkGraphNodeDirty(this, astID);
             Validity.Assert(gnode != null);
             return gnode.updateBlock.startpc;
+        }
+
+        public void SetStartPC(int pc)
+        {
+            StartPC = pc;
         }
     }
 }

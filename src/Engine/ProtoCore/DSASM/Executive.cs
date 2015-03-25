@@ -184,6 +184,38 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
+        /// Bounce to an existing executive
+        /// </summary>
+        /// <param name="exeblock"></param>
+        /// <param name="entry"></param>
+        /// <param name="context"></param>
+        /// <param name="stackFrame"></param>
+        /// <param name="locals"></param>
+        /// <param name="fepRun"></param>
+        /// <param name="exec"></param>
+        /// <param name="breakpoints"></param>
+        /// <returns></returns>
+        public StackValue BounceUsingExecutive(
+           DSASM.Executive executive,
+           int exeblock,
+           int entry,
+           ProtoCore.Runtime.Context context,
+           StackFrame stackFrame,
+           int locals = 0,
+           bool fepRun = false,
+           DSASM.Executive exec = null,
+           List<Instruction> breakpoints = null)
+        {
+            if (stackFrame != null)
+            {
+                SetupAndPushBounceStackFrame(exeblock, entry, context, stackFrame, locals);
+                runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
+            }
+            executive.Execute(exeblock, entry, breakpoints);
+            return executive.RX;
+        }
+
+        /// <summary>
         /// Determines if the runtime is not inside a function 
         /// Will also return true if within a nested language block
         /// </summary>
@@ -395,6 +427,8 @@ namespace ProtoCore.DSASM
 
         private void SetupExecutive(int exeblock, int entry)
         {
+            terminate = false;
+
             PushInterpreterProps(Properties);
             Properties.Reset();
 
@@ -2545,6 +2579,7 @@ namespace ProtoCore.DSASM
 
         private void SetupExecutive(int exeblock, int entry, Language language, List<Instruction> breakpoints)
         {
+            terminate = false;
             // exe need to be assigned at the constructor, 
             // for function call with replication, gc is triggered to handle the parameter and return value at FunctionEndPoint
             // gc requirs exe to be not null but at that point, Execute has not been called

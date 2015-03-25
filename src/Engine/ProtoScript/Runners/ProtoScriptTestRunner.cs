@@ -205,9 +205,27 @@ namespace ProtoScript.Runners
 
                     // Initialize the entry point interpreter
                     int locals = 0; // This is the global scope, there are no locals
-                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
-                    runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
+                    if (runtimeCore.CurrentExecutive.CurrentDSASMExec == null)
+                    {
+                        ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+                        runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                    }
+
+                    // TODO Jun: Set the start pc resolving in runtimeCore 
+                    // Do this before merge
+                    int startPC = codeblock.instrStream.entrypoint;
+                    if (runtimeCore.StartPC != Constants.kInvalidPC)
+                    {
+                        startPC = runtimeCore.StartPC;
+                    }
+
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
+                        runtimeCore.CurrentExecutive.CurrentDSASMExec, 
+                        codeblock.codeBlockId,
+                        startPC, 
+                        runtimeContext, 
+                        stackFrame,
+                        locals);
                 }
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
