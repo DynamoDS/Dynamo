@@ -454,6 +454,92 @@ namespace Dynamo.Nodes
             return newText.ToString();
         }
 
+        /// <summary>
+        /// Gets words from text, e.g. ImportFromCSV to ("Import","From","CSV")
+        /// </summary>
+        /// <param name="text">incoming string</param>
+        /// <param name="maxCharacters">Max number of characters per row</param>
+        internal static IEnumerable<string> WrapText(string text, int maxCharacters)
+        {
+            List<string> words = new List<string>();
+            if (string.IsNullOrWhiteSpace(text))
+                return words;
+
+            StringBuilder currentWord = new StringBuilder();
+            currentWord.Append(text[0]);
+            for (int i = 1; i < text.Length; i++)
+            {
+                var curr = text[i];
+                var prev = text[i - 1];
+
+                if (Char.IsUpper(curr) && i != 0 && !Char.IsUpper(prev) && (!curr.Equals(" ")))
+                {
+                    words.Add(currentWord.ToString());
+                    currentWord.Clear();
+                }
+                if (currentWord.Length < maxCharacters)
+                    currentWord.Append(curr);
+                else
+                {
+                    words.Add(currentWord.ToString());
+                    currentWord.Clear();
+                    currentWord.Append(curr);
+                }
+            }
+            // Add last word.
+            words.Add(currentWord.ToString());
+            return words;
+        }
+
+        /// <summary>
+        /// Merge rows according max nuber characters per row, e.g. ("Day","Of","Week") => ("Day Of","Week")
+        /// Last row can contain remaining rows, if there is no place to store them,
+        /// e.g. ("Import","From","CSV") => ("Import","From CSV")
+        /// </summary>
+        /// <param name="rows">Incoming rows</param>
+        /// <param name="maxRows">Max number of rows</param>
+        /// <param name="maxCharacters">Max number characters per row</param>
+        internal static IEnumerable<string> ReduceRowCount(IEnumerable<string> rows, int maxRows, int maxCharacters)
+        {
+            if (rows == null || maxRows <= 0 || maxCharacters <= 0)
+                throw new ArgumentException();
+            if (rows.Count() == 0)
+                return rows;
+            List<string> resultRows = new List<string>();
+
+            StringBuilder currentRow = new StringBuilder();
+            foreach (var row in rows)
+            {
+                // +1, because we need to add space between rows.
+                if ((currentRow.Length + row.Length + 1) <= maxCharacters)
+                {
+                    if (currentRow.Length != 0)
+                        currentRow.Append(" ");
+                    currentRow.Append(row);
+                }
+                else
+                {
+                    if (resultRows.Count < maxRows - 1)
+                    {
+                        resultRows.Add(currentRow.ToString());
+                        currentRow.Clear();
+                        currentRow.Append(row);
+                    }
+                    else
+                    {
+                        if (currentRow.Length != 0)
+                            currentRow.Append(" ");
+                        currentRow.Append(row);
+                    }
+                }
+            }
+            // Add last row, if it's not empty.
+            if (currentRow.Length != 0)
+                resultRows.Add(currentRow.ToString());
+
+            return resultRows;
+        }
+
         internal static string NormalizeAsResourceName(string resource)
         {
             if (string.IsNullOrWhiteSpace(resource))

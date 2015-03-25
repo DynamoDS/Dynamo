@@ -614,6 +614,73 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void WrapTextTest()
+        {
+            string testingSTR = string.Empty;
+            IEnumerable<string> result;
+            //1. When original is empty string
+            //2. When original is null
+            //3. When original is whitespace
+            //4. When original is AaaBbbbCDE
+            //5. When original is AaaaaaaaaBbbb
+
+            // case 1
+            result = Dynamo.Nodes.Utilities.WrapText("", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { }, result);
+
+            // case 2
+            result = Dynamo.Nodes.Utilities.WrapText(null, Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { }, result);
+
+            // case 3
+            result = Dynamo.Nodes.Utilities.WrapText("    ", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { }, result);
+
+            // case 4
+            result = Dynamo.Nodes.Utilities.WrapText("AaaBbbbCDE", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { "Aaa", "Bbbb", "CDE" }, result);
+
+            // case 5
+            result = Dynamo.Nodes.Utilities.WrapText("More_then_eight_charsBbbb", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { "More_the", "n_eight_", "chars", "Bbbb" }, result);
+        }
+
+        [Test]
+        public void ReduceRowCountTest()
+        {
+            IEnumerable<string> result;
+            IEnumerable<string> original;
+            //1. When original is null, 0, 0
+            //2. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 1, maxCharacters = 8
+            //3. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 2, maxCharacters = 8
+            //4. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 3, maxCharacters = 4
+            //4. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 2, maxCharacters = 4
+
+            // case 1
+            Assert.Throws<ArgumentException>(() =>
+            {
+                Dynamo.Nodes.Utilities.ReduceRowCount(null, 0, 0);
+            });
+
+            // case 2
+            original = new List<string>() { "Aaa", "Bbbb", "CDE" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 1, 8);
+            Assert.AreEqual(new List<string>() { "Aaa Bbbb CDE" }, result);
+
+            // case 3
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2, 8);
+            Assert.AreEqual(new List<string>() { "Aaa Bbbb", "CDE" }, result);
+
+            // case 4
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 3, 4);
+            Assert.AreEqual(new List<string>() { "Aaa", "Bbbb", "CDE" }, result);
+
+            // case 5
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2, 4);
+            Assert.AreEqual(new List<string>() { "Aaa", "Bbbb CDE" }, result);
+        }
+
+        [Test]
         public void NormalizeAsResourceNameTest()
         {
             string testingSTR = string.Empty;
