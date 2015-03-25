@@ -23,7 +23,14 @@ namespace Dynamo.Tests
     {
         public override void Setup()
         {
-            PreloadLibraries(new[] { "ProtoGeometry.dll" });
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "FunctionObject.ds",
+            });
+
             base.Setup();
         }
 
