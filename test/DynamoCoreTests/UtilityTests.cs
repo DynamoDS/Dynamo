@@ -623,6 +623,9 @@ namespace Dynamo.Tests
             //3. When original is whitespace
             //4. When original is AaaBbbbCDE
             //5. When original is AaaaaaaaaBbbb
+            //6. When original is SurfaceAnalysisData
+            //7. When original is CoordinateSystem
+            //8. When original is ImportFromCSV
 
             // case 1
             result = Dynamo.Nodes.Utilities.WrapText("", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
@@ -643,6 +646,18 @@ namespace Dynamo.Tests
             // case 5
             result = Dynamo.Nodes.Utilities.WrapText("More_then_eight_charsBbbb", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
             Assert.AreEqual(new List<string>() { "More_the", "n_eight_", "chars", "Bbbb" }, result);
+
+            // case 6
+            result = Dynamo.Nodes.Utilities.WrapText("SurfaceAnalysisData", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { "Surface", "Analysis", "Data" }, result);
+
+            // case 7
+            result = Dynamo.Nodes.Utilities.WrapText("BoundingBox", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { "Bounding", "Box" }, result);
+
+            // case 8
+            result = Dynamo.Nodes.Utilities.WrapText("ImportFromCSV", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            Assert.AreEqual(new List<string>() { "Import", "From", "CSV" }, result);
         }
 
         [Test]
@@ -654,7 +669,9 @@ namespace Dynamo.Tests
             //2. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 1, maxCharacters = 8
             //3. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 2, maxCharacters = 8
             //4. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 3, maxCharacters = 4
-            //4. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 2, maxCharacters = 4
+            //5. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 2, maxCharacters = 4
+            //6. When original is ("Day", "Of", "Week"), maxRows = 2, maxCharacters = 8
+            //7. When original is ("Import", "From", "CSV"), maxRows = 2, maxCharacters = 8
 
             // case 1
             Assert.Throws<ArgumentException>(() =>
@@ -678,6 +695,16 @@ namespace Dynamo.Tests
             // case 5
             result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2, 4);
             Assert.AreEqual(new List<string>() { "Aaa", "Bbbb CDE" }, result);
+
+            // case 6
+            original = new List<string>() { "Day", "Of", "Week" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2, 8);
+            Assert.AreEqual(new List<string>() { "Day Of", "Week" }, result);
+
+            // case 7
+            original = new List<string>() { "Import", "From", "CSV" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2, 8);
+            Assert.AreEqual(new List<string>() { "Import", "From CSV" }, result);
         }
 
         [Test]
