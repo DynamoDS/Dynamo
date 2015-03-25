@@ -15,6 +15,18 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class WatchNodeTests : DynamoViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "FunctionObject.ds",
+            });
+
+            base.Setup();
+        }
+
         /// <summary>
         /// Validates the watch content of a WatchViewModel branch with the 
         /// input content.
