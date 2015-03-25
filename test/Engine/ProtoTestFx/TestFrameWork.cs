@@ -760,9 +760,13 @@ namespace ProtoTestFx.TD
 
         public void CleanUp()
         {
-            if (testCore != null)
+            if (testRuntimeCore != null)
             {
                 testRuntimeCore.Cleanup();
+            }
+
+            if (testCore != null)
+            {
                 testCore = null;
             }
         }

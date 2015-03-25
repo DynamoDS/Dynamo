@@ -80,7 +80,6 @@ namespace Dynamo.PackageManager
             Log(obj);
         }
 
-        
         private void OnRequestLoadNodeLibrary(Assembly assem)
         {
             if (RequestLoadNodeLibrary != null)
@@ -89,7 +88,6 @@ namespace Dynamo.PackageManager
             }
         }
 
-        
         private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory)
         {
             if (RequestLoadCustomNodeDirectory != null)
@@ -164,7 +162,7 @@ namespace Dynamo.PackageManager
                 Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
             {
                 var pkg = ScanPackageDirectory(dir);
-                if (preferences.PackageDirectoriesToUninstall.Contains(dir)) 
+                if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir)) 
                     pkg.MarkForUninstall(preferences);
             }
         }
@@ -185,7 +183,9 @@ namespace Dynamo.PackageManager
                         throw new Exception(String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
+                {
                     throw new Exception(String.Format(Properties.Resources.NoHeaderPackage, headerPath));
+                }
 
                 // prevent duplicates
                 if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
