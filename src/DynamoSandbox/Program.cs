@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.DynamoSandbox;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
@@ -62,6 +63,8 @@ namespace DynamoSandbox
 
     internal class Program
     {
+        private static SettingsMigrationWindow migrationWindow = new SettingsMigrationWindow();
+
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
             var geometryFactoryPath = string.Empty;
@@ -72,12 +75,16 @@ namespace DynamoSandbox
             // If not, PathResolver will be completely redundant so please remove it.
             var pathResolver = new PathResolver(preloaderLocation);
 
+            DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
+
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
                     PathResolver = pathResolver,
                     GeometryFactoryPath = geometryFactoryPath
                 });
+
+            DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
@@ -90,6 +97,18 @@ namespace DynamoSandbox
 
             var app = new Application();
             app.Run(view);
+        }
+
+        private static void MigrationStatusDialogRequested(SettingsMigrationEventArgs args)
+        {
+            if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
+            {
+                migrationWindow.Show();
+            }
+            else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
+            {
+                migrationWindow.Close();
+            }
         }
 
         private static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)

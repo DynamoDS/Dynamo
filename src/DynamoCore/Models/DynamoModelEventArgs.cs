@@ -260,4 +260,24 @@ namespace Dynamo.Models
         }
     }
 
+    public class SettingsMigrationEventArgs : EventArgs
+    {
+        public enum EventStatusType
+        { 
+            Invalid = 0,
+            Begin,
+            End 
+        }
+
+        public EventStatusType EventStatus;
+        public double Percentage;
+
+        public SettingsMigrationEventArgs(EventStatusType eventStatus, double percentage)
+        {
+            EventStatus = eventStatus;
+            Percentage = percentage;
+        }
+
+    }
+
 }
