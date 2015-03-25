@@ -6,14 +6,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Xml;
 ﻿using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
-using Dynamo.Library;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
@@ -25,7 +24,6 @@ using Dynamo.Utilities;
 using DynamoServices;
 
 using DynamoUnits;
-using DynamoUtilities;
 using Greg; // Dynamo package manager
 using ProtoCore;
 using Dynamo.Models.NodeLoaders;
@@ -462,7 +460,14 @@ namespace Dynamo.Models
                     SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
+                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.Begin, 0.0));
+
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
+                    Thread.Sleep(5000);
+
+                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.End, 100.0));
                 }
                 catch (Exception e)
                 {
