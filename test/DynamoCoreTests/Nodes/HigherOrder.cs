@@ -13,6 +13,17 @@ namespace Dynamo.Tests
 {
     public class HigherOrder : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "DSCoreNodes.dll",
+                "FunctionObject.ds",
+            });
+
+            base.Setup();
+        }
+
         string TestFolder { get { return GetTestDirectory(); } }
 
         [Test]
