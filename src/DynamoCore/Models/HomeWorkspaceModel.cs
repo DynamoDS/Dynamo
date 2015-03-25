@@ -25,6 +25,8 @@ namespace Dynamo.Models
         public bool IsTestMode { get; set; }
 
         /// <summary>
+        ///     Indicates whether a run has completed successfully.   
+        /// 
         ///     This flag is critical to ensuring that broken run auto files
         ///     are not left in run-auto if the file causes a crash.  
         /// </summary>
@@ -72,6 +74,14 @@ namespace Dynamo.Models
             : base(e, n, info, factory)
         {
             EvaluationCount = 0;
+
+            // This protects the user from a file that might have crashed during
+            // its last run.  As a side effect, this also causes all files set to
+            // run auto, but the HasRunWithoutCrash flag to run manually.
+            if (info.RunType == RunType.Automatic && !info.HasRunWithoutCrash)
+            {
+                info.RunType = RunType.Manual;
+            }
 
             RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 

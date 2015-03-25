@@ -985,11 +985,6 @@ namespace Dynamo.Models
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
-            if (workspaceInfo.RunType == RunType.Automatic && !workspaceInfo.HasRunWithoutCrash)
-            {
-                workspaceInfo.RunType = RunType.Manual;
-            }
-
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
