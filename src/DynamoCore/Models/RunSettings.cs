@@ -80,7 +80,7 @@ namespace Dynamo.Models
 
         public RunSettings()
         {
-            RunPeriod = 100;
+            RunPeriod = 500;
             RunType = RunType.Manual;
             RunEnabled = true;
         }

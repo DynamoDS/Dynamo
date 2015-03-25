@@ -703,32 +703,8 @@ namespace Dynamo.DSEngine
             if (string.IsNullOrEmpty(defaultExpression))
                 return false;
 
-            var currentParsingmode = LibraryManagementCore.ParsingMode;
-            var currentParsingFlag = LibraryManagementCore.IsParsingCodeBlockNode;
-
-            LibraryManagementCore.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
-            LibraryManagementCore.IsParsingCodeBlockNode = true;
-
-            ProtoCore.AST.Node astNode = null ;
-            try
-            {
-                astNode = ParserUtils.ParseWithCore(defaultExpression + ";", LibraryManagementCore);
-            }
-            catch (ProtoCore.BuildHaltException ex)
-            {
-                Log("Failed to parse default argument attribute \"" + defaultExpression + "\" for parameter: " + arg.Name);
-            }
-
-            if (astNode != null)
-            {
-                var cbn = astNode as CodeBlockNode;
-                if (cbn != null && cbn.Body.Any())
-                    defaultArgumentNode = (cbn.Body[0] as BinaryExpressionNode).RightNode;
-            }
-
-            LibraryManagementCore.ParsingMode = currentParsingmode;
-            LibraryManagementCore.IsParsingCodeBlockNode = currentParsingFlag;
-
+            defaultArgumentNode = ParserUtils.ParseRHSExpression(defaultExpression, LibraryManagementCore);
+           
             return defaultArgumentNode != null;
         }
 

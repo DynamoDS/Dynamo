@@ -306,5 +306,56 @@ namespace ProtoCore.Utils
 
             return p.root;
         }
+
+        /// <summary>
+        /// Parse simple RHS expression
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public static ProtoCore.AST.AssociativeAST.AssociativeNode ParseRHSExpression(string expression, ProtoCore.Core core)
+        {
+            if (string.IsNullOrEmpty(expression))
+                throw new ArgumentException("expression");
+
+            if (core == null)
+                throw new ArgumentException("core");
+
+            var currentParsingMode = core.ParsingMode;
+            var currentParsingFlag = core.IsParsingCodeBlockNode;
+
+            core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
+            core.IsParsingCodeBlockNode = true;
+
+            ProtoCore.AST.Node astNode = null;
+            try
+            {
+                expression = expression.Trim();
+                if (!expression.EndsWith(";"))
+                    expression += ";";
+
+                expression = "__dummy = " + expression;
+                astNode = ParserUtils.ParseWithCore(expression, core);
+            }
+            catch (ProtoCore.BuildHaltException ex)
+            {
+            }
+
+            core.ParsingMode = currentParsingMode;
+            core.IsParsingCodeBlockNode = currentParsingFlag;
+
+            if (astNode == null)
+                return null;
+
+            var cbn = astNode as ProtoCore.AST.AssociativeAST.CodeBlockNode;
+            if (cbn != null && cbn.Body.Any())
+            {
+                var expr = cbn.Body[0] as ProtoCore.AST.AssociativeAST.BinaryExpressionNode;
+                if (expr != null)
+                    return expr.RightNode;
+            }
+
+            return null;
+        }
     }
 }

@@ -2711,6 +2711,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while Dynamo is not running and try again..
+        /// </summary>
+        public static string PackageDuplicateAssemblyWarning {
+            get {
+                return ResourceManager.GetString("PackageDuplicateAssemblyWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot update assembly!.
+        /// </summary>
+        public static string PackageDuplicateAssemblyWarningTitle {
+            get {
+                return ResourceManager.GetString("PackageDuplicateAssemblyWarningTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Manager Website.
         /// </summary>
         public static string PackageManagerWebSiteButton {
