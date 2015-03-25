@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Xml;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using System.Collections.Generic;
 
@@ -75,6 +76,8 @@ namespace Dynamo.Models
             set
             {
                 _annotationText = value;
+                if (value == String.Empty)
+                    _annotationText = Resources.GroupDefaultText;
                 RaisePropertyChanged("AnnotationText");
             }
 
@@ -145,8 +148,7 @@ namespace Dynamo.Models
         #endregion
 
         public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes )
-        {                      
-            this.AnnotationText = "<<click to edit the grouping>>";
+        {                                 
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
 

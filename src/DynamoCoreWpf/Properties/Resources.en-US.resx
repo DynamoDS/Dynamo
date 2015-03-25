@@ -1568,4 +1568,7 @@ Many thanks!</value>
   <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
     <value>_Zoom to Fit</value>
   </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
+  </data>
 </root>

@@ -454,7 +454,7 @@ If you don't mind, it would be helpful for you to send us your file. That will m
   </data>
   <data name="NewNoteString" xml:space="preserve">
     <value>New Note</value>
-  </data>  
+  </data>
   <data name="ObsoleteFileDescription" xml:space="preserve">
     <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
   </data>
@@ -591,5 +591,8 @@ value: bool = false</value>
   </data>
   <data name="WatermarkLabelText" xml:space="preserve">
     <value>Your code goes here</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
   </data>
 </root>

@@ -667,7 +667,11 @@ namespace Dynamo.Models
             var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
             var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
 
-            var annotationModel = new AnnotationModel(selectedNodes, selectedNotes) { GUID = id };
+            var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
+            {
+                GUID = id,
+                AnnotationText = text
+            };
 
             var args = new ModelEventArgs(annotationModel, true);
             OnRequestNodeCentered(this, args);
