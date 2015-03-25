@@ -164,7 +164,7 @@ namespace Dynamo.PackageManager
                 Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
             {
                 var pkg = ScanPackageDirectory(dir);
-                if (preferences.PackageDirectoriesToUninstall.Contains(dir)) 
+                if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir)) 
                     pkg.MarkForUninstall(preferences);
             }
         }
