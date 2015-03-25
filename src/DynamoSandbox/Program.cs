@@ -63,7 +63,7 @@ namespace DynamoSandbox
 
     internal class Program
     {
-        private static SettingsMigrationWindow migrationWindow = new SettingsMigrationWindow();
+        private static readonly SettingsMigrationWindow migrationWindow = new SettingsMigrationWindow();
 
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
@@ -84,7 +84,7 @@ namespace DynamoSandbox
                     GeometryFactoryPath = geometryFactoryPath
                 });
 
-            DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
+            
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
@@ -92,6 +92,8 @@ namespace DynamoSandbox
                     CommandFilePath = commandFilePath,
                     DynamoModel = model
                 });
+
+            DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
 
             var view = new DynamoView(viewModel);
 
@@ -103,10 +105,12 @@ namespace DynamoSandbox
         {
             if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
             {
+                migrationWindow.PbStatus.Value = args.Percentage;
                 migrationWindow.Show();
             }
             else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
             {
+                migrationWindow.PbStatus.Value = args.Percentage;
                 migrationWindow.Close();
             }
         }

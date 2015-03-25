@@ -474,7 +474,14 @@ namespace Dynamo.Models
                     Logger.Log(e.Message);
                 }
                 if (migrator != null)
+                {
+                    var isFirstRun = this.PreferenceSettings.IsFirstRun;
                     this.PreferenceSettings = migrator.PreferenceSettings;
+
+                    // Preserve the preference settings for IsFirstRun as this needs to be set 
+                    // only by UsageReportingManager
+                    this.PreferenceSettings.IsFirstRun = isFirstRun;
+                }
             }
 
             SearchModel = new NodeSearchModel();
