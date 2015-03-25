@@ -658,13 +658,6 @@
                         </ControlTemplate>
                     </TreeView.Template>
                 </TreeView>
-                <!-- Do not remove. Possibly Addons TreeView will be return later. -->
-                <!--<uicontrols:AddonsTreeView Grid.Row="1"
-                                           DataContext="{Binding}">
-                    <uicontrols:AddonsTreeView.Visibility>
-                        Collapsed
-                    </uicontrols:AddonsTreeView.Visibility>
-                </uicontrols:AddonsTreeView>-->
                 <Button Grid.Row="2"
                         Height="23"
                         HorizontalAlignment="Center"
