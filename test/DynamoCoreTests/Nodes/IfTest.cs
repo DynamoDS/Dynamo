@@ -12,6 +12,17 @@ namespace Dynamo.Tests
     [TestFixture]
     class IfTest : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new []
+            {
+                "DSCoreNodes.dll",
+                "FunctionObject.ds",
+            });
+
+            base.Setup();
+        }
+
         string testFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
 
         [Test]
