@@ -314,6 +314,12 @@ namespace ProtoCore
             return ts;
         }
 
+        /// <summary>
+        /// Set the value of a variable at runtime
+        /// </summary>
+        /// <param name="astID"></param>
+        /// <param name="sv"></param>
+        /// <returns></returns>
         public void SetValue(int astID, StackValue sv)
         {
             ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);

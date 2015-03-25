@@ -490,6 +490,12 @@ namespace ProtoCore.AssociativeEngine
 
        
 
+        /// <summary>
+        /// Marks a graphnode dirty
+        /// </summary>
+        /// <param name="runtimeCore"></param>
+        /// <param name="astID"></param>
+        /// <returns></returns>
         public static void MarkGraphNodeDirty(RuntimeCore runtimeCore, int astID)
         {
             Executable exe = runtimeCore.DSExecutable;
@@ -503,8 +509,8 @@ namespace ProtoCore.AssociativeEngine
                     if (gnode.updateBlock.updateStartPC != Constants.kInvalidIndex)
                     {
                         gnode.updateBlock.startpc = gnode.updateBlock.updateStartPC;
+                        break;
                     }
-                    break;
                 }
             }
         }

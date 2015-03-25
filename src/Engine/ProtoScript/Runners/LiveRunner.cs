@@ -148,7 +148,7 @@ namespace ProtoScript.Runners
         {
             ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
 
-//            DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
+            DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
 
             // Set new value for modified ASTs
             SetValueForModifiedNodes(changeSet.ModifiedNodesForRuntimeSetValue);
@@ -218,7 +218,7 @@ namespace ProtoScript.Runners
             foreach (AssociativeNode node in modifiedNodes)
             {
                 StackValue sv = GetStackValueForRuntime(node);
-                runtimeCore.SetValue(node.ID, sv);
+                runtimeCore.SetValue((node as BinaryExpressionNode).OriginalAstID, sv);
             }
         }
 
@@ -545,7 +545,13 @@ namespace ProtoScript.Runners
                     removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
                     // We only need the removed binary ASTs
                     // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
-                    csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
+
+                    // Jun: Remove this hack before merge
+                    csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode && !(n as BinaryExpressionNode).IsInputExpression));
+                    //csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
+
+                    (modifiedASTList[0] as BinaryExpressionNode).OriginalAstID = (removedNodes[0] as BinaryExpressionNode).OriginalAstID;
+
                 }
 
                 foreach (var removedAST in csData.RemovedBinaryNodesFromModification)
@@ -660,6 +666,7 @@ namespace ProtoScript.Runners
                     Validity.Assert(bnode != null);
                     {
                         bnode.guid = modifiedSubTrees[n].GUID;
+                        bnode.IsInputExpression = true;
                     }
                 }
             }
