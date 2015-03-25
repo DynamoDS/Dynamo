@@ -17,6 +17,18 @@ namespace Dynamo.Tests
 {
     internal class CoreDynTests : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",
+                "DSCoreNodes.dll",
+                "FunctionObject.ds",
+            });
+
+            base.Setup();
+        }
+
         [Test]
         public void AddSubtractMapReduceFilterBasic()
         {
