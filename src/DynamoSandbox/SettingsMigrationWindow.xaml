@@ -3,11 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
         ResizeMode="NoResize"
         Title="First Use Setup"
-        Height="300"
+        Height="250"
         Width="300"
-        Style="{DynamicResource ui:DynamoWindowStyle}">
+        Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -18,31 +19,47 @@
     </Window.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="160"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Image Grid.Row="0"
-               Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png"
-               Height="128"
-               Width="128" />
-        <TextBox Grid.Row="1"
-                 Background="Transparent"
-                 Foreground="#888888"
-                 BorderThickness="0"
-                 FontSize="14"
-                 FontFamily="{StaticResource OpenSansRegular}"
-                 Margin="0,0,8,0"
-                 Text="Migrating Settings ..."
-                 IsReadOnly="True"
-                 IsReadOnlyCaretVisible="False"
-                 HorizontalAlignment="Center" />
-        <ProgressBar Grid.Row="2"
-                     Minimum="0"
-                     Maximum="100"
-                     Name="PbStatus"
-                     Margin="15, 10, 10, 15"
-                     />
+        <Grid Column="0"
+              Background="#363636">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="160"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image Grid.Row="0"
+                   Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png"
+                   Height="128"
+                   Width="128"
+                   RenderTransformOrigin="0.531,-0.086"
+                   Margin="86,4,86,29" />
+            <TextBox Grid.Row="1"
+                     Background="Transparent"
+                     Foreground="#888888"
+                     BorderThickness="0"
+                     FontSize="14"
+                     FontFamily="{StaticResource OpenSansRegular}"
+                     Text="Migrating Settings ..."
+                     IsReadOnly="True"
+                     IsReadOnlyCaretVisible="False"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center" />
+            <ProgressBar Grid.Row="2"
+                         Minimum="0"
+                         Maximum="100"
+                         Name="PbStatus"
+                         Margin="15, 5, 15, 5"
+                         VerticalAlignment="Center" />
+            <TextBox Background="Transparent"
+                     Foreground="#888888"
+                     BorderThickness="0"
+                     FontSize="15"
+                     FontFamily="{StaticResource OpenSansRegular}"
+                     Text="First Use Setup"
+                     IsReadOnly="True"
+                     IsReadOnlyCaretVisible="False"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Margin="95,115,95,25" />
+        </Grid>
     </Grid>
 </Window>
