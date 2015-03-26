@@ -490,9 +490,11 @@ namespace Dynamo.Core
             SetPreloadFunctionDefinition(Guid.Parse(workspaceInfo.ID));
  
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
-           
+            var designOptions = DesignOptionsSetModel.LoadFromXml(xmlDoc, nodeGraph);
+
             var newWorkspace = new CustomNodeWorkspaceModel(
                 nodeFactory,
+                designOptions,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
                 workspaceInfo);
@@ -1034,6 +1036,7 @@ namespace Dynamo.Core
                 var newId = Guid.NewGuid();
                 newWorkspace = new CustomNodeWorkspaceModel(
                     nodeFactory,
+                    new DesignOptionsSetModel(),
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
                     new WorkspaceInfo()
@@ -1047,7 +1050,7 @@ namespace Dynamo.Core
                         FileName = string.Empty
                     },
                     currentWorkspace.ElementResolver);
-
+                
                 newWorkspace.HasUnsavedChanges = true;
 
                 RegisterCustomNodeWorkspace(newWorkspace);

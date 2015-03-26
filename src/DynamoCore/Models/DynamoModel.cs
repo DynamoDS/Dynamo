@@ -1041,6 +1041,7 @@ namespace Dynamo.Models
                 EngineController,
                 Scheduler,
                 NodeFactory,
+                new DesignOptionsSetModel(),
                 DebugSettings.VerboseLogging,
                 IsTestMode,string.Empty);
 

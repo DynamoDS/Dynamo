@@ -36,7 +36,7 @@ namespace Dynamo.Models
             NodeFactory factory)
             : this(
                 factory,
-                designOptions,
+                new DesignOptionsSetModel(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 info) { }
@@ -60,7 +60,6 @@ namespace Dynamo.Models
             {
                 ElementResolver.CopyResolutionMap(elementResolver);
             }
-
             PropertyChanged += OnPropertyChanged;
         }
 
