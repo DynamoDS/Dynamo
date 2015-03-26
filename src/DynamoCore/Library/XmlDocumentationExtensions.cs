@@ -20,17 +20,17 @@ namespace Dynamo.DSEngine
         #region Public methods
 
         /// <param name="xml">Don't set it, it's just for tests.</param>
-        public static string GetSummary(this FunctionDescriptor member, XmlReader xml = null)
-        {
-
-            return GetMemberElement(member, xml, DocumentElementType.Summary);
-        }
-
-        /// <param name="xml">Don't set it, it's just for tests.</param>
         public static string GetDescription(this TypedParameter parameter, XmlReader xml = null)
         {
             return GetMemberElement(parameter.Function, xml,
                 DocumentElementType.Description, parameter.Name);
+        }
+
+        /// <param name="xml">Don't set it, it's just for tests.</param>
+        public static string GetSummary(this FunctionDescriptor member, XmlReader xml = null)
+        {
+
+            return GetMemberElement(member, xml, DocumentElementType.Summary);
         }
 
         /// <param name="xml">Don't set it, it's just for tests.</param>
