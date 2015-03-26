@@ -70,7 +70,6 @@
     <Compile Include="ConverterTests.cs" />
     <Compile Include="CrashProtectionTests.cs" />
     <Compile Include="DynamoModelTestBase.cs" />
-    <Compile Include="MessageLogTests.cs" />
     <Compile Include="IconsTests.cs" />
     <Compile Include="NodeConstructionTests.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
