@@ -19,15 +19,15 @@ namespace Dynamo.DSEngine
 
         #region Public methods
 
+        public static string GetSummary(this FunctionDescriptor member)
+        {
+            return GetMemberElement(member, DocumentElementType.Summary);
+        }
+
         public static string GetDescription(this TypedParameter parameter)
         {
             return GetMemberElement(parameter.Function,
                 DocumentElementType.Description, parameter.Name);
-        }
-
-        public static string GetSummary(this FunctionDescriptor member)
-        {
-            return GetMemberElement(member, DocumentElementType.Summary);
         }
 
         public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member)
