@@ -1,0 +1,8 @@
+<Workspace Version="0.8.0.743" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.DSFunction guid="ffffc759-6e3e-4a06-8494-a36584638804" type="Dynamo.Nodes.DSFunction" nickname="TestLogWarning.Ctor" x="250.5" y="200.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="..\..\..\bin\AnyCPU\Debug\FFITarget.dll" function="FFITarget.TestLogWarning.Ctor" />
+  </Elements>
+  <Connectors />
+  <Notes />
+</Workspace>

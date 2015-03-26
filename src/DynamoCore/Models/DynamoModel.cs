@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Xml;
 ﻿using DSCoreNodesUI;
 using Dynamo.Core;
@@ -54,6 +55,7 @@ namespace Dynamo.Models
         #endregion
 
         #region events
+
 
         public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
@@ -175,7 +177,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Manages all loaded NodeModel libraries.
         /// </summary>
-        public readonly DynamoLoader Loader;
+        public readonly NodeModelAssemblyLoader Loader;
 
         /// <summary>
         ///     Manages loading of packages.
@@ -478,11 +480,14 @@ namespace Dynamo.Models
             CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager);
             InitializeCustomNodeManager();
 
-            Loader = new DynamoLoader();
+            Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
             PackageLoader = new PackageLoader(pathManager.PackagesDirectory);
             PackageLoader.MessageLogged += LogMessage;
+            PackageLoader.RequestLoadNodeLibrary += LoadNodeLibrary;
+            PackageLoader.RequestLoadCustomNodeDirectory +=
+                (dir) => this.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode);
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -517,6 +522,8 @@ namespace Dynamo.Models
             Logger.Log("Dynamo will use the package manager server at : " + url);
 
             InitializeNodeLibrary(preferences);
+
+            LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
         }
 
         /// <summary>
@@ -588,6 +595,7 @@ namespace Dynamo.Models
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
             }
 
+            LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             foreach (var ws in _workspaces)
             {
                 ws.Dispose(); 
@@ -741,21 +749,42 @@ namespace Dynamo.Models
 
             // Load Packages
             PackageLoader.DoCachedPackageUninstalls(preferences);
-
-            PackageLoader.LoadPackagesIntoDynamo(new LoadPackageParams
+            PackageLoader.LoadAll(new LoadPackageParams
             {
                 Preferences = preferences,
-                PathManager = pathManager,
-                LibraryServices = LibraryServices,
-                Loader = Loader,
-                Context = Context,
-                IsTestMode = IsTestMode,
-                CustomNodeManager = CustomNodeManager
+                PathManager = pathManager
             });
 
             // Load local custom nodes
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitions, IsTestMode);
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
+        }
+
+        private void LoadNodeLibrary(Assembly assem)
+        {
+            if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
+            {
+                LibraryServices.ImportLibrary(assem.Location);
+                return;
+            }
+
+            var nodes = new List<TypeLoadData>();
+            Loader.LoadNodesFromAssembly(assem, Context, nodes, new List<TypeLoadData>());
+
+            foreach (var type in nodes)
+            {
+                // Protect ourselves from exceptions thrown by malformed third party nodes.
+                try
+                {
+                    NodeFactory.AddTypeFactoryAndLoader(type.Type);
+                    NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
+                    AddNodeTypeToSearch(type);
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(e);
+                }
+            }
         }
 
         private void InitializeInstrumentationLogger()
@@ -808,6 +837,16 @@ namespace Dynamo.Models
                     BaseUnit.NumberFormat = PreferenceSettings.NumberFormat;
                     break;
             }
+        }
+
+        /// <summary>
+        /// This warning message is displayed on the node associated with the FFI dll
+        /// </summary>
+        /// <param name="args"></param>
+        private void LogWarningMessage(LogWarningMessageEventArgs args)
+        {
+            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, args.message);
         }
 
         #endregion
