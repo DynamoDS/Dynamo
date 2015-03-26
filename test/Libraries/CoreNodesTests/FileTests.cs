@@ -417,6 +417,12 @@ namespace Dynamo.Tests
     [TestFixture]
     public class ZeroTouchMigrationFileTests : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[] { "ProtoGeometry.dll" });
+            base.Setup(); // Setup DynamoModel in this call.
+        }
+
         [Test]
         public void TestZeroTouchMigrationFile()
         {
