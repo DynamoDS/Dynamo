@@ -16,10 +16,16 @@ using TestServices;
 namespace Dynamo.Tests
 {
     /// <summary>
-    /// The DynamoViewModelUnitTests constructs the DynamoModel
-    /// and the DynamoViewModel, but does not construct the view.
-    /// You can use this class to create tests which ensure that the 
-    /// ViewModel and the Model are communicating properly.
+    /// 
+    ///     The DynamoViewModelUnitTests constructs the DynamoModel
+    ///     and the DynamoViewModel, but does not construct the view.
+    ///     You can use this class to create tests which ensure that the 
+    ///     ViewModel and the Model are communicating properly.
+    /// 
+    ///     WARNING! You should think twice about using this class!  It's
+    ///     often a better alternative to use DynamoModelTestBase or,
+    ///     better yet, use an even lighter weight class.  
+    ///
     /// </summary>
     public class DynamoViewModelUnitTest : UnitTestBase
     {
@@ -157,7 +163,7 @@ namespace Dynamo.Tests
         protected IEnumerable<object> GetPreviewValues()
         {
             List<object> objects = new List<object>();
-            foreach(var node in ViewModel.Model.CurrentWorkspace.Nodes)
+            foreach (var node in ViewModel.Model.CurrentWorkspace.Nodes)
             {
                 objects.Add(GetPreviewValue(node.GUID));
             }
@@ -172,7 +178,7 @@ namespace Dynamo.Tests
                 var mirror = GetRuntimeMirror(varname);
                 Assert.IsNull(mirror);
             }
-            
+
         }
 
         protected object GetPreviewValue(System.Guid guid)
@@ -193,9 +199,9 @@ namespace Dynamo.Tests
             int outportCount = node.OutPorts.Count;
             Assert.IsTrue(outportCount > 0);
 
-            if(outportCount > 1) 
-                return node.AstIdentifierBase; 
-            else 
+            if (outportCount > 1)
+                return node.AstIdentifierBase;
+            else
                 return node.GetAstIdentifierForOutputIndex(0).Value;
 
         }
@@ -209,9 +215,9 @@ namespace Dynamo.Tests
             int outportCount = node.OutPorts.Count;
             Assert.IsTrue(outportCount > 0);
 
-            if (outportCount > 1) 
-                return node.AstIdentifierBase; 
-            else 
+            if (outportCount > 1)
+                return node.AstIdentifierBase;
+            else
                 return node.GetAstIdentifierForOutputIndex(0).Value;
 
         }
