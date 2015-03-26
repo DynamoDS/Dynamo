@@ -819,6 +819,14 @@ namespace DynamoCoreUITests
 
     class RecordedTestsDSEngine : RecordedUnitTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSIronPython.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         #region Basic CodeBlockNode Test Cases
 
         [Test, RequiresSTA, Category("Failure")]
