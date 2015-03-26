@@ -1,17 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Windows.Threading;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynamoShapeManager;
-using DynamoUtilities;
-
 using NUnit.Framework;
+using TestServices;
 
 namespace DynamoCoreUITests
 {
@@ -41,10 +40,28 @@ namespace DynamoCoreUITests
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
             Model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true,
+                    PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
@@ -101,6 +118,11 @@ namespace DynamoCoreUITests
             // Fix for COM exception on close
             // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
             //Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
+
+        protected virtual void GetLibrariesToPreload(List<string> libraries)
+        {
+            // Nothing here...
         }
 
         #region Utility functions
