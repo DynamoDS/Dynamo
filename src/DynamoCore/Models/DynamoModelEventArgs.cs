@@ -270,12 +270,10 @@ namespace Dynamo.Models
         }
 
         public EventStatusType EventStatus;
-        public double Percentage;
 
-        public SettingsMigrationEventArgs(EventStatusType eventStatus, double percentage)
+        public SettingsMigrationEventArgs(EventStatusType eventStatus)
         {
             EventStatus = eventStatus;
-            Percentage = percentage;
         }
 
     }
