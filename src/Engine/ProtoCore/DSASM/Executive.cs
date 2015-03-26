@@ -427,8 +427,6 @@ namespace ProtoCore.DSASM
 
         private void SetupExecutive(int exeblock, int entry)
         {
-            terminate = false;
-
             PushInterpreterProps(Properties);
             Properties.Reset();
 
@@ -2579,7 +2577,6 @@ namespace ProtoCore.DSASM
 
         private void SetupExecutive(int exeblock, int entry, Language language, List<Instruction> breakpoints)
         {
-            terminate = false;
             // exe need to be assigned at the constructor, 
             // for function call with replication, gc is triggered to handle the parameter and return value at FunctionEndPoint
             // gc requirs exe to be not null but at that point, Execute has not been called
@@ -2731,6 +2728,7 @@ namespace ProtoCore.DSASM
         /// <param name="language"></param>
         public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
         {
+            terminate = false;
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
                 ExecuteDebug(exeblock, entry, breakpoints, language);

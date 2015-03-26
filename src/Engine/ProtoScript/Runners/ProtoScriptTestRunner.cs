@@ -234,6 +234,7 @@ namespace ProtoScript.Runners
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
                 throw;
             }
+            runtimeCore.SetStartPC(Constants.kInvalidPC);
             return runtimeCore;
         }
         

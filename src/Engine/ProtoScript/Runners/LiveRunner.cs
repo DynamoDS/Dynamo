@@ -825,51 +825,53 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
-                    BinaryExpressionNode bnode = node as BinaryExpressionNode;
-                    if (null != bnode)
+                    if (st.IsInput)
                     {
-                        if (st.IsInput)
+                        // An input node is not re-compiled and executed
+                        // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
+                        modifiedInputAST.Add(node);
+                    }
+                    else
+                    {
+                        modifiedASTList.Add(node);
+                        BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                        if (null != bnode)
                         {
-                            // A modified primitive is not re-compiled and executed
-                            // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
-                            modifiedInputAST.Add(bnode);
-                        }
-                        else if (bnode.RightNode is LanguageBlockNode)
-                        {
-                            modifiedASTList.Add(node);
-                            csData.ModifiedNestedLangBlock.Add(bnode);
-                        }
-                        else if (bnode.LeftNode is IdentifierNode)
-                        {
-                            modifiedASTList.Add(node);
-                            string lhsName = (bnode.LeftNode as IdentifierNode).Name;
-                            Validity.Assert(null != lhsName && string.Empty != lhsName);
-                            if (CoreUtils.IsSSATemp(lhsName))
+                            if (bnode.RightNode is LanguageBlockNode)
                             {
-                                // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
-                                // this means that it was a modified variable within the previous expression.
-                                // Inherit its expression ID 
-                                foreach (AssociativeNode prevNode in st.AstNodes)
+                                csData.ModifiedNestedLangBlock.Add(bnode);
+                            }
+                            else if (bnode.LeftNode is IdentifierNode)
+                            {
+                                string lhsName = (bnode.LeftNode as IdentifierNode).Name;
+                                Validity.Assert(null != lhsName && string.Empty != lhsName);
+                                if (CoreUtils.IsSSATemp(lhsName))
                                 {
-                                    BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
-                                    if (null != prevBinaryNode)
+                                    // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
+                                    // this means that it was a modified variable within the previous expression.
+                                    // Inherit its expression ID 
+                                    foreach (AssociativeNode prevNode in st.AstNodes)
                                     {
-                                        IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
-                                        if (null != prevIdent)
+                                        BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                                        if (null != prevBinaryNode)
                                         {
-                                            if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                            IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                            if (null != prevIdent)
                                             {
-                                                bnode.InheritID(prevBinaryNode.ID);
-                                                bnode.exprUID = prevBinaryNode.exprUID;
+                                                if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                                {
+                                                    bnode.InheritID(prevBinaryNode.ID);
+                                                    bnode.exprUID = prevBinaryNode.exprUID;
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                // Handle re-defined lhs expressions
-                                HandleRedefinedLHS(bnode, st.AstNodes);
+                                else
+                                {
+                                    // Handle re-defined lhs expressions
+                                    HandleRedefinedLHS(bnode, st.AstNodes);
+                                }
                             }
                         }
                     }
@@ -1713,7 +1715,6 @@ namespace ProtoScript.Runners
                 runtimeCore.RunningBlock = blockId;
                 vmState = Execute();
             }
-            runtimeCore.SetStartPC(Constants.kInvalidPC);
             return succeeded;
         }
 
