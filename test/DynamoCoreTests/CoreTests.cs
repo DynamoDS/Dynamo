@@ -21,6 +21,17 @@ namespace Dynamo.Tests
 {
     internal class CoreTests : DynamoViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",
+                "DSCoreNodes.dll",
+            });
+
+            base.Setup();
+        }
+
         // OpenCommand
         [Test]
         public void CanOpenGoodFile()
