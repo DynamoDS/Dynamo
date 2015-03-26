@@ -109,6 +109,10 @@ namespace Dynamo.Tests
 
             if (preloadedLibraries.Any())
             {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
                 pathResolver = new TestPathResolver();
                 foreach (var preloadedLibrary in preloadedLibraries.Distinct())
                 {
