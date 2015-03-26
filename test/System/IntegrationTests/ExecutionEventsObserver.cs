@@ -39,16 +39,16 @@ namespace IntegrationTests
         }
 
 
-        [SetUp]
-        public static void Setup()
+        public override void Setup()
         {
             ExecutionEvents.GraphPreExecution += PreSeen;
             ExecutionEvents.GraphPostExecution += PostSeen;
 
+            PreloadLibraries(new[] { "DSCoreNodes.dll" });
+            base.Setup(); // Setup DynamoModel in this call.
         }
 
-        [TearDown]
-        public static void Cleanup()
+        public override void Cleanup()
         {
             ExecutionEvents.GraphPreExecution -= PreSeen;
             ExecutionEvents.GraphPostExecution -= PostSeen;
@@ -57,6 +57,8 @@ namespace IntegrationTests
             preSeen = false;
             midSeen = false;
             postSeen = false;
+
+            base.Cleanup();
         }
 
         [Test]
