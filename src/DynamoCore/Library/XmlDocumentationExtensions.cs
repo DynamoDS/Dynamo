@@ -17,7 +17,7 @@ namespace Dynamo.DSEngine
         private static Dictionary<string, MemberDocumentNode> documentNodes =
                    new Dictionary<string, MemberDocumentNode>();
 
-        #region Overloads specifying XmlReader
+        #region Public methods
 
         public static string GetDescription(this TypedParameter parameter)
         {
