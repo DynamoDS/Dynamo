@@ -89,7 +89,7 @@ namespace Dynamo.Models
 
             //create a new state inside the set foreach state present in the xmldoc
 
-            foreach (XmlElement element in xmlDoc.ChildNodes)
+            foreach (XmlElement element in xmlDoc.DocumentElement.ChildNodes)
             {
                 if (element.Name == typeof(DesignOptionsSetModel).ToString())
                 {
@@ -106,9 +106,20 @@ namespace Dynamo.Models
                         //iterate each actual saved nodemodel in each state
                         foreach (XmlElement node in stateNode.ChildNodes)
                         {
-                            var ID = Guid.Parse(stateNode.GetAttribute("guid"));
+                         
+                            var guidString = node.GetAttribute("guid");
+                            Guid nodeID;
+                            if (Guid.TryParse(guidString, out nodeID))
+                            {
+
+                            }
+                            else
+                            {
+                                throw new Exception("unable to parse GUID");
+                            }
+                            
                             var nodename = stateNode.GetAttribute("nickname");
-                            var nodebyGuid = nodegraph.Nodes.Where(x => x.GUID == ID).ToList();
+                            var nodebyGuid = nodegraph.Nodes.Where(x => x.GUID == nodeID).ToList();
                             if (nodebyGuid.Count > 0)
                             {
                                 nodes.Add(nodebyGuid.First());
@@ -117,7 +128,7 @@ namespace Dynamo.Models
                             else
                             {
                                 //TODO possibly hookup to dynamologger
-                                Console.WriteLine(nodename + ID.ToString() + " could not be found in the loaded dyn");
+                                Console.WriteLine(nodename + nodeID.ToString() + " could not be found in the loaded dyn");
                             }
 
                         }
