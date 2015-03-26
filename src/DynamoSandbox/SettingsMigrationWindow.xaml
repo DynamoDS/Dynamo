@@ -6,7 +6,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         Title="First Use Setup"
-        Height="250"
+        Height="200"
         Width="300"
         Style="{DynamicResource DynamoWindowStyle}">
 
@@ -24,14 +24,24 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="160"></RowDefinition>
                 <RowDefinition Height="40"></RowDefinition>
-                <RowDefinition Height="40"></RowDefinition>
             </Grid.RowDefinitions>
             <Image Grid.Row="0"
                    Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png"
-                   Height="128"
                    Width="128"
                    RenderTransformOrigin="0.531,-0.086"
-                   Margin="86,4,86,29" />
+                   Margin="86,4,86,25" />
+            <TextBox Grid.Row="0"
+                     Background="Transparent"
+                     Foreground="#888888"
+                     BorderThickness="0"
+                     FontSize="15"
+                     FontFamily="{StaticResource OpenSansRegular}"
+                     Text="First Use Setup"
+                     IsReadOnly="True"
+                     IsReadOnlyCaretVisible="False"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Margin="95,115,95,25" />
             <TextBox Grid.Row="1"
                      Background="Transparent"
                      Foreground="#888888"
@@ -43,23 +53,7 @@
                      IsReadOnlyCaretVisible="False"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center" />
-            <ProgressBar Grid.Row="2"
-                         Minimum="0"
-                         Maximum="100"
-                         Name="PbStatus"
-                         Margin="15, 5, 15, 5"
-                         VerticalAlignment="Center" />
-            <TextBox Background="Transparent"
-                     Foreground="#888888"
-                     BorderThickness="0"
-                     FontSize="15"
-                     FontFamily="{StaticResource OpenSansRegular}"
-                     Text="First Use Setup"
-                     IsReadOnly="True"
-                     IsReadOnlyCaretVisible="False"
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Center"
-                     Margin="95,115,95,25" />
+
         </Grid>
     </Grid>
 </Window>
