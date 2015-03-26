@@ -1147,6 +1147,12 @@ namespace Dynamo.Tests
     [Category("DSCustomNode")]
     class CustomNodeEvaluationViewModel : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[] { "FunctionObject.ds" });
+            base.Setup();
+        }
+
         [Test]
         public void CustomNodeNoInput01()
         {
