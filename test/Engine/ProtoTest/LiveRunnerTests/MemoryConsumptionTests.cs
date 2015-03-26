@@ -121,6 +121,49 @@ namespace ProtoTest.LiveRunner
 
             Assert.AreEqual(instrStreamStart, instrStreamEnd);
         }
+
+        [Test]
+        [Category("Failure")]
+        public void TestInstructionStreamMemory_FunctionRedefinition01()
+        {
+            List<string> codes = new List<string>() 
+            {
+                "def f() {return = 1;}",  
+                "a = f();",  
+                "def f() {return = 2;}"
+            };
+
+            Guid guid1 = System.Guid.NewGuid();
+            Guid guid2 = System.Guid.NewGuid();
+
+            // First run
+            List<Subtree> added = new List<Subtree>();
+            Subtree st = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[0]);
+            added.Add(st);
+
+            st = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, codes[1]);
+            added.Add(st);
+
+            var syncData = new GraphSyncData(null, added, null);
+            liverunner.UpdateGraph(syncData);
+            instrStreamStart = runtimeDiagnostics.GetExecutableInstructionCount();
+
+            ProtoCore.Mirror.RuntimeMirror mirror = liverunner.InspectNodeValue("a");
+            Assert.IsTrue((Int64)mirror.GetData().Data == 1);
+
+            // Modify function
+            List<Subtree> modified = new List<Subtree>();
+            st = ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, codes[2]);
+            modified.Add(st);
+            syncData = new GraphSyncData(null, null, modified);
+            liverunner.UpdateGraph(syncData);
+            instrStreamEnd = runtimeDiagnostics.GetExecutableInstructionCount();
+
+            mirror = liverunner.InspectNodeValue("a");
+            Assert.IsTrue((Int64)mirror.GetData().Data == 2);
+
+            Assert.AreEqual(instrStreamStart, instrStreamEnd);
+        }
     }
 }
 
