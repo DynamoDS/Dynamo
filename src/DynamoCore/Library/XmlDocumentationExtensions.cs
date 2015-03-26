@@ -19,20 +19,24 @@ namespace Dynamo.DSEngine
 
         #region Public methods
 
-        public static string GetSummary(this FunctionDescriptor member)
+        /// <param name="xml">Don't set it, it's just for tests.</param>
+        public static string GetSummary(this FunctionDescriptor member, XmlReader xml = null)
         {
-            return GetMemberElement(member, DocumentElementType.Summary);
+
+            return GetMemberElement(member, xml, DocumentElementType.Summary);
         }
 
-        public static string GetDescription(this TypedParameter parameter)
+        /// <param name="xml">Don't set it, it's just for tests.</param>
+        public static string GetDescription(this TypedParameter parameter, XmlReader xml = null)
         {
-            return GetMemberElement(parameter.Function,
+            return GetMemberElement(parameter.Function, xml,
                 DocumentElementType.Description, parameter.Name);
         }
 
-        public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member)
+        /// <param name="xml">Don't set it, it's just for tests.</param>
+        public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XmlReader xml = null)
         {
-            return GetMemberElement(member, DocumentElementType.SearchTags)
+            return GetMemberElement(member, xml, DocumentElementType.SearchTags)
                 .Split(',')
                 .Select(x => x.Trim())
                 .Where(x => x != String.Empty);
@@ -63,6 +67,7 @@ namespace Dynamo.DSEngine
 
         private static string GetMemberElement(
             FunctionDescriptor function,
+            XmlReader xml,
             DocumentElementType property,
             string paramName = "")
         {
@@ -72,11 +77,11 @@ namespace Dynamo.DSEngine
                 return String.Empty;
 
             var fullyQualifiedName = GetMemberElementName(function);
-            XmlReader xml = null;
 
             if (!documentNodes.ContainsKey(fullyQualifiedName))
             {
-                xml = DocumentationServices.GetForAssembly(function.Assembly, function.PathManager);
+                if (xml == null)
+                    xml = DocumentationServices.GetForAssembly(function.Assembly, function.PathManager);
                 LoadDataFromXml(xml);
             }
 

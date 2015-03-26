@@ -71,11 +71,11 @@ namespace Dynamo.Tests
         {
             var method = GetTranslateMethod();
 
-            var tags = method.GetSearchTags();
+            var tags = method.GetSearchTags(SampleDocument);
 
-            /*Assert.AreEqual(2, tags.Count());
+            Assert.AreEqual(2, tags.Count());
             Assert.AreEqual("move", tags.First());
-            Assert.AreEqual("push", tags.Last());*/
+            Assert.AreEqual("push", tags.Last());
         }
 
         [Test]
@@ -84,10 +84,10 @@ namespace Dynamo.Tests
         {
             var method = GetTranslateMethod();
 
-            var summary = method.GetSummary();
+            var summary = method.GetSummary(SampleDocument);
 
-            /*Assert.IsTrue(summary.StartsWith("Translates any"));
-            Assert.IsTrue(summary.EndsWith("defined in WCS respectively."));*/
+            Assert.IsTrue(summary.StartsWith("Translates any"));
+            Assert.IsTrue(summary.EndsWith("defined in WCS respectively."));
         }
 
         [Test]
@@ -97,9 +97,9 @@ namespace Dynamo.Tests
             var method = GetTranslateMethod();
             var paramX = method.Parameters.First();
 
-            var descript = paramX.GetDescription();
+            var descript = paramX.GetDescription(SampleDocument);
 
-            /*Assert.AreEqual("Displacement along X-axis.", descript);*/
+            Assert.AreEqual("Displacement along X-axis.", descript);
         }
     }
 }
