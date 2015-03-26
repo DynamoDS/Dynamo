@@ -1651,9 +1651,9 @@ namespace ProtoScript.Runners
         /// </summary>
         private void SuppressResovledUnboundVariableWarnings()
         {
-            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.DSExecutable.RuntimeData.UpdatedSymbols);
+            runnerCore.BuildStatus.RemoveUnboundVariableWarnings(runnerCore.DSExecutable.UpdatedSymbols);
 
-            runnerCore.DSExecutable.RuntimeData.UpdatedSymbols.Clear();
+            runnerCore.DSExecutable.UpdatedSymbols.Clear();
         }
 
         private void ApplyUpdate()

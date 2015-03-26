@@ -553,7 +553,7 @@ namespace ProtoCore.Lang
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
-            var dynamicFunction = runtimeCore.DSExecutable.RuntimeData.DynamicFuncTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
+            var dynamicFunction = runtimeCore.DSExecutable.DynamicFuncTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
             string functionName = dynamicFunction.Name;
 
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
@@ -632,7 +632,7 @@ namespace ProtoCore.Lang
                                                null);
 
             ProtoCore.CallSite callsite = runtimeData.GetCallSite(
-                runtimeData.ExecutingGraphnode, 
+                runtime.exe.ExecutingGraphnode, 
                 thisObjectType, 
                 functionName, 
                 runtime.exe,
@@ -681,7 +681,7 @@ namespace ProtoCore.Lang
         {
             string appname = StringUtils.GetStringValue(svAppName, runtimeCore);
 
-            IContextDataProvider provider = runtimeCore.DSExecutable.RuntimeData.ContextDataMngr.GetDataProvider(appname);
+            IContextDataProvider provider = runtimeCore.DSExecutable.ContextDataMngr.GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
             CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(runtimeCore);
