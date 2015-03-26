@@ -14,6 +14,12 @@ namespace Dynamo.Tests
 {
     class FormulaTests : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[] { "DSCoreNodes.dll" });
+            base.Setup(); // Setup DynamoModel in this call.
+        }
+
         [Test]
         public void FormulaWithIf()
         {
