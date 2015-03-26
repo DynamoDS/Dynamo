@@ -28,10 +28,10 @@
     <CustomAction Id="UninstallDynamo" Return="check" Execute="deferred" Impersonate="no"
               BinaryKey="DynamoInstallActions.CA.dll" DllEntry="UninstallDynamo" />
     
-    <CustomAction Id="RemoveShortcut.SetProperty" Return="check" Property="RemoveShortcut"
+    <!--<CustomAction Id="RemoveShortcut.SetProperty" Return="check" Property="RemoveShortcut"
                   Value="Major=$(var.Major);Minor=$(var.Minor);Rev=$(var.Rev);Dir=[ApplicationProgramsFolder]" />
     <CustomAction Id="RemoveShortcut" Return="ignore" Execute="deferred" Impersonate="no"
-              BinaryKey="DynamoInstallActions.CA.dll" DllEntry="RemoveShortcut" />
+              BinaryKey="DynamoInstallActions.CA.dll" DllEntry="RemoveShortcut" />-->
     
     <CustomAction Id="GenerateRevitAddin.SetProperty" Property="GenerateRevitAddin" 
                   Value="&quot;[DYNAMO_INSTALLDIR]DynamoAddinGenerator.exe&quot; &quot;[DYNAMO_INSTALLDIR]&quot;" />
@@ -44,8 +44,8 @@
     <InstallExecuteSequence>
       <Custom Action="UninstallDynamo.SetProperty" Before="UninstallDynamo">NOT Installed</Custom>
       <Custom Action="UninstallDynamo" After="InstallInitialize">NOT Installed</Custom>
-      <Custom Action="RemoveShortcut.SetProperty" Before="RemoveShortcut">Installed</Custom>
-      <Custom Action="RemoveShortcut" After="InstallInitialize">Installed</Custom>
+      <!--<Custom Action="RemoveShortcut.SetProperty" Before="RemoveShortcut">Installed</Custom>
+      <Custom Action="RemoveShortcut" After="InstallInitialize">Installed</Custom>-->
       <Custom Action="GenerateRevitAddin.SetProperty" Before="GenerateRevitAddin">NOT Installed</Custom>
       <Custom Action="GenerateRevitAddin" Before="InstallFinalize">NOT Installed</Custom>
       <Custom Action="RemoveRevitAddin.SetProperty" Before="RemoveRevitAddin">Installed</Custom>
@@ -67,7 +67,6 @@
       <ComponentGroupRef Id="DEFINITIONS"/>
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="ProductRegistry" />
-      <ComponentGroupRef Id="AddinGenerator" />
       <Feature Id="DYNAMO_CORE_SAMPLES"
              Title="Sample Content"
              Level="1" >
@@ -104,7 +103,7 @@
 
     <!-- Install a shortcut in the Start menu -->
     <DirectoryRef Id="ApplicationProgramsFolder">
-      <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10" Win64="yes">
+      <Component Id="ApplicationShortcut" Win64="yes">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="Dynamo $(var.Major).$(var.Minor).$(var.Rev)"
                   Description="Dynamo Sandbox"
@@ -119,7 +118,7 @@
     </DirectoryRef>
 
     <DirectoryRef Id="TARGETDIR">
-      <Component Id="ProductRegistry" Guid="*" Win64="yes">
+      <Component Id="ProductRegistry" Win64="yes">
         <RegistryKey Root="HKLM"
                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
                      ForceDeleteOnUninstall="yes">
@@ -141,12 +140,6 @@
         <RemoveFolder Id="RemoveDynamoAppDataDir" Directory="DYNAMO_APPDATA" On="uninstall" />
       </Component>
     </DirectoryRef>
-
-    <ComponentGroup Id="AddinGenerator">
-      <Component Id="DynamoAddinGenerator.exe" Directory="DYNAMO_INSTALLDIR" Guid="{8BD3DEB8-531C-4967-BD8A-C821BA85891A}">
-        <File Id="DynamoAddinGenerator.exe" KeyPath="yes" Source="$(var.base)\tools\install\Extra\DynamoAddinGenerator.exe" />
-      </Component>
-    </ComponentGroup>
 
   </Fragment>
 
