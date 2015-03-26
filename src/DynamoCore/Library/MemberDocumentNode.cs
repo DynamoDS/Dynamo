@@ -48,11 +48,8 @@ namespace Dynamo.DSEngine
 
         /// <summary>
         /// Constructs an instance of MemberDocumentNode object from its 
-        /// given assembly and member name. 
+        /// member name. 
         /// </summary>
-        /// <param name="assemblyName">The assembly inside which this member 
-        /// resides. If this parameter is null or empty, ArgumentNullException
-        /// is thrown.</param>
         /// <param name="memberName">The fully qualified name that can be used
         /// to uniquely identify the member within the same assembly. For an 
         /// example:

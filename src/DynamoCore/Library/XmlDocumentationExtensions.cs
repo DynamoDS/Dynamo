@@ -22,18 +22,17 @@ namespace Dynamo.DSEngine
         public static string GetDescription(this TypedParameter parameter)
         {
             return GetMemberElement(parameter.Function,
-                DocumentElementType.Description, parameter.Name).CleanUpDocString();
+                DocumentElementType.Description, parameter.Name);
         }
 
         public static string GetSummary(this FunctionDescriptor member)
         {
-            return GetMemberElement(member, DocumentElementType.Summary).CleanUpDocString();
+            return GetMemberElement(member, DocumentElementType.Summary);
         }
 
         public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member)
         {
             return GetMemberElement(member, DocumentElementType.SearchTags)
-                .CleanUpDocString()
                 .Split(',')
                 .Select(x => x.Trim())
                 .Where(x => x != String.Empty);
@@ -251,13 +250,13 @@ namespace Dynamo.DSEngine
                         switch (currentTag)
                         {
                             case XmlTagType.Summary:
-                                currentDocNode.Summary = reader.Value;
+                                currentDocNode.Summary = reader.Value.CleanUpDocString();
                                 break;
                             case XmlTagType.Parameter:
-                                currentDocNode.Parameters.Add(currentParamName, reader.Value);
+                                currentDocNode.Parameters.Add(currentParamName, reader.Value.CleanUpDocString());
                                 break;
                             case XmlTagType.SearchTags:
-                                currentDocNode.SearchTags = reader.Value;
+                                currentDocNode.SearchTags = reader.Value.CleanUpDocString();
                                 break;
                         }
 
