@@ -77,7 +77,7 @@ namespace Dynamo.Models
 
             // This protects the user from a file that might have crashed during
             // its last run.  As a side effect, this also causes all files set to
-            // run auto, but the HasRunWithoutCrash flag to run manually.
+            // run auto but lacking the HasRunWithoutCrash flag to run manually.
             if (info.RunType == RunType.Automatic && !info.HasRunWithoutCrash)
             {
                 info.RunType = RunType.Manual;
