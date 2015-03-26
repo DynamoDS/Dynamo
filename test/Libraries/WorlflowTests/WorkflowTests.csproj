@@ -41,8 +41,7 @@
     </Reference>
     <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\bin\AnyCPU\Debug\ProtoGeometry.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="ProtoInterface, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
