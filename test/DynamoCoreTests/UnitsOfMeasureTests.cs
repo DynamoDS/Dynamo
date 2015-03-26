@@ -684,15 +684,11 @@ namespace Dynamo.Tests
 
     internal class ViewModelUnitsOfMeasureDynTests : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[]
-            {
-                "FunctionObject.ds",
-                "DynamoUnits.dll"
-            });
-
-            base.Setup(); // Setup DynamoModel in this call.
+            libraries.Add("FunctionObject.ds");
+            libraries.Add("DynamoUnits.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]

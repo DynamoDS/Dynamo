@@ -206,17 +206,13 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSEvaluationViewModelTest : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[]
-            {
-                "ProtoGeometry.dll",
-                "DSCoreNodes.dll",
-                "DSIronPython.dll",
-                "FunctionObject.ds",
-            });
-
-            base.Setup();
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSIronPython.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]
@@ -1147,10 +1143,10 @@ namespace Dynamo.Tests
     [Category("DSCustomNode")]
     class CustomNodeEvaluationViewModel : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[] { "FunctionObject.ds" });
-            base.Setup();
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]

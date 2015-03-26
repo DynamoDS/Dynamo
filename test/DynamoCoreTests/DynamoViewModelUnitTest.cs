@@ -25,9 +25,7 @@ namespace Dynamo.Tests
     {
         protected DynamoViewModel ViewModel;
         protected Preloader preloader;
-        private TestPathResolver pathResolver;
 
-        [SetUp]
         public override void Setup()
         {
             base.Setup();
@@ -90,15 +88,13 @@ namespace Dynamo.Tests
             }
         }
 
-        protected void PreloadLibraries(IEnumerable<string> preloadedLibraries)
+        protected virtual void GetLibrariesToPreload(List<string> libraries)
         {
-            if (pathResolver == null)
-                pathResolver = new TestPathResolver();
-
-            foreach (var preloadedLibrary in preloadedLibraries)
-            {
-                pathResolver.AddPreloadLibraryPath(preloadedLibrary);
-            }
+            // Nothing here by design. If you find yourself having to add 
+            // anything here, something must be wrong. DynamoViewModelUnitTest
+            // is designed to contain no test cases, so it does not need any 
+            // preloaded library, all of which should only be specified in the
+            // derived class.
         }
 
         protected void StartDynamo()
@@ -106,6 +102,19 @@ namespace Dynamo.Tests
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
+
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
 
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()

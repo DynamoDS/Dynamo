@@ -1,34 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Dynamo.ViewModels;
 using System.IO;
-using System.Reflection;
-using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Models;
-using Dynamo.DSEngine;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
-using System.Collections;
-using String = System.String;
 
 namespace Dynamo.Tests
 {
     class StringTests : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[]
-            {
-                "VMDataBridge.dll",
-                "DSCoreNodes.dll",
-                "FunctionObject.ds"
-            });
-
-            base.Setup();
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
         }
 
         string localDynamoStringTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}

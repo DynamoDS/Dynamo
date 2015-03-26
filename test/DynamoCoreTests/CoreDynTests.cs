@@ -5,28 +5,21 @@ using System.Linq;
 using System.Threading;
 
 using DSCore.File;
-using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using NUnit.Framework;
 using String = System.String;
-using System;
 
 
 namespace Dynamo.Tests
 {
     internal class CoreDynTests : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[]
-            {
-                "VMDataBridge.dll",
-                "DSCoreNodes.dll",
-                "FunctionObject.ds",
-            });
-
-            base.Setup();
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]

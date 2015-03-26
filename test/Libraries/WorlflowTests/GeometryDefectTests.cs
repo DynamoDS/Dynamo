@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using Dynamo.Models;
@@ -9,16 +10,12 @@ namespace Dynamo.Tests
     [TestFixture]
     class GeometryDefectTests : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[]
-            {
-                "ProtoGeometry.dll",
-                "DSCoreNodes.dll",
-                "FunctionObject.ds",
-            });
-
-            base.Setup();
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
         }
 
         // Note: This will contain purely ASM Geometry based test cases generated from Defects.

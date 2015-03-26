@@ -8,28 +8,21 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.DSASM;
 using Dynamo.Models;
-using ProtoCore.Namespace;
 using DynCmd = Dynamo.Models.DynamoModel;
 using ProtoCore.Mirror;
-using Dynamo.DSEngine;
 using ProtoCore.Utils;
 using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.UI;
-using System.Xml;
 
 namespace Dynamo.Tests
 {
     class CodeBlockNodeTests : DynamoViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new []
-            {
-                "DSCoreNodes.dll",
-                "ProtoGeometry.dll"
-            });
-
-            base.Setup();
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
 #if false

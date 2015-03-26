@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
-using System.IO;
 using NUnit.Framework;
-using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +9,14 @@ namespace Dynamo.Tests
 {
     class DynamoSamples : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[]
-            {
-                "VMDataBridge.dll",     // Required for Watch node.
-                "ProtoGeometry.dll",    // Required for Surface.
-                "DSCoreNodes.dll",      // Required for built-in nodes.
-                "DSIronPython.dll",     // Required for Python tests.
-                "FunctionObject.ds",    // Required for partially applied nodes.
-            });
-
-            base.Setup(); // Setup DynamoModel in this call.
+            libraries.Add("VMDataBridge.dll");  // Required for Watch node.
+            libraries.Add("ProtoGeometry.dll"); // Required for Surface.
+            libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
+            libraries.Add("DSIronPython.dll");  // Required for Python tests.
+            libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test, Category("SmokeTests")]

@@ -1,15 +1,9 @@
-﻿using System;
-using System.CodeDom;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DSCore.IO;
-using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Tests;
-using Dynamo.Utilities;
 using NUnit.Framework;
 using Color = DSCore.Color;
 using Directory = System.IO.Directory;
@@ -371,10 +365,10 @@ namespace Dynamo.Tests
     [TestFixture]
     class FileWritingTests : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[] { "DSCoreNodes.dll" });
-            base.Setup(); // Setup DynamoModel in this call.
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]
@@ -417,10 +411,10 @@ namespace Dynamo.Tests
     [TestFixture]
     public class ZeroTouchMigrationFileTests : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[] { "ProtoGeometry.dll" });
-            base.Setup(); // Setup DynamoModel in this call.
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]

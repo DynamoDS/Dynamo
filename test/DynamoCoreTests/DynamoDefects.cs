@@ -1,7 +1,4 @@
 ﻿using System.IO;
-
-using DSCoreNodesUI.Input;
-
 using NUnit.Framework;
 
 using Dynamo.Models;
@@ -17,16 +14,12 @@ namespace Dynamo.Tests
     [TestFixture]
     class DynamoDefects : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new []
-            {
-                "ProtoGeometry.dll",
-                "DSCoreNodes.dll",
-                "FunctionObject.ds",
-            });
-
-            base.Setup();
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
         }
 
         // Note: Pelase only add test cases those are related to defects.

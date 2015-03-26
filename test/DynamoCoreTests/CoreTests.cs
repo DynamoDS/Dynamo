@@ -5,15 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Windows;
-using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoUtilities;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -21,15 +18,11 @@ namespace Dynamo.Tests
 {
     internal class CoreTests : DynamoViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[]
-            {
-                "VMDataBridge.dll",
-                "DSCoreNodes.dll",
-            });
-
-            base.Setup();
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
         // OpenCommand

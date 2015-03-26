@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Dynamo.DSEngine;
-using Dynamo.Utilities;
 using NUnit.Framework;
-using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 
 namespace Dynamo.Tests
@@ -14,10 +10,10 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSFunctionNodeTest : DynamoViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[] { "DSCoreNodes.dll" });
-            base.Setup();
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]

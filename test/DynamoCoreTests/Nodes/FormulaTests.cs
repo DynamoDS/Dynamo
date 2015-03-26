@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-
 using DSCoreNodesUI;
-
-using Dynamo.Tests;
-
 using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
     class FormulaTests : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[] { "DSCoreNodes.dll" });
-            base.Setup(); // Setup DynamoModel in this call.
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]

@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
 using Dynamo.Tests;
 
 using DynamoServices;
 
 using NUnit.Framework;
-
-using ProtoScript.Runners;
-
-using ProtoTestFx.TD;
 
 namespace IntegrationTests
 {
@@ -38,13 +29,16 @@ namespace IntegrationTests
             postSeen = true;
         }
 
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
 
         public override void Setup()
         {
             ExecutionEvents.GraphPreExecution += PreSeen;
             ExecutionEvents.GraphPostExecution += PostSeen;
-
-            PreloadLibraries(new[] { "DSCoreNodes.dll" });
             base.Setup(); // Setup DynamoModel in this call.
         }
 

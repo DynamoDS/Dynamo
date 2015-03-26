@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Dynamo.Nodes;
 using NUnit.Framework;
@@ -9,16 +10,12 @@ namespace Dynamo.Tests
 {
     public class NodeMigrationTests : DSEvaluationViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[]
-            {
-                "DSCoreNodes.dll",
-                "DSOffice.dll",
-                "FunctionObject.ds",
-            });
-
-            base.Setup();
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSOffice.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
         }
 
         #region Dynamo Core Node Migration Tests

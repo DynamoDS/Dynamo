@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
 using DSOffice;
-
-using Dynamo.Nodes;
-
 using NUnit.Framework;
 using ProtoCore.Mirror;
 
@@ -16,15 +13,15 @@ namespace Dynamo.Tests
     [TestFixture]
     public class ExcelTests : DynamoViewModelUnitTest
     {
-        [SetUp]
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSOffice.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         public override void Setup()
         {
-            PreloadLibraries(new[]
-            {
-                "DSCoreNodes.dll",
-                "DSOffice.dll"
-            });
-
             base.Setup();
 
             // In unit-test scenario we are redirecting 'PreferenceSettings' to 
@@ -37,7 +34,6 @@ namespace Dynamo.Tests
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             try

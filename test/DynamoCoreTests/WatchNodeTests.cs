@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Dynamo.Interfaces;
-using Dynamo.Utilities;
+﻿using Dynamo.Interfaces;
 using NUnit.Framework;
 using System.IO;
 using Dynamo.Nodes;
@@ -15,16 +13,12 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class WatchNodeTests : DynamoViewModelUnitTest
     {
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            PreloadLibraries(new[]
-            {
-                "VMDataBridge.dll",
-                "ProtoGeometry.dll",
-                "FunctionObject.ds",
-            });
-
-            base.Setup();
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
         }
 
         /// <summary>
