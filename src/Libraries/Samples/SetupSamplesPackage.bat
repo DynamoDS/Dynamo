@@ -16,9 +16,9 @@ if not exist "%dyfDir%" mkdir "%dyfDir%"
 if not exist "%extraDir%" mkdir "%extraDir%"
 if not exist "%resourcesDir%" mkdir "%resourcesDir%"
 
-xcopy "%sampleLibraryTestsDir%\*.dll" "%binDir%" /Y
-xcopy "%sampleLibraryTestsDir%\*.pdb" "%binDir%" /Y
-xcopy "%sampleLibraryTestsDir%\*.dyn" "%extraDir%" /Y
+REM xcopy "%sampleLibraryTestsDir%\*.dll" "%binDir%" /Y
+REM xcopy "%sampleLibraryTestsDir%\*.pdb" "%binDir%" /Y
+REM xcopy "%sampleLibraryTestsDir%\*.dyn" "%extraDir%" /Y
 
 xcopy "%sampleLibraryUIDir%\*.dll" "%binDir%" /Y
 xcopy "%sampleLibraryUIDir%\*.pdb" "%binDir%" /Y
