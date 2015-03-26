@@ -565,7 +565,6 @@ namespace Dynamo.PackageManager
                         .ForEach(x => this.PackageManagerClientViewModel.DownloadAndInstall(x));
 
             }
-
         }
 
         private void DownloadsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
