@@ -20,11 +20,25 @@ namespace DynamoCoreUITests
     [TestFixture]
     public class DynamoConverterTest : DSEvaluationViewModelUnitTest
     {
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
             // Add an assembly resolver to look in the nodes folder.
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+            base.Setup();
+        }
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
+        }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DynamoConversions.dll");
+            libraries.Add("DynamoUnits.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
         System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
