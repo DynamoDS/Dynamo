@@ -36,11 +36,12 @@ namespace Dynamo.Models
         public long EvaluationCount { get; private set; }
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
-            NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
+            NodeFactory factory, DesignOptionsSetModel designOptions, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
                 engine,
                 scheduler,
                 factory,
+                designOptions,
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
@@ -52,13 +53,14 @@ namespace Dynamo.Models
             EngineController engine, 
             DynamoScheduler scheduler, 
             NodeFactory factory,
+            DesignOptionsSetModel designOptions,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             WorkspaceInfo info, 
             bool verboseLogging,
             bool isTestMode)
-            : base(e, n, info, factory)
+            : base(e, n, info, factory,designOptions)
         {
             EvaluationCount = 0;
 

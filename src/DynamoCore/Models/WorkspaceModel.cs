@@ -61,7 +61,7 @@ namespace Dynamo.Models
         private bool hasUnsavedChanges;
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
-        protected readonly DesignOptionsSetModel designOptionSet = new DesignOptionsSetModel();
+        protected readonly DesignOptionsSetModel designOptionSet;
         private readonly UndoRedoRecorder undoRecorder;
         private Guid guid;
 
@@ -442,7 +442,8 @@ namespace Dynamo.Models
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n,
             WorkspaceInfo info, 
-            NodeFactory factory)
+            NodeFactory factory,
+            DesignOptionsSetModel designOptions)
         {
             guid = Guid.NewGuid();
 
@@ -464,6 +465,7 @@ namespace Dynamo.Models
 
             NodeFactory = factory;
 
+            designOptionSet = designOptions;
             // Update ElementResolver from nodeGraph.Nodes (where node is CBN)
             ElementResolver = new ElementResolver();
             foreach (var node in nodes)

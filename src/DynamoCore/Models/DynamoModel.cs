@@ -952,11 +952,13 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
+            var designOptions = DesignOptionsSetModel.LoadFromXml(xmlDoc,nodeGraph);
 
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
                 Scheduler,
                 NodeFactory,
+                designOptions,
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
