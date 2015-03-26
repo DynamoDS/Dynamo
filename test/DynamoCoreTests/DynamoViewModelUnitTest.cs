@@ -25,7 +25,7 @@ namespace Dynamo.Tests
     {
         protected DynamoViewModel ViewModel;
         protected Preloader preloader;
-        protected TestPathResolver pathResolver;
+        private TestPathResolver pathResolver;
 
         [SetUp]
         public override void Setup()

@@ -32,9 +32,10 @@ namespace DynamoCoreUITests
     {
         #region Generic Set-up Routines and Data Members
 
+        protected TestPathResolver pathResolver;
         protected System.Random randomizer = null;
-        private IEnumerable<string> customNodesToBeLoaded = null;
-        private CommandCallback commandCallback = null;
+        private IEnumerable<string> customNodesToBeLoaded;
+        private CommandCallback commandCallback;
 
         // Geometry preloading related members.
         protected bool preloadGeometry;
@@ -803,18 +804,6 @@ namespace DynamoCoreUITests
 
     class RecordedTestsDSEngine : RecordedUnitTestBase
     {
-        [SetUp]
-        public override void Setup()
-        {
-            base.Setup();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            base.Exit();
-        }
-
         #region Basic CodeBlockNode Test Cases
 
         [Test, RequiresSTA, Category("Failure")]
