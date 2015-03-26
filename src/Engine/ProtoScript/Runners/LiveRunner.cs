@@ -663,7 +663,7 @@ namespace ProtoScript.Runners
                     if (bnode != null)
                     {
                         bnode.guid = modifiedSubTrees[n].GUID;
-                        bnode.IsInputExpression = ProtoCore.Utils.CoreUtils.IsPrimitiveASTNode(bnode.RightNode) ? true : false;
+                        bnode.IsInputExpression = modifiedSubTrees[n].IsInput;
                     }
                     SetNestedLanguageBlockASTGuids(modifiedSubTrees[n].GUID, new List<ProtoCore.AST.Node>() { bnode });
                 }
@@ -876,35 +876,6 @@ namespace ProtoScript.Runners
                 }
             }
             return modifiedASTList;
-        }
-
-        private List<AssociativeNode> GetModifiedPrimitives(List<AssociativeNode> prevASTList, List<AssociativeNode> newASTList)
-        {
-            List<AssociativeNode> modifiedPrimitives = new List<AssociativeNode>();
-
-            // For every previous AST
-            foreach (AssociativeNode newNode in newASTList)
-            {
-                // Check if the new AST exists in the previously cached ast list
-                bool newNodeFound = false;
-                foreach (AssociativeNode prevNode in prevASTList)
-                {
-                    if (newNode.Equals(prevNode))
-                    {
-                        newNodeFound = true;
-                        break;
-                    }
-                }
-
-                BinaryExpressionNode bNode = newNode as BinaryExpressionNode;
-                bool isNewNodePrimitive = bNode != null && CoreUtils.IsPrimitiveASTNode(bNode.RightNode);
-                if (!newNodeFound && isNewNodePrimitive)
-                {
-                    modifiedPrimitives.Add(newNode);
-                }
-            }
-
-            return modifiedPrimitives;
         }
 
         /// <summary>
