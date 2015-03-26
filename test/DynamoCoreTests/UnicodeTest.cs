@@ -16,6 +16,18 @@ namespace Dynamo.Tests
     [TestFixture]
     internal class UnicodeTest : DSEvaluationViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[]
+            {
+                "VMDataBridge.dll",
+                "DSCoreNodes.dll",
+                "DSIronPython.dll",
+            });
+
+            base.Setup(); // Setup DynamoModel in this call.
+        }
+
         [Test]
         public void TestUnicodeIdentifierInCBN()
         {
