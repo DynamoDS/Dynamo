@@ -27,8 +27,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     Indicates whether a run has completed successfully.   
         /// 
-        ///     This flag is critical to ensuring that broken run auto files
-        ///     are not left in run-auto if the file causes a crash.  
+        ///     This flag is critical to ensuring that crashing run-auto files
+        ///     are not left in run-auto upon reopening.  
         /// </summary>
         public bool HasRunWithoutCrash { get; private set; }
 
