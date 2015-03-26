@@ -17,62 +17,22 @@ namespace Dynamo.DSEngine
         private static Dictionary<string, MemberDocumentNode> documentNodes =
                    new Dictionary<string, MemberDocumentNode>();
 
-        #region Public methods
+        #region Overloads specifying XmlReader
 
-        public static string GetSummary(this FunctionDescriptor member, IPathManager pathManager)
+        public static string GetDescription(this TypedParameter parameter)
         {
-            XmlReader xml = null;
-
-            if (member.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Assembly, pathManager);
-
-            return member.GetSummary(xml);
+            return GetMemberElement(parameter.Function,
+                DocumentElementType.Description, parameter.Name).CleanUpDocString();
         }
 
-        public static string GetDescription(this TypedParameter member, IPathManager pathManager)
+        public static string GetSummary(this FunctionDescriptor member)
         {
-            XmlReader xml = null;
-
-            if (member.Function != null && member.Function.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Function.Assembly, pathManager);
-
-            return member.GetDescription(xml);
+            return GetMemberElement(member, DocumentElementType.Summary).CleanUpDocString();
         }
 
         public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member)
         {
-            XmlReader xml = null;
-
-            if (member.Assembly != null)
-                xml = DocumentationServices.GetForAssembly(member.Assembly, member.PathManager);
-
-            return member.GetSearchTags(xml);
-        }
-
-        #endregion
-
-        #region Overloads specifying XDocument
-
-        public static string GetDescription(this TypedParameter parameter, XmlReader xml)
-        {
-            if (xml == null) return String.Empty;
-
-            return GetMemberElement(parameter.Function,
-                "description", xml, parameter.Name).CleanUpDocString();
-        }
-
-        public static string GetSummary(this FunctionDescriptor member, XmlReader xml)
-        {
-            if (xml == null) return String.Empty;
-
-            return GetMemberElement(member, "summary", xml).CleanUpDocString();
-        }
-
-        public static IEnumerable<string> GetSearchTags(this FunctionDescriptor member, XmlReader xml)
-        {
-            if (xml == null) return new List<string>();
-
-            return GetMemberElement(member, "search", xml)
+            return GetMemberElement(member, DocumentElementType.SearchTags)
                 .CleanUpDocString()
                 .Split(',')
                 .Select(x => x.Trim())
@@ -102,55 +62,57 @@ namespace Dynamo.DSEngine
             return sb.ToString();
         }
 
-        private static string GetMemberElement(FunctionDescriptor function,
-            string property, XmlReader xml, string paramName = "")
+        private static string GetMemberElement(
+            FunctionDescriptor function,
+            DocumentElementType property,
+            string paramName = "")
         {
             var assemblyName = function.Assembly;
-            var fullyQualifiedName = GetMemberElementName(function);
-            if (!documentNodes.ContainsKey(fullyQualifiedName))
-                LoadDataFromXml(xml);
-
             // Case for operators.
-            if (assemblyName == null)
+            if (string.IsNullOrEmpty(assemblyName))
                 return String.Empty;
 
-            var keyForOverloaded = documentNodes.Keys.
+            var fullyQualifiedName = GetMemberElementName(function);
+            XmlReader xml = null;
+
+            if (!documentNodes.ContainsKey(fullyQualifiedName))
+            {
+                xml = DocumentationServices.GetForAssembly(function.Assembly, function.PathManager);
+                LoadDataFromXml(xml);
+            }
+
+            MemberDocumentNode documentNode = null;
+            if (documentNodes.ContainsKey(fullyQualifiedName))
+                documentNode = documentNodes[fullyQualifiedName];
+            else
+            {
+                var overloadedName = documentNodes.Keys.
                         Where(key => key.Contains(function.ClassName + "." + function.FunctionName)).FirstOrDefault();
+
+                if (overloadedName == null)
+                    return String.Empty;
+                if (documentNodes.ContainsKey(overloadedName))
+                    documentNode = documentNodes[overloadedName];
+            }
+            
+            if (documentNode == null)
+                return String.Empty;
+            if (property.Equals(DocumentElementType.Description) && !documentNode.Parameters.ContainsKey(paramName))
+                return String.Empty;
 
             switch (property)
             {
-                case "summary":
-                    if (documentNodes.ContainsKey(fullyQualifiedName))
-                        return documentNodes[fullyQualifiedName].Summary;
+                case DocumentElementType.Summary:
+                    return documentNode.Summary;
 
-                    // Fallback for overloaded methods.
-                    if (keyForOverloaded != null)
-                        return documentNodes[keyForOverloaded].Summary;
+                case DocumentElementType.Description:
+                    return documentNode.Parameters[paramName];
 
-                    return String.Empty;
+                case DocumentElementType.SearchTags:
+                    return documentNode.SearchTags;
 
-                case "description":
-                    if (documentNodes.ContainsKey(fullyQualifiedName))
-                        if (documentNodes[fullyQualifiedName].Parameters.ContainsKey(paramName))
-                            return documentNodes[fullyQualifiedName].Parameters[paramName];
-
-                    // Fallback for overloaded methods.
-                    if (keyForOverloaded != null)
-                        if (documentNodes[keyForOverloaded].Parameters.ContainsKey(paramName))
-                            return documentNodes[keyForOverloaded].Parameters[paramName];
-
-                    return String.Empty;
-                case "search":
-                    if (documentNodes.ContainsKey(fullyQualifiedName))
-                        return documentNodes[fullyQualifiedName].SearchTags;
-
-                    // Fallback for overloaded methods.
-                    if (keyForOverloaded != null)
-                        return documentNodes[keyForOverloaded].SearchTags;
-
-                    return String.Empty;
                 default:
-                    return String.Empty;
+                    throw new ArgumentException("property");
             }
         }
 
@@ -228,6 +190,13 @@ namespace Dynamo.DSEngine
             Member,
             Summary,
             Parameter,
+            SearchTags
+        }
+
+        private enum DocumentElementType
+        {
+            Summary,
+            Description,
             SearchTags
         }
 

@@ -11,7 +11,8 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, string> parameters;
 
         public string FullyQualifiedName { get { return fullyQualifiedName; } }
-        public string Summary 
+
+        public string Summary
         {
             get
             {
@@ -21,9 +22,12 @@ namespace Dynamo.DSEngine
             }
             set
             {
+                if (value == null)
+                    throw new ArgumentNullException("value");
                 summary = value;
             }
         }
+
         public string SearchTags
         {
             get
@@ -34,9 +38,12 @@ namespace Dynamo.DSEngine
             }
             set
             {
+                if (value == null)
+                    throw new ArgumentNullException("value");
                 searchTags = value;
             }
         }
+
         public IDictionary<string, string> Parameters { get { return parameters; } }
 
         /// <summary>
