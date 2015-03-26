@@ -6,8 +6,7 @@
              mc:Ignorable="d"                          
              Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
-             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"
-             MouseLeave="AnnotationView_OnMouseLeave"
+             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"            
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">
     <UserControl.Resources>
@@ -96,7 +95,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>    
     </UserControl.Resources>
     <Grid Name="AnnotationGrid" Height="Auto">
         <Grid.RowDefinitions>
@@ -162,23 +161,60 @@
         </Rectangle>
         <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 
               Margin="0,0,0,0"
-              VerticalAlignment="Top">           
-                <TextBlock x:Name="GroupTextBlock"                                     
-                    Text ="{Binding AnnotationText, Mode=TwoWay}"                                                  
+              VerticalAlignment="Top">            
+            <TextBlock x:Name="GroupTextBlock"                                     
+                    Text ="{Binding AnnotationText, Mode=TwoWay}"    
+                    Visibility="Visible"
                     MaxWidth="{Binding Width}"  
-                    MinHeight="20"                       
-                    TextWrapping="Wrap" MouseLeftButtonDown="UIElement_OnMouseLeftButtonDown">
-                </TextBlock>
-                <TextBox 
-                    x:Name="GroupTextBox"
+                    MinHeight="20"   
+                    FontFamily="Trebuchet" 
+                    FontSize="10"
+                    TextWrapping="Wrap">                  
+            </TextBlock>
+            <TextBox 
+                    Name="GroupTextBox"
                     Visibility="Collapsed"
                     Text ="{Binding AnnotationText,Mode=TwoWay}"                                                    
                     TextWrapping="Wrap"            
                     MaxWidth="{Binding Width}" 
-                    MinHeight="20"                   
-                    TextChanged="GroupTextBox_OnTextChanged"
-                    >
-                </TextBox>                         
+                    MinHeight="20"  
+                    FontFamily="Trebuchet" 
+                    FontSize="10"
+                    IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
+                    TextChanged="GroupTextBox_OnTextChanged">            
+            </TextBox>
+            
+            <Grid.Triggers>                
+                <EventTrigger  SourceName="GroupTextBlock" RoutedEvent="TextBlock.MouseLeftButtonDown">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Duration="0"  
+                                                               Storyboard.TargetName="GroupTextBox"
+                                                               Storyboard.TargetProperty="(TextBox.Visibility)">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                            </ObjectAnimationUsingKeyFrames>
+                            <BooleanAnimationUsingKeyFrames
+                                    Storyboard.TargetName="GroupTextBox"
+                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                                <DiscreteBooleanKeyFrame
+                                            KeyTime="0"
+                                            Value="True" />
+                            </BooleanAnimationUsingKeyFrames>                            
+                        </Storyboard>                      
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger SourceName="GroupTextBox" RoutedEvent="TextBox.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <ObjectAnimationUsingKeyFrames Duration="0"  
+                                                               Storyboard.TargetName="GroupTextBox"
+                                                               Storyboard.TargetProperty="(TextBox.Visibility)">
+                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}" />
+                            </ObjectAnimationUsingKeyFrames>                            
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Grid.Triggers>
         </Grid>              
     </Grid>
 </UserControl>

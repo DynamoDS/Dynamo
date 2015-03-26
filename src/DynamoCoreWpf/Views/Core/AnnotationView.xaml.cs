@@ -11,6 +11,7 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using GraphLayout;
+using ProtoCore.AST.AssociativeAST;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
 using Dynamo.Models;
@@ -22,8 +23,8 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class AnnotationView : IViewModelView<AnnotationViewModel>
     {
-        public AnnotationViewModel ViewModel { get; private set; }       
-        
+        public AnnotationViewModel ViewModel { get; private set; }
+        public static DependencyProperty SelectAllTextOnFocus;
         public AnnotationView()
         {
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
@@ -34,9 +35,10 @@ namespace Dynamo.Nodes
 
             InitializeComponent();
             Loaded += AnnotationView_Loaded;
-            BindingErrorTraceListener.SetTrace();                      
+            BindingErrorTraceListener.SetTrace();
+            this.GroupTextBlock.MouseLeftButtonDown += UIElement_OnMouseLeftButtonDown;         
         }
-
+      
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as AnnotationViewModel;
@@ -98,11 +100,7 @@ namespace Dynamo.Nodes
         }
 
         private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            this.GroupTextBox.Visibility = Visibility.Visible;
-            this.GroupTextBlock.Visibility = Visibility.Collapsed;
-            this.GroupTextBox.Focus();
-            this.GroupTextBox.SelectAll();
+        {                      
             e.Handled = true;
         }
 
@@ -120,10 +118,15 @@ namespace Dynamo.Nodes
             }           
         }
 
-        private void AnnotationView_OnMouseLeave(object sender, MouseEventArgs e)
+        private void GroupTextBox_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            this.GroupTextBox.Visibility = Visibility.Collapsed;
-            this.GroupTextBlock.Visibility = Visibility.Visible; 
+            var textbox = sender as TextBox;
+            if (textbox != null && textbox.Visibility == Visibility.Visible)
+            {
+                textbox.Focus();
+                textbox.SelectAll();
+                textbox.SelectionStart = 0;
+            }
         }
     }
 }
