@@ -15,6 +15,12 @@ namespace Dynamo.Tests
     [Category("MessageLog")]
     class MessageLogTests : DynamoViewModelUnitTest
     {
+        public override void Setup()
+        {
+            PreloadLibraries(new[] { "DSCoreNodes.dll" });
+            base.Setup(); // Setup DynamoModel in this call.
+        }
+
         [Test]
         public void TestWarningMessageLog()
         {
