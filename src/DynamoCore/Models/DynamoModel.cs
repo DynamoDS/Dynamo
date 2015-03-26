@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 ﻿using DSCoreNodesUI;
@@ -461,12 +462,13 @@ namespace Dynamo.Models
                 try
                 {
                     OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.Begin, 0.0));
+                        SettingsMigrationEventArgs.EventStatusType.Begin));
 
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
+                    Thread.Sleep(5000);
 
                     OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.End, 100.0));
+                        SettingsMigrationEventArgs.EventStatusType.End));
                 }
                 catch (Exception e)
                 {

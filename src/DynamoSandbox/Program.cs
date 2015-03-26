@@ -105,12 +105,10 @@ namespace DynamoSandbox
         {
             if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
             {
-                migrationWindow.PbStatus.Value = args.Percentage;
                 migrationWindow.Show();
             }
             else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
             {
-                migrationWindow.PbStatus.Value = args.Percentage;
                 migrationWindow.Close();
             }
         }
