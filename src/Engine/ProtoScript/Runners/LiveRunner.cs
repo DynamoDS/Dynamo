@@ -1654,13 +1654,10 @@ namespace ProtoScript.Runners
 
         private ProtoRunner.ProtoVMState Execute()
         {
-            // Initialize the runtime context and pass it the execution delta list from the graph compiler
-            ProtoCore.CompileTime.Context compileContext = new ProtoCore.CompileTime.Context();
-
             try
             {
                 SetupRuntimeCoreForExecution();
-                runner.ExecuteLive(runnerCore, runtimeCore, compileContext);
+                runner.ExecuteLive(runnerCore, runtimeCore);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {

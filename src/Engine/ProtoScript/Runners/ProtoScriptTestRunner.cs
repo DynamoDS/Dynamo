@@ -182,14 +182,10 @@ namespace ProtoScript.Runners
         /// <param name="staticContext"></param>
         /// <param name="runtimeContext"></param>
         /// <returns></returns>
-        public ProtoCore.RuntimeCore ExecuteLive(
-            ProtoCore.Core core,
-            ProtoCore.RuntimeCore runtimeCore, 
-            ProtoCore.CompileTime.Context staticContext)
+        public ProtoCore.RuntimeCore ExecuteLive(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
             try
             {
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
                 Executable exe = runtimeCore.DSExecutable;
                 Validity.Assert(exe.CodeBlocks.Count == 1);
                 CodeBlock codeBlock = runtimeCore.DSExecutable.CodeBlocks[0];
