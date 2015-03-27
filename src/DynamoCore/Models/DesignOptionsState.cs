@@ -5,6 +5,7 @@ using System.Text;
 using Dynamo.Core;
 using Dynamo.Services;
 using System.Xml;
+using Dynamo.Nodes;
 
 namespace Dynamo.Models
 {
@@ -69,6 +70,9 @@ namespace Dynamo.Models
             // the resulting elements will be used to save this state when 
             // the designOptionsSet is saved on graph save
             var tempdoc = new XmlDocument();
+            var root = tempdoc.CreateElement("temproot");
+            tempdoc.AppendChild(root);
+            Dynamo.Nodes.Utilities.SetDocumentXmlPath(tempdoc,"C:/tempdoc" );
             SerializedNodes = new List<XmlElement>();
             foreach (var node in Nodes)
             {
