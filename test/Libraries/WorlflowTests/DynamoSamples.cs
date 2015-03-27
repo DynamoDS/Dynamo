@@ -514,11 +514,13 @@ namespace Dynamo.Tests
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
-            string resultPath = GetSampleDirectory() + "Data\\helix.csv";
+            string resultPath = SampleDirectory + "Data\\helix.csv";
             // Although old path is a hard coded but that is not going to change 
             // because it is saved in DYN which we have added in Samples folder.
             filename.Value = filename.Value.Replace
                 ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\helix.csv", resultPath);
+
+            RunCurrentModel();
 
             const string lineNodeID = "0cde47c6-106f-4a0a-9566-872fd23a0a20";
             AssertPreviewCount(lineNodeID, 201);
@@ -544,7 +546,7 @@ namespace Dynamo.Tests
             filename.Value = filename.Value.Replace
                 ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\icosohedron_points.csv", resultPath);
 
-            //RunCurrentModel();
+            RunCurrentModel();
 
             const string lineNodeID = "48175079-300b-4b1d-9953-e23d570dce12";
             AssertPreviewCount(lineNodeID, 65);
@@ -566,7 +568,7 @@ namespace Dynamo.Tests
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
-            string resultPath = GetSampleDirectory() + "Data\\helix.xlsx";
+            string resultPath = SampleDirectory + "Data\\helix.xlsx";
             // Although old path is a hard coded but that is not going to change 
             // because it is saved in DYN which we have added in Samples folder.
             filename.Value = filename.Value.Replace
