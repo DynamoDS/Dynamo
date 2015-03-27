@@ -112,14 +112,14 @@ namespace ProtoTest.LiveRunner
                 modified.Add(st);
                 syncData = new GraphSyncData(null, null, modified);
                 liverunner.UpdateGraph(syncData);
+
+                instrStreamEnd = runtimeDiagnostics.GetExecutableInstructionCount();
+                Assert.AreEqual(instrStreamStart, instrStreamEnd);
             }
 
             mirror = liverunner.InspectNodeValue("a");
             Assert.IsTrue((Int64)mirror.GetData().Data == 100);
 
-            instrStreamEnd = runtimeDiagnostics.GetExecutableInstructionCount();
-
-            Assert.AreEqual(instrStreamStart, instrStreamEnd);
         }
 
         [Test]
