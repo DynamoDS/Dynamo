@@ -127,7 +127,6 @@ namespace ProtoCore.DSASM
         private void SetupAndPushBounceStackFrame(
           int exeblock,
           int entry,
-          ProtoCore.Runtime.Context context,
           StackFrame stackFrame,
           int locals = 0,
           ProtoCore.DebugServices.EventSink sink = null)
@@ -168,7 +167,6 @@ namespace ProtoCore.DSASM
         public StackValue Bounce(
             int exeblock, 
             int entry, 
-            ProtoCore.Runtime.Context context, 
             StackFrame stackFrame, 
             int locals = 0,
             bool fepRun = false,
@@ -177,10 +175,10 @@ namespace ProtoCore.DSASM
         {
             if (stackFrame != null)
             {
-                SetupAndPushBounceStackFrame(exeblock, entry, context, stackFrame, locals);
+                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
                 runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
-            return runtimeCore.ExecutionInstance.Execute(exeblock, entry, context, fepRun, breakpoints);
+            return runtimeCore.ExecutionInstance.Execute(exeblock, entry, fepRun, breakpoints);
         }
 
         /// <summary>
@@ -199,7 +197,6 @@ namespace ProtoCore.DSASM
            DSASM.Executive executive,
            int exeblock,
            int entry,
-           ProtoCore.Runtime.Context context,
            StackFrame stackFrame,
            int locals = 0,
            bool fepRun = false,
@@ -208,7 +205,7 @@ namespace ProtoCore.DSASM
         {
             if (stackFrame != null)
             {
-                SetupAndPushBounceStackFrame(exeblock, entry, context, stackFrame, locals);
+                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
                 runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
             executive.Execute(exeblock, entry, breakpoints);

@@ -1280,7 +1280,6 @@ namespace ProtoScript.Runners
         {
             runtimeCore = new ProtoCore.RuntimeCore(runnerCore.Heap);
             runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
-            runtimeCore.RuntimeStatus.MessageHandler = runnerCore.BuildStatus.MessageHandler;
         }
 
         /// <summary>
@@ -1288,11 +1287,17 @@ namespace ProtoScript.Runners
         /// </summary>
         private void SetupRuntimeCoreForExecution()
         {
-            // the entry point of live execution is the global scope block
-            runtimeCore.RunningBlock = 0;
-            runtimeCore.WatchSymbolList = runnerCore.watchSymbolList;
-            runtimeCore.SetProperties(runnerCore.Options, runnerCore.DSExecutable, runnerCore.DebuggerProperties);
-            runtimeCore.RegisterDllTypes(runnerCore.DllTypesToLoad);
+            // runnerCore.GlobOffset is the number of global symbols that need to be allocated on the stack
+            // The argument to Reallocate is the number of ONLY THE NEW global symbols as the stack needs to accomodate this delta
+            int globalStackFrameSize = runnerCore.GlobOffset - deltaSymbols;
+
+            // If there are lesser symbols to allocate for this run, then it means nodes were deleted.
+            // We just leave them in the global stack as no symbols point to this memory location in the stack anyway
+            // This will be addressed when instruction cache is optimized
+            runtimeCore.SetupForExecution(runnerCore, globalStackFrameSize);
+
+            // Store the current number of global symbols
+            deltaSymbols = runnerCore.GlobOffset;
         }
 
         private void FFIPropertyChanged(FFIPropertyChangedEventArgs arg)
@@ -1634,9 +1639,6 @@ namespace ProtoScript.Runners
 
         private bool Compile(List<AssociativeNode> astList, Core targetCore, out int blockId)
         {
-            // The ASTs have already been transformed to SSA
-            //runnerCore.Options.GenerateSSA = false;
-
             bool succeeded = runner.Compile(astList, targetCore, out blockId);
             if (succeeded)
             {
@@ -1652,38 +1654,19 @@ namespace ProtoScript.Runners
 
         private ProtoRunner.ProtoVMState Execute()
         {
-            // runnerCore.GlobOffset is the number of global symbols that need to be allocated on the stack
-            // The argument to Reallocate is the number of ONLY THE NEW global symbols as the stack needs to accomodate this delta
-            int newSymbols = runnerCore.GlobOffset - deltaSymbols;
-
-            // If there are lesser symbols to allocate for this run, then it means nodes were deleted.
-            // TODO Jun: Determine if it is safe to just leave them in the global stack 
-            //           as no symbols point to this memory location in the stack anyway
-            if (newSymbols >= 0)
-            {
-                runtimeCore.RuntimeMemory.PushFrameForGlobals(newSymbols);
-            }
-
-            // Store the current number of global symbols
-            deltaSymbols = runnerCore.GlobOffset;
-
             // Initialize the runtime context and pass it the execution delta list from the graph compiler
-            ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
             ProtoCore.CompileTime.Context compileContext = new ProtoCore.CompileTime.Context();
 
             try
             {
                 SetupRuntimeCoreForExecution();
-                runner.ExecuteLive(runnerCore, runtimeCore, compileContext, runtimeContext);
+                runner.ExecuteLive(runnerCore, runtimeCore, compileContext);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
                 runtimeCore.Cleanup();
                 ReInitializeLiveRunner();
             }
-
-            // ExecutionMirror mirror = new ExecutionMirror(runnerCore.CurrentExecutive.CurrentDSASMExec, runnerCore);
-
             return new ProtoRunner.ProtoVMState(runnerCore, runtimeCore);
         }
 
@@ -1704,12 +1687,7 @@ namespace ProtoScript.Runners
         {
             // TODO Jun: Revisit all the Compile functions and remove the blockId out argument
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = true;
-            if (astList.Count > 0)
-            {
-                succeeded = Compile(astList, runnerCore, out blockId);
-            }
-
+            bool succeeded= Compile(astList, runnerCore, out blockId);
             if (succeeded)
             {
                 runtimeCore.RunningBlock = blockId;

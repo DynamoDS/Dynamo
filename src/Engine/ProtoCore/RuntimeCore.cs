@@ -105,9 +105,12 @@ namespace ProtoCore
         /// </summary>
         /// <param name="compileCore"></param>
         /// <param name="context"></param>
-        public void SetupForExecution(ProtoCore.Core compileCore, ProtoCore.Runtime.Context context = null)
+        public void SetupForExecution(ProtoCore.Core compileCore, int globalStackFrameSize)
         {
-            RuntimeMemory.PushFrameForGlobals(compileCore.GlobOffset);
+            if (globalStackFrameSize > 0)
+            {
+                RuntimeMemory.PushFrameForGlobals(globalStackFrameSize);
+            }
             RunningBlock = 0;
             RuntimeStatus.MessageHandler = compileCore.BuildStatus.MessageHandler;
             WatchSymbolList = compileCore.watchSymbolList;
@@ -329,6 +332,20 @@ namespace ProtoCore
             AssociativeGraph.GraphNode gnode =  ProtoCore.AssociativeEngine.Utils.MarkGraphNodeDirty(this, astID);
             Validity.Assert(gnode != null);
             return gnode.updateBlock.startpc;
+        }
+
+        /// <summary>
+        /// This function determines what the starting pc should be for the next execution session
+        /// The StartPC takes precedence if set, otherwise, the entry pc in the global codeblock is the entry point
+        /// StartPC is assumed to be reset to kInvalidPC after each execution session
+        /// </summary>
+        private void SetupStartPC()
+        {
+            if (StartPC != Constants.kInvalidPC)
+            {
+                Validity.Assert(DSExecutable.CodeBlocks.Count > 0);
+                StartPC = DSExecutable.CodeBlocks[0].instrStream.entrypoint;
+            }
         }
 
         public void SetStartPC(int pc)

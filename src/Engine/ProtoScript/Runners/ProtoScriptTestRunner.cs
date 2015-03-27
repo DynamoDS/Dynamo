@@ -121,7 +121,7 @@ namespace ProtoScript.Runners
         private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core, int runningBlock)
         {
             ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
-            runtimeCore.SetupForExecution(core, new ProtoCore.Runtime.Context());
+            runtimeCore.SetupForExecution(core, core.GlobOffset);
             return runtimeCore;
         }
 
@@ -134,7 +134,7 @@ namespace ProtoScript.Runners
         /// <param name="staticContext"></param>
         /// <param name="runtimeContext"></param>
         public ProtoCore.RuntimeCore Execute(
-            ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
+            ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContex)
         {
             ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core, runningBlock);
 
@@ -160,7 +160,7 @@ namespace ProtoScript.Runners
                     int locals = 0; // This is the global scope, there are no locals
                     ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, stackFrame, locals);
                 }
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
@@ -185,8 +185,7 @@ namespace ProtoScript.Runners
         public ProtoCore.RuntimeCore ExecuteLive(
             ProtoCore.Core core,
             ProtoCore.RuntimeCore runtimeCore, 
-            ProtoCore.CompileTime.Context staticContext, 
-            ProtoCore.Runtime.Context runtimeContext)
+            ProtoCore.CompileTime.Context staticContext)
         {
             try
             {
@@ -226,7 +225,6 @@ namespace ProtoScript.Runners
                     runtimeCore.CurrentExecutive.CurrentDSASMExec, 
                     codeBlock.codeBlockId,
                     runtimeCore.StartPC, 
-                    runtimeContext, 
                     stackFrame,
                     locals);
 
@@ -251,7 +249,6 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public ExecutionMirror Execute(
             ProtoCore.CompileTime.Context staticContext, 
-            ProtoCore.Runtime.Context runtimeContext, 
             ProtoCore.Core core, 
             out ProtoCore.RuntimeCore runtimeCoreOut, 
             bool isTest = true)
@@ -266,8 +263,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                Validity.Assert(null != runtimeContext);
-                runtimeCore = Execute(core, blockId, staticContext, runtimeContext);
+                runtimeCore = Execute(core, blockId, staticContext);
                 if (!isTest)
                 {
                     runtimeCore.RuntimeMemory.Heap.Free();
@@ -302,7 +298,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+                runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context());
                 if (!isTest) 
                 {
                     runtimeCore.RuntimeMemory.Heap.Free(); 
@@ -339,7 +335,7 @@ namespace ProtoScript.Runners
                 core.GenerateExecutable();
                 try
                 {
-                    runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+                    runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context());
                 }
                 catch (ProtoCore.Exceptions.ExecutionCancelledException e)
                 {

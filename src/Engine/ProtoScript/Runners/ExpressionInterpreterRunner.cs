@@ -125,14 +125,12 @@ namespace ProtoScript.Runners
                 // of it and restore it right after the "Core.Bounce" call.
                 // 
                 //Core.Executives[Core.CodeBlockList[Core.RunningBlock].language].
-                ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-
                 try
                 {
                     ProtoCore.DSASM.StackFrame stackFrame = null;
                     int locals = 0;
 
-                    StackValue sv = runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.startPC, context, stackFrame, locals);
+                    StackValue sv = runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.startPC, stackFrame, locals);
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing
                     // it needs to be popped off at the end for stack alignment - pratapa
