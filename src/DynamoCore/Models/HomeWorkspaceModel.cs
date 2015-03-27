@@ -57,7 +57,7 @@ namespace Dynamo.Models
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
-                new WorkspaceInfo(){FileName = fileName, Name = "Home", HasRunWithoutCrash = true},
+                new WorkspaceInfo(){FileName = fileName, Name = "Home"},
                 verboseLogging, 
                 isTestMode) { }
 
