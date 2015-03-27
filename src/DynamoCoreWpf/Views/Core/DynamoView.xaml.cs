@@ -867,13 +867,14 @@ namespace Dynamo.Controls
             //grab serialized designoptions from current workspace... hopefully this is loaded?
             var designOptionsSet = dynamoViewModel.Model.CurrentWorkspace.DesignOptionsSet;
             // now grab all the states off the set and create a menu item for each one
-            
-            //only update the restore states menu if the stares have been updated or the user
+
+           
+            //only update the states menus if the states have been updated or the user
             // has switched workspace contexts, can check if designOptionsSet collection is different
-            if (!designOptionsSet.DesignStates.SequenceEqual(RestoreStateMenu.Items.OfType<MenuItem>().Select(x=>x.Tag).ToList()))
+            if (!designOptionsSet.DesignStates.SequenceEqual(((MenuItem)(sender)).Items.OfType<MenuItem>().Select(x=>x.Tag).ToList()))
             {
                 //dispose all state items in the menu
-                RestoreStateMenu.Items.Clear();
+                ((MenuItem)sender).Items.Clear();
 
                 foreach (var state in designOptionsSet.DesignStates)
               {
@@ -885,14 +886,24 @@ namespace Dynamo.Controls
                             Tag = state
                                
                         };
-
-                 stateItem.Click += RestoreState_Click;
+                  //if the sender was the restoremenu then add restore delegates
+                 if (sender == RestoreStateMenu)
+                 {
+                     stateItem.Click += RestoreState_Click;
+                 }
+                 else
+                 {
+                     //else the sender was the delete menu
+                     stateItem.Click += DeleteState_Click;
+                 }
+                 
                  stateItem.ToolTip = state.Description;
-                 RestoreStateMenu.Items.Add(stateItem);
+                 ((MenuItem)sender).Items.Add(stateItem);
                 }
             }
 
         }
+
 
         private void RestoreState_Click(object sender, RoutedEventArgs e)
         {
@@ -906,6 +917,16 @@ namespace Dynamo.Controls
 
             dynamoViewModel.Model.CurrentWorkspace = dynamoViewModel.HomeSpace;
             dynamoViewModel.ExecuteCommand(new DynamoModel.SetWorkSpaceToStateCommand(workspace.Guid, state.Guid));
+        }
+
+        private void DeleteState_Click(object sender, RoutedEventArgs e)
+        {
+            DesignOptionsState state = ((MenuItem)sender).Tag as DesignOptionsState;
+            var workspace = dynamoViewModel.HomeSpace;
+            workspace.HasUnsavedChanges = true;
+            //TODO wrap this in a recordable command
+            dynamoViewModel.Model.CurrentWorkspace.DesignOptionsSet.DesignStates.Remove(state);
+            
         }
         
 
@@ -1334,8 +1355,5 @@ namespace Dynamo.Controls
 
             e.Handled = true;
         }
-
-
-        
     }
 }

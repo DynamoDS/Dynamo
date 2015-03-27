@@ -344,6 +344,10 @@
                                     MouseEnter="LoadStateMenus"
                                       Name="RestoreStateMenu"
                                       Focusable="False" />
+                        <MenuItem Header="Delete State"
+                                    MouseEnter="LoadStateMenus"
+                                      Name="DeleteStateMenu"
+                                      Focusable="False" />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
                                   Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
