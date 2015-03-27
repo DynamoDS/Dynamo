@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -18,6 +19,12 @@ namespace DynamoCoreUITests
     [TestFixture]
     public class RunSettingsTests : SystemTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void RunButtonDisabledInAutomaticRun()
         {
