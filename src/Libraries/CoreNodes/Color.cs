@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
@@ -142,7 +143,7 @@ namespace DSCore
         /// <returns name="colors">Colors in the given range.</returns>
         /// <search>color,range,gradient</search>
         [IsVisibleInDynamoLibrary(false)]
-        public static Color BuildColorFrom1DRange(IList<Color> colors, IList<double> parameters, double parameter)
+        public static Color BuildColorFrom1DRange(List<Color> colors, List<double> parameters, double parameter)
         {
             var colorRange = ColorRange1D.ByColorsAndParameters(colors, parameters);
             return colorRange.GetColorAtParameter(parameter);
@@ -342,22 +343,7 @@ namespace DSCore
  
         private ColorRange1D(IEnumerable<Color> colors, IEnumerable<double> parameters)
         {
-            var colorList = colors as Color[] ?? colors.ToArray();
-            var colorParams = parameters as double[] ?? parameters.ToArray();
-
-            var colorMap = colorList.Zip(colorParams, (c, i) => new Color.IndexedColor1D(c, i)).ToList();
-
-            // If values are not supplied for the 0.0 and 1.0
-            // positions, then use the bottom and top colors
-            if (!colorParams.Any(i => i == 0.0))
-            {
-                colorMap.Insert(0, new Color.IndexedColor1D(colorList.First(), 0.0));
-            }
-
-            if (!colorParams.Any(i => i == 1.0))
-            {
-                colorMap.Add(new Color.IndexedColor1D(colorList.Last(), 1.0));
-            }
+            var colorMap = colors.Zip(parameters, (c, i) => new Color.IndexedColor1D(c, i)).ToList();
 
             // Sort the colors by index.
             indexedColors = colorMap.OrderBy(ci => ci.Parameter).ToList();
@@ -370,35 +356,75 @@ namespace DSCore
         /// <param name="parameters">A list of parameters between 0.0 and 1.0.</param>
         /// <returns>A ColorRange1D object.</returns>
         public static ColorRange1D ByColorsAndParameters(
-            IList<Color> colors, IList<double> parameters)
+            List<Color> colors, List<double> parameters)
         {
-            var colorList = colors == null ? new Color[] {} : colors.ToArray();
-            var colorParams = parameters == null ? new double[] {} : parameters.ToArray();
+            var blue = Color.ByARGB(255, 0, 0, 255);
+            var red = Color.ByARGB(255, 255, 0, 0);
 
-            // Fill in defaults if non-matching sets of inputs are supplied
+            if (colors == null)
+                colors = new List<Color>();
+
+            colors.RemoveAll(c => c == null);
+
+            colors = colors.Where(c => c != null).ToList();
+
+            if(parameters == null)
+                parameters = new List<double>();
 
             // If there's no colors supplied, then supply
-            // white for as many parameter values as there are.
-            // Or supply a red->blue gradient.
-            if (!colorList.Any())
+            // a red->blue gradient.
+            if (!colors.Any())
             {
-                colorList = colorParams.Any() ? 
-                    colorParams.Select(p => Color.ByARGB(255, 255, 255, 255)).ToArray() : 
-                    new[] { Color.ByARGB(255, 255, 0, 0), Color.ByARGB(255, 0, 0, 255) };
+                colors = new List<Color>(){ red, blue};
             }
 
-            // If there's no parameters supplied, then set
-            // 0.0 for all the colors. Or set params
-            // at 0.0 and 1.0
-            if (!colorParams.Any())
+            // If there's no parameters supplied, then set the parameters
+            // in an even range across the colors. 
+            if (!parameters.Any())
             {
-                colorParams = colorList.Any() ? 
-                    colorList.Select(c => 0.0).ToArray() : 
-                    new[] { 0.0, 1.0 };
-                
+                if (colors.Any())
+                {
+                    var step = 1.0/colors.Count();
+                    for (var i = 0; i < colors.Count(); i ++)
+                    {
+                        parameters.Add(i*step);
+                    }
+                }
             }
 
-            return new ColorRange1D(colorList, colorParams);
+            // Remap the parameters into the 0->1 range
+            var max = parameters.Max();
+            var min = parameters.Min();
+            var domain = max - min;
+            for(var i=0; i<parameters.Count(); i++)
+            {
+                parameters[i] = domain == 0.0 ?
+                    1.0:
+                    (parameters[i] - min) / domain;
+            }
+
+            // If the number of colors is greater than the 
+            // number of parameters
+            if (colors.Count() > parameters.Count())
+            {
+                var diff = colors.Count() - parameters.Count();
+                for (var i = 0; i < diff; i++)
+                {
+                    parameters.Add(1.0);
+                }
+            }
+            // If the number of parameters is greater than the
+            // number of colors
+            else if (parameters.Count() > colors.Count())
+            {
+                var diff = parameters.Count() - colors.Count();
+                for (var i = 0; i < diff; i++)
+                {
+                    colors.Add(blue);
+                }
+            }
+
+            return new ColorRange1D(colors, parameters);
         }
 
         /// <summary>

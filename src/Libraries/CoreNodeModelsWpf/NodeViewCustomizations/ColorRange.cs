@@ -36,74 +36,53 @@ namespace Dynamo.Wpf.Nodes
             {
                 model.DispatchOnUIThread(delegate
                 {
-                    var colorStartNode = model.InPorts[0].Connectors[0].Start.Owner;
-                    var startIndex = model.InPorts[0].Connectors[0].Start.Index;
-                    var colorEndNode = model.InPorts[1].Connectors[0].Start.Owner;
-                    var endIndex = model.InPorts[1].Connectors[0].Start.Index;
+                    var colorsNode = model.InPorts[0].Connectors[0].Start.Owner;
+                    var colorsIndex = model.InPorts[0].Connectors[0].Start.Index;
+                    var valuesNode = model.InPorts[1].Connectors[0].Start.Owner;
+                    var valuesIndex = model.InPorts[1].Connectors[0].Start.Index;
 
-                    var startId = colorStartNode.GetAstIdentifierForOutputIndex(startIndex).Name;
-                    var endId = colorEndNode.GetAstIdentifierForOutputIndex(endIndex).Name;
+                    var startId = colorsNode.GetAstIdentifierForOutputIndex(colorsIndex).Name;
+                    var endId = valuesNode.GetAstIdentifierForOutputIndex(valuesIndex).Name;
 
-                    var startMirror = dm.EngineController.GetMirror(startId);
-                    var endMirror = dm.EngineController.GetMirror(endId);
+                    var colorsMirror = dm.EngineController.GetMirror(startId);
+                    var valuesMirror = dm.EngineController.GetMirror(endId);
 
-                    IEnumerable<Color> colors = null;
-                    IEnumerable<double> values = null;
+                    List<Color> colors = new List<Color>();
+                    List<double> values = new List<double>();
 
-                    if (startMirror == null ||  startMirror.GetData() == null)
+                    if(colorsMirror != null && colorsMirror.GetData() != null)
                     {
-                        colors = new List<Color> { DSCore.Color.ByARGB(255, 255, 255, 255) };
-                    }
-                    else
-                    {
-                        var data = startMirror.GetData();
+                        var data = colorsMirror.GetData();
                         if (data.IsCollection)
                         {
-                            colors = data.GetElements().Select(e => e.Data).Cast<Color>();
+                            colors.AddRange(data.GetElements().Select(e => e.Data).Cast<Color>());
                         }
                         else
                         {
                             var color = data.Data as Color;
-                            colors = color == null ? 
-                                new List<Color> { DSCore.Color.ByARGB(255,255,255,255)}: 
-                                new List<Color>{color};
-                            
+                            if (color != null)
+                                colors.Add(color);
                         }
-                        
                     }
 
-                    try
+                    if(valuesMirror != null && valuesMirror.GetData() != null)
                     {
-                        if (endMirror == null || endMirror.GetData() == null)
+                        var data = valuesMirror.GetData();
+                        if (data.IsCollection)
                         {
-                            values = new List<double> { 0.0 };
+                            values.AddRange(data.
+                                GetElements().
+                                Select(e => e.Data).
+                                Select(d=>Convert.ToDouble((object)d,CultureInfo.InvariantCulture)));
                         }
                         else
                         {
-                            var data = endMirror.GetData();
-                            if (data.IsCollection)
-                            {
-                                values = data.
-                                    GetElements().
-                                    Select(e => e.Data).
-                                    Select(d=>Convert.ToDouble(d,CultureInfo.InvariantCulture));
-                            }
-                            else
-                            {
-                                var value = Convert.ToDouble(data.Data, CultureInfo.InvariantCulture);
-                                values = value == null ?
-                                    new List<double> { 0.0 } :
-                                    new List<double> { value };
-
-                            }
+                            var value = Convert.ToDouble(data.Data, CultureInfo.InvariantCulture);
+                            values.Add(value);
                         }
                     }
-                    catch
-                    {
-                        values = new List<double> { 0.0 };
-                    }
 
-                    WriteableBitmap bmp = CompleteColorScale(colors.ToList(), values.ToList());
+                    var bmp = CreateColorRangeBitmap(colors, values);
                     drawPlane.Source = bmp;
 
                 });
@@ -113,7 +92,7 @@ namespace Dynamo.Wpf.Nodes
         public void Dispose() {}
 
         //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
-        private WriteableBitmap CompleteColorScale(IList<Color> colors, IList<double> values)
+        private WriteableBitmap CreateColorRangeBitmap(List<Color> colors, List<double> parameters)
         {
             const int width = 64;
             const int height = 1;
@@ -121,98 +100,18 @@ namespace Dynamo.Wpf.Nodes
             var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
             var pixels = new uint[width * height];
 
-            for (int i = 0; i < width; i++)
-            {
-                double t = (double)i / width;
-                var newColor = Color.BuildColorFrom1DRange(colors, values, t);
+            var colorRange = DSCore.ColorRange1D.ByColorsAndParameters(colors, parameters);
 
-                pixels[i] = (uint)((255 << 24) + (newColor.Red << 16) + (newColor.Green << 8) + newColor.Blue);
+            for (var i = 1; i <= width; i++)
+            {
+                var t = (double)i / width;
+                var newColor = colorRange.GetColorAtParameter(t);
+                pixels[i-1] = (uint)((255 << 24) + (newColor.Red << 16) + (newColor.Green << 8) + newColor.Blue);
 
             }
             bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
 
             return bitmap;
         }
-
     }
-
-    //public class ColorRange2DNodeViewCustomization : INodeViewCustomization<ColorRange2D>
-    //{
-    //    public void CustomizeView(ColorRange2D model, NodeView nodeView)
-    //    {
-    //        var drawPlane = new Image
-    //        {
-    //            Stretch = Stretch.Fill,
-    //            Width = 200,
-    //            Height = 200
-    //        };
-
-    //        var dm = model.Workspace.DynamoModel;
-
-    //        nodeView.inputGrid.Children.Add(drawPlane);
-
-    //        model.RequestChangeColorRange += delegate
-    //        {
-    //            model.DispatchOnUIThread(delegate
-    //            {
-    //                var colorStartNode = model.InPorts[0].Connectors[0].Start.Owner;
-    //                var startIndex = model.InPorts[0].Connectors[0].Start.Index;
-    //                var colorEndNode = model.InPorts[1].Connectors[0].Start.Owner;
-    //                var endIndex = model.InPorts[1].Connectors[0].Start.Index;
-
-    //                var startId = colorStartNode.GetAstIdentifierForOutputIndex(startIndex).Name;
-    //                var endId = colorEndNode.GetAstIdentifierForOutputIndex(endIndex).Name;
-
-    //                var startMirror = dm.EngineController.GetMirror(startId);
-    //                var endMirror = dm.EngineController.GetMirror(endId);
-
-    //                IEnumerable<Color> colors = null;
-    //                IEnumerable<UV> values = null;
-
-    //                colors = startMirror == null ?
-    //                    new List<Color> { DSCore.Color.ByARGB(255, 192, 192, 192) } : 
-    //                    startMirror.GetData().GetElements().Select(e => e.Data).Cast<Color>();
-
-    //                values = endMirror == null ? 
-    //                    new List<UV> { UV.ByCoordinates() } : 
-    //                    endMirror.GetData().GetElements().Select(e => e.Data).Cast<UV>();
-
-    //                WriteableBitmap bmp = CompleteColorScale(colors.ToList(), values.ToList());
-    //                drawPlane.Source = bmp;
-
-    //            });
-    //        };
-    //    }
-
-    //    public void Dispose() { }
-
-    //    //http://gaggerostechnicalnotes.blogspot.com/2012/01/wpf-colors-scale.html
-    //    private WriteableBitmap CompleteColorScale(IList<Color> colors, IList<UV> values)
-    //    {
-    //        const int width = 64;
-    //        const int height = 64;
-
-    //        var bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgra32, null);
-    //        var pixels = new uint[width * height];
-
-    //        var colorRange = DSCore.ColorRange2D.ByColorsAndParameters(colors, values);
-    //        var colorMap = colorRange.CreateColorMap(width, height);
-
-    //        var count = 0;
-    //        for (int i = 0; i < width; i++)
-    //        {
-    //            for (int j = 0; j < height; j++)
-    //            {
-    //                var newColor = colorMap[i, j];
-
-    //                pixels[count] = (uint)((255 << 24) + (newColor.Red << 16) + (newColor.Green << 8) + newColor.Blue);
-    //                count++;
-    //            }
-    //        }
-    //        bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
-
-    //        return bitmap;
-    //    }
-
-    //}
 }

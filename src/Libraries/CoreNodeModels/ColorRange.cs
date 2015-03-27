@@ -55,7 +55,7 @@ namespace DSCoreNodesUI
         {
             var functionCall =
                 AstFactory.BuildFunctionCall(
-                    new Func<IList<Color>, IList<double>, double, Color>(Color.BuildColorFrom1DRange),
+                    new Func<List<Color>, List<double>, double, Color>(Color.BuildColorFrom1DRange),
                     inputAstNodes);
             return new[]
             {
