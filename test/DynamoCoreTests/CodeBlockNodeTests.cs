@@ -1190,8 +1190,9 @@ b = c[w][x][y][z];";
             // Expected 4 completion items
             Assert.AreEqual(4, completions.Count());
 
-            string[] expected = {"DummyPoint", "FFITarget.DesignScript.Point",
-                                    "FFITarget.Dynamo.Point", "UnknownPoint"};
+            string[] expectedValues = {"DummyPoint", "DesignScript.Point",
+                                    "Dynamo.Point", "UnknownPoint"};
+            var expected = expectedValues.OrderBy(x => x);
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);
@@ -1250,7 +1251,7 @@ b = c[w][x][y][z];";
             // Expected 1 completion items
             Assert.AreEqual(1, completions.Count());
 
-            string[] expected = { "FFITarget.FirstNamespace.AnotherClassWithNameConflict" };
+            string[] expected = { "AnotherClassWithNameConflict" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

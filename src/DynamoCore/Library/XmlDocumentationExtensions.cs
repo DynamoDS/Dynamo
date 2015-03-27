@@ -164,7 +164,7 @@ namespace Dynamo.DSEngine
             {
                 case FunctionType.Constructor:
                     // XML documentation uses slightly different constructor names
-                    memberName = member.ClassName + ".#ctor";
+                    memberName = memberName.Replace(".ctor", "#ctor");
                     goto case FunctionType.InstanceMethod;
 
                 case FunctionType.InstanceMethod: 

@@ -34,12 +34,6 @@ namespace Dynamo.Tests
             </search>
             <returns>Transformed Geometry.</returns>
         </member>
-        <member name=""M:Namespace.Class.#ctor(System.String)"">
-            <summary>
-            Description string constructor.
-            </summary>
-            <param name=""str"">String parameter.</param>
-        </member>
     </members>
 </doc>
 ");
@@ -64,26 +58,6 @@ namespace Dynamo.Tests
             });
 
             parms.ForEach(x => x.UpdateFunctionDescriptor(funcDesc, null));
-
-            return funcDesc;
-        }
-
-        private static FunctionDescriptor GetConstructorMethod()
-        {
-            var parm = new List<TypedParameter>()
-            {
-                new TypedParameter("str", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeString,0))
-            };
-
-            var funcDesc = new FunctionDescriptor(new FunctionDescriptorParams
-            {
-                Assembly = "ProtoGeometry.dll",
-                ClassName = "Namespace.Class",
-                FunctionName = "Class",
-                Parameters = parm,
-                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
-                FunctionType = FunctionType.Constructor
-            });
 
             return funcDesc;
         }
@@ -125,16 +99,6 @@ namespace Dynamo.Tests
             var descript = paramX.GetDescription(SampleDocument);
 
             Assert.AreEqual("Displacement along X-axis.", descript);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public static void GetSummary_FunctionDescriptorXDocument_CanFindSummaryForConstructorMethod()
-        {
-            var method = GetConstructorMethod();
-            var summary = method.GetSummary(SampleDocument);
-
-            Assert.AreEqual("Description string constructor.", summary);
         }
     }
 }

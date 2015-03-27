@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
-using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Autodesk.DesignScript.Geometry;
 
 namespace Dynamo.Tests
 {
@@ -538,7 +537,7 @@ namespace Dynamo.Tests
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
-            string resultPath = GetSampleDirectory() + "Data\\icosohedron_points.csv";
+            string resultPath = Path.Combine(TempFolder, "icosohedron_points.csv");
             // Although old path is a hard coded but that is not going to change 
             // because it is saved in DYN which we have added in Samples folder.
             filename.Value = filename.Value.Replace

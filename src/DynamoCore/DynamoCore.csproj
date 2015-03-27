@@ -244,7 +244,7 @@ limitations under the License.
     <Compile Include="Utilities\ObservableDictionary.cs" />
     <Compile Include="Utilities\TrulyObservableCollection.cs" />
     <Compile Include="Core\CustomNodeManager.cs" />
-    <Compile Include="Core\DynamoLoader.cs" />
+    <Compile Include="Core\NodeModelAssemblyLoader.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="PackageManager\PackageManagerSearchElement.cs" />
     <Compile Include="Search\Legacy\SearchElements\SearchElementBase.cs" />
