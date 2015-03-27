@@ -1542,7 +1542,52 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
+        public class SetWorkSpaceToStateCommand : RecordableCommand
+        {
+            #region Public Class Methods
 
+            [JsonConstructor]
+            public SetWorkSpaceToStateCommand(Guid workspaceID, Guid stateID)
+            {
+                StateID = stateID;
+                WorkSpaceID = workspaceID;
+            }
+
+            internal static SetWorkSpaceToStateCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+
+                return new SetWorkSpaceToStateCommand(helper.ReadGuid("WorkspaceID"), helper.ReadGuid("StateID"));
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal Guid StateID { get; set; }
+            internal Guid WorkSpaceID { get; set; }
+          
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.SetWorkSpaceToStateImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("WorkspaceID", WorkSpaceID.ToString());
+                helper.SetAttribute("StateID", StateID.ToString());
+
+            }
+
+            #endregion
+        }
 
         // public class XxxYyyCommand : RecordableCommand
         // {

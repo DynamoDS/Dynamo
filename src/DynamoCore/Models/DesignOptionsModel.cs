@@ -21,7 +21,7 @@ namespace Dynamo.Models
         #endregion
 
         # region properties
-
+        public List<DesignOptionsState> DesignStates { get { return designStates;} }
         #endregion
 
         #region constructor
@@ -46,7 +46,7 @@ namespace Dynamo.Models
                 element.AppendChild(parent);
                 parent.SetAttribute("Name", state.Name);
                 parent.SetAttribute("Description", state.Description);
-
+                parent.SetAttribute("guid", state.Guid.ToString());
                 //the states are already serialized
                 foreach (var serializedNode in state.SerializedNodes)
                 {
@@ -68,16 +68,23 @@ namespace Dynamo.Models
         /// <summary>
         /// method to create and add a new state to this design options set
         /// </summary>
-        public void CreateNewState(string name, string description, List<NodeModel> currentSelection)
+        public void CreateNewState(string name, string description, List<NodeModel> currentSelection,Guid id = new Guid())
         {
             //TODO filter current selection down to inputs before passing it on
             //var inputs = currentSelection.Where(x=>supportedInputTypes.Contains(x.GetType())).ToList();
             var inputs = currentSelection;
             //then create a new designstate and store it in the dictionary looked up via it's name
             //TODO should use a GUID instead?
-            var newstate = new DesignOptionsState(name, description, inputs);
+            var newstate = new DesignOptionsState(name, description, inputs,id);
             designStates.Add(newstate);
         }
+        public void LoadStateFromXml(string name, string description, List<NodeModel> nodes, List<XmlElement> serializednodes, Guid id)
+        {
+
+            var loadedState = new DesignOptionsState(name, description, nodes, serializednodes, id);
+            designStates.Add(loadedState);
+        }
+      
         #endregion
 
 
@@ -97,8 +104,21 @@ namespace Dynamo.Models
                     {
                         var name = stateNode.GetAttribute("Name");
                         var des = stateNode.GetAttribute("Description");
-                        var nodes = new List<NodeModel>();
+                        var stateguidString = stateNode.GetAttribute("guid");
 
+                        Guid stateID;
+                        if (Guid.TryParse(stateguidString, out stateID))
+                        {
+
+                        }
+                        else
+                        {
+                            throw new Exception("unable to parse state GUID");
+                        }
+
+                        
+                        var nodes = new List<NodeModel>();
+                        var deserialzedNodes = new List<XmlElement>();
                         //now find the nodes we're looking for by their guids in the loaded nodegraph
                         //it's possible they may no longer be present, and we must not fail to set the
                         //TODO//rest of the nodes but log this to the console.
@@ -123,7 +143,7 @@ namespace Dynamo.Models
                             if (nodebyGuid.Count > 0)
                             {
                                 nodes.Add(nodebyGuid.First());
-
+                                deserialzedNodes.Add(node);
                             }
                             else
                             {
@@ -133,7 +153,7 @@ namespace Dynamo.Models
 
                         }
 
-                        loadedStateSet.CreateNewState(name, des, nodes);
+                 loadedStateSet.LoadStateFromXml(name, des, nodes,deserialzedNodes,stateID);
                     }
                 }
             }

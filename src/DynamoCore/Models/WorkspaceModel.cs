@@ -220,6 +220,11 @@ namespace Dynamo.Models
         public readonly NodeFactory NodeFactory;
 
         /// <summary>
+        ///     A set of input parameter states, this can be used to set the graph to a serialized state.
+        /// </summary>
+        public DesignOptionsSetModel DesignOptionsSet { get { return designOptionSet;} }
+
+        /// <summary>
         ///     The date of the last save.
         /// </summary>
         public DateTime LastSaved
@@ -699,7 +704,59 @@ namespace Dynamo.Models
             this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
         }
 
-        //TODO wrap this in a recordable command...
+        internal void SetWorkspaceToState(DesignOptionsState state)
+        {
+            foreach (var node in state.Nodes )
+            {
+
+                var serializedNode = state.SerializedNodes.Find(x=> Guid.Parse(x.GetAttribute("guid")) == node.GUID);
+
+                string value = string.Empty;
+                string codetext = serializedNode.GetAttribute("CodeText");
+
+                if (serializedNode.HasChildNodes)
+                {
+                    if (serializedNode.FirstChild.Attributes != null)
+                    {
+                        var valattrib = serializedNode.FirstChild.Attributes["value"];
+                        if (valattrib != null)
+                        {
+                            value = valattrib.Value;
+                        }
+                        else
+                        {
+                            Debug.WriteLine("this node did not have a value attribute in it's first child");
+                        }  
+                        
+                    }
+                }
+                
+               
+
+                UpdateValueParams parameterToUpdate = null;
+                //if there was val attribute
+                if (!string.IsNullOrEmpty(value))
+                {
+                    //found it
+                     parameterToUpdate = new UpdateValueParams("Value",value);
+                }
+                    //else try codetext
+                else if (!string.IsNullOrEmpty(codetext))
+                {
+                    //codetext was found
+                    parameterToUpdate = new UpdateValueParams("Code",codetext);
+                }
+                else
+                {
+                    Debug.WriteLine(node);
+                    Debug.WriteLine("could not find any paramters to restore for this node");
+                    continue;
+                }
+
+                node.UpdateValue(parameterToUpdate);
+            }
+        }
+        
         internal void CreateDesignStateFromSelection(string name, string description, List<Guid> IDSToSave)
         {
 

@@ -862,6 +862,54 @@ namespace Dynamo.Controls
             LogScroller.ScrollToBottom();
         }
 
+        private void LoadStateMenus(object sender, RoutedEventArgs e)
+        {
+            //grab serialized designoptions from current workspace... hopefully this is loaded?
+            var designOptionsSet = dynamoViewModel.Model.CurrentWorkspace.DesignOptionsSet;
+            // now grab all the states off the set and create a menu item for each one
+            
+            //only update the restore states menu if the stares have been updated or the user
+            // has switched workspace contexts, can check if designOptionsSet collection is different
+            if (!designOptionsSet.DesignStates.SequenceEqual(RestoreStateMenu.Items.OfType<MenuItem>().Select(x=>x.Tag).ToList()))
+            {
+                //dispose all state items in the menu
+                RestoreStateMenu.Items.Clear();
+
+                foreach (var state in designOptionsSet.DesignStates)
+              {
+                //create a new menu item for each state in the options set
+                //when any of this buttons are clicked we'll call the SetWorkSpaceToStateCommand(state)
+                 var stateItem = new MenuItem
+                        {
+                            Header = state.Name,
+                            Tag = state
+                               
+                        };
+
+                 stateItem.Click += RestoreState_Click;
+                 stateItem.ToolTip = state.Description;
+                 RestoreStateMenu.Items.Add(stateItem);
+                }
+            }
+
+        }
+
+        private void RestoreState_Click(object sender, RoutedEventArgs e)
+        {
+            DesignOptionsState state = ((MenuItem)sender).Tag as DesignOptionsState;
+            var workspace = dynamoViewModel.HomeSpace;
+            if (workspace.HasUnsavedChanges)
+            {
+                if (!dynamoViewModel.AskUserToSaveWorkspaceOrCancel(workspace))
+                    return; // User has not saved his/her work.
+            }
+
+            dynamoViewModel.Model.CurrentWorkspace = dynamoViewModel.HomeSpace;
+            dynamoViewModel.ExecuteCommand(new DynamoModel.SetWorkSpaceToStateCommand(workspace.Guid, state.Guid));
+        }
+        
+
+
 #if !__NO_SAMPLES_MENU
         /// <summary>
         ///     Setup the "Samples" sub-menu with contents of samples directory.
@@ -1287,5 +1335,7 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
+
+        
     }
 }
