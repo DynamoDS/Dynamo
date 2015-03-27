@@ -17,7 +17,7 @@ namespace Dynamo.Tests
         [Test]
         public void FormulaWithIf()
         {
-            string path = Path.Combine(GetTestDirectory(), "core", "formula", "formula-if.dyn");
+            string path = Path.Combine(TestDirectory, "core", "formula", "formula-if.dyn");
             RunModel(path);
 
             var node = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Formula>();

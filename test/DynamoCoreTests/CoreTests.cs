@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenGoodFile()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\multiplicationAndAdd\multiplicationAndAdd.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\multiplicationAndAdd\multiplicationAndAdd.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
@@ -375,7 +375,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestFileDirtyOnLacingChange()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\LacingTest.dyn");            
+            string openPath = Path.Combine(TestDirectory, @"core\LacingTest.dyn");            
             ViewModel.OpenCommand.Execute(openPath);
 
             WorkspaceModel workspace = ViewModel.CurrentSpace;            
@@ -608,7 +608,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanOpenDSVarArgFunctionFile()
         {
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
                 @"core\dsfunction\dsvarargfunction.dyn");
 
             var dynamoModel = ViewModel.Model;
@@ -676,7 +676,7 @@ namespace Dynamo.Tests
         [Test]
         public void NodesHaveCorrectLocationsIndpendentOfCulture()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\nodeLocationTest.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\nodeLocationTest.dyn");
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("es-AR");
             ViewModel.OpenCommand.Execute(openPath);

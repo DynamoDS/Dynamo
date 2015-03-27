@@ -37,7 +37,7 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
             libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath); 
 
-            string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Dummy.ds");
+            string libraryPath = Path.Combine(TestDirectory, @"core\library\Dummy.ds");
             libraryServices.ImportLibrary(libraryPath);
             Assert.IsTrue(libraryLoaded);
 
@@ -54,7 +54,7 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
             // library should be able to load
-            string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Test.ds");
+            string libraryPath = Path.Combine(TestDirectory, @"core\library\Test.ds");
             libraryServices.ImportLibrary(libraryPath);
             Assert.IsTrue(libraryLoaded);
 

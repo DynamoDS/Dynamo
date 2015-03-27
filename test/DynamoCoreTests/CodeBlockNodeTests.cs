@@ -334,7 +334,7 @@ b = c[w][x][y][z];";
         [Category("RegressionTests")]
         public void Defect_MAGN_784()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\Defect_MAGN_784.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.IsFalse(ViewModel.Model.CurrentWorkspace.CanUndo);
@@ -821,7 +821,7 @@ b = c[w][x][y][z];";
         [Test]
         public void TypedIdentifier_AssignedToDifferentType_ThrowsWarning2()
         {
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
                 @"core\dsevaluation\typedIdentifier_warning.dyn");
 
             var dynamoModel = ViewModel.Model;
