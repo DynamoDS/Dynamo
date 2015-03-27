@@ -430,9 +430,12 @@ namespace Dynamo.Wpf.ViewModels
 
         private void AddToItems(IEnumerable<ISearchEntryViewModel> newItems)
         {
+            bool hasClasses = Items.FirstOrDefault() is ClassesNodeCategoryViewModel;
+
             foreach (var entry in newItems)
             {
-                var first = Items.Select((x, i) => new { x.Name, Idx = i })
+                var first = Items.Where(cat => !(cat is ClassesNodeCategoryViewModel)).
+                    Select((x, i) => new { x.Name, Idx = i })
                     .FirstOrDefault(
                         x =>
                             string.Compare(
@@ -445,7 +448,12 @@ namespace Dynamo.Wpf.ViewModels
                     Items.Insert(0, entry);
                 else
                     if (first != null)
-                        Items.Insert(first.Idx, entry);
+                    {
+                        if (hasClasses)
+                            Items.Insert(first.Idx + 1, entry);
+                        else
+                            Items.Insert(first.Idx, entry);
+                    }
                     else
                         Items.Add(entry);
             }
@@ -470,7 +478,9 @@ namespace Dynamo.Wpf.ViewModels
 
         public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
         {
-            var first = SubCategories.Select((x, i) => new { x.Name, Idx = i })
+            bool hasClasses = SubCategories.FirstOrDefault() is ClassesNodeCategoryViewModel;
+            var first = SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel))
+                .Select((x, i) => new { x.Name, Idx = i })
                 .FirstOrDefault(
                     x =>
                         string.Compare(
@@ -479,7 +489,12 @@ namespace Dynamo.Wpf.ViewModels
                             StringComparison.Ordinal)
                             >= 0);
             if (first != null)
-                SubCategories.Insert(first.Idx, newSubCategory);
+            {
+                if (hasClasses)
+                    SubCategories.Insert(first.Idx + 1, newSubCategory);
+                else
+                    SubCategories.Insert(first.Idx, newSubCategory);
+            }
             else
                 SubCategories.Add(newSubCategory);
         }
