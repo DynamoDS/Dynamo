@@ -69,7 +69,7 @@ namespace IntegrationTests
 
             //Run the graph
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"System\IntegrationTests\dyns", "ExecutionEvents.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"System\IntegrationTests\dyns", "ExecutionEvents.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
             RunCurrentModel();
 

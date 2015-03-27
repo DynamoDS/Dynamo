@@ -33,7 +33,7 @@ namespace Dynamo.Tests
             //For files what have never been opened, HasRunWithoutCrash defaults to false 
             //    -> So, all non-marked files will open in manual even if run auto is on
 
-            var ws = Open<HomeWorkspaceModel>(GetTestDirectory(), crashProtDir, "runAutoNoCrashFlag.dyn");
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, crashProtDir, "runAutoNoCrashFlag.dyn");
 
             AssertManual(ws);
         }
@@ -41,7 +41,7 @@ namespace Dynamo.Tests
         [Test]
         public void RunAutoFileWithTrueFlagOpensInAuto()
         {
-            var ws = Open<HomeWorkspaceModel>(GetTestDirectory(), crashProtDir, "runAutoTrueCrashFlag.dyn");
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, crashProtDir, "runAutoTrueCrashFlag.dyn");
 
             AssertAuto(ws);
         }
@@ -51,7 +51,7 @@ namespace Dynamo.Tests
         public void RunAutoFileWithFalseFlagOpensInManual()
         {
             //On open file, if run auto & HasRunWithoutCrash = false, set to run manual
-            var ws = Open<HomeWorkspaceModel>(GetTestDirectory(), crashProtDir, "runAutoFalseCrashFlag.dyn");
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, crashProtDir, "runAutoFalseCrashFlag.dyn");
 
             AssertManual(ws);
         }
@@ -60,7 +60,7 @@ namespace Dynamo.Tests
         public void RunAutoFileWithSuccessfulRunSavesFlag()
         {
             //On save, if run auto & HasRunWithoutCrash = true, this should be saved
-            var ws = Open<HomeWorkspaceModel>(GetTestDirectory(), crashProtDir, "runAutoFalseCrashFlag.dyn");
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, crashProtDir, "runAutoFalseCrashFlag.dyn");
 
             // We do a run so HasRunWithoutCrash is set to true.  Otherwise, the test
             // assertion is not valid.
@@ -88,7 +88,7 @@ namespace Dynamo.Tests
             //On run start, HasRunWithoutCrash = false
             //    - This makes sure that if the user has modifies the file during a run that causes a crash, there 
             //        file is not erroneously marked as having run without crash. 
-            var ws = Open<HomeWorkspaceModel>(GetTestDirectory(), crashProtDir, "runManual.dyn");
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, crashProtDir, "runManual.dyn");
 
             // We do a run so HasRunWithoutCrash is set to true.  Otherwise, the test
             // assertion is not valid.
@@ -125,7 +125,7 @@ namespace Dynamo.Tests
         public void FlagIsSetToTrueAfterRunSuccessfullyCompletes()
         {
             //On run complete, HasRunWithoutCrash = true
-            var ws = Open<HomeWorkspaceModel>(GetTestDirectory(), crashProtDir, "runManual.dyn");
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, crashProtDir, "runManual.dyn");
 
             Assert.False(ws.HasRunWithoutCrash);
 
