@@ -21,6 +21,13 @@ namespace DynamoCoreUITests
     [TestFixture]
     public class VisualizationManagerUITests : SystemTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSIronPython.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         private Watch3DView BackgroundPreview
         {
             get
