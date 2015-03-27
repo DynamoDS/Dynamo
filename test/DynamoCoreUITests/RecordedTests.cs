@@ -610,7 +610,7 @@ namespace DynamoCoreUITests
             });
         }
 
-        [Test, RequiresSTA]
+        [Test, RequiresSTA, Category("Failure")]
         public void Defect_MAGN_1143_CN()
         {
             // modify the name of the input node
