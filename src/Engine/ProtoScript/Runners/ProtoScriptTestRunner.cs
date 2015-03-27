@@ -85,34 +85,42 @@ namespace ProtoScript.Runners
         {
             bool buildSucceeded = false;
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            try
+            if (astList.Count <= 0)
             {
-                //defining the global Assoc block that wraps the entire .ds source file
-                ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.language = ProtoCore.Language.kAssociative;
-                globalBlock.body = string.Empty;
-                //the wrapper block can be given a unique id to identify it as the global scope
-                globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
-
-
-                //passing the global Assoc wrapper block to the compiler
-                ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                context.SetData(string.Empty, new Dictionary<string, object>(), null);
-                ProtoCore.Language id = globalBlock.language;
-
-                
-		        ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
-                codeblock.Body.AddRange(astList);
-
-                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink, codeblock);
-
-                core.BuildStatus.ReportBuildResult();
-
-                buildSucceeded = core.BuildStatus.BuildSucceeded;
+                // Nothing to compile
+                buildSucceeded = true;
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.ToString());
+                try
+                {
+                    //defining the global Assoc block that wraps the entire .ds source file
+                    ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
+                    globalBlock.language = ProtoCore.Language.kAssociative;
+                    globalBlock.body = string.Empty;
+                    //the wrapper block can be given a unique id to identify it as the global scope
+                    globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
+
+
+                    //passing the global Assoc wrapper block to the compiler
+                    ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
+                    context.SetData(string.Empty, new Dictionary<string, object>(), null);
+                    ProtoCore.Language id = globalBlock.language;
+
+
+                    ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
+                    codeblock.Body.AddRange(astList);
+
+                    core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink, codeblock);
+
+                    core.BuildStatus.ReportBuildResult();
+
+                    buildSucceeded = core.BuildStatus.BuildSucceeded;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
 
             return buildSucceeded;
@@ -208,13 +216,6 @@ namespace ProtoScript.Runners
                 {
                     ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-                }
-
-                // Resolve the startPC
-                int startPC = codeBlock.instrStream.entrypoint;
-                if (runtimeCore.StartPC != Constants.kInvalidPC)
-                {
-                    startPC = runtimeCore.StartPC;
                 }
 
                 runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
