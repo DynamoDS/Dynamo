@@ -755,6 +755,12 @@ namespace Dynamo.Models
 
                 node.UpdateValue(parameterToUpdate);
             }
+            // now select all nodes in UI
+            DynamoSelection.Instance.ClearSelection();
+            state.Nodes.ForEach(x => DynamoSelection.Instance.Selection.Add(x));
+            
+            
+
         }
         
         internal void CreateDesignStateFromSelection(string name, string description, List<Guid> IDSToSave)
