@@ -262,10 +262,7 @@ namespace Dynamo.DSEngine
                         break;
                     case XmlNodeType.Text:
                         if (currentDocNode == null)
-                            if (reader.Value == assemblyName)
-                                continue;
-                            else
-                                throw new InvalidDataException("Wrong XML documentation file.");
+                            continue;
 
                         switch (currentTag)
                         {
