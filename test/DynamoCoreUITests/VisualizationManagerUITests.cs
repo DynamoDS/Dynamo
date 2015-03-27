@@ -14,7 +14,6 @@ using DynamoCoreUITests.Utility;
 using NUnit.Framework;
 
 using Dynamo.Selection;
-using ProtoCore.Namespace;
 
 namespace DynamoCoreUITests
 {
