@@ -13,7 +13,7 @@ namespace Dynamo.Tests
 {
     public class HigherOrder : DSEvaluationViewModelUnitTest
     {
-        string TestFolder { get { return GetTestDirectory(); } }
+        string TestFolder { get { return TestDirectory; } }
 
         [Test]
         public void ComposeOrder()

@@ -1993,7 +1993,7 @@ namespace Dynamo.Tests
         public void TestSaveDontCorruptForUnresolvedNodes()
         {
             var model = ViewModel.Model;
-            var exPath = Path.Combine(GetTestDirectory(), @"core\migration");
+            var exPath = Path.Combine(TestDirectory, @"core\migration");
             var oldPath = Path.Combine(exPath, @"TestSaveDontCorruptForUnresolvedNodes.dyn");
             OpenModel(oldPath);
 
@@ -2033,7 +2033,7 @@ namespace Dynamo.Tests
         public void TestSaveDontCorruptForDeprecatedNodes()
         {
             var model = ViewModel.Model;
-            var exPath = Path.Combine(GetTestDirectory(), @"core\migration");
+            var exPath = Path.Combine(TestDirectory, @"core\migration");
             var oldPath = Path.Combine(exPath, @"TestSaveDontCorruptForDeprecatedNodes.dyn");
             OpenModel(oldPath);
 
@@ -2068,7 +2068,7 @@ namespace Dynamo.Tests
 
         private string GetDynPath(string sourceDynFile)
         {
-            string sourceDynPath = this.GetTestDirectory();
+            string sourceDynPath = this.TestDirectory;
             sourceDynPath = Path.Combine(sourceDynPath, @"core\migration\");
             return Path.Combine(sourceDynPath, sourceDynFile);
         }

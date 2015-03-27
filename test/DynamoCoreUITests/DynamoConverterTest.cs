@@ -126,7 +126,7 @@ namespace DynamoCoreUITests
         public void ConvertBetweenUnitsTestForForceReExecute()
         {
             var model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\ConvertBetweenUnitsTest.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\ConvertBetweenUnitsTest.dyn");
             RunModel(openPath);
 
             var node1 = model.CurrentWorkspace.NodeFromWorkspace("1371db60-371d-406b-a613-2f71ee43ccee");
