@@ -158,6 +158,9 @@ namespace DynamoCoreUITests
             Assert.AreEqual(ConversionUnit.Meters, converterNode.SelectedFromConversion);
             Assert.AreEqual(ConversionUnit.Millimeters, converterNode.SelectedToConversion);
 
+            ViewModel.HomeSpace.Run();
+            Thread.Sleep(500);
+
             AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 10000.0);
         }
     }
