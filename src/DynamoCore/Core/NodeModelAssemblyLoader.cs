@@ -134,8 +134,7 @@ namespace Dynamo.Utilities
                     }
 
                     LoadNodesFromAssembly(assembly, context, result, result2);
-                    loadedAssemblies.Add(assembly);
-                    OnAssemblyLoaded(assembly);
+                    
                 }
                 catch (BadImageFormatException)
                 {
@@ -245,6 +244,9 @@ namespace Dynamo.Utilities
                     Log(e);
                 }
             }
+
+            loadedAssemblies.Add(assembly);
+            OnAssemblyLoaded(assembly);
         }
 
         #endregion
