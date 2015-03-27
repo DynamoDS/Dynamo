@@ -508,9 +508,9 @@ namespace ProtoCore.AssociativeEngine
                     gnode.isDirty = true;
                     gnode.isActive = true;
 
-                    if (gnode.updateBlock.updateStartPC != Constants.kInvalidIndex)
+                    if (gnode.updateBlock.updateRegisterStartPC != Constants.kInvalidIndex)
                     {
-                        gnode.updateBlock.startpc = gnode.updateBlock.updateStartPC;
+                        gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;
                     }
                     return gnode;
                 }
@@ -612,13 +612,13 @@ namespace ProtoCore.AssociativeGraph
     {
         public int startpc { get; set; }
         public int endpc { get; set; }
-        public int updateStartPC { get; set; }
+        public int updateRegisterStartPC { get; set; }
 
         public UpdateBlock()
         {
             startpc = Constants.kInvalidIndex;
             endpc = Constants.kInvalidIndex;
-            updateStartPC = Constants.kInvalidIndex;
+            updateRegisterStartPC = Constants.kInvalidIndex;
         }
     }
 

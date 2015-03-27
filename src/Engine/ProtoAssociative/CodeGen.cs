@@ -8569,7 +8569,7 @@ namespace ProtoAssociative
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regLX);
                             EmitPop(regLX, globalClassIndex);
 
-                            graphNode.updateBlock.updateStartPC = pc;
+                            graphNode.updateBlock.updateRegisterStartPC = pc;
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regLX);
                             EmitPush(regLX);
