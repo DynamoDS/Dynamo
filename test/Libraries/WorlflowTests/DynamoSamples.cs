@@ -540,7 +540,7 @@ namespace Dynamo.Tests
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
-            string resultPath = GetSampleDirectory() + "Data\\icosohedron_points.csv";
+            string resultPath = SampleDirectory + "Data\\icosohedron_points.csv";
             // Although old path is a hard coded but that is not going to change 
             // because it is saved in DYN which we have added in Samples folder.
             filename.Value = filename.Value.Replace
@@ -574,7 +574,7 @@ namespace Dynamo.Tests
             filename.Value = filename.Value.Replace
                 ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\helix.xlsx", resultPath);
 
-            //RunCurrentModel();
+            RunCurrentModel();
 
             const string lineNodeID = "d538c147-b79f-4f11-9c00-1efd7f9b3c09";
             AssertPreviewCount(lineNodeID, 201);
