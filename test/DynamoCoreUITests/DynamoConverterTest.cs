@@ -126,7 +126,7 @@ namespace DynamoCoreUITests
         public void ConvertBetweenUnitsTestForForceReExecute()
         {
             var model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\ConvertBetweenUnitsTest.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\ConvertBetweenUnitsTest.dyn");
             RunModel(openPath);
 
             var node1 = model.CurrentWorkspace.NodeFromWorkspace("1371db60-371d-406b-a613-2f71ee43ccee");
@@ -157,6 +157,9 @@ namespace DynamoCoreUITests
             converterNode.SelectedToConversion = ConversionUnit.Millimeters;
             Assert.AreEqual(ConversionUnit.Meters, converterNode.SelectedFromConversion);
             Assert.AreEqual(ConversionUnit.Millimeters, converterNode.SelectedToConversion);
+
+            ViewModel.HomeSpace.Run();
+            Thread.Sleep(500);
 
             AssertPreviewValue("45f1ee23-5d81-4233-975e-faf218203de5", 10000.0);
         }

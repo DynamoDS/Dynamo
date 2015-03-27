@@ -225,7 +225,7 @@ namespace ProtoCore
         /// 4. Recreate using the special constructor
         /// </summary>
         [Serializable]
-        private class TraceSerialiserHelper : ISerializable
+        public class TraceSerialiserHelper : ISerializable
         {
             /// <summary>
             /// Empty defaul

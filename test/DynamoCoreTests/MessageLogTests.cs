@@ -18,7 +18,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestWarningMessageLog()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\messagelog\testwarningmessage.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\messagelog\testwarningmessage.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             ViewModel.HomeSpace.Run();
 
