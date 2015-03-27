@@ -447,15 +447,40 @@ namespace Dynamo.Wpf.ViewModels
                 if (entry is ClassesNodeCategoryViewModel)
                     Items.Insert(0, entry);
                 else
-                    if (first != null)
+                    if (hasClasses)
                     {
-                        if (hasClasses)
-                            Items.Insert(first.Idx + 1, entry);
-                        else
-                            Items.Insert(first.Idx, entry);
+                        if (entry is NodeSearchElementViewModel)
+                        {
+                            if (first != null)
+                                Items.Insert(first.Idx + SubCategories.Count(), entry);
+                            else
+                                Items.Add(entry);
+                        }
+                        if (entry is NodeCategoryViewModel)
+                        {
+                            if (first != null)
+                                Items.Insert(first.Idx + 1, entry);
+                            else
+                                Items.Insert(Items.Count - Entries.Count, entry);
+                        }
                     }
                     else
-                        Items.Add(entry);
+                    {
+                        if (entry is NodeSearchElementViewModel)
+                        {
+                            if (first != null)
+                                Items.Insert(first.Idx + SubCategories.Count(), entry);
+                            else
+                                Items.Add(entry);
+                        }
+                        if (entry is NodeCategoryViewModel)
+                        {
+                            if (first != null)
+                                Items.Insert(first.Idx, entry);
+                            else
+                                Items.Insert(Items.Count - Entries.Count, entry);
+                        }
+                    }
             }
         }
 
