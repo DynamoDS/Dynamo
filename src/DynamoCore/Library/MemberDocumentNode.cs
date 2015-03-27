@@ -48,30 +48,36 @@ namespace Dynamo.DSEngine
 
         /// <summary>
         /// Constructs an instance of MemberDocumentNode object from its 
-        /// member name. 
+        /// given assembly and member name. 
         /// </summary>
+        /// <param name="assemblyName">The assembly inside which this member 
+        /// resides. If this parameter is null or empty, ArgumentNullException
+        /// is thrown.</param>
         /// <param name="memberName">The fully qualified name that can be used
         /// to uniquely identify the member within the same assembly. For an 
         /// example:
         /// 
-        ///     "DSCore.IO.File.ReadText(System.IO.FileInfo)"
+        ///     "M:Autodesk.DesignScript.Geometry.Point.ByCoordinates(System.Double,System.Double)"
         /// 
         /// </param>
         /// 
-        public MemberDocumentNode(string memberName)
+        public MemberDocumentNode(string assemblyName, string memberName)
         {
-            fullyQualifiedName = memberName;
+            if (String.IsNullOrWhiteSpace(assemblyName))
+                throw new ArgumentNullException("Assembly Name");
+
+            fullyQualifiedName = MakeFullyQualifiedName(assemblyName, memberName);
             parameters = new Dictionary<string, string>();
         }
 
-        public MemberDocumentNode()
-        {
-            parameters = new Dictionary<string, string>();
-        }
-
-        public void AddParameter(string name, string description)
+        internal void AddParameter(string name, string description)
         {
             parameters[name] = description;
+        }
+
+        internal static string MakeFullyQualifiedName(string assemblyName, string memberName)
+        {
+            return string.Format("{0}.{1}", assemblyName, memberName);
         }
     }
 }

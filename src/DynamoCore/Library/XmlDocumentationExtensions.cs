@@ -72,17 +72,26 @@ namespace Dynamo.DSEngine
             string paramName = "")
         {
             var assemblyName = function.Assembly;
+
             // Case for operators.
             if (string.IsNullOrEmpty(assemblyName))
                 return String.Empty;
 
-            var fullyQualifiedName = GetMemberElementName(function);
+            string assemblyNameWithoutType;
+            // E.g. ProtoGeometry.dll => ProtoGeometry
+            if (assemblyName.LastIndexOf(".") != -1)
+                assemblyNameWithoutType = assemblyName.Substring(0, assemblyName.LastIndexOf("."));
+            else
+                assemblyNameWithoutType = assemblyName;
+
+            var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName
+                (assemblyNameWithoutType, GetMemberElementName(function));
 
             if (!documentNodes.ContainsKey(fullyQualifiedName))
             {
                 if (xml == null)
                     xml = DocumentationServices.GetForAssembly(function.Assembly, function.PathManager);
-                LoadDataFromXml(xml);
+                LoadDataFromXml(xml, assemblyNameWithoutType);
             }
 
             MemberDocumentNode documentNode = null;
@@ -204,12 +213,12 @@ namespace Dynamo.DSEngine
             SearchTags
         }
 
-        private static void LoadDataFromXml(XmlReader reader)
+        private static void LoadDataFromXml(XmlReader reader, string assemblyName)
         {
             if (reader == null)
                 return;
 
-            MemberDocumentNode currentDocNode = new MemberDocumentNode();
+            MemberDocumentNode currentDocNode = null;
             XmlTagType currentTag = XmlTagType.None;
             string currentParamName = String.Empty;
 
@@ -224,7 +233,7 @@ namespace Dynamo.DSEngine
                                 // Find attribute "name".
                                 if (reader.MoveToAttribute("name"))
                                 {
-                                    currentDocNode = new MemberDocumentNode(reader.Value);
+                                    currentDocNode = new MemberDocumentNode(assemblyName, reader.Value);
                                     documentNodes.Add(currentDocNode.FullyQualifiedName, currentDocNode);
                                 }
                                 currentTag = XmlTagType.Member;
@@ -252,6 +261,12 @@ namespace Dynamo.DSEngine
                         }
                         break;
                     case XmlNodeType.Text:
+                        if (currentDocNode == null)
+                            if (reader.Value == assemblyName)
+                                continue;
+                            else
+                                throw new InvalidDataException("Wrong XML documentation file.");
+
                         switch (currentTag)
                         {
                             case XmlTagType.Summary:
