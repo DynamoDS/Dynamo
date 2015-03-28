@@ -13,7 +13,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        string TestFolder { get { return GetTestDirectory(); } }
+        string TestFolder { get { return TestDirectory; } }
 
         [Test]
         public void ComposeOrder()

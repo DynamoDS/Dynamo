@@ -17,7 +17,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        string localDynamoStringTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}
+        string localDynamoStringTestFolder { get { return Path.Combine(TestDirectory, "core", "string");}}
 
         #region concat string test cases  
 

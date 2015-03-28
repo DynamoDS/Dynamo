@@ -17,7 +17,7 @@ namespace DataBridgeTests
         [Category("Failure")]
         public void CanUseWatchInCustomNode()
         {
-            var examplesPath = Path.Combine(GetTestDirectory(), @"core\watch");
+            var examplesPath = Path.Combine(TestDirectory, @"core\watch");
             var model = ViewModel.Model;
 
             RunModel(Path.Combine(examplesPath, "watchdatabridge.dyn"));

@@ -20,7 +20,7 @@ namespace Dynamo.Tests
             // when it is compiled to AST node. Verify the exception won't
             // crash Dynamo, and the state of node should be AstBuildBroken
             var model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\buildAstException.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\astbuilder\buildAstException.dyn");
             RunModel(openPath);
 
             var node = model.CurrentWorkspace.NodeFromWorkspace("c0e4b4ef-49f2-4bbc-9cbe-a8cc651ac17e");

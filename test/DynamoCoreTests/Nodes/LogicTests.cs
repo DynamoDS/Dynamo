@@ -14,7 +14,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "comparison"); } }
+        private string logicTestFolder { get { return Path.Combine(TestDirectory, "core", "logic", "comparison"); } }
 
         [Test]
         public void testLessThan_NumberInput()
@@ -258,7 +258,7 @@ namespace Dynamo.Tests
     [TestFixture]
     class ConditionalTest : DSEvaluationViewModelUnitTest
     {
-        private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
+        private string logicTestFolder { get { return Path.Combine(TestDirectory, "core", "logic", "conditional"); } }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {

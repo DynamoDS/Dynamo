@@ -21,7 +21,7 @@ namespace Dynamo.Tests
         {
             // open file
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "python.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
@@ -42,7 +42,7 @@ namespace Dynamo.Tests
         {
             // open file
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "python.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
@@ -77,7 +77,7 @@ namespace Dynamo.Tests
         {
             // open file
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "varinpython.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "varinpython.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node
@@ -96,7 +96,7 @@ namespace Dynamo.Tests
         {
             // open file
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\python", "varinpython.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "varinpython.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             // get the python node

@@ -15,7 +15,7 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
-        string testFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
+        string testFolder { get { return Path.Combine(TestDirectory, "core", "logic", "conditional"); } }
 
         [Test]
         public void TestIFBasic()

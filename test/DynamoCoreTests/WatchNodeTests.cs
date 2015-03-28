@@ -117,7 +117,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            var openPath = Path.Combine(GetTestDirectory(), @"core\watch\WatchLiterals.dyn");
+            var openPath = Path.Combine(TestDirectory, @"core\watch\WatchLiterals.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
@@ -147,7 +147,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            var openPath = Path.Combine(GetTestDirectory(), @"core\watch\Watch1DCollections.dyn");
+            var openPath = Path.Combine(TestDirectory, @"core\watch\Watch1DCollections.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
@@ -181,7 +181,7 @@ namespace Dynamo.Tests
         [Test]
         public void WatchFunctionObject()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\watch\watchfunctionobject.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             ViewModel.HomeSpace.Run();
 
@@ -197,7 +197,7 @@ namespace Dynamo.Tests
         [Test]
         public void WatchFunctionPointer()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchFunctionPointer.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\watch\watchFunctionPointer.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             ViewModel.HomeSpace.Run();
 
@@ -217,7 +217,7 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5033
             // Watch value for a partially-applied function should say "function" and not "null"
             
-            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject_2.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\watch\watchfunctionobject_2.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             ViewModel.HomeSpace.Run();
 
