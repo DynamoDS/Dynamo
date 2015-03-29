@@ -1005,12 +1005,24 @@ namespace Dynamo.Models
 
         #region Port Management
 
-        internal int GetPortModelIndex(PortModel portModel)
+        internal int GetPortIndexAndType(PortModel portModel, out PortType portType)
         {
-            if (portModel.PortType == PortType.Input)
-                return InPorts.IndexOf(portModel);
-            else
-                return OutPorts.IndexOf(portModel);
+            int index = inPorts.IndexOf(portModel);
+            if (-1 != index)
+            {
+                portType = PortType.Input;
+                return index;
+            }
+
+            index = outPorts.IndexOf(portModel);
+            if (-1 != index)
+            {
+                portType = PortType.Output;
+                return index;
+            }
+
+            portType = PortType.Input;
+            return -1; // No port found.
         }
 
         /// <summary>
@@ -1024,7 +1036,8 @@ namespace Dynamo.Models
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;
-            int index = portModel.Index;
+            PortType portType;
+            int index = GetPortIndexAndType(portModel, out portType);
 
             //If the port was not found, then it should have just been deleted. Return from function
             if (index == -1)
@@ -1032,7 +1045,7 @@ namespace Dynamo.Models
 
             double portHeight = portModel.Height;
 
-            switch (portModel.PortType)
+            switch (portType)
             {
                 case PortType.Input:
                     for (int i = 0; i < index; i++)
@@ -1177,29 +1190,45 @@ namespace Dynamo.Models
             switch (portType)
             {
                 case PortType.Input:
+
+                    bool hasDefaultValue = data.DefaultValue != null;
+
                     if (inPorts.Count > index)
                     {
                         p = inPorts[index];
-                        p.SetPortData(data);
-                    }
-                    else
-                    {
-                        p = new PortModel(portType, this, data);
 
-                        p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
+                        //update the name on the node
+                        //e.x. when the node is being re-registered during a custom
+                        //node save
+                        p.PortName = data.NickName;
+                        if (hasDefaultValue)
                         {
-                            if (args.PropertyName == "UsingDefaultValue")
-                            {
-                                OnNodeModified();
-                            }
-                        };
-
-                        //register listeners on the port
-                        p.PortConnected += PortConnected;
-                        p.PortDisconnected += PortDisconnected;
-
-                        InPorts.Add(p);
+                            p.UsingDefaultValue = true;
+                            p.DefaultValueEnabled = true;
+                        }
+                        p.ToolTipContent = data.ToolTipString;
+                        return p;
                     }
+
+                    p = new PortModel(portType, this, data)
+                    {
+                        UsingDefaultValue = hasDefaultValue,
+                        DefaultValueEnabled = hasDefaultValue
+                    };
+
+                    p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
+                    {
+                        if (args.PropertyName == "UsingDefaultValue")
+                        {
+                            OnNodeModified();
+                        }
+                    };
+
+                    InPorts.Add(p);
+
+                    //register listeners on the port
+                    p.PortConnected += PortConnected;
+                    p.PortDisconnected += PortDisconnected;
                     
                     return p;
 
@@ -1207,17 +1236,22 @@ namespace Dynamo.Models
                     if (outPorts.Count > index)
                     {
                         p = outPorts[index];
-                        p.SetPortData(data);
+                        p.PortName = data.NickName;
+                        p.MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
+                        return p;
                     }
-                    else
-                    {
-                        p = new PortModel(portType, this, data);
-                        OutPorts.Add(p);
 
-                        //register listeners on the port
-                        p.PortConnected += PortConnected;
-                        p.PortDisconnected += PortDisconnected;
-                    }
+                    p = new PortModel(portType, this, data)
+                    {
+                        UsingDefaultValue = false,
+                        MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0)
+                    };
+
+                    OutPorts.Add(p);
+
+                    //register listeners on the port
+                    p.PortConnected += PortConnected;
+                    p.PortDisconnected += PortDisconnected;
 
                     return p;
             }
