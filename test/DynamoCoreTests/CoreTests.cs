@@ -789,17 +789,5 @@ namespace Dynamo.Tests
             Assert.IsNotNull(node);
             Assert.IsNotNull(node as DSVarArgFunction);
         }
-
-        [Test, Category("UnitTests")]
-        public void TestDefaultArgumentTooltip()
-        {
-            var vm = ViewModel;
-            NodeModel node =
-                new DSFunction(vm.Model.LibraryServices.GetFunctionDescriptor("Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double"));
-            vm.ExecuteCommand(new DynCmd.CreateNodeCommand(node, 0, 0, true, false));
-            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0"));
-            node.InPorts[0].UsingDefaultValue = false;
-            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0 (disabled)"));
-        }
     }
 }
