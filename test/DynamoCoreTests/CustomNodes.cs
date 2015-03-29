@@ -2,25 +2,26 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-
 using NUnit.Framework;
-using System.Text;
-using Dynamo.DSEngine;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
 using System.Collections;
 
 namespace Dynamo.Tests
 {
     internal class CustomNodes : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void CanCollapseNodesAndGetSameResult()
         {

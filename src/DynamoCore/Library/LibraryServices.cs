@@ -572,6 +572,11 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
+            if (LibraryManagementCore == null)
+                return;
+            if (LibraryManagementCore.CodeBlockList.Count <= 0)
+                return;
+
             var builtins = LibraryManagementCore.CodeBlockList[0]
                                                 .procedureTable
                                                 .procList

@@ -6,7 +6,6 @@ using NUnit.Framework;
 using ProtoCore.Mirror;
 using System.Collections;
 using Dynamo.Nodes;
-using TestServices;
 
 namespace Dynamo.Tests
 {
@@ -207,6 +206,15 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSEvaluationViewModelTest : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSIronPython.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void TestCodeBlockNode01()
         {
@@ -1135,6 +1143,12 @@ namespace Dynamo.Tests
     [Category("DSCustomNode")]
     class CustomNodeEvaluationViewModel : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void CustomNodeNoInput01()
         {
