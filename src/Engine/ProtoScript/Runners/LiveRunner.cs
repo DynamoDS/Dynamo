@@ -1295,6 +1295,7 @@ namespace ProtoScript.Runners
             // We just leave them in the global stack as no symbols point to this memory location in the stack anyway
             // This will be addressed when instruction cache is optimized
             runtimeCore.SetupForExecution(runnerCore, globalStackFrameSize);
+            runtimeCore.SetupStartPC();
 
             // Store the current number of global symbols
             deltaSymbols = runnerCore.GlobOffset;

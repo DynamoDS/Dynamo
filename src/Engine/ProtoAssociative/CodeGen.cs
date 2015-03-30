@@ -4044,11 +4044,6 @@ namespace ProtoAssociative
 
                 if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope && !hasReturnStatement)
                 {
-                    // If entry is not set, then there is no entry point
-                    if (!isEntrySet)
-                    {
-                        SetNoEntryPoint();
-                    }
                     EmitReturnNull();  
                 }
 

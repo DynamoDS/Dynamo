@@ -117,7 +117,6 @@ namespace ProtoCore
             SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
             RegisterDllTypes(compileCore.DllTypesToLoad);
             NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
-            SetupStartPC();
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -341,7 +340,7 @@ namespace ProtoCore
         /// The StartPC takes precedence if set, otherwise, the entry pc in the global codeblock is the entry point
         /// StartPC is assumed to be reset to kInvalidPC after each execution session
         /// </summary>
-        private void SetupStartPC()
+        public void SetupStartPC()
         {
             if (StartPC == Constants.kInvalidPC)
             {
