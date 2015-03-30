@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
+using System.Xml;
+using System.IO;
 
 using Dynamo.DSEngine;
 using Dynamo.Library;
@@ -17,7 +18,7 @@ namespace Dynamo.Tests
     {
         #region Helpers
 
-        private static XDocument SampleDocument = XDocument.Parse(
+        private static XmlReader SampleDocument = XmlReader.Create(new StringReader(
 @"
 <doc>          
     <members>
@@ -36,7 +37,7 @@ namespace Dynamo.Tests
         </member>
     </members>
 </doc>
-");
+"));
 
         private static FunctionDescriptor GetTranslateMethod()
         {
