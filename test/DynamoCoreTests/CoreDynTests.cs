@@ -225,6 +225,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(examplePath, "ModuloZero.dyn");
             RunModel(openPath);
             double[] Dlist = new double[5];
+            Dlist[0] = null;
             Dlist[1] = 0;
             Dlist[2] = 1;
             Dlist[3] = 0;
