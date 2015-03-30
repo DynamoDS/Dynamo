@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Dynamo.Interfaces;
-using Dynamo.Utilities;
+﻿using Dynamo.Interfaces;
 using NUnit.Framework;
 using System.IO;
 using Dynamo.Nodes;
@@ -15,6 +13,14 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class WatchNodeTests : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         /// <summary>
         /// Validates the watch content of a WatchViewModel branch with the 
         /// input content.
@@ -111,7 +117,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            var openPath = Path.Combine(GetTestDirectory(), @"core\watch\WatchLiterals.dyn");
+            var openPath = Path.Combine(TestDirectory, @"core\watch\WatchLiterals.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
@@ -141,7 +147,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            var openPath = Path.Combine(GetTestDirectory(), @"core\watch\Watch1DCollections.dyn");
+            var openPath = Path.Combine(TestDirectory, @"core\watch\Watch1DCollections.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
@@ -175,7 +181,7 @@ namespace Dynamo.Tests
         [Test]
         public void WatchFunctionObject()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\watch\watchfunctionobject.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             ViewModel.HomeSpace.Run();
 
@@ -191,7 +197,7 @@ namespace Dynamo.Tests
         [Test]
         public void WatchFunctionPointer()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchFunctionPointer.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\watch\watchFunctionPointer.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             ViewModel.HomeSpace.Run();
 
@@ -211,7 +217,7 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5033
             // Watch value for a partially-applied function should say "function" and not "null"
             
-            string openPath = Path.Combine(GetTestDirectory(), @"core\watch\watchfunctionobject_2.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\watch\watchfunctionobject_2.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             ViewModel.HomeSpace.Run();
 

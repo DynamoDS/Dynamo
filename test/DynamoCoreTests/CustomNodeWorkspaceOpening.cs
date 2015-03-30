@@ -13,7 +13,7 @@ namespace Dynamo.Tests
     {
         public void OpenTestFile(string folder, string fileName)
         {
-            var examplePath = Path.Combine(GetTestDirectory(), folder, fileName);
+            var examplePath = Path.Combine(TestDirectory, folder, fileName);
             ViewModel.OpenCommand.Execute(examplePath);
         }
 
@@ -46,7 +46,7 @@ namespace Dynamo.Tests
         public void CanOpenCustomNodeWorkspace()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
@@ -57,7 +57,7 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWorkspaceIsAddedToSearchOnOpening()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
             
             var res = ViewModel.Model.SearchModel.Search("Sequence2");

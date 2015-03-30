@@ -17,7 +17,7 @@ namespace Dynamo.Tests
         {
             Assert.Inconclusive("To be fixed once Execution Interval is implemented.");
 
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\executioninterval\");
+            var examplePath = Path.Combine(TestDirectory, @"core\executioninterval\");
 
             string openPath = Path.Combine(examplePath, "pause.dyn");
             ViewModel.OpenCommand.Execute(openPath);

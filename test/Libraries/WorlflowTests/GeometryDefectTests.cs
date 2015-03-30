@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using Dynamo.Models;
@@ -9,6 +10,14 @@ namespace Dynamo.Tests
     [TestFixture]
     class GeometryDefectTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         // Note: This will contain purely ASM Geometry based test cases generated from Defects.
 
         [Test]
@@ -20,7 +29,7 @@ namespace Dynamo.Tests
             
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
         @"core\WorkflowTestFiles\\GeometryDefects\MAGN_3996_InputAsPolyCurvetoJoinCurves.dyn");
 
             RunModel(openPath);
@@ -50,7 +59,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
         @"core\WorkflowTestFiles\\GeometryDefects\MAGN_4578_CCSForTransformedCuboid.dyn");
 
             RunModel(openPath);
@@ -81,7 +90,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
         @"core\WorkflowTestFiles\\GeometryDefects\MAGN_4924_CurveExtractionFromSurface.dyn");
 
             RunModel(openPath);
@@ -114,7 +123,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
                 @"core\WorkflowTestFiles\\GeometryDefects\MAGN_5029_CopyPasteWarning.dyn");
 
             RunModel(openPath);
@@ -167,7 +176,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
                 @"core\WorkflowTestFiles\\GeometryDefects\MAGN_5041_NurbsCurveExtend.dyn");
 
             RunModel(openPath);
@@ -204,7 +213,7 @@ namespace Dynamo.Tests
             // This will test user workflow which contains many nodes.
             // Crash with "Index was outside the bounds of the array"
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\WorkflowTestFiles\20140418_buildingSetback_standalone.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\20140418_buildingSetback_standalone.dyn");
 
             var FARId = "c03065ec-fe54-40de-8c27-8089c7fe1b73";
             Assert.DoesNotThrow(() => RunModel(openPath));
@@ -218,7 +227,7 @@ namespace Dynamo.Tests
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5176
             // Unhandled Exception in Dynamo Engine on second run of recursive custom node
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\WorkflowTestFiles\ChordMarching_customNode02.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\ChordMarching_customNode02.dyn");
             DynamoModel model = ViewModel.Model;
             Assert.DoesNotThrow(() => RunModel(openPath));
             var watchVal = model.CurrentWorkspace.NodeFromWorkspace("d70522b3-b5e0-4ce4-a765-9daf1bd05b44");
@@ -234,7 +243,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
     @"core\WorkflowTestFiles\GeometryDefects\MAGN_5155_CrashCurveDivideByLengthFromParameter.dyn");
 
             RunModel(openPath);
@@ -266,7 +275,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
         @"core\WorkflowTestFiles\GeometryDefects\MAGN_5177_LofByGuideCurvesForSurfaceAndSolid.dyn");
 
             RunModel(openPath);
@@ -301,7 +310,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
             @"core\WorkflowTestFiles\GeometryDefects\MAGN_5323_ListUniqueNotWorkingWithNull.dyn");
 
             RunModel(openPath);
@@ -328,7 +337,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), 
+            string openPath = Path.Combine(TestDirectory, 
             @"core\WorkflowTestFiles\GeometryDefects\MAGN_5365_WrongFunctionPassingToWatchCrashingDynamo.dyn");
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
@@ -349,7 +358,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
                 @"core\WorkflowTestFiles\GeometryDefects\MAGN_5397_ListScanWithPolygon.dyn");
 
             RunModel(openPath);
@@ -373,7 +382,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), 
+            string openPath = Path.Combine(TestDirectory, 
             @"core\WorkflowTestFiles\GeometryDefects\MAGN_5407_GroupByKeyWithListOfPoints.dyn");
 
             RunModel(openPath);
@@ -411,7 +420,7 @@ namespace Dynamo.Tests
 
             DynamoModel model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
             @"core\WorkflowTestFiles\GeometryDefects\MAGN_5408_ListUniqueOnGeometryObjects.dyn");
 
             RunModel(openPath);
