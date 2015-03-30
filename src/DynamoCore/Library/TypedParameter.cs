@@ -10,7 +10,6 @@ namespace Dynamo.Library
     /// </summary>
     public class TypedParameter
     {
-        private IPathManager pathManager;
         private string summary = null; // Indicating that it is not initialized.
 
         public TypedParameter(string parameter, ProtoCore.Type type, AssociativeNode defaultValue = null)
@@ -33,13 +32,8 @@ namespace Dynamo.Library
             get
             {
                 // If 'summary' data member is 'null', it means its value has 
-                // to be repopulated. If an IPathManager is supplied, then 
-                // retrieve the description through it, otherwise set 'summary'
-                // to empty string, so it wil not keep retrieving after failing 
-                // once.
-                // 
-                return summary ?? (summary = ((pathManager != null)
-                    ? this.GetDescription() : string.Empty));
+                // to be repopulated. 
+                return summary ?? this.GetDescription();
             }
         }
 
@@ -58,14 +52,13 @@ namespace Dynamo.Library
             get { return Type.ToShortString(); }
         }
 
-        public void UpdateFunctionDescriptor(FunctionDescriptor funcDesc, IPathManager pathManager)
+        public void UpdateFunctionDescriptor(FunctionDescriptor funcDesc)
         {
             Function = funcDesc;
 
             // Setting 'summary' to 'null' so its value is retrieved later 
             // when 'Summary' property is invoked. See 'Summary' for details.
             summary = null;
-            this.pathManager = pathManager;
         }
 
         public override string ToString()

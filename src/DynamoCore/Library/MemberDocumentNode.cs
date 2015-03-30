@@ -6,8 +6,8 @@ namespace Dynamo.DSEngine
     class MemberDocumentNode
     {
         private readonly string fullyQualifiedName;
-        private string summary;
-        private string searchTags;
+        private string summary = String.Empty;
+        private string searchTags = String.Empty;
         private readonly Dictionary<string, string> parameters;
 
         public string FullyQualifiedName { get { return fullyQualifiedName; } }
@@ -16,8 +16,6 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                if (String.IsNullOrEmpty(summary))
-                    return String.Empty;
                 return summary;
             }
             set
@@ -32,8 +30,6 @@ namespace Dynamo.DSEngine
         {
             get
             {
-                if (String.IsNullOrEmpty(searchTags))
-                    return String.Empty;
                 return searchTags;
             }
             set
