@@ -8,19 +8,23 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.DSASM;
 using Dynamo.Models;
-using ProtoCore.Namespace;
 using DynCmd = Dynamo.Models.DynamoModel;
 using ProtoCore.Mirror;
-using Dynamo.DSEngine;
 using ProtoCore.Utils;
 using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.UI;
-using System.Xml;
 
 namespace Dynamo.Tests
 {
     class CodeBlockNodeTests : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
 #if false
         [Test]
         public void TestVariableClass()
@@ -334,7 +338,7 @@ b = c[w][x][y][z];";
         [Category("RegressionTests")]
         public void Defect_MAGN_784()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\Defect_MAGN_784.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.IsFalse(ViewModel.Model.CurrentWorkspace.CanUndo);
@@ -821,7 +825,7 @@ b = c[w][x][y][z];";
         [Test]
         public void TypedIdentifier_AssignedToDifferentType_ThrowsWarning2()
         {
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
                 @"core\dsevaluation\typedIdentifier_warning.dyn");
 
             var dynamoModel = ViewModel.Model;

@@ -10,8 +10,8 @@ namespace Dynamo.Tests
     [TestFixture]
     class FileReadingTests : DynamoViewModelUnitTest
     {
-        string localDynamoStringTestFloder { get { return Path.Combine(GetTestDirectory(), "core", "files"); } }
-        string localDynamoFileTestFloder { get { return Path.Combine(GetTestDirectory(), "core", "files", "future files"); } }
+        string localDynamoStringTestFloder { get { return Path.Combine(TestDirectory, "core", "files"); } }
+        string localDynamoFileTestFloder { get { return Path.Combine(TestDirectory, "core", "files", "future files"); } }
 
         [Test]
         public void CanOpenADynFileFromBefore6_0()
