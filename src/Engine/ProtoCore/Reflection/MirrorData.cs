@@ -3,6 +3,8 @@ using Autodesk.DesignScript.Interfaces;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
 using System.Linq;
+using System;
+using System.Globalization;
 
 namespace ProtoCore
 {
@@ -205,24 +207,25 @@ namespace ProtoCore
             {
                 get
                 {
-                    if (object.ReferenceEquals(Data, null))
+                    if (object.ReferenceEquals(Data, null) || this.IsNull)
                     {
                         return "null";
                     }
+                    else if (Data is bool)
+                    {
+                        return Data.ToString().ToLower();
+                    }
+                    else if (Data is IFormattable)
+                    {
+                        // Always use invariant culture format for formattable 
+                        // object. For example in Germany system '.' in the
+                        // string representation of a number won't be changed
+                        // to ','
+                        return (Data as IFormattable).ToString(null, CultureInfo.InvariantCulture);
+                    }
                     else
                     {
-                        if (this.IsNull)
-                        {
-                            return "null";
-                        }
-                        else if (Data is bool)
-                        {
-                            return Data.ToString().ToLower();
-                        }
-                        else
-                        {
-                            return Data.ToString();
-                        }
+                        return Data.ToString();
                     }
                 }
             }
