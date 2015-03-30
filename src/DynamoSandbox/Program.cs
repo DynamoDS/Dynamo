@@ -63,7 +63,7 @@ namespace DynamoSandbox
 
     internal class Program
     {
-        private static readonly SettingsMigrationWindow migrationWindow = new SettingsMigrationWindow();
+        private static SettingsMigrationWindow migrationWindow;
 
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
@@ -105,11 +105,13 @@ namespace DynamoSandbox
         {
             if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
             {
+                migrationWindow = new SettingsMigrationWindow();
                 migrationWindow.Show();
             }
             else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
             {
                 migrationWindow.Close();
+                migrationWindow = null;
             }
         }
 

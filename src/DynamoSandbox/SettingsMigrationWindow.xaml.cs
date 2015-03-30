@@ -24,6 +24,8 @@ namespace Dynamo.DynamoSandbox
         {
             InitializeComponent();
 
+            TitleBox.Text = Properties.Resources.SettingsMigrationDialogTitle;
+            TextBoxPrompt.Text = Properties.Resources.SettingsMigrationDialogMessage;
         }
     }
 }
