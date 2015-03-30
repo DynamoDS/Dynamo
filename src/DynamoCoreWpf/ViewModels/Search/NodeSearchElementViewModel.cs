@@ -117,7 +117,7 @@ namespace Dynamo.Wpf.ViewModels
             get { return Model.InputParameters; }
         }
 
-        public List<string> OutputParameters
+        public IEnumerable<string> OutputParameters
         {
             get { return Model.OutputParameters; }
         }
