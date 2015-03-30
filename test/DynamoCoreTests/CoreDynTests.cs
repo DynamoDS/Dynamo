@@ -222,6 +222,25 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ModuloDivisionByZero()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+
+            string openPath = Path.Combine(examplePath, "ModuloZero.dyn");
+            RunModel(openPath);
+            double[] Dlist = new double[5];
+            Dlist[0] = null;
+            Dlist[1] = 0;
+            Dlist[2] = 1;
+            Dlist[3] = 0;
+            Dlist[4] = 3;
+
+            AssertPreviewValue("75647d42-ff81-4ae0-9f44-2e68c9942633", Dlist);
+        }
+
+
+        [Test]
         public void Ceiling()
         {
             var model = ViewModel.Model;
