@@ -249,6 +249,21 @@ namespace ProtoAssociative
             return cb;
         }
 
+        /// <summary>
+        /// Call this function if there is no entry point for the current compilation session
+        /// This occurs if the compilation body has only either class and function definitions
+        /// </summary>
+        private void SetNoEntryPoint()
+        {
+            if (globalProcIndex == ProtoCore.DSASM.Constants.kGlobalScope  
+                && globalClassIndex == ProtoCore.DSASM.Constants.kGlobalScope 
+                && !isEntrySet)
+            {
+                isEntrySet = true;
+                codeBlock.instrStream.entrypoint = ProtoCore.DSASM.Constants.kInvalidPC;
+            }
+        }
+
         protected override void SetEntry()
         {
             if (ProtoCore.DSASM.Constants.kGlobalScope == globalProcIndex && globalClassIndex == ProtoCore.DSASM.Constants.kGlobalScope && !isEntrySet)
@@ -4029,7 +4044,12 @@ namespace ProtoAssociative
 
                 if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope && !hasReturnStatement)
                 {
-                    EmitReturnNull();
+                    // If entry is not set, then there is no entry point
+                    if (!isEntrySet)
+                    {
+                        SetNoEntryPoint();
+                    }
+                    EmitReturnNull();  
                 }
 
                 compilePass++;

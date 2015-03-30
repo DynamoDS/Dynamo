@@ -2725,14 +2725,18 @@ namespace ProtoCore.DSASM
         /// <param name="language"></param>
         public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
         {
-            terminate = false;
-            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
+            terminate = true;
+            if (entry != Constants.kInvalidPC)
             {
-                ExecuteDebug(exeblock, entry, breakpoints, language);
-            }
-            else
-            {
-                Execute(exeblock, entry, language);
+                terminate = false;
+                if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
+                {
+                    ExecuteDebug(exeblock, entry, breakpoints, language);
+                }
+                else
+                {
+                    Execute(exeblock, entry, language);
+                }
             }
         }
 

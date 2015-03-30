@@ -343,7 +343,7 @@ namespace ProtoCore
         /// </summary>
         private void SetupStartPC()
         {
-            if (StartPC != Constants.kInvalidPC)
+            if (StartPC == Constants.kInvalidPC)
             {
                 Validity.Assert(DSExecutable.CodeBlocks.Count > 0);
                 StartPC = DSExecutable.CodeBlocks[0].instrStream.entrypoint;
