@@ -217,10 +217,11 @@ namespace ProtoCore
                     }
                     else if (Data is IFormattable)
                     {
-                        // Always use invariant culture format for formattable 
-                        // object. For example in Germany system '.' in the
-                        // string representation of a number won't be changed
-                        // to ','
+                        // Object.ToString() by default will use the current 
+                        // culture to do formatting. For example, Double.ToString()
+                        // https://msdn.microsoft.com/en-us/library/3hfd35ad(v=vs.110).aspx
+                        // We should always use invariant culture format for formattable 
+                        // object.
                         return (Data as IFormattable).ToString(null, CultureInfo.InvariantCulture);
                     }
                     else
