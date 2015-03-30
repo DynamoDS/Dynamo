@@ -130,7 +130,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void LoaderOnAssemblyLoaded(DynamoLoader.AssemblyLoadedEventArgs args)
+        private void LoaderOnAssemblyLoaded(NodeModelAssemblyLoader.AssemblyLoadedEventArgs args)
         {
             nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(args.Assembly));
         }

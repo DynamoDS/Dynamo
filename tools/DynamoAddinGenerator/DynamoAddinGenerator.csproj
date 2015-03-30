@@ -2,6 +2,10 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <RevitAPI Condition=" '$(RevitAPI)' == '' ">C:\Program Files\Autodesk\Revit Architecture Copernicus</RevitAPI>
+    <RevitAPI Condition=" '$(RevitAPI)' == '' ">C:\Program Files\Autodesk\Revit Architecture 2016</RevitAPI>
+  </PropertyGroup>
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{94329181-264A-4D57-B755-78F6FC49F096}</ProjectGuid>
@@ -32,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamoInstallDetective">
+      <HintPath>..\..\bin\$(Platform)\$(Configuration)\DynamoInstallDetective.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\extern\Moq\Moq.dll</HintPath>
     </Reference>
@@ -40,7 +47,7 @@
       <HintPath>..\..\extern\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="RevitAddInUtility">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit Architecture 2015\RevitAddInUtility.dll</HintPath>
+      <HintPath>$(RevitAPI)\RevitAddInUtility.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -62,7 +69,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy DynamoAddinGenerator.exe ..\..\..\Install\Extra\DynamoAddinGenerator.exe
-copy RevitAddinUtility.dll ..\..\..\Install\Extra\RevitAddinUtility.dll</PostBuildEvent>
+copy RevitAddinUtility.dll ..\..\..\Install\Extra\RevitAddinUtility.dll
+copy DynamoInstallDetective.dll ..\..\..\Install\Extra\DynamoInstallDetective.dll</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

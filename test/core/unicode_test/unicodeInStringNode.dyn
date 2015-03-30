@@ -1,0 +1,14 @@
+<Workspace Version="0.8.0.762" X="-470.999549014225" Y="-234.633819254866" zoom="2.05668026833428" Name="Home" RunType="Automatic" RunPeriod="100">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.StringInput guid="4cdbea90-286d-4395-86c7-58bcea5f17bc" type="Dynamo.Nodes.StringInput" nickname="String" x="294.401591051291" y="275.909450478924" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String>&lt;"äö&amp;üß"&gt;</System.String>
+      <System.String value="&lt;&quot;äö&amp;üß&quot;&gt;" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Watch guid="2ac4c6a7-83a1-4775-b8f4-7fa9001d33f7" type="Dynamo.Nodes.Watch" nickname="Watch" x="573.658210440436" y="278.587683872462" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4cdbea90-286d-4395-86c7-58bcea5f17bc" start_index="0" end="2ac4c6a7-83a1-4775-b8f4-7fa9001d33f7" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

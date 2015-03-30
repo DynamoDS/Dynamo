@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
@@ -14,17 +16,20 @@ namespace Dynamo.PackageManager
 {
     public struct LoadPackageParams
     {
-        public string Context { get; set; }
-        public bool IsTestMode { get; set; }
         public IPreferences Preferences { get; set; }
         public IPathManager PathManager { get; set; }
-        public LibraryServices LibraryServices { get; set; }
-        public DynamoLoader Loader { get; set; }
-        public CustomNodeManager CustomNodeManager { get; set; }
     }
 
     public class PackageLoader : LogSourceBase
     {
+        internal event Action<Assembly> RequestLoadNodeLibrary;
+        internal event Func<string, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
+        internal event Action<Package> PackageAdded;
+        internal event Action<Package> PackageRemoved;
+
+        private readonly List<Package> localPackages = new List<Package>();
+        public IEnumerable<Package> LocalPackages { get { return localPackages; } }
+
         public string RootPackagesDirectory { get; private set; }
 
         public PackageLoader(string overridePackageDirectory)
@@ -34,13 +39,105 @@ namespace Dynamo.PackageManager
                 Directory.CreateDirectory(RootPackagesDirectory);
         }
 
-        private readonly ObservableCollection<Package> localPackages = new ObservableCollection<Package>();
-        public ObservableCollection<Package> LocalPackages { get { return localPackages; } }
+        private void OnPackageAdded(Package pkg)
+        {
+            if (PackageAdded != null)
+            {
+                PackageAdded(pkg);
+            }
+        }
+
+        private void OnPackageRemoved(Package pkg)
+        {
+            if (PackageRemoved != null)
+            {
+                PackageRemoved(pkg);
+            }
+        }
+
+        internal void Add(Package pkg)
+        {
+            if (!this.localPackages.Contains(pkg))
+            {
+                this.localPackages.Add(pkg);
+                pkg.MessageLogged += OnPackageMessageLogged;
+                OnPackageAdded(pkg);
+            }
+        }
+
+        internal void Remove(Package pkg)
+        {
+            if (this.localPackages.Contains(pkg))
+            {
+                this.localPackages.Remove(pkg);
+                pkg.MessageLogged -= OnPackageMessageLogged;
+                OnPackageRemoved(pkg);
+            }
+        }
+
+        private void OnPackageMessageLogged(ILogMessage obj)
+        {
+            Log(obj);
+        }
+
+        private void OnRequestLoadNodeLibrary(Assembly assem)
+        {
+            if (RequestLoadNodeLibrary != null)
+            {
+                RequestLoadNodeLibrary(assem);
+            }
+        }
+
+        private IEnumerable<CustomNodeInfo> OnRequestLoadCustomNodeDirectory(string directory)
+        {
+            if (RequestLoadCustomNodeDirectory != null)
+            {
+                return RequestLoadCustomNodeDirectory(directory);
+            }
+
+            return new List<CustomNodeInfo>();
+        }
+
+        /// <summary>
+        ///     Load the package into Dynamo (including all node libraries and custom nodes)
+        ///     and add to LocalPackages
+        /// </summary>
+        public void Load(Package package)
+        {
+            this.Add(package);
+
+            // Prevent duplicate loads
+            if (package.Loaded) return;
+
+            try
+            {
+                // load node libraries
+                foreach (var assem in package.EnumerateAssembliesInBinDirectory())
+                {
+                    if (assem.IsNodeLibrary)
+                    {
+                        OnRequestLoadNodeLibrary(assem.Assembly);
+                    }
+                }
+
+                // load custom nodes
+                var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory);
+                package.LoadedCustomNodes.AddRange(customNodes);
+
+                package.EnumerateAdditionalFiles();
+                package.Loaded = true;
+            }
+            catch (Exception e)
+            {
+                Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
+                Log(e.GetType() + ": " + e.Message);
+            }
+        }
 
         /// <summary>
         ///     Scan the PackagesDirectory for packages and attempt to load all of them.  Beware! Fails silently for duplicates.
         /// </summary>
-        public void LoadPackagesIntoDynamo(LoadPackageParams loadPackageParams)
+        public void LoadAll(LoadPackageParams loadPackageParams)
         {
             ScanAllPackageDirectories(loadPackageParams.Preferences);
 
@@ -48,12 +145,14 @@ namespace Dynamo.PackageManager
             if (pathManager != null)
             {
                 foreach (var pkg in LocalPackages)
+                {
                     pathManager.AddResolutionPath(pkg.BinaryDirectory);
+                }
             }
 
             foreach (var pkg in LocalPackages)
             {
-                pkg.LoadIntoDynamo(loadPackageParams, AsLogger());
+                Load(pkg);
             }
         }
 
@@ -63,7 +162,7 @@ namespace Dynamo.PackageManager
                 Directory.EnumerateDirectories(RootPackagesDirectory, "*", SearchOption.TopDirectoryOnly))
             {
                 var pkg = ScanPackageDirectory(dir);
-                if (preferences.PackageDirectoriesToUninstall.Contains(dir)) 
+                if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir)) 
                     pkg.MarkForUninstall(preferences);
             }
         }
@@ -84,12 +183,14 @@ namespace Dynamo.PackageManager
                         throw new Exception(String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
+                {
                     throw new Exception(String.Format(Properties.Resources.NoHeaderPackage, headerPath));
+                }
 
                 // prevent duplicates
                 if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
                 {
-                    LocalPackages.Add(discoveredPkg);
+                    this.Add(discoveredPkg);
                     return discoveredPkg; // success
                 }
                 throw new Exception(String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));

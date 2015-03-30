@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Dynamo.ViewModels;
 using System.IO;
-using System.Reflection;
-using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Models;
-using Dynamo.DSEngine;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
-using System.Collections;
-using String = System.String;
 
 namespace Dynamo.Tests
 {
     class StringTests : DSEvaluationViewModelUnitTest
     {
-        string localDynamoStringTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        string localDynamoStringTestFolder { get { return Path.Combine(TestDirectory, "core", "string");}}
 
         #region concat string test cases  
 

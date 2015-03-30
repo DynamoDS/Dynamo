@@ -115,7 +115,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCurrentWorkspace(object m)
         {
-            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel;
+            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel && HasAuthProvider;
         }
 
         public void PublishNewPackage(object m)
@@ -170,7 +170,7 @@ namespace Dynamo.ViewModels
         public bool CanPublishSelectedNodes(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is Function);
+                   DynamoSelection.Instance.Selection.All(x => x is Function) && HasAuthProvider;;
         }
 
         private void ShowNodePublishInfo()
@@ -204,7 +204,6 @@ namespace Dynamo.ViewModels
 
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
-
 
         public List<PackageManagerSearchElement> ListAll()
         {
@@ -262,24 +261,9 @@ namespace Dynamo.ViewModels
 
                             if (packageDownloadHandle.Extract(DynamoViewModel.Model, out dynPkg))
                             {
-                                var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
+                                var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
+                                DynamoViewModel.Model.PackageLoader.Load(p);
 
-                                var loader = DynamoViewModel.Model.Loader;
-                                var logger = DynamoViewModel.Model.Logger;
-                                var libraryServices = DynamoViewModel.EngineController.LibraryServices;
-
-                                var loadPackageParams = new LoadPackageParams
-                                {
-                                    Loader = loader,
-                                    LibraryServices = libraryServices,
-                                    Context = DynamoViewModel.Model.Context,
-                                    IsTestMode = DynamoModel.IsTestMode,
-                                    CustomNodeManager = DynamoViewModel.Model.CustomNodeManager
-                                };
-
-                                downloadPkg.LoadIntoDynamo(loadPackageParams, logger);
-
-                                DynamoViewModel.Model.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                             }
                         }

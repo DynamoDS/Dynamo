@@ -118,6 +118,16 @@ namespace Dynamo.Core
             get { return preloadedLibraries; }
         }
 
+        public int MajorFileVersion
+        {
+            get { return majorFileVersion; }
+        }
+
+        public int MinorFileVersion
+        {
+            get { return minorFileVersion; }
+        }
+
         public void AddResolutionPath(string path)
         {
             if (string.IsNullOrEmpty(path))
@@ -201,7 +211,7 @@ namespace Dynamo.Core
             }
 
             // Current user specific directories.
-            userDataDir = GetUserDataFolder();
+            userDataDir = GetUserDataFolder(pathResolver);
 
             userDefinitions = Path.Combine(userDataDir, DefinitionsDirectoryName);
             logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
@@ -209,7 +219,7 @@ namespace Dynamo.Core
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
 
             // Common directories.
-            commonDataDir = GetCommonDataFolder();
+            commonDataDir = GetCommonDataFolder(pathResolver);
 
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
@@ -219,20 +229,7 @@ namespace Dynamo.Core
                 Path.Combine(dynamoCoreDir, NodesDirectoryName)
             };
 
-            preloadedLibraries = new HashSet<string>
-            {
-                "VMDataBridge.dll",
-                "ProtoGeometry.dll",
-                "DSCoreNodes.dll",
-                "DSOffice.dll",
-                "DSIronPython.dll",
-                "FunctionObject.ds",
-                "Optimize.ds",
-                "DynamoUnits.dll",
-                "Tessellation.dll",
-                "Analysis.dll"
-            };
-
+            preloadedLibraries = new HashSet<string>();
             additionalResolutionPaths = new HashSet<string>();
             LoadPathsFromResolver(pathResolver);
         }
@@ -289,21 +286,27 @@ namespace Dynamo.Core
             }
         }
 
-        private string GetUserDataFolder()
+        private string GetUserDataFolder(IPathResolver pathResolver)
         {
-            var folder = Environment.SpecialFolder.ApplicationData;
-            return GetDynamoDataFolder(folder);
+            if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.UserDataRootFolder))
+                return GetDynamoDataFolder(pathResolver.UserDataRootFolder);
+
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo"));
         }
 
-        private string GetCommonDataFolder()
+        private string GetCommonDataFolder(IPathResolver pathResolver)
         {
-            var folder = Environment.SpecialFolder.CommonApplicationData;
-            return GetDynamoDataFolder(folder);
+            if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.CommonDataRootFolder))
+                return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
+
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            return GetDynamoDataFolder(Path.Combine(folder, "Dynamo"));
         }
 
-        private string GetDynamoDataFolder(Environment.SpecialFolder folder)
+        private string GetDynamoDataFolder(string folder)
         {
-            return Path.Combine(Environment.GetFolderPath(folder), "Dynamo",
+            return Path.Combine(folder,
                 String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
 

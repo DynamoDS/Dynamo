@@ -728,6 +728,13 @@ namespace ProtoTestFx.TD
             }
         }
 
+        public static Subtree CreateSubTreeFromCode(Guid guid, string code)
+        {
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
+            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
+            return subtree;
+        }
+
         public IList<MethodMirror> GetMethods(string className, string methodName)
         {
             ClassMirror classMirror = new ClassMirror(className, testCore);
@@ -753,9 +760,13 @@ namespace ProtoTestFx.TD
 
         public void CleanUp()
         {
-            if (testCore != null)
+            if (testRuntimeCore != null)
             {
                 testRuntimeCore.Cleanup();
+            }
+
+            if (testCore != null)
+            {
                 testCore = null;
             }
         }

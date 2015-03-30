@@ -31,7 +31,20 @@ namespace DynamoSandbox
             };
 
             additionalNodeDirectories = new List<string>();
-            preloadedLibraryPaths = new List<string>();
+            preloadedLibraryPaths = new List<string>
+            {
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSIronPython.dll",
+                "FunctionObject.ds",
+                "Optimize.ds",
+                "DynamoConversions.dll",
+                "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll"
+            };
         }
 
         public IEnumerable<string> AdditionalResolutionPaths
@@ -47,6 +60,16 @@ namespace DynamoSandbox
         public IEnumerable<string> PreloadedLibraryPaths
         {
             get { return preloadedLibraryPaths; }
+        }
+
+        public string UserDataRootFolder 
+        {
+            get { return string.Empty; }
+        }
+
+        public string CommonDataRootFolder
+        { 
+            get { return string.Empty; }
         }
     }
 

@@ -140,17 +140,7 @@ namespace Dynamo.Nodes
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context); //Base implementation must be called
-
             List<XmlNode> childNodes = nodeElement.ChildNodes.Cast<XmlNode>().ToList();
-
-            XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
-            if (nameNode != null && nameNode.Attributes != null)
-                NickName = nameNode.Attributes["value"].Value;
-
-            XmlNode descNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Description"));
-            if (descNode != null && descNode.Attributes != null)
-                Description = descNode.Attributes["value"].Value;
 
             if (!Controller.IsInSyncWithNode(this))
             {
@@ -219,6 +209,16 @@ namespace Dynamo.Nodes
 
                 RegisterAllPorts();
             }
+
+            base.DeserializeCore(nodeElement, context); //Base implementation must be called
+
+            XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
+            if (nameNode != null && nameNode.Attributes != null)
+                NickName = nameNode.Attributes["value"].Value;
+
+            XmlNode descNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Description"));
+            if (descNode != null && descNode.Attributes != null)
+                Description = descNode.Attributes["value"].Value;
         }
 
         #endregion

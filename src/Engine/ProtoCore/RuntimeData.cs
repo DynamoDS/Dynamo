@@ -70,7 +70,7 @@ namespace ProtoCore
 
         public ContextDataManager ContextDataMngr { get; set; }
 
-        public Dictionary<string, object> Configurations { get; set; }
+        public IDictionary<string, object> Configurations { get; set; }
 
         public Dictionary<ulong, ulong> CodeToLocation { get; set; }
         public string CurrentDSFileName { get; set; }

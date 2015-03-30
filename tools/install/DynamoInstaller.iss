@@ -38,8 +38,6 @@ UninstallFilesDir={app}\Uninstall
 UninstallDisplayIcon={app}\DynamoInstaller.ico
 UninstallDisplayName={#ProductName} {#ProductVersion}
 UsePreviousAppDir=no
-#define locale "en-US"
-;TODO check user locale and show the corresponding README
 
 [Dirs]
 Name: "{app}\libg_219"
@@ -70,7 +68,7 @@ Source: temp\bin\*; DestDir: {app}; Flags: ignoreversion overwritereadonly; Comp
 Source: temp\bin\nodes\*; DestDir: {app}\nodes; Flags: ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: temp\bin\lang\*; DestDir: {app}\; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoCore
 Source: Extra\IronPython-2.7.3.msi; DestDir: {tmp}; Flags: deleteafterinstall;
-Source: temp\bin\lang\{#locale}\README.txt; DestDir: {app}\{#locale}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore
+Source: temp\bin\README.txt; DestDir: {app}\; Flags: onlyifdoesntexist isreadme ignoreversion; Components: DynamoCore
 
 ;Revit 2014
 Source: temp\bin\Revit_2014\*; DestDir: {app}\Revit_2014; Flags:skipifsourcedoesntexist ignoreversion overwritereadonly recursesubdirs; Components: DynamoForRevit2014
@@ -134,7 +132,7 @@ Filename: "msiexec.exe"; Parameters: "/i ""{tmp}\IronPython-2.7.3.msi"" /qn"; Wo
 Filename: "{tmp}\DynamoAddinGenerator.exe"; Parameters: """{app}"""; Flags: runhidden;
 
 [UninstallRun]
-Filename: "{app}\DynamoAddinGenerator.exe"; Flags: runhidden;
+Filename: "{app}\DynamoAddinGenerator.exe"; Parameters: "/uninstall ""{app}"""; Flags: runhidden;
 
 [Icons]
 Name: "{group}\{#ProductName} {#ProductVersion}"; Filename: "{app}\DynamoSandbox.exe"
@@ -185,6 +183,7 @@ begin
   // we'll need these files to check for a revit installation
   ExtractTemporaryFile('RevitInstallDetective.exe');
   ExtractTemporaryFile('RevitAddinUtility.dll');
+  ExtractTemporaryFile('DynamoInstallDetective.dll');
   ExtractTemporaryFile('DynamoAddinGenerator.exe');
 
   result := true
@@ -205,7 +204,6 @@ begin
 	Exec(RemoveQuotes(sUnInstallString), '/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /UPDATE', '', SW_HIDE, ewWaitUntilTerminated, iResultCode);
 
 
-  sMsg2 := ExpandConstant(' In order to proceed with the installation, you need to uninstall {#ProductName} {#Major}.{#Minor} manually.')	
   sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#ProductName} {#Major}.{#Minor}');
   sUninstallString := '';
   RegQueryStringValue(HKLM64, sUnInstPath, 'UnInstallString', sUninstallString);
@@ -214,13 +212,15 @@ begin
 		if not RegQueryDWordValue(HKLM64, sUnInstPath, 'RevVersion', revision) then
 			begin
 				sMsg := ExpandConstant('Could not determine the revision number for already installed {#ProductName} {#Major}.{#Minor}.')
-				MsgBox(sMsg + sMsg2, mbInformation, MB_OK);
+				sMsg2 := ExpandConstant('Please uninstall {#ProductName} {#Major}.{#Minor} manually, before proceeding with the installation.')
+				MsgBox(sMsg + #13#10#13#10 + sMsg2, mbInformation, MB_OK);
 				result := false
 			end
 		else if (revision > {#Rev}) then
 			begin
 				sMsg := ExpandConstant('A newer version of {#ProductName} {#ProductVersion} is already installed.')
-				MsgBox(sMsg + sMsg2, mbInformation, MB_OK);
+				sMsg2 := ExpandConstant('Please uninstall {#ProductName} {#Major}.{#Minor}.' + IntToStr(revision) + ' manually, before proceeding with the installation.')
+				MsgBox(sMsg + #13#10#13#10 + sMsg2, mbInformation, MB_OK);
 				result := false
 			end
 		else
