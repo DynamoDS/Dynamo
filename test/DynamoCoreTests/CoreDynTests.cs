@@ -225,18 +225,12 @@ namespace Dynamo.Tests
         public void ModuloDivisionByZero()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "ModuloZero.dyn");
             RunModel(openPath);
-            double[] Dlist = new double[5];
-            Dlist[0] = null;
-            Dlist[1] = 0;
-            Dlist[2] = 1;
-            Dlist[3] = 0;
-            Dlist[4] = 3;
 
-            AssertPreviewValue("75647d42-ff81-4ae0-9f44-2e68c9942633", Dlist);
+            AssertPreviewValue("75647d42-ff81-4ae0-9f44-2e68c9942633", new object[] {null, 0, 1, 0, 3});
         }
 
 
@@ -648,7 +642,7 @@ namespace Dynamo.Tests
         public void ModuloDividendLargerThanDivisor()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math");
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
 
             string openPath = Path.Combine(examplePath, "ModuloDividendLargerThanDivisor.dyn");
             RunModel(openPath);
@@ -658,13 +652,8 @@ namespace Dynamo.Tests
             Dlist[2] = 1.899000;
             Dlist[3] = 1.830000;
 
-            Boolean[] fList = new Boolean[4];
-            fList[0] = false;
-            fList[1] = false;
-            fList[2] = false;
-            fList[3] = false;
             AssertPreviewValue("9433d723-3708-4773-9b9c-c6def0f17b18", Dlist);
-            AssertPreviewValue("55f03be2-8720-4648-b989-996b261e1502", fList);
+            AssertPreviewValue("55f03be2-8720-4648-b989-996b261e1502", new [] { false, false, false, false});
             AssertPreviewValue("0b9eca5b-835b-493e-af4b-84a3366d75d3", Dlist);
             AssertPreviewValue("7e1f9810-2f4f-4911-975b-d392afc3a674", Dlist);
         }
