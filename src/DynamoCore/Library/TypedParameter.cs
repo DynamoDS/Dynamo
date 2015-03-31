@@ -28,7 +28,7 @@ namespace Dynamo.Library
         public ProtoCore.Type Type { get; private set; }
         public AssociativeNode DefaultValue { get; private set; }
 
-        public string Summary
+        private string Summary
         {
             get
             {
@@ -47,9 +47,19 @@ namespace Dynamo.Library
         {
             get
             {
-                return !String.IsNullOrEmpty(Summary)
-                    ? Summary + " (" + DisplayTypeName + ")"
-                    : DisplayTypeName;
+                string description = string.Empty;
+                if (!string.IsNullOrEmpty(summary))
+                    description = description + summary + "\n\n";
+
+                description = description + DisplayTypeName;
+
+                if (DefaultValue != null)
+                    description = String.Format("{0}\n{1} : {2}", 
+                                                description, 
+                                                Properties.Resources.DefaultValue, 
+                                                DefaultValue.ToString());
+
+                return description;
             }
         }
 
