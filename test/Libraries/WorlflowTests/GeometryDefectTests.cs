@@ -4,7 +4,6 @@ using System.Linq;
 using NUnit.Framework;
 using Dynamo.Models;
 using Autodesk.DesignScript.Geometry;
-using SystemTestServices;
 
 namespace Dynamo.Tests
 {   
@@ -453,8 +452,11 @@ namespace Dynamo.Tests
 
         
         [Test]
-        public void ListMapTesting()
+        public void MAGN_6799_ListMapDoesntWorkWithFlatten()
         {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6799
+            // Flatten Does Not work With List.Map.
+
             var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\list\Listmap.dyn");
             RunModel(openPath);
@@ -466,14 +468,18 @@ namespace Dynamo.Tests
 
             //get List.Map guid
             string ListMapGuid = "0af8a082-0d22-476f-bc28-e61b4ce01170";  
+            
             //check the dimension of list
             var levelCount = 2;
             AssertPreviewCount(ListMapGuid, levelCount);
+            
             //flatten the list
             var levelList = GetFlattenedPreviewValues(ListMapGuid);
             Assert.AreEqual(levelList.Count, levelCount * 4);
+            
             //check the first parameter is not null
             Assert.IsNotNull(levelList[0]);
+            
             // check list.map preview value
             Point[] p = new Point[8];
             p[0] = Point.ByCoordinates(1, 1, 1);
@@ -487,8 +493,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(levelList, p);
 
         }
-
-     
         
     }
 }
