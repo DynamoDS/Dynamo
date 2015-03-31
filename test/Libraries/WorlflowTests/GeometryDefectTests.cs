@@ -469,7 +469,7 @@ namespace Dynamo.Tests
             //check the dimension of list
             var levelCount = 2;
             AssertPreviewCount(ListMapGuid, levelCount);
-            //flat the list
+            //flatten the list
             var levelList = GetFlattenedPreviewValues(ListMapGuid);
             Assert.AreEqual(levelList.Count, levelCount * 4);
             //check the first parameter is not null
