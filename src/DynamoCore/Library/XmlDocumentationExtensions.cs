@@ -77,21 +77,14 @@ namespace Dynamo.DSEngine
             if (string.IsNullOrEmpty(assemblyName))
                 return String.Empty;
 
-            string assemblyNameWithoutType;
-            // E.g. ProtoGeometry.dll => ProtoGeometry
-            if (assemblyName.LastIndexOf(".") != -1)
-                assemblyNameWithoutType = assemblyName.Substring(0, assemblyName.LastIndexOf("."));
-            else
-                assemblyNameWithoutType = assemblyName;
-
             var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName
-                (assemblyNameWithoutType, GetMemberElementName(function));
+                (assemblyName, GetMemberElementName(function));
 
             if (!documentNodes.ContainsKey(fullyQualifiedName))
             {
                 if (xml == null)
                     xml = DocumentationServices.GetForAssembly(function.Assembly, function.PathManager);
-                LoadDataFromXml(xml, assemblyNameWithoutType);
+                LoadDataFromXml(xml, assemblyName);
             }
 
             MemberDocumentNode documentNode = null;

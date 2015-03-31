@@ -73,7 +73,7 @@ namespace Dynamo.DSEngine
 
         internal static string MakeFullyQualifiedName(string assemblyName, string memberName)
         {
-            return string.Format("{0}.{1}", assemblyName, memberName);
+            return string.Format("{0},{1}", assemblyName, memberName);
         }
     }
 }
