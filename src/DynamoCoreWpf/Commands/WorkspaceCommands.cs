@@ -36,19 +36,18 @@ namespace Dynamo.ViewModels
             }
         }
 
-        // REVIVE ME!
-        //private DelegateCommand _nodeToCodeCommand;
-        //public DelegateCommand NodeToCodeCommand
-        //{
-        //    get
-        //    {
-        //        if (_nodeToCodeCommand == null)
-        //        {
-        //            _nodeToCodeCommand = new DelegateCommand(Model.NodeToCode, Model.CanNodeToCode);
-        //        }
-        //        return _nodeToCodeCommand;
-        //    }
-        //}
+        private DelegateCommand _nodeToCodeCommand;
+        public DelegateCommand NodeToCodeCommand
+        {
+            get
+            {
+                if (_nodeToCodeCommand == null)
+                {
+                    _nodeToCodeCommand = new DelegateCommand(NodeToCode, CanNodeToCode);
+                }
+                return _nodeToCodeCommand;
+            }
+        }
 
         public DelegateCommand HideCommand
         {

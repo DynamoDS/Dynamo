@@ -915,7 +915,6 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        [Obsolete("Node to Code not enabled, API subject to change.")]
         internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController, bool verboseLogging)
         {
             IEnumerable<NodeModel> selectedNodes =

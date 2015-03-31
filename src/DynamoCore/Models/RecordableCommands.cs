@@ -1314,7 +1314,6 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        [Obsolete("Node to Code not enabled, API subject to change.")]
         public class ConvertNodesToCodeCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
