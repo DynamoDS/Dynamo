@@ -3864,7 +3864,7 @@ namespace ProtoAssociative
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
-            core.startPC = this.pc;
+            core.watchStartPC = this.pc;
             compilePass = ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope;
             ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode;
 
@@ -3901,7 +3901,7 @@ namespace ProtoAssociative
 
             core.InferedType = inferedType;
 
-            this.pc = core.startPC;
+            this.pc = core.watchStartPC;
 
             return codeBlock.codeBlockId;
         }
@@ -3970,7 +3970,7 @@ namespace ProtoAssociative
 
             AllocateContextGlobals();
 
-            core.startPC = this.pc;
+            core.watchStartPC = this.pc;
             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 return EmitExpressionInterpreter(codeBlockNode);

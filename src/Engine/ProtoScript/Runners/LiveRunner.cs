@@ -159,10 +159,10 @@ namespace ProtoScript.Runners
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
 
             // Mark all graphnodes dependent on the removed function as dirty
-            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.RemovedFunctionDefNodesFromModification);
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(runtimeCore, changeSet.RemovedFunctionDefNodesFromModification);
 
             // Mark all graphnodes dependent on the modified functions as dirty
-            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.ModifiedFunctions);
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(runtimeCore, changeSet.ModifiedFunctions);
         }
 
 
