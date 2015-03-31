@@ -201,6 +201,41 @@ namespace Dynamo.Tests
             }
         }
 
+        public List<object> GetFlattenedPreviewValues(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var data = mirror.GetData();
+            if (data == null) return null;
+            if (!data.IsCollection)
+            {
+                return data.Data == null ? new List<object>() : new List<object>() { data.Data };
+            }
+            var elements = data.GetElements();
+
+            var objects = GetSublistItems(elements);
+
+            return objects;
+        }
+
+        private static List<object> GetSublistItems(IEnumerable<MirrorData> datas)
+        {
+            var objects = new List<object>();
+            foreach (var data in datas)
+            {
+                if (!data.IsCollection)
+                {
+                    objects.Add(data.Data);
+                }
+                else
+                {
+                    objects.AddRange(GetSublistItems(data.GetElements()));
+                }
+            }
+            return objects;
+        }
+
     }
 
     [Category("DSExecution")]

@@ -4,11 +4,12 @@ using System.Linq;
 using NUnit.Framework;
 using Dynamo.Models;
 using Autodesk.DesignScript.Geometry;
+using SystemTestServices;
 
 namespace Dynamo.Tests
-{
+{   
     [TestFixture]
-    class GeometryDefectTests : DSEvaluationViewModelUnitTest
+    class GeometryDefectTests : DSEvaluationViewModelUnitTest 
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -449,6 +450,44 @@ namespace Dynamo.Tests
                 Assert.IsNotNull(allLines);
             }
         }
+
+        
+        [Test]
+        public void ListMapTesting()
+        {
+            var model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\list\Listmap.dyn");
+            RunModel(openPath);
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count());
+
+            //get List.Map guid
+            string ListMapGuid = "0af8a082-0d22-476f-bc28-e61b4ce01170";  
+            //check the dimension of list
+            var levelCount = 2;
+            AssertPreviewCount(ListMapGuid, levelCount);
+            //flat the list
+            var levelList = GetFlattenedPreviewValues(ListMapGuid);
+            Assert.AreEqual(levelList.Count, levelCount * 4);
+            //check the first parameter is not null
+            Assert.IsNotNull(levelList[0]);
+            // check list.map preview value
+            Point[] p = new Point[8];
+            p[0] = Point.ByCoordinates(1, 1, 1);
+            p[1] = Point.ByCoordinates(2, 2, 2);
+            p[2] = Point.ByCoordinates(3, 3, 3);
+            p[3] = Point.ByCoordinates(4, 4, 4);
+            p[4] = Point.ByCoordinates(10, 10, 10);
+            p[5] = Point.ByCoordinates(20, 20, 20);
+            p[6] = Point.ByCoordinates(30, 30, 30);
+            p[7] = Point.ByCoordinates(40, 40, 40);
+            Assert.AreEqual(levelList, p);
+
+        }
+
      
         
     }
