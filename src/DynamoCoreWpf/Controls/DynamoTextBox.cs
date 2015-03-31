@@ -349,9 +349,14 @@ namespace Dynamo.UI.Controls
     {
         private ToolTipWindow tooltip = new ToolTipWindow();
         private DispatcherTimer dispatcherTimer = new DispatcherTimer();
-        private DispatcherTimer showTimer = new DispatcherTimer();
         private object nextDataContext;
         private DynamoView mainDynamoWindow;
+
+        private enum TimerState
+        {
+            ShowPending,
+            KeepAlive
+        }
 
         public LibraryToolTipPopup()
         {
@@ -360,10 +365,10 @@ namespace Dynamo.UI.Controls
             this.CustomPopupPlacementCallback = PlacementCallback;
             this.DataContext = null;
             this.Child = tooltip;
-            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
+            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 60);
+            this.dispatcherTimer.Tick += OpenLibraryToolTipPopup;
             this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
-            this.showTimer.Interval = new TimeSpan(0, 0, 0, 0, 60);
-            this.showTimer.Tick += OpenLibraryToolTipPopup;
+            this.dispatcherTimer.Tag = TimerState.ShowPending;
             this.Loaded += LoadMainDynamoWindow;
         }
 
@@ -392,22 +397,29 @@ namespace Dynamo.UI.Controls
 
             if (dataContext == null)
             {
+                dispatcherTimer.Tag = TimerState.KeepAlive;
                 if (closeImmediately)
                 {
                     CloseLibraryToolTipPopup(null, null);
                     return;
                 }
-                showTimer.Stop();
+                dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 240);
                 dispatcherTimer.Start();
                 return;
             }
-            dispatcherTimer.Stop();
             nextDataContext = dataContext;
-            showTimer.Start();
+            dispatcherTimer.Tag = TimerState.ShowPending;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 60);
+
+            dispatcherTimer.Start();
         }
 
         private void OpenLibraryToolTipPopup(object sender, EventArgs e)
         {
+            var currentTimerState = (TimerState)dispatcherTimer.Tag;
+            if (currentTimerState != TimerState.ShowPending)
+                return;
+
             this.DataContext = nextDataContext;
             IsOpen = true;
 
@@ -419,15 +431,20 @@ namespace Dynamo.UI.Controls
             // Moving tooltip back.
             HorizontalOffset--;
 
-            showTimer.Stop();
+            dispatcherTimer.Stop();
         }
 
         private void CloseLibraryToolTipPopup(object sender, EventArgs e)
         {
             if (!this.IsMouseOver)
             {
+                var currentTimerState = (TimerState)dispatcherTimer.Tag;
+                if ((currentTimerState) != TimerState.KeepAlive)
+                    return;
+
                 this.DataContext = null;
                 IsOpen = false;
+                dispatcherTimer.Stop();
             }
         }
 
