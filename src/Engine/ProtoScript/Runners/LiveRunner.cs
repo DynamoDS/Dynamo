@@ -1285,7 +1285,7 @@ namespace ProtoScript.Runners
         /// <summary>
         /// Setup the RuntimeCore for the next execution cycle
         /// </summary>
-        private void SetupRuntimeCoreForExecution()
+        private void SetupRuntimeCoreForExecution(bool isCodeCompiled)
         {
             // runnerCore.GlobOffset is the number of global symbols that need to be allocated on the stack
             // The argument to Reallocate is the number of ONLY THE NEW global symbols as the stack needs to accomodate this delta
@@ -1295,8 +1295,11 @@ namespace ProtoScript.Runners
             // We just leave them in the global stack as no symbols point to this memory location in the stack anyway
             // This will be addressed when instruction cache is optimized
             runtimeCore.SetupForExecution(runnerCore, globalStackFrameSize);
-            runtimeCore.SetupStartPC();
-
+            if (isCodeCompiled)
+            {
+                runtimeCore.SetupStartPC();
+            }
+          
             // Store the current number of global symbols
             deltaSymbols = runnerCore.GlobOffset;
         }
@@ -1653,11 +1656,11 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private ProtoRunner.ProtoVMState Execute()
+        private ProtoRunner.ProtoVMState Execute(bool isCodeCompiled)
         {
             try
             {
-                SetupRuntimeCoreForExecution();
+                SetupRuntimeCoreForExecution(isCodeCompiled);
                 runner.ExecuteLive(runnerCore, runtimeCore);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
@@ -1676,7 +1679,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 runtimeCore.RunningBlock = blockId;
-                vmState = Execute();
+                vmState = Execute(!string.IsNullOrEmpty(code));
             }
             return succeeded;
         }
@@ -1689,7 +1692,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 runtimeCore.RunningBlock = blockId;
-                vmState = Execute();
+                vmState = Execute(astList.Count > 0);
             }
             return succeeded;
         }
@@ -1727,7 +1730,6 @@ namespace ProtoScript.Runners
             {
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
-                Execute();
             }
         }
 
