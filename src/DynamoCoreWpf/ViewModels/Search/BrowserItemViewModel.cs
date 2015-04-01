@@ -436,23 +436,30 @@ namespace Dynamo.Wpf.ViewModels
                 }
                 // Classes must be first in any case.
                 if (entry is ClassesNodeCategoryViewModel)
-                    Items.Insert(0, entry);
-                else
                 {
-                    if (entry is NodeSearchElementViewModel)
+                    Items.Insert(0, entry);
+                    continue;
+                }
+
+                // Nodecategories(i.e. namespaces) should be before members.
+                if (entry is NodeSearchElementViewModel)
+                {
+                    if (nextLargerItemIndex >= 0)
                     {
-                        if (nextLargerItemIndex >= 0)
-                            Items.Insert(nextLargerItemIndex + SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel)).Count(), entry);
-                        else
-                            Items.Add(entry);
+                        var offset = hasClasses ? 1 : 0;
+                        Items.Insert(nextLargerItemIndex + SubCategories.Count - offset, entry);
                     }
-                    if (entry is NodeCategoryViewModel)
+                    else
+                        Items.Add(entry);
+                }
+                if (entry is NodeCategoryViewModel)
+                {
+                    if (nextLargerItemIndex >= 0)
                     {
-                        if (nextLargerItemIndex >= 0)
-                            Items.Insert(nextLargerItemIndex, entry);
-                        else
-                            Items.Insert(Items.Count - Entries.Count, entry);
+                        Items.Insert(nextLargerItemIndex, entry);
                     }
+                    else
+                        Items.Insert(Items.Count - Entries.Count, entry);
                 }
             }
         }
