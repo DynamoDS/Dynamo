@@ -1,9 +1,13 @@
-﻿using Dynamo.UI.Commands;
+﻿using Dynamo.Models;
+using Dynamo.Selection;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
     public partial class WorkspaceViewModel
     {
+        #region Private Delegate Command Data Members
+
         private DelegateCommand _hideCommand;
         private DelegateCommand _setCurrentOffsetCommand;
         private DelegateCommand _nodeFromSelectionCommand;
@@ -19,6 +23,10 @@ namespace Dynamo.ViewModels
         private DelegateCommand _graphAutoLayoutCommand;
         private DelegateCommand _pauseVisualizationManagerUpdateCommand;
         private DelegateCommand _unpauseVisualizationManagerUpdateCommand;
+
+        #endregion
+
+        #region Public Delegate Commands
 
         public DelegateCommand SelectAllCommand
         {
@@ -202,5 +210,22 @@ namespace Dynamo.ViewModels
                 return _unpauseVisualizationManagerUpdateCommand;
             }
         }
+
+        #endregion
+
+        #region Properties for Command Data Binding
+
+        public bool HasSelection
+        {
+            get { return DynamoSelection.Instance.Selection.Count > 0; }
+        }
+
+        public LacingStrategy SelectionArgumentLacing
+        {
+            // TODO: Update this to gather the right value.
+            get { return LacingStrategy.Shortest; }
+        }
+
+        #endregion
     }
 }
