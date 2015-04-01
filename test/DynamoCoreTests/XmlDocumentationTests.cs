@@ -99,6 +99,14 @@ namespace Dynamo.Tests
             var descript = paramX.GetDescription(SampleDocument);
 
             Assert.AreEqual("Double a.", descript);
+
+            paramX = method.Parameters.ElementAt(1);
+            descript = paramX.GetDescription(SampleDocument);
+            Assert.AreEqual("Double b.", descript);
+
+            paramX = method.Parameters.ElementAt(2);
+            descript = paramX.GetDescription(SampleDocument);
+            Assert.AreEqual("Double c.", descript);
         }
     }
 }
