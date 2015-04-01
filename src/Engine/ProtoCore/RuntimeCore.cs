@@ -95,6 +95,7 @@ namespace ProtoCore
             ExecutiveProvider = new ExecutiveProvider();
 
             RuntimeStatus = new ProtoCore.RuntimeStatus(this);
+            StartPC = Constants.kInvalidPC;
         }
 
         /// <summary>
@@ -104,9 +105,12 @@ namespace ProtoCore
         /// </summary>
         /// <param name="compileCore"></param>
         /// <param name="context"></param>
-        public void SetupForExecution(ProtoCore.Core compileCore, ProtoCore.Runtime.Context context = null)
+        public void SetupForExecution(ProtoCore.Core compileCore, int globalStackFrameSize)
         {
-            RuntimeMemory.PushFrameForGlobals(compileCore.GlobOffset);
+            if (globalStackFrameSize > 0)
+            {
+                RuntimeMemory.PushFrameForGlobals(globalStackFrameSize);
+            }
             RunningBlock = 0;
             RuntimeStatus.MessageHandler = compileCore.BuildStatus.MessageHandler;
             WatchSymbolList = compileCore.watchSymbolList;
@@ -140,6 +144,7 @@ namespace ProtoCore
         public IExecutiveProvider ExecutiveProvider { get; set; }
         public Executive ExecutionInstance { get; private set; }
         public Executive CurrentExecutive { get; private set; }
+        public int StartPC { get; private set; }
 
         // Execution properties
         public Executable DSExecutable { get; private set; }
@@ -214,6 +219,7 @@ namespace ProtoCore
         {
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
+            StartPC = Constants.kInvalidPC;
         }
 
         protected void OnDispose()
@@ -314,5 +320,38 @@ namespace ProtoCore
             return ts;
         }
 
+        /// <summary>
+        /// Set the value of a variable at runtime
+        /// Returns the entry pc
+        /// </summary>
+        /// <param name="astID"></param>
+        /// <param name="sv"></param>
+        /// <returns></returns>
+        public int SetValue(int astID, StackValue sv)
+        {
+            ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
+            AssociativeGraph.GraphNode gnode =  ProtoCore.AssociativeEngine.Utils.MarkGraphNodeDirty(this, astID);
+            Validity.Assert(gnode != null);
+            return gnode.updateBlock.startpc;
+        }
+
+        /// <summary>
+        /// This function determines what the starting pc should be for the next execution session
+        /// The StartPC takes precedence if set, otherwise, the entry pc in the global codeblock is the entry point
+        /// StartPC is assumed to be reset to kInvalidPC after each execution session
+        /// </summary>
+        public void SetupStartPC()
+        {
+            if (StartPC == Constants.kInvalidPC)
+            {
+                Validity.Assert(DSExecutable.CodeBlocks.Count > 0);
+                StartPC = DSExecutable.CodeBlocks[0].instrStream.entrypoint;
+            }
+        }
+
+        public void SetStartPC(int pc)
+        {
+            StartPC = pc;
+        }
     }
 }

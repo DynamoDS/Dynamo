@@ -344,7 +344,6 @@ namespace ProtoCore
 
         public ParseMode ParsingMode { get; set; }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -619,7 +618,7 @@ namespace ProtoCore
             DynamicVariableTable = new DynamicVariableTable();
             DynamicFunctionTable = new DynamicFunctionTable();
 
-            startPC = Constants.kInvalidIndex;
+            watchStartPC = Constants.kInvalidIndex;
 
             deltaCompileStartPC = Constants.kInvalidIndex;
 
@@ -690,7 +689,7 @@ namespace ProtoCore
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AssociativeNode AssocNode { get; set; }
-        public int startPC { get; set; }
+        public int watchStartPC { get; set; }
 
 
         //
