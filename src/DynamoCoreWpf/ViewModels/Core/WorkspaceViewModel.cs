@@ -757,6 +757,26 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 0;
         }
 
+        private void EnableUpstreamPreview(object parameter)
+        {
+
+        }
+
+        private bool CanEnableUpstreamPreview(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
+        private void SetArgumentLacing(object parameter)
+        {
+
+        }
+
+        private bool CanSetArgumentLacing(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
         private void Hide(object parameters)
         {
             // Closing of custom workspaces will simply close those workspaces,

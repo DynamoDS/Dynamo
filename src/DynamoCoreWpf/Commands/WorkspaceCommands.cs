@@ -12,6 +12,8 @@ namespace Dynamo.ViewModels
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
         private DelegateCommand _enableNodePreviewCommand;
+        private DelegateCommand _enableUpstreamPreviewCommand;
+        private DelegateCommand _setArgumentLacingCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
         private DelegateCommand _graphAutoLayoutCommand;
@@ -137,6 +139,34 @@ namespace Dynamo.ViewModels
                 }
 
                 return _enableNodePreviewCommand;
+            }
+        }
+
+        public DelegateCommand EnableUpstreamPreviewCommand
+        {
+            get
+            {
+                if (_enableUpstreamPreviewCommand == null)
+                {
+                    _enableUpstreamPreviewCommand = new DelegateCommand(
+                        EnableUpstreamPreview, CanEnableUpstreamPreview);
+                }
+
+                return _enableUpstreamPreviewCommand;
+            }
+        }
+
+        public DelegateCommand SetArgumentLacingCommand
+        {
+            get
+            {
+                if (_setArgumentLacingCommand == null)
+                {
+                    _setArgumentLacingCommand = new DelegateCommand(
+                        SetArgumentLacing, CanSetArgumentLacing);
+                }
+
+                return _setArgumentLacingCommand;
             }
         }
 
