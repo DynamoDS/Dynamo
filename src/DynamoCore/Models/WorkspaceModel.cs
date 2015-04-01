@@ -706,63 +706,16 @@ namespace Dynamo.Models
 
         internal void SetWorkspaceToState(DesignOptionsState state)
         {
-            foreach (var node in state.Nodes )
+            foreach (var node in state.Nodes)
             {
-
-                var serializedNode = state.SerializedNodes.Find(x=> Guid.Parse(x.GetAttribute("guid")) == node.GUID);
-
-                string value = string.Empty;
-                string codetext = serializedNode.GetAttribute("CodeText");
-
-                if (serializedNode.HasChildNodes)
-                {
-                    if (serializedNode.FirstChild.Attributes != null)
-                    {
-                        var valattrib = serializedNode.FirstChild.Attributes["value"];
-                        if (valattrib != null)
-                        {
-                            value = valattrib.Value;
-                        }
-                        else
-                        {
-                            Debug.WriteLine("this node did not have a value attribute in it's first child");
-                        }  
-                        
-                    }
-                }
+                var serializedNode = state.SerializedNodes.Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
+                node.Deserialize(serializedNode, SaveContext.File);
                 
-               
+                DynamoSelection.Instance.ClearSelection();
+                state.Nodes.ForEach(x => DynamoSelection.Instance.Selection.Add(x));
 
-                UpdateValueParams parameterToUpdate = null;
-                //if there was val attribute
-                if (!string.IsNullOrEmpty(value))
-                {
-                    //found it
-                     parameterToUpdate = new UpdateValueParams("Value",value);
-                }
-                    //else try codetext
-                else if (!string.IsNullOrEmpty(codetext))
-                {
-                    //codetext was found
-                    parameterToUpdate = new UpdateValueParams("Code",codetext);
-                }
-                else
-                {
-                    Debug.WriteLine(node);
-                    Debug.WriteLine("could not find any paramters to restore for this node");
-                    continue;
-                }
-
-                node.UpdateValue(parameterToUpdate);
             }
-            // now select all nodes in UI
-            DynamoSelection.Instance.ClearSelection();
-            state.Nodes.ForEach(x => DynamoSelection.Instance.Selection.Add(x));
-            
-            
-
         }
-        
         internal void CreateDesignStateFromSelection(string name, string description, List<Guid> IDSToSave)
         {
 
