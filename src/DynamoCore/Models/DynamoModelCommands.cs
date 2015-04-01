@@ -318,6 +318,7 @@ namespace Dynamo.Models
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
             CurrentWorkspace.ConvertNodesToCodeInternal(
+                command.NodeId,
                 EngineController,
                 DebugSettings.VerboseLogging);
 

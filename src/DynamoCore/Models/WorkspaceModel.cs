@@ -915,7 +915,7 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        internal void ConvertNodesToCodeInternal(EngineController engineController, bool verboseLogging)
+        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController, bool verboseLogging)
         {
             var selectedNodes = DynamoSelection.Instance
                                                .Selection
@@ -985,7 +985,7 @@ namespace Dynamo.Models
 
                 codeBlockNode = new CodeBlockNodeModel(
                     code,
-                    System.Guid.NewGuid(),
+                    nodeId,
                     totalX / nodeCount,
                     totalY / nodeCount, engineController.LibraryServices);
                 UndoRecorder.RecordCreationForUndo(codeBlockNode);
