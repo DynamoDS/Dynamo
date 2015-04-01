@@ -124,6 +124,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Automatic.
+        /// </summary>
+        public static string Automatic {
+            get {
+                return ResourceManager.GetString("Automatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading....
         /// </summary>
         public static string BrowserWindowLoading {
@@ -2088,6 +2097,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manual.
+        /// </summary>
+        public static string Manual {
+            get {
+                return ResourceManager.GetString("Manual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamo has already installed {0}.
         ///
         ///Dynamo will attempt to uninstall this package before installing..
@@ -2720,7 +2738,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot update assembly!.
+        ///   Looks up a localized string similar to Cannot update assembly.
         /// </summary>
         public static string PackageDuplicateAssemblyWarningTitle {
             get {
@@ -3067,6 +3085,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageWarningMessageBoxTitle {
             get {
                 return ResourceManager.GetString("PackageWarningMessageBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Periodic.
+        /// </summary>
+        public static string Periodic {
+            get {
+                return ResourceManager.GetString("Periodic", resourceCulture);
             }
         }
         
