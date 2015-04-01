@@ -1575,4 +1575,16 @@ Do you want to install the latest Dynamo update?</value>
   <data name="Periodic" xml:space="preserve">
     <value>Periodic</value>
   </data>
+  <data name="ContextMenuLacingCrossProduct" xml:space="preserve">
+    <value>Cross Product</value>
+  </data>
+  <data name="ContextMenuLacingFirst" xml:space="preserve">
+    <value>First</value>
+  </data>
+  <data name="ContextMenuLacingLongest" xml:space="preserve">
+    <value>Longest</value>
+  </data>
+  <data name="ContextMenuLacingShortest" xml:space="preserve">
+    <value>Shortest</value>
+  </data>
 </root>
