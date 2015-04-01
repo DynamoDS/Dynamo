@@ -6,6 +6,7 @@ using System.Xml;
 using DSCoreNodesUI;
 using Dynamo.DSEngine;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 
 namespace Dynamo.Models.NodeLoaders
 {
@@ -38,18 +39,34 @@ namespace Dynamo.Models.NodeLoaders
             }
             else
             {
-                var xmlAttribute = nodeElement.Attributes["assembly"];
-                if (xmlAttribute != null)
-                {
-                    assembly = Uri.UnescapeDataString(xmlAttribute.Value);
-                }
-
                 string xmlSignature = nodeElement.Attributes["function"].Value;
 
                 string hintedSigniture =
                     libraryServices.FunctionSignatureFromFunctionSignatureHint(xmlSignature);
 
-                function = hintedSigniture ?? xmlSignature;
+                if (hintedSigniture != null)
+                {
+                    nodeElement.Attributes["nickname"].Value =
+                        libraryServices.NicknameFromFunctionSignatureHint(xmlSignature);
+                    function = hintedSigniture;
+
+                    // if the node needs additional parameters, add them here
+                    if (libraryServices.FunctionSignatureNeedsAdditionalAttributes(xmlSignature))
+                        libraryServices.AddAdditionalAttributesToNode(xmlSignature, nodeElement);
+
+                    if (libraryServices.FunctionSignatureNeedsAdditionalElements(xmlSignature))
+                        libraryServices.AddAdditionalElementsToNode(xmlSignature, nodeElement);
+                }
+                else
+                {
+                    function = xmlSignature;
+                }
+
+                var xmlAttribute = nodeElement.Attributes["assembly"];
+                if (xmlAttribute != null)
+                {
+                    assembly = Uri.UnescapeDataString(xmlAttribute.Value);
+                }
             }
 
             if (context == SaveContext.File && !string.IsNullOrEmpty(assembly))
@@ -70,6 +87,7 @@ namespace Dynamo.Models.NodeLoaders
             if (null == descriptor)
             {
                 var inputcount = DetermineFunctionInputCount(nodeElement);
+
                 return new DummyNode(
                     inputcount,
                     1,

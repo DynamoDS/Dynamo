@@ -26,6 +26,7 @@ using ProtoCore.AST.AssociativeAST;
 using VMDataBridge;
 
 using Color = System.Windows.Media.Color;
+using DynamoWatch3D.Properties;
 
 namespace Dynamo.Nodes
 {
@@ -132,7 +133,8 @@ namespace Dynamo.Nodes
 
     [NodeName("Watch 3D")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("Shows a dynamic preview of geometry.")]
+    [NodeDescription("Watch3DDescription",typeof(DynamoWatch3D.Properties.Resources))]
+    [NodeSearchTags("Watch3DSearchTags", typeof(DynamoWatch3D.Properties.Resources))]
     [AlsoKnownAs("Dynamo.Nodes.dyn3DPreview", "Dynamo.Nodes.3DPreview")]
     [IsDesignScriptCompatible]
     public class Watch3D : NodeModel, IWatchViewModel
@@ -157,8 +159,6 @@ namespace Dynamo.Nodes
         #region public properties
 
         public DelegateCommand GetBranchVisualizationCommand { get; set; }
-
-        public DelegateCommand CheckForLatestRenderCommand { get; set; }
 
         public DelegateCommand ToggleCanNavigateBackgroundCommand
         {
@@ -199,15 +199,15 @@ namespace Dynamo.Nodes
 
         public Watch3D()
         {
-            InPortData.Add(new PortData("", "Incoming geometry objects."));
-            OutPortData.Add(new PortData("", "Watch contents, passed through"));
+            InPortData.Add(new PortData("", Resources.Watch3DPortDataInputToolTip));
+            OutPortData.Add(new PortData("", Resources.Watch3DPortDataOutputToolTip));
 
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
 
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
-            CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
+
             WatchIsResizable = true;
 
             WatchWidth = 200;
@@ -334,28 +334,16 @@ namespace Dynamo.Nodes
             // No visualization update is required for this node type.
         }
 
-
         #region IWatchViewModel interface
 
         public void GetBranchVisualization(object parameters)
         {
-            Debug.WriteLine(string.Format("Requesting branch update for {0}", GUID));
             ViewModel.VisualizationManager.RequestBranchUpdate(this);
         }
 
         public bool CanGetBranchVisualization(object parameter)
         {
             return true;
-        }
-
-        private bool CanCheckForLatestRender(object obj)
-        {
-            return true;
-        }
-
-        private void CheckForLatestRender(object obj)
-        {
-            this.ViewModel.VisualizationManager.CheckIfLatestAndUpdate((long)obj);
         }
 
         #endregion

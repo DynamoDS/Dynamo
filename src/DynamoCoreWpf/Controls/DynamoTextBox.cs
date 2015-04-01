@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
+using System.Windows.Threading;
 using Dynamo.Controls;
-using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Search;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
-using DynCmd = Dynamo.Models.DynamoModel;
-using System.Windows.Controls.Primitives;
-using Dynamo.Core;
 using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Nodes
@@ -224,13 +221,14 @@ namespace Dynamo.Nodes
                         string propName = expr.ParentBinding.Path.Path;
                         nvm.DynamoViewModel.ExecuteCommand(
                             new DynamoModel.UpdateModelValueCommand(
+                                nodeViewModel.WorkspaceViewModel.Model.Guid,
                                 nvm.NodeModel.GUID, propName, Text));
                     }
                 }
 
                 if (OnChangeCommitted != null)
                     OnChangeCommitted();
-                
+
                 Pending = false;
             }
         }
@@ -344,6 +342,129 @@ namespace Dynamo.UI.Controls
         {
             get { return ((Side)GetValue(AttachmentSideProperty)); }
             set { SetValue(AttachmentSideProperty, value); }
+        }
+    }
+
+    public class LibraryToolTipPopup : Popup
+    {
+        private ToolTipWindow tooltip = new ToolTipWindow();
+        private DispatcherTimer dispatcherTimer = new DispatcherTimer();
+        private DispatcherTimer showTimer = new DispatcherTimer();
+        private object nextDataContext;
+        private DynamoView mainDynamoWindow;
+
+        public LibraryToolTipPopup()
+        {
+            this.Placement = PlacementMode.Custom;
+            this.AllowsTransparency = true;
+            this.CustomPopupPlacementCallback = PlacementCallback;
+            this.DataContext = null;
+            this.Child = tooltip;
+            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
+            this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
+            this.showTimer.Interval = new TimeSpan(0, 0, 0, 0, 60);
+            this.showTimer.Tick += OpenLibraryToolTipPopup;
+            this.Loaded += LoadMainDynamoWindow;
+        }
+
+        // We should load main window after Popup has been initialized.
+        // If we try to load it before, we will get null.
+        private void LoadMainDynamoWindow(object sender, RoutedEventArgs e)
+        {
+            mainDynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            if (mainDynamoWindow == null)
+                return;
+
+            // When Dynamo window goes behind another app, the tool-tip should be hidden right 
+            // away. We cannot use CloseLibraryToolTipPopup because it only hides the tool-tip 
+            // window after a pause.
+            mainDynamoWindow.Deactivated += (Sender, args) =>
+            {
+                this.DataContext = null;
+                IsOpen = false;
+            };
+        }
+
+        public void SetDataContext(object dataContext, bool closeImmediately = false)
+        {
+            // If Dynamo window is not active, we should not show as well as hide tooltip or do any other staff.
+            if (mainDynamoWindow == null || !mainDynamoWindow.IsActive) return;
+
+            if (dataContext == null)
+            {
+                if (closeImmediately)
+                {
+                    CloseLibraryToolTipPopup(null, null);
+                    return;
+                }
+                showTimer.Stop();
+                dispatcherTimer.Start();
+                return;
+            }
+            dispatcherTimer.Stop();
+            nextDataContext = dataContext;
+            showTimer.Start();
+        }
+
+        private void OpenLibraryToolTipPopup(object sender, EventArgs e)
+        {
+            this.DataContext = nextDataContext;
+            IsOpen = true;
+
+            // This line is needed to change position of Popup.
+            // As position changed PlacementCallback is called and
+            // Popup placed correctly.            
+            HorizontalOffset++;
+
+            // Moving tooltip back.
+            HorizontalOffset--;
+
+            showTimer.Stop();
+        }
+
+        private void CloseLibraryToolTipPopup(object sender, EventArgs e)
+        {
+            if (!this.IsMouseOver)
+            {
+                this.DataContext = null;
+                IsOpen = false;
+            }
+        }
+
+        private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
+        {
+            double gap = Configurations.ToolTipTargetGapInPixels;
+            var dynamoWindow = WpfUtilities.FindUpVisualTree<DynamoView>(this.PlacementTarget);
+            if (dynamoWindow == null)
+            {
+                SetDataContext(null, true);
+                return null;
+            }
+            Point targetLocation = this.PlacementTarget
+                .TransformToAncestor(dynamoWindow)
+                .Transform(new Point(0, 0));
+
+            // Count width.
+            double x = 0;
+            x = WpfUtilities.FindUpVisualTree<SearchView>(this.PlacementTarget).ActualWidth
+                + gap * 2 + targetLocation.X * (-1);
+
+            // Count height.
+            var availableHeight = dynamoWindow.ActualHeight - popup.Height
+                - (targetLocation.Y + Configurations.NodeButtonHeight);
+
+            double y = 0;
+            if (availableHeight < Configurations.BottomPanelHeight)
+                y = availableHeight - (Configurations.BottomPanelHeight + gap * 4);
+
+            return new CustomPopupPlacement[]
+            {
+                new CustomPopupPlacement()
+                {
+                    Point = new Point(x, y),
+                    PrimaryAxis = PopupPrimaryAxis.Horizontal
+                }
+            };
         }
     }
 }

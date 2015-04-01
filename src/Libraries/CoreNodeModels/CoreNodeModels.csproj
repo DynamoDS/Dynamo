@@ -44,13 +44,11 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DynamoConvert.cs" />
     <Compile Include="Input\SliderBase.cs" />
     <Compile Include="Input\Double.cs" />
     <Compile Include="Input\BaseTypes.cs" />
@@ -77,6 +75,16 @@
     <Compile Include="Logic\ScopedIf.cs" />
     <Compile Include="NumberRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
     <Compile Include="Selection.cs" />
     <Compile Include="Watch.cs" />
     <Compile Include="WatchImageCore.cs" />
@@ -99,11 +107,26 @@
       <Name>CoreNodes</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
+      <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
+      <Name>DynamoConversions</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
       <Name>VMDataBridge</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

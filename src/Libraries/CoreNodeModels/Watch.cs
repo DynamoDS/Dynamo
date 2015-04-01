@@ -3,22 +3,27 @@ using System.Collections.Generic;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Models;
-
 using ProtoCore.AST.AssociativeAST;
-
 using VMDataBridge;
+
 
 namespace Dynamo.Nodes
 {
     [NodeName("Watch")]
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
-    [NodeDescription("Visualize the output of node. ")]
-    [NodeSearchTags("print", "output", "display")]
+    [NodeDescription("WatchNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeSearchTags("WatchNodeSearchTags", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class Watch : NodeModel
     {
         public event Action<Object> EvaluationComplete;
         public new object CachedValue;
+
+        /// <summary>
+        ///     Has the Watch node been run once?  If not, the CachedValue
+        ///     is technically not accurate.
+        /// </summary>
+        public bool HasRunOnce { get; private set; }
 
         public Watch()
         {
@@ -30,6 +35,7 @@ namespace Dynamo.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             ShouldDisplayPreviewCore = false;
+            HasRunOnce = false;
         }
 
         protected override void OnBuilt()
@@ -47,6 +53,7 @@ namespace Dynamo.Nodes
         private void OnEvaluationComplete(object obj)
         {
             this.CachedValue = obj;
+            this.HasRunOnce = true;
 
             if (EvaluationComplete != null)
             {

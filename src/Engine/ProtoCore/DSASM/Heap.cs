@@ -160,35 +160,24 @@ namespace ProtoCore.DSASM
 
     public class StackValueComparer : IEqualityComparer<StackValue>
     {
-        private Core core;
+        private RuntimeCore runtimeCore;
 
-        public StackValueComparer(Core core)
+        public StackValueComparer(RuntimeCore runtimeCore)
         {
-            this.core = core;
+            this.runtimeCore = runtimeCore;
         }
 
         public bool Equals(StackValue x, StackValue y)
         {
-            return StackUtils.CompareStackValues(x, y, core, core);
+            return StackUtils.CompareStackValues(x, y, runtimeCore, runtimeCore);
         }
 
         public int GetHashCode(StackValue value)
         {
             if (value.IsString)
             {
-                HeapElement he = ArrayUtils.GetHeapElement(value, core);
-                int length = he.VisibleSize;
-
-                unchecked
-                {
-                    int hash = 0;
-                    int step = (length >> 5) + 1;
-                    for (int i = he.VisibleSize; i >= step; i -= step)
-                    {
-                        hash = (hash * 397) ^ he.Stack[i - 1].opdata.GetHashCode();
-                    }
-                    return hash;
-                }
+                string s = runtimeCore.Heap.GetString(value);
+                return s.GetHashCode();
             }
             else
             {
@@ -203,25 +192,83 @@ namespace ProtoCore.DSASM
         }
     }
 
+    /// <summary>
+    /// String table to store all DS strings. 
+    /// </summary>
+    internal class StringTable
+    {
+        private Dictionary<string, int> stringToPointerTable;
+        private Dictionary<int, string> pointerToStringTable;
+
+        internal StringTable()
+        {
+            stringToPointerTable = new Dictionary<string, int>();
+            pointerToStringTable = new Dictionary<int, string>();
+        }
+
+        /// <summary>
+        /// Add string to the string table. 
+        /// </summary>
+        /// <param name="pointer">The index of HeapElement that represents the string</param>
+        /// <param name="s"></param>
+        internal void AddString(int pointer, string s)
+        {
+            stringToPointerTable[s] = pointer;
+            pointerToStringTable[pointer] = s;
+        }
+
+        /// <summary>
+        /// Get string from the string table.
+        /// </summary>
+        /// <param name="pointer">The index of HeapElement that represents the string</param>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        internal bool TryGetString(int pointer, out string s)
+        {
+            return pointerToStringTable.TryGetValue(pointer, out s);
+        }
+
+        /// <summary>
+        /// Get the index of HeapElement that represents the string
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
+        internal bool TryGetPointer(string s, out int pointer)
+        {
+            return stringToPointerTable.TryGetValue(s, out pointer);
+        }
+
+        internal bool TryRemoveString(int pointer)
+        {
+            string stringToBeRemoved = null;
+            if (!pointerToStringTable.TryGetValue(pointer, out stringToBeRemoved))
+                return false;
+
+            pointerToStringTable.Remove(pointer);
+            stringToPointerTable.Remove(stringToBeRemoved);
+            return true;
+        }
+    }
+
     public class Heap
     {
         private readonly List<int> freeList = new List<int>();
         private readonly List<HeapElement> heapElements = new List<HeapElement>();
+        private HashSet<int> fixedHeapElements = new HashSet<int>(); 
+        private StringTable stringTable = new StringTable();
         private bool isGarbageCollecting = false;
 
         public Heap()
         {
         }
 
-        public StackValue AllocateString(string str)
-        {
-            var chs = str.Select(c => StackValue.BuildChar(c)).ToArray();
-            int index = AllocateInternal(chs);
-            var heapElement = heapElements[index];
-            heapElement.MetaData = new MetaData { type = (int)PrimitiveType.kTypeString};
-            return StackValue.BuildString(index);
-        }
-
+        /// <summary>
+        /// Allocate an array.
+        /// </summary>
+        /// <param name="values">Array elements whose indices are integer</param>
+        /// <param name="dict">Array elements whose indices are not integer</param>
+        /// <returns></returns>
         public StackValue AllocateArray(IEnumerable<StackValue> values, 
                                         Dictionary<StackValue, StackValue> dict = null)
         {
@@ -232,6 +279,12 @@ namespace ProtoCore.DSASM
             return StackValue.BuildArrayPointer(index);
         }
 
+        /// <summary>
+        /// Allocate an object pointer.
+        /// </summary>
+        /// <param name="values">Values of object properties</param>
+        /// <param name="metaData">Object type</param>
+        /// <returns></returns>
         public StackValue AllocatePointer(IEnumerable<StackValue> values, 
                                           MetaData metaData)
         {
@@ -241,6 +294,11 @@ namespace ProtoCore.DSASM
             return StackValue.BuildPointer(index, metaData);
         }
 
+        /// <summary>
+        /// Allocate an object pointer.
+        /// </summary>
+        /// <param name="values">Values of object properties</param>
+        /// <returns></returns>
         public StackValue AllocatePointer(IEnumerable<StackValue> values)
         {
             return AllocatePointer(
@@ -248,6 +306,12 @@ namespace ProtoCore.DSASM
                     new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
+        /// <summary>
+        /// Allocate an object pointer.
+        /// </summary>
+        /// <param name="size">The size of object properties.</param>
+        /// <param name="metadata">Object type</param>
+        /// <returns></returns>
         public StackValue AllocatePointer(int size, MetaData metadata)
         {    
             int index = AllocateInternal(size);
@@ -256,6 +320,11 @@ namespace ProtoCore.DSASM
             return StackValue.BuildPointer(index, metadata);
         }
 
+        /// <summary>
+        /// Allocate an object pointer.
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
         public StackValue AllocatePointer(int size)
         {
             return AllocatePointer(
@@ -263,6 +332,71 @@ namespace ProtoCore.DSASM
                     new MetaData { type = (int)PrimitiveType.kTypePointer });
         }
 
+        /// <summary>
+        /// Allocate a string, the string will be put in string table.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private int AllocateStringInternal(string str)
+        {
+            int index;
+            if (!stringTable.TryGetPointer(str, out index))
+            {
+                index = AllocateInternal(Enumerable.Empty<StackValue>());
+                stringTable.AddString(index, str);
+                heapElements[index].MetaData = new MetaData { type = (int)PrimitiveType.kTypeString};
+            }
+            return index;
+        }
+
+        /// <summary>
+        /// Allocate string constant. String constant won't be garbage collected.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public StackValue AllocateFixedString(string str)
+        {
+            int index = AllocateStringInternal(str);
+            fixedHeapElements.Add(index);
+            return StackValue.BuildString(index);
+        }
+
+        /// <summary>
+        /// Allocate string. 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public StackValue AllocateString(string str)
+        {
+            int index = AllocateStringInternal(str);
+            return StackValue.BuildString(index);
+        }
+
+        /// <summary>
+        /// Get string that pointer represents.
+        /// </summary>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
+        public string GetString(StackValue pointer)
+        {
+            if (!pointer.IsString)
+                return null;
+
+            int index = (int)pointer.opdata;
+            Validity.Assert(index >= 0 && index < heapElements.Count);
+
+            string s;
+            if (stringTable.TryGetString(index, out s))
+                return s;
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// Get HeapElement that pointer represents.
+        /// </summary>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
         public HeapElement GetHeapElement(StackValue pointer)
         {
             int index = (int)pointer.opdata;
@@ -370,7 +504,7 @@ namespace ProtoCore.DSASM
                 exe.rmem.Push(StackValue.BuildArrayDimension(0));
                 exe.rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
                 
-                ++exe.Core.FunctionCallDepth;
+                ++exe.RuntimeCore.FunctionCallDepth;
 
                 // TODO: Need to move IsExplicitCall to DebugProps and come up with a more elegant solution for this
                 // fix for IDE-963 - pratapa
@@ -380,7 +514,7 @@ namespace ProtoCore.DSASM
 
                 exe.IsExplicitCall = tempFlag;
 
-                --exe.Core.FunctionCallDepth;
+                --exe.RuntimeCore.FunctionCallDepth;
             }
         }
 
@@ -396,6 +530,11 @@ namespace ProtoCore.DSASM
                 // Mark
                 var count = heapElements.Count;
                 var markBits = new BitArray(count);
+                foreach (var index in fixedHeapElements)
+                {
+                    markBits.Set(index, true); 
+                }
+
                 var workingStack = new Stack<StackValue>(rootPointers);
                 while (workingStack.Any())
                 {
@@ -435,7 +574,11 @@ namespace ProtoCore.DSASM
                     }
 
                     var metaData = heapElements[i].MetaData;
-                    if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
+                    if (metaData.type == (int)PrimitiveType.kTypeString)
+                    {
+                        stringTable.TryRemoveString(i);
+                    }
+                    else if (metaData.type >= (int)PrimitiveType.kMaxPrimitives)
                     {
                         var objPointer = StackValue.BuildPointer(i, metaData);
                         GCDisposeObject(objPointer, exe);

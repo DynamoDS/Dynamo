@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 namespace DSCoreNodesUI
 {
     [NodeName("Legacy Node")]
-    [NodeDescription("This is an obsolete node")]
+    [NodeDescription("DummyNodeDescription",typeof(Dynamo.Properties.Resources))]
     [IsMetaNode]
     [IsVisibleInDynamoLibrary(false)]
     [NodeSearchable(false)]
@@ -26,8 +24,7 @@ namespace DSCoreNodesUI
             LegacyNodeName = "DSCoreNodesUI.DummyNode";
             LegacyAssembly = string.Empty;
             NodeNature = Nature.Unresolved;
-            Description = GetDescription(); 
-            
+            Description = GetDescription();
             ShouldDisplayPreviewCore = false;
         }
 
@@ -36,6 +33,7 @@ namespace DSCoreNodesUI
             InputCount = inputCount;
             OutputCount = outputCount;
             LegacyNodeName = legacyName;
+            NickName = legacyName;
             OriginalNodeContent = originalElement;
             LegacyAssembly = legacyAssembly;
             NodeNature = nodeNature;
@@ -44,6 +42,12 @@ namespace DSCoreNodesUI
             ShouldDisplayPreviewCore = false;
 
             UpdatePorts();
+
+            // Take the position from the old node (because a dummy node
+            // should always be created at the location of the old node).
+            var helper = new XmlElementHelper(originalElement);
+            X = helper.ReadDouble("x", 0.0);
+            Y = helper.ReadDouble("y", 0.0);
         }
 
         private void LoadNode(XmlNode nodeElement)
@@ -134,23 +138,20 @@ namespace DSCoreNodesUI
                 //instead of saving the dummy node.
                 if (OriginalNodeContent != null)
                 {
-                    XmlElement originalNode = nodeElement.OwnerDocument.CreateElement(OriginalNodeContent.Name);
+                    nodeElement.RemoveAll();
                     foreach (XmlAttribute attribute in OriginalNodeContent.Attributes)
-                        originalNode.SetAttribute(attribute.Name, attribute.Value);
+                        nodeElement.SetAttribute(attribute.Name, attribute.Value);
 
                     //overwrite the guid/x/y value of the original node.
-                    originalNode.SetAttribute("guid", nodeElement.GetAttribute("guid"));
-                    originalNode.SetAttribute("x", nodeElement.GetAttribute("x"));
-                    originalNode.SetAttribute("y", nodeElement.GetAttribute("y"));
+                    nodeElement.SetAttribute("guid", nodeElement.GetAttribute("guid"));
+                    nodeElement.SetAttribute("x", nodeElement.GetAttribute("x"));
+                    nodeElement.SetAttribute("y", nodeElement.GetAttribute("y"));
 
                     for (int i = 0; i < OriginalNodeContent.ChildNodes.Count; i++)
                     {
-                        XmlNode child =
-                            originalNode.OwnerDocument.ImportNode(OriginalNodeContent.ChildNodes[i], true);
-                        originalNode.AppendChild(child.CloneNode(true));
+                        XmlNode child = nodeElement.OwnerDocument.ImportNode(OriginalNodeContent.ChildNodes[i], true);
+                        nodeElement.AppendChild(child.CloneNode(true));
                     }
-
-                    nodeElement.ParentNode.ReplaceChild(originalNode, nodeElement);
                 }
                 else
                 {
@@ -164,6 +165,19 @@ namespace DSCoreNodesUI
         }
 
         #region SerializeCore/DeserializeCore
+
+        protected override XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
+        {
+            if (context == SaveContext.File && OriginalNodeContent != null)
+            {
+                XmlElement originalNode = xmlDocument.CreateElement(OriginalNodeContent.Name);
+                return originalNode;
+            }
+            else
+            {
+                return base.CreateElement(xmlDocument, context);
+            }
+        }
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {

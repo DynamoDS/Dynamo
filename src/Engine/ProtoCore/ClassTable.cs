@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Properties;
 using ProtoCore.Utils;
 using System.Linq;
 
@@ -141,104 +142,6 @@ namespace ProtoCore.DSASM
             return false;
         }
 
-        // classScope is a global context, it tells we are in which class's scope
-        // functionScope is telling us which function we are in. 
-        // 
-        // 1. Try to find if the target is a member function's local variable
-        //        classScope != kInvalidIndex && functionScope != kInvalidIndex;
-        // 
-        // 2. Try to find if the target is a member variable
-        //     2.1 In a member functions classScope != kInvalidIndex && functionScope != kInvalidIndex.
-        //         Returns member in derived class, or non-private member in base classes
-        // 
-        //     2.2 In a global functions classScope == kInvalidIndex && functionScope != kInvalidIndex.
-        //         Returns public member in derived class, or public member in base classes
-        // 
-        //     2.3 Otherwise, classScope == kInvalidIndex && functionScope == kInvalidIndex
-        //         Return public member in derived class, or public member in base classes 
-        public int GetSymbolIndex(string name, int classScope, int functionScope, int blockId, Core core, out bool hasThisSymbol, out ProtoCore.DSASM.AddressType addressType)
-        {
-            hasThisSymbol = false;
-            addressType = ProtoCore.DSASM.AddressType.Invalid;
-
-            if (symbols == null)
-            {
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            }
-
-            IEnumerable<SymbolNode> allSymbols = symbols.GetNodeForName(name);
-            if (allSymbols == null)
-            {                
-                return ProtoCore.DSASM.Constants.kInvalidIndex;
-            }
-
-            int myself = typeSystem.classTable.IndexOf(this.name);
-            bool isInMemberFunctionContext = (classScope == myself) && (functionScope != ProtoCore.DSASM.Constants.kInvalidIndex);
-            bool isInStaticFunction = isInMemberFunctionContext &&  (vtable.procList[functionScope].isStatic);
-
-            // Try for member function variables
-            var blocks = core.GetAncestorBlockIdsOfBlock(blockId);
-            blocks.Insert(0, blockId);
-
-            Dictionary<int, SymbolNode> symbolOfBlockScope = new Dictionary<int, SymbolNode>();
-            foreach (var memvar in allSymbols)
-            {
-                if ((isInMemberFunctionContext) && (memvar.functionIndex == functionScope))
-                {
-                    symbolOfBlockScope[memvar.codeBlockId] = memvar;
-                }
-            }
-            if (symbolOfBlockScope.Count > 0)
-            {
-                foreach (var blockid in blocks)
-                {
-                    if (symbolOfBlockScope.ContainsKey(blockid))
-                    {
-                        hasThisSymbol = true;
-                        addressType = AddressType.VarIndex;
-                        return symbolOfBlockScope[blockid].symbolTableIndex;
-                    }
-                }
-            }
-
-            // Try for member variables. 
-            var candidates = new List<SymbolNode>();
-            foreach (var memvar in allSymbols)
-            {
-                if (memvar.functionIndex == ProtoCore.DSASM.Constants.kGlobalScope)
-                {
-                    candidates.Add(memvar);
-                }
-            }
-            // Sort candidates descending based on their class scopes so that
-            // we can search member variable in reverse order of hierarchy tree.
-            candidates.Sort((lhs, rhs) => rhs.classScope.CompareTo(lhs.classScope));
-            hasThisSymbol = candidates.Count > 0;
-
-            foreach (var symbol in candidates)
-            {
-                bool isAccessible = false;
-                if (isInMemberFunctionContext)
-                {
-                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.Compiler.AccessSpecifier.kPrivate);
-                    if (isInStaticFunction)
-                        isAccessible = isAccessible && symbol.isStatic;
-                }
-                else
-                {
-                    isAccessible = symbol.access == ProtoCore.Compiler.AccessSpecifier.kPublic;
-                }
-
-                if (isAccessible)
-                {
-                    addressType = symbol.isStatic ? AddressType.StaticMemVarIndex : AddressType.MemVarIndex;
-                    return symbol.symbolTableIndex;
-                }
-            }
-
-            return Constants.kInvalidIndex;
-        }
-
 
         public int GetFirstVisibleSymbolNoAccessCheck(string name)
         {
@@ -284,7 +187,7 @@ namespace ProtoCore.DSASM
 
                 if (classScope == ProtoCore.DSASM.Constants.kInvalidIndex)
                 {
-                    isAccessible = (procNode.access == Compiler.AccessSpecifier.kPublic);
+                    isAccessible = (procNode.access == CompilerDefinitions.AccessSpecifier.kPublic);
                 }
                 else if (classScope == myClassIndex) 
                 {
@@ -292,11 +195,11 @@ namespace ProtoCore.DSASM
                 }
                 else if (typeSystem.classTable.ClassNodes[classScope].IsMyBase(myClassIndex))
                 {
-                    isAccessible = (procNode.access != Compiler.AccessSpecifier.kPrivate);
+                    isAccessible = (procNode.access != CompilerDefinitions.AccessSpecifier.kPrivate);
                 }
                 else
                 {
-                    isAccessible = (procNode.access == Compiler.AccessSpecifier.kPublic);
+                    isAccessible = (procNode.access == CompilerDefinitions.AccessSpecifier.kPublic);
                 }
 
                 return procNode;
@@ -651,7 +554,7 @@ namespace ProtoCore.DSASM
                 var symbols = symbolTable.GetAllSymbols(name);
                 if (symbols.Count > 1)
                 {
-                    string message = string.Format(StringConstants.kMultipleSymbolFound, name, "");
+                    string message = string.Format(Resources.kMultipleSymbolFound, name, "");
                     foreach (var symbol in symbols)
                     {
                         message += ", " + symbol.FullName;

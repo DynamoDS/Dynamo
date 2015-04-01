@@ -17,7 +17,7 @@ namespace Dynamo.Tests
         {
             get
             {
-                return Path.Combine(GetTestDirectory(), "core", "scopednode"); 
+                return Path.Combine(TestDirectory, "core", "scopednode"); 
                 
             }
         }

@@ -1028,6 +1028,25 @@ class VisibilityAttribute
         }
 
         [Test]
+        public void TestStringForloop()
+        {
+            string code = 
+@"
+r = [Imperative]
+{
+    s = ""foo"";
+    for (x in ""bar"")
+    {
+         s  = s + x;
+    }
+    return = s;
+}
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", "foobar");
+        }
+
+        [Test]
         public void TestLocalKeyword01()
         {
             string code =

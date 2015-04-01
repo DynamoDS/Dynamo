@@ -84,9 +84,9 @@ Hydrogen<out Node codeBlockNode>
 
   
                            (. if (la.val == "if")
-                                 SynErr("'"+la.val+ @"' statement can only be used in imperative language block, consider using an inline conditional instead?"); .)
+                                 SynErr(String.Format(Resources.UseInlineConditional, la.val)); .)
                            (. if ((la.val == "for")||(la.val == "while"))
-                                 SynErr("'"+la.val+ @"' statement can only be used in imperative language block."); .)
+                                 SynErr(String.Format(Resources.ValidForImperativeBlockOnly, la.val)); .)
                            (. 
                                 codeBlockNode = codeblock;
 
@@ -121,7 +121,7 @@ Import_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         [kw_prefix ident] 
                             (. 
                                 if (la.kind != _endline)
-                                   SynErr("';' is expected."); 
+                                   SynErr(Resources.SemiColonExpected);
                             .)
         endline
     (.
@@ -159,7 +159,7 @@ Import_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 
 //------------------------------------------------------------------------
 Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>      
-=  SYNC                     (. if (!IsFullClosure()) SynErr(@"')' expected - Imcomplete Closure"); .)
+=  SYNC                     (. if (!IsFullClosure()) SynErr(Resources.CloseBracketExpected); .)
                             (. node = null; .)
 (
 	IF(IsNonAssignmentStatement())
@@ -183,7 +183,7 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             kw_break 
                 (. 
                     if (la.val != ";")
-                        SynErr("';' is expected.");  
+                        SynErr(Resources.SemiColonExpected);  
                 .)
             endline
         )      (. node = new ProtoCore.AST.AssociativeAST.BreakNode(); .)
@@ -192,7 +192,7 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             kw_continue 
                 (. 
                     if (la.val != ";")
-                        SynErr("';' is expected.");  
+                        SynErr(Resources.SemiColonExpected); 
                 .)
             endline
         )   (. node = new ProtoCore.AST.AssociativeAST.ContinueNode(); .)
@@ -209,7 +209,7 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             (
                 (. 
                     if (la.val != ";")
-                        SynErr("';' is expected.");  
+                        SynErr(Resources.SemiColonExpected);
                 .)
                 endline   
             )      
@@ -226,12 +226,12 @@ Associative_ThrowStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                 (. throwNode.expression = expression; .)
                                 (. 
                                     if (la.val != ";")
-                                        SynErr("';' is expected.");  
+                                        SynErr(Resources.SemiColonExpected);  
                                 .)
         
                                 (. 
                                     if (la.val != ";")
-                                        SynErr("';' is expected.");  
+                                        SynErr(Resources.SemiColonExpected); 
                                 .)
     endline
                                 (. node = throwNode; .)
@@ -246,9 +246,9 @@ Associative_StatementList<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode
 }    
     (.         
         if (la.val == "if")
-            SynErr("'"+la.val+ @"' statement can only be used in imperative language block, consider using inline conditional instead?"); 
+            SynErr(String.Format(Resources.UseInlineConditional, la.val)); 
         if ((la.val == "for")||(la.val == "while"))
-            SynErr("'"+la.val+ @"' statement can only be used in imperative language block. "); 
+             SynErr(String.Format(Resources.ValidForImperativeBlockOnly, la.val));
     .)
 .
 
@@ -261,7 +261,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                                                 (. isInClass = true;
                                                     if (IsKeyWord(t.val, true))
                                                     {
-                                                        errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                                        errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                                     }
                                                 .)
     [
@@ -280,7 +280,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                 Associative_AttributeDeclaration<out attributes>
             ]
             
-                                               (. ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic; .)
+                                               (. ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic; .)
             [
                 Associative_AccessSpecifier<out access>
             ]
@@ -315,7 +315,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
 
                                                 (. 
                                                    if (la.val != ";")
-                                                       SynErr("';' is expected.");  
+                                                       SynErr(Resources.SemiColonExpected);  
                                                 .)
                                                 endline
                                                 (. NodeUtils.SetNodeEndLocation(varnode, t); .)
@@ -351,7 +351,7 @@ Associative_LanguageBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             }
                                             else {
                                                 langblock.codeblock.language = ProtoCore.Language.kInvalid;
-                                                errors.SemErr(t.line, t.col, String.Format("\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?", t.val));
+                                                errors.SemErr(t.line, t.col, String.Format(Resources.InvalidLanguageBlockIdentifier, t.val));
                                             }
                                         .)
     {
@@ -423,7 +423,7 @@ Associative_LanguageBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             (. node = langblock; .)
 .       
 
-Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.Compiler.AccessSpecifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
+Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessSpecifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
 =                           (.
                                 ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(); ;                                 
                                 string methodName;  
@@ -461,7 +461,7 @@ Associative_BaseConstructorCall<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                     (. 
                                        if (la.val != "base")
                                        {
-                                           SynErr("'base' is expected here to call base constructor.");  
+                                           SynErr(Resources.BaseIsExpectedToCallBaseConstructor); 
                                        }
                                        else
                                        {
@@ -489,18 +489,18 @@ Associative_ExternalLibraryReference<out string libname>
 .
 
 //------------------------------------------------------------------------
-Associative_AccessSpecifier<out ProtoCore.Compiler.AccessSpecifier access>
-=                   (. access = ProtoCore.Compiler.AccessSpecifier.kPublic; .)
+Associative_AccessSpecifier<out ProtoCore.CompilerDefinitions.AccessSpecifier access>
+=                   (. access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic; .)
     (
         "public"        
         |
-        "private"       (. access = ProtoCore.Compiler.AccessSpecifier.kPrivate; .)
+        "private"       (. access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPrivate; .)
         |
-        "protected"     (. access = ProtoCore.Compiler.AccessSpecifier.kProtected; .)
+        "protected"     (. access = ProtoCore.CompilerDefinitions.AccessSpecifier.kProtected; .)
     )
 .
 
-Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic, bool isStatic = false.>
+Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, bool isStatic = false.>
 =                           
                             (. 
                                 ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(); 
@@ -564,7 +564,7 @@ Associative_MethodSignature<out string methodName, out ProtoCore.AST.Associative
 ident                           (. methodName = t.val; .)
                                 (.  if (IsKeyWord(t.val, true))
                                     {
-                                        errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                        errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                     }
                                     ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature = null;
                                     returnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank);
@@ -592,7 +592,7 @@ Associative_CtorSignature<out string ctorName, out ProtoCore.AST.AssociativeAST.
     ident                       (. ctorName = t.val; .)
                                 (.  if (IsKeyWord(ctorName, true))
                                     {
-                                        errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, can't be used as constructor name", t.val));
+                                         errors.SemErr(t.line, t.col, String.Format(Resources.keywordCannotBeUsedAsConstructorName, t.val));
                                     }
                                 .)
 ]
@@ -632,7 +632,7 @@ Associative_ArgumentSignatureDefinition<out ProtoCore.AST.AssociativeAST.Associa
                                                 (. argumentSign = argumentSignature; .)
 .
 
-Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
+Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -651,7 +651,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
         ident                       (. 
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
                                         NodeUtils.SetNodeLocation(varDeclNode, t);
                                         tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
@@ -718,7 +718,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
 
 .
 
-Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic>    
+Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -731,7 +731,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
         ident                       (.
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
                                         tNode = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
                                         NodeUtils.SetNodeLocation(tNode, t);
@@ -775,7 +775,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
 .
 
 
-Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.Compiler.AccessSpecifier access = ProtoCore.Compiler.AccessSpecifier.kPublic>	
+Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic>	
 =
     Associative_ArgDecl<out node>    (. ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = node as ProtoCore.AST.AssociativeAST.VarDeclNode; .)
     '=' 
@@ -866,7 +866,7 @@ Associative_FunctionalMethodBodySingleLine<out ProtoCore.AST.AssociativeAST.Asso
 
                                         (. 
                                             if (la.val != ";")
-                                                SynErr("';' is expected.");  
+                                                SynErr(Resources.SemiColonExpected);  
                                         .)
     endline
 .
@@ -897,7 +897,7 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
             ident           (.  
                                 if (IsKeyWord(t.val, true))
                                 {
-                                    errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                    errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                 }
                                 var typedVar = new ProtoCore.AST.AssociativeAST.TypedIdentifierNode();
                                 typedVar.Name = typedVar.Value = t.val;
@@ -958,8 +958,33 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
 .
 */
 
+//-----------------------------------------------------------------------------------------------------
+TypedIdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+(
+		ident
+		(. node = new IdentifierNode(t.val); .)
+		
+			{
+				'.'
+				(. ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null; .)
+				ident
+				(. 
+					rnode = new IdentifierNode(t.val);
+            
+					ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+					bnode.LeftNode = node;
+					bnode.Optr = Operator.dot;
+					bnode.RightNode = rnode;
+					node = bnode;
+					NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode); 
+				.)
+			}
+		
+ ) 
+ .   
 
-
+//-----------------------------------------------------------------------------------------------------
 Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =                           (. node = null; .)
 (
@@ -968,7 +993,7 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
         ident           (.  
                             if (IsKeyWord(t.val, true))
                             {
-                                errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                             }
                             var typedVar = new ProtoCore.AST.AssociativeAST.TypedIdentifierNode();
                             typedVar.Name = typedVar.Value = t.val;
@@ -1027,7 +1052,7 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
         ident       (.  
                             if (IsKeyWord(t.val, true))
                             {
-                                errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                             }
                             var identNode = new ProtoCore.AST.AssociativeAST.IdentifierNode();
                             identNode.Name = identNode.Value = t.val;
@@ -1047,7 +1072,7 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
         ident           (.  
                             if (IsKeyWord(t.val, true))
                             {
-                                errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                             }
                             var typedVar = new ProtoCore.AST.AssociativeAST.TypedIdentifierNode();
                             typedVar.Name = typedVar.Value = t.val;
@@ -1055,21 +1080,41 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
                         .)
         ':'
 
-        ident
-                        (. 
-                            int type = core.TypeSystem.GetType(t.val); 
-                            if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
-                            {
-                                var unknownType = new ProtoCore.Type();
-                                unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-                                unknownType.Name = t.val; 
-                                typedVar.datatype = unknownType;
-                            }
-                            else
-                            {
-                                typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
-                            }
-                        .)
+
+            (. 
+                string strIdent = string.Empty;
+				int type = ProtoCore.DSASM.Constants.kInvalidIndex;
+			.)
+				
+				(IF (IsIdentList())
+				(
+					TypedIdentifierList<out node>
+										(.	strIdent = node.ToString(); .)
+				)
+				|
+				(
+					ident
+							(. strIdent = t.val; .)
+							
+				)
+				)
+				(.
+						type = core.TypeSystem.GetType(strIdent);
+						typedVar.TypeAlias = strIdent;
+						if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
+						{
+							var unknownType = new ProtoCore.Type();
+							unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
+							unknownType.Name = strIdent; 
+							typedVar.datatype = unknownType;
+						}
+						else
+						{
+							typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+						}
+				.)		
+				
+	
 
         [                               
                         (. var datatype = typedVar.datatype; .)
@@ -1132,7 +1177,7 @@ Associative_NonAssignmentStatement<out ProtoCore.AST.AssociativeAST.AssociativeN
                     
                     (. 
                         if (la.val != ";")
-                            SynErr("';' is expected.");  
+                            SynErr(Resources.SemiColonExpected);  
                     .)
 		endline				
 					(. NodeUtils.SetNodeEndLocation(node, t); .)
@@ -1181,7 +1226,7 @@ Associative_FunctionCallStatement<out ProtoCore.AST.AssociativeAST.AssociativeNo
                     
                     (. 
                         if (la.val != ";")
-                            SynErr("';' is expected.");  
+                            SynErr(Resources.SemiColonExpected);  
                     .)
 		endline				
 					(. NodeUtils.SetNodeEndLocation(node, t); .)
@@ -1286,7 +1331,7 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                         Associative_Expression<out rightNode> 
                                 (.
                                     if (la.val == "=") 
-                                        SynErr("Syntax Error: invalid symbol '" + la.val + "'. (Did you mean to use Modifier Stack \" => \")"); 
+                                        SynErr(String.Format(Resources.InvalidSymbol, la.val));
 
                                     ProtoCore.AST.AssociativeAST.IdentifierNode identifier = null;
                                 .)
@@ -1310,7 +1355,7 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
 
                                 (. 
                                     if (la.val != ";")
-                                        SynErr("';' is expected.");  
+                                        SynErr(Resources.SemiColonExpected); 
                                 .)
 
                         SYNC endline (. NodeUtils.SetNodeEndLocation(elementNode, t); .)
@@ -1334,7 +1379,7 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                             Associative_Expression<out rightNode>
                             (.
                                     if (la.val == "=") 
-                                        SynErr("Syntax Error: invalid symbol '" + la.val + "'. (Did you mean to use Modifier Stack \" => \")"); 
+                                        SynErr(String.Format(Resources.InvalidSymbol, la.val));
 
                                     identifier = null;
                             .)
@@ -1368,7 +1413,7 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
 
                                 (. 
                                     if (la.val != ";")
-                                        SynErr("';' is expected.");  
+                                        SynErr(Resources.SemiColonExpected); 
                                 .)
 
                             SYNC endline (. NodeUtils.SetNodeEndLocation(elementNode, t); .)
@@ -1414,7 +1459,7 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
 
                                 (. 
                                     if (la.kind != _endline)
-                                       SynErr("';' is expected."); 
+                                       SynErr(Resources.SemiColonExpected);
                                 .)
                     endline				
                                 (. NodeUtils.SetNodeEndLocation(expressionNode, t); node = expressionNode; .)
@@ -1443,7 +1488,7 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
         )
         |
         (
-            (. SynErr("';' is expected"); .)
+            (. SynErr(Resources.SemiColonExpected); .)
         )
     )
 )
@@ -1673,7 +1718,7 @@ Associative_CatchFilter<out ProtoCore.AST.AssociativeAST.CatchFilterNode catchFi
                                     (. 
                                         if (IsKeyWord(t.val, true))
                                         {
-                                            errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                                         }
 
                                         catchFilterNode.var =  ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
@@ -1978,7 +2023,7 @@ Associative_Char<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     char
             (. 
                 if (t.val.Length <= 2) {
-                    errors.SemErr(t.line, t.col, "Empty character literal.");
+                    errors.SemErr(t.line, t.col, Resources.EmptyCharacterLiteral);
                 }
 
                 node = new ProtoCore.AST.AssociativeAST.CharNode() 
@@ -2060,12 +2105,12 @@ Associative_Ident<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     ident   (. 
                 if (!disableKwCheck && IsKeyWord(t.val, false, false))
                 {
-                    errors.SemErr(t.line, t.col, String.Format("\"{0}\" is a keyword, identifier expected", t.val));
+                    errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
                 }
                 int ltype = (0 == String.Compare(t.val, "return")) ? (int)ProtoCore.PrimitiveType.kTypeReturn : (int)ProtoCore.PrimitiveType.kTypeVar;
                 if (ltype == (int)ProtoCore.PrimitiveType.kTypeReturn && la.val != "=")
                 {
-                    SynErr("Return statement is invalid. Do you mean: return = " + la.val + " ?"); 
+                     SynErr(String.Format(Resources.InvalidReturnStatement, la.val));
                 }
                 
                 var = ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val, (ProtoCore.PrimitiveType)ltype);
@@ -2130,7 +2175,7 @@ Associative_NameReference<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         (                               (.
                                             if (isLeft)
                                             {
-                                               errors.SemErr(la.line, la.col, "function call is not allowed at the left hand side of an assignment");
+                                               errors.SemErr(la.line, la.col, Resources.FunctionCallCannotBeAtLeftSide);
                                             } 
                                         .)
             Associative_FunctionCall<out node>  
@@ -2498,21 +2543,7 @@ Associative_IdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                                 string rhsName = null;
                                                 ProtoCore.AST.AssociativeAST.ExprListNode dimList = null;
                                                 int dim = 0;
-                                                if (rnode is ProtoCore.AST.AssociativeAST.IdentifierNode)
-                                                {
-                                                    rhsName = rnode.Name;
-                                                    ProtoCore.AST.AssociativeAST.IdentifierNode rhsINode = rnode as ProtoCore.AST.AssociativeAST.IdentifierNode;
-                                                    if (rhsINode.ArrayDimensions != null)
-                                                    {
-                                                        dimList = ProtoCore.Utils.CoreUtils.BuildArrayExprList(rhsINode.ArrayDimensions);
-                                                        dim = dimList.list.Count;
-                                                    }
-                                                    else
-                                                    {
-                                                        dimList = new ProtoCore.AST.AssociativeAST.ExprListNode();
-                                                    }
-                                                }
-                                                else if (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
+                                                if (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
                                                 {
                                                     ProtoCore.AST.AssociativeAST.FunctionCallNode rhsFNode = rnode as ProtoCore.AST.AssociativeAST.FunctionCallNode;
                                                     node = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(node, rhsFNode, core);
@@ -2705,7 +2736,7 @@ Associative_FunctionCall<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 
 Associative_Arguments<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodes.>
 =                                           
-    '('										(. if (!IsFullClosure()) SynErr(@"')' expected - Imcomplete Closure"); .)
+    '('										(. if (!IsFullClosure()) SynErr(Resources.CloseBracketExpected); .)
                                             (. nodes = new List<ProtoCore.AST.AssociativeAST.AssociativeNode>(); .)
         [
                                             (. ProtoCore.AST.AssociativeAST.AssociativeNode t; .)

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
-
+using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -14,6 +16,7 @@ using Dynamo.Utilities;
 
 using System.Windows.Input;
 using Dynamo.Core;
+using Dynamo.Wpf.ViewModels;
 
 using Function = Dynamo.Nodes.Function;
 
@@ -178,6 +181,7 @@ namespace Dynamo.ViewModels
         public bool HasUnsavedChanges
         {
             get { return Model.HasUnsavedChanges; }
+            set { Model.HasUnsavedChanges = value; }
         }
 
         public ObservableCollection<Watch3DFullscreenViewModel> Watch3DViewModels
@@ -236,6 +240,8 @@ namespace Dynamo.ViewModels
 
         public Action FindNodesFromElements { get; set; }
 
+        public RunSettingsViewModel RunSettingsViewModel { get; protected set; }
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -277,6 +283,14 @@ namespace Dynamo.ViewModels
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
+        }
+
+        void RunSettingsViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // If any property changes on the run settings object
+            // Raise a property change notification for the RunSettingsViewModel
+            // property
+            RaisePropertyChanged("RunSettingsViewModel");
         }
 
         void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -337,7 +351,8 @@ namespace Dynamo.ViewModels
                             var node = item as NodeModel;
 
                             var nodeViewModel = new NodeViewModel(this, node);
-                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;                          
+                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;  
+                            nodeViewModel.NodeLogic.Modified +=OnNodeModified;
                             _nodes.Add(nodeViewModel);
                             Errors.Add(nodeViewModel.ErrorBubble);
                             nodeViewModel.UpdateBubbleContent();
@@ -358,9 +373,28 @@ namespace Dynamo.ViewModels
                     }
                     break;
             }
+
+            if (RunSettingsViewModel == null) return;
+
+            CheckAndSetPeriodicRunCapability();
         }
 
-        
+        /// <summary>
+        /// This is required here to compute the nodes delta state.
+        /// This is overriden in HomeWorkspaceViewModel
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public virtual void OnNodeModified(NodeModel obj)
+        {
+            
+        }
+
+        internal void CheckAndSetPeriodicRunCapability()
+        {
+            var periodUpdateAvailable = Model.Nodes.Any(n => n.CanUpdatePeriodically);
+            RunSettingsViewModel.ToggleRunTypeEnabled(RunType.Periodic, periodUpdateAvailable);
+        }
+
         /// <summary>
         /// Handles the port snapping on Mouse Enter.
         /// </summary>
@@ -868,7 +902,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                DynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
 
             try
@@ -887,7 +921,7 @@ namespace Dynamo.ViewModels
             }
             catch
             {
-                DynamoViewModel.Model.Logger.Log("No node could be found with that Id.");
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
         }
 
@@ -966,8 +1000,9 @@ namespace Dynamo.ViewModels
             if (!args.Success)
                 return;
 
-            DynamoViewModel.Model.CustomNodeManager.Collapse(
-                selectedNodes, Model, DynamoModel.IsTestMode, args);
+            DynamoViewModel.Model.AddCustomNodeWorkspace(
+                DynamoViewModel.Model.CustomNodeManager.Collapse(
+                    selectedNodes, Model, DynamoModel.IsTestMode, args));
         }
 
         internal void Loaded()

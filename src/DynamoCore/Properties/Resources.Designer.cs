@@ -286,6 +286,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom node definition is not loaded!.
+        /// </summary>
+        public static string CustomNodeNotLoaded {
+            get {
+                return ResourceManager.GetString("CustomNodeNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default value.
+        /// </summary>
+        public static string DefaultValue {
+            get {
+                return ResourceManager.GetString("DefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (disabled).
+        /// </summary>
+        public static string DefaultValueDisabled {
+            get {
+                return ResourceManager.GetString("DefaultValueDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely &quot;having great difficulties pulling itself together. It is &quot;recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
         ///
         ///If you don&apos;t mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed..
@@ -371,9 +398,9 @@ namespace Dynamo.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Evaluation completed in {0}.
         /// </summary>
-        public static string EvaluationComleted {
+        public static string EvaluationCompleted {
             get {
-                return ResourceManager.GetString("EvaluationComleted", resourceCulture);
+                return ResourceManager.GetString("EvaluationCompleted", resourceCulture);
             }
         }
         
@@ -533,6 +560,33 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ACTIONS.
+        /// </summary>
+        public static string HeaderAction {
+            get {
+                return ResourceManager.GetString("HeaderAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CREATE.
+        /// </summary>
+        public static string HeaderCreate {
+            get {
+                return ResourceManager.GetString("HeaderCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to QUERY.
+        /// </summary>
+        public static string HeaderQuery {
+            get {
+                return ResourceManager.GetString("HeaderQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No identifiers found..
         /// </summary>
         public static string IdentifiersNotFound {
@@ -551,11 +605,38 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This is the incorrectly formatted library name:.
+        /// </summary>
+        public static string IncorrectlyFormattedNodeLibraryDisplay {
+            get {
+                return ResourceManager.GetString("IncorrectlyFormattedNodeLibraryDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!.
+        /// </summary>
+        public static string IncorrectlyFormattedNodeLibraryWarning {
+            get {
+                return ResourceManager.GetString("IncorrectlyFormattedNodeLibraryWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your file &apos;{0}&apos; was created in future version &apos;{1}&apos; and may not open correctly in your installed version of Dynamo &apos;{2}&apos;.
         /// </summary>
         public static string IncorrectVersionToOpenFile {
             get {
                 return ResourceManager.GetString("IncorrectVersionToOpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INPUT.
+        /// </summary>
+        public static string InputLabel {
+            get {
+                return ResourceManager.GetString("InputLabel", resourceCulture);
             }
         }
         
@@ -641,11 +722,38 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Locate in Disk...
+        /// </summary>
+        public static string LocateInDisk {
+            get {
+                return ResourceManager.GetString("LocateInDisk", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} contains a package with a malformed header.  Ignoring it..
         /// </summary>
         public static string MalformedHeaderPackage {
             get {
                 return ResourceManager.GetString("MalformedHeaderPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SHOW MORE ({0}).
+        /// </summary>
+        public static string MoreButtonTextFormat {
+            get {
+                return ResourceManager.GetString("MoreButtonTextFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move.
+        /// </summary>
+        public static string MoveLabel {
+            get {
+                return ResourceManager.GetString("MoveLabel", resourceCulture);
             }
         }
         
@@ -668,11 +776,38 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No description available.
+        /// </summary>
+        public static string NoDescriptionAvailable {
+            get {
+                return ResourceManager.GetString("NoDescriptionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} contains a package without a header.  Ignoring it..
         /// </summary>
         public static string NoHeaderPackage {
             get {
                 return ResourceManager.GetString("NoHeaderPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No matches found.
+        /// </summary>
+        public static string NoMatchesFound {
+            get {
+                return ResourceManager.GetString("NoMatchesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing is selected..
+        /// </summary>
+        public static string NothingIsSelectedWarning {
+            get {
+                return ResourceManager.GetString("NothingIsSelectedWarning", resourceCulture);
             }
         }
         
@@ -781,6 +916,15 @@ namespace Dynamo.Properties {
         public static string OpenWorkspaceError {
             get {
                 return ResourceManager.GetString("OpenWorkspaceError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OUTPUT.
+        /// </summary>
+        public static string OutputLabel {
+            get {
+                return ResourceManager.GetString("OutputLabel", resourceCulture);
             }
         }
         
@@ -938,6 +1082,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string RemoveLabel {
+            get {
+                return ResourceManager.GetString("RemoveLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requesting version update info....
         /// </summary>
         public static string RequestingVersionUpdate {
@@ -947,11 +1100,56 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run whenever an input to the graph is updated..
+        /// </summary>
+        public static string RunTypeToolTipAutomatically {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run when you click the Run button..
+        /// </summary>
+        public static string RunTypeToolTipManually {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run Periodic is only available when there are nodes in the graph that support periodic update..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyDisabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run at the specified interval..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyEnabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Saving {0} ....
         /// </summary>
         public static string SavingInProgress {
             get {
                 return ResourceManager.GetString("SavingInProgress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SEARCH LIBRARY.
+        /// </summary>
+        public static string SearchTextBlockText {
+            get {
+                return ResourceManager.GetString("SearchTextBlockText", resourceCulture);
             }
         }
         
@@ -1073,6 +1271,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Top Result.
+        /// </summary>
+        public static string TopResult {
+            get {
+                return ResourceManager.GetString("TopResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unable to create instance of custom node with id: \&quot;.
         /// </summary>
         public static string UnableToCreateCustomNodeID {
@@ -1186,6 +1393,15 @@ namespace Dynamo.Properties {
         public static string WarningInvalidInput {
             get {
                 return ResourceManager.GetString("WarningInvalidInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your code goes here.
+        /// </summary>
+        public static string WatermarkLabelText {
+            get {
+                return ResourceManager.GetString("WatermarkLabelText", resourceCulture);
             }
         }
         

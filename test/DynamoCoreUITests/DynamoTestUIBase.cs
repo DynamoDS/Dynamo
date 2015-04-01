@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Windows.Threading;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
-
-using DynamoUtilities;
-
+using DynamoShapeManager;
 using NUnit.Framework;
+using TestServices;
 
 namespace DynamoCoreUITests
 {
     public class DynamoTestUIBase
     {
+        private Preloader preloader;
+
         protected DynamoViewModel ViewModel { get; set; }
         protected DynamoView View { get; set; }
         protected DynamoModel Model { get; set; }
@@ -31,21 +32,37 @@ namespace DynamoCoreUITests
         [SetUp]
         public virtual void Start()
         {
-            DynamoPathManager.Instance.InitializeCore(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+            preloader.Preload();
             CreateTemporaryFolder();
 
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
-            Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
                 {
-                    StartInTestMode = true
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
+            Model = DynamoModel.Start(
+                new DynamoModel.DefaultStartConfiguration()
+                {
+                    StartInTestMode = true,
+                    PathResolver = pathResolver,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             ViewModel = DynamoViewModel.Start(
@@ -82,8 +99,7 @@ namespace DynamoCoreUITests
 
             View = null;
             Model = null;
-
-            GC.Collect();
+            preloader = null;
 
             try
             {
@@ -102,6 +118,11 @@ namespace DynamoCoreUITests
             // Fix for COM exception on close
             // See: http://stackoverflow.com/questions/6232867/com-exceptions-on-exit-with-wpf 
             //Dispatcher.CurrentDispatcher.InvokeShutdown();
+        }
+
+        protected virtual void GetLibrariesToPreload(List<string> libraries)
+        {
+            // Nothing here...
         }
 
         #region Utility functions

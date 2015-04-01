@@ -2,30 +2,53 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
-using System.Globalization;
+
 using Dynamo.Core;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Nodes;
+using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+
 using ProtoCore.Namespace;
-using String = System.String;
+
 using Utils = Dynamo.Nodes.Utilities;
-using ModelModificationUndoHelper = Dynamo.Core.UndoRedoRecorder.ModelModificationUndoHelper;
 
 namespace Dynamo.Models
 {
     public abstract class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable
     {
+
         public const double ZOOM_MAXIMUM = 4.0;
         public const double ZOOM_MINIMUM = 0.01;
 
-        #region private members
-        
+        #region private/internal members
+
+        /// <summary>
+        ///     The offset of the elements in the current paste operation
+        /// </summary>
+        private int currentPasteOffset = 0;
+        internal int CurrentPasteOffset
+        {
+            get { return currentPasteOffset; }
+        }
+
+        /// <summary>
+        ///     The step to offset elements between subsequent paste operations
+        /// </summary>
+        internal static readonly int PASTE_OFFSET_STEP = 10;
+
+        /// <summary>
+        ///     The maximum paste offset before reset
+        /// </summary>
+        internal static readonly int PASTE_OFFSET_MAX = 60;
+
         private string fileName;
         private string name;
         private double height = 100;
@@ -39,6 +62,7 @@ namespace Dynamo.Models
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
         private readonly UndoRedoRecorder undoRecorder;
+        private Guid guid;
 
         #endregion
 
@@ -54,6 +78,7 @@ namespace Dynamo.Models
         ///     Event that is fired when a workspace requests that a Node or Note model is
         ///     centered.
         /// </summary>
+
         public event NodeEventHandler RequestNodeCentered;
         
         /// <summary>
@@ -136,10 +161,10 @@ namespace Dynamo.Models
         ///     Event that is fired when a node is added to the workspace.
         /// </summary>
         public event Action<NodeModel> NodeAdded;
-        protected virtual void OnNodeAdded(NodeModel obj)
+        protected virtual void OnNodeAdded(NodeModel node)
         {
             var handler = NodeAdded;
-            if (handler != null) handler(obj);
+            if (handler != null) handler(node);
         }
 
         /// <summary>
@@ -234,6 +259,8 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     All of the nodes currently in the workspace.
+        /// 
+        ///     TODO(Peter): This should be an IEnumerable of nodes to prevent modification from the outside - MAGN-6580
         /// </summary>
         public ObservableCollection<NodeModel> Nodes { get { return nodes; } }
 
@@ -252,8 +279,11 @@ namespace Dynamo.Models
 
         /// <summary>
         ///     All of the notes currently in the workspace.
+        /// 
+        ///     TODO(Peter): This should be an IEnumerable of notes to prevent modification from the outside - MAGN-6580
         /// </summary>
         public ObservableCollection<NoteModel> Notes { get { return notes; } }
+
         /// <summary>
         ///     Path to the file this workspace is associated with. If null or empty, this workspace has never been saved.
         /// </summary>
@@ -394,23 +424,37 @@ namespace Dynamo.Models
             get { return undoRecorder; }
         }
 
-        public ElementResolver ElementResolver { get; private set; }
+        public ElementResolver ElementResolver { get; protected set; }
+        /// <summary>
+        /// A unique identifier for the workspace.
+        /// </summary>
+        public Guid Guid
+        {
+            get { return guid; }
+        }
 
         #endregion
 
         #region constructors
 
         protected WorkspaceModel(
-            string name, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n,
-            double x, double y, NodeFactory factory, ElementResolver elementResolver, string fileName="")
+            IEnumerable<NodeModel> e, 
+            IEnumerable<NoteModel> n,
+            WorkspaceInfo info, 
+            NodeFactory factory)
         {
-            Name = name;
+            guid = Guid.NewGuid();
 
             nodes = new ObservableCollection<NodeModel>(e);
             notes = new ObservableCollection<NoteModel>(n);
-            X = x;
-            Y = y;
-            FileName = fileName;
+
+            // Set workspace info from WorkspaceInfo object
+            Name = info.Name;
+            X = info.X;
+            Y = info.Y;
+            FileName = info.FileName;
+            Zoom = info.Zoom;
+
             HasUnsavedChanges = false;
             LastSaved = DateTime.Now;
 
@@ -418,10 +462,19 @@ namespace Dynamo.Models
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
-            ElementResolver = elementResolver;
 
+            // Update ElementResolver from nodeGraph.Nodes (where node is CBN)
+            ElementResolver = new ElementResolver();
             foreach (var node in nodes)
+            {
                 RegisterNode(node);
+
+                var cbn = node as CodeBlockNodeModel;
+                if (cbn != null && cbn.ElementResolver != null)
+                {
+                    ElementResolver.CopyResolutionMap(cbn.ElementResolver);
+                }
+            }
 
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
@@ -435,6 +488,7 @@ namespace Dynamo.Models
         {
             foreach (var node in Nodes)
                 DisposeNode(node);
+
             foreach (var connector in Connectors)
                 OnConnectorDeleted(connector);
 
@@ -444,6 +498,7 @@ namespace Dynamo.Models
             Disposed = null;
         }
 
+     
         #endregion
 
         #region public methods
@@ -453,7 +508,9 @@ namespace Dynamo.Models
         /// </summary>
         public virtual void Clear()
         {
-            Log("Clearing workspace...");
+            Log(Resources.ClearingWorkSpace);
+
+            DynamoSelection.Instance.ClearSelection();
 
             foreach (NodeModel el in Nodes)
             {
@@ -476,6 +533,10 @@ namespace Dynamo.Models
 
             ClearUndoRecorder();
             ResetWorkspace();
+
+            X = 0.0;
+            Y = 0.0;
+            Zoom = 1.0;
         }
 
         /// <summary>
@@ -488,7 +549,7 @@ namespace Dynamo.Models
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
-            Log("Saving " + newPath + "...");
+            Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
                 if (SaveInternal(newPath, core))
@@ -524,64 +585,50 @@ namespace Dynamo.Models
                 OnRequestNodeCentered(this, args);
             }
 
-            //var cbn = node as CodeBlockNodeModel;
-            //if (cbn != null)
-            //{
-            //    var firstChange = true;
-            //    PropertyChangedEventHandler codeChangedHandler = (sender, args) =>
-            //    {
-            //        if (args.PropertyName != "Code") return;
-                    
-            //        if (string.IsNullOrWhiteSpace(cbn.Code))
-            //        {
-            //            if (firstChange)
-            //                RemoveNode(cbn);
-            //            else
-            //                RecordAndDeleteModels(new List<ModelBase> { cbn });
-            //        }
-            //        firstChange = false;
-            //    };
-            //    cbn.PropertyChanged += codeChangedHandler;
-            //    cbn.Disposed += () => { cbn.PropertyChanged -= codeChangedHandler; };
-            //}
-
             nodes.Add(node);
             OnNodeAdded(node);
             HasUnsavedChanges = true;
+
+            RequestRun();
         }
 
         private void RegisterNode(NodeModel node)
         {
-            node.NodeModified += OnNodesModified;
+            node.Modified += NodeModified;
             node.ConnectorAdded += OnConnectorAdded;
         }
 
-        /// <summary>
-        ///     Indicates that this workspace's DesignScript AST has been updated.
-        /// </summary>
-        public virtual void OnNodesModified()
+        protected virtual void RequestRun()
         {
             
         }
 
         /// <summary>
-        ///     Removes a node from this workspace.
+        ///     Indicates that the AST for a node in this workspace requires recompilation
+        /// </summary>
+        protected virtual void NodeModified(NodeModel node)
+        {
+
+        }
+
+        /// <summary>
+        /// Removes a node from this workspace. 
+        /// This method does not raise a NodesModified event.
         /// </summary>
         /// <param name="model"></param>
         public void RemoveNode(NodeModel model)
         {
-            if (nodes.Remove(model))
-            {
-                DisposeNode(model);
-                OnNodesModified();
-            }
+            if (!nodes.Remove(model)) return;
+
+            DisposeNode(model);
         }
 
         protected void DisposeNode(NodeModel model)
         {
             model.ConnectorAdded -= OnConnectorAdded;
-            model.NodeModified -= OnNodesModified;
+            model.Modified -= NodeModified;
             OnNodeRemoved(model);
+            model.Dispose();
         }
 
         public void AddNote(NoteModel note, bool centered)
@@ -596,7 +643,7 @@ namespace Dynamo.Models
 
         public NoteModel AddNote(bool centerNote, double xPos, double yPos, string text, Guid id)
         {
-            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? "New Note" : text, id);
+            var noteModel = new NoteModel(xPos, yPos, string.IsNullOrEmpty(text) ? Resources.NewNoteString : text, id);
 
             //if we have null parameters, the note is being added
             //from the menu, center the view on the note
@@ -615,6 +662,7 @@ namespace Dynamo.Models
 
         internal void ResetWorkspace()
         {
+            ElementResolver = new ElementResolver();
             ResetWorkspaceCore();
         }
 
@@ -638,6 +686,14 @@ namespace Dynamo.Models
         public void ReportPosition()
         {
             RaisePropertyChanged("Position");
+        }
+
+        /// <summary>
+        ///     Increment the current paste offset to prevent overlapping pasted elements
+        /// </summary>
+        internal void IncrementPasteOffset()
+        {
+            this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
         }
 
         #endregion
@@ -755,7 +811,8 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                Log(ex.Message);
+                Log(ex.StackTrace);
                 return false;
             }
         }
@@ -806,7 +863,7 @@ namespace Dynamo.Models
             var nodeModel = retrievedModel as NodeModel;
             if (nodeModel != null)
             {
-                using (new ModelModificationUndoHelper(undoRecorder, nodeModel))
+                using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, nodeModel))
                 {
                     handled = nodeModel.HandleModelEvent(eventName, undoRecorder);
                 }
@@ -847,7 +904,7 @@ namespace Dynamo.Models
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
             var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
-            using (new ModelModificationUndoHelper(undoRecorder, retrievedModels))
+            using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, retrievedModels))
             {
                 foreach (var retrievedModel in retrievedModels)
                 {
@@ -948,7 +1005,7 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
-            OnNodesModified();
+            RequestRun();
         }
 
         #endregion
@@ -1086,6 +1143,9 @@ namespace Dynamo.Models
                         var node = model as NodeModel;
                         Debug.Assert(Nodes.Contains(node));
 
+                        bool silentFlag = node.RaisesModificationEvents;
+                        node.RaisesModificationEvents = false;
+
                         // Note that AllConnectors is duplicated as a separate list 
                         // by calling its "ToList" method. This is the because the 
                         // "Connectors.Remove" will modify "AllConnectors", causing 
@@ -1095,6 +1155,8 @@ namespace Dynamo.Models
                             conn.Delete();
                             undoRecorder.RecordDeletionForUndo(conn);
                         }
+
+                        node.RaisesModificationEvents = silentFlag;
 
                         // Take a snapshot of the node before it goes away.
                         undoRecorder.RecordDeletionForUndo(node);
@@ -1106,6 +1168,8 @@ namespace Dynamo.Models
                         undoRecorder.RecordDeletionForUndo(model);
                     }
                 }
+
+                RequestRun();
 
             } // Conclude the deletion.
         }
@@ -1229,7 +1293,7 @@ namespace Dynamo.Models
                 string.Format("Unhandled model type: {0}", helper.ReadString("type", modelData.Name)));
         }
 
-        internal ModelBase GetModelInternal(Guid modelGuid)
+        public ModelBase GetModelInternal(Guid modelGuid)
         {
             ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
                 ?? (ModelBase)Nodes.FirstOrDefault(node => node.GUID == modelGuid))
@@ -1349,7 +1413,7 @@ namespace Dynamo.Models
             document.AppendChild(document.CreateElement("Workspace"));
 
             //This is only used for computing relative offsets, it's not actually created
-            string virtualFileName = String.Join(Path.GetTempPath(), "DynamoTemp.dyn");
+            string virtualFileName = Path.Combine(Path.GetTempPath(), "DynamoTemp.dyn");
             Utils.SetDocumentXmlPath(document, virtualFileName);
 
             if (!PopulateXmlDocument(document))

@@ -97,7 +97,7 @@ namespace Dynamo.Tests
             // save as
             // file exists
 
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math", "Add.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var newPath = GetNewFileNameOnTempPath("dyn");
@@ -115,7 +115,7 @@ namespace Dynamo.Tests
             // file exists
 
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace = model.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
@@ -136,7 +136,7 @@ namespace Dynamo.Tests
             // save as
             // file exists
 
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\math", "Add.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var res = ViewModel.Model.CurrentWorkspace.SaveAs("", ViewModel.Model.EngineController.LiveRunnerCore);
@@ -522,7 +522,13 @@ namespace Dynamo.Tests
 
             Assert.AreNotEqual(Guid.Empty, initialId);
             Assert.AreNotEqual(Guid.Empty, newDef);
-            Assert.AreNotEqual(initialId, newDef);
+            Assert.AreEqual(initialId, newDef);
+
+            var newPath2 = GetNewFileNameOnTempPath("dyf");
+            workspace.SaveAs(newPath2, ViewModel.Model.EngineController.LiveRunnerCore);
+            var newDef2 = workspace.CustomNodeId;
+            Assert.AreNotEqual(Guid.Empty, newDef2);
+            Assert.AreNotEqual(initialId, newDef2);
         }
 
         [Test]
@@ -534,7 +540,7 @@ namespace Dynamo.Tests
             // custom node instance is in environment
 
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
@@ -565,7 +571,7 @@ namespace Dynamo.Tests
             // can get instance of that node
 
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
@@ -595,7 +601,7 @@ namespace Dynamo.Tests
             // function id is in environment
 
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
@@ -618,7 +624,7 @@ namespace Dynamo.Tests
             // place custom node with new id, run expression and result is correct.
 
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
 
@@ -661,7 +667,7 @@ namespace Dynamo.Tests
             // two nodes are returned in search on custom node name, difer 
 
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
@@ -705,7 +711,7 @@ namespace Dynamo.Tests
 
             // open custom node
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var nodeWorkspace =
@@ -753,7 +759,7 @@ namespace Dynamo.Tests
             // two nodes are returned in search on custom node name, difer 
 
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var oldId = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().Definition.FunctionId;
@@ -805,7 +811,7 @@ namespace Dynamo.Tests
             // two nodes are returned in search on custom node name, difer 
 
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_saving", "Constant2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_saving", "Constant2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             var oldId = model.CurrentWorkspace.FirstNodeFromWorkspace<Function>().Definition.FunctionId;

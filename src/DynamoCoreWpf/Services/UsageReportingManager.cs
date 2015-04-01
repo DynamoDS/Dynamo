@@ -5,8 +5,8 @@ using Dynamo.UI.Prompts;
 
 using System;
 using System.Windows;
-using Dynamo.UI;
 
+using Dynamo.Wpf.Interfaces;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.Services
@@ -20,6 +20,7 @@ namespace Dynamo.Services
 
         private static DynamoModel dynamoModel;
         private static UsageReportingManager instance;
+        private static IBrandingResourceProvider resourceProvider;
 
         #endregion
 
@@ -53,17 +54,18 @@ namespace Dynamo.Services
             {
                 dynamoModel.PreferenceSettings.IsUsageReportingApproved = value;
                 RaisePropertyChanged("IsUsageReportingApproved");
+                var path = dynamoModel.PathManager.PreferenceFilePath;
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynamoModel.PreferenceSettings.Save();
+                    dynamoModel.PreferenceSettings.SaveInternal(path);
                 }
                 catch (Exception args)
                 {
                     DynamoModel.IsCrashing = true;
-                    string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(
+                        args.Message, Properties.Resources.UsageReportingErrorMessage, path));
                 }
             }
         }
@@ -101,17 +103,18 @@ namespace Dynamo.Services
             {
                 dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved = value;
                 RaisePropertyChanged("IsAnalyticsReportingApproved");
+                var path = dynamoModel.PathManager.PreferenceFilePath;
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynamoModel.PreferenceSettings.Save();
+                    dynamoModel.PreferenceSettings.SaveInternal(path);
                 }
                 catch (Exception args)
                 {
                     DynamoModel.IsCrashing = true;
-                    string filePath = PreferenceSettings.GetSettingsFilePath();
-                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(args.Message, Configurations.UsageReportingErrorMessage, filePath));
+                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(
+                        args.Message, Properties.Resources.UsageReportingErrorMessage, path));
                 }
             }
 
@@ -139,8 +142,9 @@ namespace Dynamo.Services
             ToggleIsAnalyticsReportingApprovedCommand = new DelegateCommand(ToggleIsAnalyticsReportingApproved, CanToggleIsAnalyticsReportingApproved);
         }
 
-        public void CheckIsFirstRun(Window ownerWindow)
+        public void CheckIsFirstRun(Window ownerWindow, IBrandingResourceProvider resource)
         {
+            resourceProvider = resource;
             // First run of Dynamo
             if (dynamoModel.PreferenceSettings.IsFirstRun)
             {
@@ -192,7 +196,7 @@ namespace Dynamo.Services
             IsUsageReportingApproved = approved;
         }
 
-        private static void ShowUsageReportingPrompt(Window ownerWindow)
+        private void ShowUsageReportingPrompt(Window ownerWindow)
         {
             // If an owner window is not supplied, then we will fallback onto 
             // using the application's main window. In native host application
@@ -206,8 +210,10 @@ namespace Dynamo.Services
             if (ownerWindow == null && (null != Application.Current))
                 ownerWindow = Application.Current.MainWindow;
 
-            var usageReportingPrompt = new UsageReportingAgreementPrompt();
-            usageReportingPrompt.Owner = ownerWindow;
+            var usageReportingPrompt = new UsageReportingAgreementPrompt(resourceProvider)
+            {
+                Owner = ownerWindow
+            };
             usageReportingPrompt.ShowDialog();
         }
     }

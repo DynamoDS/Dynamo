@@ -5,9 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -84,8 +82,6 @@ namespace Dynamo.Controls
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Node view unloaded.");
-
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
             ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
@@ -108,7 +104,6 @@ namespace Dynamo.Controls
                 var size = new double[] { ActualWidth, nodeBorder.ActualHeight };
                 if (ViewModel.SetModelSizeCommand.CanExecute(size))
                 {
-                    //Debug.WriteLine(string.Format("Updating {2} node size {0}:{1}", size[0], size[1], ViewModel.NodeLogic.GetType().ToString()));
                     ViewModel.SetModelSizeCommand.Execute(size);
                 }
             }
@@ -179,8 +174,18 @@ namespace Dynamo.Controls
                 // There is no preview control or the preview control is 
                 // currently in transition state (it can come back to handle
                 // the new data later on when it is ready).
-                if ((previewControl == null) || previewControl.IsInTransition)
+                if ((previewControl == null))
+                {
                     return;
+                }
+
+                // Enqueue an update of the preview control once it has completed its 
+                // transition
+                if (previewControl.IsInTransition)
+                {
+                    previewControl.EnqueueBindToDataSource(ViewModel.NodeModel.CachedValue);
+                    return;
+                }
 
                 if (previewControl.IsHidden) // The preview control is hidden.
                 {
@@ -224,7 +229,7 @@ namespace Dynamo.Controls
             var editWindow = new EditWindow(viewModel.DynamoViewModel)
             {
                 DataContext = ViewModel,
-                Title = "Edit Node Name"
+                Title = Dynamo.Wpf.Properties.Resources.EditNodeWindowTitle 
             };
 
             editWindow.Owner = Window.GetWindow(this);
@@ -318,13 +323,9 @@ namespace Dynamo.Controls
         {
             if (ViewModel == null) return;
 
-            if ((ViewModel.NodeLogic is CodeBlockNodeModel) == false)
-            {
-                // Do not return focus to search if this is a code block node.
-                var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
-                ViewModel.DynamoViewModel.ReturnFocusToSearch();
-                view.mainGrid.Focus();
-            }
+            var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
+            ViewModel.DynamoViewModel.ReturnFocusToSearch();
+            view.mainGrid.Focus();
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.DynamoViewModel.ExecuteCommand(

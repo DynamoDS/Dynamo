@@ -74,7 +74,7 @@ namespace ProtoTest.Imperative
             String code =
 @"y;[Imperative]{        def sum:int( x:int, y:int )        {	        s = x + y;	        return = s;        }        	    y = 57;}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core);
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             Assert.IsTrue((Int64)mirror.GetValue("y").Payload == 57);
         }
 

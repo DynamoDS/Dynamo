@@ -4,6 +4,7 @@
                     xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCoreWpf"
                     xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCore"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                     xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit" 
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf">
 
@@ -792,6 +793,16 @@
                                     Property="Visibility"
                                     Value="Visible" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="True">
+                            <Setter TargetName="contentPresent" 
+                                    Property="TextBlock.Foreground" 
+                                    Value="#bbbbbb"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="contentPresent" 
+                                    Property="TextBlock.Foreground" 
+                                    Value="#444444"/>
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -1222,7 +1233,7 @@
                         <StackPanel Orientation="Horizontal">
                             <ContentControl />
                             <Label x:Name="label"
-                                   Content="Show Samples In Folder"
+                                   Content="{x:Static p:Resources.StartPageShowSamples}"
                                    Foreground="#888888"
                                    FontSize="12"
                                    FontFamily="{StaticResource OpenSansRegular}"/>

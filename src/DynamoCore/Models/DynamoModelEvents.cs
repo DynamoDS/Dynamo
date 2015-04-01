@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using Dynamo.Annotations;
 using Dynamo.Core;
+
+using DynamoServices;
 
 namespace Dynamo.Models
 {
@@ -66,6 +69,8 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceAdded;
             if (handler != null) handler(obj);
+
+            WorkspaceEvents.OnWorkspaceAdded(obj.Guid, obj.Name);
         }
 
         public event Action<WorkspaceModel> WorkspaceRemoved;
@@ -73,6 +78,8 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceRemoved;
             if (handler != null) handler(obj);
+
+            WorkspaceEvents.OnWorkspaceRemoved(obj.Guid, obj.Name);
         }
 
         public event EventHandler DeletionStarted;
@@ -183,7 +190,7 @@ namespace Dynamo.Models
             {
                 Action showFailureMessage = () => DisplayEngineFailureMessage(e.Error);
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
-            }
+           }
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);

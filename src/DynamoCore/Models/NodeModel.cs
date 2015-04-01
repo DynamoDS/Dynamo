@@ -20,6 +20,7 @@ using ProtoCore.Namespace;
 using String = System.String;
 using StringNode = ProtoCore.AST.AssociativeAST.StringNode;
 using ProtoCore.DSASM;
+using System.Reflection;
 
 namespace Dynamo.Models
 {
@@ -32,10 +33,12 @@ namespace Dynamo.Models
         private bool displayLabels;
         private bool isUpstreamVisible;
         private bool isVisible;
+        private bool canUpdatePeriodically;
         private string nickName;
         private ElementState state;
         private string toolTipText = "";
         private string description;
+        private string persistentWarning = "";
 
         // Data caching related class members. There are multiple parties at
         // play when it comes to caching MirrorData for a NodeModel, this value
@@ -84,6 +87,11 @@ namespace Dynamo.Models
         }
 
         public bool HasRenderPackages { get; set; }
+
+        /// <summary>
+        /// The unique name that was created the node by
+        /// </summary>
+        public virtual string CreationName { get { return this.Name; } }
 
         #endregion
 
@@ -184,6 +192,10 @@ namespace Dynamo.Models
             {
                 if (value != ElementState.Error && value != ElementState.AstBuildBroken)
                     ClearTooltipText();
+
+                // Check before settings and raising 
+                // a notification.
+                if (state == value) return;
 
                 state = value;
                 RaisePropertyChanged("State");
@@ -440,6 +452,16 @@ namespace Dynamo.Models
             }
         }
 
+        public bool CanUpdatePeriodically
+        {
+            get { return canUpdatePeriodically; }
+            set
+            {
+                canUpdatePeriodically = value;
+                RaisePropertyChanged("CanUpdatePeriodically");
+            }
+        }
+
         /// <summary>
         ///     ProtoAST Identifier for result of the node before any output unpacking has taken place.
         ///     If there is only one output for the node, this is equivalent to GetAstIdentifierForOutputIndex(0).
@@ -568,7 +590,8 @@ namespace Dynamo.Models
             IsSelected = false;
             State = ElementState.Dead;
             ArgumentLacing = LacingStrategy.Disabled;
-            //IsReportingModifications = true;
+
+            RaisesModificationEvents = true;
         }
 
         public virtual void Dispose()
@@ -597,19 +620,30 @@ namespace Dynamo.Models
             var elNameAttrib = GetType().GetCustomAttributes<NodeNameAttribute>(false).FirstOrDefault();
             if (elNameAttrib != null)
                 NickName = elNameAttrib.Name;
+
         }
 
         #region Modification Reporting
 
         /// <summary>
-        ///     Event fired when the DesignScript AST produced by this node has changed.
+        ///     Indicate if the node should respond to NodeModified event. It
+        ///     always should be true, unless is temporarily set to false to 
+        ///     avoid flood of Modified event. 
         /// </summary>
-        public event Action NodeModified;
+        public bool RaisesModificationEvents { get; set; }
+
+        /// <summary>
+        ///     Event fired when the node's DesignScript AST should be recompiled
+        /// </summary>
+        public event Action<NodeModel> Modified;
         public virtual void OnNodeModified(bool forceExecute = false)
         {
-            MarkNodeAsModified(forceExecute);
-            var handler = NodeModified;
-            if (handler != null) handler();
+            if (!RaisesModificationEvents)
+                return;
+
+            MarkNodeAsModified(forceExecute);           
+            var handler = Modified;
+            if (handler != null) handler(this);
         }
 
         #endregion
@@ -654,7 +688,7 @@ namespace Dynamo.Models
                 // 
                 // The return value of function %nodeAstFailed() is always 
                 // null.
-                const string errorMsg = AstBuilder.StringConstants.AstBuildBrokenMessage;
+                var errorMsg = Properties.Resources.NodeProblemEncountered;
                 var fullMsg = String.Format(errorMsg, e.Message);
                 this.NotifyAstBuildBroken(fullMsg);
 
@@ -784,8 +818,6 @@ namespace Dynamo.Models
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
             Inputs[inputData] = Tuple.Create(outputData, node);
-
-            OnNodeModified();
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
@@ -798,8 +830,6 @@ namespace Dynamo.Models
         internal void DisconnectInput(int data)
         {
             Inputs[data] = null;
-
-            OnNodeModified();
         }
 
         /// <summary>
@@ -872,12 +902,25 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Clears the errors/warnings that are generated when running the graph
+        /// Clears the errors/warnings that are generated when running the graph.
+        /// If the node has a value supplied for the persistentWarning, then the
+        /// node's State will be set to ElementState.Persistent and the ToolTipText will
+        /// be set to the persistent warning. Otherwise, the State will be 
+        /// set to ElementState.Dead
         /// </summary>
         public virtual void ClearRuntimeError()
         {
-            State = ElementState.Dead;
-            ClearTooltipText();
+            if (!string.IsNullOrEmpty(persistentWarning))
+            {
+                State = ElementState.PersistentWarning;
+                ToolTipText = persistentWarning;
+            }
+            else
+            {
+                State = ElementState.Dead;
+                ClearTooltipText();
+            }
+
             ValidateConnections();
         }
 
@@ -904,14 +947,18 @@ namespace Dynamo.Models
             {
                 if (State == ElementState.Active)
                 {
-                    State = ElementState.Dead;
+                    State = string.IsNullOrEmpty(persistentWarning)
+                        ? ElementState.Dead
+                        : ElementState.PersistentWarning;
                 }
             }
             else
             {
                 if (State == ElementState.Dead)
                 {
-                    State = ElementState.Active;
+                    State = string.IsNullOrEmpty(persistentWarning)
+                        ? ElementState.Active
+                        : ElementState.PersistentWarning;
                 }
             }
         }
@@ -922,10 +969,25 @@ namespace Dynamo.Models
             ToolTipText = p;
         }
         
-        public void Warning(string p)
+        /// <summary>
+        /// Set a warning on a node. 
+        /// </summary>
+        /// <param name="p">The warning text.</param>
+        /// <param name="isPersistent">Is the warning persistent? If true, the warning will not be
+        /// cleared when the node is next evaluated and any additional warning messages will be concatenated
+        /// to the persistent error message. If false, the warning will be cleared on the next evaluation.</param>
+        public void Warning(string p, bool isPersistent = false)
         {
-            State = ElementState.Warning;
-            ToolTipText = p;
+            if (isPersistent)
+            {
+                State = ElementState.PersistentWarning;
+                ToolTipText = string.Format("{0}\n{1}", persistentWarning, p);
+            }
+            else
+            {
+                State = ElementState.Warning;
+                ToolTipText = p;
+            }
         }
 
         /// <summary>
@@ -943,24 +1005,12 @@ namespace Dynamo.Models
 
         #region Port Management
 
-        internal int GetPortIndexAndType(PortModel portModel, out PortType portType)
+        internal int GetPortModelIndex(PortModel portModel)
         {
-            int index = inPorts.IndexOf(portModel);
-            if (-1 != index)
-            {
-                portType = PortType.Input;
-                return index;
-            }
-
-            index = outPorts.IndexOf(portModel);
-            if (-1 != index)
-            {
-                portType = PortType.Output;
-                return index;
-            }
-
-            portType = PortType.Input;
-            return -1; // No port found.
+            if (portModel.PortType == PortType.Input)
+                return InPorts.IndexOf(portModel);
+            else
+                return OutPorts.IndexOf(portModel);
         }
 
         /// <summary>
@@ -974,8 +1024,7 @@ namespace Dynamo.Models
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;
-            PortType portType;
-            int index = GetPortIndexAndType(portModel, out portType);
+            int index = portModel.Index;
 
             //If the port was not found, then it should have just been deleted. Return from function
             if (index == -1)
@@ -983,7 +1032,7 @@ namespace Dynamo.Models
 
             double portHeight = portModel.Height;
 
-            switch (portType)
+            switch (portModel.PortType)
             {
                 case PortType.Input:
                     for (int i = 0; i < index; i++)
@@ -1131,39 +1180,26 @@ namespace Dynamo.Models
                     if (inPorts.Count > index)
                     {
                         p = inPorts[index];
-
-                        //update the name on the node
-                        //e.x. when the node is being re-registered during a custom
-                        //node save
-                        p.PortName = data.NickName;
-                        if (data.HasDefaultValue)
-                        {
-                            p.UsingDefaultValue = true;
-                            p.DefaultValueEnabled = true;
-                        }
-
-                        return p;
+                        p.SetPortData(data);
                     }
-
-                    p = new PortModel(portType, this, data)
+                    else
                     {
-                        UsingDefaultValue = data.HasDefaultValue,
-                        DefaultValueEnabled = data.HasDefaultValue
-                    };
+                        p = new PortModel(portType, this, data);
 
-                    p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
-                    {
-                        if (args.PropertyName == "UsingDefaultValue")
+                        p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                         {
-                            OnNodeModified();
-                        }
-                    };
+                            if (args.PropertyName == "UsingDefaultValue")
+                            {
+                                OnNodeModified();
+                            }
+                        };
 
-                    InPorts.Add(p);
+                        //register listeners on the port
+                        p.PortConnected += PortConnected;
+                        p.PortDisconnected += PortDisconnected;
 
-                    //register listeners on the port
-                    p.PortConnected += p_PortConnected;
-                    p.PortDisconnected += p_PortDisconnected;
+                        InPorts.Add(p);
+                    }
                     
                     return p;
 
@@ -1171,22 +1207,17 @@ namespace Dynamo.Models
                     if (outPorts.Count > index)
                     {
                         p = outPorts[index];
-                        p.PortName = data.NickName;
-                        p.MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
-                        return p;
+                        p.SetPortData(data);
                     }
-
-                    p = new PortModel(portType, this, data)
+                    else
                     {
-                        UsingDefaultValue = false,
-                        MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0)
-                    };
+                        p = new PortModel(portType, this, data);
+                        OutPorts.Add(p);
 
-                    OutPorts.Add(p);
-
-                    //register listeners on the port
-                    p.PortConnected += p_PortConnected;
-                    p.PortDisconnected += p_PortDisconnected;
+                        //register listeners on the port
+                        p.PortConnected += PortConnected;
+                        p.PortDisconnected += PortDisconnected;
+                    }
 
                     return p;
             }
@@ -1194,34 +1225,34 @@ namespace Dynamo.Models
             return null;
         }
 
-        private void p_PortConnected(PortModel port, ConnectorModel connector)
+        private void PortConnected(PortModel port, ConnectorModel connector)
         {
             ValidateConnections();
 
-            if (port.PortType == PortType.Input)
-            {
-                int data = InPorts.IndexOf(port);
-                PortModel startPort = connector.Start;
-                int outData = startPort.Owner.OutPorts.IndexOf(startPort);
-                ConnectInput(data, outData, startPort.Owner);
-                startPort.Owner.ConnectOutput(outData, data, this);
-                OnConnectorAdded(connector);
+            if (port.PortType != PortType.Input) return;
 
-                // OnNodeModified();
-            }
+            var data = InPorts.IndexOf(port);
+            var startPort = connector.Start;
+            var outData = startPort.Owner.OutPorts.IndexOf(startPort);
+            ConnectInput(data, outData, startPort.Owner);
+            startPort.Owner.ConnectOutput(outData, data, this);
+            OnConnectorAdded(connector);
+
+            OnNodeModified();
         }
 
-        private void p_PortDisconnected(PortModel port)
+        private void PortDisconnected(PortModel port)
         {
             ValidateConnections();
 
-            if (port.PortType == PortType.Input)
-            {
-                int data = InPorts.IndexOf(port);
-                PortModel startPort = port.Connectors[0].Start;
-                DisconnectInput(data);
-                startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
-            }
+            if (port.PortType != PortType.Input) return;
+
+            var data = InPorts.IndexOf(port);
+            var startPort = port.Connectors[0].Start;
+            DisconnectInput(data);
+            startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
+
+            OnNodeModified();
         }
 
         #endregion
@@ -1297,6 +1328,20 @@ namespace Dynamo.Models
             if (name == "NickName")
             {
                 NickName = value;
+                return true;
+            }
+
+            if (name == "UsingDefaultValue")
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    return true;
+
+                // Here we expect a string that represents an array of Boolean values which are separated by ";"
+                var arr = value.Split(';');
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                }
                 return true;
             }
 
@@ -1395,9 +1440,12 @@ namespace Dynamo.Models
                 if (subNode.Name == "PortInfo")
                 {
                     int index = int.Parse(subNode.Attributes["index"].Value);
-                    portInfoProcessed.Add(index);
-                    bool def = bool.Parse(subNode.Attributes["default"].Value);
-                    inPorts[index].UsingDefaultValue = def;
+                    if (index < InPorts.Count)
+                    {
+                        portInfoProcessed.Add(index);
+                        bool def = bool.Parse(subNode.Attributes["default"].Value);
+                        inPorts[index].UsingDefaultValue = def;
+                    }
                 }
             }
 
@@ -1433,7 +1481,9 @@ namespace Dynamo.Models
         #endregion
 
         #region Dirty Management
-
+        //TODO: Refactor Property into Automatic with private(?) setter
+        //TODO: Add RequestRecalc() method to replace setter --steve
+       
         /// <summary>
         /// Execution scenarios for a Node to be re-executed
         /// </summary>
@@ -1474,7 +1524,6 @@ namespace Dynamo.Models
         {
             return executionHint;
         }
-
         #endregion
 
         #region Visualization Related Methods
@@ -1690,6 +1739,7 @@ namespace Dynamo.Models
         Dead,
         Active,
         Warning,
+        PersistentWarning,
         Error,
         AstBuildBroken
     };
@@ -1760,6 +1810,24 @@ namespace Dynamo.Models
     [AttributeUsage(AttributeTargets.All)]
     public class NodeSearchTagsAttribute : Attribute
     {
+        public NodeSearchTagsAttribute(string tagsID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            //Sometimes resources are made internal so that they don't appear in 
+            //node library, hence we also need to query non public properties.
+            var prop = resourceType.GetProperty(tagsID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                var tagString = (string)prop.GetValue(null, null);
+                Tags = tagString.Split(';').ToList();
+            }
+            else
+            {
+                Tags = new List<String> { tagsID };
+            }
+        }
         public NodeSearchTagsAttribute(params string[] tags)
         {
             Tags = tags.ToList();
@@ -1794,6 +1862,24 @@ namespace Dynamo.Models
         public NodeDescriptionAttribute(string description)
         {
             ElementDescription = description;
+        }
+
+        public NodeDescriptionAttribute(string descriptionResourceID, Type resourceType)
+        {
+            if (resourceType == null)
+                throw new ArgumentNullException("resourceType");
+
+            //Sometimes resources are made internal so that they don't appear in 
+            //node library, hence we also need to query non public properties.
+            var prop = resourceType.GetProperty(descriptionResourceID, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+            if (prop != null && prop.PropertyType == typeof(String))
+            {
+                ElementDescription = (string)prop.GetValue(null, null);
+            }
+            else
+            {
+                ElementDescription = descriptionResourceID;
+            }
         }
 
         public string ElementDescription { get; set; }

@@ -13,7 +13,7 @@ namespace Dynamo.Tests
         public void CanDiscoverDependenciesForFunctionDefinitionOpenFromFile()
         {
             var vm = ViewModel;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_dep_test\");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_dep_test\");
 
             string openPath = Path.Combine(examplePath, "custom_node_dep_test.dyn");
             ViewModel.OpenCommand.Execute(openPath);

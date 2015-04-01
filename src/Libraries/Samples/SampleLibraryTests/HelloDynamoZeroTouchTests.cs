@@ -1,6 +1,7 @@
 ﻿using System;
 
 using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
 
 using NUnit.Framework;
 
@@ -37,6 +38,7 @@ namespace SampleLibraryTests
     // location.
     
     [TestFixture]
+    [IsVisibleInDynamoLibrary(false)]
     class HelloDynamoZeroTouchTests : GeometricTestBase
     {
         [Test]

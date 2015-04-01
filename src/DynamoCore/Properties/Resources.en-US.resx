@@ -273,7 +273,7 @@ Sorry about that.</value>
   <data name="ElapsedWhenLoadingXml" xml:space="preserve">
     <value>{0} elapsed for loading xml.</value>
   </data>
-  <data name="EvaluationComleted" xml:space="preserve">
+  <data name="EvaluationCompleted" xml:space="preserve">
     <value>Evaluation completed in {0}</value>
   </data>
   <data name="FailedToLoadHeader" xml:space="preserve">
@@ -525,5 +525,79 @@ value: bool = false</value>
   </data>
   <data name="SymbolNodeDescription" xml:space="preserve">
     <value>A function parameter, use with custom nodes. \n\nYou can specify the type and default value for parameter. E.g.,\n\ninput : var[]..[]\nvalue : bool = false</value>
+  </data>
+  <data name="CustomNodeNotLoaded" xml:space="preserve">
+    <value>Custom node definition is not loaded!</value>
+  </data>
+  <data name="RunTypeToolTipAutomatically" xml:space="preserve">
+    <value>Run whenever an input to the graph is updated.</value>
+  </data>
+  <data name="RunTypeToolTipManually" xml:space="preserve">
+    <value>Run when you click the Run button.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
+    <value>Run Periodic is only available when there are nodes in the graph that support periodic update.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
+    <value>Run at the specified interval.</value>
+  </data>
+  <data name="HeaderAction" xml:space="preserve">
+    <value>ACTIONS</value>
+  </data>
+  <data name="HeaderCreate" xml:space="preserve">
+    <value>CREATE</value>
+  </data>
+  <data name="HeaderQuery" xml:space="preserve">
+    <value>QUERY</value>
+  </data>
+  <data name="InputLabel" xml:space="preserve">
+    <value>INPUT</value>
+  </data>
+  <data name="MoreButtonTextFormat" xml:space="preserve">
+    <value>SHOW MORE ({0})</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>No description available</value>
+  </data>
+  <data name="OutputLabel" xml:space="preserve">
+    <value>OUTPUT</value>
+  </data>
+  <data name="TopResult" xml:space="preserve">
+    <value>Top Result</value>
+  </data>
+  <data name="LocateInDisk" xml:space="preserve">
+    <value>Locate in Disk..</value>
+  </data>
+  <data name="MoveLabel" xml:space="preserve">
+    <value>Move</value>
+  </data>
+  <data name="NoMatchesFound" xml:space="preserve">
+    <value>No matches found</value>
+  </data>
+  <data name="RemoveLabel" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="IncorrectlyFormattedNodeLibraryDisplay" xml:space="preserve">
+    <value>This is the incorrectly formatted library name:</value>
+  </data>
+  <data name="IncorrectlyFormattedNodeLibraryWarning" xml:space="preserve">
+    <value>Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!</value>
+  </data>
+  <data name="NothingIsSelectedWarning" xml:space="preserve">
+    <value>Nothing is selected.</value>
+  </data>
+  <data name="SearchTextBlockText" xml:space="preserve">
+    <value>SEARCH LIBRARY</value>
+  </data>
+  <data name="WatermarkLabelText" xml:space="preserve">
+    <value>Your code goes here</value>
+  </data>
+  <data name="DefaultValue" xml:space="preserve">
+    <value>Default value</value>
+    <comment>Default value</comment>
+  </data>
+  <data name="DefaultValueDisabled" xml:space="preserve">
+    <value>(disabled)</value>
+    <comment>Default value is disabled</comment>
   </data>
 </root>

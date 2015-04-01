@@ -1,4 +1,5 @@
-﻿using Dynamo.Utilities;
+﻿using Dynamo.Properties;
+using Dynamo.Utilities;
 
 namespace Dynamo.UI
 {
@@ -7,6 +8,7 @@ namespace Dynamo.UI
         #region Dynamo Universal Constants
 
         // Add 0.5 to place the point in the middle of a pixel to sharpen it
+        public static readonly string FallbackUiCulture = "en-US";
         public static readonly string BackupFolderName = "backup";
         public static readonly string FilePathAttribName = "TargetXmlFilePath";
         public static readonly double DoubleSliderTextBoxWidth = 55.0;
@@ -28,8 +30,6 @@ namespace Dynamo.UI
         public static string DynamoDownloadLink = "http://dynamobim.org/download/";
         public static string GitHubDynamoLink = "https://github.com/DynamoDS/Dynamo";
         public static string GitHubBugReportingLink = "https://github.com/DynamoDS/Dynamo/issues";
-
-        public static string UsageReportingErrorMessage = "Uh oh...\n\rWe're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.\n\rYou can also try deleting [FILEPATH] and trying again.\n\rDepending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.\n\rSorry about that.";
         #endregion
 
         #region Canvas Configurations
@@ -64,10 +64,6 @@ namespace Dynamo.UI
         public static double MaxOpacity = 0.95;
 
         #region Preview Bubble
-        public static int CondensedPreviewMaxLength = 25;
-
-        public static double PreviewFrameStrokeThickness = 1;
-
         public static double PreviewTextFontSize = 10;
 
         public static double PreviewMaxWidth = 500;
@@ -131,6 +127,11 @@ namespace Dynamo.UI
         public static double NodeTooltipArrowHeight_SideConnecting = 12;
 
         public static double ToolTipTargetGapInPixels = 3.0;
+        public static double NodeButtonHeight = 32; // Height of node button.
+        public static double BottomPanelHeight = 48; // Height of black bottom panel with 2 buttons: Run & Canсel.
+        public static int MaxLengthTooltipCode = 35; // Max length of field code in tooltip, it's near copy icon.
+        public static string NoDescriptionAvailable = Resources.NoDescriptionAvailable;
+
         #endregion
 
         #region Library Item Tooltip
@@ -181,6 +182,51 @@ namespace Dynamo.UI
 
         #endregion
 
+        #region Icon Resources Strings
+
+        public const string SmallIconPostfix = ".Small";
+        public const string LargeIconPostfix = ".Large";
+        public const string IconResourcesDLL = ".customization.dll";
+        public const string DefaultIcon = "DefaultIcon";
+        public const string DefaultCustomNodeIcon = "DefaultCustomNode";
+        public const string DefaultAssembly = "DynamoCore";
+
+        #endregion
+
+        #region Class button
+        public const int MaxLengthClassButtonTitle = 22;
+        public const int MaxLengthRowClassButtonTitle = 8; // How many characters can be in one row.
+        public const string TwoDots = "..";
+        #endregion
+
+        #region LibraryView
+
+        public const double MinWidthLibraryView = 204;
+
+        public static string TopResult = Resources.TopResult;
+        public const string CategoryGroupCreate = "Create";
+        public const string CategoryGroupAction = "Actions";
+        public const string CategoryGroupQuery = "Query";
+        public const string CategoryDelimiterString = ".";
+        public const string ShortenedCategoryDelimiter = "-";
+        public const string CategoryDelimiterWithSpaces = " - ";
+
+        public const string ClassesDefaultName = "Classes";
+
+        public const string ElementTypeShorthandCategory = "CTGRY";
+        public const string ElementTypeShorthandPackage = "PKG";
+        public const string ElementTypeShorthandImportedDll = "DLL";
+
+        #endregion
+
+        #region StandardPanel
+
+        public static string MoreButtonTextFormat = Resources.MoreButtonTextFormat;
+        public static string HeaderCreate = Resources.HeaderCreate;
+        public static string HeaderAction = Resources.HeaderAction;
+        public static string HeaderQuery = Resources.HeaderQuery;
+
+        #endregion
     }
 
     public class ResourceNames

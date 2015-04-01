@@ -14,8 +14,8 @@ namespace ProtoFFITests
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
             return core;
@@ -44,12 +44,14 @@ namespace ProtoFFITests
         {
             ProtoCore.Core core = Setup();
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, context);
-            int nWarnings = core.RuntimeStatus.WarningCount;
+            ProtoCore.CompileTime.Context compileContext = new ProtoCore.CompileTime.Context(code, context);
+            ProtoCore.RuntimeCore runtimeCore = null;
+            ExecutionMirror mirror = fsr.Execute(compileContext, core, out runtimeCore);
+            int nWarnings = runtimeCore.RuntimeStatus.WarningCount;
             nErrors = core.BuildStatus.ErrorCount;
             if (data == null)
             {
-                core.Cleanup();
+                runtimeCore.Cleanup();
                 return nWarnings + nErrors;
             }
             TestFrameWork thisTest = new TestFrameWork();
@@ -65,7 +67,7 @@ namespace ProtoFFITests
                     TestFrameWork.Verify(mirror, item.ValueName, item.ExpectedValue, item.BlockIndex);
                 }
             }
-            core.Cleanup();
+            runtimeCore.Cleanup();
             return nWarnings + nErrors;
         }
     }

@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.CodeDom.Compiler;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Shapes;
@@ -20,7 +23,7 @@ namespace Dynamo.Wpf.Controls
         public DynamoSlider(NodeModel model, IViewModelView<NodeViewModel> nodeUI)
         {
             InitializeComponent();
-
+            this.slider.IsMoveToPointEnabled = true;            
             nodeModel = model;
             ui = nodeUI;
 
@@ -41,7 +44,7 @@ namespace Dynamo.Wpf.Controls
 
         private void Slider_OnDragCompleted(object sender, DragCompletedEventArgs e)
         {
-            nodeModel.MarkNodeAsModified(true);
+            nodeModel.MarkNodeAsModified(true);           
         }
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -50,6 +53,14 @@ namespace Dynamo.Wpf.Controls
             base.OnPreviewMouseLeftButtonDown(e);
             if (e.OriginalSource is Rectangle)
                 WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
+        }
+
+        private void Slider_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                ui.ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            }
         }
 
         #endregion

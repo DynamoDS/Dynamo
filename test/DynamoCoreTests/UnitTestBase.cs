@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using Dynamo.Utilities;
 using NUnit.Framework;
 
 namespace Dynamo
@@ -11,9 +10,11 @@ namespace Dynamo
 
         protected string ExecutingDirectory { get; set; }
         protected string TempFolder { get; private set; }
+        public string SampleDirectory { get; private set; }
+        public string TestDirectory { get; private set; }
 
         [SetUp]
-        public virtual void Init()
+        public virtual void Setup()
         {
             SetupDirectories();
         }
@@ -42,32 +43,37 @@ namespace Dynamo
                     : Path.ChangeExtension(guid, fileExtension));
         }
 
-        public string GetTestDirectory()
-        {
-            var directory = new DirectoryInfo(ExecutingDirectory);
-            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
-        }
-
-        public string GetSampleDirectory()
-        {
-            var directory = new FileInfo(ExecutingDirectory);
-            string assemblyDir = directory.DirectoryName;
-            string sampleLocation = Path.Combine(assemblyDir, @"..\..\doc\distrib\Samples\");
-            string samplePath = Path.GetFullPath(sampleLocation);
-
-            return samplePath;
-
-        }
-
         protected void SetupDirectories()
         {
             ExecutingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string tempPath = Path.GetTempPath();
 
             TempFolder = Path.Combine(tempPath, "dynamoTmp\\" + Guid.NewGuid().ToString("N"));
-
+            
             if (!Directory.Exists(TempFolder))
                 Directory.CreateDirectory(TempFolder);
+
+            // Setup Temp PreferenceSetting Location for testing
+            PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
+
+            SampleDirectory = GetSampleDirectory();
+
+            TestDirectory = GetTestDirectory();
+        }
+
+        private string GetSampleDirectory()
+        {
+            var directory = new FileInfo(ExecutingDirectory);
+            string assemblyDir = directory.DirectoryName;
+            string sampleLocation = Path.Combine(assemblyDir, @"..\..\doc\distrib\Samples\");
+            string samplePath = Path.GetFullPath(sampleLocation);
+            return samplePath;
+        }
+
+        private string GetTestDirectory()
+        {
+            var directory = new DirectoryInfo(ExecutingDirectory);
+            return Path.Combine(directory.Parent.Parent.Parent.FullName, "test");
         }
     }
 }

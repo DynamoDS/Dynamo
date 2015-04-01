@@ -7,26 +7,48 @@ using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using NUnit.Framework;
+using TestServices;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Dynamo.ViewModels;
+using ProtoCore;
+using Dynamo.Core;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class LibraryTests : DSEvaluationViewModelUnitTest
+    class LibraryTests : UnitTestBase
     {
+        private LibraryServices libraryServices;
+        private ProtoCore.Core libraryCore;
+
         protected static bool LibraryLoaded { get; set; }
 
-        [SetUp]
-        public override void Init()
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
+
+            libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
+
+            var pathResolver = new TestPathResolver();
+            pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
+
+            var pathManager = new PathManager(new PathManagerParams
+            {
+                PathResolver = pathResolver
+            });
+
+            libraryServices = new LibraryServices(libraryCore, pathManager);
+
             RegisterEvents();
         }
 
-        [TearDown]
         public override void Cleanup()
         {
             UnRegisterEvents();
+            libraryServices.Dispose();
             base.Cleanup();
         }
 
@@ -54,22 +76,6 @@ namespace Dynamo.Tests
                 Assert.Fail("Failed to load library: " + a.LibraryPath);
             else
                 Assert.Fail("Failed to load library");
-        }
-
-        private CodeBlockNodeModel CreateCodeBlockNode()
-        {
-            var cbn = new CodeBlockNodeModel(ViewModel.Model.LibraryServices);
-
-            var command = new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false);
-            ViewModel.ExecuteCommand(command);
-
-            return cbn;
-        }
-
-        private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
-        {
-            var command = new DynCmd.UpdateModelValueCommand(cbn.GUID, "Code", value);
-            ViewModel.ExecuteCommand(command);
         }
 
         #region Test cases
@@ -113,12 +119,8 @@ namespace Dynamo.Tests
         {
             LibraryLoaded = false;
 
-            string libraryPath = "FFITarget.dll";
-
-            string tempPath = Path.GetTempPath();
-            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var tempDirectory = uniqueDirectory.FullName;
-            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
+            const string libraryPath = "FFITarget.dll";
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
 
             File.Copy(libraryPath, tempLibraryPath);
 
@@ -143,11 +145,8 @@ namespace Dynamo.Tests
                 "</priorNameHint>" + System.Environment.NewLine +
                 "</migrations>" + System.Environment.NewLine;
 
-            string tempPath = Path.GetTempPath();
-            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var tempDirectory = uniqueDirectory.FullName;
-            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
-            string tempBadXMLPath = Path.Combine(tempDirectory, badXMLPath);
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
+            string tempBadXMLPath = Path.Combine(TempFolder, badXMLPath);
 
             File.Copy(libraryPath, tempLibraryPath);
 
@@ -177,11 +176,8 @@ namespace Dynamo.Tests
                 "</priorNameHint>" + System.Environment.NewLine +
                 "</migrations>" + System.Environment.NewLine;
 
-            string tempPath = Path.GetTempPath();
-            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var tempDirectory = uniqueDirectory.FullName;
-            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
-            string tempBadXMLPath = Path.Combine(tempDirectory, badXMLPath);
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
+            string tempBadXMLPath = Path.Combine(TempFolder, badXMLPath);
 
             File.Copy(libraryPath, tempLibraryPath);
 
@@ -200,7 +196,7 @@ namespace Dynamo.Tests
         {
             LibraryLoaded = false;
 
-            string libraryPath = "FFITarget.dll";
+            const string libraryPath = "FFITarget.dll";
 
             // All we need to do here is to ensure that the target has been loaded
             // at some point, so if it's already thre, don't try and reload it
@@ -226,41 +222,10 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void LibraryLoaded_PrecompileCBN_ShowConflictWarnings()
-        {
-            var model = ViewModel.Model;
-
-            // Create the initial code block node.
-            var codeBlockNodeOne = CreateCodeBlockNode();
-            UpdateCodeBlockNodeContent(codeBlockNodeOne, "Point.ByCoordinates();");
-
-            // We should have one code block node by now.
-            Assert.AreEqual(1, model.CurrentWorkspace.Nodes.Count());
-
-            // Run 
-            Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
-
-            string libraryPath = "FFITarget.dll";
-
-            var libraryServices = ViewModel.Model.EngineController.LibraryServices;
-
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already thre, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath);
-            }
-
-            // Assert that once a library with classname conflicts is loaded the CBN
-            // displays the warning
-            Assert.IsTrue(codeBlockNodeOne.ToolTipText.Contains(string.Format(
-                ProtoCore.StringConstants.kMultipleSymbolFoundFromName, "Point", "")));
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void DumpLibraryToXmlZeroTouchTest()
         {
+            var searchViewModel = new SearchViewModel(null, new NodeSearchModel());
+
             LibraryLoaded = false;
 
             string libraryPath = "DSOffice.dll";
@@ -274,8 +239,18 @@ namespace Dynamo.Tests
             }
 
             var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
+            foreach (var funcGroup in fgToCompare)
+            {
+                foreach (var functionDescriptor in funcGroup.Functions)
+                {
+                    if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
+                    {
+                        searchViewModel.Model.Add(new ZeroTouchSearchElement(functionDescriptor));
+                    }
+                }
+            }
 
-            var document = ViewModel.SearchViewModel.Model.ComposeXmlForLibrary();
+            var document = searchViewModel.Model.ComposeXmlForLibrary();
 
             Assert.AreEqual("LibraryTree", document.DocumentElement.Name);
 
@@ -289,11 +264,18 @@ namespace Dynamo.Tests
                     if (function.IsObsolete || !function.IsVisibleInLibrary || function.FunctionName.Contains("GetType"))
                         continue;
 
+                    var category = function.Category;
+                    var group = SearchElementGroup.Action;
+                    category = searchViewModel.Model.ProcessNodeCategory(category, ref group);
+
                     node = document.SelectSingleNode(string.Format(
-                        "//{0}[FullCategoryName='{1}' and Name='{2}']", 
-                        typeof(ZeroTouchSearchElement).FullName,
-                        function.Category, function.FunctionName));
+                        "//{0}[FullCategoryName='{1}' and Name='{2}']",
+                        typeof(ZeroTouchSearchElement).FullName, category, function.FunctionName));
                     Assert.IsNotNull(node);
+
+                    subNode = node.SelectSingleNode("Group");
+                    Assert.IsNotNull(subNode.FirstChild);
+                    Assert.AreEqual(group.ToString(), subNode.FirstChild.Value);
 
                     // 'FullCategoryName' is already checked.
                     // 'Name' is already checked.
@@ -310,6 +292,27 @@ namespace Dynamo.Tests
                     // normal function.Description: Excel.ReadFromFile (file: var, sheetName: string): var[][]
                 }
             }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestDefaultArgumentAttribute()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+            }
+
+            // Get function groups for ClassFunctionality Class
+            var functions = libraryServices.GetFunctionGroups(libraryPath)
+                                            .SelectMany(x => x.Functions)
+                                            .Where(y => y.ClassName.Contains("FFITarget.TestData") && y.FunctionName.Equals("GetCircleArea"));
+
+            Assert.IsTrue(functions.Any());
+            var func = functions.First();
+
+            Assert.IsTrue(func.Parameters.First().DefaultValue.ToString().Equals("TestData.GetFloat()"));
         }
 
         #endregion

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
-
+using Dynamo.Properties;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -19,7 +19,7 @@ namespace Dynamo.Nodes
 {
     [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a string.")]
+    [NodeDescription("StringInputNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class StringInput : String
     {
@@ -37,7 +37,7 @@ namespace Dynamo.Nodes
 
             if (name == "Value")
             {
-                Value = HttpUtility.HtmlEncode(value);
+                Value = value; 
                 return true; // UpdateValueCore handled.
             }
 
@@ -48,21 +48,13 @@ namespace Dynamo.Nodes
             return base.UpdateValueCore(updateValueParams);
         }
 
-        protected override string SerializeValue()
-        {
-            return HttpUtility.HtmlEncode(Value);
-        }
-
-        protected override string DeserializeValue(string val)
-        {
-            return HttpUtility.HtmlDecode(val);
-        }
-
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.SerializeCore(nodeElement, context);
             XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(string).FullName);
-            outEl.SetAttribute("value", SerializeValue().ToString(CultureInfo.InvariantCulture));
+
+            var helper = new XmlElementHelper(outEl);
+            helper.SetAttribute("value", SerializeValue());
             nodeElement.AppendChild(outEl);
         }
 
@@ -118,7 +110,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("Creates a number.")]
+    [NodeDescription("DoubleInputNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class DoubleInput : NodeModel
     {
@@ -129,6 +121,7 @@ namespace Dynamo.Nodes
 
             ShouldDisplayPreviewCore = false;
             ConvertToken = Convert;
+            Value = "0";
 
             //ws.DynamoModel.PreferenceSettings.PropertyChanged += Preferences_PropertyChanged;
         }

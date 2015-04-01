@@ -1,15 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-
 using Dynamo.UpdateManager;
-
-using ProtoCore.Lang;
-
-using DynUpdateManager = Dynamo.UpdateManager.UpdateManager;
 using Moq;
 using NUnit.Framework;
+using DynUpdateManager = Dynamo.UpdateManager.UpdateManager;
+
 
 namespace Dynamo.Tests
 {
@@ -25,7 +23,7 @@ namespace Dynamo.Tests
         /// </summary>
         class ConfigInjection : IDisposable
         {
-            private readonly DynUpdateManager updateManager; //updatemanager instance.
+            private readonly IUpdateManager updateManager; //updatemanager instance.
             private readonly object configuration; //old configuration value.
             private readonly FieldInfo fieldInfo; //internal configuration field.
 
@@ -34,7 +32,7 @@ namespace Dynamo.Tests
             /// </summary>
             /// <param name="updateManager">UpdateManager instance to which configuration is to be injected.</param>
             /// <param name="configuration">The configuration for injection.</param>
-            public ConfigInjection(DynUpdateManager updateManager, UpdateManagerConfiguration configuration)
+            public ConfigInjection(IUpdateManager updateManager, UpdateManagerConfiguration configuration)
             {
                 this.updateManager = updateManager;
                 fieldInfo = updateManager.GetType()
@@ -55,6 +53,17 @@ namespace Dynamo.Tests
         private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
         private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
 
+        static UpdateManagerConfiguration NewConfiguration(bool checkNewerDailyBuild =false, bool forceUpdate =false)
+        {
+            return new UpdateManagerConfiguration()
+            {
+                DownloadSourcePath = DOWNLOAD_SOURCE_PATH_S,
+                SignatureSourcePath = SIGNATURE_SOURCE_PATH_S,
+                CheckNewerDailyBuild = checkNewerDailyBuild,
+                ForceUpdate = forceUpdate,
+            };
+        }
+
         [Test]
         [Category("UnitTests")]
         public void UpdateCheckReturnsInfoWhenNewerVersionAvaialable()
@@ -62,10 +71,12 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
 
-            UpdateManager.UpdateManager.Instance.CheckNewerDailyBuilds = false;
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
-
-            Assert.NotNull(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            var updateManager = UpdateManager.UpdateManager.Instance;
+            using (new ConfigInjection(updateManager, NewConfiguration()))
+            {
+                updateManager.UpdateDataAvailable(updateRequest.Object);
+                Assert.NotNull(updateManager.UpdateInfo);
+            }
         }
 
         [Test]
@@ -75,10 +86,12 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.dailyBuildAvailableData);
 
-            UpdateManager.UpdateManager.Instance.CheckNewerDailyBuilds = true;
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
-            
-            Assert.NotNull(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            var updateManager = UpdateManager.UpdateManager.Instance;
+            using (new ConfigInjection(updateManager, NewConfiguration(checkNewerDailyBuild:true)))
+            {
+                updateManager.UpdateDataAvailable(updateRequest.Object);
+                Assert.NotNull(updateManager.UpdateInfo);
+            }
         }
 
         [Test]
@@ -263,6 +276,58 @@ namespace Dynamo.Tests
             UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
 
             Assert.Null(UpdateManager.UpdateManager.Instance.UpdateInfo);
+        }
+
+        [Test, Category("UnitTests")]
+        public void GetLatestProductFromGoodData()
+        {
+            var products = new Dictionary<string, Version>
+            {
+                { "A", new Version(0, 1, 2, 3) },
+                { "B", new Version(0, 1, 2, 3) },
+                { "C", new Version(1, 2, 0, 0) },
+                { "D", new Version(0, 1, 3, 3) },
+            };
+
+            var lookup = new Mock<DynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstalls()).Returns(products.Keys);
+            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+                .Returns<string>(s => products[s]);
+
+            var latest = lookup.Object.LatestProduct;
+            Assert.AreEqual("1.2.0.0", latest.ToString());
+        }
+
+        [Test, Category("UnitTests")]
+        public void NoLatestProductVersion()
+        {
+            var lookup = new Mock<DynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstalls()).Returns(new[] { "A" });
+            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+                .Returns<string>(null);
+
+            var latest = lookup.Object.LatestProduct;
+            Assert.AreEqual(null, latest);
+        }
+
+        [Test, Category("UnitTests")]
+        public void GetLatestProductVersion()
+        {
+            var products = new Dictionary<string, Version>
+            {
+                { "A", new Version() },
+                { "B", new Version(0, 1, 2, 3) },
+                { "C", new Version(1, 2, 0, 0) },
+                { "D", null },
+            };
+
+            var lookup = new Mock<DynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstalls()).Returns(products.Keys);
+            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+                .Returns<string>(s => products[s]);
+
+            var latest = lookup.Object.LatestProduct;
+            Assert.AreEqual("1.2.0.0", latest.ToString());
         }
     }
 

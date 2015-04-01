@@ -31,13 +31,17 @@ namespace ProtoScript.Runners
     {
         public Guid GUID;
         public List<AssociativeNode> AstNodes;
+        public List<AssociativeNode> ModifiedAstNodes;
         public bool ForceExecution;
+        public bool IsInput;
 
         public Subtree(List<AssociativeNode> astNodes, System.Guid guid)
         {
             GUID = guid;
             AstNodes = astNodes;
             ForceExecution = false;
+            IsInput = false;
+            ModifiedAstNodes = new List<AssociativeNode>();
         }
 
         public override string ToString()
@@ -111,6 +115,7 @@ namespace ProtoScript.Runners
         public List<AssociativeNode> DeletedBinaryExprASTNodes;
         public List<AssociativeNode> DeletedFunctionDefASTNodes;
         public List<AssociativeNode> RemovedBinaryNodesFromModification;
+        public List<AssociativeNode> ModifiedNodesForRuntimeSetValue;
         public List<AssociativeNode> RemovedFunctionDefNodesFromModification;
         public List<AssociativeNode> ForceExecuteASTList;
         public List<AssociativeNode> ModifiedFunctions;
@@ -123,10 +128,13 @@ namespace ProtoScript.Runners
     public class ChangeSetApplier
     {
         private ProtoCore.Core core = null;
-        public void Apply(ProtoCore.Core core, ChangeSetData changeSet)
+        private RuntimeCore runtimeCore = null;
+
+        public void Apply(ProtoCore.Core core, RuntimeCore runtimeCore, ChangeSetData changeSet)
         {
             Validity.Assert(null != changeSet);
             this.core = core;
+            this.runtimeCore = runtimeCore;
             ApplyChangeSetDeleted(changeSet);
             ApplyChangeSetModified(changeSet);
             ApplyChangeSetForceExecute(changeSet);
@@ -141,16 +149,20 @@ namespace ProtoScript.Runners
         private void ApplyChangeSetModified(ChangeSetData changeSet)
         {
             ClearModifiedNestedBlocks(changeSet.ModifiedNestedLangBlock);
+
             DeactivateGraphnodes(changeSet.RemovedBinaryNodesFromModification);
+
+            // Set new value for modified ASTs
+            SetValueForModifiedNodes(changeSet.ModifiedNodesForRuntimeSetValue);
             
             // Undefine a function that was removed 
             UndefineFunctions(changeSet.RemovedFunctionDefNodesFromModification);
 
             // Mark all graphnodes dependent on the removed function as dirty
-            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.RemovedFunctionDefNodesFromModification);
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(runtimeCore, changeSet.RemovedFunctionDefNodesFromModification);
 
             // Mark all graphnodes dependent on the modified functions as dirty
-            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(core, changeSet.ModifiedFunctions);
+            ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyFromFunctionRedef(runtimeCore, changeSet.ModifiedFunctions);
         }
 
 
@@ -167,8 +179,56 @@ namespace ProtoScript.Runners
                 // Otherwise the entrypoint is set by the code generator when the new ASTs are compiled
                 if (!changeSet.ContainsDeltaAST)
                 {
-                    core.SetNewEntryPoint(firstDirtyNode.updateBlock.startpc);
+                    runtimeCore.SetStartPC(firstDirtyNode.updateBlock.startpc);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Get the StackValue to be set at runtime
+        /// The StackValue can be a primitive or an object
+        /// Currently, only primitives are supported
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private StackValue GetStackValueForRuntime(AssociativeNode node)
+        {
+            BinaryExpressionNode bnode = node as BinaryExpressionNode;
+            Validity.Assert(bnode != null);
+            Validity.Assert(bnode.Optr == Operator.assign);
+
+            StackValue svSet = StackValue.BuildNull();
+            if (ProtoCore.Utils.CoreUtils.IsPrimitiveASTNode(bnode.RightNode))
+            {
+                svSet = ProtoCore.Utils.CoreUtils.BuildStackValueForPrimitive(bnode.RightNode);
+            }
+            else
+            {
+                // Build or retrieve a DS Pointer (object) and set it here
+                // DS Pointer must be created and set on the DS heap)
+                svSet = StackValue.BuildNull();
+            }
+            return svSet;
+        }
+
+        /// <summary>
+        /// Sets a new rhs for binary asts that were modified
+        /// Sets the VM entry point
+        /// </summary>
+        /// <param name="modifiedNodes"></param>
+        private void SetValueForModifiedNodes(List<AssociativeNode> modifiedNodes)
+        {
+            // Currently only supports 1 input node
+            Validity.Assert(modifiedNodes.Count <= 1);
+
+            if (modifiedNodes.Count > 0)
+            {
+                AssociativeNode node = modifiedNodes[0];
+
+                StackValue sv = GetStackValueForRuntime(node);
+                int startPC = runtimeCore.SetValue((node as BinaryExpressionNode).OriginalAstID, sv);
+                Validity.Assert(startPC != Constants.kInvalidIndex);
+                runtimeCore.SetStartPC(startPC);
             }
         }
 
@@ -247,12 +307,14 @@ namespace ProtoScript.Runners
     {
         private Dictionary<System.Guid, Subtree> currentSubTreeList = null;
         private ProtoCore.Core core = null;
+        private ProtoCore.RuntimeCore runtimeCore = null;
 
         public ChangeSetData csData { get; private set; }
 
-        public ChangeSetComputer(ProtoCore.Core core)
+        public ChangeSetComputer(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
         {
             this.core = core;
+            this.runtimeCore = runtimeCore;
             currentSubTreeList = new Dictionary<Guid, Subtree>();
         }
 
@@ -262,14 +324,14 @@ namespace ProtoScript.Runners
         /// <param name="liveCore"></param>
         /// <param name="deltaGraphNodes"></param>
         /// <returns></returns>
-        private List<GraphNode> EstimateReachableGraphNodes(Core liveCore, List<GraphNode> deltaGraphNodes)
+        private List<GraphNode> EstimateReachableGraphNodes(RuntimeCore rt, List<GraphNode> deltaGraphNodes)
         {
             List<GraphNode> reachableNodes = new List<GraphNode>();
             foreach (GraphNode executingNode in deltaGraphNodes)
             {
                 reachableNodes.AddRange(ProtoCore.AssociativeEngine.Utils.UpdateDependencyGraph(
                     executingNode,
-                    liveCore.CurrentExecutive.CurrentDSASMExec,
+                    rt.CurrentExecutive.CurrentDSASMExec,
                     executingNode.exprUID,
                     executingNode.modBlkUID,
                     executingNode.IsSSANode(),
@@ -294,7 +356,7 @@ namespace ProtoScript.Runners
             List<GraphNode> deltaGraphNodeList = ProtoCore.AssociativeEngine.Utils.GetGraphNodesFromAST(core.DSExecutable, astList);
             
             // Get the reachable VM graphnodes  given the modified graphnode list
-            List<GraphNode> reachableNodes = EstimateReachableGraphNodes(core, deltaGraphNodeList);
+            List<GraphNode> reachableNodes = EstimateReachableGraphNodes(runtimeCore, deltaGraphNodeList);
 
             // Append the modified nodes(deltaGraphNodeList) into the reachable list as they are also going to be executed when run
             reachableNodes.AddRange(deltaGraphNodeList);
@@ -364,7 +426,8 @@ namespace ProtoScript.Runners
                     }
 
                     core.BuildStatus.ClearWarningsForGraph(st.GUID);
-                    core.RuntimeStatus.ClearWarningsForGraph(st.GUID);
+
+                    runtimeCore.RuntimeStatus.ClearWarningsForGraph(st.GUID);
                 }
             }
             return deltaAstList;
@@ -372,7 +435,7 @@ namespace ProtoScript.Runners
 
         private IEnumerable<AssociativeNode> GetDeltaAstListAdded(IEnumerable<Subtree> addedSubTrees)
         {
-            var deltaAstList = new List<AssociativeNode>();
+            var deltaAstList = new List<AssociativeNode>();            
             if (addedSubTrees != null)
             {
                 foreach (var st in addedSubTrees)
@@ -389,6 +452,7 @@ namespace ProtoScript.Runners
                             if (bnode != null)
                             {
                                 bnode.guid = st.GUID;
+                                bnode.IsInputExpression = st.IsInput;
                             }
 
                             SetNestedLanguageBlockASTGuids(st.GUID, new List<ProtoCore.AST.Node>() { bnode });
@@ -455,11 +519,120 @@ namespace ProtoScript.Runners
             }
         }
 
+        public void UpdateCachedASTFromSubtrees(List<Subtree> modifiedSubTrees)
+        {
+            if (modifiedSubTrees != null)
+            {
+                for (int n = 0; n < modifiedSubTrees.Count(); ++n)
+                {
+                    Subtree subtree = modifiedSubTrees[n];
+                    if (subtree.AstNodes == null)
+                    {
+                        continue;
+                    }
 
-        private IEnumerable<AssociativeNode> GetDeltaAstListModified(IEnumerable<Subtree> modifiedSubTrees)
+                    UpdateCachedASTList(subtree, subtree.ModifiedAstNodes);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update the cached ASTs in the subtree given the modified ASTs
+        /// </summary>
+        /// <param name="st"></param>
+        /// <param name="modifiedASTList"></param>
+        private void UpdateCachedASTList(Subtree st, List<AssociativeNode> modifiedASTList)
+        {
+            // Disable removed nodes from the cache
+            Subtree oldSubTree;
+            bool cachedTreeExists = currentSubTreeList.TryGetValue(st.GUID, out oldSubTree);
+
+            if (cachedTreeExists && oldSubTree.AstNodes != null)
+            {
+                List<AssociativeNode> removedNodes = null;
+                if (st.IsInput)
+                {
+                    removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                    (modifiedASTList[0] as BinaryExpressionNode).OriginalAstID = (removedNodes[0] as BinaryExpressionNode).OriginalAstID;
+                }
+                else if (!st.ForceExecution)
+                {
+                    removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
+                    // We only need the removed binary ASTs
+                    // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
+                    csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
+                }
+
+                foreach (var removedAST in csData.RemovedBinaryNodesFromModification)
+                {
+                    core.BuildStatus.ClearWarningsForAst(removedAST.ID);
+                    runtimeCore.RuntimeStatus.ClearWarningsForAst(removedAST.ID);
+                }
+            }
+
+            // Cache the modifed functions
+            //var modifiedFunctions = st.AstNodes.Where(n => n is FunctionDefinitionNode);
+            var modifiedFunctions = modifiedASTList.Where(n => n is FunctionDefinitionNode);
+            csData.ModifiedFunctions.AddRange(modifiedFunctions);
+
+            // Handle cached subtree
+            if (!cachedTreeExists)
+            {
+                // Cache the subtree if it does not exist yet
+                // This scenario is possible if a subtree was deleted and the same subtree was added again as a modified subtree
+                currentSubTreeList.Add(st.GUID, st);
+            }
+            else
+            {
+                if (null == oldSubTree.AstNodes)
+                {
+                    // The ast list for this subtree is null
+                    // This is due to the liverunner being passed an empty astlist, such as a codeblock with no content
+                    // Populate this subtree with the current ast contents
+                    oldSubTree.AstNodes = modifiedASTList;
+                    currentSubTreeList[st.GUID] = oldSubTree;
+                }
+                else
+                {
+                    if (st.ForceExecution)
+                    {
+                        // Get the cached AST and append it to the changeSet
+                        csData.ForceExecuteASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+                    }
+                    else
+                    {
+                        // Only update the cached ASTs if it is not ForceExecution
+
+                        List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
+
+                        // Get all the unomodified ASTs and append them to the cached ast list 
+                        newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
+
+                        // Append all the modified ASTs to the cached ast list 
+                        newCachedASTList.AddRange(modifiedASTList);
+
+                        // ================================================================================
+                        // Get a list of functions that were removed
+                        // This is the list of functions that exist in oldSubTree.AstNodes and no longer exist in st.AstNodes
+                        // This will passed to the changeset applier to handle removed functions in the VM
+                        // ================================================================================
+                        IEnumerable<AssociativeNode> removedFunctions = oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode && !st.AstNodes.Contains(f));
+                        csData.RemovedFunctionDefNodesFromModification.AddRange(removedFunctions);
+
+                        st.AstNodes.Clear();
+                        st.AstNodes.AddRange(newCachedASTList);
+                        currentSubTreeList[st.GUID] = st;
+                    }
+                }
+            }
+        }
+
+
+        private IEnumerable<AssociativeNode> GetDeltaAstListModified(List<Subtree> modifiedSubTrees)
         {
             var deltaAstList = new List<AssociativeNode>();
             csData.RemovedBinaryNodesFromModification = new List<AssociativeNode>();
+            csData.ModifiedNodesForRuntimeSetValue = new List<AssociativeNode>();
             csData.RemovedFunctionDefNodesFromModification = new List<AssociativeNode>();
             csData.ModifiedFunctions = new List<AssociativeNode>();
             csData.ForceExecuteASTList = new List<AssociativeNode>();
@@ -470,107 +643,40 @@ namespace ProtoScript.Runners
                 return deltaAstList;
             }
 
-            foreach (var st in modifiedSubTrees)
+            for (int n = 0; n < modifiedSubTrees.Count(); ++n)
             {
-                if (st.AstNodes == null)
+                if (modifiedSubTrees[n].AstNodes == null)
                 {
                     continue;
                 }
 
-                // Handle modified statements
-                var modifiedASTList = GetModifiedNodes(st);
+                // Get modified statements
+                var modifiedASTList = GetModifiedNodes(modifiedSubTrees[n], out csData.ModifiedNodesForRuntimeSetValue);
+                modifiedSubTrees[n].ModifiedAstNodes.Clear();
+                modifiedSubTrees[n].ModifiedAstNodes.AddRange(modifiedASTList);
+                modifiedSubTrees[n].ModifiedAstNodes.AddRange(csData.ModifiedNodesForRuntimeSetValue);
                 deltaAstList.AddRange(modifiedASTList);
-
-                var modifiedExprIDs = modifiedASTList.Where(n => n is BinaryExpressionNode)
-                                                     .Select(n => (n as BinaryExpressionNode).exprUID);
-
-                // Disable removed nodes from the cache
-                Subtree oldSubTree;
-                bool cachedTreeExists = currentSubTreeList.TryGetValue(st.GUID, out oldSubTree);
-
-                if (cachedTreeExists && oldSubTree.AstNodes != null)
-                {
-                    List<AssociativeNode> removedNodes = null;
-                    if (!st.ForceExecution)
-                    {
-                        removedNodes = GetInactiveASTList(oldSubTree.AstNodes, st.AstNodes);
-                        // We only need the removed binary ASTs
-                        // Function definitions are handled in ChangeSetData.RemovedFunctionDefNodesFromModification
-                        csData.RemovedBinaryNodesFromModification.AddRange(removedNodes.Where(n => n is BinaryExpressionNode));
-                    }
-
-                    foreach (var ast in csData.RemovedBinaryNodesFromModification)
-                    {
-                        core.BuildStatus.ClearWarningsForAst(ast.ID);
-                        core.RuntimeStatus.ClearWarningsForAst(ast.ID);
-                    }
-                }
-
-                // Cache the modifed functions
-                //var modifiedFunctions = st.AstNodes.Where(n => n is FunctionDefinitionNode);
-                var modifiedFunctions = modifiedASTList.Where(n => n is FunctionDefinitionNode);
-                csData.ModifiedFunctions.AddRange(modifiedFunctions);
-
-                // Handle cached subtree
-                if (!cachedTreeExists)
-                {
-                    // Cache the subtree if it does not exist yet
-                    // This scenario is possible if a subtree was deleted and the same subtree was added again as a modified subtree
-                    currentSubTreeList.Add(st.GUID, st);
-                }
-                else
-                {
-                    if (null == oldSubTree.AstNodes)
-                    {
-                        // The ast list for this subtree is null
-                        // This is due to the liverunner being passed an empty astlist, such as a codeblock with no content
-                        // Populate this subtree with the current ast contents
-                        oldSubTree.AstNodes = modifiedASTList;
-                        currentSubTreeList[st.GUID] = oldSubTree;
-                    }
-                    else
-                    {
-                        if (st.ForceExecution)
-                        {
-                            // Get the cached AST and append it to the changeSet
-                            csData.ForceExecuteASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
-                        }
-                        else
-                        {
-                            // Only update the cached ASTs if it is not ForceExecution
-
-                            List<AssociativeNode> newCachedASTList = new List<AssociativeNode>();
-
-                            // Get all the unomodified ASTs and append them to the cached ast list 
-                            newCachedASTList.AddRange(GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes));
-
-                            // Append all the modified ASTs to the cached ast list 
-                            newCachedASTList.AddRange(modifiedASTList);
-
-                            // ================================================================================
-                            // Get a list of functions that were removed
-                            // This is the list of functions that exist in oldSubTree.AstNodes and no longer exist in st.AstNodes
-                            // This will passed to the changeset applier to handle removed functions in the VM
-                            // ================================================================================
-                            IEnumerable<AssociativeNode> removedFunctions = oldSubTree.AstNodes.Where(f => f is FunctionDefinitionNode && !st.AstNodes.Contains(f));
-                            csData.RemovedFunctionDefNodesFromModification.AddRange(removedFunctions);
-
-                            st.AstNodes.Clear();
-                            st.AstNodes.AddRange(newCachedASTList);
-                            currentSubTreeList[st.GUID] = st;
-                        }
-                    }
-                }
 
                 foreach (AssociativeNode node in modifiedASTList)
                 {
                     var bnode = node as BinaryExpressionNode;
                     if (bnode != null)
                     {
-                        bnode.guid = st.GUID;
+                        bnode.guid = modifiedSubTrees[n].GUID;
+                        bnode.IsInputExpression = modifiedSubTrees[n].IsInput;
                     }
+                    SetNestedLanguageBlockASTGuids(modifiedSubTrees[n].GUID, new List<ProtoCore.AST.Node>() { bnode });
+                }
 
-                    SetNestedLanguageBlockASTGuids(st.GUID, new List<ProtoCore.AST.Node>() { bnode });
+                // Handle modified primitives
+                foreach (AssociativeNode node in csData.ModifiedNodesForRuntimeSetValue)
+                {
+                    var bnode = node as BinaryExpressionNode;
+                    Validity.Assert(bnode != null);
+                    {
+                        bnode.guid = modifiedSubTrees[n].GUID;
+                        bnode.IsInputExpression = true;
+                    }
                 }
             }
             return deltaAstList;
@@ -687,8 +793,9 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="subtree"></param>
         /// <returns></returns>
-        private List<AssociativeNode> GetModifiedNodes(Subtree subtree)
+        private List<AssociativeNode> GetModifiedNodes(Subtree subtree, out List<AssociativeNode> modifiedInputAST)
         {
+            modifiedInputAST = new List<AssociativeNode>();
             Subtree st;
             if (!currentSubTreeList.TryGetValue(subtree.GUID, out st) || st.AstNodes == null)
             {
@@ -718,46 +825,53 @@ namespace ProtoScript.Runners
                     // It can then be handled normally regardless of its ForceExecution state
                     subtree.ForceExecution = false;
 
-                    // node is modifed as it does not match any existing
-                    modifiedASTList.Add(node);
-
-                    BinaryExpressionNode bnode = node as BinaryExpressionNode;
-                    if (null != bnode)
+                    if (st.IsInput)
                     {
-                        if (bnode.RightNode is LanguageBlockNode)
+                        // An input node is not re-compiled and executed
+                        // It is handled by the ChangeSetApply by re-executing the modified node with the updated changes
+                        modifiedInputAST.Add(node);
+                    }
+                    else
+                    {
+                        modifiedASTList.Add(node);
+                        BinaryExpressionNode bnode = node as BinaryExpressionNode;
+                        if (null != bnode)
                         {
-                            csData.ModifiedNestedLangBlock.Add(bnode);
-                        }
-                        else if (bnode.LeftNode is IdentifierNode)
-                        {
-                            string lhsName = (bnode.LeftNode as IdentifierNode).Name;
-                            Validity.Assert(null != lhsName && string.Empty != lhsName);
-                            if (CoreUtils.IsSSATemp(lhsName))
+                            if (bnode.RightNode is LanguageBlockNode)
                             {
-                                // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
-                                // this means that it was a modified variable within the previous expression.
-                                // Inherit its expression ID 
-                                foreach (AssociativeNode prevNode in st.AstNodes)
+                                csData.ModifiedNestedLangBlock.Add(bnode);
+                            }
+                            else if (bnode.LeftNode is IdentifierNode)
+                            {
+                                string lhsName = (bnode.LeftNode as IdentifierNode).Name;
+                                Validity.Assert(null != lhsName && string.Empty != lhsName);
+                                if (CoreUtils.IsSSATemp(lhsName))
                                 {
-                                    BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
-                                    if (null != prevBinaryNode)
+                                    // If the lhs of this binary expression is an SSA temp, and it existed in the lhs of any cached nodes, 
+                                    // this means that it was a modified variable within the previous expression.
+                                    // Inherit its expression ID 
+                                    foreach (AssociativeNode prevNode in st.AstNodes)
                                     {
-                                        IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
-                                        if (null != prevIdent)
+                                        BinaryExpressionNode prevBinaryNode = prevNode as BinaryExpressionNode;
+                                        if (null != prevBinaryNode)
                                         {
-                                            if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                            IdentifierNode prevIdent = prevBinaryNode.LeftNode as IdentifierNode;
+                                            if (null != prevIdent)
                                             {
-                                                bnode.InheritID(prevBinaryNode.ID);
-                                                bnode.exprUID = prevBinaryNode.exprUID;
+                                                if (prevIdent.Equals(bnode.LeftNode as IdentifierNode))
+                                                {
+                                                    bnode.InheritID(prevBinaryNode.ID);
+                                                    bnode.exprUID = prevBinaryNode.exprUID;
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                // Handle re-defined lhs expressions
-                                HandleRedefinedLHS(bnode, st.AstNodes);
+                                else
+                                {
+                                    // Handle re-defined lhs expressions
+                                    HandleRedefinedLHS(bnode, st.AstNodes);
+                                }
                             }
                         }
                     }
@@ -765,7 +879,6 @@ namespace ProtoScript.Runners
             }
             return modifiedASTList;
         }
-
 
         /// <summary>
         /// Get the ASTs from the previous list that no longer exist in the new list
@@ -929,10 +1042,11 @@ namespace ProtoScript.Runners
     public interface ILiveRunner
     {
         ProtoCore.Core Core { get; }
+        ProtoCore.RuntimeCore RuntimeCore { get; }
 
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
-        void PreviewGraph(GraphSyncData syncData);
+        List<Guid> PreviewGraph(GraphSyncData syncData);
         void UpdateCmdLineInterpreter(string code);
         ProtoCore.Mirror.RuntimeMirror QueryNodeValue(Guid nodeId);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
@@ -1036,6 +1150,19 @@ namespace ProtoScript.Runners
             }
         }
 
+        private ProtoCore.RuntimeCore runtimeCore = null;
+        public ProtoCore.RuntimeCore RuntimeCore
+        {
+            get
+            {
+                return runtimeCore;
+            }
+            private set
+            {
+                runtimeCore = value;
+            }
+        }
+
         private Options coreOptions = null;
         private Configuration configuration = null;
         private int deltaSymbols = 0;
@@ -1074,7 +1201,7 @@ namespace ProtoScript.Runners
             staticContext = new ProtoCore.CompileTime.Context();
 
             terminating = false;
-            changeSetComputer = new ChangeSetComputer(runnerCore);
+            changeSetComputer = new ChangeSetComputer(runnerCore, runtimeCore);
             changeSetApplier = new ChangeSetApplier();
         }
 
@@ -1089,8 +1216,15 @@ namespace ProtoScript.Runners
             {
                 if (runnerCore != null)
                 {
-                    runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -= FFIPropertyChanged;
-                    runnerCore.Cleanup();
+                    runtimeCore.Cleanup();
+                    runnerCore = null;
+                }
+
+                if (runtimeCore != null)
+                {
+                    runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler -=
+                        FFIPropertyChanged;
+                    runtimeCore.Cleanup();
                 }
 
                 terminating = true;
@@ -1100,10 +1234,15 @@ namespace ProtoScript.Runners
                     taskQueue.Clear();
                 }
 
-                // waiting for thread to finish
-                if (workerThread.IsAlive)
+                if (workerThread != null)
                 {
-                    workerThread.Join();
+                    // waiting for thread to finish
+                    if (workerThread.IsAlive)
+                    {
+                        workerThread.Join();
+                    }
+
+                    workerThread = null;
                 }
             }
         }
@@ -1115,14 +1254,12 @@ namespace ProtoScript.Runners
                 GenerateExprID = true,
                 IsDeltaExecution = true,
                 BuildOptErrorAsWarning = true,
-                WebRunner = false,
                 ExecutionMode = ExecutionMode.Serial
             };
 
             runnerCore = new ProtoCore.Core(coreOptions);
-            runnerCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(runnerCore));
-            runnerCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(runnerCore));
-            runnerCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
+            runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
+            runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
 
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
@@ -1132,6 +1269,39 @@ namespace ProtoScript.Runners
             }
 
             vmState = null;
+
+            CreateRuntimeCore();
+        }
+
+        /// <summary>
+        /// Cretes a new instance of the RuntimeCore object
+        /// </summary>
+        private void CreateRuntimeCore()
+        {
+            runtimeCore = new ProtoCore.RuntimeCore(runnerCore.Heap);
+            runtimeCore.FFIPropertyChangedMonitor.FFIPropertyChangedEventHandler += FFIPropertyChanged;
+        }
+
+        /// <summary>
+        /// Setup the RuntimeCore for the next execution cycle
+        /// </summary>
+        private void SetupRuntimeCoreForExecution(bool isCodeCompiled)
+        {
+            // runnerCore.GlobOffset is the number of global symbols that need to be allocated on the stack
+            // The argument to Reallocate is the number of ONLY THE NEW global symbols as the stack needs to accomodate this delta
+            int globalStackFrameSize = runnerCore.GlobOffset - deltaSymbols;
+
+            // If there are lesser symbols to allocate for this run, then it means nodes were deleted.
+            // We just leave them in the global stack as no symbols point to this memory location in the stack anyway
+            // This will be addressed when instruction cache is optimized
+            runtimeCore.SetupForExecution(runnerCore, globalStackFrameSize);
+            if (isCodeCompiled)
+            {
+                runtimeCore.SetupStartPC();
+            }
+          
+            // Store the current number of global symbols
+            deltaSymbols = runnerCore.GlobOffset;
         }
 
         private void FFIPropertyChanged(FFIPropertyChangedEventArgs arg)
@@ -1253,7 +1423,7 @@ namespace ProtoScript.Runners
                     {
                         //return GetWatchValue(nodeName);
                         const int blockID = 0;
-                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runnerCore);
+                        ProtoCore.Mirror.RuntimeMirror runtimeMirror = ProtoCore.Mirror.Reflection.Reflect(nodeName, blockID, runtimeCore, runnerCore);
                         return runtimeMirror;
                     }
                 }
@@ -1272,8 +1442,8 @@ namespace ProtoScript.Runners
             // Traverse order:
             //  Exelist, Globals symbols
 
-            ProtoCore.DSASM.Executive exec = runnerCore.CurrentExecutive.CurrentDSASMExec;
-            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runnerCore);
+            ProtoCore.DSASM.Executive exec = runtimeCore.CurrentExecutive.CurrentDSASMExec;
+            ExecutionMirror execMirror = new ProtoCore.DSASM.Mirror.ExecutionMirror(exec, runtimeCore);
             Executable exe = exec.exe;
 
             // Only display symbols defined in the default top-most langauge block;
@@ -1309,7 +1479,7 @@ namespace ProtoScript.Runners
         /// This API needs to be called for every delta AST preview
         /// </summary>
         /// <param name="syncData"></param>
-        public void PreviewGraph(GraphSyncData syncData)
+        public List<Guid> PreviewGraph(GraphSyncData syncData)
         {
             while (true)
             {
@@ -1317,8 +1487,7 @@ namespace ProtoScript.Runners
                 {
                     if (taskQueue.Count == 0)
                     {
-                        PreviewInternal(syncData);
-                        return;
+                        return PreviewInternal(syncData);                       
                     }
                 }
                 Thread.Sleep(1);
@@ -1423,7 +1592,7 @@ namespace ProtoScript.Runners
 
                     }
                 }
-                Thread.Sleep(10);
+                Thread.Sleep(1);
             }
         }
 
@@ -1474,9 +1643,6 @@ namespace ProtoScript.Runners
 
         private bool Compile(List<AssociativeNode> astList, Core targetCore, out int blockId)
         {
-            // The ASTs have already been transformed to SSA
-            //runnerCore.Options.GenerateSSA = false;
-
             bool succeeded = runner.Compile(astList, targetCore, out blockId);
             if (succeeded)
             {
@@ -1490,39 +1656,19 @@ namespace ProtoScript.Runners
             return succeeded;
         }
 
-        private ProtoRunner.ProtoVMState Execute()
+        private ProtoRunner.ProtoVMState Execute(bool isCodeCompiled)
         {
-            // runnerCore.GlobOffset is the number of global symbols that need to be allocated on the stack
-            // The argument to Reallocate is the number of ONLY THE NEW global symbols as the stack needs to accomodate this delta
-            int newSymbols = runnerCore.GlobOffset - deltaSymbols;
-
-            // If there are lesser symbols to allocate for this run, then it means nodes were deleted.
-            // TODO Jun: Determine if it is safe to just leave them in the global stack 
-            //           as no symbols point to this memory location in the stack anyway
-            if (newSymbols >= 0)
-            {
-                runnerCore.Rmem.PushFrameForGlobals(newSymbols);
-            }
-
-            // Store the current number of global symbols
-            deltaSymbols = runnerCore.GlobOffset;
-
-            // Initialize the runtime context and pass it the execution delta list from the graph compiler
-            ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
-
             try
             {
-                runner.Execute(runnerCore, runtimeContext);
+                SetupRuntimeCoreForExecution(isCodeCompiled);
+                runner.ExecuteLive(runnerCore, runtimeCore);
             }
             catch (ProtoCore.Exceptions.ExecutionCancelledException)
             {
-                runnerCore.Cleanup();
+                runtimeCore.Cleanup();
                 ReInitializeLiveRunner();
             }
-
-            // ExecutionMirror mirror = new ExecutionMirror(runnerCore.CurrentExecutive.CurrentDSASMExec, runnerCore);
-
-            return new ProtoRunner.ProtoVMState(runnerCore);
+            return new ProtoRunner.ProtoVMState(runnerCore, runtimeCore);
         }
 
         private bool CompileAndExecute(string code)
@@ -1532,8 +1678,8 @@ namespace ProtoScript.Runners
             bool succeeded = Compile(code, out blockId);
             if (succeeded)
             {
-                runnerCore.RunningBlock = blockId;
-                vmState = Execute();
+                runtimeCore.RunningBlock = blockId;
+                vmState = Execute(!string.IsNullOrEmpty(code));
             }
             return succeeded;
         }
@@ -1542,11 +1688,11 @@ namespace ProtoScript.Runners
         {
             // TODO Jun: Revisit all the Compile functions and remove the blockId out argument
             int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            bool succeeded = Compile(astList, runnerCore, out blockId);
+            bool succeeded= Compile(astList, runnerCore, out blockId);
             if (succeeded)
             {
-                runnerCore.RunningBlock = blockId;
-                vmState = Execute();
+                runtimeCore.RunningBlock = blockId;
+                vmState = Execute(astList.Count > 0);
             }
             return succeeded;
         }
@@ -1580,11 +1726,11 @@ namespace ProtoScript.Runners
 
         private void ApplyUpdate()
         {
-            if (ProtoCore.AssociativeEngine.Utils.GetDirtyNodeCountAtGlobalScope(runnerCore.DSExecutable) > 0)
+            if (ProtoCore.AssociativeEngine.Utils.IsGlobalScopeDirty(runnerCore.DSExecutable))
             {
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
-                Execute();
+                Execute(true);
             }
         }
 
@@ -1595,6 +1741,7 @@ namespace ProtoScript.Runners
         private void ResetForDeltaExecution()
         {
             runnerCore.ResetForDeltaExecution();
+            runtimeCore.ResetForDeltaExecution();
         }
 
         /// <summary>
@@ -1635,13 +1782,14 @@ namespace ProtoScript.Runners
             PostExecution();
         }
 
-        private void PreviewInternal(GraphSyncData syncData)
+        private List<Guid> PreviewInternal(GraphSyncData syncData)
         {
             // Get the list of ASTs that will be affected by syncData
             var previewAstList = changeSetComputer.GetDeltaASTList(syncData);
 
             // Get the list of guid's affected by the astlist
             List<Guid> cbnGuidList = changeSetComputer.EstimateNodesAffectedByASTList(previewAstList);
+            return cbnGuidList;
         }
 
         private void SynchronizeInternal(GraphSyncData syncData)
@@ -1656,9 +1804,10 @@ namespace ProtoScript.Runners
 
             // Get AST list that need to be executed
             var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
+            changeSetComputer.UpdateCachedASTFromSubtrees(syncData.ModifiedSubtrees);
 
             // Prior to execution, apply state modifications to the VM given the delta AST's
-            changeSetApplier.Apply(runnerCore, changeSetComputer.csData);
+            changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
 
             CompileAndExecuteForDeltaExecution(finalDeltaAstList);
         }
@@ -1701,7 +1850,7 @@ namespace ProtoScript.Runners
             deltaSymbols = 0;
             InitCore();
             staticContext = new ProtoCore.CompileTime.Context();
-            changeSetComputer = new ChangeSetComputer(runnerCore);
+            changeSetComputer = new ChangeSetComputer(runnerCore, runtimeCore);
             CLRModuleType.ClearTypes();
         }
 
@@ -1792,7 +1941,7 @@ namespace ProtoScript.Runners
         {
             // Group all warnings by their expression ids, and only keep the last
             // warning for each expression, and then group by GUID.  
-            var warnings = runnerCore.RuntimeStatus
+            var warnings = runtimeCore.RuntimeStatus
                                      .Warnings
                                      .Where(w => !w.GraphNodeGuid.Equals(Guid.Empty))
                                      .OrderBy(w => w.GraphNodeGuid)

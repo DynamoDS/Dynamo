@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
+using System.Xml;
+using System.IO;
 
 using Dynamo.DSEngine;
 using Dynamo.Library;
@@ -17,7 +18,7 @@ namespace Dynamo.Tests
     {
         #region Helpers
 
-        private static XDocument SampleDocument = XDocument.Parse(
+        private static XmlReader SampleDocument = XmlReader.Create(new StringReader(
 @"
 <doc>          
     <members>
@@ -36,7 +37,7 @@ namespace Dynamo.Tests
         </member>
     </members>
 </doc>
-");
+"));
 
         private static FunctionDescriptor GetTranslateMethod()
         {
@@ -47,15 +48,17 @@ namespace Dynamo.Tests
                 new TypedParameter("zTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0))
             };
 
-            var funcDesc = new FunctionDescriptor(
-                "ProtoGeometry.dll",
-                "Autodesk.DesignScript.Geometry.Geometry",
-                "Translate",
-                parms,
-                TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
-                FunctionType.InstanceMethod);
+            var funcDesc = new FunctionDescriptor(new FunctionDescriptorParams
+            {
+                Assembly = "ProtoGeometry.dll",
+                ClassName = "Autodesk.DesignScript.Geometry.Geometry",
+                FunctionName = "Translate",
+                Parameters = parms,
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
+                FunctionType = FunctionType.InstanceMethod
+            });
 
-            parms.ForEach(x => x.Function = funcDesc);
+            parms.ForEach(x => x.UpdateFunctionDescriptor(funcDesc));
 
             return funcDesc;
         }

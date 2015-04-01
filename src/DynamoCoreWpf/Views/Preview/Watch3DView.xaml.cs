@@ -217,8 +217,6 @@ namespace Dynamo.Controls
 
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine("Watch 3D view unloaded.");
-
             var vm = DataContext as IWatchViewModel;
             if (vm != null)
             {
@@ -249,11 +247,11 @@ namespace Dynamo.Controls
                 var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
                 var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
 
-                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Rendering Tier: {0}", renderingTier));
-                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Pixel Shader 3 Supported: {0}", pixelShader3Supported));
-                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Pixel Shader 4 Supported: {0}", pixelShader4Supported));
-                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Software Effect Rendering Supported: {0}", softwareEffectSupported));
-                vm.ViewModel.Model.Logger.Log("RENDER", string.Format("Maximum hardware texture size: {0}", maxTextureSize));
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
+                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
             }
 
             DrawGrid();
@@ -421,8 +419,6 @@ namespace Dynamo.Controls
                 return;
             }
 
-            Debug.WriteLine(string.Format("Rendering visuals for {0}", e.Id));
-
             var sw = new Stopwatch();
             sw.Start();
 
@@ -498,12 +494,6 @@ namespace Dynamo.Controls
 
             sw.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for updating background preview.", sw.Elapsed));
-
-            var vm = (IWatchViewModel)DataContext;
-            if (vm.CheckForLatestRenderCommand.CanExecute(e.TaskId))
-            {
-                vm.CheckForLatestRenderCommand.Execute(e.TaskId);
-            }
 
             points.Freeze();
             pointsSelected.Freeze();

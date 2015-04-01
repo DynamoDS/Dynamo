@@ -20,7 +20,7 @@ namespace Dynamo.Nodes
     ///     DesignScript Custom Node instance.
     /// </summary>
     [NodeName("Custom Node")]
-    [NodeDescription("Instance of a Custom Node")]
+    [NodeDescription("FunctionDescription",typeof(Dynamo.Properties.Resources))]
     [IsInteractive(false)]
     [NodeSearchable(false)]
     [IsMetaNode]
@@ -31,6 +31,7 @@ namespace Dynamo.Nodes
             CustomNodeDefinition def, string nickName, string description, string category)
             : base(new CustomNodeController<CustomNodeDefinition>(def))
         {
+            ValidateDefinition(def);
             ArgumentLacing = LacingStrategy.Shortest;
             NickName = nickName;
             Description = description;
@@ -81,26 +82,72 @@ namespace Dynamo.Nodes
             element.AppendChild(outEl);
         }
 
+        /// <summary>
+        ///     Complete a definition for a proxy custom node instance 
+        ///     by adding input and output ports as far as we don't have
+        ///     a corresponding custom node workspace
+        /// </summary>
+        /// <param name="funcID">Identifier of the custom node instance</param>
+        /// <param name="inputs">Number of inputs</param>
+        /// <param name="outputs">Number of outputs</param>
+        internal void LoadNode(Guid nodeId, int inputs, int outputs)
+        {
+            GUID = nodeId;
+            
+            // make the custom node instance be in sync 
+            // with its definition if it's needed
+            if (!Controller.IsInSyncWithNode(this))
+            {
+                Controller.SyncNodeWithDefinition(this);
+            }
+            else
+            {
+                PortData data;
+                if (outputs > 0)
+                {
+                    // create outputs for the node
+                    for (int i = 0; i < outputs; i++)
+                    {
+                        data = new PortData("", "Output #" + (i + 1));
+                        if (OutPortData.Count > i)
+                            OutPortData[i] = data;
+                        else
+                            OutPortData.Add(data);
+                    }
+                }
+
+                if (inputs > 0)
+                {
+                    // create inputs for the node
+                    for (int i = 0; i < inputs; i++)
+                    {
+                        data = new PortData("", "Input #" + (i + 1));
+                        if (InPortData.Count > i)
+                            InPortData[i] = data;
+                        else
+                            InPortData.Add(data);
+                    }
+                }
+
+                RegisterAllPorts();
+            }
+
+            //argument lacing on functions should be set to disabled
+            //by default in the constructor, but for any workflow saved
+            //before this was the case, we need to ensure it here.
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            base.DeserializeCore(nodeElement, context); //Base implementation must be called
-
             List<XmlNode> childNodes = nodeElement.ChildNodes.Cast<XmlNode>().ToList();
-
-            XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
-            if (nameNode != null && nameNode.Attributes != null)
-                NickName = nameNode.Attributes["value"].Value;
-
-            XmlNode descNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Description"));
-            if (descNode != null && descNode.Attributes != null)
-                Description = descNode.Attributes["value"].Value;
 
             if (!Controller.IsInSyncWithNode(this))
             {
                 Controller.SyncNodeWithDefinition(this);
                 OnNodeModified();
             }
-            else
+            else if (Controller.Definition == null || Controller.Definition.IsProxy)
             {
                 foreach (XmlNode subNode in childNodes)
                 {
@@ -112,7 +159,7 @@ namespace Dynamo.Nodes
                                        (outputNode, i) =>
                                            new
                                            {
-                                               data = new PortData(outputNode.Attributes[0].Value, "Output #" + (i + 1)),
+                                               data = new PortData(outputNode.Attributes[0].Value, Properties.Resources.ToolTipOutput + (i + 1)),
                                                idx = i
                                            });
 
@@ -132,7 +179,7 @@ namespace Dynamo.Nodes
                                        (inputNode, i) =>
                                            new
                                            {
-                                               data = new PortData(inputNode.Attributes[0].Value, "Input #" + (i + 1)),
+                                               data = new PortData(inputNode.Attributes[0].Value, Properties.Resources.ToolTipInput + (i + 1)),
                                                idx = i
                                            });
 
@@ -149,7 +196,7 @@ namespace Dynamo.Nodes
 
                     else if (subNode.Name.Equals("Output"))
                     {
-                        var data = new PortData(subNode.Attributes[0].Value, "function output");
+                        var data = new PortData(subNode.Attributes[0].Value, Properties.Resources.ToolTipFunctionOutput);
 
                         if (OutPortData.Any())
                             OutPortData[0] = data;
@@ -162,12 +209,40 @@ namespace Dynamo.Nodes
 
                 RegisterAllPorts();
             }
+
+            base.DeserializeCore(nodeElement, context); //Base implementation must be called
+
+            XmlNode nameNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Name"));
+            if (nameNode != null && nameNode.Attributes != null)
+                NickName = nameNode.Attributes["value"].Value;
+
+            XmlNode descNode = childNodes.LastOrDefault(subNode => subNode.Name.Equals("Description"));
+            if (descNode != null && descNode.Attributes != null)
+                Description = descNode.Attributes["value"].Value;
         }
 
         #endregion
 
+        private void ValidateDefinition(CustomNodeDefinition def)
+        {
+            if (def == null)
+            {
+                throw new ArgumentNullException("def");
+            }
+
+            if (def.IsProxy)
+            {
+                this.Error(Properties.Resources.CustomNodeNotLoaded);
+            } 
+            else
+            {
+                this.ClearRuntimeError();
+            }
+        }
+
         public void ResyncWithDefinition(CustomNodeDefinition def)
         {
+            ValidateDefinition(def);
             Controller.Definition = def;
             Controller.SyncNodeWithDefinition(this);
         }
@@ -175,7 +250,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function parameter, use with custom nodes. \n\nYou can specify the type and default value for parameter. E.g.,\n\ninput : var[]..[]\nvalue : bool = false")]
+    [NodeDescription("SymbolNodeDescription",typeof(Dynamo.Properties.Resources))]
     [NodeSearchTags("variable", "argument", "parameter")]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
@@ -184,16 +259,20 @@ namespace Dynamo.Nodes
     {
         private string inputSymbol = String.Empty;
         private string nickName = String.Empty;
+        private ElementResolver elementResolver;
+        private ElementResolver workspaceElementResolver;
 
         public Symbol()
         {
-            OutPortData.Add(new PortData("", "Symbol"));
+            OutPortData.Add(new PortData("", Properties.Resources.ToolTipSymbol));
 
             RegisterAllPorts();
 
             ArgumentLacing = LacingStrategy.Disabled;
 
             InputSymbol = String.Empty;
+
+            elementResolver = new ElementResolver();
         }
 
         public string InputSymbol
@@ -208,7 +287,7 @@ namespace Dynamo.Nodes
 
                 nickName = substrings[0].Trim();
                 var type = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
-                object defaultValue = null;
+                AssociativeNode defaultValue = null;
 
                 if (substrings.Count() > 2)
                 {
@@ -222,9 +301,7 @@ namespace Dynamo.Nodes
                     //    x : type
                     //    x : type = default_value
                     IdentifierNode identifierNode;
-                    AssociativeNode defaultValueNode;
-
-                    if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValueNode))
+                    if (!TryParseInputSymbol(inputSymbol, out identifierNode, out defaultValue))
                     {
                         this.Warning(Properties.Resources.WarningInvalidInput);
                     }
@@ -239,19 +316,10 @@ namespace Dynamo.Nodes
                         }
                         else
                         {
-                            nickName = identifierNode.Value;
-                            type = identifierNode.datatype;
-                        }
+                            if (defaultValue == null)
+                                nickName = identifierNode.Value;
 
-                        if (defaultValueNode != null)
-                        {
-                            TypeSwitch.Do(
-                                defaultValueNode,
-                                TypeSwitch.Case<IntNode>(n => defaultValue = n.Value),
-                                TypeSwitch.Case<DoubleNode>(n => defaultValue = n.Value),
-                                TypeSwitch.Case<BooleanNode>(n => defaultValue = n.Value),
-                                TypeSwitch.Case<StringNode>(n => defaultValue = n.value),
-                                TypeSwitch.Default(() => defaultValue = null));
+                            type = identifierNode.datatype;
                         }
                     }
                 }
@@ -296,6 +364,9 @@ namespace Dynamo.Nodes
             }
 
             ArgumentLacing = LacingStrategy.Disabled;
+
+            var resolutionMap = CodeBlockUtils.DeserializeElementResolver(nodeElement);
+            elementResolver = new ElementResolver(resolutionMap);
         }
 
         private bool TryParseInputSymbol(string inputSymbol, 
@@ -305,23 +376,13 @@ namespace Dynamo.Nodes
             identifier = null;
             defaultValue = null;
 
-            // workaround: there is an issue in parsing "x:int" format unless 
-            // we create the other parser specially for it. We change it to 
-            // "x:int = dummy;" for parsing. 
             var parseString = InputSymbol;
-
-            // if it has default value, then append ';'
-            if (InputSymbol.Contains("="))
-            {
-                parseString += ";";
-            }
-            else
-            {
-                String dummyExpression = "{0}=dummy;";
-                parseString = string.Format(dummyExpression, parseString);
-            }
-
-            ParseParam parseParam = new ParseParam(this.GUID, parseString);
+            parseString += ";";
+            
+            // During loading of symbol node from file, the elementResolver from the workspace is unavailable
+            // in which case, a local copy of the ER obtained from the symbol node is used
+            var resolver = workspaceElementResolver ?? elementResolver;
+            var parseParam = new ParseParam(this.GUID, parseString, resolver);
 
             if (EngineController.CompilationServices.PreCompileCodeBlock(ref parseParam) &&
                 parseParam.ParsedNodes != null &&
@@ -347,6 +408,7 @@ namespace Dynamo.Nodes
         {
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
+            workspaceElementResolver = updateValueParams.ElementResolver;
 
             if (name == "InputSymbol")
             {
@@ -360,7 +422,7 @@ namespace Dynamo.Nodes
 
     [NodeName("Output")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A function output, use with custom nodes")]
+    [NodeDescription("OutputNodeDescription",typeof(Dynamo.Properties.Resources))]
     [IsInteractive(false)]
     [NotSearchableInHomeWorkspace]
     [IsDesignScriptCompatible]

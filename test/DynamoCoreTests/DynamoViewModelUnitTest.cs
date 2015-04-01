@@ -5,23 +5,36 @@ using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
-
+using DynamoShapeManager;
 using NUnit.Framework;
 
 using ProtoCore.Mirror;
-using DynamoUtilities;
 using System.Reflection;
 using System.IO;
+using TestServices;
 
 namespace Dynamo.Tests
 {
+    /// <summary>
+    /// 
+    ///     The DynamoViewModelUnitTests constructs the DynamoModel
+    ///     and the DynamoViewModel, but does not construct the view.
+    ///     You can use this class to create tests which ensure that the 
+    ///     ViewModel and the Model are communicating properly.
+    /// 
+    ///     WARNING! You should think twice about using this class!  It's
+    ///     often a better alternative to use DynamoModelTestBase or,
+    ///     better yet, use an even lighter weight class.  
+    ///
+    /// </summary>
     public class DynamoViewModelUnitTest : UnitTestBase
     {
         protected DynamoViewModel ViewModel;
+        protected Preloader preloader;
 
-        public override void Init()
+        public override void Setup()
         {
-            base.Init();
+            base.Setup();
             StartDynamo();
         }
 
@@ -29,10 +42,15 @@ namespace Dynamo.Tests
         {
             try
             {
+                preloader = null;
                 DynamoSelection.Instance.ClearSelection();
 
+                if (ViewModel == null)
+                    return;
+
                 var shutdownParams = new DynamoViewModel.ShutdownParams(
-                    shutdownHost: false, allowCancellation: false);
+                    shutdownHost: false,
+                    allowCancellation: false);
 
                 ViewModel.PerformShutdownSequence(shutdownParams);
                 ViewModel.RequestUserSaveWorkflow -= RequestUserSaveWorkflow;
@@ -44,8 +62,6 @@ namespace Dynamo.Tests
             }
 
             base.Cleanup();
-
-            GC.Collect();
         }
 
         private void RequestUserSaveWorkflow(object sender, WorkspaceSaveEventArgs e)
@@ -78,17 +94,44 @@ namespace Dynamo.Tests
             }
         }
 
+        protected virtual void GetLibrariesToPreload(List<string> libraries)
+        {
+            // Nothing here by design. If you find yourself having to add 
+            // anything here, something must be wrong. DynamoViewModelUnitTest
+            // is designed to contain no test cases, so it does not need any 
+            // preloaded library, all of which should only be specified in the
+            // derived class.
+        }
+
         protected void StartDynamo()
         {
-            DynamoPathManager.Instance.InitializeCore(
-               Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var assemblyPath = Assembly.GetExecutingAssembly().Location;
+            preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+            preloader.Preload();
 
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-            
-            var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
                 {
-                    StartInTestMode = true
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
+            var model = DynamoModel.Start(
+                new DynamoModel.DefaultStartConfiguration()
+                {
+                    PathResolver = pathResolver,
+                    StartInTestMode = true,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
 
             this.ViewModel = DynamoViewModel.Start(
@@ -144,7 +187,7 @@ namespace Dynamo.Tests
         protected IEnumerable<object> GetPreviewValues()
         {
             List<object> objects = new List<object>();
-            foreach(var node in ViewModel.Model.CurrentWorkspace.Nodes)
+            foreach (var node in ViewModel.Model.CurrentWorkspace.Nodes)
             {
                 objects.Add(GetPreviewValue(node.GUID));
             }
@@ -159,7 +202,7 @@ namespace Dynamo.Tests
                 var mirror = GetRuntimeMirror(varname);
                 Assert.IsNull(mirror);
             }
-            
+
         }
 
         protected object GetPreviewValue(System.Guid guid)
@@ -180,9 +223,9 @@ namespace Dynamo.Tests
             int outportCount = node.OutPorts.Count;
             Assert.IsTrue(outportCount > 0);
 
-            if(outportCount > 1) 
-                return node.AstIdentifierBase; 
-            else 
+            if (outportCount > 1)
+                return node.AstIdentifierBase;
+            else
                 return node.GetAstIdentifierForOutputIndex(0).Value;
 
         }
@@ -196,18 +239,35 @@ namespace Dynamo.Tests
             int outportCount = node.OutPorts.Count;
             Assert.IsTrue(outportCount > 0);
 
-            if (outportCount > 1) 
-                return node.AstIdentifierBase; 
-            else 
+            if (outportCount > 1)
+                return node.AstIdentifierBase;
+            else
                 return node.GetAstIdentifierForOutputIndex(0).Value;
 
         }
 
+        /// <summary>
+        /// Used to reflect on runtime data such as values of a variable
+        /// </summary>
+        /// <param name="varName"></param>
+        /// <returns></returns>
         protected RuntimeMirror GetRuntimeMirror(string varName)
         {
             RuntimeMirror mirror = null;
             Assert.DoesNotThrow(() => mirror = ViewModel.Model.EngineController.GetMirror(varName));
             return mirror;
+        }
+
+        /// <summary>
+        /// Used to reflect on static data such as classes and class members
+        /// </summary>
+        /// <param name="varName"></param>
+        /// <returns></returns>
+        protected ClassMirror GetClassMirror(string className)
+        {
+            ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
+            var classMirror = new ClassMirror(className, core);
+            return classMirror;
         }
 
     }

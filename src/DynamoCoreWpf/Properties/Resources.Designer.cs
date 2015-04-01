@@ -115,6 +115,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autodesk Sign In.
+        /// </summary>
+        public static string AutodeskSignIn {
+            get {
+                return ResourceManager.GetString("AutodeskSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string BrowserWindowLoading {
+            get {
+                return ResourceManager.GetString("BrowserWindowLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must provide a Build version as a non-negative integer..
         /// </summary>
         public static string BuildVersionNonNegative {
@@ -954,6 +972,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run is not available when running Automatically or Periodically..
+        /// </summary>
+        public static string DynamoViewRunButtonToolTipDisabled {
+            get {
+                return ResourceManager.GetString("DynamoViewRunButtonToolTipDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show In Folder.
         /// </summary>
         public static string DynamoViewSamplesMenuShowInFolder {
@@ -1269,6 +1296,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Run Preview.
+        /// </summary>
+        public static string DynamoViewSettingShowRunPreview {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingShowRunPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Export Workspace As Image.
         /// </summary>
         public static string DynamoViewToolbarExportButtonTooltip {
@@ -1530,7 +1566,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All Files (*.*)|*.*.
+        ///   Looks up a localized string similar to All Files ({0})|{0}.
         /// </summary>
         public static string FileDialogAllFiles {
             get {
@@ -1539,7 +1575,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assembly Library Files (*.dll)|*.dll.
+        ///   Looks up a localized string similar to Assembly Library Files ({0})|{0}.
         /// </summary>
         public static string FileDialogAssemblyFiles {
             get {
@@ -1548,7 +1584,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml.
+        ///   Looks up a localized string similar to Custom Node, DLL, XML ({0})|{0}.
         /// </summary>
         public static string FileDialogCustomNodeDLLXML {
             get {
@@ -1575,7 +1611,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DesignScript Files (*.ds)|*.ds.
+        ///   Looks up a localized string similar to DesignScript Files ({0})|{0}.
         /// </summary>
         public static string FileDialogDesignScriptFiles {
             get {
@@ -1584,7 +1620,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Custom Node (*.dyf)|*.dyf.
+        ///   Looks up a localized string similar to Dynamo Custom Node ({0})|{0}.
         /// </summary>
         public static string FileDialogDynamoCustomNode {
             get {
@@ -1593,7 +1629,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Definitions (*.dyn; *.dyf)|*.dyn;*.dyf.
+        ///   Looks up a localized string similar to Dynamo Definitions ({0})|{0}.
         /// </summary>
         public static string FileDialogDynamoDefinitions {
             get {
@@ -1602,7 +1638,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Workspace (*.dyn)|*.dyn.
+        ///   Looks up a localized string similar to Dynamo Workspace ({0})|{0}.
         /// </summary>
         public static string FileDialogDynamoWorkspace {
             get {
@@ -1611,7 +1647,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Library Files (*.dll, *.ds)|*.dll;*.ds.
+        ///   Looks up a localized string similar to Library Files ({0})|{0}.
         /// </summary>
         public static string FileDialogLibraryFiles {
             get {
@@ -1620,7 +1656,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PNG Image|*.png.
+        ///   Looks up a localized string similar to PNG Image|{0}.
         /// </summary>
         public static string FileDialogPNGFiles {
             get {
@@ -1629,7 +1665,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to STL Models|*.stl.
+        ///   Looks up a localized string similar to STL Models|{0}.
         /// </summary>
         public static string FileDialogSTLModels {
             get {
@@ -1949,6 +1985,15 @@ namespace Dynamo.Wpf.Properties {
         public static string InstallMessageCaption {
             get {
                 return ResourceManager.GetString("InstallMessageCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid URL for login page!.
+        /// </summary>
+        public static string InvalidLoginUrl {
+            get {
+                return ResourceManager.GetString("InvalidLoginUrl", resourceCulture);
             }
         }
         
@@ -2540,6 +2585,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to none.
+        /// </summary>
+        public static string NoneString {
+            get {
+                return ResourceManager.GetString("NoneString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
         public static string NoteViewContextMenuDelete {
@@ -2653,6 +2707,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageDownloadStateStarting {
             get {
                 return ResourceManager.GetString("PackageDownloadStateStarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while Dynamo is not running and try again..
+        /// </summary>
+        public static string PackageDuplicateAssemblyWarning {
+            get {
+                return ResourceManager.GetString("PackageDuplicateAssemblyWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot update assembly!.
+        /// </summary>
+        public static string PackageDuplicateAssemblyWarningTitle {
+            get {
+                return ResourceManager.GetString("PackageDuplicateAssemblyWarningTitle", resourceCulture);
             }
         }
         
@@ -3170,6 +3242,69 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run completed..
+        /// </summary>
+        public static string RunCompletedMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run completed with warnings..
+        /// </summary>
+        public static string RunCompletedWithWarningsMessage {
+            get {
+                return ResourceManager.GetString("RunCompletedWithWarningsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run started....
+        /// </summary>
+        public static string RunStartedMessage {
+            get {
+                return ResourceManager.GetString("RunStartedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run whenever there is a change to the graph..
+        /// </summary>
+        public static string RunTypeToolTipAutomatically {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run whenever you press the Run button..
+        /// </summary>
+        public static string RunTypeToolTipManually {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Periodic running is disabled when there are no nodes in your graph that support it..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyDisabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run at the specified interval..
+        /// </summary>
+        public static string RunTypeToolTipPeriodicallyEnabled {
+            get {
+                return ResourceManager.GetString("RunTypeToolTipPeriodicallyEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirmation.
         /// </summary>
         public static string SaveConfirmationMessageBoxTitle {
@@ -3220,6 +3355,24 @@ namespace Dynamo.Wpf.Properties {
         public static string ShowClassicNodeLibrary {
             get {
                 return ResourceManager.GetString("ShowClassicNodeLibrary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph.
+        /// </summary>
+        public static string ShowRunPreviewDisableToolTip {
+            get {
+                return ResourceManager.GetString("ShowRunPreviewDisableToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Execution preview is not available when running automatically.
+        /// </summary>
+        public static string ShowRunPreviewEnableToolTip {
+            get {
+                return ResourceManager.GetString("ShowRunPreviewEnableToolTip", resourceCulture);
             }
         }
         
@@ -3431,10 +3584,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An update is available for Dynamo
-        ///
-        ///Click OK to close Dynamo and install
-        ///Click CANCEL to cancel the update..
+        ///   Looks up a localized string similar to An update is available for Dynamo.
+        ///Installing the latest update requires Dynamo and any host applications to close.
+        ///Do you want to install the latest Dynamo update?.
         /// </summary>
         public static string UpdateMessage {
             get {
@@ -3461,7 +3613,13 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We would like to collect some information about how Dynamo is used..
+        ///   Looks up a localized string similar to We would like to collect some information about how Dynamo is used.
+        ///
+        ///Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.
+        ///
+        ///The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).
+        ///
+        ///The information being collected  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string UsageReportPromptDialogMessagePart1 {
             get {
@@ -3470,7 +3628,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language..
+        ///   Looks up a localized string similar to It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting &apos;Enable usability data reporting&apos; in the settings menu of the UI.
+        ///
+        ///ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK.
+        ///
+        ///Many thanks!.
         /// </summary>
         public static string UsageReportPromptDialogMessagePart2 {
             get {
@@ -3479,52 +3641,8 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address)..
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart3 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The information being collected is:.
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart4 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart4", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting &apos;Enable usability data reporting&apos; in the settings menu of the UI..
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart5 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart5", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK..
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart6 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart6", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Many thanks!.
-        /// </summary>
-        public static string UsageReportPromptDialogMessagePart7 {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogMessagePart7", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime)..
+        ///   Looks up a localized string similar to The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime).
+        ///.
         /// </summary>
         public static string UsageReportPromptDialogNodeUsage {
             get {

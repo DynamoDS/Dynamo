@@ -5,9 +5,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
-
+using System.Windows.Media;
 using Dynamo.Search;
-
+using Dynamo.UI;
+using Dynamo.ViewModels;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -42,13 +43,14 @@ namespace Dynamo.Wpf.ViewModels
             Items.ToList().ForEach(x => x.RecursivelySort());
         }
 
-        private void ItemsOnCollectionChanged(object sender, 
+        private void ItemsOnCollectionChanged(object sender,
             NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (BrowserItem item in e.NewItems.OfType<BrowserItem>()) {
+                    foreach (BrowserItem item in e.NewItems.OfType<BrowserItem>())
+                    {
                         Items.Add(Wrap(item));
                     }
                     break;
@@ -103,12 +105,23 @@ namespace Dynamo.Wpf.ViewModels
         public ICommand ClickedCommand { get; private set; }
 
         private string name;
+        private string fullCategoryName;
+        private string assembly;
         private ObservableCollection<ISearchEntryViewModel> items;
-        private ObservableCollection<NodeSearchElementViewModel> entries;
-        private ObservableCollection<NodeCategoryViewModel> subCategories;
+        private readonly ObservableCollection<NodeSearchElementViewModel> entries;
+        private readonly ObservableCollection<NodeCategoryViewModel> subCategories;
         private bool visibility;
         private bool isExpanded;
         private bool isSelected;
+
+        public event RequestBitmapSourceHandler RequestBitmapSource;
+        public void OnRequestBitmapSource(IconRequestEventArgs e)
+        {
+            if (RequestBitmapSource != null)
+            {
+                RequestBitmapSource(e);
+            }
+        }
 
         public string Name
         {
@@ -121,37 +134,46 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        public string FullCategoryName
+        {
+            get { return fullCategoryName; }
+            set
+            {
+                if (value == fullCategoryName) return;
+                fullCategoryName = value;
+                RaisePropertyChanged("FullCategoryName");
+            }
+        }
+
+        public string Assembly
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(assembly))
+                    return Configurations.DefaultAssembly;
+
+                return assembly;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(assembly)) return;
+                assembly = value;
+            }
+        }
+
         public ObservableCollection<ISearchEntryViewModel> Items
         {
             get { return items; }
-            set
-            {
-                if (Equals(value, items)) return;
-                items = value;
-                RaisePropertyChanged("Items");
-            }
         }
 
         public ObservableCollection<NodeSearchElementViewModel> Entries
         {
             get { return entries; }
-            set
-            {
-                if (Equals(value, entries)) return;
-                entries = value;
-                RaisePropertyChanged("Entries");
-            }
         }
 
         public ObservableCollection<NodeCategoryViewModel> SubCategories
         {
             get { return subCategories; }
-            set
-            {
-                if (Equals(value, subCategories)) return;
-                subCategories = value;
-                RaisePropertyChanged("SubCategories");
-            }
         }
 
         public bool Visibility
@@ -195,6 +217,23 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        ///<summary>
+        /// Small icon for class and method buttons.
+        ///</summary>
+        public ImageSource SmallIcon
+        {
+            get
+            {
+                ImageSource icon = GetIcon(Name + Configurations.SmallIconPostfix);
+
+                // If there is no icon, use default.
+                if (icon == null)
+                    icon = LoadDefaultIcon();
+
+                return icon;
+            }
+        }
+
         public NodeCategoryViewModel(string name)
             : this(
                 name,
@@ -206,8 +245,8 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(Expand);
 
             Name = name;
-            Entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
-            SubCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
+            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
+            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
 
             foreach (var category in SubCategories)
                 category.PropertyChanged += CategoryOnPropertyChanged;
@@ -216,15 +255,15 @@ namespace Dynamo.Wpf.ViewModels
             SubCategories.CollectionChanged += OnCollectionChanged;
             SubCategories.CollectionChanged += SubCategoriesOnCollectionChanged;
 
-            Items = new ObservableCollection<ISearchEntryViewModel>(
+            items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
 
             Items.CollectionChanged += ItemsOnCollectionChanged;
-            
+
             foreach (var item in Items)
                 item.PropertyChanged += ItemOnPropertyChanged;
-            
+
             Visibility = true;
             IsExpanded = false;
         }
@@ -241,8 +280,8 @@ namespace Dynamo.Wpf.ViewModels
                 {
                     item.PropertyChanged += ItemOnPropertyChanged;
                 }
-            } 
-            
+            }
+
             if (args.OldItems != null)
             {
                 foreach (var item in args.OldItems.Cast<ISearchEntryViewModel>())
@@ -319,8 +358,8 @@ namespace Dynamo.Wpf.ViewModels
         {
             var endState = !IsExpanded;
 
-            //foreach (var ele in this.Siblings)
-            //    ele.IsExpanded = false;
+            foreach (var ele in SubCategories.Where(cat => cat.IsExpanded == true))
+                ele.IsExpanded = false;
 
             //Walk down the tree expanding anything nested one layer deep
             //this can be removed when we have the hierachy implemented properly
@@ -332,7 +371,7 @@ namespace Dynamo.Wpf.ViewModels
                     subElement.IsExpanded = true;
                     if (subElement.SubCategories.Any())
                         subElement = subElement.SubCategories[0];
-                    else 
+                    else
                         break;
                 }
 
@@ -373,7 +412,7 @@ namespace Dynamo.Wpf.ViewModels
             foreach (var item in items)
                 item.PropertyChanged -= ItemOnPropertyChanged;
 
-            Items = new ObservableCollection<ISearchEntryViewModel>(
+            items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
 
@@ -386,7 +425,7 @@ namespace Dynamo.Wpf.ViewModels
         private void RemoveFromItems(IEnumerable<ISearchEntryViewModel> oldItems)
         {
             foreach (var entry in oldItems)
-                Items.Remove(entry);   
+                Items.Remove(entry);
         }
 
         private void AddToItems(IEnumerable<ISearchEntryViewModel> newItems)
@@ -401,21 +440,87 @@ namespace Dynamo.Wpf.ViewModels
                                 entry.Name,
                                 StringComparison.Ordinal)
                                 >= 0);
-                if (first != null)
-                    Items.Insert(first.Idx, entry);
+                // Classes must be first in any case.
+                if (entry is ClassesNodeCategoryViewModel)
+                    Items.Insert(0, entry);
                 else
-                    Items.Add(entry);
+                    if (first != null)
+                        Items.Insert(first.Idx, entry);
+                    else
+                        Items.Add(entry);
             }
+        }
+
+        private ImageSource GetIcon(string fullNameOfIcon)
+        {
+            var iconRequest = new IconRequestEventArgs(Assembly, fullNameOfIcon);
+            OnRequestBitmapSource(iconRequest);
+
+            return iconRequest.Icon;
+        }
+
+        private ImageSource LoadDefaultIcon()
+        {
+            var iconRequest = new IconRequestEventArgs(Configurations.DefaultAssembly,
+                Configurations.DefaultIcon);
+            OnRequestBitmapSource(iconRequest);
+
+            return iconRequest.Icon;
+        }
+
+        public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
+        {
+            var first = SubCategories.Select((x, i) => new { x.Name, Idx = i })
+                .FirstOrDefault(
+                    x =>
+                        string.Compare(
+                            x.Name,
+                            newSubCategory.Name,
+                            StringComparison.Ordinal)
+                            >= 0);
+            if (first != null)
+                SubCategories.Insert(first.Idx, newSubCategory);
+            else
+                SubCategories.Add(newSubCategory);
         }
     }
 
     public class RootNodeCategoryViewModel : NodeCategoryViewModel
     {
+        private ClassInformationViewModel classDetails;
+        public ClassInformationViewModel ClassDetails
+        {
+            get
+            {
+                if (classDetails == null && SubCategories.Count == 0)
+                {
+                    classDetails = new ClassInformationViewModel();
+                    classDetails.IsRootCategoryDetails = true;
+                    classDetails.PopulateMemberCollections(this);
+                }
+
+                return classDetails;
+            }
+        }
+
         public RootNodeCategoryViewModel(string name) : base(name) { }
 
         public RootNodeCategoryViewModel(
             string name, IEnumerable<NodeSearchElementViewModel> entries,
-            IEnumerable<NodeCategoryViewModel> subs) : base(name, entries, subs)
+            IEnumerable<NodeCategoryViewModel> subs)
+            : base(name, entries, subs)
         { }
+    }
+
+    public class ClassesNodeCategoryViewModel : NodeCategoryViewModel
+    {
+        public NodeCategoryViewModel Parent { get; private set; }
+
+        public ClassesNodeCategoryViewModel(NodeCategoryViewModel parent)
+            : base(Configurations.ClassesDefaultName)
+        {
+            FullCategoryName = Configurations.ClassesDefaultName;
+            Parent = parent;
+        }
     }
 }

@@ -1,6 +1,5 @@
-﻿using Dynamo.Core;
-using Dynamo.UI;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,9 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-
-using System.Xml.Serialization;
 using System.Xml.Linq;
+using System.Xml.Serialization;
+using Dynamo.Core;
+using Microsoft.Win32;
 
 namespace Dynamo.UpdateManager
 {
@@ -46,13 +46,12 @@ namespace Dynamo.UpdateManager
         void QuitAndInstallUpdate();
         void HostApplicationBeginQuit();
         void UpdateDataAvailable(IAsynchronousRequest request);
-        bool IsVersionCheckInProgress();
         bool CheckNewerDailyBuilds { get; set; }
         bool ForceUpdate { get; set; }
-        string UpdateFileLocation { get; }
         IUpdateManagerConfiguration Configuration { get; }
         event LogEventHandler Log;
         void OnLog(LogEventArgs args);
+        void RegisterExternalApplicationProcessId(int id);
     }
 
     public interface IUpdateManagerConfiguration
@@ -261,7 +260,7 @@ namespace Dynamo.UpdateManager
                     updateManager.OnLog(
                         new LogEventArgs(
                             string.Format(
-                                "Failed to load {0}\n, Exception: {1}",
+                                Properties.Resources.FailedToLoad,
                                 filePath,
                                 ex.Message),
                             LogLevel.Console));
@@ -291,7 +290,7 @@ namespace Dynamo.UpdateManager
                     updateManager.OnLog(
                         new LogEventArgs(
                             string.Format(
-                                "Failed to save {0}\n, Exception: {1}",
+                                Properties.Resources.FailedToSave,
                                 filePath,
                                 ex.Message),
                             LogLevel.Console));
@@ -334,14 +333,16 @@ namespace Dynamo.UpdateManager
         private bool versionCheckInProgress;
         private BinaryVersion productVersion;
         private IAppVersionInfo updateInfo;
-        private const string InstallNameBase = "DynamoInstall";
-        private const string OldDailyInstallNameBase = "DynamoDailyInstall";
+        private const string INSTALL_NAME_BASE = "DynamoInstall";
+        private const string OLD_DAILY_INSTALL_NAME_BASE = "DynamoDailyInstall";
+        private const string INSTALLUPDATE_EXE = "InstallUpdate.exe";
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
         private IAppVersionInfo downloadedUpdateInfo;
         private static IUpdateManager instance;
         private static readonly object lockingObject = new object();
         private UpdateManagerConfiguration configuration = null;
+        private int hostApplicationProcessId = -1;
 
         #endregion
 
@@ -411,7 +412,7 @@ namespace Dynamo.UpdateManager
             {
                 if (value != null)
                 {
-                    OnLog(new LogEventArgs(string.Format("Update available: {0}", value.Version), LogLevel.Console));
+                    OnLog(new LogEventArgs(string.Format(Properties.Resources.UpdateAvailable, value.Version), LogLevel.Console));
                 }
 
                 updateInfo = value;
@@ -510,7 +511,7 @@ namespace Dynamo.UpdateManager
                         //When the UpdateInfo property changes, this will be reflected in the UI
                         //by the vsisibility of the download cloud. The most up to date version will
                         //be downloaded asynchronously.
-                        OnLog(new LogEventArgs("Update download started...", LogLevel.Console));
+                        OnLog(new LogEventArgs(Properties.Resources.UpdateDownloadStarted, LogLevel.Console));
 
                         var tempPath = Path.GetTempPath();
                         DownloadUpdatePackageAsynchronously(updateInfo.InstallerURL, updateInfo.Version, tempPath);
@@ -530,7 +531,7 @@ namespace Dynamo.UpdateManager
         public void CheckForProductUpdate(IAsynchronousRequest request)
         {
             OnLog(new LogEventArgs("RequestUpdateVersionInfo", LogLevel.File));
-            OnLog(new LogEventArgs("Requesting version update info...", LogLevel.Console));
+            OnLog(new LogEventArgs(Properties.Resources.RequestingVersionUpdate, LogLevel.Console));
 
             if (versionCheckInProgress)
                 return;
@@ -554,7 +555,7 @@ namespace Dynamo.UpdateManager
             if (!string.IsNullOrEmpty(request.Error) ||
                 string.IsNullOrEmpty(request.Data))
             {
-                OnLog(new LogEventArgs("Couldn't get update data from " + request.Path, LogLevel.Console));
+                OnLog(new LogEventArgs(String.Format(Properties.Resources.CouldNotGetUpdateData, request.Path), LogLevel.Console));
                 versionCheckInProgress = false;
                 return;
             }
@@ -562,7 +563,7 @@ namespace Dynamo.UpdateManager
             var latestBuildFilePath = GetLatestBuildFromS3(request, CheckNewerDailyBuilds);
             if (string.IsNullOrEmpty(latestBuildFilePath))
             {
-                OnLog(new LogEventArgs("Couldn't get the latest build from S3", LogLevel.Console));
+                OnLog(new LogEventArgs(Properties.Resources.CouldNotGetLatestBuild, LogLevel.Console));
                 versionCheckInProgress = false;
                 return;
             }
@@ -580,19 +581,19 @@ namespace Dynamo.UpdateManager
             var latestBuildTime = new DateTime();
 
             bool useStable = false;
-            if (IsStableBuild(InstallNameBase, latestBuildFilePath))
+            if (IsStableBuild(INSTALL_NAME_BASE, latestBuildFilePath))
             {
                 useStable = true;
-                latestBuildVersion = GetBinaryVersionFromFilePath(InstallNameBase, latestBuildFilePath);
+                latestBuildVersion = GetBinaryVersionFromFilePath(INSTALL_NAME_BASE, latestBuildFilePath);
             }
-            else if (IsDailyBuild(InstallNameBase, latestBuildFilePath) || IsDailyBuild(OldDailyInstallNameBase, latestBuildFilePath))
+            else if (IsDailyBuild(INSTALL_NAME_BASE, latestBuildFilePath) || IsDailyBuild(OLD_DAILY_INSTALL_NAME_BASE, latestBuildFilePath))
             {
-                latestBuildTime = GetBuildTimeFromFilePath(InstallNameBase, latestBuildFilePath);
+                latestBuildTime = GetBuildTimeFromFilePath(INSTALL_NAME_BASE, latestBuildFilePath);
                 latestBuildVersion = GetCurrentBinaryVersion();
             }
             else
             {
-                OnLog(new LogEventArgs("The specified file path is not recognizable as a stable or a daily build", LogLevel.Console));
+                OnLog(new LogEventArgs(Properties.Resources.PathNotRegconizableAsStableOrDailyBuild, LogLevel.Console));
                 versionCheckInProgress = false;
                 return;
             }
@@ -625,7 +626,7 @@ namespace Dynamo.UpdateManager
                     }
                     else
                     {
-                        OnLog(new LogEventArgs("Dynamo is up to date.", LogLevel.Console));
+                        OnLog(new LogEventArgs(Properties.Resources.DynamoUpToDate, LogLevel.Console));
                     }
                 }
                 else // Check dailies
@@ -636,7 +637,7 @@ namespace Dynamo.UpdateManager
                     }
                     else
                     {
-                        OnLog(new LogEventArgs("Dynamo is up to date.", LogLevel.Console));
+                        OnLog(new LogEventArgs(Properties.Resources.DynamoUpToDate, LogLevel.Console));
                     }
                 }
             }
@@ -654,20 +655,47 @@ namespace Dynamo.UpdateManager
 
         public void HostApplicationBeginQuit()
         {
-            if (!string.IsNullOrEmpty(UpdateFileLocation))
+            // Double check that the updater path is not null and that there
+            // exists a file at that location on disk.
+            // Although this updater is stored in a temp directory,
+            // and the user wouldn't have come across it, there's the
+            // outside chance that it was deleted. Update cannot
+            // continue without this file.
+
+            if (string.IsNullOrEmpty(UpdateFileLocation) || !File.Exists(UpdateFileLocation))
+                return;
+
+            var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var updater = Path.Combine(currDir, INSTALLUPDATE_EXE);
+            
+            // Double check that that the updater program exists.
+            // This program lives in the users's base Dynamo directory. If 
+            // it doesn't exist, we can't run the update.
+
+            if (!File.Exists(updater)) 
+                return;
+
+            var p = new Process
             {
-                var currDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                var updater = Path.Combine(currDir, "InstallUpdate.exe");
-                if (File.Exists(updater))
+                StartInfo =
                 {
-                    Process.Start(updater, UpdateFileLocation);
+                    FileName = updater,
+                    Arguments = UpdateFileLocation,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
                 }
+            };
+
+            if (hostApplicationProcessId != -1)
+            {
+                p.StartInfo.Arguments += " " + hostApplicationProcessId;
             }
+            p.Start();
         }
 
-        public bool IsVersionCheckInProgress()
+        public void RegisterExternalApplicationProcessId(int id)
         {
-            return versionCheckInProgress;
+            hostApplicationProcessId = id;
         }
 
         #endregion
@@ -682,7 +710,7 @@ namespace Dynamo.UpdateManager
                 return;
 
             string errorMessage = ((null == e.Error) ? "Successful" : e.Error.Message);
-            OnLog(new LogEventArgs("UpdateManager-OnDownloadFileCompleted", LogLevel.File));
+            OnLog(new LogEventArgs(Properties.Resources.UpdateDownloadComplete, LogLevel.Console));
             OnLog(new LogEventArgs(errorMessage, LogLevel.File));
 
             UpdateFileLocation = string.Empty;
@@ -749,7 +777,7 @@ namespace Dynamo.UpdateManager
 
             var builds = bucketresult.Descendants(ns + "LastModified").
                 OrderByDescending(x => DateTime.Parse(x.Value)).
-                Where(x => x.Parent.Value.Contains(InstallNameBase) || x.Parent.Value.Contains(OldDailyInstallNameBase)).
+                Where(x => x.Parent.Value.Contains(INSTALL_NAME_BASE) || x.Parent.Value.Contains(OLD_DAILY_INSTALL_NAME_BASE)).
                 Select(x => x.Parent);
 
 
@@ -763,8 +791,8 @@ namespace Dynamo.UpdateManager
 
             string latestBuild = string.Empty;
             latestBuild = checkDailyBuilds ?
-                fileNames.FirstOrDefault(x => IsDailyBuild(InstallNameBase, x) || IsDailyBuild(OldDailyInstallNameBase, x)) :
-                fileNames.FirstOrDefault(x => IsStableBuild(InstallNameBase, x));
+                fileNames.FirstOrDefault(x => IsDailyBuild(INSTALL_NAME_BASE, x) || IsDailyBuild(OLD_DAILY_INSTALL_NAME_BASE, x)) :
+                fileNames.FirstOrDefault(x => IsStableBuild(INSTALL_NAME_BASE, x));
 
             return latestBuild;
         }
@@ -982,7 +1010,7 @@ namespace Dynamo.UpdateManager
             if (e.ProgressPercentage % 10 == 0 &&
                 e.ProgressPercentage > currentDownloadProgress)
             {
-                OnLog(new LogEventArgs(string.Format("Update download progress: {0}%", e.ProgressPercentage), LogLevel.Console));
+                OnLog(new LogEventArgs(string.Format(Properties.Resources.UpdateDownloadProgress, e.ProgressPercentage), LogLevel.Console));
                 currentDownloadProgress = e.ProgressPercentage;
             }
         }
@@ -995,8 +1023,62 @@ namespace Dynamo.UpdateManager
         /// </summary>
         internal static void CheckForProductUpdate()
         {
+            //If we already have higher version installed, don't look for product update.
+            if(new DynamoLookUp().LatestProduct > Instance.ProductVersion)
+                return;
+
             var downloadUri = new Uri(Instance.Configuration.DownloadSourcePath);
             Instance.CheckForProductUpdate(new UpdateRequest(downloadUri, Instance));
+        }
+    }
+
+    /// <summary>
+    /// Lookup for installed products
+    /// </summary>
+    public class DynamoLookUp
+    {
+        /// <summary>
+        /// Gets the version of latest product
+        /// </summary>
+        public BinaryVersion LatestProduct { get { return GetLatestInstallVersion(); } }
+
+        /// <summary>
+        /// Locates DynamoCore.dll at given install path and gets file version
+        /// </summary>
+        /// <param name="installPath">Dynamo install path</param>
+        /// <returns>Dynamo version if valid Dynamo exists else null</returns>
+        public virtual Version GetDynamoVersion(string installPath)
+        {
+            if(!Directory.Exists(installPath))//null or empty installPath will return false
+                return null;
+
+            var filePath = Directory.GetFiles(installPath, "*DynamoCore.dll").FirstOrDefault();
+            return String.IsNullOrEmpty(filePath) ? null : Version.Parse(FileVersionInfo.GetVersionInfo(filePath).FileVersion);
+        }
+
+        /// <summary>
+        /// Gets all dynamo install path on the system by looking into registery
+        /// </summary>
+        /// <returns>List of Dynamo install path</returns>
+        public virtual IEnumerable<string> GetDynamoInstalls()
+        {
+            const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
+            //Open HKLM for 64bit registry
+            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            //Open Windows/CurrentVersion/Uninstall registry key
+            regKey = regKey.OpenSubKey(regKey64);
+
+            //Get "InstallLocation" value as string for all the subkey that starts with "Dynamo"
+            return regKey.GetSubKeyNames().Where(s => s.StartsWith("Dynamo")).Select(
+                (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
+        }
+
+        private BinaryVersion GetLatestInstallVersion()
+        {
+            var dynamoInstallations = GetDynamoInstalls();
+            var latestVersion =
+                dynamoInstallations.Select(GetDynamoVersion).OrderBy(s => s).LastOrDefault();
+            return latestVersion == null ? null : BinaryVersion.FromString(latestVersion.ToString());
         }
     }
 }

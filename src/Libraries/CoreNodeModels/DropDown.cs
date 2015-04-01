@@ -6,6 +6,7 @@ using System.Linq;
 using System.Xml;
 
 using Dynamo.Models;
+using Dynamo.Properties;
 
 namespace DSCoreNodesUI
 {
@@ -80,7 +81,7 @@ namespace DSCoreNodesUI
 
         protected DSDropDownBase(string outputName)
         {
-            OutPortData.Add(new PortData(outputName, string.Format("The selected {0}", outputName)));
+            OutPortData.Add(new PortData(outputName, string.Format(Properties.Resources.DropDownPortDataResultToolTip, outputName)));
             RegisterAllPorts();
             PopulateItems();
         }
@@ -104,7 +105,12 @@ namespace DSCoreNodesUI
             if (attrib == null)
                 return;
 
-            SelectedIndex = ParseSelectedIndex(attrib.Value, Items);
+            selectedIndex = ParseSelectedIndex(attrib.Value, Items);
+
+            if (selectedIndex < 0)
+            {
+                Warning(Resources.NothingIsSelectedWarning);
+            }
         }
 
         public static int ParseSelectedIndex(string index, IList<DynamoDropDownItem> items)
@@ -133,19 +139,15 @@ namespace DSCoreNodesUI
 
         public static string SaveSelectedIndex(int index, IList<DynamoDropDownItem> items )
         {
-            var result = "-1";
-
-            if (index == -1)
+            // If nothing is selected or there are no
+            // items in the collection, than return -1
+            if (index == -1 || items.Count == 0)
             {
-                result = index.ToString();
+                return "-1";
             }
-            else
-            {
-                var item = items[index];
-                result = string.Format("{0}:{1}", index, XmlEscape(item.Name));
-            }
-
-            return result;
+            
+            var item = items[index];
+            return string.Format("{0}:{1}", index, XmlEscape(item.Name));
         }
 
         private static string XmlEscape(string unescaped)

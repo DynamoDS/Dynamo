@@ -16,4 +16,5 @@ namespace Dynamo.ViewModels
 
     public delegate void RequestDisplayPreviewsHandler(IEnumerable<NodeModel> nodes);
 
+    public delegate void RequestBitmapSourceHandler(IconRequestEventArgs e);
 }
