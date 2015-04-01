@@ -148,7 +148,7 @@ namespace Dynamo.ViewModels
             {
                 if (_enableUpstreamPreviewCommand == null)
                 {
-                    _enableNodePreviewCommand = new DelegateCommand(
+                    _enableUpstreamPreviewCommand = new DelegateCommand(
                         EnableUpstreamPreview, CanEnableUpstreamPreview);
                 }
 
