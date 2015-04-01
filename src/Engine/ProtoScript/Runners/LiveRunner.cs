@@ -1730,6 +1730,7 @@ namespace ProtoScript.Runners
             {
                 ResetForDeltaExecution();
                 runnerCore.Options.ApplyUpdate = true;
+                Execute(true);
             }
         }
 
