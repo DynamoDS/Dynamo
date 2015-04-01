@@ -484,21 +484,20 @@ namespace Dynamo.Wpf.ViewModels
         public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
         {
             bool hasClasses = SubCategories.FirstOrDefault() is ClassesNodeCategoryViewModel;
-            var first = SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel))
-                .Select((x, i) => new { x.Name, Idx = i })
-                .FirstOrDefault(
-                    x =>
-                        string.Compare(
-                            x.Name,
-                            newSubCategory.Name,
-                            StringComparison.Ordinal)
-                            >= 0);
-            if (first != null)
+            var nextLargerItemIndex = -1;
+            foreach (var subCategory in SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel)))
             {
-                if (hasClasses)
-                    SubCategories.Insert(first.Idx + 1, newSubCategory);
-                else
-                    SubCategories.Insert(first.Idx, newSubCategory);
+                if (string.Compare(subCategory.Name, newSubCategory.Name, StringComparison.Ordinal) >= 0)
+                {
+                    nextLargerItemIndex = Items.IndexOf(subCategory);
+                    break;
+                }
+            }
+
+            if (nextLargerItemIndex >= 0)
+            {
+                var offset = hasClasses ? 1 : 0;
+                SubCategories.Insert(nextLargerItemIndex + offset, newSubCategory);
             }
             else
                 SubCategories.Add(newSubCategory);
