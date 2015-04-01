@@ -1325,33 +1325,36 @@ namespace Dynamo.Models
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (name == "NickName")
+            switch (name)
             {
-                NickName = value;
-                return true;
-            }
-
-            if (name == "UsingDefaultValue")
-            {
-                if (string.IsNullOrWhiteSpace(value))
+                case "NickName":
+                    NickName = value;
                     return true;
 
-                // Here we expect a string that represents an array of Boolean values which are separated by ";"
-                var arr = value.Split(';');
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
-                }
-                return true;
-            }
+                case "UsingDefaultValue":
+                    if (string.IsNullOrWhiteSpace(value))
+                        return true;
 
-            if (name == "ArgumentLacing")
-            {
-                LacingStrategy strategy;
-                if (!Enum.TryParse(value, out strategy))
-                    strategy = LacingStrategy.Disabled;
-                ArgumentLacing = strategy;
-                return true;
+                    // Here we expect a string that represents an array of Boolean values which are separated by ";"
+                    var arr = value.Split(';');
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                    }
+                    return true;
+                  
+                case "ArgumentLacing":
+                    LacingStrategy strategy;
+                    if (!Enum.TryParse(value, out strategy))
+                        strategy = LacingStrategy.Disabled;
+                    ArgumentLacing = strategy;
+                    return true;
+
+                case "IsVisible":
+                    bool newVisibilityValue;
+                    if (bool.TryParse(value, out newVisibilityValue))
+                        IsVisible = newVisibilityValue;
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
