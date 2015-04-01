@@ -73,9 +73,8 @@ namespace Dynamo.DSEngine
         {
             var assemblyName = function.Assembly;
 
-            // Case for operators.
-            if (string.IsNullOrEmpty(assemblyName))
-                return String.Empty;
+            if (string.IsNullOrEmpty(assemblyName) || (function.Type == FunctionType.GenericFunction))
+                return String.Empty; // Operators, or generic global function in DS script.
 
             var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName
                 (assemblyName, GetMemberElementName(function));
@@ -149,7 +148,9 @@ namespace Dynamo.DSEngine
         {
             char prefixCode;
 
-            string memberName = member.ClassName + "." + member.FunctionName;
+            string memberName = member.FunctionName;
+            if (!string.IsNullOrEmpty(member.ClassName))
+                memberName = member.ClassName + "." + member.FunctionName;
 
             switch (member.Type)
             {
