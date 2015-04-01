@@ -276,7 +276,10 @@ namespace Dynamo.ViewModels
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += this.AlignSelectionCanExecuteChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += (sender, e) =>
+            {
+                AlignSelectedCommand.RaiseCanExecuteChanged();
+            };
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
@@ -806,11 +809,6 @@ namespace Dynamo.ViewModels
         //{
         //    NodeFromSelectionCommand.RaiseCanExecuteChanged();
         //}
-
-        private void AlignSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            AlignSelectedCommand.RaiseCanExecuteChanged();
-        }
 
         private static bool CanCreateNodeFromSelection(object parameter)
         {
