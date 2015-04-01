@@ -559,78 +559,10 @@ namespace Dynamo.DSEngine
 
         #region Node2Code
 
-        [Obsolete("Node2Code disabled, API subject to change.")]
-        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string, string> variableNames, bool verboseLogging)
+        public Nodes2CodeParam ConvertNodesToCode(IEnumerable<NodeModel> nodes, bool verboseLogging)
         {
-            variableNames = new Dictionary<string, string>();
-            if (!nodes.Any())
-                return string.Empty;
-
-            string code = NodeToCodeUtils.ConvertNodesToCode(astBuilder, nodes, verboseLogging);
-            if (string.IsNullOrEmpty(code))
-                return code;
-
-            StringBuilder sb = new StringBuilder(code);
-            string newVar;
-            foreach (var node in nodes)
-            {
-                if (node is CodeBlockNodeModel)
-                {
-                    var tempVars = (node as CodeBlockNodeModel).TempVariables;
-                    foreach (var tempVar in tempVars)
-                    {
-                        newVar = GenerateShortVariable();
-                        sb = sb.Replace(tempVar, newVar);
-                        variableNames.Add(tempVar, newVar);
-                    }
-                }
-                else
-                {
-                    string thisVar = node.AstIdentifierForPreview.ToString();
-                    newVar = GenerateShortVariable();
-                    sb = sb.Replace(thisVar, newVar);
-                    variableNames.Add(thisVar, newVar);
-                }
-
-                //get the names of inputs as well and replace them with simpler names
-                foreach (var inport in node.InPorts)
-                {
-                    if (inport.Connectors.Count == 0)
-                        continue;
-                    var inputNode = inport.Connectors[0].Start.Owner;
-                    if (nodes.Contains(inputNode))
-                        continue;
-                    if (!(inputNode is CodeBlockNodeModel))
-                    {
-                        string inputVar = inputNode.AstIdentifierForPreview.ToString();
-                        if (!variableNames.ContainsKey(inputVar))
-                        {
-                            newVar = GenerateShortVariable();
-                            variableNames.Add(inputVar, newVar);
-                            sb = sb.Replace(inputVar, newVar);
-                        }
-                    }
-                    else
-                    {
-                        var cbn = inputNode as CodeBlockNodeModel;
-                        int portIndex = cbn.OutPorts.IndexOf(inport.Connectors[0].Start);
-                        string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
-                        if (cbn.TempVariables.Contains(inputVar))
-                        {
-                            if (!variableNames.ContainsKey(inputVar))
-                            {
-                                newVar = GenerateShortVariable();
-                                variableNames.Add(inputVar, newVar);
-                                sb = sb.Replace(inputVar, newVar);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return sb.ToString();
+            return Nodes2CodeUtils.Node2Code(astBuilder, nodes, verboseLogging);
         }
-
 
         private string GenerateShortVariable()
         {

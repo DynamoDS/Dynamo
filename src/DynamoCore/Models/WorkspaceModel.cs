@@ -915,94 +915,98 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController, bool verboseLogging)
+        internal void ConvertNodesToCodeInternal(EngineController engineController, bool verboseLogging)
         {
-            IEnumerable<NodeModel> selectedNodes =
-                DynamoSelection.Instance.Selection.OfType<NodeModel>().Where(n => n.IsConvertible);
-            
+            var selectedNodes = DynamoSelection.Instance
+                                               .Selection
+                                               .OfType<NodeModel>()
+                                               .Where(n => n.IsConvertible);
             if (!selectedNodes.Any())
                 return;
 
-            Dictionary<string, string> variableNameMap;
-            string code = engineController.ConvertNodesToCode(selectedNodes, out variableNameMap, verboseLogging);
-
-            CodeBlockNodeModel codeBlockNode;
+            var node2CodeMap = engineController.ConvertNodesToCode(selectedNodes, verboseLogging);
+            var codeBlockNodes = new List<CodeBlockNodeModel>();
 
             //UndoRedo Action Group----------------------------------------------
             using (UndoRecorder.BeginActionGroup())
             {
-                #region Step I. Delete all nodes and their connections
-                //Create two dictionarys to store the details of the external connections that have to 
-                //be recreated after the conversion
-                var externalInputConnections = new Dictionary<ConnectorModel, string>();
-                var externalOutputConnections = new Dictionary<ConnectorModel, string>();
-
-                //Also collect the average X and Y co-ordinates of the different nodes
-                var nodeList = selectedNodes.ToList();
-                int nodeCount = nodeList.Count;
-                double totalX = 0, totalY = 0;
-                
-                foreach (var node in nodeList) 
+                var nodeGraphs = node2CodeMap.NodeGraphs;
+                var astGraphs = node2CodeMap.AstGraphs;
+                var node2codeTuples = nodeGraphs.Zip(astGraphs, (n, a) => Tuple.Create(n, a));
+                foreach (var tuple in node2codeTuples)
                 {
-                    #region Step I.A. Delete the connections for the node
+                    #region Step I. Delete all nodes and their connections
+                    //Create two dictionarys to store the details of the external connections that have to 
+                    //be recreated after the conversion
+                    var externalInputConnections = new Dictionary<ConnectorModel, string>();
+                    var externalOutputConnections = new Dictionary<ConnectorModel, string>();
 
-                    foreach (var connector in node.AllConnectors.ToList())
+                    //Also collect the average X and Y co-ordinates of the different nodes
+                    var nodeList = tuple.Item1.ToList();
+                    int nodeCount = nodeList.Count;
+                    double totalX = 0, totalY = 0;
+
+                    foreach (var node in nodeList)
                     {
-                        if (!IsInternalNodeToCodeConnection(connector))
+                        #region Step I.A. Delete the connections for the node
+
+                        foreach (var connector in node.AllConnectors.ToList())
                         {
-                            //If the connector is an external connector, the save its details
-                            //for recreation later
-                            var startNode = connector.Start.Owner;
-                            int index = startNode.OutPorts.IndexOf(connector.Start);
-                            //We use the varibleName as the connection between the port of the old Node
-                            //to the port of the new node.
-                            var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
-                            if (variableNameMap.ContainsKey(variableName))
-                                variableName = variableNameMap[variableName];
+                            if (!IsInternalNodeToCodeConnection(nodeList, connector))
+                            {
+                                //If the connector is an external connector, the save its details
+                                //for recreation later
+                                var startNode = connector.Start.Owner;
+                                int index = startNode.OutPorts.IndexOf(connector.Start);
+                                //We use the varibleName as the connection between the port of the old Node
+                                //to the port of the new node.
+                                var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
 
-                            //Store the data in the corresponding dictionary
-                            if (startNode == node)
-                                externalOutputConnections.Add(connector, variableName);
-                            else
-                                externalInputConnections.Add(connector, variableName);
+                                //Store the data in the corresponding dictionary
+                                if (startNode == node)
+                                    externalOutputConnections.Add(connector, variableName);
+                                else
+                                    externalInputConnections.Add(connector, variableName);
+                            }
+
+                            //Delete the connector
+                            UndoRecorder.RecordDeletionForUndo(connector);
+                            connector.Delete();
                         }
+                        #endregion
 
-                        //Delete the connector
-                        UndoRecorder.RecordDeletionForUndo(connector);
-                        connector.Delete();
+                        #region Step I.B. Delete the node
+                        totalX += node.X;
+                        totalY += node.Y;
+                        UndoRecorder.RecordDeletionForUndo(node);
+                        Nodes.Remove(node);
+                        #endregion
                     }
                     #endregion
 
-                    #region Step I.B. Delete the node
-                    totalX += node.X;
-                    totalY += node.Y;
-                    UndoRecorder.RecordDeletionForUndo(node);
-                    Nodes.Remove(node);
+                    #region Step II. Create the new code block node
+                    var codegen = new ProtoCore.CodeGenDS(tuple.Item2);
+                    var code = codegen.GenerateCode();
+
+                    var codeBlockNode = new CodeBlockNodeModel(
+                        code,
+                        System.Guid.NewGuid(),
+                        totalX / nodeCount,
+                        totalY / nodeCount, engineController.LibraryServices);
+                    UndoRecorder.RecordCreationForUndo(codeBlockNode);
+                    Nodes.Add(codeBlockNode);
+                    #endregion
+
+                    #region Step III. Recreate the necessary connections
+                    ReConnectInputConnections(externalInputConnections, codeBlockNode);
+                    ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
                     #endregion
                 }
-                #endregion
-
-                #region Step II. Create the new code block node
-                codeBlockNode = new CodeBlockNodeModel(
-                    code,
-                    nodeId,
-                    totalX/nodeCount,
-                    totalY/nodeCount, engineController.LibraryServices);
-                UndoRecorder.RecordCreationForUndo(codeBlockNode);
-                Nodes.Add(codeBlockNode);
-                #endregion
-
-                #region Step III. Recreate the necessary connections
-                ReConnectInputConnections(externalInputConnections, codeBlockNode);
-                ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
-                #endregion
             }
             //End UndoRedo Action Group------------------------------------------
 
-            // select node
-            
             DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.Add(codeBlockNode);
+            DynamoSelection.Instance.Selection.AddRange(codeBlockNodes);
 
             RequestRun();
         }
@@ -1324,10 +1328,9 @@ namespace Dynamo.Models
         /// This determines if it should be redrawn(if it is external) or if it should be 
         /// deleted (if it is internal)
         /// </summary>
-        [Obsolete("Node to Code not enabled, API subject to change.")]
-        private static bool IsInternalNodeToCodeConnection(ConnectorModel connector)
+        private static bool IsInternalNodeToCodeConnection(IEnumerable<NodeModel> nodes, ConnectorModel connector)
         {
-            return DynamoSelection.Instance.Selection.Contains(connector.Start.Owner) && DynamoSelection.Instance.Selection.Contains(connector.End.Owner);
+            return nodes.Contains(connector.Start.Owner) && nodes.Contains(connector.End.Owner);
         }
 
         /// <summary>
@@ -1335,9 +1338,8 @@ namespace Dynamo.Models
         /// based on the connectors passed as inputs.
         /// </summary>
         /// <param name="externalOutputConnections">List of connectors to remake, along with the port names of the new port</param>
-        /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
-        [Obsolete("Node to Code not enabled, API subject to change.")]
-        private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel codeBlockNode)
+        /// <param name="cbn">The new Node To Code created Code Block Node</param>
+        private void ReConnectOutputConnections(Dictionary<ConnectorModel, string> externalOutputConnections, CodeBlockNodeModel cbn)
         {
             foreach (var kvp in externalOutputConnections)
             {
@@ -1345,22 +1347,18 @@ namespace Dynamo.Models
                 string variableName = kvp.Value;
 
                 //Get the start and end idex for the ports for the connection
-                int endIndex = connector.End.Owner.InPorts.IndexOf(connector.End);
-                int i;
-                for (i = 0; i < codeBlockNode.OutPorts.Count; i++)
-                {
-                    if (codeBlockNode.GetAstIdentifierForOutputIndex(i).Value == variableName)
-                        break;
-                }
-                var portModel = codeBlockNode.OutPorts[i];
-                int startIndex = codeBlockNode.OutPorts.IndexOf(portModel);
+                var portModel = cbn.OutPorts.FirstOrDefault(
+                    port => cbn.GetAstIdentifierForOutputIndex(port.Index).Value.Equals(variableName));
+
+                if (portModel == null)
+                    return;
 
                 //Make the new connection and then record and add it
                 var newConnector = ConnectorModel.Make(
-                    codeBlockNode,
+                    cbn,
                     connector.End.Owner,
-                    startIndex,
-                    endIndex);
+                    portModel.Index,
+                    connector.End.Index);
 
                 UndoRecorder.RecordCreationForUndo(newConnector);
             }
@@ -1372,7 +1370,6 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
         /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
-        [Obsolete("Node to Code not enabled, API subject to change.")]
         private void ReConnectInputConnections(
             Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel codeBlockNode)
         {

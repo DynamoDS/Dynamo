@@ -183,13 +183,13 @@ namespace Dynamo.DSEngine
         /// <param name="nodes"></param>
         /// <param name="isDeltaExecution"></param>
         /// <param name="verboseLogging"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
+        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging, bool needSorting = false)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
             var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
-            var sortedNodes = TopologicalSort(topScopedNodes);
+            var sortedNodes = needSorting ? TopologicalSort(topScopedNodes) : topScopedNodes;
 
             if (isDeltaExecution)
             {
