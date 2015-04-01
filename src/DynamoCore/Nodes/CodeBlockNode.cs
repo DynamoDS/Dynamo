@@ -317,7 +317,7 @@ namespace Dynamo.Nodes
             return resultNodes;
         }
 
-        public override IdentifierNode GetAstIdentifierForOutputIndex(int portIndex)
+        private IdentifierNode GetAstIdentifierForOutputIndexInternal(int portIndex, bool forRawName)
         {
             if (State == ElementState.Error)
                 return null;
@@ -354,8 +354,21 @@ namespace Dynamo.Nodes
 
             var identNode = binExprNode.LeftNode as IdentifierNode;
             var mappedIdent = NodeUtils.Clone(identNode);
-            MapIdentifiers(mappedIdent);
+
+            if (!forRawName)
+                MapIdentifiers(mappedIdent);
+
             return mappedIdent as IdentifierNode;
+        }
+
+        public override IdentifierNode GetAstIdentifierForOutputIndex(int portIndex)
+        {
+            return GetAstIdentifierForOutputIndexInternal(portIndex, false);
+        }
+
+        public IdentifierNode GetRawAstIdentifierForOutputINdex(int portIndex)
+        {
+            return GetAstIdentifierForOutputIndexInternal(portIndex, true);
         }
 
         #endregion

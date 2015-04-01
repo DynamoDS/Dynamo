@@ -559,7 +559,7 @@ namespace Dynamo.DSEngine
 
         #region Node2Code
 
-        public Nodes2CodeParam ConvertNodesToCode(IEnumerable<NodeModel> nodes, bool verboseLogging)
+        public IEnumerable<AssociativeNode> ConvertNodesToCode(IEnumerable<NodeModel> nodes, bool verboseLogging)
         {
             return Nodes2CodeUtils.Node2Code(astBuilder, nodes, verboseLogging);
         }

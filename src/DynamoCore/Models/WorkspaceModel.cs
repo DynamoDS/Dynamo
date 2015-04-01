@@ -924,89 +924,83 @@ namespace Dynamo.Models
             if (!selectedNodes.Any())
                 return;
 
-            var node2CodeMap = engineController.ConvertNodesToCode(selectedNodes, verboseLogging);
-            var codeBlockNodes = new List<CodeBlockNodeModel>();
+            var astNodes = engineController.ConvertNodesToCode(selectedNodes, verboseLogging);
+            CodeBlockNodeModel codeBlockNode = null;
 
             //UndoRedo Action Group----------------------------------------------
             using (UndoRecorder.BeginActionGroup())
             {
-                var nodeGraphs = node2CodeMap.NodeGraphs;
-                var astGraphs = node2CodeMap.AstGraphs;
-                var node2codeTuples = nodeGraphs.Zip(astGraphs, (n, a) => Tuple.Create(n, a));
-                foreach (var tuple in node2codeTuples)
+                #region Step I. Delete all nodes and their connections
+                //Create two dictionarys to store the details of the external connections that have to 
+                //be recreated after the conversion
+                var externalInputConnections = new Dictionary<ConnectorModel, string>();
+                var externalOutputConnections = new Dictionary<ConnectorModel, string>();
+
+                //Also collect the average X and Y co-ordinates of the different nodes
+                var nodeList = selectedNodes.ToList();
+                int nodeCount = nodeList.Count;
+                double totalX = 0, totalY = 0;
+
+                foreach (var node in nodeList)
                 {
-                    #region Step I. Delete all nodes and their connections
-                    //Create two dictionarys to store the details of the external connections that have to 
-                    //be recreated after the conversion
-                    var externalInputConnections = new Dictionary<ConnectorModel, string>();
-                    var externalOutputConnections = new Dictionary<ConnectorModel, string>();
+                    #region Step I.A. Delete the connections for the node
 
-                    //Also collect the average X and Y co-ordinates of the different nodes
-                    var nodeList = tuple.Item1.ToList();
-                    int nodeCount = nodeList.Count;
-                    double totalX = 0, totalY = 0;
-
-                    foreach (var node in nodeList)
+                    foreach (var connector in node.AllConnectors.ToList())
                     {
-                        #region Step I.A. Delete the connections for the node
-
-                        foreach (var connector in node.AllConnectors.ToList())
+                        if (!IsInternalNodeToCodeConnection(nodeList, connector))
                         {
-                            if (!IsInternalNodeToCodeConnection(nodeList, connector))
-                            {
-                                //If the connector is an external connector, the save its details
-                                //for recreation later
-                                var startNode = connector.Start.Owner;
-                                int index = startNode.OutPorts.IndexOf(connector.Start);
-                                //We use the varibleName as the connection between the port of the old Node
-                                //to the port of the new node.
-                                var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
+                            //If the connector is an external connector, the save its details
+                            //for recreation later
+                            var startNode = connector.Start.Owner;
+                            int index = startNode.OutPorts.IndexOf(connector.Start);
+                            //We use the varibleName as the connection between the port of the old Node
+                            //to the port of the new node.
+                            var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
 
-                                //Store the data in the corresponding dictionary
-                                if (startNode == node)
-                                    externalOutputConnections.Add(connector, variableName);
-                                else
-                                    externalInputConnections.Add(connector, variableName);
-                            }
-
-                            //Delete the connector
-                            UndoRecorder.RecordDeletionForUndo(connector);
-                            connector.Delete();
+                            //Store the data in the corresponding dictionary
+                            if (startNode == node)
+                                externalOutputConnections.Add(connector, variableName);
+                            else
+                                externalInputConnections.Add(connector, variableName);
                         }
-                        #endregion
 
-                        #region Step I.B. Delete the node
-                        totalX += node.X;
-                        totalY += node.Y;
-                        UndoRecorder.RecordDeletionForUndo(node);
-                        Nodes.Remove(node);
-                        #endregion
+                        //Delete the connector
+                        UndoRecorder.RecordDeletionForUndo(connector);
+                        connector.Delete();
                     }
                     #endregion
 
-                    #region Step II. Create the new code block node
-                    var codegen = new ProtoCore.CodeGenDS(tuple.Item2);
-                    var code = codegen.GenerateCode();
-
-                    var codeBlockNode = new CodeBlockNodeModel(
-                        code,
-                        System.Guid.NewGuid(),
-                        totalX / nodeCount,
-                        totalY / nodeCount, engineController.LibraryServices);
-                    UndoRecorder.RecordCreationForUndo(codeBlockNode);
-                    Nodes.Add(codeBlockNode);
-                    #endregion
-
-                    #region Step III. Recreate the necessary connections
-                    ReConnectInputConnections(externalInputConnections, codeBlockNode);
-                    ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+                    #region Step I.B. Delete the node
+                    totalX += node.X;
+                    totalY += node.Y;
+                    UndoRecorder.RecordDeletionForUndo(node);
+                    Nodes.Remove(node);
                     #endregion
                 }
+                #endregion
+
+                #region Step II. Create the new code block node
+                var codegen = new ProtoCore.CodeGenDS(astNodes);
+                var code = codegen.GenerateCode();
+
+                codeBlockNode = new CodeBlockNodeModel(
+                    code,
+                    System.Guid.NewGuid(),
+                    totalX / nodeCount,
+                    totalY / nodeCount, engineController.LibraryServices);
+                UndoRecorder.RecordCreationForUndo(codeBlockNode);
+                Nodes.Add(codeBlockNode);
+                #endregion
+
+                #region Step III. Recreate the necessary connections
+                ReConnectInputConnections(externalInputConnections, codeBlockNode);
+                ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+                #endregion
             }
             //End UndoRedo Action Group------------------------------------------
 
             DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.AddRange(codeBlockNodes);
+            DynamoSelection.Instance.Selection.Add(codeBlockNode);
 
             RequestRun();
         }
@@ -1348,7 +1342,7 @@ namespace Dynamo.Models
 
                 //Get the start and end idex for the ports for the connection
                 var portModel = cbn.OutPorts.FirstOrDefault(
-                    port => cbn.GetAstIdentifierForOutputIndex(port.Index).Value.Equals(variableName));
+                    port => cbn.GetRawAstIdentifierForOutputINdex(port.Index).Value.Equals(variableName));
 
                 if (portModel == null)
                     return;
@@ -1376,7 +1370,7 @@ namespace Dynamo.Models
             var connections = from kvp in externalInputConnections
                               let connector = kvp.Key
                               let variableName = kvp.Value
-                              let startIndex = connector.Start.Owner.OutPorts.IndexOf(connector.Start)
+                              let startIndex = connector.Start.Index
                               let endIndex = CodeBlockNodeModel.GetInportIndex(codeBlockNode, variableName)
                               where Connectors.All(c => c.End != codeBlockNode.InPorts[endIndex])
                               select
