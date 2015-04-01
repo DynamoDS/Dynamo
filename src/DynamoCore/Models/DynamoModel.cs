@@ -456,7 +456,7 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            if (this.PreferenceSettings.IsFirstRun)
+            if (!isTestMode && this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
                 try
