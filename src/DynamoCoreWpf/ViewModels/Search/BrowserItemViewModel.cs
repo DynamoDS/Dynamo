@@ -34,15 +34,6 @@ namespace Dynamo.Wpf.ViewModels
             Model.Items.CollectionChanged += ItemsOnCollectionChanged;
         }
 
-        /// <summary>
-        /// Sort this items children and then tell its children and recurse on children
-        /// </summary>
-        public void RecursivelySort()
-        {
-            Items = new ObservableCollection<BrowserItemViewModel>(Items.OrderBy(x => x.Model.Name));
-            Items.ToList().ForEach(x => x.RecursivelySort());
-        }
-
         private void ItemsOnCollectionChanged(object sender,
             NotifyCollectionChangedEventArgs e)
         {
@@ -434,53 +425,35 @@ namespace Dynamo.Wpf.ViewModels
 
             foreach (var entry in newItems)
             {
-                var first = Items.Where(cat => !(cat is ClassesNodeCategoryViewModel)).
-                    Select((x, i) => new { x.Name, Idx = i })
-                    .FirstOrDefault(
-                        x =>
-                            string.Compare(
-                                x.Name,
-                                entry.Name,
-                                StringComparison.Ordinal)
-                                >= 0);
+                var nextLargerItemIndex = -1;
+                foreach (var item in Items.Where(cat => !(cat is ClassesNodeCategoryViewModel)))
+                {
+                    if (string.Compare(item.Name, entry.Name, StringComparison.Ordinal) >= 0)
+                    {
+                        nextLargerItemIndex = Items.IndexOf(item);
+                        break;
+                    }
+                }
                 // Classes must be first in any case.
                 if (entry is ClassesNodeCategoryViewModel)
                     Items.Insert(0, entry);
                 else
-                    if (hasClasses)
+                {
+                    if (entry is NodeSearchElementViewModel)
                     {
-                        if (entry is NodeSearchElementViewModel)
-                        {
-                            if (first != null)
-                                Items.Insert(first.Idx + SubCategories.Count(), entry);
-                            else
-                                Items.Add(entry);
-                        }
-                        if (entry is NodeCategoryViewModel)
-                        {
-                            if (first != null)
-                                Items.Insert(first.Idx + 1, entry);
-                            else
-                                Items.Insert(Items.Count - Entries.Count, entry);
-                        }
+                        if (nextLargerItemIndex >= 0)
+                            Items.Insert(nextLargerItemIndex + SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel)).Count(), entry);
+                        else
+                            Items.Add(entry);
                     }
-                    else
+                    if (entry is NodeCategoryViewModel)
                     {
-                        if (entry is NodeSearchElementViewModel)
-                        {
-                            if (first != null)
-                                Items.Insert(first.Idx + SubCategories.Count(), entry);
-                            else
-                                Items.Add(entry);
-                        }
-                        if (entry is NodeCategoryViewModel)
-                        {
-                            if (first != null)
-                                Items.Insert(first.Idx, entry);
-                            else
-                                Items.Insert(Items.Count - Entries.Count, entry);
-                        }
+                        if (nextLargerItemIndex >= 0)
+                            Items.Insert(nextLargerItemIndex, entry);
+                        else
+                            Items.Insert(Items.Count - Entries.Count, entry);
                     }
+                }
             }
         }
 
