@@ -279,6 +279,10 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.Selection.CollectionChanged += (sender, e) =>
             {
                 AlignSelectedCommand.RaiseCanExecuteChanged();
+                EnableNodePreviewCommand.RaiseCanExecuteChanged();
+                EnableUpstreamPreviewCommand.RaiseCanExecuteChanged();
+                SetArgumentLacingCommand.RaiseCanExecuteChanged();
+                RaisePropertyChanged("HasSelection");
             };
 
             // sync collections
