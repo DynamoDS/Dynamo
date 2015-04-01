@@ -1566,4 +1566,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Cannot update assembly</value>
   </data>
+  <data name="Automatic" xml:space="preserve">
+    <value>Automatic</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="Periodic" xml:space="preserve">
+    <value>Periodic</value>
+  </data>
 </root>
