@@ -214,6 +214,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cross Product.
+        /// </summary>
+        public static string ContextMenuLacingCrossProduct {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingCrossProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First.
+        /// </summary>
+        public static string ContextMenuLacingFirst {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longest.
+        /// </summary>
+        public static string ContextMenuLacingLongest {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingLongest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shortest.
+        /// </summary>
+        public static string ContextMenuLacingShortest {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingShortest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nodes From _Selected Geometry.
         /// </summary>
         public static string ContextMenuNodesFromGeometry {

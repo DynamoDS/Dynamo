@@ -768,7 +768,16 @@ namespace Dynamo.ViewModels
 
         private void EnableUpstreamPreview(object parameter)
         {
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
 
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "IsUpstreamVisible", ((bool)parameter) ? "true" : "false");
+
+            DynamoViewModel.Model.ExecuteCommand(command);
         }
 
         private bool CanEnableUpstreamPreview(object parameter)
@@ -778,7 +787,16 @@ namespace Dynamo.ViewModels
 
         private void SetArgumentLacing(object parameter)
         {
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
 
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "ArgumentLacing", (string) parameter);
+
+            DynamoViewModel.Model.ExecuteCommand(command);
         }
 
         private bool CanSetArgumentLacing(object parameter)

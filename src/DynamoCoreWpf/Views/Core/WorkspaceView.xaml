@@ -144,6 +144,28 @@
 
                     <Separator />
 
+                    <MenuItem Header="{x:Static p:Resources.NodeContextMenuLacing}"
+                              Name="lacingStrategy"
+                              Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
+                        <MenuItem Name="lacing_strategy_single"
+                                  IsEnabled="False"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="First"
+                                  Header="{x:Static p:Resources.ContextMenuLacingFirst}" />
+                        <MenuItem Name="lacing_strategy_shortest"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="Shortest"
+                                  Header="{x:Static p:Resources.ContextMenuLacingShortest}" />
+                        <MenuItem Name="lacing_strategy_longest"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="Longest"
+                                  Header="{x:Static p:Resources.ContextMenuLacingLongest}" />
+                        <MenuItem Name="lacing_strategy_cross"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="CrossProduct"
+                                  Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}" />
+                    </MenuItem>
+
                     <MenuItem Header="{x:Static p:Resources.ContextMenuGeometryView}"
                               Command="{Binding DynamoViewModel.ToggleCanNavigateBackgroundCommand}" />
                     <MenuItem Header="{x:Static p:Resources.ContextMenuPan}"
