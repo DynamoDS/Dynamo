@@ -749,7 +749,16 @@ namespace Dynamo.ViewModels
 
         private void EnableNodePreview(object parameter)
         {
-            // TODO: Issue UpdateModelValueCommand for the selected node(s).
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
+
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "IsVisible", ((bool)parameter) ? "true" : "false");
+
+            DynamoViewModel.Model.ExecuteCommand(command);
         }
 
         private bool CanEnableNodePreview(object parameter)
