@@ -747,6 +747,16 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 1;
         }
 
+        private void EnableNodePreview(object parameter)
+        {
+            // TODO: Issue UpdateModelValueCommand for the selected node(s).
+        }
+
+        private bool CanEnableNodePreview(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
+        }
+
         private void Hide(object parameters)
         {
             // Closing of custom workspaces will simply close those workspaces,

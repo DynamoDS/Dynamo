@@ -11,6 +11,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _resetFitViewToggleCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
+        private DelegateCommand _enableNodePreviewCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
         private DelegateCommand _graphAutoLayoutCommand;
@@ -122,6 +123,20 @@ namespace Dynamo.ViewModels
                     _alignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
 
                 return _alignSelectedCommand;
+            }
+        }
+
+        public DelegateCommand EnableNodePreviewCommand
+        {
+            get
+            {
+                if (_enableNodePreviewCommand == null)
+                {
+                    _enableNodePreviewCommand = new DelegateCommand(
+                        EnableNodePreview, CanEnableNodePreview);
+                }
+
+                return _enableNodePreviewCommand;
             }
         }
 
