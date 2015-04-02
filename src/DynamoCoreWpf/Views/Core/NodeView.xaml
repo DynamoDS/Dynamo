@@ -42,7 +42,7 @@
             <ContextMenu Name="MainContextMenu"
                          x:FieldModifier="public">
                 <MenuItem Name="createGroup_cm"
-                          Header="Create Group"
+                          Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
                           Command="{Binding Path=CreateGroupCommand}" />
                 <MenuItem Name="deleteElem_cm"
                           Header="{x:Static p:Resources.ContextMenuDelete}"
