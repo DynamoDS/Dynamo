@@ -1728,6 +1728,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Background.
+        /// </summary>
+        public static string GroupContextMenuBackground {
+            get {
+                return ResourceManager.GetString("GroupContextMenuBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Font.
+        /// </summary>
+        public static string GroupContextMenuFont {
+            get {
+                return ResourceManager.GetString("GroupContextMenuFont", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ungroup.
+        /// </summary>
+        public static string GroupContextMenuUngroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuUngroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;Click here to edit the group title&gt;.
         /// </summary>
         public static string GroupDefaultText {

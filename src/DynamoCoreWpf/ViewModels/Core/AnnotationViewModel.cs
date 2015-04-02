@@ -1,11 +1,15 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Dynamo.Models;
 using System;
+using Dynamo.UI.Commands;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
@@ -13,9 +17,9 @@ namespace Dynamo.ViewModels
     public class AnnotationViewModel : ViewModelBase
     {
         private AnnotationModel _annotationModel;
-        public readonly WorkspaceViewModel WorkspaceViewModel;
+        public readonly WorkspaceViewModel WorkspaceViewModel;        
         private double _zIndex = 2;
-
+        
         public AnnotationModel AnnotationModel
         {
             get { return _annotationModel; }
@@ -36,8 +40,7 @@ namespace Dynamo.ViewModels
             get { return _annotationModel.Height; }
             set
             {
-                _annotationModel.Height = value;
-                RaisePropertyChanged("Height");
+                _annotationModel.Height = value;              
             }
         }
 
@@ -46,8 +49,7 @@ namespace Dynamo.ViewModels
             get { return _annotationModel.Top; }
             set
             {
-                _annotationModel.Top = value;
-                RaisePropertyChanged("Top");
+                _annotationModel.Top = value;                
             }
         }
        
@@ -106,13 +108,50 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private DelegateCommand _changeFontSize;
+        public DelegateCommand ChangeFontSize
+        {
+            get
+            {
+                if (_changeFontSize == null)
+                    _changeFontSize =
+                        new DelegateCommand(UpdateFontSize, CanChangeFontSize);
+
+                return _changeFontSize;
+            }
+        }
+      
+        public Double FontSize
+        {
+            get
+            {
+                return _annotationModel.FontSize;
+            }
+            set
+            {
+                _annotationModel.FontSize = value;                
+            }
+        }
+       
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {            
             _annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;                                     
-            model.PropertyChanged += model_PropertyChanged;
+            model.PropertyChanged += model_PropertyChanged;          
         }
-       
+
+        private bool CanChangeFontSize(object obj)
+        {
+            return true;
+        }
+
+        private void UpdateFontSize(object parameter)
+        {
+            if (parameter != null)
+            {
+                FontSize = Convert.ToDouble(parameter);
+            }
+        }
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -138,6 +177,9 @@ namespace Dynamo.ViewModels
                     break;                              
                 case "IsSelected":
                     RaisePropertyChanged("PreviewState");
+                    break;
+                case "FontSize":
+                    RaisePropertyChanged("FontSize");
                     break;
             }
         }      

@@ -1,18 +1,22 @@
 ﻿
 using System;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Xml;
 using Dynamo.Properties;
 using Dynamo.Utilities;
 using System.Collections.Generic;
+using ICSharpCode.AvalonEdit.Editing;
+using ProtoCore.AST;
 
 namespace Dynamo.Models
 {
     public class AnnotationModel : ModelBase
     {
         #region Properties
-        private double initialTop; //required to calculate the TOP position in a group         
-        private double initialHeight; //required to calculate the HEIGHT of a group 
+        public double InitialTop { get; set; } //required to calculate the TOP position in a group         
+        public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group 
         private string modelGuids { get; set; }        
         private string _text;
         public string Text
@@ -140,21 +144,39 @@ namespace Dynamo.Models
             set
             {
                 textBlockHeight = value;
-                Top = initialTop - textBlockHeight;
-                Height = initialHeight + textBlockHeight;
+                Top = InitialTop - textBlockHeight;
+                Height = InitialHeight + textBlockHeight;
+            }
+        }
+
+        private double fontSize = 10;
+        public Double FontSize
+        {
+            get { return fontSize; }
+            set
+            {
+                fontSize = value;
+                RaisePropertyChanged("FontSize");
             }
         }
 
         #endregion
 
-        public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes )
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AnnotationModel"/> class.
+        /// </summary>
+        /// <param name="nodes">The nodes.</param>
+        /// <param name="notes">The notes.</param>
+        /// <param name="loadFromGraph">This is true when graph is loaded from XML</param>
+        public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes, bool loadFromGraph=false)
         {                                 
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
 
             this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();
-           
-            CreateGroupingOnModels(SelectedModels);
+
+            if (!loadFromGraph)
+                CreateGroupingOnModels();
         }
 
 
@@ -163,10 +185,10 @@ namespace Dynamo.Models
             switch (e.PropertyName)
             {
                 case "X":
-                    CreateGroupingOnModels(SelectedModels);
+                    CreateGroupingOnModels();
                     break;
                 case "Y":
-                    CreateGroupingOnModels(SelectedModels);
+                    CreateGroupingOnModels();
                     break;
             }
         }
@@ -181,7 +203,8 @@ namespace Dynamo.Models
             bool remove = nodesList.Remove(node);
             if (remove)
             {
-                CreateGroupingOnModels(SelectedModels);
+                SelectedModels = nodesList;
+                CreateGroupingOnModels();
             }
         }
 
@@ -195,33 +218,37 @@ namespace Dynamo.Models
             bool remove = notesList.Remove(note);
             if (remove)
             {
-                CreateGroupingOnModels(SelectedModels);
+                SelectedModels = notesList;
+                CreateGroupingOnModels();
             }
         }
 
         /// <summary>
         /// Creates the grouping on selected models.
-        /// </summary>
-        /// <param name="selectedModels">The selected models.</param>
-        private void CreateGroupingOnModels(IEnumerable<ModelBase> models)
+        /// </summary>      
+        private void CreateGroupingOnModels()
         {
-            var selectedModelsList = models.ToList();
+            var selectedModelsList = selectedModels.ToList();
           
             if (selectedModelsList.Any())
             {
-               var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
-
-                var maxWidth = groupModels.Max(x => x.Width);
-                var maxHeight = groupModels.Max(y => y.Height);
-
+                var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
+              
+                //Shifting x by 10 and y to the height of textblock
                 var regionX = groupModels.Min(x => x.X) - 10;
                 var regionY = groupModels.Min(y => y.Y) - TextBlockHeight;
-             
+              
+                //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => x.X) - regionX;
                 var yDistance = groupModels.Max(x => x.Y) - regionY;
 
-                // InitialTop is used to store the Y value without the Textblock height
-                this.initialTop = groupModels.Min(y => y.Y);
+                var widthandheight = CalculateWidthAndHeight();
+
+                var maxWidth = widthandheight.Item1;
+                var maxHeight = widthandheight.Item2;
+
+                // InitialTop is to store the Y value without the Textblock height
+                this.InitialTop = groupModels.Min(y => y.Y);
 
                 var region = new Rect2D
                 {
@@ -235,11 +262,23 @@ namespace Dynamo.Models
                 this.Top = region.Y;
                 this.Width = region.Width;
                 this.Height = region.Height; 
-                //Initial Height is required to store the Actual height of the group.
-                this.initialHeight = region.Height;               
+                //Initial Height is to store the Actual height of the group.
+                this.InitialHeight = region.Height;               
             }
         }
 
+        /// <summary>
+        /// Group the Models based on Height and Width
+        /// </summary>
+        /// <returns></returns>
+        private Tuple<Double,Double> CalculateWidthAndHeight()
+        {           
+            var xgroup = SelectedModels.OrderBy(x => x.X + x.Width).ToList();
+            var ygroup = SelectedModels.OrderBy(x => x.Y + x.Height ).ToList();
+           
+            return Tuple.Create(xgroup.Last().Width, ygroup.Last().Height);
+        }
+        
         /// <summary>
         /// Deserializes the model guids from XML
         /// and creates group on those model guids.
@@ -257,8 +296,7 @@ namespace Dynamo.Models
                         listOfModels.Add(model);
                     }
             }
-            SelectedModels = listOfModels;
-            CreateGroupingOnModels(SelectedModels);
+            SelectedModels = listOfModels;           
         }
 
         #region Serialization/Deserialization Methods
@@ -272,6 +310,9 @@ namespace Dynamo.Models
             helper.SetAttribute("top", this.Top);
             helper.SetAttribute("width", this.Width);
             helper.SetAttribute("height", this.Height);
+            helper.SetAttribute("fontSize", this.FontSize);
+            helper.SetAttribute("initialTop", this.InitialTop);
+            helper.SetAttribute("initialHeight", this.InitialHeight);
             helper.SetAttribute("annotationColor", (this.BackGroundColor == null ? "" : this.BackGroundColor.ToString()));
             helper.SetAttribute("ModelGUIDs", string.Join(",", this.SelectedModels.Select(x => x.GUID)));           
         }
@@ -286,6 +327,9 @@ namespace Dynamo.Models
             this.Width = helper.ReadDouble("width", 0.0);
             this.Height = helper.ReadDouble("height", 0.0);
             this.BackGroundColor = helper.ReadString("annotationColor", "");
+            this.FontSize = helper.ReadDouble("fontSize", 10.0);
+            this.InitialTop = helper.ReadDouble("initialTop", 0.0);
+            this.InitialHeight = helper.ReadDouble("initialHeight", 0.0);
             modelGuids = helper.ReadString("ModelGUIDs", "");           
             DeserializeGroup();           
         }

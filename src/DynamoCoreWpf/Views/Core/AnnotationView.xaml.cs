@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Input;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using GraphLayout;
-using ProtoCore.AST.AssociativeAST;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
-using Dynamo.Models;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
 {
@@ -36,9 +31,10 @@ namespace Dynamo.Nodes
             InitializeComponent();
             Loaded += AnnotationView_Loaded;
             BindingErrorTraceListener.SetTrace();
-            this.GroupTextBlock.MouseLeftButtonDown += UIElement_OnMouseLeftButtonDown;         
+            this.GroupTextBlock.MouseLeftButtonDown += UIElement_OnMouseLeftButtonDown;   
+            this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;          
         }
-      
+     
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as AnnotationViewModel;
@@ -61,6 +57,7 @@ namespace Dynamo.Nodes
                 if (brush != null)
                     ViewModel.BackGroundColor = brush.Color;
             }
+            ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
         private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
@@ -80,14 +77,17 @@ namespace Dynamo.Nodes
         private void AnnotationView_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         { 
             DynamoSelection.Instance.ClearSelection();
-            var annotationGuid = this.ViewModel.AnnotationModel.GUID;
-            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
-
-            foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
+            if (GroupTextBlock.IsVisible)
             {
+                var annotationGuid = this.ViewModel.AnnotationModel.GUID;
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(models.GUID, Dynamo.Utilities.ModifierKeys.Shift));
+                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+
+                foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
+                {
+                    ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                        new DynCmd.SelectModelCommand(models.GUID, Dynamo.Utilities.ModifierKeys.Shift));
+                }
             }
         }
      
@@ -111,22 +111,57 @@ namespace Dynamo.Nodes
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="TextChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
-        {           
+        {             
             if (ViewModel != null)
             {
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBox.ActualHeight;
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }           
         }
 
+
+        /// <summary>
+        /// Handles the SizeChanged event of the GroupTextBlock control.
+        /// This function calculates the height of a group based on font size
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SizeChangedEventArgs"/> instance containing the event data.</param>
+        private void GroupTextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.ActualHeight;                
+            }  
+        }
+
+
+        /// <summary>
+        /// Select the text in textbox
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBox_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var textbox = sender as TextBox;
             if (textbox != null && textbox.Visibility == Visibility.Visible)
             {
                 textbox.Focus();
-                textbox.SelectAll();
-                textbox.SelectionStart = 0;
+                if (textbox.Text.Equals(Dynamo.Properties.Resources.GroupDefaultText))
+                {
+                    textbox.SelectAll();  
+                }
+                             
             }
+        }
+
+        /// <summary>
+        /// Set the Mouse caret at the end
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
+        private void GroupTextBox_OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            this.GroupTextBox.CaretIndex = Int32.MaxValue;
         }
     }
 }

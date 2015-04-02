@@ -2158,4 +2158,20 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public class MenuItemCheckConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var fontsize = System.Convert.ToDouble(value);
+            var param = System.Convert.ToDouble(parameter);
+
+            return fontsize == param;            
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

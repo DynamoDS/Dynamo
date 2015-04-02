@@ -844,14 +844,15 @@ namespace Dynamo.Models
                     var annotation = xmlDoc.CreateElement(n.GetType().ToString());
                     annotationList.AppendChild(annotation);
                     annotation.SetAttribute("guid", n.GUID.ToString());
-                    annotation.SetAttribute("text", n.AnnotationText);
-                    annotation.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("text", n.AnnotationText);                   
                     annotation.SetAttribute("left", n.Left.ToString(CultureInfo.InvariantCulture));
                     annotation.SetAttribute("top", n.Top.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("width", this.Width.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("height", this.Height.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("width", n.Width.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("height", n.Height.ToString(CultureInfo.InvariantCulture));                   
                     annotation.SetAttribute("annotationColor", (n.BackGroundColor == null ? "" : n.BackGroundColor.ToString()));
+                    annotation.SetAttribute("fontSize", n.FontSize.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("initialTop", n.InitialTop.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("initialHeight", n.InitialHeight.ToString(CultureInfo.InvariantCulture));
                     annotation.SetAttribute("ModelGUIDs", string.Join(",", n.SelectedModels.Select(z => z.GUID)));
                 }
 
