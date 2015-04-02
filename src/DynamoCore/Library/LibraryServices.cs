@@ -42,9 +42,12 @@ namespace Dynamo.DSEngine
         private readonly IPathManager pathManager;
         public ProtoCore.Core LibraryManagementCore{get; private set;}
 
-        public void SetLibraryCore(ProtoCore.Core core)
+        public void SetAndPrepareLibraryCore(ProtoCore.Core core)
         {
             LibraryManagementCore = core;
+            PopulateBuiltIns();
+            PopulateOperators();
+            PopulatePreloadLibraries();
         }
 
         private class UpgradeHint
