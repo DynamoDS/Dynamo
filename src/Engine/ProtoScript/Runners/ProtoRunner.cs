@@ -80,11 +80,9 @@ namespace ProtoScript.Runners
             Validity.Assert(null != ExecutionContext);
             Validity.Assert(null != Runner);
 
-            ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
-
             // TODO Jun: Implement as DebugRunner, where breakpoints are inserted here.
             ProtoCore.RuntimeCore runtimeCore = null;
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = Runner.Execute(ExecutionContext, runtimeContext, RunnerCore, out runtimeCore);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = Runner.Execute(ExecutionContext, RunnerCore, out runtimeCore);
 
             return new ProtoVMState(RunnerCore, runtimeCore);
         }
