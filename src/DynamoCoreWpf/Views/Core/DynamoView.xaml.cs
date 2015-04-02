@@ -925,7 +925,7 @@ namespace Dynamo.Controls
             var workspace = dynamoViewModel.HomeSpace;
             workspace.HasUnsavedChanges = true;
             //TODO wrap this in a recordable command
-            dynamoViewModel.Model.CurrentWorkspace.DesignOptionsSet.DesignStates.Remove(state);
+            dynamoViewModel.Model.CurrentWorkspace.DesignOptionsSet.RemoveState(state);
             
         }
         

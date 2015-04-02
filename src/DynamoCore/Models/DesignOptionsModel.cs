@@ -13,15 +13,20 @@ namespace Dynamo.Models
     /// a class that holds a set of design options states
     /// there is one instance of this class per workspacemodel
     /// </summary>
-    public class DesignOptionsSetModel : ModelBase
+    public class DesignOptionsSetModel
     {
         #region private members
-        private List<DesignOptionsState> designStates;
-        //private List<String> supportedInputTypes =new List<String>(){("DoubleSlider")};
+        private readonly List<DesignOptionsState> designStates;
+       
+        private void LoadStateFromXml(string name, string description, List<NodeModel> nodes, List<XmlElement> serializednodes, Guid id)
+        {
+            var loadedState = new DesignOptionsState(name, description, nodes, serializednodes, id);
+            designStates.Add(loadedState);
+        }
         #endregion
 
         # region properties
-        public List<DesignOptionsState> DesignStates { get { return designStates;} }
+        public IEnumerable<DesignOptionsState> DesignStates { get { return designStates;} }
         #endregion
 
         #region constructor
@@ -32,12 +37,27 @@ namespace Dynamo.Models
         #endregion
 
         #region serialization / deserialzation
-        //current idea is that we serialze and and deserialze the the designoptions set
+        // we serialze the presets to xml like a model, but we deserialze them before the workspacemodel is constructed
         //during save and load of the graph, can just inject this into workspacemodel 
-
         //when a new designstate is created we'll serialize all the current nodes into a new xmlelement
         //but not actually write this xml to a file until the graph is saved
-        protected override void SerializeCore(System.Xml.XmlElement element, SaveContext context)
+
+        //grabbed some methods needed from modelbase for serialization
+        protected virtual XmlElement CreateElement(XmlDocument xmlDocument, SaveContext context)
+        {
+            string typeName = GetType().ToString();
+            XmlElement element = xmlDocument.CreateElement(typeName);
+            return element;
+        }
+
+        public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
+        {
+            var element = CreateElement(xmlDocument, context);
+            SerializeCore(element, context);
+            return element;
+        }
+
+        protected virtual void SerializeCore(System.Xml.XmlElement element, SaveContext context)
         {
 
             foreach (var state in designStates)
@@ -57,38 +77,6 @@ namespace Dynamo.Models
 
             }
         }
-
-        protected override void DeserializeCore(System.Xml.XmlElement nodeElement, SaveContext context)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-
-        #region public methods
-        /// <summary>
-        /// method to create and add a new state to this design options set
-        /// </summary>
-        public void CreateNewState(string name, string description, List<NodeModel> currentSelection,Guid id = new Guid())
-        {
-            //TODO filter current selection down to inputs before passing it on
-            //var inputs = currentSelection.Where(x=>supportedInputTypes.Contains(x.GetType())).ToList();
-            var inputs = currentSelection;
-            //then create a new designstate and store it in the dictionary looked up via it's name
-            //TODO should use a GUID instead?
-            var newstate = new DesignOptionsState(name, description, inputs,id);
-            designStates.Add(newstate);
-        }
-        public void LoadStateFromXml(string name, string description, List<NodeModel> nodes, List<XmlElement> serializednodes, Guid id)
-        {
-
-            var loadedState = new DesignOptionsState(name, description, nodes, serializednodes, id);
-            designStates.Add(loadedState);
-        }
-      
-        #endregion
-
-
-
 
         internal static DesignOptionsSetModel LoadFromXml(XmlDocument xmlDoc, NodeGraph nodegraph)
         {
@@ -115,8 +103,6 @@ namespace Dynamo.Models
                         {
                             throw new Exception("unable to parse state GUID");
                         }
-
-                        
                         var nodes = new List<NodeModel>();
                         var deserialzedNodes = new List<XmlElement>();
                         //now find the nodes we're looking for by their guids in the loaded nodegraph
@@ -126,18 +112,14 @@ namespace Dynamo.Models
                         //iterate each actual saved nodemodel in each state
                         foreach (XmlElement node in stateNode.ChildNodes)
                         {
-                         
+
                             var guidString = node.GetAttribute("guid");
                             Guid nodeID;
-                            if (Guid.TryParse(guidString, out nodeID))
-                            {
-
-                            }
-                            else
+                            if (!Guid.TryParse(guidString, out nodeID))
                             {
                                 throw new Exception("unable to parse GUID");
                             }
-                            
+
                             var nodename = stateNode.GetAttribute("nickname");
                             var nodebyGuid = nodegraph.Nodes.Where(x => x.GUID == nodeID).ToList();
                             if (nodebyGuid.Count > 0)
@@ -153,12 +135,34 @@ namespace Dynamo.Models
 
                         }
 
-                 loadedStateSet.LoadStateFromXml(name, des, nodes,deserialzedNodes,stateID);
+                        loadedStateSet.LoadStateFromXml(name, des, nodes, deserialzedNodes, stateID);
                     }
                 }
             }
             return loadedStateSet;
         }
+        #endregion
+
+        #region public methods
+        /// <summary>
+        /// method to create and add a new state to this design options set
+        /// </summary>
+        public void CreateNewState(string name, string description, IEnumerable<NodeModel> currentSelection,Guid id = new Guid())
+        {
+            var inputs = currentSelection;
+            var newstate = new DesignOptionsState(name, description, inputs,id);
+            designStates.Add(newstate);
+        }
+
+        public void RemoveState(DesignOptionsState state)
+        {
+            designStates.Remove(state);
+        }
+
+        #endregion
+
+        
+
 
     }
 }

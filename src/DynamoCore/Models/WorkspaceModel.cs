@@ -708,11 +708,11 @@ namespace Dynamo.Models
         {
             foreach (var node in state.Nodes)
             {
-                var serializedNode = state.SerializedNodes.Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
+                var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
                 node.Deserialize(serializedNode, SaveContext.File);
                 
                 DynamoSelection.Instance.ClearSelection();
-                state.Nodes.ForEach(x => DynamoSelection.Instance.Selection.Add(x));
+                state.Nodes.ToList().ForEach(x => DynamoSelection.Instance.Selection.Add(x));
 
             }
         }

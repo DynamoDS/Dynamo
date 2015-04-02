@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using Dynamo.Controls;
 using Dynamo.Utilities;
+using System;
 
 namespace Dynamo.Nodes
 {
@@ -19,6 +20,7 @@ namespace Dynamo.Nodes
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             this.nameBox.Focus();
+            Application.Current.Dispatcher.BeginInvoke(new Action(() => { this.nameBox.Text = System.DateTime.Now.ToString(); }));
         }
 
         void OK_Click(object sender, RoutedEventArgs e)

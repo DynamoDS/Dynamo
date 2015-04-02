@@ -21,17 +21,17 @@
         <StackPanel Margin="15">
 
             <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.DesignOptionsWindowTitle}"/>
-            <Label Content="{x:Static p:Resources.CustomNodePropertyWindowName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
+            <Label Content="{x:Static p:Resources.DesignOptionsWindowName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                 <Label.ToolTip>
-                    <TextBlock>A unique name for the node.</TextBlock>
+                    <TextBlock>A unique name for the preset.</TextBlock>
                 </Label.ToolTip>
             </Label>
-            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="nameBox" Padding="5" />
+            <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="nameBox" Padding="5"/>
             <TextBlock Name="nameView" Foreground="WhiteSmoke" FontSize="13" Padding="5"></TextBlock>
 
             <Label Content="{x:Static p:Resources.DesignOptionsWindowDescription}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
                 <Label.ToolTip>
-                    <TextBlock>A description of what the input state sets the graph to.</TextBlock>
+                    <TextBlock>A description of what the preset state sets the graph to.</TextBlock>
                 </Label.ToolTip>
             </Label>
             <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" 
