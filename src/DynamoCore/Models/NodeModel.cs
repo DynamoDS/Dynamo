@@ -158,11 +158,18 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsVisible
         {
-            get { return isVisible; }
-            set
+            get
             {
-                isVisible = value;
-                RaisePropertyChanged("IsVisible");
+                return isVisible;
+            }
+
+            private set // Private setter, see "ArgumentLacing" for details.
+            {
+                if (isVisible != value)
+                {
+                    isVisible = value;
+                    RaisePropertyChanged("IsVisible");
+                }
             }
         }
 
@@ -172,11 +179,18 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsUpstreamVisible
         {
-            get { return isUpstreamVisible; }
-            set
+            get
             {
-                isUpstreamVisible = value;
-                RaisePropertyChanged("IsUpstreamVisible");
+                return isUpstreamVisible;
+            }
+
+            private set // Private setter, see "ArgumentLacing" for details.
+            {
+                if (isUpstreamVisible != value)
+                {
+                    isUpstreamVisible = value;
+                    RaisePropertyChanged("IsUpstreamVisible");
+                }
             }
         }
 
@@ -291,8 +305,27 @@ namespace Dynamo.Models
         /// </summary>
         public LacingStrategy ArgumentLacing
         {
-            get { return argumentLacing; }
-            set
+            get
+            {
+                return argumentLacing;
+            }
+
+            // The property setter is marked as private/protected because it 
+            // should not be set from an external component directly. The ability
+            // to directly set the property value causes a NodeModel to be altered 
+            // without careful consideration of undo/redo recording. If changing 
+            // this property value should be undo-able, then the caller should use 
+            // "DynamoModel.UpdateModelValueCommand" to set the property value. 
+            // The command ensures changes to the NodeModel is recorded for undo.
+            // 
+            // In some cases being able to set the property value directly is 
+            // desirable, for example, some unit test scenarios require the given 
+            // NodeModel property to be of certain value. In such cases the 
+            // easiest workaround is to use "NodeModel.UpdateValue" method:
+            // 
+            //      someNode.UpdateValue("ArgumentLacing", "CrossProduct");
+            // 
+            protected set
             {
                 if (argumentLacing != value)
                 {
@@ -1336,7 +1369,7 @@ namespace Dynamo.Models
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            switch (name)
+            switch(name)
             {
                 case "NickName":
                     NickName = value;
@@ -1353,7 +1386,7 @@ namespace Dynamo.Models
                         InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
                     }
                     return true;
-                  
+
                 case "ArgumentLacing":
                     LacingStrategy strategy;
                     if (!Enum.TryParse(value, out strategy))
@@ -1365,6 +1398,12 @@ namespace Dynamo.Models
                     bool newVisibilityValue;
                     if (bool.TryParse(value, out newVisibilityValue))
                         IsVisible = newVisibilityValue;
+                    return true;
+
+                case "IsUpstreamVisible":
+                    bool newUpstreamVisibilityValue;
+                    if (bool.TryParse(value, out newUpstreamVisibilityValue))
+                        IsUpstreamVisible = newUpstreamVisibilityValue;
                     return true;
             }
 
