@@ -643,31 +643,31 @@
     <value>Zoom Out (Mouse wheel up)</value>
     <comment>View menu | Zoom out</comment>
   </data>
-  <data name="NodeContextMenuDelete" xml:space="preserve">
-    <value>Delete</value>
+  <data name="ContextMenuDelete" xml:space="preserve">
+    <value>Remove</value>
     <comment>Context menu for selected node - delete selected node</comment>
   </data>
   <data name="NodeContextMenuHelp" xml:space="preserve">
     <value>Help...</value>
     <comment>Display help message for this node</comment>
   </data>
-  <data name="NodeContextMenuLacing" xml:space="preserve">
+  <data name="ContextMenuLacing" xml:space="preserve">
     <value>Lacing</value>
     <comment>Context menu for selected node</comment>
   </data>
-  <data name="NodeContextMenuLacingCrossProduct" xml:space="preserve">
+  <data name="ContextMenuLacingCrossProduct" xml:space="preserve">
     <value>Cross Product</value>
     <comment>Lacing strategy: use cross product for two lists</comment>
   </data>
-  <data name="NodeContextMenuLacingFirst" xml:space="preserve">
+  <data name="ContextMenuLacingFirst" xml:space="preserve">
     <value>First</value>
     <comment>Lacing strategy: use the first list</comment>
   </data>
-  <data name="NodeContextMenuLacingLongest" xml:space="preserve">
+  <data name="ContextMenuLacingLongest" xml:space="preserve">
     <value>Longest</value>
     <comment>Lacing strategy: use the longest list</comment>
   </data>
-  <data name="NodeContextMenuLacingShortest" xml:space="preserve">
+  <data name="ContextMenuLacingShortest" xml:space="preserve">
     <value>Shortest</value>
     <comment>Lacing strategy: use the shortest list</comment>
   </data>
@@ -1574,5 +1574,41 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="Periodic" xml:space="preserve">
     <value>Periodic</value>
+  </data>
+  <data name="ContextMenuCopy" xml:space="preserve">
+    <value>Copy</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextMenuHideAllGeometry" xml:space="preserve">
+    <value>Hide all geometry preview</value>
+    <comment>Context menu item - Specific to canvas</comment>
+  </data>
+  <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
+    <value>Hide all text bubble</value>
+    <comment>Context menu item - Specific to canvas</comment>
+  </data>
+  <data name="ContextMenuHideUpstreamPreview" xml:space="preserve">
+    <value>Hide upstream geometry preview</value>
+    <comment>Context menu item - Specific to canvas</comment>
+  </data>
+  <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
+    <value>Insert code block</value>
+    <comment>Context menu item - Specific to canvas</comment>
+  </data>
+  <data name="ContextMenuPaste" xml:space="preserve">
+    <value>Paste</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextMenuShowAllGeometry" xml:space="preserve">
+    <value>Show all geometry preview</value>
+    <comment>Context menu item - Specific to canvas</comment>
+  </data>
+  <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
+    <value>Show all text buble</value>
+    <comment>Context menu item - Specific to canvas</comment>
+  </data>
+  <data name="ContextMenuShowUpstreamPreview" xml:space="preserve">
+    <value>Show upstream geometry preview</value>
+    <comment>Context menu item - Specific to canvas</comment>
   </data>
 </root>
