@@ -1234,7 +1234,8 @@ namespace Dynamo.Models
                     newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy);
                 }
 
-                newNode.ArgumentLacing = node.ArgumentLacing;
+                var lacing = node.ArgumentLacing.ToString();
+                newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
                 if (!string.IsNullOrEmpty(node.NickName))
                     newNode.NickName = node.NickName;
 

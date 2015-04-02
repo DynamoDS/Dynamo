@@ -122,7 +122,7 @@ namespace DynamoCoreUITests
             //now flip off the preview on one of the points
             //and ensure that the visualization updates without re-running
             var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
-            p1.IsVisible = false;
+            p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.AreEqual(1, BackgroundPreview.Points.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Count);
@@ -130,15 +130,15 @@ namespace DynamoCoreUITests
 
             //flip off the lines node
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
-            l1.IsVisible = false;
+            l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.AreEqual(1, BackgroundPreview.Points.Count);
             Assert.AreEqual(0, BackgroundPreview.Lines.Count);
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
             //flip those back on and ensure the visualization returns
-            p1.IsVisible = true;
-            l1.IsVisible = true;
+            p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
+            l1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
 
             Assert.AreEqual(7, BackgroundPreview.Points.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Count);
@@ -166,7 +166,7 @@ namespace DynamoCoreUITests
 
             //flip off the line node's preview upstream
             var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
-            l1.IsUpstreamVisible = false;
+            l1.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
 
             Assert.NotNull(model);
             Assert.NotNull(model.CurrentWorkspace);
