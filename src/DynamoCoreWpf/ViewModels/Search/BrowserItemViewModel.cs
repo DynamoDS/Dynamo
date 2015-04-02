@@ -236,8 +236,8 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(Expand);
 
             Name = name;
-            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries.OrderBy(x => name));
-            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs.OrderBy(x => name));
+            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries.OrderBy(x => x.Name));
+            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs.OrderBy(x => x.Name));
 
             foreach (var category in SubCategories)
                 category.PropertyChanged += CategoryOnPropertyChanged;
@@ -420,8 +420,6 @@ namespace Dynamo.Wpf.ViewModels
 
         private void AddToItems(IEnumerable<ISearchEntryViewModel> newItems)
         {
-            bool hasClasses = Items.FirstOrDefault() is ClassesNodeCategoryViewModel;
-
             foreach (var entry in newItems)
             {
                 // Classes must be first in any case.
@@ -446,6 +444,8 @@ namespace Dynamo.Wpf.ViewModels
                 {
                     if (nextLargerItemIndex >= 0)
                     {
+                        bool hasClasses = Items.FirstOrDefault() is ClassesNodeCategoryViewModel;
+
                         var offset = hasClasses ? 1 : 0;
                         Items.Insert(nextLargerItemIndex + offset, entry);
                     }
@@ -474,12 +474,12 @@ namespace Dynamo.Wpf.ViewModels
 
         public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
         {
-            bool hasClasses = SubCategories.FirstOrDefault() is ClassesNodeCategoryViewModel;
             var list = SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel));
             var nextLargerItemIndex = FindInsertionPointByName(list, newSubCategory.Name);
 
             if (nextLargerItemIndex >= 0)
             {
+                bool hasClasses = SubCategories.FirstOrDefault() is ClassesNodeCategoryViewModel;
                 var offset = hasClasses ? 1 : 0;
                 SubCategories.Insert(nextLargerItemIndex + offset, newSubCategory);
             }
