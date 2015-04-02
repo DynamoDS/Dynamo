@@ -94,7 +94,7 @@
             <Canvas.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="WorkspaceLacingMenu"
-                              Header="{x:Static p:Resources.NodeContextMenuLacing}"
+                              Header="{x:Static p:Resources.ContextMenuLacing}"
                               IsEnabled="{Binding Path=HasSelection}">
                         <MenuItem IsCheckable="True"
                                   Command="{Binding Path=SetArgumentLacingCommand}"
