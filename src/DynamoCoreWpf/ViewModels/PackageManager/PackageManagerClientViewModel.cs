@@ -128,6 +128,22 @@ namespace Dynamo.ViewModels
             return HasAuthProvider;
         }
 
+        public void PublishCustomNode(Dynamo.Nodes.Function m)
+        {
+            CustomNodeInfo currentFunInfo;
+            if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
+                m.Definition.FunctionId,
+                out currentFunInfo))
+            {
+                ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, m.Definition) });
+            }
+        }
+
+        public bool CanPublishCustomNode(Dynamo.Nodes.Function m)
+        {
+            return HasAuthProvider && m != null;
+        }
+
         public void PublishSelectedNodes(object m)
         {
             var nodeList = DynamoSelection.Instance.Selection
