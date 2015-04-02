@@ -157,7 +157,7 @@ namespace Dynamo.Nodes
             if (string.IsNullOrEmpty(fullCategoryName))
                 return string.Empty;
 
-            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiterString, Configurations.ShortenedCategoryDelimiter);
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiterString, Configurations.CategoryDelimiterWithSpaces);
 
             // if the category name is too long, we strip off the interior categories
             if (catName.Length > 50)
@@ -173,7 +173,7 @@ namespace Dynamo.Nodes
                                             s[s.Count - 2],
                                             s[s.Count - 1]
                                         };
-                    catName = String.Join(Configurations.ShortenedCategoryDelimiter, s);
+                    catName = String.Join(Configurations.CategoryDelimiterWithSpaces, s);
                 }
             }
 

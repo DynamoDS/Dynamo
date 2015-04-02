@@ -53,6 +53,11 @@ namespace ProtoCore.DSASM
         public StackValue SX { get; set; }
         public StackValue TX { get; set; }
 
+        public void SetAssociativeUpdateRegister(StackValue sv)
+        {
+            LX = sv;
+        }
+
         //public ProtoCore.AssociativeGraph.GraphNode executingGraphNode { get; private set; }
         public InterpreterProperties Properties { get; set; }
 
@@ -122,7 +127,6 @@ namespace ProtoCore.DSASM
         private void SetupAndPushBounceStackFrame(
           int exeblock,
           int entry,
-          ProtoCore.Runtime.Context context,
           StackFrame stackFrame,
           int locals = 0,
           ProtoCore.DebugServices.EventSink sink = null)
@@ -163,7 +167,6 @@ namespace ProtoCore.DSASM
         public StackValue Bounce(
             int exeblock, 
             int entry, 
-            ProtoCore.Runtime.Context context, 
             StackFrame stackFrame, 
             int locals = 0,
             bool fepRun = false,
@@ -172,10 +175,41 @@ namespace ProtoCore.DSASM
         {
             if (stackFrame != null)
             {
-                SetupAndPushBounceStackFrame(exeblock, entry, context, stackFrame, locals);
+                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
                 runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
-            return runtimeCore.ExecutionInstance.Execute(exeblock, entry, context, fepRun, breakpoints);
+            return runtimeCore.ExecutionInstance.Execute(exeblock, entry, fepRun, breakpoints);
+        }
+
+        /// <summary>
+        /// Bounce to an existing executive
+        /// </summary>
+        /// <param name="exeblock"></param>
+        /// <param name="entry"></param>
+        /// <param name="context"></param>
+        /// <param name="stackFrame"></param>
+        /// <param name="locals"></param>
+        /// <param name="fepRun"></param>
+        /// <param name="exec"></param>
+        /// <param name="breakpoints"></param>
+        /// <returns></returns>
+        public StackValue BounceUsingExecutive(
+           DSASM.Executive executive,
+           int exeblock,
+           int entry,
+           StackFrame stackFrame,
+           int locals = 0,
+           bool fepRun = false,
+           DSASM.Executive exec = null,
+           List<Instruction> breakpoints = null)
+        {
+            if (stackFrame != null)
+            {
+                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
+                runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
+            }
+            executive.Execute(exeblock, entry, breakpoints);
+            return executive.RX;
         }
 
         /// <summary>
@@ -2691,13 +2725,18 @@ namespace ProtoCore.DSASM
         /// <param name="language"></param>
         public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
         {
-            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
+            terminate = true;
+            if (entry != Constants.kInvalidPC)
             {
-                ExecuteDebug(exeblock, entry, breakpoints, language);
-            }
-            else
-            {
-                Execute(exeblock, entry, language);
+                terminate = false;
+                if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
+                {
+                    ExecuteDebug(exeblock, entry, breakpoints, language);
+                }
+                else
+                {
+                    Execute(exeblock, entry, language);
+                }
             }
         }
 

@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
 using Dynamo.Tests;
 
 using DynamoServices;
 
 using NUnit.Framework;
-
-using ProtoScript.Runners;
-
-using ProtoTestFx.TD;
 
 namespace IntegrationTests
 {
@@ -38,17 +29,20 @@ namespace IntegrationTests
             postSeen = true;
         }
 
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
 
-        [SetUp]
-        public static void Setup()
+        public override void Setup()
         {
             ExecutionEvents.GraphPreExecution += PreSeen;
             ExecutionEvents.GraphPostExecution += PostSeen;
-
+            base.Setup(); // Setup DynamoModel in this call.
         }
 
-        [TearDown]
-        public static void Cleanup()
+        public override void Cleanup()
         {
             ExecutionEvents.GraphPreExecution -= PreSeen;
             ExecutionEvents.GraphPostExecution -= PostSeen;
@@ -57,6 +51,8 @@ namespace IntegrationTests
             preSeen = false;
             midSeen = false;
             postSeen = false;
+
+            base.Cleanup();
         }
 
         [Test]
@@ -69,7 +65,7 @@ namespace IntegrationTests
 
             //Run the graph
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"System\IntegrationTests\dyns", "ExecutionEvents.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"System\IntegrationTests\dyns", "ExecutionEvents.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
             RunCurrentModel();
 

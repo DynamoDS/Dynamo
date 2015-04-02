@@ -16,6 +16,7 @@ namespace Dynamo.Models
             Y = 0;
             RunType = RunType.Automatic;
             RunPeriod = 100;
+            HasRunWithoutCrash = true;
         }
 
         public static bool FromXmlDocument(
@@ -33,6 +34,7 @@ namespace Dynamo.Models
                 string version = "";
                 var runType = RunType.Manual;
                 int runPeriod = 100;
+                bool hasRunWithoutCrash = false;
 
                 var topNode = xmlDoc.GetElementsByTagName("Workspace");
 
@@ -61,6 +63,8 @@ namespace Dynamo.Models
                             category = att.Value;
                         else if (att.Name.Equals("Description"))
                             description = att.Value;
+                        else if (att.Name.Equals("HasRunWithoutCrash"))
+                            hasRunWithoutCrash = bool.Parse(att.Value);
                         else if (att.Name.Equals("Version"))
                             version = att.Value;
                         else if (att.Name.Equals("RunType"))
@@ -95,7 +99,8 @@ namespace Dynamo.Models
                     Description = description,
                     Version = version,
                     RunType  = runType,
-                    RunPeriod = runPeriod
+                    RunPeriod = runPeriod,
+                    HasRunWithoutCrash = hasRunWithoutCrash
                 };
                 return true;
             }
@@ -125,6 +130,7 @@ namespace Dynamo.Models
         public string FileName { get; internal set; }
         public RunType RunType { get; internal set; }
         public int RunPeriod { get; internal set; }
+        public bool HasRunWithoutCrash { get; internal set; }
         public bool IsCustomNodeWorkspace
         {
             get { return !string.IsNullOrEmpty(ID); }

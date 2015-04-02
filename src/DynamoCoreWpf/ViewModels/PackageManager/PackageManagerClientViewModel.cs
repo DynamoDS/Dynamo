@@ -128,6 +128,22 @@ namespace Dynamo.ViewModels
             return HasAuthProvider;
         }
 
+        public void PublishCustomNode(Dynamo.Nodes.Function m)
+        {
+            CustomNodeInfo currentFunInfo;
+            if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
+                m.Definition.FunctionId,
+                out currentFunInfo))
+            {
+                ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, m.Definition) });
+            }
+        }
+
+        public bool CanPublishCustomNode(Dynamo.Nodes.Function m)
+        {
+            return HasAuthProvider && m != null;
+        }
+
         public void PublishSelectedNodes(object m)
         {
             var nodeList = DynamoSelection.Instance.Selection
@@ -261,24 +277,9 @@ namespace Dynamo.ViewModels
 
                             if (packageDownloadHandle.Extract(DynamoViewModel.Model, out dynPkg))
                             {
-                                var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
+                                var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
+                                DynamoViewModel.Model.PackageLoader.Load(p);
 
-                                var loader = DynamoViewModel.Model.Loader;
-                                var logger = DynamoViewModel.Model.Logger;
-                                var libraryServices = DynamoViewModel.EngineController.LibraryServices;
-
-                                var loadPackageParams = new LoadPackageParams
-                                {
-                                    Loader = loader,
-                                    LibraryServices = libraryServices,
-                                    Context = DynamoViewModel.Model.Context,
-                                    IsTestMode = DynamoModel.IsTestMode,
-                                    CustomNodeManager = DynamoViewModel.Model.CustomNodeManager
-                                };
-
-                                downloadPkg.LoadIntoDynamo(loadPackageParams, logger);
-
-                                DynamoViewModel.Model.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                             }
                         }

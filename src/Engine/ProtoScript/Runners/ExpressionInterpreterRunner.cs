@@ -37,7 +37,7 @@ namespace ProtoScript.Runners
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                context.SetData(string.Empty, null, null, currentBlockID, runtimeCore.RuntimeMemory);
+                context.SetExprInterpreterProperties(currentBlockID, runtimeCore.RuntimeMemory, runtimeCore.watchClassScope, runtimeCore.DebugProps);
                 ProtoCore.Language id = globalBlock.language;
 
                 runtimeCore.ExprInterpreterExe.iStreamCanvas = new InstructionStream(globalBlock.language, Core);
@@ -100,12 +100,12 @@ namespace ProtoScript.Runners
             int oldFunctionCallDepth = runtimeCore.FunctionCallDepth;
 
             //Record the old start PC
-            int oldStartPC = Core.startPC;
+            int oldStartPC = Core.watchStartPC;
             if (succeeded)
             {
 
                 //a2. Record the old start PC for restore instructions
-                Core.startPC = runtimeCore.ExprInterpreterExe.instrStreamList[blockId].instrList.Count;
+                Core.watchStartPC = runtimeCore.ExprInterpreterExe.instrStreamList[blockId].instrList.Count;
                 Core.GenerateExprExeInstructions(blockId);
                 
                 //a3. Record the old running block
@@ -125,14 +125,12 @@ namespace ProtoScript.Runners
                 // of it and restore it right after the "Core.Bounce" call.
                 // 
                 //Core.Executives[Core.CodeBlockList[Core.RunningBlock].language].
-                ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-
                 try
                 {
                     ProtoCore.DSASM.StackFrame stackFrame = null;
                     int locals = 0;
 
-                    StackValue sv = runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.startPC, context, stackFrame, locals);
+                    StackValue sv = runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(blockId, Core.watchStartPC, stackFrame, locals);
 
                     // As Core.InterpreterProps stack member is pushed to every time the Expression Interpreter begins executing
                     // it needs to be popped off at the end for stack alignment - pratapa
@@ -151,12 +149,12 @@ namespace ProtoScript.Runners
                 runtimeCore.RunningBlock = restoreBlock;
 
                 //r2. Restore the instructions in Core.ExprInterpreterExe
-                int from = Core.startPC;
+                int from = Core.watchStartPC;
                 int elems = runtimeCore.ExprInterpreterExe.iStreamCanvas.instrList.Count;
                 runtimeCore.ExprInterpreterExe.instrStreamList[blockId].instrList.RemoveRange(from, elems);
 
                 //Restore the start PC
-                Core.startPC = oldStartPC;
+                Core.watchStartPC = oldStartPC;
 
                 //Restore the function call depth
                 //Fix IDE-523: part of error for watching non-existing member
@@ -175,7 +173,7 @@ namespace ProtoScript.Runners
             else
             {
                 //Restore the start PC
-                Core.startPC = oldStartPC;
+                Core.watchStartPC = oldStartPC;
 
                 //Restore the function call depth
                 //Fix IDE-523: part of error for watching non-existing member

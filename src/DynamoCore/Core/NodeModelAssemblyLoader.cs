@@ -11,12 +11,12 @@ using DynamoUtilities;
 namespace Dynamo.Utilities
 {
     /// <summary>
-    /// The DynamoLoader is responsible for loading types which derive
-    /// from NodeModel. For information about package loading see the
-    /// PackageLoader. For information about loading other libraries, 
-    /// see LibraryServices.
+    ///     This class is responsible for loading types that derive
+    ///     from NodeModel. For information about package loading see the
+    ///     PackageLoader. For information about loading other libraries, 
+    ///     see LibraryServices.
     /// </summary>
-    public class DynamoLoader : LogSourceBase
+    public class NodeModelAssemblyLoader : LogSourceBase
     {
         #region Properties/Fields
 
@@ -134,8 +134,7 @@ namespace Dynamo.Utilities
                     }
 
                     LoadNodesFromAssembly(assembly, context, result, result2);
-                    loadedAssemblies.Add(assembly);
-                    OnAssemblyLoaded(assembly);
+                    
                 }
                 catch (BadImageFormatException)
                 {
@@ -175,7 +174,7 @@ namespace Dynamo.Utilities
                     .Any();
         }
 
-        internal bool ContainsNodeModelSubType(Assembly assem)
+        internal static bool ContainsNodeModelSubType(Assembly assem)
         {
             return assem.GetTypes().Any(IsNodeSubType);
         }
@@ -245,6 +244,9 @@ namespace Dynamo.Utilities
                     Log(e);
                 }
             }
+
+            loadedAssemblies.Add(assembly);
+            OnAssemblyLoaded(assembly);
         }
 
         #endregion

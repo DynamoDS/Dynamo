@@ -613,13 +613,6 @@
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
-                <!--<uicontrols:AddonsTreeView Grid.Row="2"
-                                           DataContext="{Binding}">
-                    <uicontrols:AddonsTreeView.Visibility>
-                        <Binding Path="SearchAddonsVisibility"
-                                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
-                    </uicontrols:AddonsTreeView.Visibility>
-                </uicontrols:AddonsTreeView>-->
             </Grid>
         </ScrollViewer>
 
@@ -638,7 +631,6 @@
             <Button.Visibility>
                 <MultiBinding Converter="{StaticResource SearchResultsToVisibilityConverter}">
                     <Binding Path="SearchRootCategories.Count" />
-                    <Binding Path="SearchAddonsVisibility" />
                     <Binding Path="SearchText" />
                 </MultiBinding>
             </Button.Visibility>
