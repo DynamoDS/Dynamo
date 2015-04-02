@@ -56,7 +56,7 @@ namespace Dynamo.DSEngine
                 nodeFlags[node] = MarkFlag.TempMark;
 
                 IEnumerable<NodeModel> outputs =
-                    node.Outputs.Values.SelectMany(set => set.Select(t => t.Item2)).Distinct();
+                    node.OutputNodes.Values.SelectMany(set => set.Select(t => t.Item2)).Distinct();
                 foreach (NodeModel output in outputs)
                     MarkNode(output, nodeFlags, sortedList);
 

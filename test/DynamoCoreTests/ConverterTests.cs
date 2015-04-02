@@ -436,9 +436,6 @@ namespace Dynamo.Tests
             textBlock.Height = 10;
 
             # region dynamoViewModel and searchModel
-            var model = DynamoModel.Start();
-            var vizManager = new VisualizationManager(model);
-            var watchHandler = new DefaultWatchHandler(vizManager, model.PreferenceSettings);
             DynamoViewModel dynamoViewModel = DynamoViewModel.Start();
             NodeSearchModel searchModel = new NodeSearchModel();
             # endregion
@@ -469,6 +466,9 @@ namespace Dynamo.Tests
             thickness = new Thickness(0, 0, -6.6733333333333338, 0);
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(thickness, result);
+
+            var shutdownParams = new DynamoViewModel.ShutdownParams(shutdownHost: false, allowCancellation: false);
+            dynamoViewModel.PerformShutdownSequence(shutdownParams);
         }
 
         [Test]

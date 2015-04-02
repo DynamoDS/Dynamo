@@ -744,13 +744,13 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(dynFilePath);
             
             var instance = model.CurrentWorkspace.Nodes.OfType<Function>().First();
-            instance.ArgumentLacing = LacingStrategy.CrossProduct;
+            instance.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
             ViewModel.HomeSpace.Run();
 
             // {1,2} + {3,4}
             AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { new object [] {4, 5}, new object [] {5, 6}});
 
-            instance.ArgumentLacing = LacingStrategy.Longest;
+            instance.UpdateValue(new UpdateValueParams("ArgumentLacing", "Longest"));
             ViewModel.HomeSpace.Run();
             AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { 4, 6});
 
