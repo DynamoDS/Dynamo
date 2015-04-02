@@ -425,6 +425,13 @@ namespace Dynamo.Wpf.ViewModels
 
             foreach (var entry in newItems)
             {
+                // Classes must be first in any case.
+                if (entry is ClassesNodeCategoryViewModel)
+                {
+                    Items.Insert(0, entry);
+                    continue;
+                }
+
                 var nextLargerItemIndex = -1;
                 foreach (var item in Items.Where(cat => !(cat is ClassesNodeCategoryViewModel)))
                 {
@@ -433,12 +440,6 @@ namespace Dynamo.Wpf.ViewModels
                         nextLargerItemIndex = Items.IndexOf(item);
                         break;
                     }
-                }
-                // Classes must be first in any case.
-                if (entry is ClassesNodeCategoryViewModel)
-                {
-                    Items.Insert(0, entry);
-                    continue;
                 }
 
                 // Nodecategories(i.e. namespaces) should be before members.
@@ -452,7 +453,7 @@ namespace Dynamo.Wpf.ViewModels
                     else
                         Items.Add(entry);
                 }
-                if (entry is NodeCategoryViewModel)
+                else if (entry is NodeCategoryViewModel)
                 {
                     if (nextLargerItemIndex >= 0)
                     {
