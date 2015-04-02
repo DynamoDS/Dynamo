@@ -62,6 +62,7 @@ namespace Dynamo.Tests
             }
 
             Assert.IsTrue(missingIcons.Count == 0, String.Join(Environment.NewLine, missingIcons));
+            model.ShutDown(false);
         }
     }
 }

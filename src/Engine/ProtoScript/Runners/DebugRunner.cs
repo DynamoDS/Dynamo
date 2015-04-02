@@ -51,7 +51,7 @@ namespace ProtoScript.Runners
         private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core)
         {
             ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
-            runtimeCore.SetupForExecution(core, new ProtoCore.Runtime.Context());
+            runtimeCore.SetupForExecution(core, core.GlobOffset);
             return runtimeCore;
         }
 
@@ -535,8 +535,6 @@ namespace ProtoScript.Runners
 
         private ExecutionMirror Execute(int programCounterToExecuteFrom, List<Instruction> breakpoints, bool fepRun = false)
         {
-
-            ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
             runtimeCore.Breakpoints = breakpoints;
             resumeBlockID = runtimeCore.RunningBlock;
 
@@ -558,7 +556,6 @@ namespace ProtoScript.Runners
             runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                 resumeBlockID, 
                 programCounterToExecuteFrom,
-                context, 
                 runtimeCore.DebugProps.FirstStackFrame, 
                 locals, 
                 fepRun,

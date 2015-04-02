@@ -1,4 +1,5 @@
 ﻿using System;
+using ProtoCore.Lang;
 using ProtoScript.Runners;
 
 namespace Dynamo.Models
@@ -10,4 +11,6 @@ namespace Dynamo.Models
     public delegate void WorkspaceHandler(WorkspaceModel model);   
     public delegate void ActionHandler(Action action);
     public delegate void NodeEventHandler(object sender, EventArgs e);
+
+    public delegate void SettingsMigrationHandler(SettingsMigrationEventArgs args);
 }

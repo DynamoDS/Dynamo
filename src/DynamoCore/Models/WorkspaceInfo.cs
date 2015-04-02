@@ -16,6 +16,7 @@ namespace Dynamo.Models
             Y = 0;
             RunType = RunType.Automatic;
             RunPeriod = 100;
+            HasRunWithoutCrash = true;
         }
 
         public static bool FromXmlDocument(

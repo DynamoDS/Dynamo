@@ -68,23 +68,23 @@ namespace Dynamo.Tests
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("Category1", result);
 
-            categoryName = "Cat1 Cat" + Configurations.CategoryDelimiterString + "Cat2 Cat" +
-                                    Configurations.CategoryDelimiterString + "Cat3";
+            categoryName = "Cat1 Cat" + Configurations.CategoryDelimiterWithSpaces + "Cat2 Cat" +
+                                    Configurations.CategoryDelimiterWithSpaces + "Cat3";
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
-            Assert.AreEqual("Cat1 Cat" + Configurations.ShortenedCategoryDelimiter + "Cat2 Cat" +
-                                      Configurations.ShortenedCategoryDelimiter + "Cat3", result);
+            Assert.AreEqual("Cat1 Cat" + Configurations.CategoryDelimiterWithSpaces + "Cat2 Cat" +
+                                      Configurations.CategoryDelimiterWithSpaces + "Cat3", result);
 
-            categoryName = "TenSymbol" + Configurations.CategoryDelimiterString +
-                           "TenSymbol" + Configurations.CategoryDelimiterString +
-                           "TenSymbol" + Configurations.CategoryDelimiterString +
-                           "TenSymbol" + Configurations.CategoryDelimiterString +
-                           "TenSymbol" + Configurations.CategoryDelimiterString +
+            categoryName = "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
                            "MoreSymbols";
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
-            Assert.AreEqual("TenSymbol" + Configurations.ShortenedCategoryDelimiter +
-                           "..." + Configurations.ShortenedCategoryDelimiter +
-                           "TenSymbol" + Configurations.ShortenedCategoryDelimiter +
-                           "TenSymbol" + Configurations.ShortenedCategoryDelimiter +
+            Assert.AreEqual("TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "..." + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
                            "MoreSymbols", result);
         }
 

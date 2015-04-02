@@ -149,7 +149,7 @@ namespace Dynamo.Core.Threading
 
             gathered.Add(node);
 
-            var sets = node.Outputs.Values;
+            var sets = node.OutputNodes.Values;
             var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct();
             foreach (var outputNode in outputNodes)
             {
