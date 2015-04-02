@@ -35,7 +35,7 @@ namespace Dynamo.Nodes
         
         public override bool IsConvertible
         {
-            get { return true; }
+            get { return !IsPartiallyApplied; }
         }
 
         public override IdentifierNode GetAstIdentifierForOutputIndex(int outputIndex)
