@@ -990,6 +990,7 @@ namespace Dynamo.Models
                     totalY / nodeCount, engineController.LibraryServices);
                 UndoRecorder.RecordCreationForUndo(codeBlockNode);
                 Nodes.Add(codeBlockNode);
+                this.RegisterNode(codeBlockNode);
                 #endregion
 
                 #region Step III. Recreate the necessary connections
