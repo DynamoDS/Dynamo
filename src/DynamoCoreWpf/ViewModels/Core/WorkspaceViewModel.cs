@@ -283,6 +283,7 @@ namespace Dynamo.ViewModels
                 EnableUpstreamPreviewCommand.RaiseCanExecuteChanged();
                 SetArgumentLacingCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged("HasSelection");
+                RaisePropertyChanged("AnyNodeVisible");
             };
 
             // sync collections
@@ -765,11 +766,6 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.ExecuteCommand(command);
         }
 
-        private bool CanEnableNodePreview(object parameter)
-        {
-            return DynamoSelection.Instance.Selection.Count > 0;
-        }
-
         private void EnableUpstreamPreview(object parameter)
         {
             var modelGuids = DynamoSelection.Instance.Selection.
@@ -784,9 +780,18 @@ namespace Dynamo.ViewModels
             DynamoViewModel.Model.ExecuteCommand(command);
         }
 
-        private bool CanEnableUpstreamPreview(object parameter)
+        private void ShowHideAllGeometryPreview(object parameter)
         {
-            return DynamoSelection.Instance.Selection.Count > 0;
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
+
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "IsVisible", (string) parameter);
+
+            DynamoViewModel.Model.ExecuteCommand(command);
         }
 
         private void SetArgumentLacing(object parameter)
@@ -801,11 +806,6 @@ namespace Dynamo.ViewModels
                 modelGuids, "ArgumentLacing", (string) parameter);
 
             DynamoViewModel.Model.ExecuteCommand(command);
-        }
-
-        private bool CanSetArgumentLacing(object parameter)
-        {
-            return DynamoSelection.Instance.Selection.Count > 0;
         }
 
         private void Hide(object parameters)

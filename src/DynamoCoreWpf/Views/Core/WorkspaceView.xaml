@@ -94,8 +94,7 @@
             <Canvas.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="WorkspaceLacingMenu"
-                              Header="{x:Static p:Resources.ContextMenuLacing}"
-                              IsEnabled="{Binding Path=HasSelection}">
+                              Header="{x:Static p:Resources.ContextMenuLacing}">
                         <MenuItem IsCheckable="True"
                                   Command="{Binding Path=SetArgumentLacingCommand}"
                                   CommandParameter="Shortest"
@@ -130,6 +129,23 @@
                             </MenuItem.IsChecked>
                         </MenuItem>
                     </MenuItem>
+
+
+                    <MenuItem Name="ShowGeometryPreview"
+                              IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
+                              Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
+                              CommandParameter="true"
+                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
+
+
+                    <MenuItem Name="HideGeometryPreview"
+                              IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static p:Resources.ContextMenuHideAllGeometry}"
+                              Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
+                              CommandParameter="false"
+                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+
 
                     <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}"
                                Name="Align">

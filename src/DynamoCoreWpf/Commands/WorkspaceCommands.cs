@@ -1,6 +1,8 @@
-﻿using Dynamo.Models;
+﻿using System.Linq;
+using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.ViewModels
 {
@@ -23,6 +25,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _graphAutoLayoutCommand;
         private DelegateCommand _pauseVisualizationManagerUpdateCommand;
         private DelegateCommand _unpauseVisualizationManagerUpdateCommand;
+        private DelegateCommand _showHideAllGeometryPreviewCommand;
 
         #endregion
 
@@ -143,7 +146,7 @@ namespace Dynamo.ViewModels
                 if (_enableNodePreviewCommand == null)
                 {
                     _enableNodePreviewCommand = new DelegateCommand(
-                        EnableNodePreview, CanEnableNodePreview);
+                        EnableNodePreview, p => HasSelection);
                 }
 
                 return _enableNodePreviewCommand;
@@ -157,7 +160,7 @@ namespace Dynamo.ViewModels
                 if (_enableUpstreamPreviewCommand == null)
                 {
                     _enableUpstreamPreviewCommand = new DelegateCommand(
-                        EnableUpstreamPreview, CanEnableUpstreamPreview);
+                        EnableUpstreamPreview, p => HasSelection);
                 }
 
                 return _enableUpstreamPreviewCommand;
@@ -171,7 +174,7 @@ namespace Dynamo.ViewModels
                 if (_setArgumentLacingCommand == null)
                 {
                     _setArgumentLacingCommand = new DelegateCommand(
-                        SetArgumentLacing, CanSetArgumentLacing);
+                        SetArgumentLacing, p => HasSelection);
                 }
 
                 return _setArgumentLacingCommand;
@@ -211,9 +214,37 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public DelegateCommand ShowHideAllGeometryPreviewCommand
+        {
+            get
+            {
+                if (_showHideAllGeometryPreviewCommand == null)
+                {
+                    _showHideAllGeometryPreviewCommand = new DelegateCommand(
+                        ShowHideAllGeometryPreview);
+                }
+
+                return _showHideAllGeometryPreviewCommand;
+            }
+        }
+
         #endregion
 
         #region Properties for Command Data Binding
+
+        public bool AnyNodeVisible
+        {
+            get
+            {
+                return DynamoSelection.Instance.Selection.
+                    OfType<NodeModel>().Any(n => n.IsVisible);
+            }
+        }
+
+        public string ShowHideTextBubble
+        {
+            get { return Resources.ContextMenuShowAllTextBubble; }
+        }
 
         public bool HasSelection
         {
@@ -225,6 +256,7 @@ namespace Dynamo.ViewModels
             // TODO: Update this to gather the right value.
             get { return LacingStrategy.Shortest; }
         }
+
 
         #endregion
     }
