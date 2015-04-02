@@ -42,9 +42,9 @@
             <ContextMenu Name="MainContextMenu"
                          x:FieldModifier="public">
                 <MenuItem Name="deleteElem_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuDelete}"
+                          Header="{x:Static p:Resources.ContextMenuDelete}"
                           Command="{Binding Path=DeleteCommand}" />
-                <MenuItem Header="{x:Static p:Resources.NodeContextMenuLacing}"
+                <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Name="lacingStrategy"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
                     <MenuItem Name="lacing_strategy_single"
@@ -53,25 +53,25 @@
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=First,Mode=TwoWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="First"
-                              Header="{x:Static p:Resources.NodeContextMenuLacingFirst}" />
+                              Header="{x:Static p:Resources.ContextMenuLacingFirst}" />
                     <MenuItem Name="lacing_strategy_shortest"
                               IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest, Mode=TwoWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="Shortest"
-                              Header="{x:Static p:Resources.NodeContextMenuLacingShortest}" />
+                              Header="{x:Static p:Resources.ContextMenuLacingShortest}" />
                     <MenuItem Name="lacing_strategy_longest"
                               IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Longest,Mode=TwoWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="Longest"
-                              Header="{x:Static p:Resources.NodeContextMenuLacingLongest}" />
+                              Header="{x:Static p:Resources.ContextMenuLacingLongest}" />
                     <MenuItem Name="lacing_strategy_cross"
                               IsCheckable="True"
                               IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CrossProduct,Mode=TwoWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="CrossProduct"
-                              Header="{x:Static p:Resources.NodeContextMenuLacingCrossProduct}" />
+                              Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}" />
                 </MenuItem>
                 <MenuItem Name="isVisible_cm"
                           Header="{x:Static p:Resources.NodeContextMenuPreview}"

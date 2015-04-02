@@ -690,7 +690,7 @@ namespace Dynamo.Core
                             node =>
                                 Enumerable.Range(0, node.InPortData.Count)
                                 .Where(node.HasConnectedInput)
-                                .Select(data => Tuple.Create(node, data, node.Inputs[data]))
+                                .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
                                 .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
                 var outputs =
@@ -701,7 +701,7 @@ namespace Dynamo.Core
                                 .Where(node.HasOutput)
                                 .SelectMany(
                                     data =>
-                                        node.Outputs[data].Where(
+                                        node.OutputNodes[data].Where(
                                             output => !selectedNodeSet.Contains(output.Item2))
                                         .Select(output => Tuple.Create(node, data, output)))));
 

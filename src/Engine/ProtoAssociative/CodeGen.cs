@@ -249,6 +249,21 @@ namespace ProtoAssociative
             return cb;
         }
 
+        /// <summary>
+        /// Call this function if there is no entry point for the current compilation session
+        /// This occurs if the compilation body has only either class and function definitions
+        /// </summary>
+        private void SetNoEntryPoint()
+        {
+            if (globalProcIndex == ProtoCore.DSASM.Constants.kGlobalScope  
+                && globalClassIndex == ProtoCore.DSASM.Constants.kGlobalScope 
+                && !isEntrySet)
+            {
+                isEntrySet = true;
+                codeBlock.instrStream.entrypoint = ProtoCore.DSASM.Constants.kInvalidPC;
+            }
+        }
+
         protected override void SetEntry()
         {
             if (ProtoCore.DSASM.Constants.kGlobalScope == globalProcIndex && globalClassIndex == ProtoCore.DSASM.Constants.kGlobalScope && !isEntrySet)
@@ -2889,6 +2904,7 @@ namespace ProtoAssociative
 
                 BinaryExpressionNode bnode = new BinaryExpressionNode(leftNode, rightNode, ProtoCore.DSASM.Operator.assign);
                 bnode.isSSAAssignment = isSSAAssignment;
+                bnode.IsInputExpression = astBNode.IsInputExpression;
 
                 astlist.Add(bnode);
                 ssaStack.Push(bnode);
@@ -3848,7 +3864,7 @@ namespace ProtoAssociative
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
-            core.startPC = this.pc;
+            core.watchStartPC = this.pc;
             compilePass = ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope;
             ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.AssociativeAST.CodeBlockNode;
 
@@ -3885,7 +3901,7 @@ namespace ProtoAssociative
 
             core.InferedType = inferedType;
 
-            this.pc = core.startPC;
+            this.pc = core.watchStartPC;
 
             return codeBlock.codeBlockId;
         }
@@ -3954,7 +3970,7 @@ namespace ProtoAssociative
 
             AllocateContextGlobals();
 
-            core.startPC = this.pc;
+            core.watchStartPC = this.pc;
             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 return EmitExpressionInterpreter(codeBlockNode);
@@ -4028,7 +4044,7 @@ namespace ProtoAssociative
 
                 if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope && !hasReturnStatement)
                 {
-                    EmitReturnNull();
+                    EmitReturnNull();  
                 }
 
                 compilePass++;
@@ -8560,6 +8576,20 @@ namespace ProtoAssociative
                             symbolnode.SetStaticType(castType);
                         }
                         castType = symbolnode.staticType;
+
+
+                        if (bnode.IsInputExpression)
+                        {
+                            StackValue regLX = StackValue.BuildRegister(Registers.LX);
+                            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regLX);
+                            EmitPop(regLX, globalClassIndex);
+
+                            graphNode.updateBlock.updateRegisterStartPC = pc;
+
+                            EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regLX);
+                            EmitPush(regLX);
+                        }
+
                         EmitPushVarData(runtimeIndex, dimensions, castType.UID, castType.rank);
 
                         if (core.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)

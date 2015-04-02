@@ -1158,6 +1158,18 @@ namespace Dynamo.Tests
             AssertPreviewValue("0b9eca5b-835b-493e-af4b-84a3366d75d3", Dlist);
             AssertPreviewValue("7e1f9810-2f4f-4911-975b-d392afc3a674", Dlist);
         }
+
+        [Test, Category("UnitTests")]
+        public void TestDefaultArgumentTooltip()
+        {
+            var vm = ViewModel;
+            var node =
+                new DSFunction(vm.Model.LibraryServices.GetFunctionDescriptor("Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double"));
+            vm.ExecuteCommand(new Dynamo.Models.DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
+            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0"));
+            node.InPorts[0].UsingDefaultValue = false;
+            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0 (disabled)"));
+        }
     }
 
     [Category("DSCustomNode")]
