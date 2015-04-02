@@ -1338,14 +1338,14 @@ namespace Dynamo.Models
             foreach (var kvp in externalOutputConnections)
             {
                 var connector = kvp.Key;
-                string variableName = kvp.Value;
+                var variableName = kvp.Value;
 
                 //Get the start and end idex for the ports for the connection
                 var portModel = cbn.OutPorts.FirstOrDefault(
-                    port => cbn.GetRawAstIdentifierForOutputINdex(port.Index).Value.Equals(variableName));
+                    port => cbn.GetRawAstIdentifierForOutputIndex(port.Index).Value.Equals(variableName));
 
                 if (portModel == null)
-                    return;
+                    continue;
 
                 //Make the new connection and then record and add it
                 var newConnector = ConnectorModel.Make(
@@ -1363,33 +1363,27 @@ namespace Dynamo.Models
         /// based on the connectors passed as inputs.
         /// </summary>
         /// <param name="externalInputConnections">List of connectors to remake, along with the port names of the new port</param>
-        /// <param name="codeBlockNode">The new Node To Code created Code Block Node</param>
+        /// <param name="cbn">The new Node To Code created Code Block Node</param>
         private void ReConnectInputConnections(
-            Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel codeBlockNode)
+            Dictionary<ConnectorModel, string> externalInputConnections, CodeBlockNodeModel cbn)
         {
-            var connections = from kvp in externalInputConnections
-                              let connector = kvp.Key
-                              let variableName = kvp.Value
-                              let startIndex = connector.Start.Index
-                              let endIndex = CodeBlockNodeModel.GetInportIndex(codeBlockNode, variableName)
-                              where Connectors.All(c => c.End != codeBlockNode.InPorts[endIndex])
-                              select
-                                  new
-                                  {
-                                      Start = connector.Start.Owner,
-                                      End = codeBlockNode,
-                                      StartIdx = startIndex,
-                                      EndIdx = endIndex
-                                  };
-
-            foreach (var newConnector in connections)
+            foreach (var kvp in externalInputConnections)
             {
-                var connector = ConnectorModel.Make(
-                    newConnector.Start,
-                    newConnector.End,
-                    newConnector.StartIdx,
-                    newConnector.EndIdx);
-                UndoRecorder.RecordCreationForUndo(connector);
+                var connector = kvp.Key;
+                var variableName = kvp.Value;
+
+                var endPortIndex = CodeBlockNodeModel.GetInportIndex(cbn, variableName);
+                if (Connectors.Any(c => c.End == cbn.InPorts[endPortIndex]))
+                    continue;
+
+                var newConnector = ConnectorModel.Make(
+                    connector.Start.Owner,
+                    cbn,
+                    connector.Start.Index,
+                    endPortIndex);
+
+                UndoRecorder.RecordCreationForUndo(newConnector);
+
             }
         }
 

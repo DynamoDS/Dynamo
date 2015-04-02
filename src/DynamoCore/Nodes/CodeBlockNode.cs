@@ -366,7 +366,7 @@ namespace Dynamo.Nodes
             return GetAstIdentifierForOutputIndexInternal(portIndex, false);
         }
 
-        public IdentifierNode GetRawAstIdentifierForOutputINdex(int portIndex)
+        public IdentifierNode GetRawAstIdentifierForOutputIndex(int portIndex)
         {
             return GetAstIdentifierForOutputIndexInternal(portIndex, true);
         }
