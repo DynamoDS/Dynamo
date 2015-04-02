@@ -61,10 +61,8 @@ namespace Dynamo.Models
 
         #region public members
 
-        public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
-
-        public Dictionary<int, HashSet<Tuple<int, NodeModel>>> Outputs =
-            new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
+        private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
+        private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
 
         public Object RenderPackagesMutex = new object();
         public List<IRenderPackage> RenderPackages
@@ -276,6 +274,16 @@ namespace Dynamo.Models
                 outPorts = value;
                 RaisePropertyChanged("OutPorts");
             }
+        }
+
+        public IDictionary<int, Tuple<int, NodeModel>> InputNodes
+        {
+            get { return inputNodes; }
+        }
+
+        public IDictionary<int, HashSet<Tuple<int, NodeModel>>> OutputNodes
+        {
+            get { return outputNodes; }
         }
 
         /// <summary>
@@ -558,6 +566,9 @@ namespace Dynamo.Models
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
 
+            inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
+            outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
+
             IsVisible = true;
             IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
@@ -817,19 +828,19 @@ namespace Dynamo.Models
         
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
-            Inputs[inputData] = Tuple.Create(outputData, node);
+            inputNodes[inputData] = Tuple.Create(outputData, node);
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
         {
-            if (!Outputs.ContainsKey(portData))
-                Outputs[portData] = new HashSet<Tuple<int, NodeModel>>();
-            Outputs[portData].Add(Tuple.Create(inputData, nodeLogic));
+            if (!outputNodes.ContainsKey(portData))
+                outputNodes[portData] = new HashSet<Tuple<int, NodeModel>>();
+            outputNodes[portData].Add(Tuple.Create(inputData, nodeLogic));
         }
 
         internal void DisconnectInput(int data)
         {
-            Inputs[data] = null;
+            inputNodes[data] = null;
         }
 
         /// <summary>
@@ -840,7 +851,7 @@ namespace Dynamo.Models
         /// <returns>True if there is an input, false otherwise.</returns>
         public bool TryGetInput(int data, out Tuple<int, NodeModel> input)
         {
-            return Inputs.TryGetValue(data, out input) && input != null;
+            return inputNodes.TryGetValue(data, out input) && input != null;
         }
 
         /// <summary>
@@ -851,7 +862,7 @@ namespace Dynamo.Models
         /// <returns>True if there is an output, false otherwise.</returns>
         public bool TryGetOutput(int output, out HashSet<Tuple<int, NodeModel>> newOutputs)
         {
-            return Outputs.TryGetValue(output, out newOutputs);
+            return outputNodes.TryGetValue(output, out newOutputs);
         }
 
         /// <summary>
@@ -872,7 +883,7 @@ namespace Dynamo.Models
         /// <returns>True if there is an input, false otherwise.</returns>
         public bool HasConnectedInput(int data)
         {
-            return Inputs.ContainsKey(data) && Inputs[data] != null;
+            return inputNodes.ContainsKey(data) && inputNodes[data] != null;
         }
 
         /// <summary>
@@ -882,13 +893,13 @@ namespace Dynamo.Models
         /// <returns>True if there is an output, false otherwise.</returns>
         public bool HasOutput(int portData)
         {
-            return Outputs.ContainsKey(portData) && Outputs[portData].Any();
+            return outputNodes.ContainsKey(portData) && outputNodes[portData].Any();
         }
 
         internal void DisconnectOutput(int portData, int inPortData, NodeModel nodeModel)
         {
             HashSet<Tuple<int, NodeModel>> output;
-            if (Outputs.TryGetValue(portData, out output))
+            if (outputNodes.TryGetValue(portData, out output))
                 output.RemoveWhere(x => x.Item2 == nodeModel && x.Item1 == inPortData);
         }
 
