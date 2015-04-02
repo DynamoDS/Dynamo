@@ -494,6 +494,7 @@ namespace Dynamo.Models
         {
             foreach (var node in Nodes)
                 DisposeNode(node);
+
             foreach (var connector in Connectors)
                 OnConnectorDeleted(connector);
 
@@ -634,6 +635,7 @@ namespace Dynamo.Models
             model.ConnectorAdded -= OnConnectorAdded;
             model.Modified -= NodeModified;
             OnNodeRemoved(model);
+            model.Dispose();
         }
 
         public void AddNote(NoteModel note, bool centered)
@@ -1197,15 +1199,20 @@ namespace Dynamo.Models
                         var node = model as NodeModel;
                         Debug.Assert(Nodes.Contains(node));
 
+                        bool silentFlag = node.RaisesModificationEvents;
+                        node.RaisesModificationEvents = false;
+
                         // Note that AllConnectors is duplicated as a separate list 
                         // by calling its "ToList" method. This is the because the 
                         // "Connectors.Remove" will modify "AllConnectors", causing 
                         // the Enumerator in this "foreach" to become invalid.
                         foreach (var conn in node.AllConnectors.ToList())
                         {
-                            conn.Delete(true);
+                            conn.Delete();
                             undoRecorder.RecordDeletionForUndo(conn);
                         }
+
+                        node.RaisesModificationEvents = silentFlag;
 
                         // Take a snapshot of the node before it goes away.
                         undoRecorder.RecordDeletionForUndo(node);

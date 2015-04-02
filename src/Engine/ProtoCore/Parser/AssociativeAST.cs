@@ -1268,6 +1268,7 @@ namespace ProtoCore.AST.AssociativeAST
     public class MethodAttributes
     {
         public bool HiddenInLibrary { get; protected set; }
+        public bool CanUpdatePeriodically { get; protected set; }
         public IEnumerable<string> ReturnKeys
         {
             get
@@ -1284,9 +1285,10 @@ namespace ProtoCore.AST.AssociativeAST
         /// </summary>
         public string Description { get; set; }
 
-        public MethodAttributes(bool hiddenInLibrary = false, string msg = "")
+        public MethodAttributes(bool hiddenInLibrary = false, bool canUpdatePeriodically = false, string msg = "")
         {
             HiddenInLibrary = hiddenInLibrary;
+            CanUpdatePeriodically = canUpdatePeriodically;
             ObsoleteMessage = msg;
         }
     }
@@ -1647,6 +1649,7 @@ namespace ProtoCore.AST.AssociativeAST
         public AssociativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
         public AssociativeNode RightNode { get; set; }
+        public bool IsInputExpression { get; set; }
 
         // These properties are used only for the GraphUI ProtoAST
         public uint Guid { get; set; }
@@ -1666,6 +1669,7 @@ namespace ProtoCore.AST.AssociativeAST
             LeftNode = left;
             Optr = optr;
             RightNode = right;
+            IsInputExpression = false;
         }
 
         public BinaryExpressionNode(BinaryExpressionNode rhs) : base(rhs)
@@ -1686,6 +1690,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
+            IsInputExpression = rhs.IsInputExpression;
         }
 
         /// <summary>
@@ -1709,6 +1714,7 @@ namespace ProtoCore.AST.AssociativeAST
              Optr = Operator.assign;
              LeftNode = lhs;
              RightNode = NodeUtils.Clone(rhs);
+             IsInputExpression = false;
              
          }
 

@@ -17,18 +17,37 @@ namespace Dynamo.Models
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
+        private bool graphExecuted;
 
-        private bool graphExecuted;              
-        public readonly bool VerboseLogging;
+        /// <summary>
+        ///     Flag specifying if this workspace is operating in "test mode".
+        /// </summary>
+        public bool IsTestMode { get; set; }
+
+        /// <summary>
+        ///     Indicates whether a run has completed successfully.   
+        /// 
+        ///     This flag is critical to ensuring that crashing run-auto files
+        ///     are not left in run-auto upon reopening.  
+        /// </summary>
+        public bool HasRunWithoutCrash { get; private set; }
 
         /// <summary>
         ///     Before the Workspace has been built the first time, we do not respond to 
         ///     NodeModification events.
         /// </summary>
         private bool silenceNodeModifications = true;
+   
+        public readonly bool VerboseLogging;
 
         public RunSettings RunSettings { get; protected set; }
        
+        /// <summary>
+        /// Evaluation count is incremented whenever the graph is evaluated. 
+        /// It is set to zero when the graph is Cleared.
+        /// </summary>
+        public long EvaluationCount { get; private set; }
+
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
@@ -56,6 +75,15 @@ namespace Dynamo.Models
             bool isTestMode)
             : base(e, n,a, info, factory)
         {
+            EvaluationCount = 0;
+
+            // This protects the user from a file that might have crashed during
+            // its last run.  As a side effect, this also causes all files set to
+            // run auto but lacking the HasRunWithoutCrash flag to run manually.
+            if (info.RunType == RunType.Automatic && !info.HasRunWithoutCrash)
+            {
+                info.RunType = RunType.Manual;
+            }
 
             RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 
@@ -82,19 +110,8 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// This does not belong here, period. It is here simply because there is 
-        /// currently no better place to put it. A DYN file is loaded by DynamoModel,
-        /// subsequently populating WorkspaceModel, along the way, the trace data 
-        /// gets preloaded with the file. The best place for this cached data is in 
-        /// the EngineController (or even LiveRunner), but the engine gets reset in 
-        /// a rather nondeterministic way (for example, when Revit idle thread 
-        /// decides it is time to execute a pre-scheduled engine reset). And it gets 
-        /// done more than once during file open. So that's out. The second best 
-        /// place to store this information is then the WorkspaceModel, where file 
-        /// loading is SUPPOSED TO BE done. As of now we let DynamoModel sets the 
-        /// loaded data (since it deals with loading DYN file), but in near future,
-        /// the file loading mechanism will be completely moved into WorkspaceModel,
-        /// that's the time we removed this property setter below.
+        /// In near future, the file loading mechanism will be completely moved 
+        /// into WorkspaceModel, that's the time we removed this property setter below.
         /// </summary>
         internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
         {
@@ -161,10 +178,6 @@ namespace Dynamo.Models
             {
                 RequestRun();
             }
-
-            //Find the next executing nodes on when Run-Auto is not set 
-            if (RunSettings.RunType == RunType.Manual)
-                GetExecutingNodes();
         }
 
         /// <summary>
@@ -175,6 +188,7 @@ namespace Dynamo.Models
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();
+            EvaluationCount = 0;
         }
 
         /// <summary>
@@ -183,8 +197,6 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="milliseconds">The desired amount of time between two 
         /// evaluations in milliseconds.</param>
-        /// <param name="context">A synchronization context belonging to the 
-        /// thread on which you want PulseMaker callbacks to execute.</param>
         public void StartPeriodicEvaluation(int milliseconds)
         {
             if (pulseMaker == null)
@@ -206,7 +218,7 @@ namespace Dynamo.Models
 
         private void PulseMakerRunStarted()
         {
-            var nodesToUpdate = Nodes.Where(n => n.EnablePeriodicUpdate);
+            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
             MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
@@ -234,6 +246,7 @@ namespace Dynamo.Models
 
             root.SetAttribute("RunType", RunSettings.RunType.ToString());
             root.SetAttribute("RunPeriod", RunSettings.RunPeriod.ToString(CultureInfo.InvariantCulture));
+            root.SetAttribute("HasRunWithoutCrash", HasRunWithoutCrash.ToString(CultureInfo.InvariantCulture));
 
             return true;
         }
@@ -356,13 +369,10 @@ namespace Dynamo.Models
                 ? new EvaluationCompletedEventArgs(true)
                 : new EvaluationCompletedEventArgs(true, task.Exception);
 
+            EvaluationCount ++;
+
             OnEvaluationCompleted(e);
         }
-
-        /// <summary>
-        ///     Flag specifying if this workspace is operating in "test mode".
-        /// </summary>
-        public bool IsTestMode { get; set; }
 
         /// <summary>
         /// This method is typically called from the main application thread (as 
@@ -372,11 +382,10 @@ namespace Dynamo.Models
         /// in actual graph update (e.g. moving of node on UI), the update task 
         /// will not be scheduled for execution.
         /// </summary>
-        /// <param name="state">Any state that passed to this method by the 
-        /// running context.</param>
         public void Run()
         {
             graphExecuted = true;
+
             // When Dynamo is shut down, the workspace is cleared, which results
             // in Modified() being called. But, we don't want to run when we are
             // shutting down so we check whether an engine controller is available.
@@ -422,6 +431,8 @@ namespace Dynamo.Models
         public event EventHandler<EventArgs> EvaluationStarted;
         public virtual void OnEvaluationStarted(EventArgs e)
         {
+            this.HasRunWithoutCrash = false;
+
             var handler = EvaluationStarted;
             if (handler != null) handler(this, e);
         }
@@ -429,6 +440,8 @@ namespace Dynamo.Models
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
+            this.HasRunWithoutCrash = true;
+
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
         }
@@ -440,12 +453,18 @@ namespace Dynamo.Models
             if (handler != null) handler(this, e);
         }
 
-        public void GetExecutingNodes()
+        /// <summary>
+        /// This function gets the set of nodes that will get executed in the next run.
+        /// This function will be called when the nodes are modified or when showrunpreview is set
+        /// the executing nodes will be sent via SetNodeDeltaState event.
+        /// </summary>
+        /// <param name="showRunPreview">This parameter controls the delta state computation </param>
+        public void GetExecutingNodes(bool showRunPreview)
         {
             var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
                         
-            //The Graph is executed and Show node execution is checked on the Debug menu
-            if (graphExecuted)
+            //The Graph is executed and Show node execution is checked on the Settings menu
+            if (graphExecuted && showRunPreview)
             {
                 if (task.Initialize(EngineController, this) != null)
                 {

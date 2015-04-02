@@ -85,37 +85,52 @@ namespace ProtoScript.Runners
         {
             bool buildSucceeded = false;
             blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-            try
+            if (astList.Count <= 0)
             {
-                //defining the global Assoc block that wraps the entire .ds source file
-                ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.language = ProtoCore.Language.kAssociative;
-                globalBlock.body = string.Empty;
-                //the wrapper block can be given a unique id to identify it as the global scope
-                globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
-
-
-                //passing the global Assoc wrapper block to the compiler
-                ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                context.SetData(string.Empty, new Dictionary<string, object>(), null, Constants.kInvalidIndex, null);
-                ProtoCore.Language id = globalBlock.language;
-
-                
-		        ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
-                codeblock.Body.AddRange(astList);
-
-                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink, codeblock);
-
-                core.BuildStatus.ReportBuildResult();
-
-                buildSucceeded = core.BuildStatus.BuildSucceeded;
+                // Nothing to compile
+                buildSucceeded = true;
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.ToString());
+                try
+                {
+                    //defining the global Assoc block that wraps the entire .ds source file
+                    ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
+                    globalBlock.language = ProtoCore.Language.kAssociative;
+                    globalBlock.body = string.Empty;
+                    //the wrapper block can be given a unique id to identify it as the global scope
+                    globalBlock.id = ProtoCore.LanguageCodeBlock.OUTERMOST_BLOCK_ID;
+
+
+                    //passing the global Assoc wrapper block to the compiler
+                    ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
+                    context.SetData(string.Empty, new Dictionary<string, object>(), null);
+                    ProtoCore.Language id = globalBlock.language;
+
+
+                    ProtoCore.AST.AssociativeAST.CodeBlockNode codeblock = new ProtoCore.AST.AssociativeAST.CodeBlockNode();
+                    codeblock.Body.AddRange(astList);
+
+                    core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink, codeblock);
+
+                    core.BuildStatus.ReportBuildResult();
+
+                    buildSucceeded = core.BuildStatus.BuildSucceeded;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
 
             return buildSucceeded;
+        }
+
+        private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core, int runningBlock)
+        {
+            ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
+            runtimeCore.SetupForExecution(core, core.GlobOffset);
+            return runtimeCore;
         }
 
         /// <summary>
@@ -127,19 +142,15 @@ namespace ProtoScript.Runners
         /// <param name="staticContext"></param>
         /// <param name="runtimeContext"></param>
         public ProtoCore.RuntimeCore Execute(
-            ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContext, ProtoCore.Runtime.Context runtimeContext)
+            ProtoCore.Core core, int runningBlock, ProtoCore.CompileTime.Context staticContex)
         {
-            //========================Generate runtimecore here===============================//
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            ProtoCore.RuntimeCore runtimeCore = CreateRuntimeCore(core, runningBlock);
 
-            // Move these core setup to runtime core 
-            runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
-            runtimeCore.RunningBlock = runningBlock;
-            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
+            //Start the timer       
+            runtimeCore.StartTimer();
 
             try
             {
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
                 foreach (ProtoCore.DSASM.CodeBlock codeblock in core.CodeBlockList)
                 {
                     // Comment Jun:
@@ -157,11 +168,66 @@ namespace ProtoScript.Runners
                     int locals = 0; // This is the global scope, there are no locals
                     ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
-                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, runtimeContext, stackFrame, locals);
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(codeblock.codeBlockId, codeblock.instrStream.entrypoint, stackFrame, locals);
                 }
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
             }
             catch 
+            {
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+                throw;
+            }
+            return runtimeCore;
+        }
+
+        /// <summary>
+        /// ExecuteLive is called by the liverunner where a persistent RuntimeCore is provided
+        /// ExecuteLive assumes only a single global scope
+        /// </summary>
+        /// <param name="core"></param>
+        /// <param name="runtimeCore"></param>
+        /// <param name="runningBlock"></param>
+        /// <param name="staticContext"></param>
+        /// <param name="runtimeContext"></param>
+        /// <returns></returns>
+        public ProtoCore.RuntimeCore ExecuteLive(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
+        {
+            try
+            {
+                Executable exe = runtimeCore.DSExecutable;
+                Validity.Assert(exe.CodeBlocks.Count == 1);
+                CodeBlock codeBlock = runtimeCore.DSExecutable.CodeBlocks[0];
+                int codeBlockID = codeBlock.codeBlockId;
+
+                // Comment Jun:
+                // On first bounce, the stackframe depth is initialized to -1 in the Stackfame constructor.
+                // Passing it to bounce() increments it so the first depth is always 0
+                ProtoCore.DSASM.StackFrame stackFrame = new ProtoCore.DSASM.StackFrame(core.GlobOffset);
+                stackFrame.FramePointer = runtimeCore.RuntimeMemory.FramePointer;
+
+                // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
+                // Register TX is used for this.
+                StackValue svCallConvention = StackValue.BuildCallingConversion((int)ProtoCore.DSASM.CallingConvention.BounceType.kImplicit);
+                stackFrame.TX = svCallConvention;
+
+                // Initialize the entry point interpreter
+                int locals = 0; // This is the global scope, there are no locals
+                if (runtimeCore.CurrentExecutive.CurrentDSASMExec == null)
+                {
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                }
+
+                runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec, 
+                    codeBlock.codeBlockId,
+                    runtimeCore.StartPC, 
+                    stackFrame,
+                    locals);
+
+                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
+            }
+            catch
             {
                 runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionEnd);
                 throw;
@@ -180,7 +246,6 @@ namespace ProtoScript.Runners
         /// <returns></returns>
         public ExecutionMirror Execute(
             ProtoCore.CompileTime.Context staticContext, 
-            ProtoCore.Runtime.Context runtimeContext, 
             ProtoCore.Core core, 
             out ProtoCore.RuntimeCore runtimeCoreOut, 
             bool isTest = true)
@@ -195,8 +260,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                Validity.Assert(null != runtimeContext);
-                runtimeCore = Execute(core, blockId, staticContext, runtimeContext);
+                runtimeCore = Execute(core, blockId, staticContext);
                 if (!isTest)
                 {
                     runtimeCore.RuntimeMemory.Heap.Free();
@@ -231,7 +295,7 @@ namespace ProtoScript.Runners
             if (succeeded)
             {
                 core.GenerateExecutable();
-                runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+                runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context());
                 if (!isTest) 
                 {
                     runtimeCore.RuntimeMemory.Heap.Free(); 
@@ -268,7 +332,7 @@ namespace ProtoScript.Runners
                 core.GenerateExecutable();
                 try
                 {
-                    runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context(), new ProtoCore.Runtime.Context());
+                    runtimeCore = Execute(core, blockId, new ProtoCore.CompileTime.Context());
                 }
                 catch (ProtoCore.Exceptions.ExecutionCancelledException e)
                 {
@@ -295,12 +359,6 @@ namespace ProtoScript.Runners
             return null;
         }
 
-        public ExecutionMirror Execute(string sourcecode, ProtoCore.Core core, bool isTest = true)
-        {
-            ProtoCore.RuntimeCore runtimeCore = null;
-            return Execute(sourcecode, core, out runtimeCore);
-        }
-
         /// <summary>
         /// Load and execute the DS code in the specified file
         /// </summary>
@@ -324,8 +382,6 @@ namespace ProtoScript.Runners
 
             string strSource = reader.ReadToEnd();
             reader.Dispose();
-            //Start the timer       
-            runtimeCore.StartTimer();
 
             core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(filename);
             core.CurrentDSFileName = core.Options.RootModulePathName;

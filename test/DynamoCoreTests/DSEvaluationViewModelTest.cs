@@ -6,7 +6,6 @@ using NUnit.Framework;
 using ProtoCore.Mirror;
 using System.Collections;
 using Dynamo.Nodes;
-using TestServices;
 
 namespace Dynamo.Tests
 {
@@ -14,13 +13,13 @@ namespace Dynamo.Tests
     {
         public void OpenModel(string relativeFilePath)
         {
-            string openPath = Path.Combine(GetTestDirectory(), relativeFilePath);
+            string openPath = Path.Combine(TestDirectory, relativeFilePath);
             ViewModel.OpenCommand.Execute(openPath);
         }
 
         public void OpenSampleModel(string relativeFilePath)
         {
-            string openPath = Path.Combine(GetSampleDirectory(), relativeFilePath);
+            string openPath = Path.Combine(SampleDirectory, relativeFilePath);
             ViewModel.OpenCommand.Execute(openPath);
         }
 
@@ -207,6 +206,15 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSEvaluationViewModelTest : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSIronPython.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void TestCodeBlockNode01()
         {
@@ -1047,7 +1055,7 @@ namespace Dynamo.Tests
         {
             // Regression test case for
             // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\default_values\defaultValueInFunctionObject.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\default_values\defaultValueInFunctionObject.dyn");
 
             RunModel(dynFilePath);
 
@@ -1061,7 +1069,7 @@ namespace Dynamo.Tests
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3132
             // test for run time warning is thrown or not 
 
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsfunction\RunTimeWarning_3132.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsfunction\RunTimeWarning_3132.dyn");
 
             RunModel(dynFilePath);
             var guid = System.Guid.Parse("88f376fa-634b-422e-b853-6afa8af8d286");
@@ -1076,7 +1084,7 @@ namespace Dynamo.Tests
             //http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5233
             //List.map with default arguments 
 
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\list\List_Map_DefaultArg5233.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\list\List_Map_DefaultArg5233.dyn");
             RunModel(dynFilePath);
             AssertPreviewValue("6a0207d9-78d7-4fd3-829f-d19644acdc1b", new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         }
@@ -1084,7 +1092,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestListCombineRegress5561()
         {
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\regress5561.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsevaluation\regress5561.dyn");
             RunModel(dynFilePath);
             AssertPreviewValue("4fb0a4ef-8151-4e5f-a2e6-9c3fcd2c1e8f", new object[] { "1foo", null });
         }
@@ -1092,7 +1100,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestMod()
         {
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\dsfunction\modDoesntWork.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\dsfunction\modDoesntWork.dyn");
             RunModel(dynFilePath);
             AssertPreviewValue("77c95ace-e4f1-4119-87fc-7163f9b3b8b0", true);
             AssertPreviewValue("21f58def-725d-41c9-abc7-063cc3642420", true);
@@ -1102,7 +1110,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDefaultValueAttribute()
         {
-            var dynFilePath = Path.Combine(GetTestDirectory(),
+            var dynFilePath = Path.Combine(TestDirectory,
                 @"core\default_values\defaultValueAttributeTest.dyn");
 
             RunModel(dynFilePath);
@@ -1110,24 +1118,74 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestDefaulArgumentAttributeNegative()
+        {
+            // This is to test FFITarget.TestData.MultiplyBy3NonParsableDefaultArgument() whose
+            // DefaultArgumentAttribute is invalid. In this case, we should make sure that
+            // no default argument is used, even null. So this function should be compiled to
+            // a function object and Apply() should work on it. 
+            var dynFilePath = Path.Combine(TestDirectory, @"core\default_values\invalidDefaultArgument.dyn");
+            RunModel(dynFilePath);
+            AssertPreviewValue("1b2fa812-960d-424c-b679-8b850abe2e26", 12);
+        }
+
+        [Test]
         public void TestDefaultValueAttributeForDummyLine()
         {
-            var dynFilePath = Path.Combine(GetTestDirectory(), 
+            var dynFilePath = Path.Combine(TestDirectory, 
                 @"core\default_values\defaultValueAttributeForDummyLine.dyn");
 
             RunModel(dynFilePath);
             AssertPreviewValue("e95a634b-aab9-4b6e-bb33-2f9669381ad6", 5);
+        }
+
+        [Test]
+        public void ModuloDividendLargerThanDivisor()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
+
+            string openPath = Path.Combine(examplePath, "ModuloDividendLargerThanDivisor.dyn");
+            RunModel(openPath);
+            double[] Dlist = new double[4];
+            Dlist[0] = 0.129000;
+            Dlist[1] = 0.026000;
+            Dlist[2] = 1.899000;
+            Dlist[3] = 1.830000;
+
+            AssertPreviewValue("9433d723-3708-4773-9b9c-c6def0f17b18", Dlist);
+            AssertPreviewValue("55f03be2-8720-4648-b989-996b261e1502", new[] { false, false, false, false });
+            AssertPreviewValue("0b9eca5b-835b-493e-af4b-84a3366d75d3", Dlist);
+            AssertPreviewValue("7e1f9810-2f4f-4911-975b-d392afc3a674", Dlist);
+        }
+
+        [Test, Category("UnitTests")]
+        public void TestDefaultArgumentTooltip()
+        {
+            var vm = ViewModel;
+            var node =
+                new DSFunction(vm.Model.LibraryServices.GetFunctionDescriptor("Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double"));
+            vm.ExecuteCommand(new Dynamo.Models.DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
+            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0"));
+            node.InPorts[0].UsingDefaultValue = false;
+            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0 (disabled)"));
         }
     }
 
     [Category("DSCustomNode")]
     class CustomNodeEvaluationViewModel : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void CustomNodeNoInput01()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
             CustomNodeInfo info;
             Assert.IsTrue(
@@ -1152,7 +1210,7 @@ namespace Dynamo.Tests
         public void CustomNodeWithInput02()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
             CustomNodeInfo info;
             Assert.IsTrue(
@@ -1174,7 +1232,7 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeWithCBNAndGeometry()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
             CustomNodeInfo info;
             Assert.IsTrue(
@@ -1194,7 +1252,7 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeMultipleInGraph()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
             var dyfPath = Path.Combine(examplePath, "Poly.dyf");
             CustomNodeInfo info;
@@ -1210,7 +1268,7 @@ namespace Dynamo.Tests
         [Test]
         public void CustomNodeConditional()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
             CustomNodeInfo info;
             Assert.IsTrue(
@@ -1235,7 +1293,7 @@ namespace Dynamo.Tests
             // which cannot be found, so foo.dyf would be a proxy custom node,
             // as opening a dyn file will compile all custom nodes, the 
             // compilation of that proxy custom node should have any problem.
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
             CustomNodeInfo info;
             Assert.IsTrue(
@@ -1252,7 +1310,7 @@ namespace Dynamo.Tests
             // Test nested custom node: run and reset engine and re-run.
             // Original defect: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-4837
 
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\Regress_Magn_4837.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\Regress_Magn_4837.dyn");
 
             RunModel(dynFilePath);
  

@@ -23,50 +23,14 @@ namespace DynamoCoreUITests
     //public delegate void CommandCallback(string commandTag);
 
     [TestFixture]
-    public class CodeBlockNodeTests : DSEvaluationViewModelUnitTest
+    public class CodeBlockNodeTests : RecordedUnitTestBase
     {
-        #region Generic Set-up Routines and Data Members
-
-        private System.Random randomizer = null;
-        private CommandCallback commandCallback = null;
-
-        // For access within test cases.
-        protected WorkspaceModel workspace = null;
-        protected WorkspaceViewModel workspaceViewModel = null;
-
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            // We do not call "base.Init()" here because we want to be able 
-            // to create our own copy of Controller here with command file path.
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
-        [SetUp]
-        public void Start()
-        {
-            // Fixed seed randomizer for predictability.
-            randomizer = new System.Random(123456);
-            SetupDirectories();
-        }
-
-        [TearDown]
-        protected void Exit()
-        {
-            if (this.ViewModel != null)
-            {
-                var shutdownParams = new DynamoViewModel.ShutdownParams(
-                    shutdownHost: false, allowCancellation: false);
-
-                this.ViewModel.PerformShutdownSequence(shutdownParams);
-                this.ViewModel = null;
-                this.commandCallback = null;
-            }
-
-            GC.Collect();
-        }
-
-        #endregion
-
-        [Test, RequiresSTA]
         //Run the CBN without an input to get the error message
         //Connent a input to the CBN and run
         //Change the value of the input and run 
@@ -78,7 +42,7 @@ namespace DynamoCoreUITests
         //Execute(InitialRun)
         //Update the value from 10 to 0
         //Execute(SecondRun)
-
+        [Test, RequiresSTA]
         public void CodeBlockNode_ReassignInput()
         {
             RunCommandsFromFile("CodeBlockNode_ReassignInput.xml", false, (commandTag) =>
@@ -94,8 +58,6 @@ namespace DynamoCoreUITests
             });
         }
 
-
-        [Test, RequiresSTA]
         //Assign a vale to a CodeBlockNode and run
         //Remove the input of this CBN by assign a literals to the CBN's text and run
         //Change the value of the literals and run 
@@ -108,7 +70,7 @@ namespace DynamoCoreUITests
         //Execute(SecondRun)
         //Update the CBN to Math.Sin(3)
         //Execute(ThirdRun)
-
+        [Test, RequiresSTA]
         public void CodeBlockNode_ReassignInput_2()
         {
             RunCommandsFromFile("CodeBlockNode_ReassignInput_2.xml", false, (commandTag) =>
@@ -128,14 +90,13 @@ namespace DynamoCoreUITests
             });
         }
 
-
-        [Test, RequiresSTA, Category("Failure")]
         // Create a cyclic chain of three code block nodes, and verify that a
         // warning is shown on one of the cyclic nodes.
         // Reconnect a valid value to one of the chain items, and verify that the
         // warning is turned off and the values are evaluated properly.
         // Create another cyclic chain of two nodes, and verify the same behavior.
         //
+        [Test, RequiresSTA, Category("Failure")]
         public void CodeBlockNode_ReassignCyclic()
         {
             RunCommandsFromFile("CodeBlockNode_ReassignCyclic.xml", true, (commandTag) =>
@@ -218,107 +179,5 @@ namespace DynamoCoreUITests
             string[] expected = new string[] { "-2468.2342E+04", "34534.345345", "23423", "-98.7", "0", "10", "2", "-555" };
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
-
-
-        #region Private Helper Methods
-
-        protected ModelBase GetNode(string guid)
-        {
-            Guid id = Guid.Parse(guid);
-            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
-        }
-
-        protected void RunCommandsFromFile(string commandFileName,
-            bool autoRun = false, CommandCallback commandCallback = null)
-        {
-            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
-            commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
-            commandFilePath = Path.Combine(commandFilePath, commandFileName);
-
-            if (this.ViewModel != null)
-            {
-                var message = "Multiple DynamoViewModel instances detected!";
-                throw new InvalidOperationException(message);
-            }
-
-            var model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    StartInTestMode = true
-                });
-
-            ViewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    DynamoModel = model,
-                    CommandFilePath = commandFilePath
-                });
-
-            ViewModel.HomeSpace.RunSettings.RunType = autoRun ? 
-                RunType.Automatic : 
-                RunType.Manual;
-
-            RegisterCommandCallback(commandCallback);
-
-            // Create the view.
-            var dynamoView = new DynamoView(this.ViewModel);
-            dynamoView.ShowDialog();
-
-            Assert.IsNotNull(ViewModel);
-            Assert.IsNotNull(ViewModel.Model);
-            Assert.IsNotNull(ViewModel.Model.CurrentWorkspace);
-            workspace = ViewModel.Model.CurrentWorkspace;
-            workspaceViewModel = ViewModel.CurrentSpaceViewModel;
-        }
-
-        private void RegisterCommandCallback(CommandCallback commandCallback)
-        {
-            if (commandCallback == null)
-                return;
-
-            if (this.commandCallback != null)
-                throw new InvalidOperationException("RunCommandsFromFile called twice");
-
-            this.commandCallback = commandCallback;
-            var automation = this.ViewModel.Automation;
-            automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
-        }
-
-        private void OnAutomationPlaybackStateChanged(object sender, PlaybackStateChangedEventArgs e)
-        {
-            if (e.OldState == AutomationSettings.State.Paused)
-            {
-                if (e.NewState == AutomationSettings.State.Playing)
-                {
-                    // Call back to the delegate registered by the test case. We
-                    // only handle command transition from Paused to Playing. Note 
-                    // that "commandCallback" is not checked against "null" value 
-                    // because "OnAutomationPlaybackStateChanged" would not have 
-                    // been called if the "commandCallback" was not registered.
-                    // 
-                    this.commandCallback(e.NewTag);
-                }
-            }
-        }
-
-        private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynamoModel.RecordableCommand
-        {
-            Assert.IsNotNull(command); // Ensure we have an input command.
-
-            // Serialize the command into an XmlElement.
-            XmlDocument xmlDocument = new XmlDocument();
-            XmlElement element = command.Serialize(xmlDocument);
-            Assert.IsNotNull(element);
-
-            // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
-            Assert.IsNotNull(duplicate);
-            Assert.IsTrue(duplicate is CmdType);
-            return duplicate as CmdType;
-        }
-
-        #endregion
     }
-
 }

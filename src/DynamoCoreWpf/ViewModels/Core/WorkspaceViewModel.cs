@@ -380,7 +380,8 @@ namespace Dynamo.ViewModels
                             var node = item as NodeModel;
 
                             var nodeViewModel = new NodeViewModel(this, node);
-                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;                          
+                            nodeViewModel.SnapInputEvent +=nodeViewModel_SnapInputEvent;  
+                            nodeViewModel.NodeLogic.Modified +=OnNodeModified;
                             _nodes.Add(nodeViewModel);
                             Errors.Add(nodeViewModel.ErrorBubble);
                             nodeViewModel.UpdateBubbleContent();
@@ -407,9 +408,19 @@ namespace Dynamo.ViewModels
             CheckAndSetPeriodicRunCapability();
         }
 
+        /// <summary>
+        /// This is required here to compute the nodes delta state.
+        /// This is overriden in HomeWorkspaceViewModel
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        public virtual void OnNodeModified(NodeModel obj)
+        {
+            
+        }
+
         internal void CheckAndSetPeriodicRunCapability()
         {
-            var periodUpdateAvailable = Model.Nodes.Any(n => n.EnablePeriodicUpdate);
+            var periodUpdateAvailable = Model.Nodes.Any(n => n.CanUpdatePeriodically);
             RunSettingsViewModel.ToggleRunTypeEnabled(RunType.Periodic, periodUpdateAvailable);
         }
 

@@ -572,6 +572,11 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
+            if (LibraryManagementCore == null)
+                return;
+            if (LibraryManagementCore.CodeBlockList.Count <= 0)
+                return;
+
             var builtins = LibraryManagementCore.CodeBlockList[0]
                                                 .procedureTable
                                                 .procList
@@ -698,23 +703,8 @@ namespace Dynamo.DSEngine
             if (string.IsNullOrEmpty(defaultExpression))
                 return false;
 
-            var currentParsingmode = LibraryManagementCore.ParsingMode;
-            var currentParsingFlag = LibraryManagementCore.IsParsingCodeBlockNode;
-
-            LibraryManagementCore.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
-            LibraryManagementCore.IsParsingCodeBlockNode = true;
-
-            var astNode = ParserUtils.ParseWithCore(defaultExpression + ";", LibraryManagementCore);
-            if (astNode != null)
-            {
-                var cbn = astNode as CodeBlockNode;
-                if (cbn != null && cbn.Body.Any())
-                    defaultArgumentNode = (cbn.Body[0] as BinaryExpressionNode).RightNode;
-            }
-
-            LibraryManagementCore.ParsingMode = currentParsingmode;
-            LibraryManagementCore.IsParsingCodeBlockNode = currentParsingFlag;
-
+            defaultArgumentNode = ParserUtils.ParseRHSExpression(defaultExpression, LibraryManagementCore);
+           
             return defaultArgumentNode != null;
         }
 
@@ -745,10 +735,12 @@ namespace Dynamo.DSEngine
 
             // MethodAttribute's HiddenInLibrary has higher priority than
             // ClassAttribute's HiddenInLibrary
-            bool isVisible = true;
+            var isVisible = true;
+            var canUpdatePeriodically = false;
             if (methodAttribute != null)
             {
                 isVisible = !methodAttribute.HiddenInLibrary;
+                canUpdatePeriodically = methodAttribute.CanUpdatePeriodically;
             }
             else
             {
@@ -785,14 +777,15 @@ namespace Dynamo.DSEngine
                 }
             }
 
-            IEnumerable<TypedParameter> arguments = proc.argInfoList.Zip(
+            List<TypedParameter> arguments = proc.argInfoList.Zip(
                 proc.argTypeList,
                 (arg, argType) =>
                 {
                     AssociativeNode defaultArgumentNode;
                     // Default argument specified by DefaultArgumentAttribute
                     // takes higher priority
-                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) && arg.IsDefault)
+                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) 
+                        && arg.IsDefault)
                     {
                         var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)
@@ -802,7 +795,7 @@ namespace Dynamo.DSEngine
                     }
 
                     return new TypedParameter(arg.Name, argType, defaultArgumentNode);
-                });
+                }).ToList();
 
             IEnumerable<string> returnKeys = null;
             if (proc.MethodAttribute != null)
@@ -825,7 +818,8 @@ namespace Dynamo.DSEngine
                 ReturnKeys = returnKeys,
                 PathManager = pathManager,
                 IsVarArg = proc.isVarArg,
-                ObsoleteMsg = obsoleteMessage
+                ObsoleteMsg = obsoleteMessage,
+                CanUpdatePeriodically = canUpdatePeriodically
             });
 
             AddImportedFunctions(library, new[] { function });

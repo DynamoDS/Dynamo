@@ -48,15 +48,9 @@ namespace Dynamo.Wpf
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(publishCustomNodeItem);
-            publishCustomNodeItem.Click += (sender, args) =>
-            {
-                GoToWorkspace(nodeView.ViewModel);
 
-                if (nodeView.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
-                {
-                    nodeView.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
-                }
-            };
+            publishCustomNodeItem.Command = nodeView.ViewModel.DynamoViewModel.PublishSelectedNodesCommand;
+            publishCustomNodeItem.CommandParameter = functionNodeModel;
 
             nodeView.UpdateLayout();
         }

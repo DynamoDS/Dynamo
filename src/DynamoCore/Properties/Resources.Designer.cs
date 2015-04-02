@@ -295,6 +295,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default value.
+        /// </summary>
+        public static string DefaultValue {
+            get {
+                return ResourceManager.GetString("DefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (disabled).
+        /// </summary>
+        public static string DefaultValueDisabled {
+            get {
+                return ResourceManager.GetString("DefaultValueDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely &quot;having great difficulties pulling itself together. It is &quot;recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
         ///
         ///If you don&apos;t mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed..
@@ -1136,7 +1154,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search Library.
+        ///   Looks up a localized string similar to SEARCH LIBRARY.
         /// </summary>
         public static string SearchTextBlockText {
             get {

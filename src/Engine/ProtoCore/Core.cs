@@ -232,15 +232,14 @@ namespace ProtoCore
 
     public class Core
     {
+        public IDictionary<string, object> Configurations { get; set; }
+        public List<System.Type> DllTypesToLoad { get; private set; }
 
-        /// <summary>
-        /// This is a temporary instance of RuntimeCore 
-        /// The purpose of this is to move core properties to runtime core in segments and to start using them within the runtime without having to break the exisiting APIs where Core is used.
-        /// Eventually, instances of Core will be removed from the runtime. This means replacing all instances of __TempCoreHostForRefactoring and Core with RuntimeCore.
-        /// </summary>
-        public RuntimeCore __TempCoreHostForRefactoring { get; set; }
-
-        public Dictionary<string, object> Configurations { get; set; }
+        public void AddDLLExtensionAppType(System.Type type)
+        {
+            Validity.Assert(DllTypesToLoad != null);
+            DllTypesToLoad.Add(type);
+        }
 
         /// <summary>
         /// Properties in under COMPILER_GENERATED_TO_RUNTIME_DATA, are generated at compile time, and passed to RuntimeData/Exe
@@ -344,7 +343,6 @@ namespace ProtoCore
         internal ContextDataManager ContextDataManager { get; set; }
 
         public ParseMode ParsingMode { get; set; }
-
 
         /// <summary>
         /// 
@@ -569,19 +567,14 @@ namespace ProtoCore
             ForLoopBlockIndex = Constants.kInvalidIndex;
         }
 
-        private void ResetRuntimeCore()
-        {
-            RuntimeData = new ProtoCore.RuntimeData();
-            __TempCoreHostForRefactoring = new RuntimeCore(Heap);
-        }
-
         private void ResetAll(Options options)
         {
             Heap = new Heap();
             //Rmem = new RuntimeMemory(Heap);
             Configurations = new Dictionary<string, object>();
+            DllTypesToLoad = new List<System.Type>();
 
-            ResetRuntimeCore();
+            RuntimeData = new ProtoCore.RuntimeData();
 
             Validity.AssertExpiry();
             Options = options;
@@ -625,7 +618,7 @@ namespace ProtoCore
             DynamicVariableTable = new DynamicVariableTable();
             DynamicFunctionTable = new DynamicFunctionTable();
 
-            startPC = Constants.kInvalidIndex;
+            watchStartPC = Constants.kInvalidIndex;
 
             deltaCompileStartPC = Constants.kInvalidIndex;
 
@@ -696,7 +689,7 @@ namespace ProtoCore
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AssociativeNode AssocNode { get; set; }
-        public int startPC { get; set; }
+        public int watchStartPC { get; set; }
 
 
         //
@@ -924,10 +917,6 @@ namespace ProtoCore
             ExprInterpreterExe.runtimeSymbols = DSExecutable.runtimeSymbols;
             ExprInterpreterExe.isSingleAssocBlock = DSExecutable.isSingleAssocBlock;
 
-            // Debug properties
-            // Move WatchSymbolList to runtimeData
-            __TempCoreHostForRefactoring.WatchSymbolList = watchSymbolList;
-
             ExprInterpreterExe.TypeSystem = TypeSystem;
             
             // Copy all instruction streams
@@ -973,15 +962,6 @@ namespace ProtoCore
             RuntimeData.CodeToLocation = codeToLocation;
             RuntimeData.CurrentDSFileName = CurrentDSFileName;
             return RuntimeData;
-        }
-
-        /// <summary>
-        /// Setup the runtime core and runtimedata
-        /// </summary>
-        private void SetupRuntimeCore()
-        {
-            DSExecutable.RuntimeData = GenerateRuntimeData();
-            __TempCoreHostForRefactoring.SetProperties(Options, DSExecutable, DebuggerProperties);
         }
 
         public void GenerateExecutable()
@@ -1033,7 +1013,8 @@ namespace ProtoCore
                 DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
             }
             GenerateExprExe();
-            SetupRuntimeCore();
+
+            DSExecutable.RuntimeData = GenerateRuntimeData();
         }
 
 
@@ -1075,27 +1056,6 @@ namespace ProtoCore
             return modStateTemp;
         }
 
-        //public int GetCurrentBlockId()
-        //{
-        //    int constructBlockId = __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
-        //    if (constructBlockId == Constants.kInvalidIndex)
-        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
-
-        //    CodeBlock constructBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(CodeBlockList, constructBlockId);
-        //    while (null != constructBlock && constructBlock.blockType == CodeBlockType.kConstruct)
-        //    {
-        //        constructBlock = constructBlock.parent;
-        //    }
-
-        //    if (null != constructBlock)
-        //        constructBlockId = constructBlock.codeBlockId;
-
-        //    if (constructBlockId != __TempCoreHostForRefactoring.DebugProps.CurrentBlockId)
-        //        return __TempCoreHostForRefactoring.DebugProps.CurrentBlockId;
-        //    else
-        //        return __TempCoreHostForRefactoring.RuntimeMemory.CurrentConstructBlockId;
-        //}
-
         public GraphNode GetExecutingGraphNode()
         {
             return ExecutingGraphnode;
@@ -1110,6 +1070,10 @@ namespace ProtoCore
             SSASubscript_GUID = guid;
             SSASubscript = subscript;
         }
-       
+
+        public void Cleanup()
+        {
+            CLRModuleType.ClearTypes();
+        }
     }
 }
