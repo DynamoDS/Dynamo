@@ -83,6 +83,57 @@ namespace Dynamo.DSEngine
             return sortedNodes.Where(nodeModels.Contains);
         }
 
+        // Reverse post-order to sort nodes
+        private static void MarkNodeInPostOrder(NodeModel node, Dictionary<NodeModel, MarkFlag> nodeFlags, Stack<NodeModel> sortedList)
+        {
+            MarkFlag flag;
+            if (!nodeFlags.TryGetValue(node, out flag))
+            {
+                flag = MarkFlag.NoMark;
+                nodeFlags[node] = flag;
+            }
+
+            if (MarkFlag.NoMark == flag)
+            {
+                sortedList.Push(node);
+                nodeFlags[node] = MarkFlag.Marked;
+
+                IEnumerable<NodeModel> inputs =
+                    node.InputNodes.Values.Select(t => t.Item2).Distinct().Reverse();
+                foreach (NodeModel input in inputs)
+                    MarkNodeInPostOrder(input, nodeFlags, sortedList);
+            }
+        }
+
+        public static IEnumerable<NodeModel> PostOrderSort(IEnumerable<NodeModel> nodes)
+        {
+            // Get roots of these nodes
+            Dictionary<NodeModel, MarkFlag> nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
+            foreach (var node in nodes)
+            {
+                if (nodeFlags[node] == MarkFlag.Marked)
+                    continue;
+
+                var outputs = node.OutputNodes.Values
+                                              .SelectMany(set => set.Select(t => t.Item2))
+                                              .Distinct();
+                foreach (var outputNode in outputs)
+                {
+                    if (nodeFlags.ContainsKey(outputNode))
+                        nodeFlags[node] = MarkFlag.Marked;
+                }
+            }
+            var roots = nodeFlags.Where(pair => pair.Value == MarkFlag.NoMark)
+                                 .Select(pair => pair.Key);
+
+            nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
+            var sortedNodes = new Stack<NodeModel>();
+            foreach (NodeModel candidate in roots)
+                MarkNodeInPostOrder(candidate, nodeFlags, sortedNodes);
+
+            return sortedNodes.Where(nodes.Contains);
+        }
+
         private static IEnumerable<NodeModel> SortCandidates(Dictionary<NodeModel, MarkFlag> nodeFlags)
         {
             while (true)
@@ -183,13 +234,13 @@ namespace Dynamo.DSEngine
         /// <param name="nodes"></param>
         /// <param name="isDeltaExecution"></param>
         /// <param name="verboseLogging"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging, bool needSorting = false)
+        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging, bool isForNodeToCode = false)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
             var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
-            var sortedNodes = needSorting ? TopologicalSort(topScopedNodes) : topScopedNodes;
+            var sortedNodes = isForNodeToCode ? PostOrderSort(topScopedNodes) : TopologicalSort(topScopedNodes);
 
             if (isDeltaExecution)
             {
@@ -340,7 +391,7 @@ namespace Dynamo.DSEngine
             public const string ParamPrefix = @"p_";
             public const string FunctionPrefix = @"__func_";
             public const string VarPrefix = @"var_";
-            public const string ShortVarPrefix = @"t_";
+            public const string ShortVarPrefix = @"t";
             public const string CustomNodeReturnVariable = @"%arr";
         }
     }

@@ -40,7 +40,6 @@ namespace Dynamo.DSEngine
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
         private readonly DynamoModel dynamoModel;
         private readonly ProtoCore.Core libraryCore;
-        private int shortVarCounter;
         public bool VerboseLogging;
         private readonly Object macroMutex = new Object();
 
@@ -562,18 +561,6 @@ namespace Dynamo.DSEngine
         public IEnumerable<AssociativeNode> ConvertNodesToCode(IEnumerable<NodeModel> nodes, bool verboseLogging)
         {
             return Nodes2CodeUtils.Node2Code(astBuilder, nodes, verboseLogging);
-        }
-
-        private string GenerateShortVariable()
-        {
-            while (true)
-            {
-                shortVarCounter++;
-                string var = AstBuilder.StringConstants.ShortVarPrefix + shortVarCounter.ToString();
-
-                if (!HasVariableDefined(var))
-                    return var;
-            }
         }
 
         private bool HasVariableDefined(string var)
