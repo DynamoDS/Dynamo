@@ -415,6 +415,30 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void FindInsertionPointByNameTest()
+        {
+            var elementVM = CreateCustomNodeViewModel("AMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("ZMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var listOfMembers = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").Items;
+
+            var index = NodeCategoryViewModel.FindInsertionPointByName(listOfMembers, "BMember");
+
+            Assert.AreEqual(1, index);
+
+            elementVM = CreateCustomNodeViewModel("BMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            index = NodeCategoryViewModel.FindInsertionPointByName(listOfMembers, "BMember");
+
+            Assert.AreEqual(1, index);
+        }
+
         #endregion
 
         #region RemoveEntry tests
