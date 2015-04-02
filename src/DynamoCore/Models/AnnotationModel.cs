@@ -190,6 +190,9 @@ namespace Dynamo.Models
                 case "Y":
                     CreateGroupingOnModels();
                     break;
+                case "Position":
+                    CreateGroupingOnModels();
+                    break;
             }
         }
 
