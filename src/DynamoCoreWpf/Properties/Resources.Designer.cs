@@ -178,6 +178,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string ContextMenuCopy {
+            get {
+                return ResourceManager.GetString("ContextMenuCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string ContextMenuDelete {
+            get {
+                return ResourceManager.GetString("ContextMenuDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit Custom Node....
         /// </summary>
         public static string ContextMenuEditCustomNode {
@@ -210,6 +228,87 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenuGeometryView {
             get {
                 return ResourceManager.GetString("ContextMenuGeometryView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide all geometry preview.
+        /// </summary>
+        public static string ContextMenuHideAllGeometry {
+            get {
+                return ResourceManager.GetString("ContextMenuHideAllGeometry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide all text bubble.
+        /// </summary>
+        public static string ContextMenuHideAllTextBubble {
+            get {
+                return ResourceManager.GetString("ContextMenuHideAllTextBubble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide upstream geometry preview.
+        /// </summary>
+        public static string ContextMenuHideUpstreamPreview {
+            get {
+                return ResourceManager.GetString("ContextMenuHideUpstreamPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert code block.
+        /// </summary>
+        public static string ContextMenuInsertCodeBlock {
+            get {
+                return ResourceManager.GetString("ContextMenuInsertCodeBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lacing.
+        /// </summary>
+        public static string ContextMenuLacing {
+            get {
+                return ResourceManager.GetString("ContextMenuLacing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cross Product.
+        /// </summary>
+        public static string ContextMenuLacingCrossProduct {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingCrossProduct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First.
+        /// </summary>
+        public static string ContextMenuLacingFirst {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Longest.
+        /// </summary>
+        public static string ContextMenuLacingLongest {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingLongest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shortest.
+        /// </summary>
+        public static string ContextMenuLacingShortest {
+            get {
+                return ResourceManager.GetString("ContextMenuLacingShortest", resourceCulture);
             }
         }
         
@@ -250,11 +349,47 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Paste.
+        /// </summary>
+        public static string ContextMenuPaste {
+            get {
+                return ResourceManager.GetString("ContextMenuPaste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish This Custom Node....
         /// </summary>
         public static string ContextMenuPublishCustomNode {
             get {
                 return ResourceManager.GetString("ContextMenuPublishCustomNode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all geometry preview.
+        /// </summary>
+        public static string ContextMenuShowAllGeometry {
+            get {
+                return ResourceManager.GetString("ContextMenuShowAllGeometry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show all text buble.
+        /// </summary>
+        public static string ContextMenuShowAllTextBubble {
+            get {
+                return ResourceManager.GetString("ContextMenuShowAllTextBubble", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show upstream geometry preview.
+        /// </summary>
+        public static string ContextMenuShowUpstreamPreview {
+            get {
+                return ResourceManager.GetString("ContextMenuShowUpstreamPreview", resourceCulture);
             }
         }
         
@@ -2459,65 +2594,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete.
-        /// </summary>
-        public static string NodeContextMenuDelete {
-            get {
-                return ResourceManager.GetString("NodeContextMenuDelete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Help....
         /// </summary>
         public static string NodeContextMenuHelp {
             get {
                 return ResourceManager.GetString("NodeContextMenuHelp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Lacing.
-        /// </summary>
-        public static string NodeContextMenuLacing {
-            get {
-                return ResourceManager.GetString("NodeContextMenuLacing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cross Product.
-        /// </summary>
-        public static string NodeContextMenuLacingCrossProduct {
-            get {
-                return ResourceManager.GetString("NodeContextMenuLacingCrossProduct", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to First.
-        /// </summary>
-        public static string NodeContextMenuLacingFirst {
-            get {
-                return ResourceManager.GetString("NodeContextMenuLacingFirst", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Longest.
-        /// </summary>
-        public static string NodeContextMenuLacingLongest {
-            get {
-                return ResourceManager.GetString("NodeContextMenuLacingLongest", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Shortest.
-        /// </summary>
-        public static string NodeContextMenuLacingShortest {
-            get {
-                return ResourceManager.GetString("NodeContextMenuLacingShortest", resourceCulture);
             }
         }
         
