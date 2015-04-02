@@ -348,8 +348,7 @@ namespace Dynamo.UI.Controls
     public class LibraryToolTipPopup : Popup
     {
         private ToolTipWindow tooltip = new ToolTipWindow();
-        private DispatcherTimer dispatcherTimer = new DispatcherTimer();
-        private object nextDataContext;
+        private readonly LibraryToolTipTimer toolTipTimer;
         private DynamoView mainDynamoWindow;
 
         public LibraryToolTipPopup()
@@ -359,9 +358,13 @@ namespace Dynamo.UI.Controls
             this.CustomPopupPlacementCallback = PlacementCallback;
             this.DataContext = null;
             this.Child = tooltip;
-            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 150);
-            this.dispatcherTimer.Tick += OpenCloseLibraryToolTipPopup;
             this.Loaded += LoadMainDynamoWindow;
+
+            toolTipTimer = new LibraryToolTipTimer();
+            toolTipTimer.TimerElapsed += (dataContext) =>
+            {
+                OpenCloseLibraryToolTipPopup(dataContext);
+            };
         }
 
         // We should load main window after Popup has been initialized.
@@ -393,15 +396,14 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            nextDataContext = dataContext;
-            dispatcherTimer.Start();
+            toolTipTimer.Start(dataContext, 150);
         }
 
-        private void OpenCloseLibraryToolTipPopup(object sender, EventArgs e)
+        private void OpenCloseLibraryToolTipPopup(object dataContext)
         {
-            if (nextDataContext != null)
-                this.DataContext = nextDataContext;
-            IsOpen = nextDataContext != null || this.IsMouseOver;
+            IsOpen = dataContext != null || this.IsMouseOver;
+            if (dataContext != null)
+                this.DataContext = dataContext;
 
             // This line is needed to change position of Popup.
             // As position changed PlacementCallback is called and
@@ -411,17 +413,14 @@ namespace Dynamo.UI.Controls
             // Moving tooltip back.
             HorizontalOffset--;
 
-            dispatcherTimer.Stop();
+            toolTipTimer.Stop();
         }
 
         private void CloseLibraryToolTipPopup()
         {
-            if (!this.IsMouseOver)
-            {
-                this.DataContext = null;
-                IsOpen = false;
-                dispatcherTimer.Stop();
-            }
+            this.DataContext = null;
+            IsOpen = false;
+            toolTipTimer.Stop();
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
@@ -458,6 +457,45 @@ namespace Dynamo.UI.Controls
                     PrimaryAxis = PopupPrimaryAxis.Horizontal
                 }
             };
+        }
+
+        private class LibraryToolTipTimer
+        {
+            private readonly DispatcherTimer dispatcherTimer;
+
+            internal LibraryToolTipTimer()
+            {
+                dispatcherTimer = new DispatcherTimer();
+                dispatcherTimer.Tick += (sender, args) =>
+                {
+                    // Send the data context to caller.
+                    this.OnTimerElapsed(dispatcherTimer.Tag);
+                };
+
+            }
+            internal void Start(object dataContext, int milliseconds)
+            {
+                dispatcherTimer.Stop();
+                dispatcherTimer.Tag = dataContext;
+                dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds);
+                dispatcherTimer.Start();
+            }
+
+            internal void Stop()
+            {
+                dispatcherTimer.Stop();
+                dispatcherTimer.Tag = null;
+            }
+
+            internal event Action<object> TimerElapsed;
+            private void OnTimerElapsed(object dataContext)
+            {
+                dispatcherTimer.Stop();
+
+                var handler = TimerElapsed;
+                if (handler != null)
+                    handler(dataContext);
+            }
         }
     }
 }
