@@ -37,7 +37,6 @@ namespace Dynamo.ViewModels
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
         NodeModel nodeLogic;
-        private bool isFullyConnected = false;
         private double zIndex = 3;
         private string astText = string.Empty;
 
@@ -50,24 +49,9 @@ namespace Dynamo.ViewModels
 
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
-        public bool IsFullyConnected
-        {
-            get { return isFullyConnected; }
-            set
-            {
-                isFullyConnected = value;
-                RaisePropertyChanged("IsFullyConnected");
-            }
-        }
-
         public LacingStrategy ArgumentLacing
         {
             get { return nodeLogic.ArgumentLacing; }
-            set
-            {
-                nodeLogic.ArgumentLacing = value;
-                RaisePropertyChanged("ArgumentLacing");
-            }
         }
 
         public NodeModel NodeLogic
@@ -178,11 +162,6 @@ namespace Dynamo.ViewModels
             {
                 return nodeLogic.IsVisible;
             }
-            set
-            {
-                nodeLogic.IsVisible = value;
-                RaisePropertyChanged("IsVisible");
-            }
         }
 
         public bool IsUpstreamVisible
@@ -190,11 +169,6 @@ namespace Dynamo.ViewModels
             get
             {
                 return nodeLogic.IsUpstreamVisible;
-            }
-            set
-            {
-                nodeLogic.IsUpstreamVisible = value;
-                RaisePropertyChanged("IsUpstreamVisible");
             }
         }
 
@@ -789,26 +763,24 @@ namespace Dynamo.ViewModels
 
         private void ToggleIsVisible(object parameter)
         {
-            // Record the state of this node before changes.
-            DynamoModel dynamo = DynamoViewModel.Model;
-            WorkspaceModel.RecordModelForModification(nodeLogic, dynamo.CurrentWorkspace.UndoRecorder);
+            // Invert the visibility before setting the value
+            var visibility = (!nodeLogic.IsVisible).ToString();
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                new[] { nodeLogic.GUID }, "IsVisible", visibility);
 
-            nodeLogic.IsVisible = !nodeLogic.IsVisible;
-
-            RaisePropertyChanged("IsVisible");
+            DynamoViewModel.Model.ExecuteCommand(command);
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void ToggleIsUpstreamVisible(object parameter)
         {
-            // Record the state of this node before changes.
-            DynamoModel dynamo = DynamoViewModel.Model;
-            WorkspaceModel.RecordModelForModification(nodeLogic, dynamo.CurrentWorkspace.UndoRecorder);
+            // Invert the visibility before setting the value
+            var visibility = (!nodeLogic.IsUpstreamVisible).ToString();
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                new[] { nodeLogic.GUID }, "IsUpstreamVisible", visibility);
 
-            nodeLogic.IsUpstreamVisible = !nodeLogic.IsUpstreamVisible;
-
-            RaisePropertyChanged("IsUpstreamVisible");
+            DynamoViewModel.Model.ExecuteCommand(command);
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }

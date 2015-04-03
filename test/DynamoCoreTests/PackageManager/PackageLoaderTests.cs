@@ -9,7 +9,7 @@ namespace Dynamo.Tests
 {
     class PackageLoaderTests : DynamoViewModelUnitTest
     {
-        public string PackagesDirectory { get { return Path.Combine(this.GetTestDirectory(), "pkgs"); } }
+        public string PackagesDirectory { get { return Path.Combine(this.TestDirectory, "pkgs"); } }
 
         [Test]
         public void ScanPackageDirectoryReturnsPackageForValidDirectory()
@@ -103,7 +103,7 @@ namespace Dynamo.Tests
             CustomNodeInfo info;
             Assert.IsTrue(
                 ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(
-                    Path.Combine(new string[] { GetTestDirectory(), "core", "combine", "combine2.dyf" }),
+                    Path.Combine(new string[] { TestDirectory, "core", "combine", "combine2.dyf" }),
                     true,
                     out info));
 

@@ -1,0 +1,12 @@
+{"file_hash":null,
+"name":"Dynamo Samples",
+"version":"1.0.0",
+"description":"Dynamo code samples.",
+"group":"",
+"keywords":["dynamo","samples"],
+"dependencies":[],
+"license":"MIT",
+"contents":"",
+"engine_version":"0.8.1",
+"engine_metadata":"",
+"engine":"dynamo"}

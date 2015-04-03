@@ -1,0 +1,39 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.DSFunction guid="c5f12fff-e9bb-4182-ae32-626177252aa0" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="268" y="123.6" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="152.8" Y="256.8" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="152.8" Y="256.8" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="97232dd1-fa83-4b44-bb31-2a910fbbb577" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="60" y="225" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="1" WorkspaceGuid="0d3eed1e-df21-47fe-8493-c67a36c33327">
+    <ModelGuid>97232dd1-fa83-4b44-bb31-2a910fbbb577</ModelGuid>
+  </UpdateModelValueCommand>
+  <MakeConnectionCommand NodeId="97232dd1-fa83-4b44-bb31-2a910fbbb577" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="c5f12fff-e9bb-4182-ae32-626177252aa0" PortIndex="0" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="97232dd1-fa83-4b44-bb31-2a910fbbb577" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="c5f12fff-e9bb-4182-ae32-626177252aa0" PortIndex="1" Type="0" ConnectionMode="1" />
+  <MakeConnectionCommand NodeId="97232dd1-fa83-4b44-bb31-2a910fbbb577" PortIndex="0" Type="1" ConnectionMode="0" />
+  <MakeConnectionCommand NodeId="c5f12fff-e9bb-4182-ae32-626177252aa0" PortIndex="2" Type="0" ConnectionMode="1" />
+  <SelectModelCommand ModelGuid="c5f12fff-e9bb-4182-ae32-626177252aa0" Modifiers="0" />
+  <DragSelectionCommand X="333.6" Y="222.4" DragOperation="0" />
+  <DragSelectionCommand X="350.4" Y="144" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="130.4" Y="389.6" Width="0" Height="0" IsCrossSelection="false" />
+  <SelectModelCommand ModelGuid="97232dd1-fa83-4b44-bb31-2a910fbbb577" Modifiers="0" />
+  <DragSelectionCommand X="75.2" Y="292" DragOperation="0" />
+  <DragSelectionCommand X="75.2" Y="292" DragOperation="1" />
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="312.8" Y="320" Width="0" Height="0" IsCrossSelection="false" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="first" PauseDurationInMs="20" />
+  <DeleteModelCommand ModelGuid="97232dd1-fa83-4b44-bb31-2a910fbbb577" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="second" PauseDurationInMs="20" />
+</Commands>

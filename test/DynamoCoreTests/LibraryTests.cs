@@ -32,7 +32,14 @@ namespace Dynamo.Tests
             libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
-            var pathManager = new PathManager(new PathManagerParams());
+            var pathResolver = new TestPathResolver();
+            pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
+
+            var pathManager = new PathManager(new PathManagerParams
+            {
+                PathResolver = pathResolver
+            });
+
             libraryServices = new LibraryServices(libraryCore, pathManager);
 
             RegisterEvents();

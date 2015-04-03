@@ -11,7 +11,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanRecognizeCustomNodeWorkspace()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
             var doc = new XmlDocument();
             doc.Load(examplePath);
             WorkspaceInfo workspaceInfo;
@@ -25,7 +25,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanRecognizeHomeWorkspace()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "combine-with-three.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "combine-with-three.dyn");
             var doc = new XmlDocument();
             doc.Load(examplePath); WorkspaceInfo workspaceInfo;
             Assert.IsTrue(WorkspaceInfo.FromXmlDocument(doc, examplePath, true, ViewModel.Model.Logger, out workspaceInfo));

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Dynamo.Models;
-using Dynamo.Tests;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -12,7 +8,14 @@ namespace Dynamo.Tests
     [TestFixture]
     class IfTest : DSEvaluationViewModelUnitTest
     {
-        string testFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        string testFolder { get { return Path.Combine(TestDirectory, "core", "logic", "conditional"); } }
 
         [Test]
         public void TestIFBasic()
