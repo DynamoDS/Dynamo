@@ -264,9 +264,36 @@ namespace Dynamo.Models
                 this.Left = region.X;              
                 this.Top = region.Y;
                 this.Width = region.Width;
-                this.Height = region.Height; 
+                this.Height = region.Height;
+
+                //Calculate the boundary if there is any overlap
+                ModelBase overlap = null;
+                foreach (var nodes in SelectedModels)
+                {
+                    if (!region.Contains(nodes.Rect))
+                    {
+                        overlap = nodes;
+                    }
+                }
+               
+                if (overlap != null && overlap.Height < this.Height)
+                {
+                    if (overlap.Rect.Top < this.Top ||
+                            overlap.Rect.Bottom > region.Bottom) //Overlap in height - increase the region height
+                    {
+                        this.Height += overlap.Rect.Bottom - region.Bottom + 10;
+                        region.Height = this.Height;
+                    }
+                    if (overlap.Rect.Top < this.Top ||
+                            overlap.Rect.Bottom > region.Bottom) //Overlap in width - increase the region width
+                    {
+                        this.Width += overlap.Rect.Top - region.Top + 10;
+                        region.Width = this.Width;
+                    }
+                }
+
                 //Initial Height is to store the Actual height of the group.
-                this.InitialHeight = region.Height;               
+                this.InitialHeight = region.Height;
             }
         }
 
@@ -276,9 +303,9 @@ namespace Dynamo.Models
         /// <returns></returns>
         private Tuple<Double,Double> CalculateWidthAndHeight()
         {           
-            var xgroup = SelectedModels.OrderBy(x => x.X + x.Width).ToList();
-            var ygroup = SelectedModels.OrderBy(x => x.Y + x.Height ).ToList();
-           
+            var xgroup = SelectedModels.OrderBy(x => x.X).ToList();
+            var ygroup = SelectedModels.OrderBy(x => x.Y).ToList();
+          
             return Tuple.Create(xgroup.Last().Width, ygroup.Last().Height);
         }
         
