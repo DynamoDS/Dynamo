@@ -273,25 +273,24 @@ namespace Dynamo.Models
                     if (!region.Contains(nodes.Rect))
                     {
                         overlap = nodes;
+                        if (overlap.Height < this.Height)
+                        {
+                            if (overlap.Rect.Top < this.Top ||
+                                    overlap.Rect.Bottom > region.Bottom) //Overlap in height - increase the region height
+                            {
+                                this.Height += overlap.Rect.Bottom - region.Bottom + 10;
+                                region.Height = this.Height;
+                            }
+                            if (overlap.Rect.Left < this.Left ||
+                                    overlap.Rect.Right > region.Right) //Overlap in width - increase the region width
+                            {
+                                this.Width += overlap.Rect.Right - region.Right + 10;
+                                region.Width = this.Width;
+                            }
+                        }
                     }
                 }
-               
-                if (overlap != null && overlap.Height < this.Height)
-                {
-                    if (overlap.Rect.Top < this.Top ||
-                            overlap.Rect.Bottom > region.Bottom) //Overlap in height - increase the region height
-                    {
-                        this.Height += overlap.Rect.Bottom - region.Bottom + 10;
-                        region.Height = this.Height;
-                    }
-                    if (overlap.Rect.Top < this.Top ||
-                            overlap.Rect.Bottom > region.Bottom) //Overlap in width - increase the region width
-                    {
-                        this.Width += overlap.Rect.Top - region.Top + 10;
-                        region.Width = this.Width;
-                    }
-                }
-
+                               
                 //Initial Height is to store the Actual height of the group.
                 this.InitialHeight = region.Height;
             }
