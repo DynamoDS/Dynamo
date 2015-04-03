@@ -36,6 +36,8 @@ namespace Dynamo.Search.SearchElements
             inputParameters = new List<Tuple<string, string>>();
             outputParameters = new List<string>();
             SyncWithCustomNodeInfo(info);
+
+            iconName = FullName;
         }
 
         /// <summary>
