@@ -457,6 +457,9 @@ namespace Dynamo.Models
             if (this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
+
+                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
@@ -465,6 +468,12 @@ namespace Dynamo.Models
                 {
                     Logger.Log(e.Message);
                 }
+                finally
+                {
+                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.End));
+                }
+
                 if (migrator != null)
                     this.PreferenceSettings = migrator.PreferenceSettings;
             }
