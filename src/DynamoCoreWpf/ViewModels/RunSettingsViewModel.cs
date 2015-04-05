@@ -43,7 +43,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public string Name
         {
-            get { return RunType.ToString(); }
+            get { return Resources.ResourceManager.GetString(RunType.ToString()); }
         }
 
         public string ToolTipText

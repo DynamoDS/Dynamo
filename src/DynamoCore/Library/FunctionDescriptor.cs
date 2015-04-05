@@ -92,7 +92,7 @@ namespace Dynamo.DSEngine
             Parameters = funcDescParams.Parameters.Select(
                 x =>
                 {
-                    x.UpdateFunctionDescriptor(this, pathManager);
+                    x.UpdateFunctionDescriptor(this);
                     return x;
                 }).ToList();
 
@@ -172,7 +172,7 @@ namespace Dynamo.DSEngine
 
         public string Summary
         {
-            get { return summary ?? (summary = this.GetSummary(pathManager)); }
+            get { return summary ?? (summary = this.GetSummary()); }
         }
 
         /// <summary>
