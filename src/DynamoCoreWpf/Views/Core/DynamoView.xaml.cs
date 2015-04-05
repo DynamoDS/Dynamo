@@ -692,7 +692,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void DynamoViewModelRequestDesignOptionsNamePrompt (object sender, DesignOptionNamePromptEventArgs e)
+        void DynamoViewModelRequestDesignOptionsNamePrompt (DesignOptionNamePromptEventArgs e)
         {
             ShowNewDesignOptionsDialog(e);
         }
@@ -800,7 +800,7 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
 
             //DesignOptions Name Prompt
-            dynamoViewModel.Model.RequestDesignOptionNamePrompt += DynamoViewModelRequestDesignOptionsNamePrompt;
+            dynamoViewModel.Model.RequestDesignOptionNamePrompt -= DynamoViewModelRequestDesignOptionsNamePrompt;
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;

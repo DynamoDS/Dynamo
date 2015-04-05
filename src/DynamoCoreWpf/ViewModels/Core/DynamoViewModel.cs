@@ -2044,7 +2044,7 @@ namespace Dynamo.ViewModels
             //trigger the event to request the display
             //of the design option name dialogue
             var args = new DesignOptionNamePromptEventArgs();
-            this.Model.OnRequestsDesignOptionNamePrompt(this, args);
+            this.Model.OnRequestsDesignOptionNamePrompt(args);
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             if (args.Success)
             {
