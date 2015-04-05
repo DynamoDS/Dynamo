@@ -10,7 +10,7 @@ using Dynamo.Nodes;
 namespace Dynamo.Models
 {
     /// <summary>
-    /// a class that saves the state of a graph
+    /// a class that saves the state of a subset of a graph
     /// </summary>
     public class DesignOptionsState
     {
@@ -20,8 +20,8 @@ namespace Dynamo.Models
 
         # region properties
 
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; private set; }
+        public string Description { get; private set; }
        
         /// <summary>
         /// list of nodemodels that this state serializes
@@ -60,17 +60,20 @@ namespace Dynamo.Models
             {
                 throw new ArgumentNullException("design options state name is null");
             }
+
             if (inputsToSave == null || inputsToSave.Count() < 1)
             {
                 throw new ArgumentNullException("nodes to save are null null");
-            }   
+            } 
+  
             Name = name;
             Description = description;
-            nodes = inputsToSave.ToList(); ;
+            nodes = inputsToSave.ToList();
             
             // serialize all the nodes by calling their serialize method, 
             // the resulting elements will be used to save this state when 
             // the designOptionsSet is saved on graph save
+            // the below temp root and doc is to avoid a exceptions thrown by the zero touch serialization methods
             var tempdoc = new XmlDocument();
             var root = tempdoc.CreateElement("temproot");
             tempdoc.AppendChild(root);

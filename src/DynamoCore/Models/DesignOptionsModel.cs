@@ -17,7 +17,7 @@ namespace Dynamo.Models
     {
         #region private members
         private readonly List<DesignOptionsState> designStates;
-       
+
         private void LoadStateFromXml(string name, string description, List<NodeModel> nodes, List<XmlElement> serializednodes, Guid id)
         {
             var loadedState = new DesignOptionsState(name, description, nodes, serializednodes, id);
@@ -26,7 +26,7 @@ namespace Dynamo.Models
         #endregion
 
         # region properties
-        public IEnumerable<DesignOptionsState> DesignStates { get { return designStates;} }
+        public IEnumerable<DesignOptionsState> DesignStates { get { return designStates; } }
         #endregion
 
         #region constructor
@@ -95,14 +95,11 @@ namespace Dynamo.Models
                         var stateguidString = stateNode.GetAttribute("guid");
 
                         Guid stateID;
-                        if (Guid.TryParse(stateguidString, out stateID))
-                        {
-
-                        }
-                        else
+                        if (!Guid.TryParse(stateguidString, out stateID))
                         {
                             throw new Exception("unable to parse state GUID");
                         }
+
                         var nodes = new List<NodeModel>();
                         var deserialzedNodes = new List<XmlElement>();
                         //now find the nodes we're looking for by their guids in the loaded nodegraph
@@ -112,7 +109,6 @@ namespace Dynamo.Models
                         //iterate each actual saved nodemodel in each state
                         foreach (XmlElement node in stateNode.ChildNodes)
                         {
-
                             var guidString = node.GetAttribute("guid");
                             Guid nodeID;
                             if (!Guid.TryParse(guidString, out nodeID))
@@ -147,10 +143,10 @@ namespace Dynamo.Models
         /// <summary>
         /// method to create and add a new state to this design options set
         /// </summary>
-        public void CreateNewState(string name, string description, IEnumerable<NodeModel> currentSelection,Guid id = new Guid())
+        public void CreateNewState(string name, string description, IEnumerable<NodeModel> currentSelection, Guid id = new Guid())
         {
             var inputs = currentSelection;
-            var newstate = new DesignOptionsState(name, description, inputs,id);
+            var newstate = new DesignOptionsState(name, description, inputs, id);
             designStates.Add(newstate);
         }
 
@@ -160,9 +156,6 @@ namespace Dynamo.Models
         }
 
         #endregion
-
-        
-
 
     }
 }
