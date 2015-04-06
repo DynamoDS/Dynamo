@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -49,6 +51,13 @@ namespace DynamoCoreUITests
             DispatcherUtil.DoEvents();
         }
 
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void Watch3DHasViewer()
         {
@@ -56,7 +65,7 @@ namespace DynamoCoreUITests
 
             var nodeView = NodeViewWithGuid("6869c998-b819-4686-8849-6f36162c4182"); // NodeViewOf<Watch3D>();
             var watchView = nodeView.ChildrenOfType<Watch3DView>().First();
-            Assert.AreEqual(0, watchView.Points.Count);
+            Assert.AreEqual(0, watchView.Points.Positions.Count);
         }
 
         [Test]
@@ -265,7 +274,7 @@ namespace DynamoCoreUITests
 
             var watch3DView = watch3ds.First();
 
-            Assert.AreEqual(1, watch3DView.Points.Count);
+            Assert.AreEqual(1, watch3DView.Points.Positions.Count);
         }
 
         [Test]

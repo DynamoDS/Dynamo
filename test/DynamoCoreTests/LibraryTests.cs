@@ -7,6 +7,7 @@ using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using NUnit.Framework;
+using TestServices;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.ViewModels;
 using ProtoCore;
@@ -15,31 +16,40 @@ using Dynamo.Core;
 namespace Dynamo.Tests
 {
     [TestFixture]
-    class LibraryTests 
+    class LibraryTests : UnitTestBase
     {
         private LibraryServices libraryServices;
         private ProtoCore.Core libraryCore;
-        private PathManager pathManager = new PathManager(new PathManagerParams());
 
         protected static bool LibraryLoaded { get; set; }
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
+            base.Setup();
+
             libraryCore = new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
             libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
             libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
+
+            var pathResolver = new TestPathResolver();
+            pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
+
+            var pathManager = new PathManager(new PathManagerParams
+            {
+                PathResolver = pathResolver
+            });
+
             libraryServices = new LibraryServices(libraryCore, pathManager);
 
             RegisterEvents();
         }
 
-        [TearDown]
-        public void Cleanup()
+        public override void Cleanup()
         {
             UnRegisterEvents();
             libraryServices.Dispose();
+            base.Cleanup();
         }
 
         private void RegisterEvents()
@@ -109,12 +119,8 @@ namespace Dynamo.Tests
         {
             LibraryLoaded = false;
 
-            string libraryPath = "FFITarget.dll";
-
-            string tempPath = Path.GetTempPath();
-            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var tempDirectory = uniqueDirectory.FullName;
-            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
+            const string libraryPath = "FFITarget.dll";
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
 
             File.Copy(libraryPath, tempLibraryPath);
 
@@ -139,11 +145,8 @@ namespace Dynamo.Tests
                 "</priorNameHint>" + System.Environment.NewLine +
                 "</migrations>" + System.Environment.NewLine;
 
-            string tempPath = Path.GetTempPath();
-            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var tempDirectory = uniqueDirectory.FullName;
-            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
-            string tempBadXMLPath = Path.Combine(tempDirectory, badXMLPath);
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
+            string tempBadXMLPath = Path.Combine(TempFolder, badXMLPath);
 
             File.Copy(libraryPath, tempLibraryPath);
 
@@ -173,11 +176,8 @@ namespace Dynamo.Tests
                 "</priorNameHint>" + System.Environment.NewLine +
                 "</migrations>" + System.Environment.NewLine;
 
-            string tempPath = Path.GetTempPath();
-            var uniqueDirectory = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
-            var tempDirectory = uniqueDirectory.FullName;
-            string tempLibraryPath = Path.Combine(tempDirectory, libraryPath);
-            string tempBadXMLPath = Path.Combine(tempDirectory, badXMLPath);
+            string tempLibraryPath = Path.Combine(TempFolder, libraryPath);
+            string tempBadXMLPath = Path.Combine(TempFolder, badXMLPath);
 
             File.Copy(libraryPath, tempLibraryPath);
 
@@ -196,7 +196,7 @@ namespace Dynamo.Tests
         {
             LibraryLoaded = false;
 
-            string libraryPath = "FFITarget.dll";
+            const string libraryPath = "FFITarget.dll";
 
             // All we need to do here is to ensure that the target has been loaded
             // at some point, so if it's already thre, don't try and reload it

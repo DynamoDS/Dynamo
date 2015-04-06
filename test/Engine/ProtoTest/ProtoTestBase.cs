@@ -26,15 +26,11 @@ namespace ProtoTest
 
         private void CleanupRuntimeCore()
         {
-            // Executing a test can either come from DebugRunner or TestFrameWork
-            // We want the generated runtimecore from either of these frameworks to be properly disposed.
-            // The DebugRunner should handle setting runtimeCore in its TearDown function
-            // As a fallback, if the runtimeCore is null, it is assumed that the test was run from the TestFramework
-            if (runtimeCore == null)
+            // If a runtimeCore was used for the test, call its Cleanup
+            if (runtimeCore != null)
             {
-                runtimeCore = thisTest.GetTestRuntimeCore();
+                runtimeCore.Cleanup();
             }
-            runtimeCore.Cleanup();
         }
 
         [TearDown]

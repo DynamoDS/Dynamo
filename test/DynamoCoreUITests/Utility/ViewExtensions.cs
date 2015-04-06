@@ -11,7 +11,7 @@ namespace DynamoCoreUITests.Utility
     {
         public static IEnumerable<NodeView> OfNodeModelType<T>(this IEnumerable<NodeView> nodeViews) where T : NodeModel
         {
-            return nodeViews.Where(x => x.ViewModel.NodeModel as T != null);
+            return nodeViews.Where(x => x.ViewModel.NodeModel is T);
         }
 
         public static IEnumerable<NodeView> ChildNodeViews(this WorkspaceView nodeViews)

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Dynamo.DSEngine;
 using NUnit.Framework;
 
@@ -13,7 +11,12 @@ namespace Dynamo.Tests
     {
         private LibraryServices libraryServices;
 
-        [SetUp]
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         public override void Setup()
         {
             base.Setup();
@@ -37,7 +40,7 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
             libraryServices.LibraryLoadFailed += (sender, e) => Assert.Fail("Failed to load library: " + e.LibraryPath); 
 
-            string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Dummy.ds");
+            string libraryPath = Path.Combine(TestDirectory, @"core\library\Dummy.ds");
             libraryServices.ImportLibrary(libraryPath);
             Assert.IsTrue(libraryLoaded);
 
@@ -54,7 +57,7 @@ namespace Dynamo.Tests
             libraryServices.LibraryLoaded += (sender, e) => libraryLoaded = true;
 
             // library should be able to load
-            string libraryPath = Path.Combine(GetTestDirectory(), @"core\library\Test.ds");
+            string libraryPath = Path.Combine(TestDirectory, @"core\library\Test.ds");
             libraryServices.ImportLibrary(libraryPath);
             Assert.IsTrue(libraryLoaded);
 

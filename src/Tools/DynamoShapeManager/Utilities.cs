@@ -25,11 +25,20 @@ namespace DynamoShapeManager
         /// of preference. This argument cannot be null or empty.</param>
         /// <param name="location">The full path of the directory in which targeted
         /// ASM binaries are found. This argument cannot be null.</param>
+        /// <param name="rootFolder">This method makes use of DynamoInstallDetective
+        /// to determine the installation location of various Autodesk products. This 
+        /// argument is not optional and must represent the full path to the folder 
+        /// which contains DynamoInstallDetective.dll. An exception is thrown if the 
+        /// assembly cannot be located.</param>
         /// <returns>Returns LibraryVersion of ASM if any installed ASM is found, 
         /// or None otherwise.</returns>
         /// 
-        public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location)
+        public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location, string rootFolder)
         {
+            if (string.IsNullOrEmpty(rootFolder))
+                throw new ArgumentNullException("rootFolder");
+            if (!Directory.Exists(rootFolder))
+                throw new DirectoryNotFoundException(rootFolder);
             if ((versions == null) || versions.Count <= 0)
                 throw new ArgumentNullException("versions");
             if (location == null)
@@ -39,7 +48,7 @@ namespace DynamoShapeManager
 
             try
             {
-                var installations = GetAsmInstallations();
+                var installations = GetAsmInstallations(rootFolder);
 
                 foreach (KeyValuePair<string, Tuple<int,int,int,int>> install in installations)
                 {
@@ -144,10 +153,14 @@ namespace DynamoShapeManager
             return assemblyPath;
         }
 
-        private static IEnumerable GetAsmInstallations()
+        private static IEnumerable GetAsmInstallations(string rootFolder)
         {
-            string installDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var assembly = Assembly.LoadFrom(Path.Combine(installDir, "DynamoInstallDetective.dll"));
+            var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
+            if (!File.Exists(assemblyPath))
+                throw new FileNotFoundException(assemblyPath);
+
+            var assembly = Assembly.LoadFrom(assemblyPath);
+
             var type = assembly.GetType("DynamoInstallDetective.Utilities");
 
             var installationsMethod = type.GetMethod(

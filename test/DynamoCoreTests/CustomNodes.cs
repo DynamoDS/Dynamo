@@ -2,30 +2,31 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-
 using NUnit.Framework;
-using System.Text;
-using Dynamo.DSEngine;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
 using System.Collections;
 
 namespace Dynamo.Tests
 {
     internal class CustomNodes : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void CanCollapseNodesAndGetSameResult()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            var examplePath = Path.Combine(TestDirectory, @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -81,7 +82,7 @@ namespace Dynamo.Tests
         public void CanCollapseNodesWithDefaultValues()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            var examplePath = Path.Combine(TestDirectory, @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse-defaults.dyn");
             RunModel(openPath);
@@ -127,7 +128,7 @@ namespace Dynamo.Tests
         {
         //   http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            var examplePath = Path.Combine(TestDirectory, @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse-function.dyn");
             RunModel(openPath);
@@ -171,7 +172,7 @@ namespace Dynamo.Tests
         public void CanCollapseAndUndoRedo()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            var examplePath = Path.Combine(TestDirectory, @"core\collapse\");
             ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "collapse-number-chain.dyn"));
 
             // Ensure all the nodes we are looking for are actually there.
@@ -295,7 +296,7 @@ namespace Dynamo.Tests
         public void GitHub_461_DeleteNodesFromCustomNodeWorkspaceAfterCollapse()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            var examplePath = Path.Combine(TestDirectory, @"core\collapse\");
 
             string openPath = Path.Combine(examplePath, "collapse.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -346,7 +347,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\reduce_and_recursion\");
+            var examplePath = Path.Combine(TestDirectory, @"core\reduce_and_recursion\");
 
             string openPath = Path.Combine(examplePath, "reduce-example.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -371,7 +372,7 @@ namespace Dynamo.Tests
         public void FilterWithCustomNode()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\filter\");
+            var examplePath = Path.Combine(TestDirectory, @"core\filter\");
 
             CustomNodeInfo info;
             Assert.IsTrue(ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(Path.Combine(examplePath, "IsOdd.dyf"), true, out info));
@@ -406,7 +407,7 @@ namespace Dynamo.Tests
         [Test]
         public void CanEvaluateCustomNodeWithDuplicateInputs()
         {
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\duplicate-input.dyn");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\duplicate-input.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
             ViewModel.HomeSpace.Run();
 
@@ -574,7 +575,7 @@ namespace Dynamo.Tests
         public void MultipleOutputs()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+            var examplePath = Path.Combine(TestDirectory, @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "multi-custom.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -601,7 +602,7 @@ namespace Dynamo.Tests
         public void PartialApplicationWithMultipleOutputs()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\multiout");
+            var examplePath = Path.Combine(TestDirectory, @"core\multiout");
 
             string openPath = Path.Combine(examplePath, "partial-multi-custom.dyn");
             ViewModel.OpenCommand.Execute(openPath);
@@ -662,7 +663,7 @@ namespace Dynamo.Tests
         public void CollapsedNodeShouldHaveNewIdentfifer()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\collapse\");
+            var examplePath = Path.Combine(TestDirectory, @"core\collapse\");
             ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "collapse-newname.dyn"));
 
             // Convert a DSFunction node Point.ByCoordinates to custom node.
@@ -710,7 +711,7 @@ namespace Dynamo.Tests
             // Dyn file contains a proxy custom node. Evaluating the whole graph
             // should evaluate all nodes except those proxy custom node instance. 
             var model = ViewModel.Model;
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\missing_custom_node.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\missing_custom_node.dyn");
 
             ViewModel.OpenCommand.Execute(dynFilePath);
             ViewModel.HomeSpace.Run();
@@ -725,7 +726,7 @@ namespace Dynamo.Tests
             // Custom node's signature is add(x:int, y:int)
             // Test type conversion happens.
             var model = ViewModel.Model;
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestTypeConversion.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestTypeConversion.dyn");
 
             ViewModel.OpenCommand.Execute(dynFilePath);
             ViewModel.HomeSpace.Run();
@@ -739,17 +740,17 @@ namespace Dynamo.Tests
         {
             // Test lacing works ofr custom node. 
             var model = ViewModel.Model;
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestLacing.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestLacing.dyn");
             ViewModel.OpenCommand.Execute(dynFilePath);
             
             var instance = model.CurrentWorkspace.Nodes.OfType<Function>().First();
-            instance.ArgumentLacing = LacingStrategy.CrossProduct;
+            instance.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
             ViewModel.HomeSpace.Run();
 
             // {1,2} + {3,4}
             AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { new object [] {4, 5}, new object [] {5, 6}});
 
-            instance.ArgumentLacing = LacingStrategy.Longest;
+            instance.UpdateValue(new UpdateValueParams("ArgumentLacing", "Longest"));
             ViewModel.HomeSpace.Run();
             AssertPreviewValue("fe515852-8e88-496b-8f17-005d97c7fa19", new object[] { 4, 6});
 
@@ -760,7 +761,7 @@ namespace Dynamo.Tests
         {
             // Test custom node default value works
             var model = ViewModel.Model;
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestDefaultValue.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestDefaultValue.dyn");
 
             ViewModel.OpenCommand.Execute(dynFilePath);
             ViewModel.HomeSpace.Run();
@@ -773,7 +774,7 @@ namespace Dynamo.Tests
         {
             // Custom node has invalid type, which should be captured by Input node
             var model = ViewModel.Model;
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\invalidType.dyf");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\invalidType.dyf");
 
             ViewModel.OpenCommand.Execute(dynFilePath);
 
@@ -787,7 +788,7 @@ namespace Dynamo.Tests
             // Custom node has invalid input like "x = f(x)", but the evalution should continue
             // so that old custom node won't be broken
             var model = ViewModel.Model;
-            var dynFilePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\TestInvalidInput.dyn");
+            var dynFilePath = Path.Combine(TestDirectory, @"core\CustomNodes\TestInvalidInput.dyn");
             ViewModel.OpenCommand.Execute(dynFilePath);
             ViewModel.HomeSpace.Run();
 
@@ -799,7 +800,7 @@ namespace Dynamo.Tests
         public void TestCustomNodeFromCollapsedNodeHasTypes()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var examplePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
             ViewModel.OpenCommand.Execute(Path.Combine(examplePath, "simpleGeometry.dyn"));
 
             // Convert a DSFunction node Line.ByStartPointEndPoint to custom node.
@@ -828,7 +829,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestCustomNodeInSyncWithDefinition()
         {
-            var basePath = Path.Combine(GetTestDirectory(), @"core\CustomNodes\");
+            var basePath = Path.Combine(TestDirectory, @"core\CustomNodes\");
 
             var model = ViewModel.Model;
             ViewModel.OpenCommand.Execute(Path.Combine(basePath, "testCustomNodeSync.dyn"));

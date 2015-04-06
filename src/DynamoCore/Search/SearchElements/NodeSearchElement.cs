@@ -200,7 +200,7 @@ namespace Dynamo.Search.SearchElements
         }
 
         protected List<string> outputParameters;
-        public List<string> OutputParameters
+        public IEnumerable<string> OutputParameters
         {
             get
             {
@@ -258,13 +258,13 @@ namespace Dynamo.Search.SearchElements
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected virtual List<string> GenerateOutputParameters()
+        protected virtual IEnumerable<string> GenerateOutputParameters()
         {
             outputParameters.Add("none");
             return outputParameters;
         }
 
-        protected virtual List<Tuple<string, string>> GenerateInputParameters()
+        protected virtual IEnumerable<Tuple<string, string>> GenerateInputParameters()
         {
             inputParameters.Add(Tuple.Create("", "none"));
             return inputParameters;

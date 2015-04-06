@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using MIConvexHull;
 
+using StarMathLib;
+
 namespace Tessellation.Adapters
 {
     /// <summary>

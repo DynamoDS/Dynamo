@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using Dynamo;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.DynamoSandbox;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Services;
@@ -31,7 +32,20 @@ namespace DynamoSandbox
             };
 
             additionalNodeDirectories = new List<string>();
-            preloadedLibraryPaths = new List<string>();
+            preloadedLibraryPaths = new List<string>
+            {
+                "VMDataBridge.dll",
+                "ProtoGeometry.dll",
+                "DSCoreNodes.dll",
+                "DSOffice.dll",
+                "DSIronPython.dll",
+                "FunctionObject.ds",
+                "Optimize.ds",
+                "DynamoConversions.dll",
+                "DynamoUnits.dll",
+                "Tessellation.dll",
+                "Analysis.dll"
+            };
         }
 
         public IEnumerable<string> AdditionalResolutionPaths
@@ -62,6 +76,8 @@ namespace DynamoSandbox
 
     internal class Program
     {
+        private static SettingsMigrationWindow migrationWindow;
+
         private static void MakeStandaloneAndRun(string commandFilePath, out DynamoViewModel viewModel)
         {
             var geometryFactoryPath = string.Empty;
@@ -72,12 +88,16 @@ namespace DynamoSandbox
             // If not, PathResolver will be completely redundant so please remove it.
             var pathResolver = new PathResolver(preloaderLocation);
 
+            DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
+
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
                     PathResolver = pathResolver,
                     GeometryFactoryPath = geometryFactoryPath
                 });
+
+            
 
             viewModel = DynamoViewModel.Start(
                 new DynamoViewModel.StartConfiguration()
@@ -86,10 +106,26 @@ namespace DynamoSandbox
                     DynamoModel = model
                 });
 
+            DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
+
             var view = new DynamoView(viewModel);
 
             var app = new Application();
             app.Run(view);
+        }
+
+        private static void MigrationStatusDialogRequested(SettingsMigrationEventArgs args)
+        {
+            if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.Begin)
+            {
+                migrationWindow = new SettingsMigrationWindow();
+                migrationWindow.Show();
+            }
+            else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
+            {
+                migrationWindow.Close();
+                migrationWindow = null;
+            }
         }
 
         private static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)

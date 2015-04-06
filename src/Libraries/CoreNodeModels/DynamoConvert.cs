@@ -68,6 +68,7 @@ namespace DSCoreNodesUI
             set
             {
                 selectedFromConversion = (ConversionUnit) Enum.Parse(typeof (ConversionUnit), value.ToString());
+                this.OnNodeModified();
                 RaisePropertyChanged("SelectedFromConversion");
             }
         }
@@ -78,6 +79,7 @@ namespace DSCoreNodesUI
             set
             {
                 selectedToConversion = (ConversionUnit) Enum.Parse(typeof (ConversionUnit), value.ToString());
+                this.OnNodeModified();
                 RaisePropertyChanged("SelectedToConversion");
             }
         }
