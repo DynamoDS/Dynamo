@@ -6,14 +6,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Xml;
 ﻿using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
-using Dynamo.Library;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.Search;
@@ -25,7 +24,6 @@ using Dynamo.Utilities;
 using DynamoServices;
 
 using DynamoUnits;
-using DynamoUtilities;
 using Greg; // Dynamo package manager
 using ProtoCore;
 using Dynamo.Models.NodeLoaders;
@@ -454,9 +452,12 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            if (this.PreferenceSettings.IsFirstRun)
+            if (!isTestMode && this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
+
+                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
@@ -465,8 +466,21 @@ namespace Dynamo.Models
                 {
                     Logger.Log(e.Message);
                 }
+                finally
+                {
+                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.End));
+                }
+
                 if (migrator != null)
+                {
+                    var isFirstRun = this.PreferenceSettings.IsFirstRun;
                     this.PreferenceSettings = migrator.PreferenceSettings;
+
+                    // Preserve the preference settings for IsFirstRun as this needs to be set 
+                    // only by UsageReportingManager
+                    this.PreferenceSettings.IsFirstRun = isFirstRun;
+                }
             }
 
             SearchModel = new NodeSearchModel();
