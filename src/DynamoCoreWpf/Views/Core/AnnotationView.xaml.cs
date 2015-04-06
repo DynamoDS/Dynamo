@@ -29,8 +29,7 @@ namespace Dynamo.Nodes
             Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
 
             InitializeComponent();
-            Loaded += AnnotationView_Loaded;
-            BindingErrorTraceListener.SetTrace();
+            Loaded += AnnotationView_Loaded;           
             this.GroupTextBlock.MouseLeftButtonDown += UIElement_OnMouseLeftButtonDown;   
             this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;          
         }
