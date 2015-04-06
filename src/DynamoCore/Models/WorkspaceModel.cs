@@ -924,7 +924,7 @@ namespace Dynamo.Models
             if (!selectedNodes.Any())
                 return;
 
-            var astNodes = engineController.ConvertNodesToCode(selectedNodes, verboseLogging);
+            var nodeToCodeResult =  engineController.ConvertNodesToCode(selectedNodes, verboseLogging);
             CodeBlockNodeModel codeBlockNode = null;
 
             //UndoRedo Action Group----------------------------------------------
@@ -959,9 +959,17 @@ namespace Dynamo.Models
 
                             //Store the data in the corresponding dictionary
                             if (startNode == node)
+                            {
                                 externalOutputConnections.Add(connector, variableName);
+                            }
                             else
+                            {
+                                if (nodeToCodeResult.VariableMapping.ContainsKey(variableName))
+                                {
+                                    variableName = nodeToCodeResult.VariableMapping[variableName];
+                                }
                                 externalInputConnections.Add(connector, variableName);
+                            }
                         }
 
                         //Delete the connector
@@ -980,7 +988,7 @@ namespace Dynamo.Models
                 #endregion
 
                 #region Step II. Create the new code block node
-                var codegen = new ProtoCore.CodeGenDS(astNodes);
+                var codegen = new ProtoCore.CodeGenDS(nodeToCodeResult.AstNodes);
                 var code = codegen.GenerateCode();
 
                 codeBlockNode = new CodeBlockNodeModel(

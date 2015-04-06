@@ -7,7 +7,19 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.DSEngine
 {
-    public class Nodes2CodeUtils
+    public class NodeToCodeResult
+    {
+        public IEnumerable<AssociativeNode> AstNodes { get; private set; }
+        public Dictionary<string, string> VariableMapping { get; private set; }
+
+        public NodeToCodeResult(IEnumerable<AssociativeNode> astNodes, 
+            Dictionary<string, string> variableMapping)
+        {
+            AstNodes = astNodes;
+            VariableMapping = variableMapping;
+        }
+    }
+    public class NodeToCodeUtils
     {
         private class ShortNameGenerator
         {
@@ -145,40 +157,47 @@ namespace Dynamo.DSEngine
             AssociativeNode astNode, 
             NodeModel node,
             Dictionary<string, Tuple<int, bool>> numberingMap, 
-            Dictionary<string, string> renamingMap)
+            Dictionary<string, string> renamingMap,
+            Dictionary<string, string> shortNameMap)
         {
-            var binaryExpr = astNode as BinaryExpressionNode;
-            if (binaryExpr == null)
-                return;
-
-            var identNode = binaryExpr.LeftNode as IdentifierNode;
-            if (identNode == null)
-                return;
-
-            var ident = identNode.Value;
-            if (!numberingMap.ContainsKey(ident))
+            Action<IdentifierNode> func = n =>
             {
-                numberingMap[ident] = Tuple.Create(0, true);
-            }
-            var t = numberingMap[ident];
-            if (!t.Item2)
-            {
-                numberingMap[ident] = Tuple.Create(t.Item1 + 1, true);
-                t = numberingMap[ident];
-            }
+                var ident = n.Value;
 
-            if (t.Item1 != 0)
-            {
-                var newIdent = ident + t.Item1.ToString();
-                identNode.Name = identNode.Value = newIdent;
+                // This ident is from other node's output port, so it should be
+                // renamed later on VarialbeMapping()
+                if (renamingMap.ContainsKey(ident) || shortNameMap.ContainsKey(ident))
+                    return;
 
-                string name = string.Format("{0}%{1}", ident, node.GUID);
-                if (renamingMap.ContainsKey(name))
+                if (!numberingMap.ContainsKey(ident))
                 {
-                    var mappedName = renamingMap[name];
-                    renamingMap[mappedName] = newIdent;
+                    numberingMap[ident] = Tuple.Create(0, true);
                 }
-            }
+                var t = numberingMap[ident];
+                if (!t.Item2)
+                {
+                    numberingMap[ident] = Tuple.Create(t.Item1 + 1, true);
+                    t = numberingMap[ident];
+                }
+
+                if (t.Item1 != 0)
+                {
+                    var newIdent = ident + t.Item1.ToString();
+                    n.Name = n.Value = newIdent;
+
+                    // If this variable is numbered, and it is also output to
+                    // other node, we should remap the output variable to
+                    // this re-numbered variable.
+                    string name = string.Format("{0}%{1}", ident, node.GUID);
+                    if (renamingMap.ContainsKey(name))
+                    {
+                        var mappedName = renamingMap[name];
+                        renamingMap[mappedName] = newIdent;
+                    }
+                }
+            };
+
+            IdentifierVisitor.Visit(astNode, func);
         }
 
         /// <summary>
@@ -238,7 +257,7 @@ namespace Dynamo.DSEngine
         /// <param name="nodes"></param>
         /// <param name="verboseLogging"></param>
         /// <returns></returns>
-        public static IEnumerable<AssociativeNode> Node2Code(
+        public static NodeToCodeResult NodeToCode(
             AstBuilder astBuilder, 
             IEnumerable<NodeModel> nodes, 
             bool verboseLogging)
@@ -311,6 +330,10 @@ namespace Dynamo.DSEngine
             // sequence and if for the new UI node.
             var numberingMap = new Dictionary<string, Tuple<int, bool>>();
 
+            // Long names from extern nodes
+            var longNames = GetLongNames(nodes);
+            var shortNameMap = longNames.ToDictionary(v => v, _ => string.Empty);
+
             foreach (var t in allAstNodes)
             {
                 // Reset variable numbering map
@@ -319,7 +342,7 @@ namespace Dynamo.DSEngine
                     p => Tuple.Create(p.Value.Item1, false));
 
                 foreach (var astNode in t.Item2)
-                    VariableNumbering(astNode, t.Item1, numberingMap, remappingMap); 
+                    VariableNumbering(astNode, t.Item1, numberingMap, remappingMap, shortNameMap); 
             }
             #endregion
 
@@ -333,8 +356,6 @@ namespace Dynamo.DSEngine
 
             #region Step 4 Generate short name
             var nameGenerator = new ShortNameGenerator();
-            var longNames = GetLongNames(nodes);
-            var shortNameMap = longNames.ToDictionary(v => v, _ => string.Empty);
             foreach (var ts in allAstNodes)
             {
                 foreach (var astNode in ts.Item2)
@@ -342,7 +363,7 @@ namespace Dynamo.DSEngine
             }
             #endregion
 
-            return allAstNodes.SelectMany(x => x.Item2);
+            return new NodeToCodeResult(allAstNodes.SelectMany(x => x.Item2), shortNameMap);
         }
     }
 }
