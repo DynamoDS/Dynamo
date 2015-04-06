@@ -609,9 +609,9 @@ namespace Dynamo.Tests
             sumNode.X = 250;
             sumNode.Y = 0;
             sumNode.NickName = "TestNode";
-            sumNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            sumNode.IsVisible = false;
-            sumNode.IsUpstreamVisible = false;
+            sumNode.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
+            sumNode.UpdateValue(new UpdateValueParams("IsVisible", "false"));
+            sumNode.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
             sumNode.State = ElementState.Active;
 
             //Assert New Changes

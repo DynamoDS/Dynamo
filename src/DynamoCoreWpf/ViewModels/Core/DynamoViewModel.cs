@@ -999,7 +999,7 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = string.Format(Resources.FileDialogDynamoDefinitions, "*.dyn; *.dyf") + "|" +
+                Filter = string.Format(Resources.FileDialogDynamoDefinitions, "*.dyn;*.dyf") + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
                 Title = Resources.OpenDynamoDefinitionDialogTitle
             };

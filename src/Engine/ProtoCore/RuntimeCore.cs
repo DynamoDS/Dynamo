@@ -104,6 +104,7 @@ namespace ProtoCore
         /// It will initialize the runtime execution data and configuration
         /// </summary>
         /// <param name="compileCore"></param>
+        /// <param name="isCodeCompiled"></param>
         /// <param name="context"></param>
         public void SetupForExecution(ProtoCore.Core compileCore, int globalStackFrameSize)
         {
@@ -337,18 +338,22 @@ namespace ProtoCore
 
         /// <summary>
         /// This function determines what the starting pc should be for the next execution session
-        /// The StartPC takes precedence if set, otherwise, the entry pc in the global codeblock is the entry point
+        /// The StartPC takes precedence if set. Otherwise, the entry pc in the global codeblock is the entry point
         /// StartPC is assumed to be reset to kInvalidPC after each execution session
         /// </summary>
         public void SetupStartPC()
         {
-            if (StartPC == Constants.kInvalidPC)
+            if (StartPC == Constants.kInvalidPC && DSExecutable.CodeBlocks.Count > 0)
             {
-                Validity.Assert(DSExecutable.CodeBlocks.Count > 0);
                 StartPC = DSExecutable.CodeBlocks[0].instrStream.entrypoint;
             }
         }
 
+        /// <summary>
+        /// Sets a new entry point pc
+        /// This can be overrided by another call to SetStartPC
+        /// </summary>
+        /// <param name="pc"></param>
         public void SetStartPC(int pc)
         {
             StartPC = pc;

@@ -163,7 +163,7 @@ namespace Dynamo.Core.Threading
             if (!nodeModel.IsUpstreamVisible)
                 return;
 
-            foreach (var upstreamNode in nodeModel.Inputs)
+            foreach (var upstreamNode in nodeModel.InputNodes)
             {
                 if (upstreamNode.Value == null)
                     continue;
