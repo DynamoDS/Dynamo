@@ -711,9 +711,14 @@ namespace Dynamo.Models
                //reload each node, and record each each modification in the undogroup
                 foreach (var node in state.Nodes)
                 {
-                    var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
-                    this.undoRecorder.RecordModificationForUndo(node);
-                    this.ReloadModel(serializedNode);
+                    //check that node still exists in this workspace, 
+                    //otherwise bail on this node
+                    if (nodes.Contains(node))
+                    {
+                        var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
+                        this.undoRecorder.RecordModificationForUndo(node);
+                        this.ReloadModel(serializedNode);
+                    }
                 }
                 //select all the modified nodes in the UI
                 DynamoSelection.Instance.ClearSelection();

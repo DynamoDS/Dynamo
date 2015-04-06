@@ -117,6 +117,9 @@ namespace Dynamo.Models
                             }
 
                             var nodename = stateNode.GetAttribute("nickname");
+                            //NOTE this code removes orphaned states on load
+                            //if we implement a UI for reassociating old states with new nodes this
+                            //behavior will be incorrect
                             var nodebyGuid = nodegraph.Nodes.Where(x => x.GUID == nodeID).ToList();
                             if (nodebyGuid.Count > 0)
                             {
