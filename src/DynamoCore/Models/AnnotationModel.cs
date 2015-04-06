@@ -17,7 +17,8 @@ namespace Dynamo.Models
         #region Properties
         public double InitialTop { get; set; } //required to calculate the TOP position in a group         
         public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group 
-        private string modelGuids { get; set; }        
+        private string modelGuids { get; set; }   
+        private const double doubleValue = 0.0;
         private string text;
         public string Text
         {
@@ -349,14 +350,14 @@ namespace Dynamo.Models
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("GUID", this.GUID);
             this.annotationText = helper.ReadString("annotationText", String.Empty);
-            this.left = helper.ReadDouble("left", 0.0);
-            this.top = helper.ReadDouble("top", 0.0);
-            this.width = helper.ReadDouble("width", 0.0);
-            this.height = helper.ReadDouble("height", 0.0);
+            this.left = helper.ReadDouble("left", doubleValue);
+            this.top = helper.ReadDouble("top", doubleValue);
+            this.width = helper.ReadDouble("width", doubleValue);
+            this.height = helper.ReadDouble("height", doubleValue);
             this.background = helper.ReadString("backgrouund", "");
-            this.fontSize = helper.ReadDouble("fontSize", 10.0);
-            this.InitialTop = helper.ReadDouble("InitialTop", 0.0);
-            this.InitialHeight = helper.ReadDouble("InitialTop", 0.0);
+            this.fontSize = helper.ReadDouble("fontSize", fontSize);
+            this.InitialTop = helper.ReadDouble("InitialTop", doubleValue);
+            this.InitialHeight = helper.ReadDouble("InitialTop", doubleValue);
             modelGuids = helper.ReadString("modelGuids", "");           
             DeserializeGroup();           
         }
