@@ -879,7 +879,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public void AddAnnotation(object parameters)
+        internal void AddAnnotation(object parameters)
         {
             if (null != parameters) // See above for details of this exception.
             {
