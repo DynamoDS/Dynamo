@@ -9,18 +9,18 @@ using Geometry = Autodesk.DesignScript.Geometry.Geometry;
 
 namespace DSCore
 {
-    public class ColoredGeometry :  IGraphicItem
+    public class ColorGeometry :  IGraphicItem
     {
         internal Geometry geometry;
         internal Color color;
 
-        private ColoredGeometry(Geometry geometry, Color color)
+        private ColorGeometry(Geometry geometry, Color color)
         {
             this.geometry = geometry;
             this.color = color;
         }
 
-        public static ColoredGeometry ByGeometryAndColor(Geometry geometry, Color color)
+        public static ColorGeometry ByGeometryColor(Geometry geometry, Color color)
         {
             if (geometry == null)
             {
@@ -32,7 +32,7 @@ namespace DSCore
                 throw new ArgumentNullException("color");
             }
 
-            return new ColoredGeometry(geometry, color);
+            return new ColorGeometry(geometry, color);
         }
 
         [IsVisibleInDynamoLibrary(false)]
