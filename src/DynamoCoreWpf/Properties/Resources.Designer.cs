@@ -2585,6 +2585,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More.
+        /// </summary>
+        public static string MoreButton {
+            get {
+                return ResourceManager.GetString("MoreButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name must be at least 3 characters..
         /// </summary>
         public static string NameNeedMoreCharacters {
@@ -3184,6 +3193,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PortViewContextMenuUserDefaultValue {
             get {
                 return ResourceManager.GetString("PortViewContextMenuUserDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish Package !.
+        /// </summary>
+        public static string PublishPackage {
+            get {
+                return ResourceManager.GetString("PublishPackage", resourceCulture);
             }
         }
         
