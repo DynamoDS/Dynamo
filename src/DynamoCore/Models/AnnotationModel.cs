@@ -316,8 +316,19 @@ namespace Dynamo.Models
             helper.SetAttribute("fontSize", this.FontSize);
             helper.SetAttribute("InitialTop", this.InitialTop);
             helper.SetAttribute("InitialTop", this.InitialHeight);
-            helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
-            helper.SetAttribute("modelGuids", string.Join(",", this.SelectedModels.Select(x => x.GUID)));           
+            helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));        
+            //Serialize Selected models
+            XmlDocument xmlDoc = element.OwnerDocument;            
+            foreach (var guids in this.SelectedModels.Select(x => x.GUID))
+            {
+                if (xmlDoc != null)
+                {
+                    var modelElement = xmlDoc.CreateElement("Models");
+                    element.AppendChild(modelElement);
+                    XmlElementHelper mhelper = new XmlElementHelper(modelElement);
+                    modelElement.SetAttribute("ModelGuid", guids.ToString());
+                }
+            }
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -333,8 +344,23 @@ namespace Dynamo.Models
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
             this.InitialTop = helper.ReadDouble("InitialTop", doubleValue);
             this.InitialHeight = helper.ReadDouble("InitialTop", doubleValue);
-            modelGuids = helper.ReadString("modelGuids", "");           
-            DeserializeGroup();           
+            //Deserialize Selected models
+            if (element.HasChildNodes) 
+            {
+                var listOfModels = new List<ModelBase>();
+                foreach (var childnode in element.ChildNodes)
+                {
+                    XmlElementHelper mhelper = new XmlElementHelper(childnode as XmlElement);
+                     if (SelectedModels != null)
+                     {
+                         var result = mhelper.ReadGuid("ModelGuid", new Guid());
+                        var model = SelectedModels.FirstOrDefault(x => x.GUID == result);
+                        listOfModels.Add(model);
+                    }                  
+                }
+                selectedModels = listOfModels;        
+            }
+          
         }
 
         #endregion
