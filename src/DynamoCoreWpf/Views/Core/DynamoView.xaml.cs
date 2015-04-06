@@ -710,7 +710,6 @@ namespace Dynamo.Controls
 
             do
             {
-              
                 var dialog = new DesignOptionsPrompt()
                 {
                     DescriptionInput = { Text = e.Description },
@@ -730,21 +729,10 @@ namespace Dynamo.Controls
 
                 if (String.IsNullOrEmpty(dialog.Text))
                 {
-                    MessageBox.Show(Dynamo.Wpf.Properties.Resources.MessageCustomNodeNoName,
-                        Dynamo.Wpf.Properties.Resources.CustomNodePropertyErrorMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                   //if the name is empty, then default to the current time
+                    e.Name = System.DateTime.Now.ToString();
+                    break;
                 }
-
-                //TODO add a check that the design options state we're saving has
-                //a unique name...
-                //else if (e.Name != dialog.Text && dynamoViewModel.Model.BuiltInTypesByNickname.ContainsKey(dialog.Text))
-                //{
-                //    error = "A built-in node with the given name already exists.";
-                //    MessageBox.Show(error, "Custom Node Property Error", MessageBoxButton.OK,
-                //                                   MessageBoxImage.Error);
-                //}
-
-              
                 else
                 {
                     error = "";
@@ -865,7 +853,7 @@ namespace Dynamo.Controls
         private void LoadStateMenus(object sender, RoutedEventArgs e)
         {
             //grab serialized designoptions from current workspace... hopefully this is loaded?
-            var designOptionsSet = dynamoViewModel.Model.CurrentWorkspace.DesignOptionsSet;
+            var designOptionsSet = dynamoViewModel.Model.CurrentWorkspace.PresetsCollection;
             // now grab all the states off the set and create a menu item for each one
 
            
@@ -907,7 +895,7 @@ namespace Dynamo.Controls
 
         private void RestoreState_Click(object sender, RoutedEventArgs e)
         {
-            DesignOptionsState state = ((MenuItem)sender).Tag as DesignOptionsState;
+            PresetState state = ((MenuItem)sender).Tag as PresetState;
             var workspace = dynamoViewModel.HomeSpace;
             if (workspace.HasUnsavedChanges)
             {
@@ -921,11 +909,11 @@ namespace Dynamo.Controls
 
         private void DeleteState_Click(object sender, RoutedEventArgs e)
         {
-            DesignOptionsState state = ((MenuItem)sender).Tag as DesignOptionsState;
+            PresetState state = ((MenuItem)sender).Tag as PresetState;
             var workspace = dynamoViewModel.HomeSpace;
             workspace.HasUnsavedChanges = true;
             //TODO wrap this in a recordable command
-            dynamoViewModel.Model.CurrentWorkspace.DesignOptionsSet.RemoveState(state);
+            dynamoViewModel.Model.CurrentWorkspace.PresetsCollection.RemoveState(state);
             
         }
         

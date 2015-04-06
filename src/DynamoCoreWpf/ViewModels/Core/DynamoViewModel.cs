@@ -2048,7 +2048,7 @@ namespace Dynamo.ViewModels
             var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             if (args.Success)
             {
-                this.ExecuteCommand(new DynamoModel.CreateDesignStateFromSelectionCommand(args.Name, args.Description,IDS));
+                this.ExecuteCommand(new DynamoModel.CreatePresetStateFromSelectionCommand(args.Name, args.Description,IDS));
             }
         }
         private bool CanShowNewDesignOptionDialog(object parameter)

@@ -36,14 +36,14 @@ namespace Dynamo.Models
             NodeFactory factory)
             : this(
                 factory,
-                new DesignOptionsSetModel(),
+                new PresetsModel(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
                 info) { }
 
         public CustomNodeWorkspaceModel( 
             NodeFactory factory,
-            DesignOptionsSetModel designOptions,
+            PresetsModel designOptions,
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
             WorkspaceInfo info,

@@ -1473,19 +1473,19 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class CreateDesignStateFromSelectionCommand : RecordableCommand
+        public class CreatePresetStateFromSelectionCommand : RecordableCommand
         {
             #region Public Class Methods
 
             [JsonConstructor]
-            public CreateDesignStateFromSelectionCommand(string name, string description, List<Guid> currentSelectionIDS )
+            public CreatePresetStateFromSelectionCommand(string name, string description, List<Guid> currentSelectionIDS )
             {
-                DesignStateName = name;
-                DesignStateDescription = description;
+                PresetStateName = name;
+                PresetStateDescription = description;
                 SelectedNodesIDs = currentSelectionIDS;
             }
 
-            internal static CreateDesignStateFromSelectionCommand DeserializeCore(XmlElement element)
+            internal static CreatePresetStateFromSelectionCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
                 List<Guid> IDS = new List<Guid>();
@@ -1504,7 +1504,7 @@ namespace Dynamo.Models
                     throw new ArgumentNullException("No IDs were deserialized during load of designstate creation command");
                 }
                 
-                return new CreateDesignStateFromSelectionCommand(helper.ReadString("name"), helper.ReadString("description"),IDS);
+                return new CreatePresetStateFromSelectionCommand(helper.ReadString("name"), helper.ReadString("description"),IDS);
             }
 
             #endregion
@@ -1512,8 +1512,8 @@ namespace Dynamo.Models
             #region Public Command Properties
 
             [DataMember]
-            internal string DesignStateName { get; set; }
-            internal string DesignStateDescription { get; set; }
+            internal string PresetStateName { get; set; }
+            internal string PresetStateDescription { get; set; }
             internal List<Guid> SelectedNodesIDs { get; set; }
             #endregion
 
@@ -1521,14 +1521,14 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoModel.CreateDesignStateImpl(this);
+                dynamoModel.CreatePresetStateImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                helper.SetAttribute("name", DesignStateName);
-                helper.SetAttribute("description", DesignStateDescription);
+                helper.SetAttribute("name", PresetStateName);
+                helper.SetAttribute("description", PresetStateDescription);
                 //add a new element for the ids we 
                var idselement= element.OwnerDocument.CreateElement("IDS");
                element.AppendChild(idselement);

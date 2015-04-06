@@ -490,7 +490,7 @@ namespace Dynamo.Core
             SetPreloadFunctionDefinition(Guid.Parse(workspaceInfo.ID));
  
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
-            var designOptions = DesignOptionsSetModel.LoadFromXml(xmlDoc, nodeGraph);
+            var designOptions = PresetsModel.LoadFromXml(xmlDoc, nodeGraph);
 
             var newWorkspace = new CustomNodeWorkspaceModel(
                 nodeFactory,
@@ -1036,7 +1036,7 @@ namespace Dynamo.Core
                 var newId = Guid.NewGuid();
                 newWorkspace = new CustomNodeWorkspaceModel(
                     nodeFactory,
-                    new DesignOptionsSetModel(),
+                    new PresetsModel(),
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
                     new WorkspaceInfo()

@@ -336,18 +336,6 @@
                                   Command="{Binding AddNoteCommand}"
                                   Name="noteMenuItem"
                                   InputGestureText="Ctrl + W" />
-                        <MenuItem Header="Create Input State From Selection"
-                                      Command="{Binding ShowNewDesignOptionDialogCommand}"
-                                      Name="newDesignOptions"
-                                      Focusable="False" />
-                        <MenuItem Header="Restore State"
-                                    MouseEnter="LoadStateMenus"
-                                      Name="RestoreStateMenu"
-                                      Focusable="False" />
-                        <MenuItem Header="Delete State"
-                                    MouseEnter="LoadStateMenus"
-                                      Name="DeleteStateMenu"
-                                      Focusable="False" />
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
                                   Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
@@ -519,6 +507,24 @@
                                   Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishCurrent" />
                     </MenuItem>
+                    <!--TODO replace states with string-->
+                    <MenuItem Header ="States"
+                              Name = "StatesMenu"
+                              Focusable= "False"
+                              IsEnabled="True">
+                              <MenuItem Header="Create Input State From Selection"
+                                      Command="{Binding ShowNewDesignOptionDialogCommand}"
+                                      Name="newDesignOptions"
+                                      Focusable="False" />
+                        <MenuItem Header="Restore State"
+                                    MouseEnter="LoadStateMenus"
+                                      Name="RestoreStateMenu"
+                                      Focusable="False" />
+                        <MenuItem Header="Delete State"
+                                    MouseEnter="LoadStateMenus"
+                                      Name="DeleteStateMenu"
+                                      Focusable="False" />
+                              </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"

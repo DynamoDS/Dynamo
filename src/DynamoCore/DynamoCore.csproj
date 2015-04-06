@@ -114,8 +114,8 @@ limitations under the License.
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
     <Compile Include="Core\PathManager.cs" />
-    <Compile Include="Models\DesignOptionsModel.cs" />
-    <Compile Include="Models\DesignOptionsState.cs" />
+    <Compile Include="Models\PresetsModel.cs" />
+    <Compile Include="Models\PresetsState.cs" />
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Core\Threading\AsyncTaskExtensions.cs" />
     <Compile Include="Interfaces\IPathResolver.cs" />

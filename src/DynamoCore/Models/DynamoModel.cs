@@ -952,7 +952,7 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-            var designOptions = DesignOptionsSetModel.LoadFromXml(xmlDoc,nodeGraph);
+            var designOptions = PresetsModel.LoadFromXml(xmlDoc,nodeGraph);
 
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
@@ -1041,7 +1041,7 @@ namespace Dynamo.Models
                 EngineController,
                 Scheduler,
                 NodeFactory,
-                new DesignOptionsSetModel(),
+                new PresetsModel(),
                 DebugSettings.VerboseLogging,
                 IsTestMode,string.Empty);
 

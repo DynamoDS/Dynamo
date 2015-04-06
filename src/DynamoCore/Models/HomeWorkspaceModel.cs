@@ -36,7 +36,7 @@ namespace Dynamo.Models
         public long EvaluationCount { get; private set; }
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
-            NodeFactory factory, DesignOptionsSetModel designOptions, bool verboseLogging, bool isTestMode, string fileName="")
+            NodeFactory factory, PresetsModel designOptions, bool verboseLogging, bool isTestMode, string fileName="")
             : this(
                 engine,
                 scheduler,
@@ -53,7 +53,7 @@ namespace Dynamo.Models
             EngineController engine, 
             DynamoScheduler scheduler, 
             NodeFactory factory,
-            DesignOptionsSetModel designOptions,
+            PresetsModel designOptions,
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 

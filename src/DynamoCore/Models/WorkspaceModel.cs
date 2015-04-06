@@ -61,7 +61,7 @@ namespace Dynamo.Models
         private bool hasUnsavedChanges;
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
-        protected readonly DesignOptionsSetModel designOptionSet;
+        protected readonly PresetsModel presetsCollection;
         private readonly UndoRedoRecorder undoRecorder;
         private Guid guid;
 
@@ -222,7 +222,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     A set of input parameter states, this can be used to set the graph to a serialized state.
         /// </summary>
-        public DesignOptionsSetModel DesignOptionsSet { get { return designOptionSet;} }
+        public PresetsModel PresetsCollection { get { return presetsCollection;} }
 
         /// <summary>
         ///     The date of the last save.
@@ -448,7 +448,7 @@ namespace Dynamo.Models
             IEnumerable<NoteModel> n,
             WorkspaceInfo info, 
             NodeFactory factory,
-            DesignOptionsSetModel designOptions)
+            PresetsModel designOptions)
         {
             guid = Guid.NewGuid();
 
@@ -470,7 +470,7 @@ namespace Dynamo.Models
 
             NodeFactory = factory;
 
-            designOptionSet = designOptions;
+            presetsCollection = designOptions;
             // Update ElementResolver from nodeGraph.Nodes (where node is CBN)
             ElementResolver = new ElementResolver();
             foreach (var node in nodes)
@@ -704,25 +704,30 @@ namespace Dynamo.Models
             this.currentPasteOffset = (this.currentPasteOffset + PASTE_OFFSET_STEP) % PASTE_OFFSET_MAX;
         }
 
-        internal void SetWorkspaceToState(DesignOptionsState state)
-        {
-            foreach (var node in state.Nodes)
+        internal void SetWorkspaceToState(PresetState state)
+        {   //start an undoBeginGroup
+            using (var undoGroup = this.undoRecorder.BeginActionGroup())
             {
-                var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
-                node.Deserialize(serializedNode, SaveContext.File);
-                
+               //reload each node, and record each each modification in the undogroup
+                foreach (var node in state.Nodes)
+                {
+                    var serializedNode = state.SerializedNodes.ToList().Find(x => Guid.Parse(x.GetAttribute("guid")) == node.GUID);
+                    this.undoRecorder.RecordModificationForUndo(node);
+                    this.ReloadModel(serializedNode);
+                }
+                //select all the modified nodes in the UI
                 DynamoSelection.Instance.ClearSelection();
                 state.Nodes.ToList().ForEach(x => DynamoSelection.Instance.Selection.Add(x));
-
+                
             }
+            
         }
-        internal void CreateDesignStateFromSelection(string name, string description, List<Guid> IDSToSave)
+        internal void CreatePresetStateFromSelection(string name, string description, List<Guid> IDSToSave)
         {
-
             //lookup the nodes by their ID, can also check that we find all of them....
             var nodesFromIDs = this.Nodes.Where(node => IDSToSave.Contains(node.GUID)).ToList();
- 	        //access the designOptionsSet and add a new state based on the current selection
-            designOptionSet.CreateNewState(name, description, nodesFromIDs);
+ 	        //access the presetsCollection and add a new state based on the current selection
+            presetsCollection.CreateNewState(name, description, nodesFromIDs);
             HasUnsavedChanges = true;
         }
 
@@ -838,8 +843,8 @@ namespace Dynamo.Models
                     note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
                 }
 
-                //save the designOptionsSet into the dyn file as a seperate element on the root
-                var designOptions =  designOptionSet.Serialize(xmlDoc,SaveContext.File);
+                //save the presetsCollection into the dyn file as a seperate element on the root
+                var designOptions =  presetsCollection.Serialize(xmlDoc,SaveContext.File);
                 root.AppendChild(designOptions);
                
                 return true;

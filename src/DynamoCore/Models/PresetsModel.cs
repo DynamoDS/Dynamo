@@ -10,29 +10,29 @@ using System.Xml;
 namespace Dynamo.Models
 {
     /// <summary>
-    /// a class that holds a set of design options states
+    /// a class that holds a set of preset design options states
     /// there is one instance of this class per workspacemodel
     /// </summary>
-    public class DesignOptionsSetModel
+    public class PresetsModel
     {
         #region private members
-        private readonly List<DesignOptionsState> designStates;
+        private readonly List<PresetState> designStates;
 
         private void LoadStateFromXml(string name, string description, List<NodeModel> nodes, List<XmlElement> serializednodes, Guid id)
         {
-            var loadedState = new DesignOptionsState(name, description, nodes, serializednodes, id);
+            var loadedState = new PresetState(name, description, nodes, serializednodes, id);
             designStates.Add(loadedState);
         }
         #endregion
 
         # region properties
-        public IEnumerable<DesignOptionsState> DesignStates { get { return designStates; } }
+        public IEnumerable<PresetState> DesignStates { get { return designStates; } }
         #endregion
 
         #region constructor
-        public DesignOptionsSetModel()
+        public PresetsModel()
         {
-            designStates = new List<DesignOptionsState>();
+            designStates = new List<PresetState>();
         }
         #endregion
 
@@ -62,7 +62,7 @@ namespace Dynamo.Models
 
             foreach (var state in designStates)
             {
-                var parent = element.OwnerDocument.CreateElement("DesignOptionsState");
+                var parent = element.OwnerDocument.CreateElement("PresetState");
                 element.AppendChild(parent);
                 parent.SetAttribute("Name", state.Name);
                 parent.SetAttribute("Description", state.Description);
@@ -78,15 +78,15 @@ namespace Dynamo.Models
             }
         }
 
-        internal static DesignOptionsSetModel LoadFromXml(XmlDocument xmlDoc, NodeGraph nodegraph)
+        internal static PresetsModel LoadFromXml(XmlDocument xmlDoc, NodeGraph nodegraph)
         {
-            var loadedStateSet = new DesignOptionsSetModel();
+            var loadedStateSet = new PresetsModel();
 
             //create a new state inside the set foreach state present in the xmldoc
 
             foreach (XmlElement element in xmlDoc.DocumentElement.ChildNodes)
             {
-                if (element.Name == typeof(DesignOptionsSetModel).ToString())
+                if (element.Name == typeof(PresetsModel).ToString())
                 {
                     foreach (XmlElement stateNode in element.ChildNodes)
                     {
@@ -141,16 +141,16 @@ namespace Dynamo.Models
 
         #region public methods
         /// <summary>
-        /// method to create and add a new state to this design options set
+        /// method to create and add a new state to this presets collection
         /// </summary>
         public void CreateNewState(string name, string description, IEnumerable<NodeModel> currentSelection, Guid id = new Guid())
         {
             var inputs = currentSelection;
-            var newstate = new DesignOptionsState(name, description, inputs, id);
+            var newstate = new PresetState(name, description, inputs, id);
             designStates.Add(newstate);
         }
 
-        public void RemoveState(DesignOptionsState state)
+        public void RemoveState(PresetState state)
         {
             designStates.Remove(state);
         }

@@ -344,15 +344,14 @@ namespace Dynamo.Models
             CurrentWorkspace = Workspaces.ElementAt(command.WorkspaceModelIndex);
         }
 
-        void CreateDesignStateImpl(CreateDesignStateFromSelectionCommand command)
+        void CreatePresetStateImpl(CreatePresetStateFromSelectionCommand command)
         {
-            this.CurrentWorkspace.CreateDesignStateFromSelection(command.DesignStateName,command.DesignStateDescription,command.SelectedNodesIDs);
-
+            this.CurrentWorkspace.CreatePresetStateFromSelection(command.PresetStateName,command.PresetStateDescription,command.SelectedNodesIDs);
         }
         void SetWorkSpaceToStateImpl(SetWorkSpaceToStateCommand command)
         {
             var workspaceToSet = this.Workspaces.Where(x => x.Guid == command.WorkSpaceID).First();
-            var state = workspaceToSet.DesignOptionsSet.DesignStates.Where(x => x.Guid == command.StateID).First();
+            var state = workspaceToSet.PresetsCollection.DesignStates.Where(x => x.Guid == command.StateID).First();
 
             //TODO check if either of these are null, if we cant find the state by GUID lookup try name
 

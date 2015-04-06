@@ -136,7 +136,7 @@ namespace Dynamo.ViewModels
                 case "SelectModelCommand":
                 case "MakeConnectionCommand":
                 case "CreateCustomNodeCommand":
-                case "CreateDesignStateFromSelectionCommand":
+                case "CreatePresetStateFromSelectionCommand":
                 case "SetWorkSpaceToStateCommand":
                     // for this commands there is no need
                     // to do anything after execution
@@ -176,7 +176,7 @@ namespace Dynamo.ViewModels
                 case "CreateCustomNodeCommand":
                 case "SwitchTabCommand":
                 case "MutateTestCommand":
-                case "CreateDesignStateFromSelectionCommand":
+                case "CreatePresetStateFromSelectionCommand":
                 case "SetWorkSpaceToStateCommand":
                     // for this commands there is no need
                     // to do anything before execution
