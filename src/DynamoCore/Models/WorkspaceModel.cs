@@ -831,11 +831,8 @@ namespace Dynamo.Models
                 root.AppendChild(noteList);
                 foreach (var n in Notes)
                 {
-                    var note = xmlDoc.CreateElement(n.GetType().ToString());
-                    noteList.AppendChild(note);
-                    note.SetAttribute("text", n.Text);
-                    note.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
-                    note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
+                    var note = n.Serialize(xmlDoc, SaveContext.File);
+                    noteList.AppendChild(note);                         
                 }
 
                 //save the annotation
