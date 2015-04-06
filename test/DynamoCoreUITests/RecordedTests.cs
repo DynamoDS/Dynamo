@@ -3210,6 +3210,132 @@ namespace DynamoCoreUITests
             });
 
         }
+
+        [Test, RequiresSTA]
+        [Category("Failure")]
+        public void Defect_MAGN_6821_withoutInput()
+        {
+          
+
+            RunCommandsFromFile("Defect_MAGN_6821_withoutInput.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                var cbn = GetNode("5eb125ad-c724-43bd-8815-c67e65d6269b") as Function;
+
+                if (commandTag == "Run")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
+
+
+
+                    AssertPreviewValue("5eb125ad-c724-43bd-8815-c67e65d6269b", 1);
+
+                }
+               
+
+            });
+
+        }
+
+        [Test, RequiresSTA]
+        [Category("Failure")]
+        public void Defect_MAGN_6821_withInput()
+        {
+            
+
+            RunCommandsFromFile("Defect_MAGN_6821_withInput.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+               
+                if (commandTag == "Run")
+                {
+
+                    AssertPreviewValue("4d7eed2c-6568-4dd8-b43d-5e3e67b1e720", 1);  
+                    
+                }
+
+               
+            });
+        }
+
+        [Test, RequiresSTA]
+        [Category("Failure")]
+        public void Defect_MAGN_6821_multipleInput()
+        {
+
+
+            RunCommandsFromFile("Defect_MAGN_6821_multipleInput.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+
+                if (commandTag == "Run")
+                {
+
+                    AssertPreviewValue("dd5e11dc-972a-4b7a-adf8-cabffbe4464c", new object[] { 1, 2, 3 });
+
+                }
+
+
+            });
+        }
+
+        [Test, RequiresSTA]
+        [Category("Failure")]
+        public void Defect_MAGN_6821_multipleInstance()
+        {
+
+
+            RunCommandsFromFile("Defect_MAGN_6821_multipleInstance.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+
+                if (commandTag == "FirstRun")
+                {
+
+                    AssertPreviewValue("6e1ed2fc-864c-4b6e-90fa-6ab6c8345901", new object[] { 1, 2 });
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    AssertPreviewValue("0834ea10-e0a6-4c90-a347-73f459a23a61", new object[] { 3, 4 });
+
+                }
+
+
+            });
+        }
+
+        [Test, RequiresSTA]
+        [Category("Failure")]
+        public void Defect_MAGN_6821_nestedCustomNode()
+        {
+
+
+            RunCommandsFromFile("Defect_MAGN_6821_nestedCustomNode.xml",false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+
+                if (commandTag == "Run")
+                {
+
+                    AssertPreviewValue("6309c92b-52b9-4d7f-9dba-c63355fda876", 1);
+
+                }
+               
+
+
+            });
+        }
+       
+
         #endregion
 
         #region Tests moved from FScheme

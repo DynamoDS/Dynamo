@@ -1,0 +1,31 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="211" Y="324" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="211" Y="324" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="b0676ca0-df97-4416-9c16-fec72e5e7b9a" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <UpdateModelValueCommand Name="Code" Value="1" WorkspaceGuid="a86f77b3-615c-4d28-b0fd-d863fba34783">
+    <ModelGuid>11209e1e-6fb1-40e9-8a19-857287d36b03</ModelGuid>
+  </UpdateModelValueCommand>
+  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
+  <SelectInRegionCommand X="72" Y="252" Width="211" Height="155" IsCrossSelection="false" />
+  <DeleteModelCommand ModelGuid="6c288919-6807-493f-810e-495c3faa9213" />
+  <PausePlaybackCommand Tag="Tag-a7abb285" PauseDurationInMs="20" />
+  <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
+    <Dynamo.Nodes.Function guid="5eb125ad-c724-43bd-8815-c67e65d6269b" type="Dynamo.Nodes.Function" nickname="withoutInput" x="365" y="259" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
+      <ID value="57137548-2ea6-4bf7-bb6e-17bf72cf4398" />
+      <Name value="withoutInput" />
+      <Description value="withoutInputDescription" />
+      <Inputs />
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </CreateNodeCommand>
+  <SelectModelCommand ModelGuid="5eb125ad-c724-43bd-8815-c67e65d6269b" Modifiers="0" />
+  <DragSelectionCommand X="432" Y="332" DragOperation="0" />
+  <DragSelectionCommand X="432" Y="332" DragOperation="1" />
+  <RunCancelCommand ShowErrors="false" CancelRun="false" />
+  <PausePlaybackCommand Tag="Run" PauseDurationInMs="20" />
+</Commands>
