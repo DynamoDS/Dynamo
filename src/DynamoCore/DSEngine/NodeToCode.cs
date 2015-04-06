@@ -9,7 +9,7 @@ namespace Dynamo.DSEngine
 {
     public class Nodes2CodeUtils
     {
-        private class VariableShortNameGenerator
+        private class ShortNameGenerator
         {
             private int counter = 0;
 
@@ -88,7 +88,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private static HashSet<string> CollectIntermediateVarialbeNames(IEnumerable<NodeModel> nodes)
+        private static HashSet<string> GetLongNames(IEnumerable<NodeModel> nodes)
         {
             HashSet<string> variableSet = new HashSet<string>();
 
@@ -116,7 +116,7 @@ namespace Dynamo.DSEngine
                     {
                         var cbn = inputNode as CodeBlockNodeModel;
                         int portIndex = cbn.OutPorts.IndexOf(inport.Connectors[0].Start);
-                        string inputVar = cbn.GetRawAstIdentifierForOutputIndex(portIndex).Value;
+                        string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
                         variableSet.Add(inputVar);
                     }
                     else
@@ -135,112 +135,98 @@ namespace Dynamo.DSEngine
             return variables.ToDictionary(v => v, _ => string.Empty);
         }
 
-        private static void MapIdentifier(AssociativeNode astNode, Dictionary<string, string> namingMap, VariableShortNameGenerator nameGenerator)
-        {
-            if (astNode is IdentifierNode)
-            {
-                var identNode = astNode as IdentifierNode;
-                var ident = identNode.Value;
-                if (namingMap.ContainsKey(ident))
-                {
-                    // hasn't been initialized yet
-                    if (namingMap[ident] == string.Empty)
-                    {
-                        namingMap[ident] = nameGenerator.GetNextName();
-                    }
-                    identNode.Name = identNode.Value = namingMap[ident];
-                }
-
-                MapIdentifier(identNode.ArrayDimensions, namingMap, nameGenerator);
-            }
-            else if (astNode is IdentifierListNode)
-            {
-                var node = astNode as IdentifierListNode;
-                MapIdentifier(node.LeftNode, namingMap, nameGenerator);
-                MapIdentifier(node.RightNode, namingMap, nameGenerator);
-            }
-            else if (astNode is FunctionCallNode)
-            {
-                var node = astNode as FunctionCallNode;
-                MapIdentifier(node.Function, namingMap, nameGenerator);
-                for (int i = 0; i < node.FormalArguments.Count; ++i)
-                {
-                    MapIdentifier(node.FormalArguments[i], namingMap, nameGenerator);
-                }
-                MapIdentifier(node.ArrayDimensions, namingMap, nameGenerator);
-            }
-            else if (astNode is ArrayNode)
-            {
-                var node = astNode as ArrayNode;
-                MapIdentifier(node.Expr, namingMap, nameGenerator);
-            }
-            else if (astNode is ExprListNode)
-            {
-                var node = astNode as ExprListNode;
-                for (int i = 0; i < node.list.Count; ++i)
-                {
-                    MapIdentifier(node.list[i], namingMap, nameGenerator);
-                }
-                MapIdentifier(node.ArrayDimensions, namingMap, nameGenerator);
-            }
-            else if (astNode is FunctionDotCallNode)
-            {
-                var node = astNode as FunctionDotCallNode;
-            }
-            else if (astNode is InlineConditionalNode)
-            {
-                var node = astNode as InlineConditionalNode;
-                MapIdentifier(node.ConditionExpression, namingMap, nameGenerator);
-                MapIdentifier(node.TrueExpression, namingMap, nameGenerator);
-                MapIdentifier(node.FalseExpression, namingMap, nameGenerator);
-            }
-            else if (astNode is RangeExprNode)
-            {
-                var node = astNode as RangeExprNode;
-                MapIdentifier(node.FromNode, namingMap, nameGenerator);
-                MapIdentifier(node.ToNode, namingMap, nameGenerator);
-                MapIdentifier(node.StepNode, namingMap, nameGenerator);
-                MapIdentifier(node.ArrayDimensions, namingMap, nameGenerator);
-            }
-            else if (astNode is BinaryExpressionNode)
-            {
-                var node = astNode as BinaryExpressionNode;
-                MapIdentifier(node.LeftNode, namingMap, nameGenerator);
-                MapIdentifier(node.RightNode, namingMap, nameGenerator);
-            }
-        }
-
         /// <summary>
         /// Renumber variables used in astNode.
         /// </summary>
         /// <param name="astNode"></param>
-        /// <param name="variableNumberingMap"></param>
+        /// <param name="numberingMap"></param>
         /// <param name="variableMap"></param>
         private static void VariableNumbering(
             AssociativeNode astNode, 
-            Dictionary<string, Tuple<int, bool>> variableNumberingMap, 
-            Dictionary<string, string> variableMap)
+            NodeModel node,
+            Dictionary<string, Tuple<int, bool>> numberingMap, 
+            Dictionary<string, string> renamingMap)
         {
-            Action<IdentifierNode> func = node =>
-                {
-                    var ident = node.Value;
-                    if (!variableNumberingMap.ContainsKey(ident))
-                    {
-                        variableNumberingMap[ident] = Tuple.Create(0, true);
-                    }
-                    var tuple = variableNumberingMap[ident];
-                    if (!tuple.Item2)
-                    {
-                        variableNumberingMap[ident] = Tuple.Create(tuple.Item1 + 1, true);
-                        tuple = variableNumberingMap[ident];
-                    }
+            var binaryExpr = astNode as BinaryExpressionNode;
+            if (binaryExpr == null)
+                return;
 
-                    if (tuple.Item1 != 0)
+            var identNode = binaryExpr.LeftNode as IdentifierNode;
+            if (identNode == null)
+                return;
+
+            var ident = identNode.Value;
+            if (!numberingMap.ContainsKey(ident))
+            {
+                numberingMap[ident] = Tuple.Create(0, true);
+            }
+            var t = numberingMap[ident];
+            if (!t.Item2)
+            {
+                numberingMap[ident] = Tuple.Create(t.Item1 + 1, true);
+                t = numberingMap[ident];
+            }
+
+            if (t.Item1 != 0)
+            {
+                var newIdent = ident + t.Item1.ToString();
+                identNode.Name = identNode.Value = newIdent;
+
+                string name = string.Format("{0}%{1}", ident, node.GUID);
+                if (renamingMap.ContainsKey(name))
+                {
+                    var mappedName = renamingMap[name];
+                    renamingMap[mappedName] = newIdent;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Remap variables.
+        /// </summary>
+        /// <param name="astNode"></param>
+        /// <param name="renamingMap"></param>
+        private static void VariableRemapping(
+            AssociativeNode astNode, 
+            Dictionary<string, string> renamingMap)
+        {
+            Action<IdentifierNode> func = n =>
+                {
+                    var ident = n.Value;
+                    if (renamingMap.ContainsKey(ident))
                     {
-                        var newIdent = ident + tuple.Item1.ToString();
-                        node.Name = node.Value = newIdent;
+                        n.Value = n.Name = renamingMap[ident];
                     }
                 };
+
+            IdentifierVisitor.Visit(astNode, func);
+        }
+
+        /// <summary>
+        /// Map variable to shorter name.
+        /// </summary>
+        /// <param name="astNode"></param>
+        /// <param name="shortNameMap"></param>
+        /// <param name="nameGenerator"></param>
+        private static void ShortNameMapping(
+            AssociativeNode astNode,
+            Dictionary<string, string> shortNameMap,
+            ShortNameGenerator nameGenerator)
+        {
+            Action<IdentifierNode> func = n =>
+            {
+                var ident = n.Value;
+                if (shortNameMap.ContainsKey(ident))
+                {
+                    var shortName = shortNameMap[ident];
+                    if (shortName == string.Empty)
+                    {
+                        shortName = nameGenerator.GetNextName();
+                        shortNameMap[ident] = shortName;
+                    }
+                    n.Value = n.Name = shortNameMap[ident];
+                }
+            };
 
             IdentifierVisitor.Visit(astNode, func);
         }
@@ -272,7 +258,10 @@ namespace Dynamo.DSEngine
             //   
             //      Note in step 2 we may rename "x" to "xn". 
             //
-            //   4. Do constant progation to optimize the generated code.
+            //   4. Generate short name for long name variables. Typically they
+            //      are from output ports from other nodes.
+            //
+            //   5. Do constant progation to optimize the generated code.
             #region Step 1 AST compilation
             var allAstNodes = astBuilder.CompileToAstNodesForNodeToCode(nodes, false, verboseLogging);
             #endregion
@@ -291,29 +280,69 @@ namespace Dynamo.DSEngine
 
             // Map from mapped variable to its original name. Typcically
             // these variables are from code block node.
-            var renamingMap = new Dictionary<string, string>();
+            var remappingMap = new Dictionary<string, string>();
+            foreach (var node in nodes)
+            {
+                foreach (var inport in node.InPorts)
+                {
+                    if (inport.Connectors.Count == 0)
+                        continue;
+
+                    var inputNode = inport.Connectors[0].Start.Owner;
+
+                    var cbn = inputNode as CodeBlockNodeModel;
+                    if (cbn == null)
+                        continue;
+
+                    if (!nodes.Contains(cbn))
+                        continue;
+
+                    int portIndex = inport.Connectors[0].Start.Index;
+                    string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
+                    string originalVar = cbn.GetRawAstIdentifierForOutputIndex(portIndex).Value;
+
+                    remappingMap[inputVar] = originalVar;
+                    var key = String.Format("{0}%{1}", originalVar, cbn.GUID);
+                    remappingMap[key] = inputVar;
+                }
+            }
 
             // Vairable numbering map. The Tuple value indicates its number
             // sequence and if for the new UI node.
             var numberingMap = new Dictionary<string, Tuple<int, bool>>();
 
-            foreach (var astNodes in allAstNodes)
+            foreach (var t in allAstNodes)
             {
                 // Reset variable numbering map
                 numberingMap = numberingMap.ToDictionary(
                     p => p.Key, 
                     p => Tuple.Create(p.Value.Item1, false));
 
-                foreach (var astNode in astNodes)
-                    VariableNumbering(astNode, numberingMap, renamingMap); 
+                foreach (var astNode in t.Item2)
+                    VariableNumbering(astNode, t.Item1, numberingMap, remappingMap); 
             }
             #endregion
 
-            // var nameGenerator = new VariableShortNameGenerator();
-            // var intermediateVariables = CollectIntermediateVarialbeNames(nodes);
-            // var renamingMap = GetVariableRenamingMap(intermediateVariables);
+            #region Step 3 Variable remapping
+            foreach (var ts in allAstNodes)
+            {
+                foreach (var astNode in ts.Item2)
+                    VariableRemapping(astNode, remappingMap); 
+            }
+            #endregion
 
-            return allAstNodes.SelectMany(x => x);
+            #region Step 4 Generate short name
+            var nameGenerator = new ShortNameGenerator();
+            var longNames = GetLongNames(nodes);
+            var shortNameMap = longNames.ToDictionary(v => v, _ => string.Empty);
+            foreach (var ts in allAstNodes)
+            {
+                foreach (var astNode in ts.Item2)
+                    ShortNameMapping(astNode, shortNameMap, nameGenerator);
+            }
+            #endregion
+
+            return allAstNodes.SelectMany(x => x.Item2);
         }
     }
 }

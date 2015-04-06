@@ -262,7 +262,7 @@ namespace Dynamo.DSEngine
             return result;
         }
 
-        public IEnumerable<IEnumerable<AssociativeNode>> CompileToAstNodesForNodeToCode(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
+        public IEnumerable<Tuple<NodeModel, List<AssociativeNode>>> CompileToAstNodesForNodeToCode(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
@@ -278,7 +278,7 @@ namespace Dynamo.DSEngine
                 result.Add(astNodes);
             }
 
-            return result;
+            return result.Zip(sortedNodes, (astNodes, node) => Tuple.Create(node, astNodes));
         }
 
         /// <summary>
