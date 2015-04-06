@@ -10,13 +10,16 @@ namespace Dynamo.DSEngine
     public class NodeToCodeResult
     {
         public IEnumerable<AssociativeNode> AstNodes { get; private set; }
-        public Dictionary<string, string> InputMapping { get; private set; }
+        public Dictionary<string, string> InputMap { get; private set; }
+        public Dictionary<string, string> OutputMap { get; private set; }
 
         public NodeToCodeResult(IEnumerable<AssociativeNode> astNodes, 
-            Dictionary<string, string> variableMapping)
+            Dictionary<string, string> inputMap, 
+            Dictionary<string, string> outputMap)
         {
             AstNodes = astNodes;
-            InputMapping = variableMapping;
+            InputMap = inputMap;
+            OutputMap = outputMap;
         }
     }
     public class NodeToCodeUtils
@@ -99,7 +102,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private static HashSet<string> GetLongNames(IEnumerable<NodeModel> nodes)
+        private static HashSet<string> GetInputs(IEnumerable<NodeModel> nodes)
         {
             HashSet<string> variableSet = new HashSet<string>();
 
@@ -157,7 +160,8 @@ namespace Dynamo.DSEngine
             NodeModel node,
             Dictionary<string, Tuple<int, bool>> numberingMap, 
             Dictionary<string, string> renamingMap,
-            Dictionary<string, string> shortNameMap)
+            Dictionary<string, string> inputMap,
+            Dictionary<string, string> outputMap)
         {
             Action<IdentifierNode> func = n =>
             {
@@ -165,7 +169,7 @@ namespace Dynamo.DSEngine
 
                 // This ident is from other node's output port, so it should be
                 // renamed later on VarialbeMapping()
-                if (renamingMap.ContainsKey(ident) || shortNameMap.ContainsKey(ident))
+                if (renamingMap.ContainsKey(ident) || inputMap.ContainsKey(ident))
                     return;
 
                 if (!numberingMap.ContainsKey(ident))
@@ -192,6 +196,13 @@ namespace Dynamo.DSEngine
                     {
                         var mappedName = renamingMap[name];
                         renamingMap[mappedName] = newIdent;
+                    }
+
+                    // Record in output map.
+                    if (outputMap.ContainsKey(name))
+                    {
+                        var mappedName = outputMap[name];
+                        outputMap[mappedName] = newIdent;
                     }
                 }
             };
@@ -299,8 +310,11 @@ namespace Dynamo.DSEngine
             // Map from mapped variable to its original name. These variables 
             // are from code block nodes that in the selection.
             var remappingMap = new Dictionary<string, string>();
+            var outputMap = new Dictionary<string, string>();
+
             foreach (var node in nodes)
             {
+                // Gather all input from code block node that used internally.
                 foreach (var inport in node.InPorts)
                 {
                     if (inport.Connectors.Count == 0)
@@ -322,6 +336,28 @@ namespace Dynamo.DSEngine
                     var key = String.Format("{0}%{1}", originalVar, cbn.GUID);
                     remappingMap[key] = inputVar;
                 }
+
+                if (node is CodeBlockNodeModel)
+                {
+                    var cbn = node as CodeBlockNodeModel;
+                    for (int i = 0; i < cbn.OutPorts.Count(); ++i)
+                    {
+                        string inputVar = cbn.GetAstIdentifierForOutputIndex(i).Value;
+                        string originalVar = cbn.GetRawAstIdentifierForOutputIndex(i).Value;
+
+                        outputMap[inputVar] = originalVar;
+                        var key = String.Format("{0}%{1}", originalVar, cbn.GUID);
+                        outputMap[key] = inputVar;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < node.OutPorts.Count(); ++i)
+                    {
+                        string inputVar = node.GetAstIdentifierForOutputIndex(i).Value;
+                        outputMap[inputVar] = string.Empty;
+                    }
+                }
             }
 
             // Vairable numbering map. The Tuple value indicates its number
@@ -329,8 +365,8 @@ namespace Dynamo.DSEngine
             var numberingMap = new Dictionary<string, Tuple<int, bool>>();
 
             // Long names from extern nodes
-            var longNames = GetLongNames(nodes);
-            var shortNameMap = longNames.ToDictionary(v => v, _ => string.Empty);
+            var longNames = GetInputs(nodes);
+            var inputMap = longNames.ToDictionary(v => v, _ => string.Empty);
 
             foreach (var t in allAstNodes)
             {
@@ -340,7 +376,7 @@ namespace Dynamo.DSEngine
                     p => Tuple.Create(p.Value.Item1, false));
 
                 foreach (var astNode in t.Item2)
-                    VariableNumbering(astNode, t.Item1, numberingMap, remappingMap, shortNameMap); 
+                    VariableNumbering(astNode, t.Item1, numberingMap, remappingMap, inputMap, outputMap); 
             }
             #endregion
 
@@ -357,11 +393,11 @@ namespace Dynamo.DSEngine
             foreach (var ts in allAstNodes)
             {
                 foreach (var astNode in ts.Item2)
-                    ShortNameMapping(astNode, shortNameMap, nameGenerator);
+                    ShortNameMapping(astNode, inputMap, nameGenerator);
             }
             #endregion
 
-            return new NodeToCodeResult(allAstNodes.SelectMany(x => x.Item2), shortNameMap);
+            return new NodeToCodeResult(allAstNodes.SelectMany(x => x.Item2), inputMap, outputMap);
         }
     }
 }

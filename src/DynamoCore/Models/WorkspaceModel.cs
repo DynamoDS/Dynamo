@@ -962,13 +962,17 @@ namespace Dynamo.Models
                             //Store the data in the corresponding dictionary
                             if (startNode == node)
                             {
+                                if (nodeToCodeResult.OutputMap.ContainsKey(variableName))
+                                {
+                                    variableName = nodeToCodeResult.OutputMap[variableName];
+                                }
                                 externalOutputConnections.Add(connector, variableName);
                             }
                             else
                             {
-                                if (nodeToCodeResult.InputMapping.ContainsKey(variableName))
+                                if (nodeToCodeResult.InputMap.ContainsKey(variableName))
                                 {
-                                    variableName = nodeToCodeResult.InputMapping[variableName];
+                                    variableName = nodeToCodeResult.InputMap[variableName];
                                 }
                                 externalInputConnections.Add(connector, variableName);
                             }
