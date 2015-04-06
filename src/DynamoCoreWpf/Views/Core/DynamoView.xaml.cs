@@ -713,7 +713,7 @@ namespace Dynamo.Controls
                 var dialog = new DesignOptionsPrompt()
                 {
                     DescriptionInput = { Text = e.Description },
-                    nameView = { Text = e.Name },
+                    nameView = { Text = "" },
                     nameBox = { Text = e.Name },
                     // center the prompt
                     Owner = this,

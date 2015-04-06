@@ -191,7 +191,7 @@ namespace Dynamo.Models
 
         public DesignOptionNamePromptEventArgs()
         {
-            Name = "";
+            Name = System.DateTime.Now.ToString();
             Description = "";
         }
     }
