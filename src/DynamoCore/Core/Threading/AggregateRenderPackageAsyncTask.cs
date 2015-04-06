@@ -82,7 +82,8 @@ namespace Dynamo.Core.Threading
                 targetedNodeId = Guid.Empty;
 
                 // Duplicate a list of all nodes for consumption later.
-                duplicatedNodeReferences = workspaceModel.Nodes.ToList();
+                var nodes = workspaceModel.Nodes.Where(n => n.IsVisible);
+                duplicatedNodeReferences = nodes.ToList();
             }
             else
             {
