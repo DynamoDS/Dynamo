@@ -57,7 +57,7 @@ namespace Dynamo.DSEngine
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
-            libraryServices.SetAndPrepareLibraryCore(LiveRunnerCore);
+            libraryServices.SetLibraryCore(LiveRunnerCore);
 
             astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
@@ -527,7 +527,7 @@ namespace Dynamo.DSEngine
             // The LiveRunner core is newly instantiated whenever a new library is imported
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
-            libraryServices.SetAndPrepareLibraryCore(LiveRunnerCore);
+            libraryServices.SetLibraryCore(LiveRunnerCore);
         }
 
         #region Implement IAstNodeContainer interface

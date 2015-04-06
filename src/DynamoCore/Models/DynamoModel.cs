@@ -510,6 +510,7 @@ namespace Dynamo.Models
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
             ResetEngineInternal();
+            LibraryServices.LoadLibraries();
 
 
             AddHomeWorkspace();

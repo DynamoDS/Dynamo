@@ -42,9 +42,13 @@ namespace Dynamo.DSEngine
         private readonly IPathManager pathManager;
         public ProtoCore.Core LibraryManagementCore{get; private set;}
 
-        public void SetAndPrepareLibraryCore(ProtoCore.Core core)
+        public void SetLibraryCore(ProtoCore.Core core)
         {
             LibraryManagementCore = core;
+        }
+
+        public void LoadLibraries()
+        {
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
