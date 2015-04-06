@@ -384,7 +384,7 @@ namespace DSCore
             {
                 if (colors.Any())
                 {
-                    var step = 1.0/colors.Count();
+                    var step = 1.0/(colors.Count()-1);
                     for (var i = 0; i < colors.Count(); i ++)
                     {
                         parameters.Add(i*step);
@@ -396,12 +396,20 @@ namespace DSCore
             var max = parameters.Max();
             var min = parameters.Min();
             var domain = max - min;
-            for(var i=0; i<parameters.Count(); i++)
+
+            if (domain == 0.0)
             {
-                parameters[i] = domain == 0.0 ?
-                    1.0:
-                    (parameters[i] - min) / domain;
+                parameters.Clear();
+                parameters.Add(0.0);
             }
+            else
+            {
+                for (var i = 0; i < parameters.Count(); i++)
+                {
+                    parameters[i] = (parameters[i] - min) / domain;
+                }
+            }
+            
 
             // If the number of colors is greater than the 
             // number of parameters
@@ -440,6 +448,11 @@ namespace DSCore
             if (found != null)
             {
                 return found.Color;
+            }
+
+            if (indexedColors.Count == 1)
+            {
+                return indexedColors.First().Color;
             }
 
             Color.IndexedColor1D c1, c2;
