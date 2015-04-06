@@ -9,8 +9,7 @@ namespace Dynamo.Models
 {
     public class NoteModel : ModelBase
     {
-        private string text;
-        public event Action<NoteModel> Disposed;
+        private string text;      
         public string Text
         {
             get { return text; }
@@ -41,15 +40,7 @@ namespace Dynamo.Models
             
             Text = value;
             return true;
-        }
-
-        public virtual void Dispose()
-        {
-            var handler = Disposed;
-            if (handler != null)
-                handler(this);
-        }
-
+        }        
         #endregion
 
         #region Serialization/Deserialization Methods

@@ -1050,15 +1050,7 @@ namespace Dynamo.Models
             foreach (ModelBase model in modelsToDelete)
             {
                 selection.Remove(model); // Remove from selection set.
-                var node = model as NodeModel;
-                if (node != null)
-                    node.Dispose();
-                var note = model as NoteModel;
-                if(note != null)
-                    note.Dispose();
-                var annotation = model as AnnotationModel;
-                if (annotation != null)
-                    annotation.Dispose();                
+                model.Dispose();              
             }
 
             OnDeletionComplete(this, EventArgs.Empty);

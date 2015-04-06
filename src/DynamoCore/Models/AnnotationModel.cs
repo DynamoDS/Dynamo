@@ -109,17 +109,7 @@ namespace Dynamo.Models
                     foreach (var model in selectedModels)
                     {
                         model.PropertyChanged +=model_PropertyChanged;
-                        if (model is NodeModel)
-                        {
-                            var nodeModel = model as NodeModel;
-                            nodeModel.Disposed += node_Disposed;
-                        }
-
-                        if (model is NoteModel)
-                        {
-                            var noteModel = model as NoteModel;
-                            noteModel.Disposed += note_Disposed;
-                        }
+                        model.Disposed+=model_Disposed;
                     }
                 }
             }
@@ -199,32 +189,17 @@ namespace Dynamo.Models
         /// Recalculate the group when a node is disposed
         /// </summary>
         /// <param name="node">The node.</param>
-        private void node_Disposed(NodeModel node)
+        private void model_Disposed(ModelBase model)
         {
-            var nodesList = this.SelectedModels.ToList();
-            bool remove = nodesList.Remove(node);
+            var modelList = this.SelectedModels.ToList();
+            bool remove = modelList.Remove(model);
             if (remove)
             {
-                SelectedModels = nodesList;
+                SelectedModels = modelList;
                 UpdateBoundaryFromSelection();
             }
         }
-
-        /// <summary>
-        /// Recalculate the group when a note is disposed
-        /// </summary>
-        /// <param name="note">The note.</param>
-        private void note_Disposed(NoteModel note)
-        {
-            var notesList = this.SelectedModels.ToList();
-            bool remove = notesList.Remove(note);
-            if (remove)
-            {
-                SelectedModels = notesList;
-                UpdateBoundaryFromSelection();
-            }
-        }
-
+      
         /// <summary>
         /// Updates the group boundary based on the nodes / notes selection.
         /// </summary>      
