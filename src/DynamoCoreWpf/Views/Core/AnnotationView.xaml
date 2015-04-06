@@ -199,7 +199,7 @@
               Margin="0,0,0,0"
               VerticalAlignment="Top">            
             <TextBlock x:Name="GroupTextBlock"                                     
-                    Text ="{Binding AnnotationText, Mode=TwoWay}"    
+                    Text ="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}}"    
                     Visibility="Visible"
                     MaxWidth="{Binding Width}"  
                     MinHeight="20"   
@@ -211,7 +211,7 @@
             <TextBox 
                     Name="GroupTextBox" 
                     Visibility="Collapsed"
-                    Text ="{Binding AnnotationText,Mode=TwoWay}"                                                    
+                    Text ="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}}"                                                    
                     TextWrapping="Wrap"            
                     MaxWidth="{Binding Width}" 
                     MinHeight="20"  

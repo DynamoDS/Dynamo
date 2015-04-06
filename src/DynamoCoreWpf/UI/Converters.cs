@@ -2155,4 +2155,23 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public class AnnotationTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value.ToString();
+            if (text == "" || text == String.Empty)
+                return Resources.GroupDefaultText;
+            return text;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value.ToString();           
+            return text;
+        }
+    }
+
+    
 }

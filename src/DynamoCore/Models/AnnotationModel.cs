@@ -79,9 +79,7 @@ namespace Dynamo.Models
             get { return annotationText; }
             set
             {
-                annotationText = value;
-                if (value == String.Empty)
-                    annotationText = Resources.GroupDefaultText;
+                annotationText = value;               
                 RaisePropertyChanged("AnnotationText");
             }
 
@@ -350,7 +348,7 @@ namespace Dynamo.Models
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);
-            this.AnnotationText = helper.ReadString("text", "<<Click to edit the grouping>>");
+            this.AnnotationText = helper.ReadString("text", String.Empty);
             this.Left = helper.ReadDouble("left", 0.0);
             this.Top = helper.ReadDouble("top", 0.0);
             this.Width = helper.ReadDouble("width", 0.0);
