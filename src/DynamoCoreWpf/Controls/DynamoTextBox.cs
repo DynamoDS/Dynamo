@@ -412,8 +412,6 @@ namespace Dynamo.UI.Controls
 
             // Moving tooltip back.
             HorizontalOffset--;
-
-            toolTipTimer.Stop();
         }
 
         private void CloseLibraryToolTipPopup()
@@ -490,7 +488,7 @@ namespace Dynamo.UI.Controls
             internal event Action<object> TimerElapsed;
             private void OnTimerElapsed(object dataContext)
             {
-                dispatcherTimer.Stop();
+                this.Stop();
 
                 var handler = TimerElapsed;
                 if (handler != null)
