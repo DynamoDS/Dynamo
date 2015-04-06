@@ -33,8 +33,8 @@ namespace DynamoCoreUITests
         #region Generic Set-up Routines and Data Members
 
         protected System.Random randomizer = null;
-        private IEnumerable<string> customNodesToBeLoaded = null;
-        private CommandCallback commandCallback = null;
+        private IEnumerable<string> customNodesToBeLoaded;
+        private CommandCallback commandCallback;
 
         // Geometry preloading related members.
         protected bool preloadGeometry;
@@ -58,7 +58,13 @@ namespace DynamoCoreUITests
             // base.Init();
         }
 
-        public void Exit()
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            Exit();
+        }
+
+        protected void Exit()
         {
             commandCallback = null;
             if (this.ViewModel != null)
@@ -133,6 +139,13 @@ namespace DynamoCoreUITests
             this.customNodesToBeLoaded = fileList;
         }
 
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         protected void RunCommandsFromFile(string commandFileName,
             bool autoRun = false, CommandCallback commandCallback = null)
         {
@@ -157,6 +170,23 @@ namespace DynamoCoreUITests
                 preloadGeometry = false;
             }
 
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
@@ -164,8 +194,6 @@ namespace DynamoCoreUITests
                     PathResolver = pathResolver,
                     GeometryFactoryPath = geometryFactoryPath
                 });
-
-            pathResolver = null; // Invalidate path resolver after specified.
 
             // Create the DynamoViewModel to control the view
             this.ViewModel = DynamoViewModel.Start(
@@ -259,18 +287,6 @@ namespace DynamoCoreUITests
     [TestFixture]
     public class RecordedTests : RecordedUnitTestBase
     {
-        [SetUp]
-        public override void Setup()
-        {
-            base.Setup();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            base.Exit();
-        }
-
         #region Recorded Test Cases for Command Framework
 
         [Test, RequiresSTA]
@@ -803,16 +819,12 @@ namespace DynamoCoreUITests
 
     class RecordedTestsDSEngine : RecordedUnitTestBase
     {
-        [SetUp]
-        public override void Setup()
+        protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            base.Setup();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            base.Exit();
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSIronPython.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
         }
 
         #region Basic CodeBlockNode Test Cases
@@ -1119,9 +1131,6 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void ReExecuteASTTest()
         {
-            pathResolver = new TestPathResolver();
-            pathResolver.AddPreloadLibraryPath("FFITarget.dll");
-
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;

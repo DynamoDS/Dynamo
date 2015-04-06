@@ -1,7 +1,5 @@
 ﻿using System.IO;
 using NUnit.Framework;
-using Dynamo.Utilities;
-using Dynamo.Models;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 
@@ -10,6 +8,12 @@ namespace Dynamo.Tests
     [TestFixture]
     class WorkflowTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         // Note: Only add test cases those are related to ASM Geometry.
         // Always create a region while creating tests for new Geometry type.
 

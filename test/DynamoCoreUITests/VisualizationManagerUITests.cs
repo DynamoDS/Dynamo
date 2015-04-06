@@ -24,6 +24,13 @@ namespace DynamoCoreUITests
     [TestFixture]
     public class VisualizationManagerUITests : SystemTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSIronPython.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         private Watch3DView BackgroundPreview
         {
             get { return (Watch3DView)View.background_grid.FindName("background_preview"); }
@@ -117,28 +124,24 @@ namespace DynamoCoreUITests
 
             //now flip off the preview on one of the points
             //and ensure that the visualization updates without re-running
-            var p1 =
-                model.CurrentWorkspace.Nodes.First(
-                    x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
-            p1.IsVisible = false;
+            var p1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "a7c70c13-cc62-41a6-85ed-dc42e788181d");
+            p1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.AreEqual(1, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
             Assert.AreEqual(0, BackgroundPreview.MeshCount);
 
             //flip off the lines node
-            var l1 =
-                model.CurrentWorkspace.Nodes.First(
-                    x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
-            l1.IsVisible = false;
+            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            l1.UpdateValue(new UpdateValueParams("IsVisible", "false"));
 
             Assert.AreEqual(1, BackgroundPreview.Points.Positions.Count);
             Assert.Null(BackgroundPreview.Lines);
             Assert.Null(BackgroundPreview.Mesh);
 
             //flip those back on and ensure the visualization returns
-            p1.IsVisible = true;
-            l1.IsVisible = true;
+            p1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
+            l1.UpdateValue(new UpdateValueParams("IsVisible", "true"));
 
             Assert.AreEqual(7, BackgroundPreview.Points.Positions.Count);
             Assert.AreEqual(12, BackgroundPreview.Lines.Positions.Count);
@@ -167,10 +170,8 @@ namespace DynamoCoreUITests
             Assert.Null(BackgroundPreview.Mesh);
 
             //flip off the line node's preview upstream
-            var l1 =
-                model.CurrentWorkspace.Nodes.First(
-                    x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
-            l1.IsUpstreamVisible = false;
+            var l1 = model.CurrentWorkspace.Nodes.First(x => x.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
+            l1.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
 
             Assert.NotNull(model);
             Assert.NotNull(model.CurrentWorkspace);

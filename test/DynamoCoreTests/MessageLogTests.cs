@@ -1,12 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using Dynamo.Interfaces;
-using Dynamo.Utilities;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.IO;
-using Dynamo.Nodes;
-using Dynamo.ViewModels;
-using ProtoCore.Mirror;
-using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,6 +8,12 @@ namespace Dynamo.Tests
     [Category("MessageLog")]
     class MessageLogTests : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void TestWarningMessageLog()
         {

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using DSIronPythonNode;
-using Dynamo;
 using Dynamo.Models;
-using Dynamo.Nodes;
-using Dynamo.Tests;
-using Dynamo.Utilities;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -16,6 +10,12 @@ namespace Dynamo.Tests
 {
     public class PythonEditTests : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSIronPython.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void PythonScriptEdit_WorkspaceChangesReflected()
         {

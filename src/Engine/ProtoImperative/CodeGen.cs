@@ -927,7 +927,7 @@ namespace ProtoImperative
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
-            core.startPC = this.pc;
+            core.watchStartPC = this.pc;
             compilePass = ProtoCore.CompilerDefinitions.Imperative.CompilePass.kGlobalScope;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
 
@@ -942,7 +942,7 @@ namespace ProtoImperative
             }
             core.InferedType = inferedType;
 
-            this.pc = core.startPC;
+            this.pc = core.watchStartPC;
 
             return codeBlock.codeBlockId;
         }
@@ -950,7 +950,7 @@ namespace ProtoImperative
 
         public override int Emit(ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
-            core.startPC = this.pc;
+            core.watchStartPC = this.pc;
             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 return EmitExpressionInterpreter(codeBlockNode);

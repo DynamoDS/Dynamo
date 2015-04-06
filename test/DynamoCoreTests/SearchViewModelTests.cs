@@ -68,23 +68,23 @@ namespace Dynamo.Tests
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
             Assert.AreEqual("Category1", result);
 
-            categoryName = "Cat1 Cat" + Configurations.CategoryDelimiterString + "Cat2 Cat" +
-                                    Configurations.CategoryDelimiterString + "Cat3";
+            categoryName = "Cat1 Cat" + Configurations.CategoryDelimiterWithSpaces + "Cat2 Cat" +
+                                    Configurations.CategoryDelimiterWithSpaces + "Cat3";
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
-            Assert.AreEqual("Cat1 Cat" + Configurations.ShortenedCategoryDelimiter + "Cat2 Cat" +
-                                      Configurations.ShortenedCategoryDelimiter + "Cat3", result);
+            Assert.AreEqual("Cat1 Cat" + Configurations.CategoryDelimiterWithSpaces + "Cat2 Cat" +
+                                      Configurations.CategoryDelimiterWithSpaces + "Cat3", result);
 
-            categoryName = "TenSymbol" + Configurations.CategoryDelimiterString +
-                           "TenSymbol" + Configurations.CategoryDelimiterString +
-                           "TenSymbol" + Configurations.CategoryDelimiterString +
-                           "TenSymbol" + Configurations.CategoryDelimiterString +
-                           "TenSymbol" + Configurations.CategoryDelimiterString +
+            categoryName = "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
                            "MoreSymbols";
             result = Nodes.Utilities.ShortenCategoryName(categoryName);
-            Assert.AreEqual("TenSymbol" + Configurations.ShortenedCategoryDelimiter +
-                           "..." + Configurations.ShortenedCategoryDelimiter +
-                           "TenSymbol" + Configurations.ShortenedCategoryDelimiter +
-                           "TenSymbol" + Configurations.ShortenedCategoryDelimiter +
+            Assert.AreEqual("TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "..." + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
+                           "TenSymbol" + Configurations.CategoryDelimiterWithSpaces +
                            "MoreSymbols", result);
         }
 
@@ -228,6 +228,215 @@ namespace Dynamo.Tests
                 SubCategories.First(c => c.Name == "SubSubCat1");
 
             Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "Member3"));
+        }
+
+        //                   Top
+        //                    │
+        //             ┌────────────┐
+        //        ASubCategory    Classes
+        //            │             │
+        //         Classes      SubClass1
+        //            │             │
+        //         SubClass2      Member1
+        //            │             
+        //         Member2   
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry07AddClassThenCategory()
+        {
+            var elementVM = CreateCustomNodeViewModel("Member1", "TopCategory.SubClass1");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("Member2", "TopCategory.ASubCategory.SubClass2");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "SubClass1"));
+
+            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.ElementAt(1);
+
+            Assert.AreEqual("ASubCategory", category.Name);
+        }
+
+
+        //                                Top
+        //                                 │
+        //             ┌───────────────────┴──────┰────────────┐
+        //          Member1                  ASubCategory    Classes
+        //                                        │             │
+        //                                     Classes      SubClass1
+        //                                        │             │
+        //                                     SubClass2      Member1
+        //                                        │             
+        //                                     Member2             
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry08AddCategoryThenClass()
+        {
+            var elementVM = CreateCustomNodeViewModel("Member2", "TopCategory.ASubCategory.SubClass2");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("Member1", "TopCategory.SubClass1");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "SubClass1"));
+
+            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.ElementAt(1);
+
+            Assert.AreEqual("ASubCategory", category.Name);
+        }
+
+        //                                Top
+        //                                 │
+        //             ┌───────────────────┴──────┰────────────┐
+        //          AMember                  SubCategory2    Classes
+        //                                        │             │
+        //                                     Classes      SubClass1
+        //                                        │             │
+        //                                     SubClass2      Member1
+        //                                        │             
+        //                                     Member2             
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry09AddCategoryThenMemberThenClass()
+        {
+            var elementVM = CreateCustomNodeViewModel("Member2", "TopCategory.SubCategory2.SubClass2");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("Member1", "TopCategory.SubClass1");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("AMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.First(c => c.Name == "Classes");
+
+            Assert.IsNotNull(category.Items.FirstOrDefault(el => el.Name == "SubClass1"));
+
+            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                SubCategories.ElementAt(1);
+
+            Assert.AreEqual("SubCategory2", category.Name);
+
+            var element = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                Items.ElementAt(2);
+
+            Assert.AreEqual("AMember", element.Name);
+        }
+
+        //                                Top
+        //                                 │
+        //             ┌────────────┰─────┴──────┰────────────┐
+        //          AMember       BMember     SubCategory    Classes
+        //                                        │             │
+        //                                     Classes      ZSubClass
+        //                                        │             │
+        //                                     SubClass      MemberZ
+        //                                        │             
+        //                                     Member             
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry10AddMembersThenClassThenCategory()
+        {
+            var elementVM = CreateCustomNodeViewModel("AMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("BMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("MemberZ", "TopCategory.ZSubClass");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("Member", "TopCategory.SubCategory.SubClass");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                Items.ElementAt(0);
+
+            Assert.AreEqual("Classes", category.Name);
+
+            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                Items.ElementAt(1);
+
+            Assert.AreEqual("SubCategory", category.Name);
+
+            var element = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                Items.ElementAt(2);
+
+            Assert.AreEqual("AMember", element.Name);
+
+            element = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                Items.ElementAt(3);
+
+            Assert.AreEqual("BMember", element.Name);
+        }
+
+        //                                Top
+        //                                 │
+        //             ┌────────────┰─────┴──────┰──────────┐
+        //          AMember      FFITarget     OneMore      System
+        //                           │            │            │
+        //                        Classes      Classes      Classes
+        //                           │            │            │
+        //                        SubClass     SubClass     SubClass
+        //                           │            │            │
+        //                         Member       Member       Member
+        [Test]
+        [Category("UnitTests")]
+        public void InsertEntry11SeveralCategoriesInAlphabeticalOrder()
+        {
+            var elementVM = CreateCustomNodeViewModel("AMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("Member", "TopCategory.System.SubClass");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("Member", "TopCategory.OneMore.SubClass");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("Member", "TopCategory.FFITarget.SubClass");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                 Items.ElementAt(0);
+            Assert.AreEqual("FFITarget", category.Name);
+
+            category = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").
+                 Items.ElementAt(1);
+            Assert.AreEqual("OneMore", category.Name);
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FindInsertionPointByNameTest()
+        {
+            var elementVM = CreateCustomNodeViewModel("AMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            elementVM = CreateCustomNodeViewModel("ZMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            var listOfMembers = viewModel.BrowserRootCategories.First(c => c.Name == "TopCategory").Items;
+
+            var index = NodeCategoryViewModel.FindInsertionPointByName(listOfMembers, "BMember");
+
+            Assert.AreEqual(1, index);
+
+            elementVM = CreateCustomNodeViewModel("BMember", "TopCategory");
+            viewModel.InsertEntry(elementVM, elementVM.Model.Categories);
+
+            index = NodeCategoryViewModel.FindInsertionPointByName(listOfMembers, "BMember");
+
+            Assert.AreEqual(1, index);
         }
 
         #endregion

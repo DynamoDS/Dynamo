@@ -6,7 +6,6 @@ using NUnit.Framework;
 using ProtoCore.Mirror;
 using System.Collections;
 using Dynamo.Nodes;
-using TestServices;
 
 namespace Dynamo.Tests
 {
@@ -207,6 +206,15 @@ namespace Dynamo.Tests
     [Category("DSExecution")]
     class DSEvaluationViewModelTest : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSIronPython.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void TestCodeBlockNode01()
         {
@@ -1130,11 +1138,49 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             AssertPreviewValue("e95a634b-aab9-4b6e-bb33-2f9669381ad6", 5);
         }
+
+        [Test]
+        public void ModuloDividendLargerThanDivisor()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
+
+            string openPath = Path.Combine(examplePath, "ModuloDividendLargerThanDivisor.dyn");
+            RunModel(openPath);
+            double[] Dlist = new double[4];
+            Dlist[0] = 0.129000;
+            Dlist[1] = 0.026000;
+            Dlist[2] = 1.899000;
+            Dlist[3] = 1.830000;
+
+            AssertPreviewValue("9433d723-3708-4773-9b9c-c6def0f17b18", Dlist);
+            AssertPreviewValue("55f03be2-8720-4648-b989-996b261e1502", new[] { false, false, false, false });
+            AssertPreviewValue("0b9eca5b-835b-493e-af4b-84a3366d75d3", Dlist);
+            AssertPreviewValue("7e1f9810-2f4f-4911-975b-d392afc3a674", Dlist);
+        }
+
+        [Test, Category("UnitTests")]
+        public void TestDefaultArgumentTooltip()
+        {
+            var vm = ViewModel;
+            var node =
+                new DSFunction(vm.Model.LibraryServices.GetFunctionDescriptor("Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double"));
+            vm.ExecuteCommand(new Dynamo.Models.DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
+            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0"));
+            node.InPorts[0].UsingDefaultValue = false;
+            Assert.IsTrue(node.InPorts[0].ToolTipContent.Equals("double\nDefault value : 0 (disabled)"));
+        }
     }
 
     [Category("DSCustomNode")]
     class CustomNodeEvaluationViewModel : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void CustomNodeNoInput01()
         {

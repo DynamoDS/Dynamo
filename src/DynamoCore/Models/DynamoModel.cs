@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 ﻿using DSCoreNodesUI;
@@ -455,9 +456,12 @@ namespace Dynamo.Models
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
 
-            if (this.PreferenceSettings.IsFirstRun)
+            if (!isTestMode && this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
+
+                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
@@ -466,8 +470,21 @@ namespace Dynamo.Models
                 {
                     Logger.Log(e.Message);
                 }
+                finally
+                {
+                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.End));
+                }
+
                 if (migrator != null)
+                {
+                    var isFirstRun = this.PreferenceSettings.IsFirstRun;
                     this.PreferenceSettings = migrator.PreferenceSettings;
+
+                    // Preserve the preference settings for IsFirstRun as this needs to be set 
+                    // only by UsageReportingManager
+                    this.PreferenceSettings.IsFirstRun = isFirstRun;
+                }
             }
 
             SearchModel = new NodeSearchModel();
@@ -1220,7 +1237,8 @@ namespace Dynamo.Models
                     newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy);
                 }
 
-                newNode.ArgumentLacing = node.ArgumentLacing;
+                var lacing = node.ArgumentLacing.ToString();
+                newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
                 if (!string.IsNullOrEmpty(node.NickName))
                     newNode.NickName = node.NickName;
 

@@ -5,18 +5,23 @@ using System.Linq;
 using System.Threading;
 
 using DSCore.File;
-using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Utilities;
 using NUnit.Framework;
 using String = System.String;
-using System;
 
 
 namespace Dynamo.Tests
 {
     internal class CoreDynTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void AddSubtractMapReduceFilterBasic()
         {
@@ -215,6 +220,19 @@ namespace Dynamo.Tests
             AssertPreviewValue("4a780dfb-74b1-453a-86ef-2f4a5c46792e", 0.0);
 
         }
+
+        [Test]
+        public void ModuloDivisionByZero()
+        {
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\math");
+
+            string openPath = Path.Combine(examplePath, "ModuloZero.dyn");
+            RunModel(openPath);
+
+            AssertPreviewValue("75647d42-ff81-4ae0-9f44-2e68c9942633", new object[] {null, 0, 1, 0, 3});
+        }
+
 
         [Test]
         public void Ceiling()
@@ -616,6 +634,7 @@ namespace Dynamo.Tests
             var exPath = Path.Combine(TestDirectory, @"core\number");
 
             RunModel(Path.Combine(exPath, @"TestNumber_RangeExpr04.dyn"));
+
 
             AssertPreviewValue("e9ad17aa-e30f-4fcb-9d43-71ec2ab027f4", new[] { 5, 4, 3, 2, 1 });
         }

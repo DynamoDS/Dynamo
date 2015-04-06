@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Dynamo.DSEngine;
 using NUnit.Framework;
 
@@ -13,7 +11,12 @@ namespace Dynamo.Tests
     {
         private LibraryServices libraryServices;
 
-        [SetUp]
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         public override void Setup()
         {
             base.Setup();

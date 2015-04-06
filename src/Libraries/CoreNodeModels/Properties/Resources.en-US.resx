@@ -516,4 +516,8 @@
   <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
     <value>A list of values between 0 and 1. These values are used to look up the color within the range.</value>
   </data>
+  <data name="ListCreateSearchTags" xml:space="preserve">
+    <value>entwine;listcreate,newlist;makelist;list;</value>
+    <comment>search tags for list.create</comment>
+  </data>
 </root>
