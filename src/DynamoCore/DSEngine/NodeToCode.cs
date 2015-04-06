@@ -20,6 +20,74 @@ namespace Dynamo.DSEngine
             }
         }
 
+        private class IdentifierVisitor
+        {
+            public static void Visit(AssociativeNode astNode, Action<IdentifierNode> func)
+            {
+                if (astNode is IdentifierNode)
+                {
+                    var identNode = astNode as IdentifierNode;
+                    func(identNode);
+                    Visit(identNode.ArrayDimensions, func);
+                }
+                else if (astNode is IdentifierListNode)
+                {
+                    var node = astNode as IdentifierListNode;
+                    Visit(node.LeftNode, func);
+                    Visit(node.RightNode, func);
+                }
+                else if (astNode is FunctionCallNode)
+                {
+                    var node = astNode as FunctionCallNode;
+                    Visit(node.Function, func);
+                    for (int i = 0; i < node.FormalArguments.Count; ++i)
+                    {
+                        Visit(node.FormalArguments[i], func);
+                    }
+                    Visit(node.ArrayDimensions, func);
+                }
+                else if (astNode is ArrayNode)
+                {
+                    var node = astNode as ArrayNode;
+                    Visit(node.Expr, func);
+                }
+                else if (astNode is ExprListNode)
+                {
+                    var node = astNode as ExprListNode;
+                    for (int i = 0; i < node.list.Count; ++i)
+                    {
+                        Visit(node.list[i], func);
+                    }
+                    Visit(node.ArrayDimensions, func);
+                }
+                else if (astNode is FunctionDotCallNode)
+                {
+                    var node = astNode as FunctionDotCallNode;
+                }
+                else if (astNode is InlineConditionalNode)
+                {
+                    var node = astNode as InlineConditionalNode;
+                    Visit(node.ConditionExpression, func);
+                    Visit(node.TrueExpression, func);
+                    Visit(node.FalseExpression, func);
+                }
+                else if (astNode is RangeExprNode)
+                {
+                    var node = astNode as RangeExprNode;
+                    Visit(node.FromNode, func);
+                    Visit(node.ToNode, func);
+                    Visit(node.StepNode, func);
+                    Visit(node.ArrayDimensions, func);
+                }
+                else if (astNode is BinaryExpressionNode)
+                {
+                    var node = astNode as BinaryExpressionNode;
+                    Visit(node.LeftNode, func);
+                    Visit(node.RightNode, func);
+                }
+            }
+        }
+
         private static HashSet<string> CollectIntermediateVarialbeNames(IEnumerable<NodeModel> nodes)
         {
             HashSet<string> variableSet = new HashSet<string>();
@@ -48,7 +116,7 @@ namespace Dynamo.DSEngine
                     {
                         var cbn = inputNode as CodeBlockNodeModel;
                         int portIndex = cbn.OutPorts.IndexOf(inport.Connectors[0].Start);
-                        string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
+                        string inputVar = cbn.GetRawAstIdentifierForOutputIndex(portIndex).Value;
                         variableSet.Add(inputVar);
                     }
                     else
@@ -142,18 +210,110 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public static IEnumerable<AssociativeNode> Node2Code(AstBuilder astBuilder, IEnumerable<NodeModel> nodes, bool verboseLogging)
+        /// <summary>
+        /// Renumber variables used in astNode.
+        /// </summary>
+        /// <param name="astNode"></param>
+        /// <param name="variableNumberingMap"></param>
+        /// <param name="variableMap"></param>
+        private static void VariableNumbering(
+            AssociativeNode astNode, 
+            Dictionary<string, Tuple<int, bool>> variableNumberingMap, 
+            Dictionary<string, string> variableMap)
         {
-            var intermediateVariables = CollectIntermediateVarialbeNames(nodes);
-            var renamingMap = GetVariableRenamingMap(intermediateVariables);
-            var astNodes = astBuilder.CompileToAstNodes(nodes, false, verboseLogging, true);
-            var nameGenerator = new VariableShortNameGenerator();
+            Action<IdentifierNode> func = node =>
+                {
+                    var ident = node.Value;
+                    if (!variableNumberingMap.ContainsKey(ident))
+                    {
+                        variableNumberingMap[ident] = Tuple.Create(0, true);
+                    }
+                    var tuple = variableNumberingMap[ident];
+                    if (!tuple.Item2)
+                    {
+                        variableNumberingMap[ident] = Tuple.Create(tuple.Item1 + 1, true);
+                        tuple = variableNumberingMap[ident];
+                    }
 
-            foreach (var astNode in astNodes)
+                    if (tuple.Item1 != 0)
+                    {
+                        var newIdent = ident + tuple.Item1.ToString();
+                        node.Name = node.Value = newIdent;
+                    }
+                };
+
+            IdentifierVisitor.Visit(astNode, func);
+        }
+
+        /// <summary>
+        /// Compile a bunch of NodeModel to code which is in AST format. 
+        /// </summary>
+        /// <param name="astBuilder"></param>
+        /// <param name="nodes"></param>
+        /// <param name="verboseLogging"></param>
+        /// <returns></returns>
+        public static IEnumerable<AssociativeNode> Node2Code(
+            AstBuilder astBuilder, 
+            IEnumerable<NodeModel> nodes, 
+            bool verboseLogging)
+        {
+            // The basic worflow is:
+            //   1. Compile each node to get its cde in AST format
+            // 
+            //   2. Variable numbering to avoid confliction. For example, two 
+            //      code block nodes both have assignment "y = x", we need to 
+            //      rename "y" to "y1" and "y2" respectively.
+            //
+            //   3. Variable remapping. For example, code block node 
+            //      "x = 1" connects to "a = b", where the second code block 
+            //      node will have initialization "b = x_guid" where "x_guid"
+            //      is because of variable mappining in the first code block 
+            //      node. We should restore it to its original name.
+            //   
+            //      Note in step 2 we may rename "x" to "xn". 
+            //
+            //   4. Do constant progation to optimize the generated code.
+            #region Step 1 AST compilation
+            var allAstNodes = astBuilder.CompileToAstNodesForNodeToCode(nodes, false, verboseLogging);
+            #endregion
+
+            #region Step 2 Varialbe numbering
+            // In this step, we'll renumber all variables that going to be in 
+            // the same code block node. That is, 
+            // 
+            //     "x = 1; y = x;"   and
+            //     "x = 2; y = x;" 
+            //
+            // Will be renumbered to 
+            //
+            //    "x1 = 1; y1 = x1;" and
+            //    "x2 = 2; y2 = x2;"
+
+            // Map from mapped variable to its original name. Typcically
+            // these variables are from code block node.
+            var renamingMap = new Dictionary<string, string>();
+
+            // Vairable numbering map. The Tuple value indicates its number
+            // sequence and if for the new UI node.
+            var numberingMap = new Dictionary<string, Tuple<int, bool>>();
+
+            foreach (var astNodes in allAstNodes)
             {
-                MapIdentifier(astNode, renamingMap, nameGenerator); 
+                // Reset variable numbering map
+                numberingMap = numberingMap.ToDictionary(
+                    p => p.Key, 
+                    p => Tuple.Create(p.Value.Item1, false));
+
+                foreach (var astNode in astNodes)
+                    VariableNumbering(astNode, numberingMap, renamingMap); 
             }
-            return astNodes;
+            #endregion
+
+            // var nameGenerator = new VariableShortNameGenerator();
+            // var intermediateVariables = CollectIntermediateVarialbeNames(nodes);
+            // var renamingMap = GetVariableRenamingMap(intermediateVariables);
+
+            return allAstNodes.SelectMany(x => x);
         }
     }
 }

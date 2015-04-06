@@ -676,6 +676,11 @@ namespace Dynamo.Models
                                    new NullNode()));
         }
 
+        internal virtual IEnumerable<AssociativeNode> BuildAstForNodesToCode(List<AssociativeNode> inputAstNodes)
+        {
+            return BuildAst(inputAstNodes);
+        }
+
         /// <summary>
         /// Wraps the publically overrideable `BuildOutputAst` method so that it works with Preview.
         /// </summary>

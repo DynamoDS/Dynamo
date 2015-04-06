@@ -146,7 +146,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution, bool verboseLogging)
+        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution, bool verboseLogging, bool isForNodesToCode = false)
         {
 
             var inputAstNodes = new List<AssociativeNode>();
@@ -186,10 +186,15 @@ namespace Dynamo.DSEngine
 #endif
 
             var scopedNode = node as ScopedNodeModel;
-            IEnumerable<AssociativeNode> astNodes = 
-                scopedNode != null
-                    ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
-                    : node.BuildAst(inputAstNodes);
+            IEnumerable<AssociativeNode> astNodes = null;
+            if (node is ScopedNodeModel)
+            {
+                astNodes = (node as ScopedNodeModel).BuildAstInScope(inputAstNodes, verboseLogging, this);
+            }
+            else
+            {
+                astNodes = isForNodesToCode ? node.BuildAstForNodesToCode(inputAstNodes) : node.BuildAst(inputAstNodes);
+            }
             
             if (verboseLogging)
             {
@@ -234,13 +239,13 @@ namespace Dynamo.DSEngine
         /// <param name="nodes"></param>
         /// <param name="isDeltaExecution"></param>
         /// <param name="verboseLogging"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging, bool isForNodeToCode = false)
+        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
         {
             // TODO: compile to AST nodes should be triggered after a node is 
             // modified.
 
             var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
-            var sortedNodes = isForNodeToCode ? PostOrderSort(topScopedNodes) : TopologicalSort(topScopedNodes);
+            var sortedNodes = TopologicalSort(topScopedNodes);
 
             if (isDeltaExecution)
             {
@@ -251,12 +256,30 @@ namespace Dynamo.DSEngine
 
             foreach (NodeModel node in sortedNodes)
             {
-                _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging);
+                _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging, false);
             }
 
             return result;
         }
 
+        public IEnumerable<IEnumerable<AssociativeNode>> CompileToAstNodesForNodeToCode(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
+        {
+            // TODO: compile to AST nodes should be triggered after a node is 
+            // modified.
+
+            var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
+            var sortedNodes = PostOrderSort(topScopedNodes);
+            var result = new List<List<AssociativeNode>>();
+
+            foreach (NodeModel node in sortedNodes)
+            {
+                var astNodes = new List<AssociativeNode>();
+                _CompileToAstNodes(node, astNodes, isDeltaExecution, verboseLogging, true);
+                result.Add(astNodes);
+            }
+
+            return result;
+        }
 
         /// <summary>
         ///     Compiles a collection of Dynamo nodes into a function definition for a custom node.
