@@ -924,6 +924,15 @@ namespace Dynamo.Models
             if (!selectedNodes.Any())
                 return;
 
+            //Create two dictionarys to store the details of the external connections that have to 
+            //be recreated after the conversion
+            var externalInputConnections = new Dictionary<ConnectorModel, string>();
+            var externalOutputConnections = new Dictionary<ConnectorModel, string>();
+
+            //Also collect the average X and Y co-ordinates of the different nodes
+            var nodeList = selectedNodes.ToList();
+            int nodeCount = nodeList.Count;
+
             var nodeToCodeResult =  engineController.ConvertNodesToCode(selectedNodes, verboseLogging);
             CodeBlockNodeModel codeBlockNode = null;
 
@@ -931,14 +940,7 @@ namespace Dynamo.Models
             using (UndoRecorder.BeginActionGroup())
             {
                 #region Step I. Delete all nodes and their connections
-                //Create two dictionarys to store the details of the external connections that have to 
-                //be recreated after the conversion
-                var externalInputConnections = new Dictionary<ConnectorModel, string>();
-                var externalOutputConnections = new Dictionary<ConnectorModel, string>();
-
-                //Also collect the average X and Y co-ordinates of the different nodes
-                var nodeList = selectedNodes.ToList();
-                int nodeCount = nodeList.Count;
+                
                 double totalX = 0, totalY = 0;
 
                 foreach (var node in nodeList)
@@ -964,9 +966,9 @@ namespace Dynamo.Models
                             }
                             else
                             {
-                                if (nodeToCodeResult.VariableMapping.ContainsKey(variableName))
+                                if (nodeToCodeResult.InputMapping.ContainsKey(variableName))
                                 {
-                                    variableName = nodeToCodeResult.VariableMapping[variableName];
+                                    variableName = nodeToCodeResult.InputMapping[variableName];
                                 }
                                 externalInputConnections.Add(connector, variableName);
                             }

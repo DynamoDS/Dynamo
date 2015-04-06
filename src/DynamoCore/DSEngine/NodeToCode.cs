@@ -10,13 +10,13 @@ namespace Dynamo.DSEngine
     public class NodeToCodeResult
     {
         public IEnumerable<AssociativeNode> AstNodes { get; private set; }
-        public Dictionary<string, string> VariableMapping { get; private set; }
+        public Dictionary<string, string> InputMapping { get; private set; }
 
         public NodeToCodeResult(IEnumerable<AssociativeNode> astNodes, 
             Dictionary<string, string> variableMapping)
         {
             AstNodes = astNodes;
-            VariableMapping = variableMapping;
+            InputMapping = variableMapping;
         }
     }
     public class NodeToCodeUtils
@@ -51,7 +51,6 @@ namespace Dynamo.DSEngine
                 else if (astNode is FunctionCallNode)
                 {
                     var node = astNode as FunctionCallNode;
-                    Visit(node.Function, func);
                     for (int i = 0; i < node.FormalArguments.Count; ++i)
                     {
                         Visit(node.FormalArguments[i], func);
@@ -297,8 +296,8 @@ namespace Dynamo.DSEngine
             //    "x1 = 1; y1 = x1;" and
             //    "x2 = 2; y2 = x2;"
 
-            // Map from mapped variable to its original name. Typcically
-            // these variables are from code block node.
+            // Map from mapped variable to its original name. These variables 
+            // are from code block nodes that in the selection.
             var remappingMap = new Dictionary<string, string>();
             foreach (var node in nodes)
             {
@@ -308,12 +307,11 @@ namespace Dynamo.DSEngine
                         continue;
 
                     var inputNode = inport.Connectors[0].Start.Owner;
+                    if (!nodes.Contains(inputNode))
+                        continue;
 
                     var cbn = inputNode as CodeBlockNodeModel;
                     if (cbn == null)
-                        continue;
-
-                    if (!nodes.Contains(cbn))
                         continue;
 
                     int portIndex = inport.Connectors[0].Start.Index;
