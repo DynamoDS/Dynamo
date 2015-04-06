@@ -333,16 +333,16 @@ namespace Dynamo.Models
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("GUID", this.GUID);
-            helper.SetAttribute("annotationText", this.AnnotationText);
-            helper.SetAttribute("left", this.Left);
-            helper.SetAttribute("top", this.Top);
-            helper.SetAttribute("width", this.Width);
-            helper.SetAttribute("height", this.Height);
-            helper.SetAttribute("fontSize", this.FontSize);
+            helper.SetAttribute("annotationText", this.annotationText);
+            helper.SetAttribute("left", this.left);
+            helper.SetAttribute("top", this.top);
+            helper.SetAttribute("width", this.width);
+            helper.SetAttribute("height", this.height);
+            helper.SetAttribute("fontSize", this.fontSize);
             helper.SetAttribute("InitialTop", this.InitialTop);
             helper.SetAttribute("InitialTop", this.InitialHeight);
-            helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
-            helper.SetAttribute("modelGuids", string.Join(",", this.SelectedModels.Select(x => x.GUID)));           
+            helper.SetAttribute("backgrouund", (this.background == null ? "" : this.background.ToString()));
+            helper.SetAttribute("modelGuids", string.Join(",", this.selectedModels.Select(x => x.GUID)));           
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
