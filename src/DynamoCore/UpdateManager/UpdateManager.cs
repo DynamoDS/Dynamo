@@ -1,6 +1,5 @@
-﻿using Dynamo.Core;
-using Dynamo.UI;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,9 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-
-using System.Xml.Serialization;
 using System.Xml.Linq;
+using System.Xml.Serialization;
+using Dynamo.Core;
+using Microsoft.Win32;
 
 namespace Dynamo.UpdateManager
 {
@@ -1023,8 +1023,62 @@ namespace Dynamo.UpdateManager
         /// </summary>
         internal static void CheckForProductUpdate()
         {
+            //If we already have higher version installed, don't look for product update.
+            if(new DynamoLookUp().LatestProduct > Instance.ProductVersion)
+                return;
+
             var downloadUri = new Uri(Instance.Configuration.DownloadSourcePath);
             Instance.CheckForProductUpdate(new UpdateRequest(downloadUri, Instance));
+        }
+    }
+
+    /// <summary>
+    /// Lookup for installed products
+    /// </summary>
+    public class DynamoLookUp
+    {
+        /// <summary>
+        /// Gets the version of latest product
+        /// </summary>
+        public BinaryVersion LatestProduct { get { return GetLatestInstallVersion(); } }
+
+        /// <summary>
+        /// Locates DynamoCore.dll at given install path and gets file version
+        /// </summary>
+        /// <param name="installPath">Dynamo install path</param>
+        /// <returns>Dynamo version if valid Dynamo exists else null</returns>
+        public virtual Version GetDynamoVersion(string installPath)
+        {
+            if(!Directory.Exists(installPath))//null or empty installPath will return false
+                return null;
+
+            var filePath = Directory.GetFiles(installPath, "*DynamoCore.dll").FirstOrDefault();
+            return String.IsNullOrEmpty(filePath) ? null : Version.Parse(FileVersionInfo.GetVersionInfo(filePath).FileVersion);
+        }
+
+        /// <summary>
+        /// Gets all dynamo install path on the system by looking into registery
+        /// </summary>
+        /// <returns>List of Dynamo install path</returns>
+        public virtual IEnumerable<string> GetDynamoInstalls()
+        {
+            const string regKey64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
+            //Open HKLM for 64bit registry
+            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            //Open Windows/CurrentVersion/Uninstall registry key
+            regKey = regKey.OpenSubKey(regKey64);
+
+            //Get "InstallLocation" value as string for all the subkey that starts with "Dynamo"
+            return regKey.GetSubKeyNames().Where(s => s.StartsWith("Dynamo")).Select(
+                (s) => regKey.OpenSubKey(s).GetValue("InstallLocation") as string);
+        }
+
+        private BinaryVersion GetLatestInstallVersion()
+        {
+            var dynamoInstallations = GetDynamoInstalls();
+            var latestVersion =
+                dynamoInstallations.Select(GetDynamoVersion).OrderBy(s => s).LastOrDefault();
+            return latestVersion == null ? null : BinaryVersion.FromString(latestVersion.ToString());
         }
     }
 }
