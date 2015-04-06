@@ -297,7 +297,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Group the Models based on Height and Width
         /// </summary>
-        /// <returns></returns>
+        /// <returns> the width and height of the last model </returns>
         private Tuple<Double,Double> CalculateWidthAndHeight()
         {           
             var xgroup = SelectedModels.OrderBy(x => x.X).ToList();
@@ -323,7 +323,7 @@ namespace Dynamo.Models
                         listOfModels.Add(model);
                     }
             }
-            SelectedModels = listOfModels;           
+            selectedModels = listOfModels;           
         }
 
         #region Serialization/Deserialization Methods
@@ -331,33 +331,33 @@ namespace Dynamo.Models
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("guid", this.GUID);
-            helper.SetAttribute("text", this.AnnotationText);
+            helper.SetAttribute("GUID", this.GUID);
+            helper.SetAttribute("annotationText", this.AnnotationText);
             helper.SetAttribute("left", this.Left);
             helper.SetAttribute("top", this.Top);
             helper.SetAttribute("width", this.Width);
             helper.SetAttribute("height", this.Height);
             helper.SetAttribute("fontSize", this.FontSize);
-            helper.SetAttribute("initialTop", this.InitialTop);
-            helper.SetAttribute("initialHeight", this.InitialHeight);
-            helper.SetAttribute("annotationColor", (this.Background == null ? "" : this.Background.ToString()));
-            helper.SetAttribute("ModelGUIDs", string.Join(",", this.SelectedModels.Select(x => x.GUID)));           
+            helper.SetAttribute("InitialTop", this.InitialTop);
+            helper.SetAttribute("InitialTop", this.InitialHeight);
+            helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
+            helper.SetAttribute("modelGuids", string.Join(",", this.SelectedModels.Select(x => x.GUID)));           
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
-            this.GUID = helper.ReadGuid("guid", this.GUID);
-            this.AnnotationText = helper.ReadString("text", String.Empty);
-            this.Left = helper.ReadDouble("left", 0.0);
-            this.Top = helper.ReadDouble("top", 0.0);
-            this.Width = helper.ReadDouble("width", 0.0);
-            this.Height = helper.ReadDouble("height", 0.0);
-            this.Background = helper.ReadString("annotationColor", "");
-            this.FontSize = helper.ReadDouble("fontSize", 10.0);
-            this.InitialTop = helper.ReadDouble("initialTop", 0.0);
-            this.InitialHeight = helper.ReadDouble("initialHeight", 0.0);
-            modelGuids = helper.ReadString("ModelGUIDs", "");           
+            this.GUID = helper.ReadGuid("GUID", this.GUID);
+            this.annotationText = helper.ReadString("annotationText", String.Empty);
+            this.left = helper.ReadDouble("left", 0.0);
+            this.top = helper.ReadDouble("top", 0.0);
+            this.width = helper.ReadDouble("width", 0.0);
+            this.height = helper.ReadDouble("height", 0.0);
+            this.background = helper.ReadString("backgrouund", "");
+            this.fontSize = helper.ReadDouble("fontSize", 10.0);
+            this.InitialTop = helper.ReadDouble("InitialTop", 0.0);
+            this.InitialHeight = helper.ReadDouble("InitialTop", 0.0);
+            modelGuids = helper.ReadString("modelGuids", "");           
             DeserializeGroup();           
         }
 
