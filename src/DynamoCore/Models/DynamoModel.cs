@@ -459,20 +459,23 @@ namespace Dynamo.Models
             if (!isTestMode && this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
+
+                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
-                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.Begin));
-
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
-
-                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.End));
                 }
                 catch (Exception e)
                 {
                     Logger.Log(e.Message);
                 }
+                finally
+                {
+                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.End));
+                }
+
                 if (migrator != null)
                 {
                     var isFirstRun = this.PreferenceSettings.IsFirstRun;
@@ -505,19 +508,13 @@ namespace Dynamo.Models
 
             DisposeLogic.IsShuttingDown = false;
 
-            // Create a core which is used for parsing code and loading libraries
-            var libraryCore =
-                new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
-
-            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
-            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
-            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
-
-            LibraryServices = new LibraryServices(libraryCore, pathManager);
+            LibraryServices = new LibraryServices(pathManager);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
             ResetEngineInternal();
+            LibraryServices.LoadLibraries();
+
 
             AddHomeWorkspace();
 
