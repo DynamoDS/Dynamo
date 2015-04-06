@@ -102,51 +102,75 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private static HashSet<string> GetInputs(IEnumerable<NodeModel> nodes)
+        private static void GetInputOutputMap(
+            IEnumerable<NodeModel> nodes, 
+            out Dictionary<string, string> inputMap,
+            out Dictionary<string, string> outputMap,
+            out Dictionary<string, string> renamingMap)
         {
-            HashSet<string> variableSet = new HashSet<string>();
+            inputMap = new Dictionary<string, string>();
+            outputMap = new Dictionary<string, string>();
+            renamingMap = new Dictionary<string, string>();
+            HashSet<string> inputVariableSet = new HashSet<string>();
 
             foreach (var node in nodes)
             {
-                if (node is CodeBlockNodeModel)
-                {
-                    var tempVars = (node as CodeBlockNodeModel).TempVariables;
-                    variableSet.UnionWith(tempVars);
-                }
-
-                string thisVar = node.AstIdentifierForPreview.ToString();
-                variableSet.Add(thisVar);
-
+                // Collects all inputs of selected nodes
                 foreach (var inport in node.InPorts)
                 {
                     if (inport.Connectors.Count == 0)
                         continue;
 
-                    var inputNode = inport.Connectors[0].Start.Owner;
-                    if (nodes.Contains(inputNode))
-                        continue;
+                    var startPort = inport.Connectors[0].Start;
+                    var inputNode = startPort.Owner;
+                    var portIndex = startPort.Index; 
+                    var cbn = inputNode as CodeBlockNodeModel;
 
-                    if (inputNode is CodeBlockNodeModel)
+                    if (nodes.Contains(inputNode))
                     {
-                        var cbn = inputNode as CodeBlockNodeModel;
-                        int portIndex = cbn.OutPorts.IndexOf(inport.Connectors[0].Start);
-                        string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
-                        variableSet.Add(inputVar);
+                        // internal node
+                        if (cbn != null)
+                        {
+                            string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
+                            string originalVar = cbn.GetRawAstIdentifierForOutputIndex(portIndex).Value;
+
+                            renamingMap[inputVar] = originalVar;
+                            var key = String.Format("{0}%{1}", originalVar, cbn.GUID);
+                            renamingMap[key] = inputVar;
+                        }
                     }
-                    else
+                    else // extern node, so they should be added to inputMap
                     {
-                        string inputVar = inputNode.AstIdentifierForPreview.ToString();
-                        variableSet.Add(inputVar);
+                        string inputVar = inputNode.GetAstIdentifierForOutputIndex(portIndex).Value;
+                        inputVariableSet.Add(inputVar);
+                    }
+                }
+
+                // Collect all outputs of selected nodes
+                var thisCBN = node as CodeBlockNodeModel;
+                if (thisCBN != null)
+                {
+                    for (int i = 0; i < thisCBN.OutPorts.Count(); ++i)
+                    {
+                        var inputVar = thisCBN.GetAstIdentifierForOutputIndex(i).Value;
+                        var originalVar = thisCBN.GetRawAstIdentifierForOutputIndex(i).Value;
+
+                        outputMap[inputVar] = originalVar;
+                        var key = String.Format("{0}%{1}", originalVar, thisCBN.GUID);
+                        outputMap[key] = inputVar;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < node.OutPorts.Count(); ++i)
+                    {
+                        var inputVar = node.GetAstIdentifierForOutputIndex(i).Value;
+                        outputMap[inputVar] = string.Empty;
                     }
                 }
             }
 
-            return variableSet;
-        }
-
-        private static Dictionary<string, string> GetVariableRenamingMap(IEnumerable<string> variables)
-        {
-            return variables.ToDictionary(v => v, _ => string.Empty);
+            inputMap = inputVariableSet.ToDictionary(v => v, _ => string.Empty);
         }
 
         /// <summary>
@@ -309,64 +333,20 @@ namespace Dynamo.DSEngine
 
             // Map from mapped variable to its original name. These variables 
             // are from code block nodes that in the selection.
-            var remappingMap = new Dictionary<string, string>();
-            var outputMap = new Dictionary<string, string>();
+            Dictionary<string, string> renamingMap = null; ;
 
-            foreach (var node in nodes)
-            {
-                // Gather all input from code block node that used internally.
-                foreach (var inport in node.InPorts)
-                {
-                    if (inport.Connectors.Count == 0)
-                        continue;
+            // Input variable to renamed input variable map
+            Dictionary<string, string> inputMap = null;
 
-                    var inputNode = inport.Connectors[0].Start.Owner;
-                    if (!nodes.Contains(inputNode))
-                        continue;
+            // Output variable to renamed output variable map
+            Dictionary<string, string> outputMap = null;
 
-                    var cbn = inputNode as CodeBlockNodeModel;
-                    if (cbn == null)
-                        continue;
-
-                    int portIndex = inport.Connectors[0].Start.Index;
-                    string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
-                    string originalVar = cbn.GetRawAstIdentifierForOutputIndex(portIndex).Value;
-
-                    remappingMap[inputVar] = originalVar;
-                    var key = String.Format("{0}%{1}", originalVar, cbn.GUID);
-                    remappingMap[key] = inputVar;
-                }
-
-                if (node is CodeBlockNodeModel)
-                {
-                    var cbn = node as CodeBlockNodeModel;
-                    for (int i = 0; i < cbn.OutPorts.Count(); ++i)
-                    {
-                        string inputVar = cbn.GetAstIdentifierForOutputIndex(i).Value;
-                        string originalVar = cbn.GetRawAstIdentifierForOutputIndex(i).Value;
-
-                        outputMap[inputVar] = originalVar;
-                        var key = String.Format("{0}%{1}", originalVar, cbn.GUID);
-                        outputMap[key] = inputVar;
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < node.OutPorts.Count(); ++i)
-                    {
-                        string inputVar = node.GetAstIdentifierForOutputIndex(i).Value;
-                        outputMap[inputVar] = string.Empty;
-                    }
-                }
-            }
+            // Collect all inputs/outputs/candidate renaming variables
+            GetInputOutputMap(nodes, out inputMap, out outputMap, out renamingMap);
 
             // Vairable numbering map. The Tuple value indicates its number
             // sequence and if for the new UI node.
             var numberingMap = new Dictionary<string, Tuple<int, bool>>();
-
-            // Long names from extern nodes
-            var longNames = GetInputs(nodes);
-            var inputMap = longNames.ToDictionary(v => v, _ => string.Empty);
 
             foreach (var t in allAstNodes)
             {
@@ -376,15 +356,21 @@ namespace Dynamo.DSEngine
                     p => Tuple.Create(p.Value.Item1, false));
 
                 foreach (var astNode in t.Item2)
-                    VariableNumbering(astNode, t.Item1, numberingMap, remappingMap, inputMap, outputMap); 
+                    VariableNumbering(astNode, t.Item1, numberingMap, renamingMap, inputMap, outputMap); 
             }
+
+            renamingMap = renamingMap.Where(p => !p.Key.Contains("%"))
+                                     .ToDictionary(p => p.Key, p => p.Value);
+
+            outputMap = outputMap.Where(p => !p.Key.Contains("%"))
+                                 .ToDictionary(p => p.Key, p => p.Value);
             #endregion
 
             #region Step 3 Variable remapping
             foreach (var ts in allAstNodes)
             {
                 foreach (var astNode in ts.Item2)
-                    VariableRemapping(astNode, remappingMap); 
+                    VariableRemapping(astNode, renamingMap); 
             }
             #endregion
 
@@ -393,7 +379,10 @@ namespace Dynamo.DSEngine
             foreach (var ts in allAstNodes)
             {
                 foreach (var astNode in ts.Item2)
+                {
                     ShortNameMapping(astNode, inputMap, nameGenerator);
+                    ShortNameMapping(astNode, outputMap, nameGenerator);
+                }
             }
             #endregion
 
