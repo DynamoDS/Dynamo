@@ -24,6 +24,7 @@ namespace Analysis
     /// <summary>
     /// A class for storing structured surface analysis data.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public class SurfaceData : ISurfaceData<UV, double>, IGraphicItem
     {
         private Color[,] colorMap ;
