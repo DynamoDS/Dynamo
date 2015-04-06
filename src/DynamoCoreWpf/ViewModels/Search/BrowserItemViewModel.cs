@@ -208,6 +208,11 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        public bool IsClassButton
+        {
+            get { return SubCategories.Count == 0; ; }
+        }
+
         ///<summary>
         /// Small icon for class and method buttons.
         ///</summary>
@@ -509,7 +514,7 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                if (classDetails == null && SubCategories.Count == 0)
+                if (classDetails == null && IsClassButton)
                 {
                     classDetails = new ClassInformationViewModel();
                     classDetails.IsRootCategoryDetails = true;
