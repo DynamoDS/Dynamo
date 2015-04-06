@@ -192,7 +192,7 @@
                     Opacity="0.5"                     
                     >
             <Rectangle.Fill>
-                <SolidColorBrush Color="{Binding BackGroundColor}"></SolidColorBrush>
+                <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
             </Rectangle.Fill>
         </Rectangle>
         <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 

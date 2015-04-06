@@ -78,20 +78,20 @@ namespace Dynamo.ViewModels
             }
         }
        
-        private Color _backGroundColor;
-        public Color BackGroundColor
+        private Color _background;
+        public Color Background
         {
             get
             {
                 var solidColorBrush =
                     (SolidColorBrush)
-                        new BrushConverter().ConvertFromString(_annotationModel.BackGroundColor);
-                if (solidColorBrush != null) _backGroundColor = solidColorBrush.Color;
-                return _backGroundColor;
+                        new BrushConverter().ConvertFromString(_annotationModel.Background);
+                if (solidColorBrush != null) _background = solidColorBrush.Color;
+                return _background;
             }
             set
             {
-                _annotationModel.BackGroundColor = value.ToString();                
+                _annotationModel.Background = value.ToString();                
             }
         }
         
@@ -172,8 +172,8 @@ namespace Dynamo.ViewModels
                 case "AnnotationText":
                     RaisePropertyChanged("AnnotationText");
                     break;
-                case "BackGroundColor":
-                    RaisePropertyChanged("BackGroundColor");
+                case "Background":
+                    RaisePropertyChanged("Background");
                     break;                              
                 case "IsSelected":
                     RaisePropertyChanged("PreviewState");

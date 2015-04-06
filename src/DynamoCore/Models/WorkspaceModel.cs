@@ -850,8 +850,8 @@ namespace Dynamo.Models
                     annotation.SetAttribute("left", n.Left.ToString(CultureInfo.InvariantCulture));
                     annotation.SetAttribute("top", n.Top.ToString(CultureInfo.InvariantCulture));
                     annotation.SetAttribute("width", n.Width.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("height", n.Height.ToString(CultureInfo.InvariantCulture));                   
-                    annotation.SetAttribute("annotationColor", (n.BackGroundColor == null ? "" : n.BackGroundColor.ToString()));
+                    annotation.SetAttribute("height", n.Height.ToString(CultureInfo.InvariantCulture));
+                    annotation.SetAttribute("annotationColor", (n.Background == null ? "" : n.Background.ToString()));
                     annotation.SetAttribute("fontSize", n.FontSize.ToString(CultureInfo.InvariantCulture));
                     annotation.SetAttribute("initialTop", n.InitialTop.ToString(CultureInfo.InvariantCulture));
                     annotation.SetAttribute("initialHeight", n.InitialHeight.ToString(CultureInfo.InvariantCulture));

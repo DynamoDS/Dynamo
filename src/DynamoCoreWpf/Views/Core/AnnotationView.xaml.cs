@@ -55,7 +55,7 @@ namespace Dynamo.Nodes
             {
                 var brush = rectangle.Fill as SolidColorBrush;
                 if (brush != null)
-                    ViewModel.BackGroundColor = brush.Color;
+                    ViewModel.Background = brush.Color;
             }
             ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
         }

@@ -87,14 +87,14 @@ namespace Dynamo.Models
 
         }
 
-        private string _backGroundColor;
-        public string BackGroundColor
+        private string _background;
+        public string Background
         {
-            get { return _backGroundColor ?? "#ff7bac"; }
+            get { return _background ?? "#ff7bac"; }
             set
             {
-                _backGroundColor = value;
-                RaisePropertyChanged("BackGroundColor");
+                _background = value;
+                RaisePropertyChanged("Background");
             }
         }
               
@@ -342,7 +342,7 @@ namespace Dynamo.Models
             helper.SetAttribute("fontSize", this.FontSize);
             helper.SetAttribute("initialTop", this.InitialTop);
             helper.SetAttribute("initialHeight", this.InitialHeight);
-            helper.SetAttribute("annotationColor", (this.BackGroundColor == null ? "" : this.BackGroundColor.ToString()));
+            helper.SetAttribute("annotationColor", (this.Background == null ? "" : this.Background.ToString()));
             helper.SetAttribute("ModelGUIDs", string.Join(",", this.SelectedModels.Select(x => x.GUID)));           
         }
 
@@ -355,7 +355,7 @@ namespace Dynamo.Models
             this.Top = helper.ReadDouble("top", 0.0);
             this.Width = helper.ReadDouble("width", 0.0);
             this.Height = helper.ReadDouble("height", 0.0);
-            this.BackGroundColor = helper.ReadString("annotationColor", "");
+            this.Background = helper.ReadString("annotationColor", "");
             this.FontSize = helper.ReadDouble("fontSize", 10.0);
             this.InitialTop = helper.ReadDouble("initialTop", 0.0);
             this.InitialHeight = helper.ReadDouble("initialHeight", 0.0);
