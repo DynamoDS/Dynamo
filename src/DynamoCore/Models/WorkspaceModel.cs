@@ -843,19 +843,8 @@ namespace Dynamo.Models
                 root.AppendChild(annotationList);
                 foreach (var n in annotations)
                 {
-                    var annotation = xmlDoc.CreateElement(n.GetType().ToString());
-                    annotationList.AppendChild(annotation);
-                    annotation.SetAttribute("GUID", n.GUID.ToString());
-                    annotation.SetAttribute("annotationText", n.AnnotationText);                   
-                    annotation.SetAttribute("left", n.Left.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("top", n.Top.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("width", n.Width.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("height", n.Height.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("backgrouund", (n.Background == null ? "" : n.Background.ToString()));
-                    annotation.SetAttribute("fontSize", n.FontSize.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("InitialTop", n.InitialTop.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("InitialHeight", n.InitialHeight.ToString(CultureInfo.InvariantCulture));
-                    annotation.SetAttribute("modelGuids", string.Join(",", n.SelectedModels.Select(z => z.GUID)));
+                    var annotation = n.Serialize(xmlDoc, SaveContext.File);
+                    annotationList.AppendChild(annotation);                   
                 }
 
                 return true;
