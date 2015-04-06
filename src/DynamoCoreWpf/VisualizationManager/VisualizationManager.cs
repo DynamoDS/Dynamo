@@ -352,6 +352,8 @@ namespace Dynamo
 
             foreach (var node in workspace.Nodes)
                 NodeRemovedFromHomeWorkspace(node);
+
+            Clear();
         }
 
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
