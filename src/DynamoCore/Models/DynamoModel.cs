@@ -459,20 +459,23 @@ namespace Dynamo.Models
             if (!isTestMode && this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
+
+                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
-                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.Begin));
-
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
-
-                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.End));
                 }
                 catch (Exception e)
                 {
                     Logger.Log(e.Message);
                 }
+                finally
+                {
+                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.End));
+                }
+
                 if (migrator != null)
                 {
                     var isFirstRun = this.PreferenceSettings.IsFirstRun;
