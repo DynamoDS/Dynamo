@@ -25,16 +25,14 @@ namespace Dynamo.Utilities
 
     public static class WorkspaceUtilities
     {
-        internal static void GatherAllUpstreamNodes(NodeModel nodeModel, List<NodeModel> gathered)
+        internal static void GatherAllUpstreamNodes(NodeModel nodeModel,
+            List<NodeModel> gathered, Predicate<NodeModel> match)
         {
             if ((nodeModel == null) || gathered.Contains(nodeModel))
                 return; // Look no further, node is already in the list.
 
             gathered.Add(nodeModel); // Add to list first, avoiding re-entrant.
-
-            // Stop gathering if this node does not display
-            // upstream.
-            if (!nodeModel.IsUpstreamVisible)
+            if (!match(nodeModel)) // Determine if the search should proceed.
                 return;
 
             foreach (var upstreamNode in nodeModel.InputNodes)
@@ -43,7 +41,7 @@ namespace Dynamo.Utilities
                     continue;
 
                 // Add all the upstream nodes found into the list.
-                GatherAllUpstreamNodes(upstreamNode.Value.Item2, gathered);
+                GatherAllUpstreamNodes(upstreamNode.Value.Item2, gathered, match);
             }
         }
     }

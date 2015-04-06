@@ -918,7 +918,9 @@ namespace Dynamo.Models
                 var nodesToUpdate = modelsToUpdate.OfType<NodeModel>().ToList();
                 foreach (var nodeToUpdate in nodesToUpdate)
                 {
-                    WorkspaceUtilities.GatherAllUpstreamNodes(nodeToUpdate, nodesToShowOrHide);
+                    // Unconditionally retrieve all upstream nodes.
+                    WorkspaceUtilities.GatherAllUpstreamNodes(
+                        nodeToUpdate, nodesToShowOrHide, model => true);
                 }
 
                 // Remove those nodes that are in "nodesToUpdate".
