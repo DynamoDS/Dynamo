@@ -18,82 +18,82 @@ namespace Dynamo.Models
         public double InitialTop { get; set; } //required to calculate the TOP position in a group         
         public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group 
         private string modelGuids { get; set; }        
-        private string _text;
+        private string text;
         public string Text
         {
-            get { return _text; }
+            get { return text; }
             set
             {
-                _text = value;
+                text = value;
                 RaisePropertyChanged("Text");
             }
         }
 
-        private double _width;
+        private double width;
         public double Width
         {
-            get { return _width; }
+            get { return width; }
             set
             {
-                _width = value;
+                width = value;
                 RaisePropertyChanged("Width");
             }
         }
 
-        private double _height;
+        private double height;
         public double Height
         {
-            get { return _height; }
+            get { return height; }
             set
             {
-                _height = value;
+                height = value;
                 RaisePropertyChanged("Height");
             }
         }
 
-        private double _top;
+        private double top;
         public double Top
         {
-            get { return _top; }
+            get { return top; }
             set
             {
-                _top = value;
+                top = value;
                 RaisePropertyChanged("Top");
             }
         }
 
-        private double _left;
+        private double left;
         public double Left
         {
-            get { return _left; }
+            get { return left; }
             set
             {
-                _left = value;
+                left = value;
                 RaisePropertyChanged("Left");
             }
         }
 
-        private string _annotationText;
+        private string annotationText;
         public String AnnotationText
         {
-            get { return _annotationText; }
+            get { return annotationText; }
             set
             {
-                _annotationText = value;
+                annotationText = value;
                 if (value == String.Empty)
-                    _annotationText = Resources.GroupDefaultText;
+                    annotationText = Resources.GroupDefaultText;
                 RaisePropertyChanged("AnnotationText");
             }
 
         }
 
-        private string _background;
+        private string background;
         public string Background
         {
-            get { return _background ?? "#ff7bac"; }
+            get { return background ?? "#ff7bac"; }
             set
             {
-                _background = value;
+                background = value;
                 RaisePropertyChanged("Background");
             }
         }

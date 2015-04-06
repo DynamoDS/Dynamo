@@ -16,65 +16,65 @@ namespace Dynamo.ViewModels
 {
     public class AnnotationViewModel : ViewModelBase
     {
-        private AnnotationModel _annotationModel;
+        private AnnotationModel annotationModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;        
-        private double _zIndex = 2;
+        private double zIndex = 2;
         
         public AnnotationModel AnnotationModel
         {
-            get { return _annotationModel; }
+            get { return annotationModel; }
             set
             {
-                _annotationModel = value;
+                annotationModel = value;
                 RaisePropertyChanged("AnnotationModel");
             }
         }
 
         public Double Width
         {
-            get { return _annotationModel.Width; }
+            get { return annotationModel.Width; }
         }
 
         public Double Height
         {
-            get { return _annotationModel.Height; }
+            get { return annotationModel.Height; }
             set
             {
-                _annotationModel.Height = value;              
+                annotationModel.Height = value;              
             }
         }
 
         public Double Top
         {
-            get { return _annotationModel.Top; }
+            get { return annotationModel.Top; }
             set
             {
-                _annotationModel.Top = value;                
+                annotationModel.Top = value;                
             }
         }
        
         public Double Left
         {
-            get { return _annotationModel.Left; }
-            set { _annotationModel.Left = value; }
+            get { return annotationModel.Left; }
+            set { annotationModel.Left = value; }
         }
 
         public double ZIndex
         {
-            get { return _zIndex; }
+            get { return zIndex; }
             set
             {
-                _zIndex = value;
+                zIndex = value;
                 RaisePropertyChanged("ZIndex");
             }
         }
 
         public String AnnotationText
         {
-            get { return _annotationModel.AnnotationText; }
+            get { return annotationModel.AnnotationText; }
             set
             {
-                _annotationModel.AnnotationText = value;                
+                annotationModel.AnnotationText = value;                
             }
         }
        
@@ -85,13 +85,13 @@ namespace Dynamo.ViewModels
             {
                 var solidColorBrush =
                     (SolidColorBrush)
-                        new BrushConverter().ConvertFromString(_annotationModel.Background);
+                        new BrushConverter().ConvertFromString(annotationModel.Background);
                 if (solidColorBrush != null) _background = solidColorBrush.Color;
                 return _background;
             }
             set
             {
-                _annotationModel.Background = value.ToString();                
+                annotationModel.Background = value.ToString();                
             }
         }
         
@@ -99,7 +99,7 @@ namespace Dynamo.ViewModels
         {
             get
             {               
-                if (_annotationModel.IsSelected)
+                if (annotationModel.IsSelected)
                 {
                     return PreviewState.Selection;
                 }
@@ -125,17 +125,17 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _annotationModel.FontSize;
+                return annotationModel.FontSize;
             }
             set
             {
-                _annotationModel.FontSize = value;                
+                annotationModel.FontSize = value;                
             }
         }
        
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {            
-            _annotationModel = model;           
+            annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;                                     
             model.PropertyChanged += model_PropertyChanged;          
         }
