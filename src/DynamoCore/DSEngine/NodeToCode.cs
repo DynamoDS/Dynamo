@@ -9,6 +9,17 @@ namespace Dynamo.DSEngine
 {
     public class Nodes2CodeUtils
     {
+        private class VariableShortNameGenerator
+        {
+            private int counter = 0;
+
+            public string GetNextName()
+            {
+                counter++;
+                return AstBuilder.StringConstants.ShortVarPrefix + counter.ToString();
+            }
+        }
+
         private static HashSet<string> CollectIntermediateVarialbeNames(IEnumerable<NodeModel> nodes)
         {
             HashSet<string> variableSet = new HashSet<string>();
@@ -53,58 +64,56 @@ namespace Dynamo.DSEngine
 
         private static Dictionary<string, string> GetVariableRenamingMap(IEnumerable<string> variables)
         {
-            int shortVarCounter = 0;
-            var nameMap = new Dictionary<string, string>();
-
-            foreach (var longVariable in variables)
-            {
-                shortVarCounter++;
-                string shortVariable = AstBuilder.StringConstants.ShortVarPrefix + shortVarCounter.ToString();
-                nameMap[longVariable] = shortVariable;
-            }
-            return nameMap;
+            return variables.ToDictionary(v => v, _ => string.Empty);
         }
 
-        private static void MapIdentifier(AssociativeNode astNode, Dictionary<string, string> namingMap)
+        private static void MapIdentifier(AssociativeNode astNode, Dictionary<string, string> namingMap, VariableShortNameGenerator nameGenerator)
         {
             if (astNode is IdentifierNode)
             {
                 var identNode = astNode as IdentifierNode;
                 var ident = identNode.Value;
                 if (namingMap.ContainsKey(ident))
+                {
+                    // hasn't been initialized yet
+                    if (namingMap[ident] == string.Empty)
+                    {
+                        namingMap[ident] = nameGenerator.GetNextName();
+                    }
                     identNode.Name = identNode.Value = namingMap[ident];
+                }
 
-                MapIdentifier(identNode.ArrayDimensions, namingMap);
+                MapIdentifier(identNode.ArrayDimensions, namingMap, nameGenerator);
             }
             else if (astNode is IdentifierListNode)
             {
                 var node = astNode as IdentifierListNode;
-                MapIdentifier(node.LeftNode, namingMap);
-                MapIdentifier(node.RightNode, namingMap);
+                MapIdentifier(node.LeftNode, namingMap, nameGenerator);
+                MapIdentifier(node.RightNode, namingMap, nameGenerator);
             }
             else if (astNode is FunctionCallNode)
             {
                 var node = astNode as FunctionCallNode;
-                MapIdentifier(node.Function, namingMap);
+                MapIdentifier(node.Function, namingMap, nameGenerator);
                 for (int i = 0; i < node.FormalArguments.Count; ++i)
                 {
-                    MapIdentifier(node.FormalArguments[i], namingMap);
+                    MapIdentifier(node.FormalArguments[i], namingMap, nameGenerator);
                 }
-                MapIdentifier(node.ArrayDimensions, namingMap);
+                MapIdentifier(node.ArrayDimensions, namingMap, nameGenerator);
             }
             else if (astNode is ArrayNode)
             {
                 var node = astNode as ArrayNode;
-                MapIdentifier(node.Expr, namingMap);
+                MapIdentifier(node.Expr, namingMap, nameGenerator);
             }
             else if (astNode is ExprListNode)
             {
                 var node = astNode as ExprListNode;
                 for (int i = 0; i < node.list.Count; ++i)
                 {
-                    MapIdentifier(node.list[i], namingMap);
+                    MapIdentifier(node.list[i], namingMap, nameGenerator);
                 }
-                MapIdentifier(node.ArrayDimensions, namingMap);
+                MapIdentifier(node.ArrayDimensions, namingMap, nameGenerator);
             }
             else if (astNode is FunctionDotCallNode)
             {
@@ -113,23 +122,23 @@ namespace Dynamo.DSEngine
             else if (astNode is InlineConditionalNode)
             {
                 var node = astNode as InlineConditionalNode;
-                MapIdentifier(node.ConditionExpression, namingMap);
-                MapIdentifier(node.TrueExpression, namingMap);
-                MapIdentifier(node.FalseExpression, namingMap);
+                MapIdentifier(node.ConditionExpression, namingMap, nameGenerator);
+                MapIdentifier(node.TrueExpression, namingMap, nameGenerator);
+                MapIdentifier(node.FalseExpression, namingMap, nameGenerator);
             }
             else if (astNode is RangeExprNode)
             {
                 var node = astNode as RangeExprNode;
-                MapIdentifier(node.FromNode, namingMap);
-                MapIdentifier(node.ToNode, namingMap);
-                MapIdentifier(node.StepNode, namingMap);
-                MapIdentifier(node.ArrayDimensions, namingMap);
+                MapIdentifier(node.FromNode, namingMap, nameGenerator);
+                MapIdentifier(node.ToNode, namingMap, nameGenerator);
+                MapIdentifier(node.StepNode, namingMap, nameGenerator);
+                MapIdentifier(node.ArrayDimensions, namingMap, nameGenerator);
             }
             else if (astNode is BinaryExpressionNode)
             {
                 var node = astNode as BinaryExpressionNode;
-                MapIdentifier(node.LeftNode, namingMap);
-                MapIdentifier(node.RightNode, namingMap);
+                MapIdentifier(node.LeftNode, namingMap, nameGenerator);
+                MapIdentifier(node.RightNode, namingMap, nameGenerator);
             }
         }
 
@@ -138,9 +147,11 @@ namespace Dynamo.DSEngine
             var intermediateVariables = CollectIntermediateVarialbeNames(nodes);
             var renamingMap = GetVariableRenamingMap(intermediateVariables);
             var astNodes = astBuilder.CompileToAstNodes(nodes, false, verboseLogging, true);
+            var nameGenerator = new VariableShortNameGenerator();
+
             foreach (var astNode in astNodes)
             {
-                MapIdentifier(astNode, renamingMap); 
+                MapIdentifier(astNode, renamingMap, nameGenerator); 
             }
             return astNodes;
         }
