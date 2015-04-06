@@ -50,7 +50,6 @@ namespace Dynamo.DSEngine
         {
             this.libraryServices = libraryServices;
             libraryServices.LibraryLoaded += LibraryLoaded;
-            CompilationServices = new CompilationServices(libraryServices.LibraryManagementCore);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
@@ -58,6 +57,7 @@ namespace Dynamo.DSEngine
 
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
             libraryServices.SetLibraryCore(LiveRunnerCore);
+            CompilationServices = new CompilationServices(LiveRunnerCore);
 
             astBuilder = new AstBuilder(this);
             syncDataManager = new SyncDataManager();
