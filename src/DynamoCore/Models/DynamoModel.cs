@@ -508,19 +508,13 @@ namespace Dynamo.Models
 
             DisposeLogic.IsShuttingDown = false;
 
-            // Create a core which is used for parsing code and loading libraries
-            var libraryCore =
-                new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
-
-            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
-            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
-            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
-
-            LibraryServices = new LibraryServices(libraryCore, pathManager);
+            LibraryServices = new LibraryServices(pathManager);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
             ResetEngineInternal();
+            LibraryServices.LoadLibraries();
+
 
             AddHomeWorkspace();
 
