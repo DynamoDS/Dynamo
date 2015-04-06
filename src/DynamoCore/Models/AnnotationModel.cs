@@ -176,7 +176,7 @@ namespace Dynamo.Models
             this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();
 
             if (!loadFromGraph)
-                CreateGroupingOnModels();
+                UpdateBoundaryFromSelection();
         }
 
 
@@ -185,13 +185,13 @@ namespace Dynamo.Models
             switch (e.PropertyName)
             {
                 case "X":
-                    CreateGroupingOnModels();
+                    UpdateBoundaryFromSelection();
                     break;
                 case "Y":
-                    CreateGroupingOnModels();
+                    UpdateBoundaryFromSelection();
                     break;
                 case "Position":
-                    CreateGroupingOnModels();
+                    UpdateBoundaryFromSelection();
                     break;
             }
         }
@@ -207,12 +207,12 @@ namespace Dynamo.Models
             if (remove)
             {
                 SelectedModels = nodesList;
-                CreateGroupingOnModels();
+                UpdateBoundaryFromSelection();
             }
         }
 
         /// <summary>
-        /// Recaluclate the group when a note is disposed
+        /// Recalculate the group when a note is disposed
         /// </summary>
         /// <param name="note">The note.</param>
         private void note_Disposed(NoteModel note)
@@ -222,14 +222,14 @@ namespace Dynamo.Models
             if (remove)
             {
                 SelectedModels = notesList;
-                CreateGroupingOnModels();
+                UpdateBoundaryFromSelection();
             }
         }
 
         /// <summary>
-        /// Creates the grouping on selected models.
+        /// Updates the group boundary based on the nodes / notes selection.
         /// </summary>      
-        private void CreateGroupingOnModels()
+        private void UpdateBoundaryFromSelection()
         {
             var selectedModelsList = selectedModels.ToList();
           
