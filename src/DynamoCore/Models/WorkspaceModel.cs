@@ -1348,9 +1348,9 @@ namespace Dynamo.Models
         public ModelBase GetModelInternal(Guid modelGuid)
         {
             ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
-                ?? (ModelBase)Nodes.FirstOrDefault(node => node.GUID == modelGuid))
-                ?? (Notes.FirstOrDefault(note => note.GUID == modelGuid)
-                ?? (ModelBase) Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid));
+                ??  Nodes.FirstOrDefault(node => node.GUID == modelGuid) as ModelBase)
+                ?? (Notes.FirstOrDefault(note => note.GUID == modelGuid) 
+                ??  Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid) as ModelBase) ;
 
             return foundModel;
         }
