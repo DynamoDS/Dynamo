@@ -101,7 +101,7 @@ namespace DynamoCoreUITests
             Assert.Null(BackgroundPreview.Mesh);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;
