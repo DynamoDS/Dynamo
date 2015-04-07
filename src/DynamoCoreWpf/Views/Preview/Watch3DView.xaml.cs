@@ -54,8 +54,9 @@ namespace Dynamo.Controls
         #region private members
 
         private readonly Guid _id=Guid.Empty;
-        private Point _rightMousePoint;
-        private LineGeometry3D _grid;
+        private Point rightMousePoint;
+        private LineGeometry3D worldGrid;
+        private LineGeometry3D worldAxes;
         private RenderTechnique renderTechnique;
         private Camera camera;
         private Color4 selectionColor = new Color4(0,158.0f/255.0f,1,1);
@@ -76,11 +77,21 @@ namespace Dynamo.Controls
 
         public LineGeometry3D Grid
         {
-            get { return _grid; }
+            get { return worldGrid; }
             set
             {
-                _grid = value;
+                worldGrid = value;
                 NotifyPropertyChanged("Grid");
+            }
+        }
+
+        public LineGeometry3D Axes
+        {
+            get { return worldAxes; }
+            set
+            {
+                worldAxes = value;
+                NotifyPropertyChanged("Axes");
             }
         }
 
@@ -617,7 +628,7 @@ namespace Dynamo.Controls
 
         void view_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            _rightMousePoint = e.GetPosition(topControl);
+            rightMousePoint = e.GetPosition(topControl);
         }
 
         void view_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -626,7 +637,7 @@ namespace Dynamo.Controls
             // rotation. handle the event so we don't show the context menu
             // if the user wants the contextual menu they can click on the
             // node sidebar or top bar
-            if (e.GetPosition(topControl) != _rightMousePoint)
+            if (e.GetPosition(topControl) != rightMousePoint)
             {
                 e.Handled = true;
             }
@@ -662,36 +673,53 @@ namespace Dynamo.Controls
                 }
             }
 
-            // Draw the coordinate axes
-            positions.Add(new Vector3());
-            indices.Add(positions.Count - 1);
-            positions.Add(new Vector3(1,0,0));
-            indices.Add(positions.Count - 1);
-            colors.Add(Color.Red);
-            colors.Add(Color.Red);
-
-            positions.Add(new Vector3());
-            indices.Add(positions.Count - 1);
-            positions.Add(new Vector3(0, 1, 0));
-            indices.Add(positions.Count - 1);
-            colors.Add(Color.Blue);
-            colors.Add(Color.Blue);
-
-            positions.Add(new Vector3());
-            indices.Add(positions.Count - 1);
-            positions.Add(new Vector3(0, 0, -1));
-            indices.Add(positions.Count - 1);
-            colors.Add(Color.Green);
-            colors.Add(Color.Green);
-
             Grid.Positions = positions;
             Grid.Indices = indices;
             Grid.Colors = colors;
+
+            Axes = new LineGeometry3D();
+            var axesPositions = new Vector3Collection();
+            var axesIndices = new IntCollection();
+            var axesColors = new Color4Collection();
+
+            // Draw the coordinate axes
+            axesPositions.Add(new Vector3());
+            axesIndices.Add(axesPositions.Count - 1);
+            axesPositions.Add(new Vector3(5, 0, 0));
+            axesIndices.Add(axesPositions.Count - 1);
+            axesColors.Add(Color.Red);
+            axesColors.Add(Color.Red);
+
+            axesPositions.Add(new Vector3());
+            axesIndices.Add(axesPositions.Count - 1);
+            axesPositions.Add(new Vector3(0, 5, 0));
+            axesIndices.Add(axesPositions.Count - 1);
+            axesColors.Add(Color.Blue);
+            axesColors.Add(Color.Blue);
+
+            axesPositions.Add(new Vector3());
+            axesIndices.Add(axesPositions.Count - 1);
+            axesPositions.Add(new Vector3(0, 0, -5));
+            axesIndices.Add(axesPositions.Count - 1);
+            axesColors.Add(Color.Green);
+            axesColors.Add(Color.Green);
+
+            Axes.Positions = axesPositions;
+            Axes.Indices = axesIndices;
+            Axes.Colors = axesColors;
         }
 
         private static void DrawGridPatch(
             Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY)
         {
+            var c1 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#c5d1d8");
+            c1.Clamp();
+            var c2 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#a0b4c0");
+            c2.Clamp();
+
+            var lightGridColor = new Color4(new Vector4(c1.ScR,c1.ScG ,c1.ScB, 1));
+            var darkGridColor = new Color4(new Vector4(c2.ScR, c2.ScG, c2.ScB, 1));
+
             var size = 10;
 
             for (
@@ -705,13 +733,13 @@ namespace Dynamo.Controls
 
                 if (x%5 == 0)
                 {
-                    colors.Add(Color.DarkGray);
-                    colors.Add(Color.DarkGray);
+                    colors.Add(darkGridColor);
+                    colors.Add(darkGridColor);
                 }
                 else
                 {
-                    colors.Add(Color.LightGray);
-                    colors.Add(Color.LightGray);
+                    colors.Add(lightGridColor);
+                    colors.Add(lightGridColor);
                 }
             }
 
@@ -724,13 +752,13 @@ namespace Dynamo.Controls
 
                 if (y%5 == 0)
                 {
-                    colors.Add(Color.DarkGray);
-                    colors.Add(Color.DarkGray);
+                    colors.Add(darkGridColor);
+                    colors.Add(darkGridColor);
                 }
                 else
                 {
-                    colors.Add(Color.LightGray);
-                    colors.Add(Color.LightGray);
+                    colors.Add(lightGridColor);
+                    colors.Add(lightGridColor);
                 }
             }
         }
