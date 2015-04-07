@@ -75,7 +75,7 @@ namespace Dynamo.Models
             WorkspaceInfo info, 
             bool verboseLogging,
             bool isTestMode)
-            : base(e, n, info, factory,designOptions)
+            : base(e, n,a, info, factory,designOptions)
         {
             EvaluationCount = 0;
 

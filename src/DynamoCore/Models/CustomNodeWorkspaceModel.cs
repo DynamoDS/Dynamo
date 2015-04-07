@@ -50,7 +50,7 @@ namespace Dynamo.Models
             IEnumerable<AnnotationModel> a,
             WorkspaceInfo info,
             ElementResolver elementResolver = null) 
-            : base(e, n, info, factory,designOptions)
+            : base(e, n,a, info, factory,designOptions)
         {
             HasUnsavedChanges = false;
 
