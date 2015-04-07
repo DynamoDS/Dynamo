@@ -62,8 +62,8 @@ namespace DynamoCoreUITests
             Assert.IsTrue(nodes.All(n => n.IsUpstreamVisible));
 
             // Ensure that visulations match our expectations
-            Assert.AreEqual(5, BackgroundPreview.Points.Count);
-            Assert.AreEqual(4, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(5, BackgroundPreview.Points.Positions.Count);
+            Assert.AreEqual(4, BackgroundPreview.Lines.Positions.Count);
 
             // Now turn off the upstream preview for "FinalPoints"...
             var setUpstreamInvisible = new DynamoModel.UpdateModelValueCommand(
@@ -84,8 +84,8 @@ namespace DynamoCoreUITests
             }));
 
             // Should be left with just FinalPoints, Line1 and Point2.
-            Assert.AreEqual(3, BackgroundPreview.Points.Count);
-            Assert.AreEqual(2, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(3, BackgroundPreview.Points.Positions.Count);
+            Assert.AreEqual(2, BackgroundPreview.Lines.Positions.Count);
 
             // Turn the upstream preview back on for "FinalPoints"...
             setUpstreamInvisible = new DynamoModel.UpdateModelValueCommand(
@@ -98,8 +98,8 @@ namespace DynamoCoreUITests
             Assert.IsTrue(nodes.All(n => n.IsUpstreamVisible));
 
             // Ensure we get back those hidden geometries.
-            Assert.AreEqual(5, BackgroundPreview.Points.Count);
-            Assert.AreEqual(4, BackgroundPreview.Lines.Count);
+            Assert.AreEqual(5, BackgroundPreview.Points.Positions.Count);
+            Assert.AreEqual(4, BackgroundPreview.Lines.Positions.Count);
         }
     }
 }
