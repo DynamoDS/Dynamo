@@ -31,6 +31,9 @@ namespace Dynamo.DSEngine
     /// </summary>
     public class AstBuilder : LogSourceBase
     {
+        /// <summary>
+        /// Indicate the context of AST compilation
+        /// </summary>
         public enum CompilationContext
         {
             ForDeltaExecution,

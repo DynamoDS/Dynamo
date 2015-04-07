@@ -7,10 +7,26 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.DSEngine
 {
+    /// <summary>
+    /// The result of converting nodes to code. As when a node is converted to 
+    /// code, its inputs and outputs may be renamed to avoid confliction, the
+    /// result contains maps for inputs/new-inputs and outputs/new-outputs.
+    /// </summary>
     public class NodeToCodeResult
     {
+        /// <summary>
+        /// AST nodes that compiled from NodeModel.
+        /// </summary>
         public IEnumerable<AssociativeNode> AstNodes { get; private set; }
+
+        /// <summary>
+        /// The map between original input name and new name.
+        /// </summary>
         public Dictionary<string, string> InputMap { get; private set; }
+
+        /// <summary>
+        /// The map between original output name and new name.
+        /// </summary>
         public Dictionary<string, string> OutputMap { get; private set; }
 
         public NodeToCodeResult(IEnumerable<AssociativeNode> astNodes, 
@@ -24,6 +40,9 @@ namespace Dynamo.DSEngine
     }
     public class NodeToCodeUtils
     {
+        /// <summary>
+        /// Generate short variable name.
+        /// </summary>
         private class ShortNameGenerator
         {
             private int counter = 0;
@@ -35,6 +54,10 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// Traverse all identifiers in depth-first order and for each 
+        /// identifier apply a function to it.
+        /// </summary>
         private class IdentifierVisitor
         {
             public static void Visit(AssociativeNode astNode, Action<IdentifierNode> func)
@@ -108,10 +131,9 @@ namespace Dynamo.DSEngine
             out Dictionary<string, string> outputMap,
             out Dictionary<string, string> renamingMap)
         {
-            inputMap = new Dictionary<string, string>();
             outputMap = new Dictionary<string, string>();
             renamingMap = new Dictionary<string, string>();
-            HashSet<string> inputVariableSet = new HashSet<string>();
+            var inputVariableSet = new HashSet<string>();
 
             foreach (var node in nodes)
             {
@@ -314,7 +336,9 @@ namespace Dynamo.DSEngine
             //
             //   5. Do constant progation to optimize the generated code.
             #region Step 1 AST compilation
-            var allAstNodes = astBuilder.CompileToAstNodes(nodes, Dynamo.DSEngine.AstBuilder.CompilationContext.ForNodeToCode, false);
+
+            var allAstNodes = astBuilder.CompileToAstNodes(nodes, AstBuilder.CompilationContext.ForNodeToCode, false);
+
             #endregion
 
             #region Step 2 Varialbe numbering
