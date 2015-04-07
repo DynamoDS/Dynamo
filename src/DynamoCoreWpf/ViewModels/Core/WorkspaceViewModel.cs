@@ -286,6 +286,7 @@ namespace Dynamo.ViewModels
                 SetArgumentLacingCommand.RaiseCanExecuteChanged();
                 RaisePropertyChanged("HasSelection");
                 RaisePropertyChanged("AnyNodeVisible");
+                RaisePropertyChanged("SelectionArgumentLacing");
             };
 
             // sync collections
