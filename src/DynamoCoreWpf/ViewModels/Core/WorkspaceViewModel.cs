@@ -814,6 +814,7 @@ namespace Dynamo.ViewModels
                 modelGuids, "ArgumentLacing", (string) parameter);
 
             DynamoViewModel.Model.ExecuteCommand(command);
+            RaisePropertyChanged("SelectionArgumentLacing");
         }
 
         private void Hide(object parameters)

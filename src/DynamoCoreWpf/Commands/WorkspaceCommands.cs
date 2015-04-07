@@ -277,8 +277,15 @@ namespace Dynamo.ViewModels
 
         public LacingStrategy SelectionArgumentLacing
         {
-            // TODO: Update this to gather the right value.
-            get { return LacingStrategy.Shortest; }
+            // TODO We may need a better way to do this
+            // For now this returns the most common lacing strategy in the collection.
+            get
+            {
+                return DynamoSelection.Instance.Selection.OfType<NodeModel>()
+                    .GroupBy(node => node.ArgumentLacing)
+                    .OrderByDescending(group => group.Count())
+                    .Select(group => group.Key).First();
+            }
         }
 
         #endregion
