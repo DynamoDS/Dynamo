@@ -238,9 +238,9 @@ namespace Dynamo.Core
         ///     it. Otherwise, it will be set to null.
         /// </param>
         /// <returns>True on success, false if the file could not be read properly.</returns>
-        public bool AddUninitializedCustomNode(string file, bool isTestMode, out CustomNodeInfo info, bool isPackage = false)
+        public bool AddUninitializedCustomNode(string file, bool isTestMode, out CustomNodeInfo info)
         {
-            if (TryGetInfoFromPath(file, isTestMode, isPackage, out info))
+            if (TryGetInfoFromPath(file, isTestMode, out info))
             {
                 SetNodeInfo(info);
                 return true;
@@ -312,8 +312,11 @@ namespace Dynamo.Core
             foreach (var file in Directory.EnumerateFiles(dir, "*.dyf"))
             {
                 CustomNodeInfo info;
-                if (TryGetInfoFromPath(file, isTestMode, isPackage, out info))
+                if (TryGetInfoFromPath(file, isTestMode, out info))
+                {
+                    info.IsPackage = isPackage;
                     yield return info;
+                }
             }
         }
 
@@ -424,7 +427,7 @@ namespace Dynamo.Core
         /// </param>
         /// <param name="info"></param>
         /// <returns>The custom node info object - null if we failed</returns>
-        public bool TryGetInfoFromPath(string path, bool isTestMode, bool isPackage, out CustomNodeInfo info)
+        public bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
             try
             {
@@ -443,8 +446,7 @@ namespace Dynamo.Core
                     header.Name,
                     header.Category,
                     header.Description, 
-                    path,
-                    isPackage);
+                    path);
                 return true;
             }
             catch (Exception e)

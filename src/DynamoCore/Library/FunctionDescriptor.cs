@@ -52,7 +52,6 @@ namespace Dynamo.DSEngine
             Parameters = new List<TypedParameter>();
             ReturnKeys = new List<string>();
             ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
-            IsBuiltIn = false;
         }
 
         public string Assembly { get; set; }
