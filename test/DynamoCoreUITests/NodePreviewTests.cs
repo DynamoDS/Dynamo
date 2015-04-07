@@ -215,7 +215,7 @@ namespace DynamoCoreUITests
             {
                 false, false, false, false
             }));
-            Assert.AreEqual(0, BackgroundPreview.Points.Positions.Count);
+            Assert.Null(BackgroundPreview.Points); // There should be no point left.
 
             // Now turn on the preview of all the nodes
             ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
