@@ -40,19 +40,7 @@ namespace Dynamo.DSEngine
         private readonly List<string> importedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
-        public ProtoCore.Core LibraryManagementCore{get; private set;}
-
-        public void SetLibraryCore(ProtoCore.Core core)
-        {
-            LibraryManagementCore = core;
-        }
-
-        public void LoadLibraries()
-        {
-            PopulateBuiltIns();
-            PopulateOperators();
-            PopulatePreloadLibraries();
-        }
+        public readonly ProtoCore.Core LibraryManagementCore;
 
         private class UpgradeHint
         {
@@ -82,14 +70,6 @@ namespace Dynamo.DSEngine
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
-
-        }
-
-        public LibraryServices(IPathManager pathManager)
-        {
-            LibraryManagementCore = null;
-            this.pathManager = pathManager;
-            importedLibraries.AddRange(pathManager.PreloadedLibraries);
         }
 
         public void Dispose()

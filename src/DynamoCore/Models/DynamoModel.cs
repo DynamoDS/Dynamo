@@ -508,13 +508,19 @@ namespace Dynamo.Models
 
             DisposeLogic.IsShuttingDown = false;
 
-            LibraryServices = new LibraryServices(pathManager);
+            // Create a core which is used for parsing code and loading libraries
+            var libraryCore =
+                new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
+
+            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
+
+            LibraryServices = new LibraryServices(libraryCore, pathManager);
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
             ResetEngineInternal();
-            LibraryServices.LoadLibraries();
-
 
             AddHomeWorkspace();
 
@@ -1038,7 +1044,7 @@ namespace Dynamo.Models
             if (null == CurrentWorkspace)
                 return;
 
-            OnDeletionStarted(this, EventArgs.Empty);
+            OnDeletionStarted();
 
             CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
 
@@ -1331,7 +1337,7 @@ namespace Dynamo.Models
         /// </summary>
         public void ClearCurrentWorkspace()
         {
-            OnWorkspaceClearing(this, EventArgs.Empty);
+            OnWorkspaceClearing();
 
             CurrentWorkspace.Clear();
 
