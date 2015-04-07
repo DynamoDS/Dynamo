@@ -823,7 +823,7 @@ namespace Dynamo.DSEngine
                 IsVarArg = proc.isVarArg,
                 ObsoleteMsg = obsoleteMessage,
                 CanUpdatePeriodically = canUpdatePeriodically,
-                IsBuiltIn = true
+                IsBuiltIn = pathManager.PreloadedLibraries.Contains(library)
             });
 
             AddImportedFunctions(library, new[] { function });

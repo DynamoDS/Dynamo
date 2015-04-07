@@ -153,11 +153,20 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        private ElementTypeEnum elementType;
         public ElementTypeEnum ElementType
         {
-            get { return elementType; }
-            private set { elementType = value; }
+            get
+            {
+                if (entries.All(entry => entry.ElementType == ElementTypeEnum.Package) &&
+                    subCategories.All(subCategory => subCategory.ElementType == ElementTypeEnum.Package))
+                    return ElementTypeEnum.Package;
+                else
+                    if (entries.All(entry => entry.ElementType == ElementTypeEnum.CustomDll) &&
+                        subCategories.All(subCategory => subCategory.ElementType == ElementTypeEnum.CustomDll))
+                        return ElementTypeEnum.CustomDll;
+                    else
+                        return ElementTypeEnum.RegularCategory;
+            }
         }
 
         public ObservableCollection<ISearchEntryViewModel> Items
@@ -264,13 +273,6 @@ namespace Dynamo.Wpf.ViewModels
 
             Visibility = true;
             IsExpanded = false;
-
-            if (entries.All(entry => entry.ElementType == ElementTypeEnum.Package) &&
-                subCategories.All(subCategory => subCategory.ElementType == ElementTypeEnum.Package))
-                ElementType = ElementTypeEnum.Package;
-            if (entries.All(entry => entry.ElementType == ElementTypeEnum.CustomDll) &&
-                subCategories.All(subCategory => subCategory.ElementType == ElementTypeEnum.CustomDll))
-                ElementType = ElementTypeEnum.CustomDll;
         }
 
         private void ItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
