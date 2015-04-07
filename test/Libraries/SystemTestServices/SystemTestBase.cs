@@ -11,6 +11,7 @@ using Dynamo.Controls;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Tests;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
 
@@ -43,6 +44,8 @@ namespace SystemTestServices
         protected DynamoView View { get; set; }
 
         protected DynamoModel Model { get; set; }
+
+        protected IUpdateManager UpdateManager { get; set; }
 
         protected string ExecutingDirectory
         {
@@ -158,7 +161,8 @@ namespace SystemTestServices
                 {
                     StartInTestMode = true,
                     PathResolver = pathResolver,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    UpdateManager = this.UpdateManager
                 });
 
             ViewModel = DynamoViewModel.Start(
