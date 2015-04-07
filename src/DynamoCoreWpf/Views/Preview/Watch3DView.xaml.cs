@@ -88,6 +88,8 @@ namespace Dynamo.Controls
 
         public LineGeometry3D Lines { get; set; }
 
+        public LineGeometry3D LinesSelected { get; set; }
+
         public MeshGeometry3D Mesh { get; set; }
 
         public BillboardText3D Text { get; set; }
@@ -754,6 +756,7 @@ namespace Dynamo.Controls
 
             Points = null;
             Lines = null;
+            LinesSelected = null;
             Mesh = null;
             Text = null;
             MeshCount = 0;
@@ -763,13 +766,14 @@ namespace Dynamo.Controls
 
             var points = InitPointGeometry();
             var lines = InitLineGeometry();
+            var linesSelected = InitLineGeometry();
             var text = InitText3D(); 
             var mesh = InitMeshGeometry();
 
-            foreach (var package in packages)
+            foreach (RenderPackage package in packages)
             {
                 ConvertPoints(package, points, text);
-                ConvertLines(package, lines, text);
+                ConvertLines(package, package.Selected ? linesSelected : lines, text);
                 ConvertMeshes(package, mesh);
             }
 
@@ -778,6 +782,9 @@ namespace Dynamo.Controls
 
             if (!lines.Positions.Any())
                 lines = null;
+
+            if (!linesSelected.Positions.Any())
+                linesSelected = null;
 
             if (!text.TextInfo.Any())
                 text = null;
@@ -792,7 +799,7 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            SendGraphicsToView(points, lines, mesh, text);
+            SendGraphicsToView(points, lines, linesSelected, mesh, text);
 
             //DrawTestMesh();
         }
@@ -844,11 +851,13 @@ namespace Dynamo.Controls
         private void SendGraphicsToView(
             PointGeometry3D points,
             LineGeometry3D lines,
+            LineGeometry3D linesSelected,
             MeshGeometry3D mesh,
             BillboardText3D text)
         {
             Points = points;
             Lines = lines;
+            LinesSelected = linesSelected;
             Mesh = mesh;
             Text = text;
             
@@ -948,7 +957,7 @@ namespace Dynamo.Controls
                     geom.Indices.Add(geom.Indices.Count);
                     geom.Positions.Add(point);
                     geom.Colors.Add(((RenderPackage)p).Selected ? selectionColor : startColor);
-
+                    
                     idx += 3;
                     color_idx += 4;
                 }
