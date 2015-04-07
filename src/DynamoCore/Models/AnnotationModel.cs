@@ -19,6 +19,7 @@ namespace Dynamo.Models
         public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group 
         private string modelGuids { get; set; }   
         private const double doubleValue = 0.0;
+        public bool loadFromXML { get; set; }
         private string text;
         public string Text
         {
@@ -132,7 +133,7 @@ namespace Dynamo.Models
             get { return textBlockHeight; }
             set
             {
-                textBlockHeight = value;
+                textBlockHeight = value;                
                 Top = InitialTop - textBlockHeight;
                 Height = InitialHeight + textBlockHeight;
             }
@@ -163,7 +164,7 @@ namespace Dynamo.Models
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
 
             this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();
-
+            loadFromXML = loadFromGraph;
             if (!loadFromGraph)
                 UpdateBoundaryFromSelection();
         }
@@ -180,7 +181,8 @@ namespace Dynamo.Models
                     UpdateBoundaryFromSelection();
                     break;
                 case "Position":
-                    UpdateBoundaryFromSelection();
+                    if(!loadFromXML)
+                        UpdateBoundaryFromSelection();
                     break;
             }
         }
@@ -315,7 +317,7 @@ namespace Dynamo.Models
             helper.SetAttribute("height", this.Height);
             helper.SetAttribute("fontSize", this.FontSize);
             helper.SetAttribute("InitialTop", this.InitialTop);
-            helper.SetAttribute("InitialTop", this.InitialHeight);
+            helper.SetAttribute("InitialHeight", this.InitialHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));        
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
@@ -343,7 +345,7 @@ namespace Dynamo.Models
             this.background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
             this.InitialTop = helper.ReadDouble("InitialTop", doubleValue);
-            this.InitialHeight = helper.ReadDouble("InitialTop", doubleValue);
+            this.InitialHeight = helper.ReadDouble("InitialHeight", doubleValue);
             //Deserialize Selected models
             if (element.HasChildNodes) 
             {

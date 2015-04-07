@@ -38,7 +38,7 @@ namespace Dynamo.Nodes
         {
             ViewModel = this.DataContext as AnnotationViewModel;
             //Set the height of Textblock based on the content.
-            if (ViewModel != null)
+            if (ViewModel != null && !ViewModel.AnnotationModel.loadFromXML)
             {
                 ViewModel.AnnotationModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
             }
@@ -127,7 +127,7 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="SizeChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (ViewModel != null)
+            if (ViewModel != null && !ViewModel.AnnotationModel.loadFromXML)
             {
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.ActualHeight;                
             }  
