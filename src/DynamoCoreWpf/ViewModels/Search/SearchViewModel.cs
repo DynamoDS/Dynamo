@@ -495,17 +495,19 @@ namespace Dynamo.ViewModels
                             targetClass.Parent.SubCategories.RemoveAt(0);
 
                         targetClass.Dispose();
+                    }
 
-                        // Situation when we need to add only one new category and item.
-                        // Before adding of it we need create new ClassesNodeCategoryViewModel
-                        // as soon as new category will be a class.
-                        if (nameStack.Count == 0)
-                        {
-                            targetClass = new ClassesNodeCategoryViewModel(target);
+                    // Situation when we need to add only one new category and item.
+                    // Before adding of it we need create new ClassesNodeCategoryViewModel
+                    // as soon as new category will be a class.
+                    if (nameStack.Count == 0 && !targetIsRoot)
+                    {
+                        targetClass = new ClassesNodeCategoryViewModel(target);
 
-                            target.SubCategories.Add(targetClass);
-                            target = targetClass;
-                        }
+                        target.SubCategories.Insert(0,targetClass);
+                        target.SubCategories[0].SubCategories.Add(newTarget);
+                        AddEntryToExistingCategory(newTarget, entry);
+                        return;
                     }
 
                     target.InsertSubCategory(newTarget);

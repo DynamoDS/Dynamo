@@ -459,20 +459,23 @@ namespace Dynamo.Models
             if (!isTestMode && this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
+
+                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
-                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.Begin));
-
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
-
-                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.End));
                 }
                 catch (Exception e)
                 {
                     Logger.Log(e.Message);
                 }
+                finally
+                {
+                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.End));
+                }
+
                 if (migrator != null)
                 {
                     var isFirstRun = this.PreferenceSettings.IsFirstRun;
@@ -1042,7 +1045,7 @@ namespace Dynamo.Models
             if (null == CurrentWorkspace)
                 return;
 
-            OnDeletionStarted(this, EventArgs.Empty);
+            OnDeletionStarted();
 
             CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
 
@@ -1333,16 +1336,11 @@ namespace Dynamo.Models
         /// <param name="parameters">The object to add to the selection.</param>
         public void AddToSelection(object parameters)
         {
-            var node = parameters as NodeModel;
-
-            //don't add if the object is null
-            if (node == null)
-                return;
-
-            if (!node.IsSelected)
+            var selectable = parameters as ISelectable;
+            if ((selectable != null) && !selectable.IsSelected)
             {
-                if (!DynamoSelection.Instance.Selection.Contains(node))
-                    DynamoSelection.Instance.Selection.Add(node);
+                if (!DynamoSelection.Instance.Selection.Contains(selectable))
+                    DynamoSelection.Instance.Selection.Add(selectable);
             }
         }
 
@@ -1351,7 +1349,7 @@ namespace Dynamo.Models
         /// </summary>
         public void ClearCurrentWorkspace()
         {
-            OnWorkspaceClearing(this, EventArgs.Empty);
+            OnWorkspaceClearing();
 
             CurrentWorkspace.Clear();
 

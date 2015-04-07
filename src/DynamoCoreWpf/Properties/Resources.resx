@@ -1631,4 +1631,11 @@ Do you want to install the latest Dynamo update?</value>
     <value>Show upstream geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
+  <data name="MoreButton" xml:space="preserve">
+    <value>More</value>
+    <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
+  </data>
+  <data name="PublishPackage" xml:space="preserve">
+    <value>Publish Package !</value>
+  </data>
 </root>
