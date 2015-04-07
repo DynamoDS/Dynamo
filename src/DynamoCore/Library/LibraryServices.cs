@@ -605,7 +605,8 @@ namespace Dynamo.DSEngine
                                                                 PathManager = pathManager,
                                                                 ReturnType = method.returntype,
                                                                 FunctionType = FunctionType.GenericFunction,
-                                                                IsVisibleInLibrary = visibleInLibrary
+                                                                IsVisibleInLibrary = visibleInLibrary,
+                                                                IsBuiltIn = true
                                                             });
 
             AddBuiltinFunctions(functions);
@@ -644,14 +645,16 @@ namespace Dynamo.DSEngine
                     FunctionName = op,
                     Parameters = args,
                     PathManager = pathManager,
-                    FunctionType = FunctionType.GenericFunction
+                    FunctionType = FunctionType.GenericFunction,
+                    IsBuiltIn = true
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
                 {
                     FunctionName = Op.GetUnaryOpFunction(UnaryOperator.Not),
                     Parameters = GetUnaryFuncArgs(),
                     PathManager = pathManager,
-                    FunctionType = FunctionType.GenericFunction
+                    FunctionType = FunctionType.GenericFunction,
+                    IsBuiltIn = true
                 }).AsSingleton());
 
             AddBuiltinFunctions(functions);
@@ -819,7 +822,8 @@ namespace Dynamo.DSEngine
                 PathManager = pathManager,
                 IsVarArg = proc.isVarArg,
                 ObsoleteMsg = obsoleteMessage,
-                CanUpdatePeriodically = canUpdatePeriodically
+                CanUpdatePeriodically = canUpdatePeriodically,
+                IsBuiltIn = true
             });
 
             AddImportedFunctions(library, new[] { function });

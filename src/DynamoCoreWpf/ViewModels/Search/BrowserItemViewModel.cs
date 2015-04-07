@@ -89,6 +89,7 @@ namespace Dynamo.Wpf.ViewModels
         bool IsSelected { get; }
         string Description { get; }
         ICommand ClickedCommand { get; }
+        ElementTypeEnum ElementType { get; }
     }
 
     public class NodeCategoryViewModel : NotificationObject, ISearchEntryViewModel
@@ -150,6 +151,13 @@ namespace Dynamo.Wpf.ViewModels
                 if (!string.IsNullOrEmpty(assembly)) return;
                 assembly = value;
             }
+        }
+
+        private ElementTypeEnum elementType;
+        public ElementTypeEnum ElementType
+        {
+            get { return elementType; }
+            private set { elementType = value; }
         }
 
         public ObservableCollection<ISearchEntryViewModel> Items
@@ -256,6 +264,13 @@ namespace Dynamo.Wpf.ViewModels
 
             Visibility = true;
             IsExpanded = false;
+
+            if (entries.All(entry => entry.ElementType == ElementTypeEnum.Package) &&
+                subCategories.All(subCategory => subCategory.ElementType == ElementTypeEnum.Package))
+                ElementType = ElementTypeEnum.Package;
+            if (entries.All(entry => entry.ElementType == ElementTypeEnum.CustomDll) &&
+                subCategories.All(subCategory => subCategory.ElementType == ElementTypeEnum.CustomDll))
+                ElementType = ElementTypeEnum.CustomDll;
         }
 
         private void ItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)

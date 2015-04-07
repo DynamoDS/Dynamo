@@ -504,7 +504,7 @@ namespace Dynamo.Models
             PackageLoader.MessageLogged += LogMessage;
             PackageLoader.RequestLoadNodeLibrary += LoadNodeLibrary;
             PackageLoader.RequestLoadCustomNodeDirectory +=
-                (dir) => this.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode);
+                (dir) => this.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode, true);
 
             DisposeLogic.IsShuttingDown = false;
 

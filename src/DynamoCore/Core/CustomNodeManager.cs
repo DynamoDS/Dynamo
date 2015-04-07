@@ -238,9 +238,9 @@ namespace Dynamo.Core
         ///     it. Otherwise, it will be set to null.
         /// </param>
         /// <returns>True on success, false if the file could not be read properly.</returns>
-        public bool AddUninitializedCustomNode(string file, bool isTestMode, out CustomNodeInfo info)
+        public bool AddUninitializedCustomNode(string file, bool isTestMode, out CustomNodeInfo info, bool isPackage = false)
         {
-            if (TryGetInfoFromPath(file, isTestMode, out info))
+            if (TryGetInfoFromPath(file, isTestMode, isPackage, out info))
             {
                 SetNodeInfo(info);
                 return true;
@@ -288,10 +288,10 @@ namespace Dynamo.Core
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
         /// <returns></returns>
-        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode)
+        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode, bool isPackage = false)
         {
             var result = new List<CustomNodeInfo>();
-            foreach (var info in ScanNodeHeadersInDirectory(path, isTestMode))
+            foreach (var info in ScanNodeHeadersInDirectory(path, isTestMode, isPackage))
             {
                 SetNodeInfo(info);
                 result.Add(info);
@@ -304,7 +304,7 @@ namespace Dynamo.Core
         ///     Does not instantiate the nodes.
         /// </summary>
         /// <returns>False if SearchPath is not a valid directory, otherwise true</returns>
-        private IEnumerable<CustomNodeInfo> ScanNodeHeadersInDirectory(string dir, bool isTestMode)
+        private IEnumerable<CustomNodeInfo> ScanNodeHeadersInDirectory(string dir, bool isTestMode, bool isPackage)
         {
             if (!Directory.Exists(dir))
                 yield break;
@@ -312,7 +312,7 @@ namespace Dynamo.Core
             foreach (var file in Directory.EnumerateFiles(dir, "*.dyf"))
             {
                 CustomNodeInfo info;
-                if (TryGetInfoFromPath(file, isTestMode, out info))
+                if (TryGetInfoFromPath(file, isTestMode, isPackage, out info))
                     yield return info;
             }
         }
@@ -424,7 +424,7 @@ namespace Dynamo.Core
         /// </param>
         /// <param name="info"></param>
         /// <returns>The custom node info object - null if we failed</returns>
-        public bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
+        public bool TryGetInfoFromPath(string path, bool isTestMode, bool isPackage, out CustomNodeInfo info)
         {
             try
             {
@@ -443,7 +443,8 @@ namespace Dynamo.Core
                     header.Name,
                     header.Category,
                     header.Description, 
-                    path);
+                    path,
+                    isPackage);
                 return true;
             }
             catch (Exception e)
