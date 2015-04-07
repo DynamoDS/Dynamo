@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Documents;
-
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -278,16 +273,8 @@ namespace Dynamo.ViewModels
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += (sender, e) =>
-            {
-                AlignSelectedCommand.RaiseCanExecuteChanged();
-                EnableNodePreviewCommand.RaiseCanExecuteChanged();
-                EnableUpstreamPreviewCommand.RaiseCanExecuteChanged();
-                SetArgumentLacingCommand.RaiseCanExecuteChanged();
-                RaisePropertyChanged("HasSelection");
-                RaisePropertyChanged("AnyNodeVisible");
-                RaisePropertyChanged("SelectionArgumentLacing");
-            };
+            DynamoSelection.Instance.Selection.CollectionChanged += 
+                (sender, e) => RefreshViewOnSelectionChange();
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
@@ -767,6 +754,7 @@ namespace Dynamo.ViewModels
                 modelGuids, "IsVisible", ((bool)parameter) ? "true" : "false");
 
             DynamoViewModel.Model.ExecuteCommand(command);
+            RefreshViewOnSelectionChange();
         }
 
         private void EnableUpstreamPreview(object parameter)
@@ -781,6 +769,7 @@ namespace Dynamo.ViewModels
                 modelGuids, "IsUpstreamVisible", ((bool)parameter) ? "true" : "false");
 
             DynamoViewModel.Model.ExecuteCommand(command);
+            RefreshViewOnSelectionChange();
         }
 
         private void ShowHideAllGeometryPreview(object parameter)
@@ -795,6 +784,22 @@ namespace Dynamo.ViewModels
                 modelGuids, "IsVisible", (string) parameter);
 
             DynamoViewModel.Model.ExecuteCommand(command);
+            RefreshViewOnSelectionChange();
+        }
+
+        private void ShowHideAllUpstreamPreview(object parameter)
+        {
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
+
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "IsUpstreamVisible", (string) parameter);
+
+            DynamoViewModel.Model.ExecuteCommand(command);
+            RefreshViewOnSelectionChange();
         }
 
         private void SetArgumentLacing(object parameter)
@@ -1095,6 +1100,18 @@ namespace Dynamo.ViewModels
         private static bool CanUnPauseVisualizationManagerUpdates(object parameter)
         {
             return true;
+        }
+
+        private void RefreshViewOnSelectionChange()
+        {
+            AlignSelectedCommand.RaiseCanExecuteChanged();
+            EnableNodePreviewCommand.RaiseCanExecuteChanged();
+            EnableUpstreamPreviewCommand.RaiseCanExecuteChanged();
+            SetArgumentLacingCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged("HasSelection");
+            RaisePropertyChanged("AnyNodeVisible");
+            RaisePropertyChanged("AnyNodeUpstreamVisible");
+            RaisePropertyChanged("SelectionArgumentLacing");
         }
     }
 

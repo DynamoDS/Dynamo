@@ -26,6 +26,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _pauseVisualizationManagerUpdateCommand;
         private DelegateCommand _unpauseVisualizationManagerUpdateCommand;
         private DelegateCommand _showHideAllGeometryPreviewCommand;
+        private DelegateCommand _showHideAllUpstreamPreviewCommand;
 
         #endregion
 
@@ -228,6 +229,20 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public DelegateCommand ShowHideAllUpstreamPreviewCommand
+        {
+            get
+            {
+                if (_showHideAllUpstreamPreviewCommand == null)
+                {
+                    _showHideAllUpstreamPreviewCommand = new DelegateCommand(
+                        ShowHideAllUpstreamPreview);
+                }
+
+                return _showHideAllUpstreamPreviewCommand;
+            }
+        }
+
         #endregion
 
         #region Properties for Command Data Binding
@@ -238,6 +253,15 @@ namespace Dynamo.ViewModels
             {
                 return DynamoSelection.Instance.Selection.
                     OfType<NodeModel>().Any(n => n.IsVisible);
+            }
+        }
+
+        public bool AnyNodeUpstreamVisible
+        {
+            get
+            {
+                return DynamoSelection.Instance.Selection.
+                    OfType<NodeModel>().Any(n => n.IsUpstreamVisible);
             }
         }
 
@@ -256,7 +280,6 @@ namespace Dynamo.ViewModels
             // TODO: Update this to gather the right value.
             get { return LacingStrategy.Shortest; }
         }
-
 
         #endregion
     }

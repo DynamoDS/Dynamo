@@ -131,21 +131,29 @@
                     </MenuItem>
 
 
-                    <MenuItem Name="ShowGeometryPreview"
-                              IsEnabled="{Binding Path=HasSelection}"
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
                               Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
                               Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
                               CommandParameter="true"
                               Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
 
-
-                    <MenuItem Name="HideGeometryPreview"
-                              IsEnabled="{Binding Path=HasSelection}"
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
                               Header="{x:Static p:Resources.ContextMenuHideAllGeometry}"
                               Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
                               CommandParameter="false"
                               Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
 
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static  p:Resources.ContextMenuShowUpstreamPreview}"
+                              Command="{Binding Path=ShowHideAllUpstreamPreviewCommand}"
+                              CommandParameter="true"
+                              Visibility="{Binding Path=AnyNodeUpstreamVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
+
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static p:Resources.ContextMenuHideUpstreamPreview}"
+                              Command="{Binding Path=ShowHideAllUpstreamPreviewCommand}"
+                              CommandParameter="false"
+                              Visibility="{Binding Path=AnyNodeUpstreamVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
                     <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}"
                                Name="Align">
