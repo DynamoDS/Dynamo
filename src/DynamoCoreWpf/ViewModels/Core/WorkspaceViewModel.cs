@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Documents;
+
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -1075,7 +1077,7 @@ namespace Dynamo.ViewModels
 
         private void PauseVisualizationManagerUpdates(object parameter)
         {
-            DynamoViewModel.VisualizationManager.Pause();
+            DynamoViewModel.VisualizationManager.Stop();
         }
 
         private static bool CanPauseVisualizationManagerUpdates(object parameter)
@@ -1085,7 +1087,8 @@ namespace Dynamo.ViewModels
 
         private void UnPauseVisualizationManagerUpdates(object parameter)
         {
-            DynamoViewModel.VisualizationManager.UnPause();
+            var update = (bool)parameter;
+            DynamoViewModel.VisualizationManager.Start(update);
         }
 
         private static bool CanUnPauseVisualizationManagerUpdates(object parameter)
