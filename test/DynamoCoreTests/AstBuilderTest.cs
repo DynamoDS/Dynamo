@@ -42,7 +42,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\astbuilder\complex.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             AstBuilder builder = new AstBuilder(null);
@@ -61,7 +61,7 @@ namespace Dynamo.Tests
             //
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\cyclic.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\astbuilder\cyclic.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var sortedNodes = AstBuilder.TopologicalSort(model.CurrentWorkspace.Nodes);
@@ -80,7 +80,7 @@ namespace Dynamo.Tests
             //      +----> 4
             // 
             var model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\multioutputs.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\astbuilder\multioutputs.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
@@ -120,7 +120,7 @@ namespace Dynamo.Tests
             //   3 ----+
             // 
             var model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\multiinputs.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\astbuilder\multiinputs.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
@@ -159,7 +159,7 @@ namespace Dynamo.Tests
             //  2 ----> 3 ----> 1
             // 
             var model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\tri.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\astbuilder\tri.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
@@ -195,7 +195,7 @@ namespace Dynamo.Tests
             // 1 <---- 2 <----> 3 <---- 4
             //
             var model = ViewModel.Model;
-            string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\linear.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\astbuilder\linear.dyn");
             ViewModel.OpenCommand.Execute(openPath);
             var nodes = model.CurrentWorkspace.Nodes.ToList();
 
@@ -239,7 +239,7 @@ namespace Dynamo.Tests
             // 
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\astbuilder\complex.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\astbuilder\complex.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             var nodes = model.CurrentWorkspace.Nodes.ToList();

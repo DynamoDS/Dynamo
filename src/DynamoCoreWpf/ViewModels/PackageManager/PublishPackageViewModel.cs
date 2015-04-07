@@ -550,6 +550,7 @@ namespace Dynamo.PackageManager
             {
                 Assembly assem;
                 var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
+
                 if (result)
                 {
                     var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
@@ -884,6 +885,19 @@ namespace Dynamo.PackageManager
                 var result = PackageLoader.TryLoadFrom(filename, out assem);
                 if (result)
                 {
+                    var assemName = assem.GetName().Name;
+
+                    // The user has attempted to load an existing dll from another path. This is not allowed 
+                    // as the existing assembly cannot be modified while Dynamo is active.
+                    if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name))
+                    {
+                        MessageBox.Show(Resources.PackageDuplicateAssemblyWarning, 
+                                        Resources.PackageDuplicateAssemblyWarningTitle, 
+                                        MessageBoxButtons.OK, 
+                                        MessageBoxIcon.Stop);
+                        return; // skip loading assembly
+                    }
+
                     Assemblies.Add(new PackageAssembly()
                     {
                         Assembly = assem,
@@ -929,7 +943,9 @@ namespace Dynamo.PackageManager
                 var files = GetAllFiles().ToList();
 
                 if (isNewPackage)
-                    dynamoViewModel.Model.PackageLoader.LocalPackages.Add(Package);
+                {
+                    dynamoViewModel.Model.PackageLoader.Add(Package);
+                }
 
                 Package.AddAssemblies(Assemblies);
 

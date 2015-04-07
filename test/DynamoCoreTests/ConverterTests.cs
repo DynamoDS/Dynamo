@@ -18,26 +18,17 @@ namespace Dynamo.Tests
         [Test]
         public void SearchResultsToVisibilityConverterTest()
         {
-            // Currently converter ignores visibility of Addons TreeView. Rewrite test when
-            // addon is come back to UI.
-            // Task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6226.
-
             SearchResultsToVisibilityConverter converter = new SearchResultsToVisibilityConverter();
             int numberOfFoundSearchCategories = 0;
-            bool addonsVisibility = false;
             string searchText = "";
             object result;
 
-            object[] array = { numberOfFoundSearchCategories, addonsVisibility, searchText };
+            object[] array = { numberOfFoundSearchCategories, searchText };
 
-            //1. There are no found search categories. Addons are invisible. Search text is empty.
-            //2. There are no found search categories. Addons are invisible. Search text is not empty.
-            //3. There are no found search categories. Addons are visible. Search text is empty.
-            //4. There are no found search categories. Addons are visible. Search text is not empty.
-            //5. There are some search categories. Addons are invisible. Search text is not empty.
-            //6. There are some search categories. Addons are invisible. Search text is empty.
-            //7. There are some search categories. Addons are visible. Search text is not empty.
-            //8. There are some search categories. Addons are visible. Search text is empty.
+            //1. There are no found search categories. Search text is empty.
+            //2. There are no found search categories. Search text is not empty.
+            //3. There are some search categories. Search text is not empty.
+            //4. There are some search categories. Search text is empty.
 
             // 1 case
             result = converter.Convert(array, null, null, null);
@@ -45,49 +36,19 @@ namespace Dynamo.Tests
 
             // 2 case
             searchText = "search text";
-            array[2] = searchText;
+            array[1] = searchText;
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(Visibility.Visible, result);
 
             // 3 case
-            searchText = "";
-            array[2] = searchText;
-            addonsVisibility = true;
-            array[1] = addonsVisibility;
+            array[0] = 1;
+            array[1] = "search text";
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(Visibility.Collapsed, result);
 
             // 4 case
-            searchText = "search text";
-            array[2] = searchText;
-            result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(Visibility.Visible, result);
-
-            // 5 case
-            numberOfFoundSearchCategories = 5;
-            array[0] = numberOfFoundSearchCategories;
-            addonsVisibility = false;
-            array[1] = addonsVisibility;
-            result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(Visibility.Collapsed, result);
-
-            // 6 case
-            searchText = "";
-            array[2] = searchText;
-            result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(Visibility.Collapsed, result);
-
-            // 7 case
-            addonsVisibility = true;
-            array[1] = addonsVisibility;
-            searchText = "search text";
-            array[2] = searchText;
-            result = converter.Convert(array, null, null, null);
-            Assert.AreEqual(Visibility.Collapsed, result);
-
-            // 8 case
-            searchText = "";
-            array[2] = searchText;
+            array[0] = 1;
+            array[1] = "";
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(Visibility.Collapsed, result);
         }
@@ -365,42 +326,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
-        [Ignore]
-        // TODO(Vladimir): HasParentRootElement converter is not used anywhere.
-        // Reimplement test when needed.
-        public void HasParentRootElementTest()
-        {
-            var converter = new HasParentRootElement();
-            var BreVM = new BrowserRootElementViewModel(new BrowserRootElement("BRE"));
-            var BieVM = new BrowserInternalElementViewModel(new BrowserInternalElement());
-            object result;
-
-            //1. Element is null.
-            //2. Element is BrowserRootElement.
-            //3. Element is not child of BrowserRootElement.
-            //4. Element is child of BrowserRootElement.
-
-            // 1 case
-            result = converter.Convert(null, null, null, null);
-            Assert.AreEqual(false, result);
-
-            // 2 case
-            result = converter.Convert(BreVM, null, null, null);
-            Assert.AreEqual(true, result);
-
-            // 3 case
-            result = converter.Convert(BieVM, null, null, null);
-            Assert.AreEqual(false, result);
-
-            // 4 case
-            // TODO(Vladimir): take a look.
-            //BreVM.CastedModel.AddChild(BieVM.CastedModel);
-            result = converter.Convert(BieVM, null, null, null);
-            Assert.AreEqual(true, result);
-        }
-
-        [Test]
         public void NullValueToCollapsedConverterTest()
         {
             NullValueToCollapsedConverter converter = new NullValueToCollapsedConverter();
@@ -511,9 +436,6 @@ namespace Dynamo.Tests
             textBlock.Height = 10;
 
             # region dynamoViewModel and searchModel
-            var model = DynamoModel.Start();
-            var vizManager = new VisualizationManager(model);
-            var watchHandler = new DefaultWatchHandler(vizManager, model.PreferenceSettings);
             DynamoViewModel dynamoViewModel = DynamoViewModel.Start();
             NodeSearchModel searchModel = new NodeSearchModel();
             # endregion
@@ -544,6 +466,9 @@ namespace Dynamo.Tests
             thickness = new Thickness(0, 0, -6.6733333333333338, 0);
             result = converter.Convert(array, null, null, null);
             Assert.AreEqual(thickness, result);
+
+            var shutdownParams = new DynamoViewModel.ShutdownParams(shutdownHost: false, allowCancellation: false);
+            dynamoViewModel.PerformShutdownSequence(shutdownParams);
         }
 
         [Test]

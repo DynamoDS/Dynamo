@@ -67,6 +67,7 @@
     <Compile Include="OverloadTarget.cs" />
     <Compile Include="ProtoFFITests.cs" />
     <Compile Include="RegressionTargets.cs" />
+    <Compile Include="TestMessageLog.cs" />
     <Compile Include="TestNamespaceConflict.cs" />
     <Compile Include="TestNamespaceResolution.cs" />
     <Compile Include="TestPersistentNodeValues.cs" />

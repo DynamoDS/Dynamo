@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 
 using ProtoCore.AST;
 using ProtoCore.DSASM;
+using TestServices;
 
 namespace Dynamo
 {
@@ -1220,6 +1221,9 @@ namespace Dynamo
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
 
+            var pathResolver = new TestPathResolver();
+            pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
+
             schedulerThread = new SampleSchedulerThread();
             dynamoModel = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
@@ -1227,6 +1231,7 @@ namespace Dynamo
                     // See documentation for 'SchedulerIntegrationTests' above.
                     StartInTestMode = false,
                     SchedulerThread = schedulerThread,
+                    PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
         }

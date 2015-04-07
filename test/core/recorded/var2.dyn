@@ -1,4 +1,4 @@
-<Workspace Version="0.7.2.9691" X="0" Y="0" zoom="1" Description="" RunType="Automatic" Category="" Name="Home">
+<Workspace Version="0.7.2.9691" X="0" Y="0" zoom="1" Description="" RunType="Automatic" Category="" Name="Home" HasRunWithoutCrash="True">
   <Elements>
     <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="22318709-d001-45c0-afde-f9a7ff94ed39" nickname="+" x="691" y="404.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="+@," />
     <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="e9c9a45b-e5fb-4b16-b2ba-e5e08a7048c8" nickname="Code Block" x="308" y="414" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />

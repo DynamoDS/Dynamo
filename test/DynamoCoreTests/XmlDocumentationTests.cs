@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
+using System.Xml;
+using System.IO;
 
 using Dynamo.DSEngine;
 using Dynamo.Library;
@@ -17,47 +18,65 @@ namespace Dynamo.Tests
     {
         #region Helpers
 
-        private static XDocument SampleDocument = XDocument.Parse(
+        private static XmlReader SampleDocument = XmlReader.Create(new StringReader(
 @"
 <doc>          
     <members>
-        <member name=""M:Autodesk.DesignScript.Geometry.Geometry.Translate(System.Double,System.Double,System.Double)"">
+        <member name=""M:MyNamespace.MyClass.MyMethod(System.Double,System.Double,System.Double)"">
             <summary>
-            Translates any given geometry by the given displacements in the x, y,
-            and z directions defined in WCS respectively. 
+            My method bla bla bla bla summary.
             </summary>
-            <param name=""xTranslation"">Displacement along X-axis.</param>
-            <param name=""yTranslation"">Displacement along Y-axis.</param>
-            <param name=""zTranslation"">Displacement along Z-axis.</param>
+            <param name=""a"">Double a.</param>
+            <param name=""b"">Double b.</param>
+            <param name=""c"">Double c.</param>
             <search>
             move,push
             </search>
             <returns>Transformed Geometry.</returns>
         </member>
+        <member name=""M:MyNamespace.MyClass.#ctor"">
+            <summary>
+            Constructor summary.
+            </summary>
+        </member>
     </members>
 </doc>
-");
+"));
 
-        private static FunctionDescriptor GetTranslateMethod()
+        private FunctionDescriptor GetMyMethod()
         {
             var parms = new List<TypedParameter>()
             {
-                new TypedParameter("xTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                new TypedParameter("yTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
-                new TypedParameter("zTranslation", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0))
+                new TypedParameter("a", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                new TypedParameter("b", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0)),
+                new TypedParameter("c", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeDouble, 0))
             };
 
             var funcDesc = new FunctionDescriptor(new FunctionDescriptorParams
             {
-                Assembly = "ProtoGeometry.dll",
-                ClassName = "Autodesk.DesignScript.Geometry.Geometry",
-                FunctionName = "Translate",
+                Assembly = "MyAssembly.dll",
+                ClassName = "MyNamespace.MyClass",
+                FunctionName = "MyMethod",
                 Parameters = parms,
                 ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
                 FunctionType = FunctionType.InstanceMethod
             });
 
-            parms.ForEach(x => x.UpdateFunctionDescriptor(funcDesc, null));
+            parms.ForEach(x => x.UpdateFunctionDescriptor(funcDesc));
+
+            return funcDesc;
+        }
+
+        private FunctionDescriptor GetConstructorMethod()
+        {
+            var funcDesc = new FunctionDescriptor(new FunctionDescriptorParams
+            {
+                Assembly = "MyAssembly.dll",
+                ClassName = "MyNamespace.MyClass",
+                FunctionName = "MyClass",
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
+                FunctionType = FunctionType.Constructor
+            });
 
             return funcDesc;
         }
@@ -66,9 +85,9 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public static void GetSearchTags_FunctionDescriptorXDocument_CanFindSearchTagsForInstanceMethod()
+        public void GetSearchTags_FunctionDescriptorXDocument_CanFindSearchTagsForInstanceMethod()
         {
-            var method = GetTranslateMethod();
+            var method = GetMyMethod();
 
             var tags = method.GetSearchTags(SampleDocument);
 
@@ -79,26 +98,46 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public static void GetSummary_FunctionDescriptorXDocument_CanFindSummaryForBasicInstanceMethod()
+        public void GetSummary_FunctionDescriptorXDocument_CanFindSummaryForBasicInstanceMethod()
         {
-            var method = GetTranslateMethod();
+            var method = GetMyMethod();
 
             var summary = method.GetSummary(SampleDocument);
 
-            Assert.IsTrue(summary.StartsWith("Translates any"));
-            Assert.IsTrue(summary.EndsWith("defined in WCS respectively."));
+            Assert.IsTrue(summary.StartsWith("My method bla"));
+            Assert.IsTrue(summary.EndsWith("summary."));
         }
 
         [Test]
         [Category("UnitTests")]
-        public static void GetDescription_TypedParameterXDocument_CanFindParameterDescriptionForBasicInstanceMethod()
+        public void GetDescription_TypedParameterXDocument_CanFindParameterDescriptionForBasicInstanceMethod()
         {
-            var method = GetTranslateMethod();
+            var method = GetMyMethod();
             var paramX = method.Parameters.First();
 
             var descript = paramX.GetDescription(SampleDocument);
 
-            Assert.AreEqual("Displacement along X-axis.", descript);
+            Assert.AreEqual("Double a.", descript);
+
+            paramX = method.Parameters.ElementAt(1);
+            descript = paramX.GetDescription(SampleDocument);
+            Assert.AreEqual("Double b.", descript);
+
+            paramX = method.Parameters.ElementAt(2);
+            descript = paramX.GetDescription(SampleDocument);
+            Assert.AreEqual("Double c.", descript);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetSummary_FromConstructor()
+        {
+            var method = GetConstructorMethod();
+
+            var summary = method.GetSummary(SampleDocument);
+
+            Assert.AreEqual("Constructor summary.", summary);
+        }
+
     }
 }

@@ -1,14 +1,5 @@
-﻿using ProtoCore.AST.AssociativeAST;
-using Dynamo.Nodes;
-using Dynamo.Utilities;
-using ProtoCore.DSASM;
-using Dynamo.Models;
+﻿using System.Collections.Generic;
 using DynCmd = Dynamo.Models.DynamoModel;
-using ProtoCore.Mirror;
-using Dynamo.DSEngine;
-using ProtoCore.Utils;
-using Dynamo.DSEngine.CodeCompletion;
-using System.IO;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -16,6 +7,14 @@ namespace Dynamo.Tests
     [TestFixture]
     internal class UnicodeTest : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSIronPython.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void TestUnicodeIdentifierInCBN()
         {

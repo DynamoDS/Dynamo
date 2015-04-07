@@ -9,16 +9,11 @@ using DSCoreNodesUI.Properties;
 namespace DSCoreNodesUI
 {
     [NodeName("Web Request")]
-    [NodeDescription("WebRequestDescription", typeof(DSCoreNodesUI.Properties.Resources))]
+    [NodeDescription("WebRequestDescription", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_STRINGS)]
     [IsDesignScriptCompatible]
     public class WebRequest : NodeModel
     {
-        protected override ExecutionHints GetExecutionHintsCore()
-        {
-            return ExecutionHints.ForceExecute;
-        }
-
         public WebRequest()
         {
             InPortData.Add(new PortData("url", Resources.WebRequestPortDataUrlToolTip));

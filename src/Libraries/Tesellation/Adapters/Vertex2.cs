@@ -4,7 +4,7 @@ using MIConvexHull;
 
 namespace Tessellation.Adapters
 {
-    internal class Vertex2 : IVertex, IGraphicItem
+    public class Vertex2 : IVertex, IGraphicItem
     {
         public static Vertex2 FromUV(UV uv)
         {

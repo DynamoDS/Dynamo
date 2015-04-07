@@ -34,15 +34,6 @@ namespace Dynamo.Wpf.ViewModels
             Model.Items.CollectionChanged += ItemsOnCollectionChanged;
         }
 
-        /// <summary>
-        /// Sort this items children and then tell its children and recurse on children
-        /// </summary>
-        public void RecursivelySort()
-        {
-            Items = new ObservableCollection<BrowserItemViewModel>(Items.OrderBy(x => x.Model.Name));
-            Items.ToList().ForEach(x => x.RecursivelySort());
-        }
-
         private void ItemsOnCollectionChanged(object sender,
             NotifyCollectionChangedEventArgs e)
         {
@@ -245,8 +236,8 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(Expand);
 
             Name = name;
-            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
-            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
+            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries.OrderBy(x => x.Name));
+            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs.OrderBy(x => x.Name));
 
             foreach (var category in SubCategories)
                 category.PropertyChanged += CategoryOnPropertyChanged;
@@ -256,8 +247,7 @@ namespace Dynamo.Wpf.ViewModels
             SubCategories.CollectionChanged += SubCategoriesOnCollectionChanged;
 
             items = new ObservableCollection<ISearchEntryViewModel>(
-                Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
-                    .OrderBy(x => x.Name));
+                SubCategories.Cast<ISearchEntryViewModel>().Concat(Entries));
 
             Items.CollectionChanged += ItemsOnCollectionChanged;
 
@@ -432,22 +422,36 @@ namespace Dynamo.Wpf.ViewModels
         {
             foreach (var entry in newItems)
             {
-                var first = Items.Select((x, i) => new { x.Name, Idx = i })
-                    .FirstOrDefault(
-                        x =>
-                            string.Compare(
-                                x.Name,
-                                entry.Name,
-                                StringComparison.Ordinal)
-                                >= 0);
                 // Classes must be first in any case.
                 if (entry is ClassesNodeCategoryViewModel)
+                {
                     Items.Insert(0, entry);
-                else
-                    if (first != null)
-                        Items.Insert(first.Idx, entry);
+                    continue;
+                }
+
+                var list = Items.Where(cat => !(cat is ClassesNodeCategoryViewModel));
+                var nextLargerItemIndex = FindInsertionPointByName(list, entry.Name);
+
+                // Nodecategories(i.e. namespaces) should be before members.
+                if (entry is NodeSearchElementViewModel)
+                {
+                    if (nextLargerItemIndex >= 0)
+                        Items.Insert(nextLargerItemIndex + SubCategories.Count, entry);
                     else
                         Items.Add(entry);
+                }
+                else if (entry is NodeCategoryViewModel)
+                {
+                    if (nextLargerItemIndex >= 0)
+                    {
+                        bool hasClasses = Items.FirstOrDefault() is ClassesNodeCategoryViewModel;
+
+                        var offset = hasClasses ? 1 : 0;
+                        Items.Insert(nextLargerItemIndex + offset, entry);
+                    }
+                    else
+                        Items.Insert(Items.Count - Entries.Count, entry);
+                }
             }
         }
 
@@ -470,18 +474,31 @@ namespace Dynamo.Wpf.ViewModels
 
         public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
         {
-            var first = SubCategories.Select((x, i) => new { x.Name, Idx = i })
-                .FirstOrDefault(
-                    x =>
-                        string.Compare(
-                            x.Name,
-                            newSubCategory.Name,
-                            StringComparison.Ordinal)
-                            >= 0);
-            if (first != null)
-                SubCategories.Insert(first.Idx, newSubCategory);
+            var list = SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel));
+            var nextLargerItemIndex = FindInsertionPointByName(list, newSubCategory.Name);
+
+            if (nextLargerItemIndex >= 0)
+            {
+                bool hasClasses = SubCategories.FirstOrDefault() is ClassesNodeCategoryViewModel;
+                var offset = hasClasses ? 1 : 0;
+                SubCategories.Insert(nextLargerItemIndex + offset, newSubCategory);
+            }
             else
                 SubCategories.Add(newSubCategory);
+        }
+
+        internal static int FindInsertionPointByName(IEnumerable<ISearchEntryViewModel> list, string name)
+        {
+            var nextLargerItemIndex = -1; ;
+            foreach (var item in list)
+            {
+                if (string.Compare(item.Name, name, StringComparison.Ordinal) >= 0)
+                {
+                    nextLargerItemIndex = list.ToList().IndexOf(item);
+                    break;
+                }
+            }
+            return nextLargerItemIndex;
         }
     }
 

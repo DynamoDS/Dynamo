@@ -63,7 +63,7 @@ namespace ProtoTestFx
 
         internal static ProtoCore.Core TestRunnerRunOnly(string includePath, string code,
             Dictionary<int, List<string>> map, string geometryFactory,
-            string persistentManager, out ExecutionMirror mirror)
+            string persistentManager, out ExecutionMirror mirror, out RuntimeCore runtimeCoreOut)
         {
             ProtoCore.Core core;
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScriptTestRunner();
@@ -112,7 +112,7 @@ namespace ProtoTestFx
 
             //Run
 
-            mirror = fsr.Execute(code, core);
+            mirror = fsr.Execute(code, core, out runtimeCoreOut);
 
             //sw.Close();
 
@@ -130,8 +130,15 @@ namespace ProtoTestFx
             file.Close();
             InjectionExecutive.ExpressionMap.Clear();
             ExecutionMirror mirror;
-            Core core = TestRunnerRunOnly(includePath, code, map, "ManagedAsmGeometry.dll", "ManagedAsmPersistentManager.dll", out mirror);
-            RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
+            RuntimeCore runtimeCore = null;
+            Core core = TestRunnerRunOnly(
+                includePath, 
+                code, 
+                map, 
+                "ManagedAsmGeometry.dll", 
+                "ManagedAsmPersistentManager.dll", 
+                out mirror, 
+                out runtimeCore);
             try
             {
                 //XML Result
@@ -195,7 +202,15 @@ namespace ProtoTestFx
             file.Close();
             InjectionExecutive.ExpressionMap.Clear();
             ExecutionMirror mirror;
-            Core core = TestRunnerRunOnly(includePath, code, map, "ManagedAsmGeometry.dll", "ManagedAsmPersistentManager.dll", out mirror);
+            RuntimeCore runtimeCore = null;
+            Core core = TestRunnerRunOnly(
+                includePath, 
+                code, 
+                map, 
+                "ManagedAsmGeometry.dll", 
+                "ManagedAsmPersistentManager.dll", 
+                out mirror, 
+                out runtimeCore);
 
             //XML Result
             Dictionary<Expression, List<string>> expressionValues = InjectionExecutive.ExpressionMap;
@@ -244,7 +259,8 @@ namespace ProtoTestFx
             file.Close();
             InjectionExecutive.ExpressionMap.Clear();
             ExecutionMirror mirror;
-            Core core = TestRunnerRunOnly(includePath, code, map, geometryFactory, persistentManager, out mirror);
+            RuntimeCore runtimeCore = null;
+            Core core = TestRunnerRunOnly(includePath, code, map, geometryFactory, persistentManager, out mirror, out runtimeCore);
 
             //XML Result
             Dictionary<Expression, List<string>> expressionValues = InjectionExecutive.ExpressionMap;

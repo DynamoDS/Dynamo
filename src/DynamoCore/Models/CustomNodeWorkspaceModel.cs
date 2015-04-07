@@ -39,6 +39,7 @@ namespace Dynamo.Models
                 new PresetsModel(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
+                Enumerable.Empty<AnnotationModel>(),
                 info) { }
 
         public CustomNodeWorkspaceModel( 
@@ -46,6 +47,7 @@ namespace Dynamo.Models
             PresetsModel designOptions,
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
+            IEnumerable<AnnotationModel> a,
             WorkspaceInfo info,
             ElementResolver elementResolver = null) 
             : base(e, n, info, factory,designOptions)

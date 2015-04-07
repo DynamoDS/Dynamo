@@ -1,6 +1,5 @@
-﻿using System.IO;
-using Dynamo.Models;
-using Dynamo.Utilities;
+﻿using System.Collections.Generic;
+using System.IO;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -8,7 +7,14 @@ namespace Dynamo.Tests
     [TestFixture]
     class ComparisonTests : DSEvaluationViewModelUnitTest
     {
-        private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "comparison"); } }
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        private string logicTestFolder { get { return Path.Combine(TestDirectory, "core", "logic", "comparison"); } }
 
         [Test]
         public void testLessThan_NumberInput()
@@ -252,7 +258,14 @@ namespace Dynamo.Tests
     [TestFixture]
     class ConditionalTest : DSEvaluationViewModelUnitTest
     {
-        private string logicTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "logic", "conditional"); } }
+        private string logicTestFolder { get { return Path.Combine(TestDirectory, "core", "logic", "conditional"); } }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
 
         [Test]
         public void testAnd_NumberInput()

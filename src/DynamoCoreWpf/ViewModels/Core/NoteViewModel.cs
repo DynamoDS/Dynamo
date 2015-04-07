@@ -125,5 +125,15 @@ namespace Dynamo.ViewModels
 
             }
         }
+
+        private void CreateGroup(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.AddAnnotationCommand.Execute(null);
+        }
+
+        private bool CanCreateGroup(object parameters)
+        {
+            return true;
+        }
     }
 }

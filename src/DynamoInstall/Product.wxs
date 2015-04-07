@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
   <Product Id="*"
            Name="$(var.ProductName) $(var.Major).$(var.Minor).$(var.Rev)"
@@ -22,26 +23,37 @@
     <Binary Id="DynamoInstallActions.CA.dll"
             SourceFile="$(var.base)\src\DynamoInstallActions\bin\$(var.Configuration)\DynamoInstallActions.CA.dll" />
 
-    <CustomAction Id="UninstallDynamo" Return="check" Execute="deferred" Impersonate="no" 
-                  BinaryKey="DynamoInstallActions.CA.dll" DllEntry="UninstallDynamo" />
-
-    <CustomAction Id="RemoveShortcut" Return="check" Execute="deferred" Impersonate="no" 
-                  BinaryKey="DynamoInstallActions.CA.dll" DllEntry="RemoveShortcut" />
-
-    <CustomAction Id="SetCA_Data1" Return="check" Property="UninstallDynamo"
+    <CustomAction Id="UninstallDynamo.SetProperty" Return="check" Property="UninstallDynamo"
                   Value="Major=$(var.Major);Minor=$(var.Minor);Rev=$(var.Rev)" />
-    <CustomAction Id="SetCA_Data2" Return="check" Property="RemoveShortcut"
+    <CustomAction Id="UninstallDynamo" Return="check" Execute="deferred" Impersonate="no"
+              BinaryKey="DynamoInstallActions.CA.dll" DllEntry="UninstallDynamo" />
+    
+    <!--<CustomAction Id="RemoveShortcut.SetProperty" Return="check" Property="RemoveShortcut"
                   Value="Major=$(var.Major);Minor=$(var.Minor);Rev=$(var.Rev);Dir=[ApplicationProgramsFolder]" />
+    <CustomAction Id="RemoveShortcut" Return="ignore" Execute="deferred" Impersonate="no"
+              BinaryKey="DynamoInstallActions.CA.dll" DllEntry="RemoveShortcut" />-->
+    
+    <CustomAction Id="GenerateRevitAddin.SetProperty" Property="GenerateRevitAddin" 
+                  Value="&quot;[DYNAMO_INSTALLDIR]DynamoAddinGenerator.exe&quot; &quot;[DYNAMO_INSTALLDIR]&quot;" />
+    <CustomAction Id="GenerateRevitAddin" Return="ignore" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Impersonate="no" />
+    
+    <CustomAction Id="RemoveRevitAddin.SetProperty" Property="RemoveRevitAddin" 
+                  Value="&quot;[DYNAMO_INSTALLDIR]DynamoAddinGenerator.exe&quot; /uninstall &quot;[DYNAMO_INSTALLDIR]&quot;" />
+    <CustomAction Id="RemoveRevitAddin" Return="ignore" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Impersonate="no" />
 
     <InstallExecuteSequence>
-      <Custom Action="SetCA_Data1" Before="UninstallDynamo">NOT Installed</Custom>
+      <Custom Action="UninstallDynamo.SetProperty" Before="UninstallDynamo">NOT Installed</Custom>
       <Custom Action="UninstallDynamo" After="InstallInitialize">NOT Installed</Custom>
-      <Custom Action="SetCA_Data2" Before="RemoveShortcut">Installed</Custom>
-      <Custom Action="RemoveShortcut" After="InstallInitialize">Installed</Custom>
+      <!--<Custom Action="RemoveShortcut.SetProperty" Before="RemoveShortcut">Installed</Custom>
+      <Custom Action="RemoveShortcut" After="InstallInitialize">Installed</Custom>-->
+      <Custom Action="GenerateRevitAddin.SetProperty" Before="GenerateRevitAddin">NOT Installed</Custom>
+      <Custom Action="GenerateRevitAddin" Before="InstallFinalize">NOT Installed</Custom>
+      <Custom Action="RemoveRevitAddin.SetProperty" Before="RemoveRevitAddin">Installed</Custom>
+      <Custom Action="RemoveRevitAddin" After="InstallInitialize">Installed</Custom>
     </InstallExecuteSequence>
 
     <Property Id="ARPNOMODIFY">1</Property>
-    
+
     <!--<UIRef Id="WixUI_FeatureTree"/>
     <WixVariable Id="WixUILicenseRtf" Value="$(env.DYNAMO_BASE)\doc\distrib\License.rtf"/>-->
 
@@ -91,7 +103,7 @@
 
     <!-- Install a shortcut in the Start menu -->
     <DirectoryRef Id="ApplicationProgramsFolder">
-      <Component Id="ApplicationShortcut" Guid="d7575401-f8ba-488f-b5e4-5ad24dbc4b10" Win64="yes">
+      <Component Id="ApplicationShortcut" Win64="yes">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="Dynamo $(var.Major).$(var.Minor).$(var.Rev)"
                   Description="Dynamo Sandbox"
@@ -106,7 +118,7 @@
     </DirectoryRef>
 
     <DirectoryRef Id="TARGETDIR">
-      <Component Id="ProductRegistry" Guid="*" Win64="yes">
+      <Component Id="ProductRegistry" Win64="yes">
         <RegistryKey Root="HKLM"
                      Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(var.ProductName) $(var.Major).$(var.Minor)"
                      ForceDeleteOnUninstall="yes">
@@ -128,6 +140,7 @@
         <RemoveFolder Id="RemoveDynamoAppDataDir" Directory="DYNAMO_APPDATA" On="uninstall" />
       </Component>
     </DirectoryRef>
+
   </Fragment>
-  
+
 </Wix>

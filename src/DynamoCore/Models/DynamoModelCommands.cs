@@ -146,6 +146,13 @@ namespace Dynamo.Models
             CurrentWorkspace.RecordCreatedModel(noteModel);
         }
 
+        void CreateAnnotationImpl(CreateAnnotationCommand command)
+        {
+            AnnotationModel annotationModel = currentWorkspace.AddAnnotation(command.AnnotationText, command.AnnotationId);
+            
+            CurrentWorkspace.RecordCreatedModel(annotationModel);
+        }
+
         void SelectModelImpl(SelectModelCommand command)
         {
             // Empty ModelGuid means clear selection.

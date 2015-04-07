@@ -58,8 +58,7 @@ namespace Dynamo.Controls
                 RenderMode.Default : RenderMode.SoftwareOnly;
             
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.UIDispatcher = Dispatcher;
-
+            this.dynamoViewModel.UIDispatcher = Dispatcher;            
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
@@ -130,7 +129,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void LoaderOnAssemblyLoaded(DynamoLoader.AssemblyLoadedEventArgs args)
+        private void LoaderOnAssemblyLoaded(NodeModelAssemblyLoader.AssemblyLoadedEventArgs args)
         {
             nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(args.Assembly));
         }

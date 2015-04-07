@@ -931,8 +931,6 @@ namespace ProtoCore.DSASM.Mirror
                 {
                     foreach (ProtoCore.DSASM.CodeBlock codeblock in exe.CodeBlocks)
                     {
-                        ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-
                         ProtoCore.DSASM.StackFrame stackFrame = new ProtoCore.DSASM.StackFrame(runtimeCore.RuntimeMemory.GlobOffset);
                         int locals = 0;
 
@@ -943,7 +941,6 @@ namespace ProtoCore.DSASM.Mirror
                         runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                             codeblock.codeBlockId, 
                             codeblock.instrStream.entrypoint, 
-                            context, 
                             stackFrame,
                             locals);
                     }

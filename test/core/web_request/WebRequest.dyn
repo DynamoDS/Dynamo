@@ -1,4 +1,4 @@
-<Workspace Version="0.8.0.716" X="211.339897572922" Y="-16.359406875511" zoom="1.66612070659228" Name="Home" RunType="Automatic" RunPeriod="100">
+<Workspace Version="0.8.0.716" X="211.339897572922" Y="-16.359406875511" zoom="1.66612070659228" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
   <NamespaceResolutionMap />
   <Elements>
     <DSCoreNodesUI.WebRequest guid="5ef73f31-46c8-40d2-a7bf-b89c6e0b325b" type="DSCoreNodesUI.WebRequest" nickname="Web Request" x="249.35810129342" y="215.077588613574" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
