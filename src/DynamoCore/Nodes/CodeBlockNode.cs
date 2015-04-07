@@ -283,7 +283,7 @@ namespace Dynamo.Nodes
             ProcessCodeDirect();
         }
 
-        private IEnumerable<AssociativeNode> BuildAstInternal(List<AssociativeNode> inputAstNodes, bool toMapIdentifier)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             //Do not build if the node is in error.
             if (State == ElementState.Error)
@@ -302,7 +302,7 @@ namespace Dynamo.Nodes
                     (ident, rhs) =>
                     {
                         var identNode = AstFactory.BuildIdentifier(ident);
-                        if (toMapIdentifier)
+                        if (context != AstBuilder.CompilationContext.ForNodeToCode)
                             MapIdentifiers(identNode);
                         return AstFactory.BuildAssignment(identNode, rhs);
                     });
@@ -311,22 +311,12 @@ namespace Dynamo.Nodes
 
             foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
-                if (toMapIdentifier)
+                if (context != AstBuilder.CompilationContext.ForNodeToCode)
                     MapIdentifiers(astNode);
                 resultNodes.Add(astNode as AssociativeNode);
             }
 
             return resultNodes;
-        }
-
-        internal override IEnumerable<AssociativeNode> BuildAstForNodesToCode(List<AssociativeNode> inputAstNodes)
-        {
-            return BuildAstInternal(inputAstNodes, false);
-        }
-
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
-        {
-            return BuildAstInternal(inputAstNodes, true);
         }
 
         private IdentifierNode GetAstIdentifierForOutputIndexInternal(int portIndex, bool forRawName)

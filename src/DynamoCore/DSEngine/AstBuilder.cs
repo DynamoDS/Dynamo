@@ -193,17 +193,11 @@ namespace Dynamo.DSEngine
 #endif
 
             var scopedNode = node as ScopedNodeModel;
-            IEnumerable<AssociativeNode> astNodes = null;
-            if (node is ScopedNodeModel)
-            {
-                astNodes = (node as ScopedNodeModel).BuildAstInScope(inputAstNodes, verboseLogging, this);
-            }
-            else
-            {
-                astNodes = context == CompilationContext.ForNodeToCode ? 
-                    node.BuildAstForNodesToCode(inputAstNodes) : node.BuildAst(inputAstNodes);
-            }
-            
+            IEnumerable<AssociativeNode> astNodes = 
+                scopedNode != null
+                    ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
+                    : node.BuildAst(inputAstNodes, context);
+           
             if (verboseLogging)
             {
                 foreach (var n in astNodes)
@@ -213,9 +207,7 @@ namespace Dynamo.DSEngine
             }
 
             if (null == astNodes)
-            {
                 resultList.AddRange(new AssociativeNode[0]);
-            }
             else if (context == CompilationContext.ForDeltaExecution)
             {
                 OnAstNodeBuilt(node.GUID, astNodes);
@@ -237,9 +229,7 @@ namespace Dynamo.DSEngine
                         OnAstNodeBuilt(node.GUID, new[] { item });
                     }
                     else
-                    {
                         resultList.Add(item);
-                    }
                 }
             }
         }
