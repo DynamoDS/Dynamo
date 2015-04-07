@@ -128,6 +128,9 @@
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
                                Command="{Binding NodeToCodeCommand}" />
                     -->
+                    <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"                                 
+                               Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
+                    
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                                Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                Command="{Binding FindNodesFromSelectionCommand}" />

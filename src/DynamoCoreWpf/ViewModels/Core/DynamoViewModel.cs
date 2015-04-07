@@ -391,11 +391,11 @@ namespace Dynamo.ViewModels
 
         public int MaxTesselationDivisions
         {
-            get { return VisualizationManager.MaxTesselationDivisions; }
+            get { return model.MaxTesselationDivisions; }
             set
             {
-                VisualizationManager.MaxTesselationDivisions = value;
-                this.model.OnRequestsRedraw(this, EventArgs.Empty);
+                model.MaxTesselationDivisions = value;
+                model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
 
@@ -819,7 +819,7 @@ namespace Dynamo.ViewModels
         //    }
         //}
 
-        private void CleanUp(DynamoModel dynamoModel)
+        private void CleanUp()
         {
             UnsubscribeAllEvents();
         }
@@ -877,6 +877,23 @@ namespace Dynamo.ViewModels
         internal bool CanAddNote(object parameters)
         {
             return true;
+        }
+
+        internal void AddAnnotation(object parameters)
+        {
+            if (null != parameters) // See above for details of this exception.
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+
+            var command = new DynamoModel.CreateAnnotationCommand(Guid.NewGuid(), null, 0, 0, true);
+            this.ExecuteCommand(command);
+        }
+
+        internal bool CanAddAnnotation(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
         private void WorkspaceAdded(WorkspaceModel item)
@@ -1971,6 +1988,8 @@ namespace Dynamo.ViewModels
             if (shutdownParams.CloseDynamoView)
                 OnRequestClose(this, EventArgs.Empty);
 
+            VisualizationManager.Dispose();
+
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
             {
@@ -2026,11 +2045,7 @@ namespace Dynamo.ViewModels
 
         public bool CanGetBranchVisualization(object parameter)
         {
-            if (FullscreenWatchShowing)
-            {
-                return true;
-            }
-            return false;
+            return FullscreenWatchShowing;
         }
 
         public DynamoViewModel ViewModel { get { return this; } }

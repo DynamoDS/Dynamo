@@ -70,7 +70,7 @@ namespace ProtoCore.Namespace
                 {
                     // If namespace resolution map does not contain entry for partial name, 
                     // back up on compiler to resolve the namespace from partial name
-                    var matchingClasses = CoreUtils.GetResolvedClassName(classTable, identifier);
+                    var matchingClasses = CoreUtils.GetResolvedClassName(classTable, CoreUtils.CreateNodeFromString(partialName));
 
                     if (matchingClasses.Length == 1)
                     {

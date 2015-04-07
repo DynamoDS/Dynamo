@@ -149,6 +149,10 @@
     <value>Switch to Geometry _View</value>
     <comment>Context menu item</comment>
   </data>
+  <data name="ContextCreateGroupFromSelection" xml:space="preserve">
+    <value>Create Group</value>
+    <comment>Context menu item</comment>
+  </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
     <value>Nodes From _Selected Geometry</value>
     <comment>Context menu item</comment>
@@ -260,6 +264,10 @@
   <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
     <value>_Create Note</value>
     <comment>Edit menu | Create note for a node</comment>
+  </data>
+  <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
+    <value>_Create Group</value>
+    <comment>Edit menu | Create Grouping for nodes</comment>
   </data>
   <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
     <value>_Delete Selected</value>
@@ -1559,6 +1567,18 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="RunStartedMessage" xml:space="preserve">
     <value>Run started...</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuBackground" xml:space="preserve">
+    <value>Select Background</value>
+  </data>
+  <data name="GroupContextMenuFont" xml:space="preserve">
+    <value>Font</value>
+  </data>
+  <data name="GroupContextMenuUngroup" xml:space="preserve">
+    <value>Ungroup</value>
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while Dynamo is not running and try again.</value>

@@ -135,22 +135,6 @@
     <value>true;truth;false</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
-  <data name="ColorRangeDescription" xml:space="preserve">
-    <value>Get a color given a color range.</value>
-    <comment>Description for Color Range</comment>
-  </data>
-  <data name="ColorRangePortDataEndToolTip" xml:space="preserve">
-    <value>The end color.</value>
-  </data>
-  <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
-    <value>The selected color.</value>
-  </data>
-  <data name="ColorRangePortDataStartToolTip" xml:space="preserve">
-    <value>The start color.</value>
-  </data>
-  <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
-    <value>The value between 0 and 1 of the selected color.</value>
-  </data>
   <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
     <value>Combinator</value>
   </data>
@@ -515,6 +499,22 @@
   </data>
   <data name="SelectFromComboBoxToolTip" xml:space="preserve">
     <value>This is your Revit display unit settings</value>
+  </data>
+  <data name="ColorRangeDescription" xml:space="preserve">
+    <value>Get a color given a color range.</value>
+    <comment>Description for Color Range</comment>
+  </data>
+  <data name="ColorRangePortDataColorsToolTip" xml:space="preserve">
+    <value>A list of colors to include in the range.</value>
+  </data>
+  <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
+    <value>A list of values between 0.0 and 1.0 which position the input colors along the range.</value>
+  </data>
+  <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
+    <value>The selected colors.</value>
+  </data>
+  <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
+    <value>A list of values between 0.0 and 1.0. These values are used to look up the color within the range.</value>
   </data>
   <data name="ListCreateSearchTags" xml:space="preserve">
     <value>entwine;listcreate,newlist;makelist;list;</value>
