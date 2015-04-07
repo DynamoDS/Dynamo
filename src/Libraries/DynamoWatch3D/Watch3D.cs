@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Annotations;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -55,8 +56,10 @@ namespace Dynamo.Nodes
 
             // When user sizes a watch node, only view gets resized. The actual 
             // NodeModel does not get updated. This is where the view updates the 
-            // model whenever its size is updated.
-            View.SizeChanged += (sender, args) => 
+            // model whenever its size is updated. 
+            //Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height 
+            // and width should correspond to node model and not watch3Dview
+            nodeView.SizeChanged += (sender, args) => 
                 model.SetSize(args.NewSize.Width, args.NewSize.Height);
 
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;

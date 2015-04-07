@@ -90,7 +90,7 @@
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.PasteCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
-        <KeyBinding Key="G"
+        <KeyBinding Key="B"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.ToggleCanNavigateBackgroundCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
 
@@ -121,7 +121,9 @@
         <KeyBinding Key="D"
                     Modifiers="Ctrl+Alt"
                     Command="{Binding Path=DataContext.DumpLibraryToXmlCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
-
+        <KeyBinding Key="G"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.AddAnnotationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Left"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
@@ -337,6 +339,11 @@
                                   Name="noteMenuItem"
                                   InputGestureText="Ctrl + W" />
                         <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewEditMenuCreateGroup}"
+                                  Command="{Binding AddAnnotationCommand}"
+                                  Name="noteMenuAnnotation"
+                                  InputGestureText="Ctrl + G" />
+                        <MenuItem Focusable="False"                                
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
                                   Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
                                   Name="nodeFromSelection"
@@ -476,7 +483,7 @@
                             <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuPreviewNavigate}"
                                       IsEnabled="{Binding Path=FullscreenWatchShowing}"
                                       IsChecked="{Binding Path=CanNavigateBackground}"
-                                      InputGestureText="Ctrl + G"
+                                      InputGestureText="Ctrl + B"
                                       Focusable="False"
                                       Command="{Binding ToggleCanNavigateBackgroundCommand}" />
                         </MenuItem>

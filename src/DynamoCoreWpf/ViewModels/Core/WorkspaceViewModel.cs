@@ -144,11 +144,13 @@ namespace Dynamo.ViewModels
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
         ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
+        ObservableCollection<AnnotationViewModel> _annotations = new ObservableCollection<AnnotationViewModel>();
 
         public ObservableCollection<ConnectorViewModel> Connectors { get { return _connectors; } }
         public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
         public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
         public ObservableCollection<InfoBubbleViewModel> Errors { get { return _errors; } }
+        public ObservableCollection<AnnotationViewModel> Annotations { get { return _annotations; } }
 
         public string Name
         {
@@ -265,6 +267,8 @@ namespace Dynamo.ViewModels
             var errorsColl = new CollectionContainer { Collection = Errors };
             _workspaceElements.Add(errorsColl);
 
+            var annotationsColl = new CollectionContainer {Collection = Annotations};
+            _workspaceElements.Add(annotationsColl);
             // Add EndlessGrid
             var endlessGrid = new EndlessGridViewModel(this);
             _workspaceElements.Add(endlessGrid);
@@ -274,6 +278,7 @@ namespace Dynamo.ViewModels
             //connector view models are added during connection
             Model.Nodes.CollectionChanged += Nodes_CollectionChanged;
             Model.Notes.CollectionChanged += Notes_CollectionChanged;
+            Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
             Model.ConnectorAdded += Connectors_ConnectorAdded;
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
@@ -283,6 +288,7 @@ namespace Dynamo.ViewModels
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
+            Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
         }
@@ -341,6 +347,29 @@ namespace Dynamo.ViewModels
             }
         }
 
+        void Annotations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                    {                     
+                        var viewModel = new AnnotationViewModel(this, item as AnnotationModel);
+                        _annotations.Add(viewModel);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    _annotations.Clear();
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                    {
+                        _annotations.Remove(_annotations.First(x => x.AnnotationModel == item));
+                    }
+                    break;
+            }
+        }
+        
         void Nodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -526,6 +555,23 @@ namespace Dynamo.ViewModels
             }
 
             foreach (var n in Model.Notes)
+            {
+                double x0 = n.X;
+                double y0 = n.Y;
+
+                if (IsInRegion(region, n, fullyEnclosed))
+                {
+                    if (!DynamoSelection.Instance.Selection.Contains(n))
+                        DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                        DynamoSelection.Instance.Selection.Remove(n);
+                }
+            }
+
+            foreach (var n in Model.Annotations)
             {
                 double x0 = n.X;
                 double y0 = n.Y;
