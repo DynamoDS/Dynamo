@@ -508,6 +508,14 @@
                                   Name="publishCurrent" />
                     </MenuItem>
 
+                    <MenuItem Header="Selec_tion"
+                              Focusable="False">
+                        <MenuItem Name="DisplayPreviews"
+                                  Header="Display _Previews"
+                                  Focusable="False"
+                                  Command="{Binding Path=DisplayPreviewsCommand}" />
+                    </MenuItem>
+
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"
                               Focusable="False"
@@ -534,23 +542,17 @@
                                   ToolTipService.ShowOnDisabled="True" 
                                   ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
                                   IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>
-                        
+
                         <!--<MenuItem Focusable="False" 
                                   Name="ShowNodeExecution" 
                                   IsCheckable="True" 
                                   IsChecked="{Binding ShowRunPreview}" 
                                   Header="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
                                   ToolTipService.ShowOnDisabled="True" 
-<<<<<<< HEAD
-                                  ToolTip="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
-                                  IsEnabled="{Binding HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled, Converter={StaticResource RunPreviewConverter}}"/>                       
-                        <MenuItem Focusable="False"
-=======
                                   ToolTip="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewToolTipConverter}}"
                                   IsEnabled="{Binding DynamicRunEnabled, Converter={StaticResource RunPreviewConverter}}"/>-->
-                        
+
                         <!--<MenuItem Focusable="False"
->>>>>>> 8ced085d0865451a474d0f033bc4d5ca2016203b
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuLengthUnits}"
                                   Name="LengthUnitsMenu">
                             <MenuItem Focusable="False"

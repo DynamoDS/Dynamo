@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections.Generic;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 
@@ -83,6 +83,16 @@ namespace Dynamo.ViewModels
             if (RequestViewOperation != null)
             {
                 RequestViewOperation(e);
+            }
+        }
+
+        public event RequestDisplayPreviewsHandler RequestDisplayPreviews;
+
+        public void OnRequestDisplayPreviews(IEnumerable<NodeModel> nodes)
+        {
+            if (RequestDisplayPreviews != null)
+            {
+                RequestDisplayPreviews(nodes);
             }
         }
 

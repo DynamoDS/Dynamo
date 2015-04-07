@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Threading;
-
+using Dynamo.Controls;
 using Dynamo.DSEngine;
 using Dynamo.UI;
 using Dynamo.Interfaces;
@@ -771,6 +771,7 @@ namespace Dynamo.ViewModels
             PublishSelectedNodesCommand.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
+            DisplayPreviewsCommand.RaiseCanExecuteChanged();
         }
 
         void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1334,6 +1335,21 @@ namespace Dynamo.ViewModels
         internal bool CanAlignSelected(object param)
         {
             return this.CurrentSpaceViewModel.AlignSelectedCommand.CanExecute(param);
+        }
+
+        private void DisplayPreviews(object parameter)
+        {
+            if (DynamoSelection.Instance.Selection.Count <= 0)
+                return;
+
+            var selection = DynamoSelection.Instance.Selection;
+            var subset = selection.OfType<NodeModel>().Where(n => n.ShouldDisplayPreview);
+            OnRequestDisplayPreviews(subset);
+        }
+
+        private bool CanDisplayPreviews(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.Count > 0;
         }
 
         public void DoGraphAutoLayout(object parameter)

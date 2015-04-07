@@ -1,4 +1,5 @@
-﻿using Dynamo.Models;
+﻿using System.Collections.Generic;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 
 namespace Dynamo.ViewModels
@@ -12,6 +13,8 @@ namespace Dynamo.ViewModels
     public delegate void RequestAboutWindowHandler(DynamoViewModel aboutViewModel);
 
     public delegate void RequestViewOperationHandler(ViewOperationEventArgs e);
+
+    public delegate void RequestDisplayPreviewsHandler(IEnumerable<NodeModel> nodes);
 
     public delegate void RequestBitmapSourceHandler(IconRequestEventArgs e);
 }

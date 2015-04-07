@@ -406,21 +406,22 @@ namespace Dynamo.Controls
         private void OnPreviewControlStateChanged(object sender, EventArgs e)
         {
             RefreshPreviewIconDisplay();
+            var preview = sender as PreviewControl;
+            if (preview.HasPendingStateChangeRequests)
+                return; // View has not been finalized yet.
 
             if (previewIcon.IsMouseOver)
             {
                 // The mouse is currently over the preview icon, so if the 
                 // preview control is hidden, bring it into condensed state.
-                var preview = sender as PreviewControl;
-                if (preview.IsHidden != false)
+                if (preview.IsHidden)
                     preview.TransitionToState(PreviewControl.State.Condensed);
             }
             else
             {
                 // The mouse is no longer over the preview icon, if the preview 
                 // control is currently in condensed state, hide it from view.
-                var preview = sender as PreviewControl;
-                if (preview.IsCondensed != false)
+                if (preview.IsCondensed)
                     preview.TransitionToState(PreviewControl.State.Hidden);
             }
         }
@@ -440,6 +441,18 @@ namespace Dynamo.Controls
             {
                 // No changes, those will come after transition is done.
             }
+        }
+
+        internal void ExpandPreviewControl()
+        {
+            if (!PreviewControl.IsHidden) // Force preview control creation.
+                return; // We only expand the preview control if it's hidden.
+
+            if (PreviewControl.IsDataBound == false)
+                PreviewControl.BindToDataSource(ViewModel.NodeModel.CachedValue);
+
+            PreviewControl.TransitionToState(PreviewControl.State.Condensed);
+            PreviewControl.TransitionToState(PreviewControl.State.Expanded);
         }
 
         #endregion
