@@ -306,7 +306,7 @@ namespace Dynamo.Models
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("GUID", this.GUID);
+            helper.SetAttribute("guid", this.GUID);
             helper.SetAttribute("annotationText", this.AnnotationText);
             helper.SetAttribute("left", this.Left);
             helper.SetAttribute("top", this.Top);
@@ -333,7 +333,7 @@ namespace Dynamo.Models
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
-            this.GUID = helper.ReadGuid("GUID", this.GUID);
+            this.GUID = helper.ReadGuid("guid", this.GUID);
             this.annotationText = helper.ReadString("annotationText", String.Empty);
             this.left = helper.ReadDouble("left", doubleValue);
             this.top = helper.ReadDouble("top", doubleValue);
