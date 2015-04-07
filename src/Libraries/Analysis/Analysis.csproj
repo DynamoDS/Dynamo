@@ -85,6 +85,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AnalysisResources.en-US.resx" />
     <EmbeddedResource Include="AnalysisResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AnalysisResources.Designer.cs</LastGenOutput>

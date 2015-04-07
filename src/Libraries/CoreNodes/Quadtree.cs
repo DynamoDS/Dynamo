@@ -5,6 +5,8 @@ using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 
+using DSCore.Properties;
+
 namespace DSCore
 {
     [IsVisibleInDynamoLibrary(false)]
@@ -29,13 +31,13 @@ namespace DSCore
             {
                 throw new ArgumentNullException(
                     "uvs",
-                    CoreNodesResources.QuadtreeConstructionNullUVSetMessage);
+                    Resources.QuadtreeConstructionNullUVSetMessage);
             }
 
             if (!uvs.Any())
             {
                 throw new ArgumentException(
-                    CoreNodesResources.QuadtreeConstructionEmptyUVSetMessage);
+                    Resources.QuadtreeConstructionEmptyUVSetMessage);
             }
 
             return new Quadtree(uvs);
@@ -53,14 +55,14 @@ namespace DSCore
             {
                 throw new ArgumentNullException(
                     "center",
-                    CoreNodesResources.FindPointsWithinRadiusNullPointMessage);
+                    Resources.FindPointsWithinRadiusNullPointMessage);
             }
 
             if (radius <= 0.0)
             {
                 throw new ArgumentException(
                     "radius",
-                    CoreNodesResources.FindPointsWithinRadiusSearchRadiusMessage);
+                    Resources.FindPointsWithinRadiusSearchRadiusMessage);
             }
 
             return Root.FindNodesWithinRadius(center, radius)
