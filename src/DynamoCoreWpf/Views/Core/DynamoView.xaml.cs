@@ -387,6 +387,8 @@ namespace Dynamo.Controls
 
             // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
+
+            watchSettingsControl.DataContext = background_preview;
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)

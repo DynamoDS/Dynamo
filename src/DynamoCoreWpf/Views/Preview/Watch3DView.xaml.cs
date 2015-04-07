@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,12 +11,10 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using System.Windows.Threading;
 
 using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.DSEngine;
-using Dynamo.Models;
 using Dynamo.ViewModels;
 
 using HelixToolkit.Wpf.SharpDX;
@@ -25,8 +23,10 @@ using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
 using SharpDX;
 
+using Camera = HelixToolkit.Wpf.SharpDX.Camera;
 using Color = SharpDX.Color;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
+using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
@@ -57,9 +57,14 @@ namespace Dynamo.Controls
         private Point _rightMousePoint;
         private LineGeometry3D _grid;
         private RenderTechnique renderTechnique;
-        private HelixToolkit.Wpf.SharpDX.Camera camera;
-        private SharpDX.Color4 selectionColor = new Color4(0,158.0f/255.0f,1,1);
+        private Camera camera;
+        private Color4 selectionColor = new Color4(0,158.0f/255.0f,1,1);
         private bool showShadows;
+        private Vector3 directionalLightDirection;
+        private Color4 directionalLightColor;
+        private Vector3 fillLightDirection;
+        private Color4 fillLightColor;
+        private Color4 ambientLightColor;
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -99,14 +104,58 @@ namespace Dynamo.Controls
         public int MeshCount { get; set; }
 
         public PhongMaterial WhiteMaterial { get; private set; }
-        
-        public Vector3 DirectionalLightDirection { get; private set; }
-        
-        public Color4 DirectionalLightColor { get; private set; }
-        
-        public Color4 AmbientLightColor { get; private set; }
-        
-        public System.Windows.Media.Media3D.Transform3D Model1Transform { get; private set; }
+
+        public Vector3 DirectionalLightDirection
+        {
+            get { return directionalLightDirection; }
+            private set
+            {
+                directionalLightDirection = value;
+                NotifyPropertyChanged("DirectionalLightDirection");
+            }
+        }
+
+        public Color4 DirectionalLightColor
+        {
+            get { return directionalLightColor; }
+            private set
+            {
+                directionalLightColor = value;
+                NotifyPropertyChanged("DirectionalLightColor");
+            }
+        }
+
+        public Vector3 FillLightDirection
+        {
+            get { return fillLightDirection; }
+            private set
+            {
+                fillLightDirection = value; 
+                NotifyPropertyChanged("FillLightDirection");
+            }
+        }
+
+        public Color4 FillLightColor
+        {
+            get { return fillLightColor; }
+            private set
+            {
+                fillLightColor = value; 
+                NotifyPropertyChanged("FillLightColor");
+            }
+        }
+
+        public Color4 AmbientLightColor
+        {
+            get { return ambientLightColor; }
+            private set
+            {
+                ambientLightColor = value;
+                NotifyPropertyChanged("AmbientLightColor");
+            }
+        }
+
+        public Transform3D Model1Transform { get; private set; }
         
         public RenderTechnique RenderTechnique
         {
@@ -121,7 +170,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public HelixToolkit.Wpf.SharpDX.Camera Camera
+        public Camera Camera
         {
             get
             {
@@ -144,6 +193,156 @@ namespace Dynamo.Controls
             {
                 showShadows = value;
                 NotifyPropertyChanged("ShowShadows");
+            }
+        }
+
+        public string KeyX
+        {
+            get { return DirectionalLightDirection.X.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightDirection = new Vector3(float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightDirection.Y, DirectionalLightDirection.Z);
+                NotifyPropertyChanged("KeyX");
+            }
+        }
+
+        public string KeyY
+        {
+            get { return DirectionalLightDirection.Y.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightDirection = new Vector3(DirectionalLightDirection.X, float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightDirection.Z);
+                NotifyPropertyChanged("KeyY");
+            }
+        }
+
+        public string KeyZ
+        {
+            get { return DirectionalLightDirection.Z.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightDirection = new Vector3(DirectionalLightDirection.X, DirectionalLightDirection.Y, float.Parse(value, CultureInfo.InvariantCulture));
+                NotifyPropertyChanged("KeyZ");
+            }
+        }
+
+        public string KeyR
+        {
+            get { return DirectionalLightColor.Red.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightColor = new Color4(float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightColor.Green, DirectionalLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("KeyR");
+            }
+        }
+
+        public string KeyG
+        {
+            get { return DirectionalLightColor.Green.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightColor = new Color4(DirectionalLightColor.Red, float.Parse(value, CultureInfo.InvariantCulture), DirectionalLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("KeyG");
+            }
+        }
+
+        public string KeyB
+        {
+            get { return DirectionalLightColor.Blue.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                DirectionalLightColor = new Color4(DirectionalLightColor.Red, DirectionalLightColor.Green, float.Parse(value, CultureInfo.InvariantCulture), 1.0f);
+                NotifyPropertyChanged("KeyB");
+            }
+        }
+
+        public string FillX
+        {
+            get { return FillLightDirection.X.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightDirection = new Vector3(float.Parse(value, CultureInfo.InvariantCulture), FillLightDirection.Y, FillLightDirection.Z);
+                NotifyPropertyChanged("FillX");
+            }
+        }
+
+        public string FillY
+        {
+            get { return FillLightDirection.Y.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightDirection = new Vector3(FillLightDirection.X, float.Parse(value, CultureInfo.InvariantCulture), FillLightDirection.Z);
+                NotifyPropertyChanged("FillY");
+            }
+        }
+
+        public string FillZ
+        {
+            get { return FillLightDirection.Z.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightDirection = new Vector3(FillLightDirection.X, FillLightDirection.Y, float.Parse(value, CultureInfo.InvariantCulture));
+                NotifyPropertyChanged("FillZ");
+            }
+        }
+
+        public string FillR
+        {
+            get { return FillLightColor.Red.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightColor = new Color4(float.Parse(value, CultureInfo.InvariantCulture), FillLightColor.Green, FillLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("FillR");
+            }
+        }
+
+        public string FillG
+        {
+            get { return FillLightColor.Green.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightColor = new Color4(FillLightColor.Red, float.Parse(value, CultureInfo.InvariantCulture), FillLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("FillG");
+            }
+        }
+
+        public string FillB
+        {
+            get { return FillLightColor.Blue.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                FillLightColor = new Color4(FillLightColor.Red, FillLightColor.Green, float.Parse(value, CultureInfo.InvariantCulture), 1.0f);
+                NotifyPropertyChanged("FillB");
+            }
+        }
+
+        public string AmbientR
+        {
+            get { return AmbientLightColor.Red.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                AmbientLightColor = new Color4(float.Parse(value, CultureInfo.InvariantCulture), AmbientLightColor.Green, AmbientLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("AmbientR");
+            }
+        }
+
+        public string AmbientG
+        {
+            get { return AmbientLightColor.Green.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                AmbientLightColor = new Color4(AmbientLightColor.Red, float.Parse(value, CultureInfo.InvariantCulture), AmbientLightColor.Blue, 1.0f);
+                NotifyPropertyChanged("AmbientG");
+            }
+        }
+
+        public string AmbientB
+        {
+            get { return AmbientLightColor.Blue.ToString(CultureInfo.InvariantCulture); }
+            set
+            {
+                AmbientLightColor = new Color4(AmbientLightColor.Red, AmbientLightColor.Green, float.Parse(value, CultureInfo.InvariantCulture), 1.0f);
+                NotifyPropertyChanged("AmbientB");
             }
         }
 
@@ -191,22 +390,25 @@ namespace Dynamo.Controls
 
         private void SetupScene()
         {
-            this.ShadowMapResolution = new Vector2(2048, 2048);
-            this.ShowShadows = false;
+            ShadowMapResolution = new Vector2(2048, 2048);
+            ShowShadows = false;
             
             // setup lighting            
-            this.AmbientLightColor = new Color4(0.1f, 0.1f, 0.1f, 1.0f);
+            AmbientLightColor = new Color4(0.4f, 0.4f, 0.4f, 1.0f);
 
-            this.DirectionalLightColor = SharpDX.Color.White;
-            this.DirectionalLightDirection = new Vector3(-0.5f, -1, 0);
+            DirectionalLightColor = new Color4(0.45f, 0.4f, 0.4f, 1.0f);
+            DirectionalLightDirection = new Vector3(0.0f, -1.0f, 0.0f);
 
-            this.RenderTechnique = Techniques.RenderPhong;
-            this.WhiteMaterial = PhongMaterials.White;
+            FillLightColor = new Color4(new Vector4(0.2f, 0.2f, 0.3f, 1.0f));
+            FillLightDirection = new Vector3(0.0f, 1.0f, 0.0f);
 
-            this.Model1Transform = new System.Windows.Media.Media3D.TranslateTransform3D(0, -0, 0);
+            RenderTechnique = Techniques.RenderPhong;
+            WhiteMaterial = PhongMaterials.PureWhite;
+
+            Model1Transform = new TranslateTransform3D(0, -0, 0);
 
             // camera setup
-            this.Camera = new HelixToolkit.Wpf.SharpDX.PerspectiveCamera
+            Camera = new PerspectiveCamera
             {
                 Position = new Point3D(10, 10, 10),
                 LookDirection = new Vector3D(-10, -10, -10),
@@ -619,9 +821,9 @@ namespace Dynamo.Controls
             return points;
         }
 
-        private static HelixToolkit.Wpf.SharpDX.MeshGeometry3D InitMeshGeometry()
+        private static MeshGeometry3D InitMeshGeometry()
         {
-            var mesh = new HelixToolkit.Wpf.SharpDX.MeshGeometry3D()
+            var mesh = new MeshGeometry3D()
             {
                 Positions = new Vector3Collection(),
                 Indices = new IntCollection(),
@@ -716,20 +918,20 @@ namespace Dynamo.Controls
                         text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), point));
                     }
 
-                    SharpDX.Color4 startColor = SharpDX.Color.Black;
+                    Color4 startColor = Color.Black;
 
                     if (p.LineStripVertexColors.Count >= color_idx + 2)
                     {
-                        startColor = new SharpDX.Color4(
+                        startColor = new Color4(
                             (p.LineStripVertexColors[color_idx] / 255.0f),
                             (p.LineStripVertexColors[color_idx + 1] / 255.0f),
                             (p.LineStripVertexColors[color_idx + 2] / 255.0f),
                             1);
                     }
 
-                    if (startColor == SharpDX.Color.White)
+                    if (startColor == Color.White)
                     {
-                        startColor = SharpDX.Color.Black;
+                        startColor = Color.Black;
                     }
 
                     // Line segments are represented as a 
@@ -755,7 +957,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void ConvertMeshes(IRenderPackage p, HelixToolkit.Wpf.SharpDX.MeshGeometry3D mesh)
+        private void ConvertMeshes(IRenderPackage p, MeshGeometry3D mesh)
         {
             // DirectX has a different winding than we store in
             // render packages. Re-wind triangles here...
