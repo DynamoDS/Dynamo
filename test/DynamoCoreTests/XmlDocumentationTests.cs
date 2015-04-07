@@ -34,6 +34,11 @@ namespace Dynamo.Tests
             </search>
             <returns>Transformed Geometry.</returns>
         </member>
+        <member name=""M:MyNamespace.MyClass.#ctor"">
+            <summary>
+            Constructor summary.
+            </summary>
+        </member>
     </members>
 </doc>
 "));
@@ -58,6 +63,20 @@ namespace Dynamo.Tests
             });
 
             parms.ForEach(x => x.UpdateFunctionDescriptor(funcDesc));
+
+            return funcDesc;
+        }
+
+        private FunctionDescriptor GetConstructorMethod()
+        {
+            var funcDesc = new FunctionDescriptor(new FunctionDescriptorParams
+            {
+                Assembly = "MyAssembly.dll",
+                ClassName = "MyNamespace.MyClass",
+                FunctionName = "MyClass",
+                ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar),
+                FunctionType = FunctionType.Constructor
+            });
 
             return funcDesc;
         }
@@ -108,5 +127,17 @@ namespace Dynamo.Tests
             descript = paramX.GetDescription(SampleDocument);
             Assert.AreEqual("Double c.", descript);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetSummary_FromConstructor()
+        {
+            var method = GetConstructorMethod();
+
+            var summary = method.GetSummary(SampleDocument);
+
+            Assert.AreEqual("Constructor summary.", summary);
+        }
+
     }
 }

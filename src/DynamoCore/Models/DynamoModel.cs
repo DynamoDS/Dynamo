@@ -1319,16 +1319,11 @@ namespace Dynamo.Models
         /// <param name="parameters">The object to add to the selection.</param>
         public void AddToSelection(object parameters)
         {
-            var node = parameters as NodeModel;
-
-            //don't add if the object is null
-            if (node == null)
-                return;
-
-            if (!node.IsSelected)
+            var selectable = parameters as ISelectable;
+            if ((selectable != null) && !selectable.IsSelected)
             {
-                if (!DynamoSelection.Instance.Selection.Contains(node))
-                    DynamoSelection.Instance.Selection.Add(node);
+                if (!DynamoSelection.Instance.Selection.Contains(selectable))
+                    DynamoSelection.Instance.Selection.Add(selectable);
             }
         }
 

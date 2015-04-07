@@ -65,7 +65,7 @@ namespace DynamoCoreUITests
 
             var nodeView = NodeViewWithGuid("6869c998-b819-4686-8849-6f36162c4182"); // NodeViewOf<Watch3D>();
             var watchView = nodeView.ChildrenOfType<Watch3DView>().First();
-            Assert.AreEqual(0, watchView.Points.Positions.Count);
+            Assert.Null(watchView.Points);
         }
 
         [Test]
