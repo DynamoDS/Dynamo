@@ -187,7 +187,7 @@ namespace Dynamo.Controls
 
         void InitializeShortcutBar()
         {
-            ShortcutToolbar shortcutBar = new ShortcutToolbar();
+            ShortcutToolbar shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager);
             shortcutBar.Name = "ShortcutToolbar";
 
             ShortcutBarItem newScriptButton = new ShortcutBarItem();

@@ -40,6 +40,7 @@ namespace Dynamo.UpdateManager
         BinaryVersion ProductVersion { get; }
         BinaryVersion AvailableVersion { get; }
         IAppVersionInfo UpdateInfo { get; set; }
+        bool IsUpdateAvailable { get; }
         event UpdateDownloadedEventHandler UpdateDownloaded;
         event ShutdownRequestedEventHandler ShutdownRequested;
         void CheckForProductUpdate(IAsynchronousRequest request);
@@ -75,6 +76,11 @@ namespace Dynamo.UpdateManager
         /// Defines whether to force update, default vlaue is false.
         /// </summary>
         bool ForceUpdate { get; set; }
+
+        /// <summary>
+        /// Gets the base name of the installer to be used for upgrade.
+        /// </summary>
+        string InstallerNameBase { get; set; }
     }
 
     /// <summary>
@@ -136,7 +142,7 @@ namespace Dynamo.UpdateManager
         /// <summary>
         /// UpdateManager instance that created this request.
         /// </summary>
-        private IUpdateManager manager = null;
+        private readonly IUpdateManager manager = null;
 
         /// <summary>
         /// The constructor.
@@ -203,6 +209,7 @@ namespace Dynamo.UpdateManager
         private const string PRODUCTION_SOURCE_PATH_S = "http://dyn-builds-data.s3.amazonaws.com/";
         private const string PRODUCTION_SIG_SOURCE_PATH_S = "http://dyn-builds-data-sig.s3.amazonaws.com/";
         private const string DEFAULT_CONFIG_FILE_S = "UpdateManagerConfig.xml";
+        private const string INSTALL_NAME_BASE = "DynamoInstall";
 
         /// <summary>
         /// Defines download location for new installer
@@ -225,6 +232,11 @@ namespace Dynamo.UpdateManager
         public bool ForceUpdate { get; set; }
 
         /// <summary>
+        /// Gets the base name of the installer to be used for upgrade.
+        /// </summary>
+        public string InstallerNameBase { get; set; }
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         public UpdateManagerConfiguration()
@@ -233,6 +245,7 @@ namespace Dynamo.UpdateManager
             SignatureSourcePath = PRODUCTION_SIG_SOURCE_PATH_S;
             CheckNewerDailyBuild = false;
             ForceUpdate = false;
+            InstallerNameBase = INSTALL_NAME_BASE;
         }
 
         /// <summary>
@@ -331,17 +344,14 @@ namespace Dynamo.UpdateManager
         #region Private Class Data Members
 
         private bool versionCheckInProgress;
-        private BinaryVersion productVersion;
+        private static BinaryVersion productVersion;
         private IAppVersionInfo updateInfo;
-        private const string INSTALL_NAME_BASE = "DynamoInstall";
         private const string OLD_DAILY_INSTALL_NAME_BASE = "DynamoDailyInstall";
         private const string INSTALLUPDATE_EXE = "InstallUpdate.exe";
         private string updateFileLocation;
         private int currentDownloadProgress = -1;
         private IAppVersionInfo downloadedUpdateInfo;
-        private static IUpdateManager instance;
-        private static readonly object lockingObject = new object();
-        private UpdateManagerConfiguration configuration = null;
+        private IUpdateManagerConfiguration configuration = null;
         private int hostApplicationProcessId = -1;
 
         #endregion
@@ -366,15 +376,18 @@ namespace Dynamo.UpdateManager
         {
             get
             {
-                if (null == productVersion)
-                {
-                    string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                    FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(executingAssemblyPathName);
-                    productVersion = BinaryVersion.FromString(myFileVersionInfo.FileVersion);
-                }
-
-                return productVersion;
+                return GetProductVersion();
             }
+        }
+
+        public static BinaryVersion GetProductVersion()
+        {
+            if (null != productVersion) return productVersion;
+
+            var executingAssemblyName = Assembly.GetExecutingAssembly().GetName();
+            productVersion = BinaryVersion.FromString(executingAssemblyName.Version.ToString());
+
+            return productVersion;
         }
 
         /// <summary>
@@ -434,6 +447,18 @@ namespace Dynamo.UpdateManager
             }
         }
 
+        public bool IsUpdateAvailable
+        {
+            get
+            {
+                //Update is not available unitl it's downloaded
+                if(DownloadedUpdateInfo==null)
+                    return false;
+
+                return ForceUpdate || AvailableVersion > ProductVersion;
+            }
+        }
+
         /// <summary>
         /// This flag is available via the debug menu to
         /// allow the update manager to check for newer daily 
@@ -472,17 +497,6 @@ namespace Dynamo.UpdateManager
             }
         }
 
-        public static IUpdateManager Instance
-        {
-            get
-            {
-                lock (lockingObject)
-                {
-                    return instance ?? (instance = new UpdateManager());
-                }
-            }
-        }
-
         /// <summary>
         /// Returns the configuration settings.
         /// </summary>
@@ -496,8 +510,9 @@ namespace Dynamo.UpdateManager
 
         #endregion
 
-        private UpdateManager()
+        public UpdateManager(IUpdateManagerConfiguration configuration)
         {
+            this.configuration = configuration;
             PropertyChanged += UpdateManager_PropertyChanged;
         }
 
@@ -581,14 +596,14 @@ namespace Dynamo.UpdateManager
             var latestBuildTime = new DateTime();
 
             bool useStable = false;
-            if (IsStableBuild(INSTALL_NAME_BASE, latestBuildFilePath))
+            if (IsStableBuild(Configuration.InstallerNameBase, latestBuildFilePath))
             {
                 useStable = true;
-                latestBuildVersion = GetBinaryVersionFromFilePath(INSTALL_NAME_BASE, latestBuildFilePath);
+                latestBuildVersion = GetBinaryVersionFromFilePath(Configuration.InstallerNameBase, latestBuildFilePath);
             }
-            else if (IsDailyBuild(INSTALL_NAME_BASE, latestBuildFilePath) || IsDailyBuild(OLD_DAILY_INSTALL_NAME_BASE, latestBuildFilePath))
+            else if (IsDailyBuild(Configuration.InstallerNameBase, latestBuildFilePath) || IsDailyBuild(OLD_DAILY_INSTALL_NAME_BASE, latestBuildFilePath))
             {
-                latestBuildTime = GetBuildTimeFromFilePath(INSTALL_NAME_BASE, latestBuildFilePath);
+                latestBuildTime = GetBuildTimeFromFilePath(Configuration.InstallerNameBase, latestBuildFilePath);
                 latestBuildVersion = GetCurrentBinaryVersion();
             }
             else
@@ -777,7 +792,7 @@ namespace Dynamo.UpdateManager
 
             var builds = bucketresult.Descendants(ns + "LastModified").
                 OrderByDescending(x => DateTime.Parse(x.Value)).
-                Where(x => x.Parent.Value.Contains(INSTALL_NAME_BASE) || x.Parent.Value.Contains(OLD_DAILY_INSTALL_NAME_BASE)).
+                Where(x => x.Parent.Value.Contains(Configuration.InstallerNameBase) || x.Parent.Value.Contains(OLD_DAILY_INSTALL_NAME_BASE)).
                 Select(x => x.Parent);
 
 
@@ -791,8 +806,8 @@ namespace Dynamo.UpdateManager
 
             string latestBuild = string.Empty;
             latestBuild = checkDailyBuilds ?
-                fileNames.FirstOrDefault(x => IsDailyBuild(INSTALL_NAME_BASE, x) || IsDailyBuild(OLD_DAILY_INSTALL_NAME_BASE, x)) :
-                fileNames.FirstOrDefault(x => IsStableBuild(INSTALL_NAME_BASE, x));
+                fileNames.FirstOrDefault(x => IsDailyBuild(Configuration.InstallerNameBase, x) || IsDailyBuild(OLD_DAILY_INSTALL_NAME_BASE, x)) :
+                fileNames.FirstOrDefault(x => IsStableBuild(Configuration.InstallerNameBase, x));
 
             return latestBuild;
         }
@@ -1018,17 +1033,20 @@ namespace Dynamo.UpdateManager
         #endregion
 
         /// <summary>
-        /// Checks for the product update. Requests for update version info
-        /// from configured download source path.
+        /// Checks for the product update by requesting for update version info 
+        /// from configured download source path. This method will skip the 
+        /// update check if a newer version of the product is already installed.
         /// </summary>
-        internal static void CheckForProductUpdate()
+        /// <param name="manager">Update manager instance using which product
+        /// update check nees to be done.</param>
+        internal static void CheckForProductUpdate(IUpdateManager manager)
         {
             //If we already have higher version installed, don't look for product update.
-            if(new DynamoLookUp().LatestProduct > Instance.ProductVersion)
+            if(new DynamoLookUp().LatestProduct > manager.ProductVersion)
                 return;
 
-            var downloadUri = new Uri(Instance.Configuration.DownloadSourcePath);
-            Instance.CheckForProductUpdate(new UpdateRequest(downloadUri, Instance));
+            var downloadUri = new Uri(manager.Configuration.DownloadSourcePath);
+            manager.CheckForProductUpdate(new UpdateRequest(downloadUri, manager));
         }
     }
 

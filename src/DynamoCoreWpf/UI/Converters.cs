@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
@@ -1758,9 +1759,14 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value != true) return Resources.AboutWindowUpToDate;
+            var um = value as IUpdateManager;
+            if (um == null)
+                return Resources.AboutWindowCannotGetVersion;
 
-            var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
+            if (!um.ForceUpdate && um.AvailableVersion <= um.ProductVersion) 
+                return Resources.AboutWindowUpToDate;
+            
+            var latest = um.AvailableVersion;
 
             return latest != null ? latest.ToString() : Resources.AboutWindowCannotGetVersion;
         }

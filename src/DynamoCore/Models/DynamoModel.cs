@@ -35,6 +35,7 @@ using ProtoCore.Exceptions;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
 using Utils = Dynamo.Nodes.Utilities;
+using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
 
 namespace Dynamo.Models
 {
@@ -52,7 +53,6 @@ namespace Dynamo.Models
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
-
         #endregion
 
         #region events
@@ -160,8 +160,13 @@ namespace Dynamo.Models
         /// </summary>
         public string Version
         {
-            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
+            get { return UpdateManager.ProductVersion.ToString(); }
         }
+
+        /// <summary>
+        /// UpdateManager to handle automatic upgrade to higher version.
+        /// </summary>
+        public IUpdateManager UpdateManager { get; private set; }
 
         /// <summary>
         ///     The path manager that configures path information required for 
@@ -224,7 +229,7 @@ namespace Dynamo.Models
             get
             {
                 return Process.GetCurrentProcess().ProcessName + "-"
-                    + UpdateManager.UpdateManager.Instance.ProductVersion;
+                    + DefaultUpdateManager.GetProductVersion();
             }
         }
 
@@ -524,9 +529,11 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
+            UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
+            UpdateManager.Log += updateManager_Log;
             if (!IsTestMode)
-                UpdateManager.UpdateManager.CheckForProductUpdate();
-
+                DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
+            
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
@@ -541,6 +548,11 @@ namespace Dynamo.Models
             InitializeNodeLibrary(preferences);
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
+        }
+
+        void updateManager_Log(LogEventArgs args)
+        {
+            Logger.Log(args.Message, args.Level);
         }
 
         /// <summary>
@@ -602,6 +614,8 @@ namespace Dynamo.Models
         {
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
+            
+            UpdateManager.Log -= updateManager_Log;
             Logger.Dispose();
 
             EngineController.Dispose();
