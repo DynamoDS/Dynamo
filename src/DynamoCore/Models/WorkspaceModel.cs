@@ -915,7 +915,7 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController, bool verboseLogging)
+        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController)
         {
             var selectedNodes = DynamoSelection.Instance
                                                .Selection
@@ -933,7 +933,7 @@ namespace Dynamo.Models
             var nodeList = selectedNodes.ToList();
             int nodeCount = nodeList.Count;
 
-            var nodeToCodeResult =  engineController.ConvertNodesToCode(selectedNodes, verboseLogging);
+            var nodeToCodeResult =  engineController.ConvertNodesToCode(selectedNodes);
             CodeBlockNodeModel codeBlockNode = null;
 
             //UndoRedo Action Group----------------------------------------------

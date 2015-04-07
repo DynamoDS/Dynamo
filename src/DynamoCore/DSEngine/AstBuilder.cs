@@ -31,6 +31,13 @@ namespace Dynamo.DSEngine
     /// </summary>
     public class AstBuilder : LogSourceBase
     {
+        public enum CompilationContext
+        {
+            ForDeltaExecution,
+            ForNodeToCode,
+            None
+        }
+
         private readonly IAstNodeContainer nodeContainer;
 
         public AstBuilder(IAstNodeContainer nodeContainer)
@@ -146,7 +153,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution, bool verboseLogging, bool isForNodesToCode = false)
+        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, CompilationContext context, bool verboseLogging)
         {
 
             var inputAstNodes = new List<AssociativeNode>();
@@ -177,7 +184,7 @@ namespace Dynamo.DSEngine
             if (node.State == ElementState.Error)
                 Log("Error in Node. Not sent for building and compiling");
 
-            if (isDeltaExecution)
+            if (context == CompilationContext.ForDeltaExecution)
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
@@ -193,7 +200,8 @@ namespace Dynamo.DSEngine
             }
             else
             {
-                astNodes = isForNodesToCode ? node.BuildAstForNodesToCode(inputAstNodes) : node.BuildAst(inputAstNodes);
+                astNodes = context == CompilationContext.ForNodeToCode ? 
+                    node.BuildAstForNodesToCode(inputAstNodes) : node.BuildAst(inputAstNodes);
             }
             
             if (verboseLogging)
@@ -204,9 +212,11 @@ namespace Dynamo.DSEngine
                 }
             }
 
-            if(null == astNodes)
+            if (null == astNodes)
+            {
                 resultList.AddRange(new AssociativeNode[0]);
-            else if (isDeltaExecution)
+            }
+            else if (context == CompilationContext.ForDeltaExecution)
             {
                 OnAstNodeBuilt(node.GUID, astNodes);
                 resultList.AddRange(astNodes);
@@ -227,58 +237,50 @@ namespace Dynamo.DSEngine
                         OnAstNodeBuilt(node.GUID, new[] { item });
                     }
                     else
+                    {
                         resultList.Add(item);
+                    }
                 }
             }
         }
 
         /// <summary>
-        ///     Compiling a collection of Dynamo nodes to AST nodes, no matter
-        ///     whether Dynamo node has been compiled or not.
+        /// Compile a collection of NodeModel to AST nodes in different contexts.
         /// </summary>
         /// <param name="nodes"></param>
-        /// <param name="isDeltaExecution"></param>
+        /// <param name="context"></param>
         /// <param name="verboseLogging"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
+        /// <returns></returns>
+        public IEnumerable<Tuple<NodeModel, IEnumerable<AssociativeNode>>> CompileToAstNodes(
+            IEnumerable<NodeModel> nodes, 
+            CompilationContext context, 
+            bool verboseLogging)
         {
-            // TODO: compile to AST nodes should be triggered after a node is 
-            // modified.
-
             var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
-            var sortedNodes = TopologicalSort(topScopedNodes);
 
-            if (isDeltaExecution)
+            IEnumerable<NodeModel> sortedNodes = null;
+            if (context == CompilationContext.ForNodeToCode)
+                sortedNodes = PostOrderSort(topScopedNodes);
+            else
+                sortedNodes = TopologicalSort(topScopedNodes);
+
+            if (context == CompilationContext.ForDeltaExecution)
             {
                 sortedNodes = sortedNodes.Where(n => n.IsModified);
             }
 
-            var result = new List<AssociativeNode>();
-
-            foreach (NodeModel node in sortedNodes)
-            {
-                _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging, false);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<Tuple<NodeModel, List<AssociativeNode>>> CompileToAstNodesForNodeToCode(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
-        {
-            // TODO: compile to AST nodes should be triggered after a node is 
-            // modified.
-
-            var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
-            var sortedNodes = PostOrderSort(topScopedNodes);
             var result = new List<List<AssociativeNode>>();
 
             foreach (NodeModel node in sortedNodes)
             {
                 var astNodes = new List<AssociativeNode>();
-                _CompileToAstNodes(node, astNodes, isDeltaExecution, verboseLogging, true);
+                _CompileToAstNodes(node, astNodes, context, verboseLogging);
                 result.Add(astNodes);
             }
 
-            return result.Zip(sortedNodes, (astNodes, node) => Tuple.Create(node, astNodes));
+            return result.Zip(
+                sortedNodes, 
+                (astNodes, node) => Tuple.Create(node, astNodes as IEnumerable<AssociativeNode>));
         }
 
         /// <summary>
@@ -299,7 +301,8 @@ namespace Dynamo.DSEngine
             OnAstNodeBuilding(functionId);
 
             var functionBody = new CodeBlockNode();
-            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false, verboseLogging));
+            var asts = CompileToAstNodes(funcBody, CompilationContext.None, verboseLogging);
+            functionBody.Body.AddRange(asts.SelectMany(t => t.Item2));
 
             var outputs = outputNodes.ToList();
             if (outputs.Count > 1)

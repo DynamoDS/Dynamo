@@ -46,8 +46,8 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(openPath);
 
             AstBuilder builder = new AstBuilder(null);
-            var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, false, false);
-            var codeGen = new ProtoCore.CodeGenDS(astNodes);
+            var astNodes = builder.CompileToAstNodes(model.CurrentWorkspace.Nodes, AstBuilder.CompilationContext.None, false);
+            var codeGen = new ProtoCore.CodeGenDS(astNodes.SelectMany(t => t.Item2));
             string code = codeGen.GenerateCode();
             Console.WriteLine(code);
         }

@@ -319,8 +319,7 @@ namespace Dynamo.Models
         {
             CurrentWorkspace.ConvertNodesToCodeInternal(
                 command.NodeId,
-                EngineController,
-                DebugSettings.VerboseLogging);
+                EngineController);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }

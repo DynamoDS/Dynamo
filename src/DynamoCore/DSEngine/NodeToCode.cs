@@ -289,12 +289,10 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="astBuilder"></param>
         /// <param name="nodes"></param>
-        /// <param name="verboseLogging"></param>
         /// <returns></returns>
         public static NodeToCodeResult NodeToCode(
             AstBuilder astBuilder, 
-            IEnumerable<NodeModel> nodes, 
-            bool verboseLogging)
+            IEnumerable<NodeModel> nodes)
         {
             // The basic worflow is:
             //   1. Compile each node to get its cde in AST format
@@ -316,7 +314,7 @@ namespace Dynamo.DSEngine
             //
             //   5. Do constant progation to optimize the generated code.
             #region Step 1 AST compilation
-            var allAstNodes = astBuilder.CompileToAstNodesForNodeToCode(nodes, false, verboseLogging);
+            var allAstNodes = astBuilder.CompileToAstNodes(nodes, Dynamo.DSEngine.AstBuilder.CompilationContext.ForNodeToCode, false);
             #endregion
 
             #region Step 2 Varialbe numbering

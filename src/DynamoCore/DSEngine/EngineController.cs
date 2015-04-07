@@ -189,7 +189,7 @@ namespace Dynamo.DSEngine
                 var activeNodes = nodes.Where(n => !n.IsInErrorState);
 
                 if (activeNodes.Any())
-                    astBuilder.CompileToAstNodes(activeNodes, true, verboseLogging);
+                    astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.ForDeltaExecution, verboseLogging);
 
                 return VerifyGraphSyncData(nodes);
             }
@@ -213,7 +213,7 @@ namespace Dynamo.DSEngine
             var activeNodes = updatedNodes.Where(n => !n.IsInErrorState);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, true, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.ForDeltaExecution, verboseLogging);
             }
 
             if (!VerifyGraphSyncData(nodes) || ((graphSyncDataQueue.Count <= 0)))
@@ -240,7 +240,7 @@ namespace Dynamo.DSEngine
             var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, true, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.ForDeltaExecution, verboseLogging);
             }
 
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
@@ -558,9 +558,9 @@ namespace Dynamo.DSEngine
 
         #region Node2Code
 
-        public NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> nodes, bool verboseLogging)
+        public NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> nodes)
         {
-            return NodeToCodeUtils.NodeToCode(astBuilder, nodes, verboseLogging);
+            return NodeToCodeUtils.NodeToCode(astBuilder, nodes);
         }
 
         private bool HasVariableDefined(string var)
