@@ -158,7 +158,7 @@ namespace Dynamo
             dynamoModel = model;
 
             dynamoModel.WorkspaceClearing += Stop;
-            dynamoModel.WorkspaceCleared += ClearVisualizations;
+            dynamoModel.WorkspaceCleared += ClearVisualizationsAndRestart;
 
             dynamoModel.WorkspaceAdded += WorkspaceAdded;
             dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
@@ -172,6 +172,12 @@ namespace Dynamo
             dynamoModel.RequestsRedraw += RequestAllNodesVisualsUpdate;
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
+
+            // The initial workspace will have been created before the viz manager
+            // is created. So we have to hook to that workspace's events during
+            // construction of the viz manager to make sure we don't miss handling
+            // events from the pre-existing workspace.
+            WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
             Start();
         }
@@ -306,7 +312,7 @@ namespace Dynamo
 
             UnregisterEventListeners();
 
-            dynamoModel.WorkspaceCleared -= ClearVisualizations;
+            dynamoModel.WorkspaceCleared -= ClearVisualizationsAndRestart;
 
             dynamoModel.WorkspaceAdded -= WorkspaceAdded;
             dynamoModel.WorkspaceRemoved -= WorkspaceRemoved;
@@ -353,7 +359,7 @@ namespace Dynamo
             foreach (var node in workspace.Nodes)
                 NodeRemovedFromHomeWorkspace(node);
 
-            Clear();
+            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<RenderPackage> { }, Guid.Empty));
         }
 
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
@@ -473,13 +479,13 @@ namespace Dynamo
         private void Clear()
         {
             // Send along an empty render set to clear all visualizations.
-            Stop();
             OnResultsReadyToVisualize(new VisualizationEventArgs(new List<RenderPackage>{}, Guid.Empty));
         }
 
-        private void ClearVisualizations(object sender, EventArgs e)
+        private void ClearVisualizationsAndRestart(object sender, EventArgs e)
         {
             Clear();
+            Start();
         }
 
         #endregion
