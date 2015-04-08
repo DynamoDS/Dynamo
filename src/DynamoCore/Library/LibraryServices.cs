@@ -41,10 +41,10 @@ namespace Dynamo.DSEngine
 
         private readonly IPathManager pathManager;
         public ProtoCore.Core LibraryManagementCore{get; private set;}
-        private ProtoCore.Core liveCore = null;
+        private ProtoCore.Core liveRunnerCore = null;
         public void SetLiveCore(ProtoCore.Core core)
         {
-            liveCore = core;
+            liveRunnerCore = core;
         }
 
         private class UpgradeHint
@@ -72,9 +72,12 @@ namespace Dynamo.DSEngine
         /// </summary>
         public void UpdateLibraryCoreData()
         {
-            Validity.Assert(liveCore != null);
-            LibraryManagementCore.ProcTable = new ProtoCore.DSASM.ProcedureTable(liveCore.ProcTable);
-            LibraryManagementCore.ClassTable = new ProtoCore.DSASM.ClassTable(liveCore.ClassTable);
+            // If a liverunner core is provided, sync the library core data
+            if (liveRunnerCore != null)
+            {
+                LibraryManagementCore.ProcTable = new ProtoCore.DSASM.ProcedureTable(liveRunnerCore.ProcTable);
+                LibraryManagementCore.ClassTable = new ProtoCore.DSASM.ClassTable(liveRunnerCore.ClassTable);
+            }
         }
 
         public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
@@ -428,7 +431,7 @@ namespace Dynamo.DSEngine
                 return false;
             }
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
-            UpdateLibraryCoreData();
+           UpdateLibraryCoreData();
             return true;
         }
 
