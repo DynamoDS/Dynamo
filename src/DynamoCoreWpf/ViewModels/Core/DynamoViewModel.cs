@@ -572,13 +572,13 @@ namespace Dynamo.ViewModels
         private void SubscribeUpdateManagerHandlers()
         {
             model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested += updateManager_ShutdownRequested;
+            model.UpdateManager.ShutdownRequested += UpdateManager_ShutdownRequested;
         }
 
         private void UnsubscribeUpdateManagerEvents()
         {
             model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
-            model.UpdateManager.ShutdownRequested -= updateManager_ShutdownRequested;
+            model.UpdateManager.ShutdownRequested -= UpdateManager_ShutdownRequested;
         }
 
         private void SubscribeModelUiEvents()
@@ -746,7 +746,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        void updateManager_ShutdownRequested(IUpdateManager updateManager)
+        void UpdateManager_ShutdownRequested(IUpdateManager updateManager)
         {
             PerformShutdownSequence(new ShutdownParams(
                 shutdownHost: true, allowCancellation: true));

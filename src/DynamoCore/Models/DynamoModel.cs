@@ -609,7 +609,7 @@ namespace Dynamo.Models
         {
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.__TempCoreHostForRefactoring.Cleanup();
-            UpdateManager.Log -= updateManager_Log;
+            UpdateManager.Log -= UpdateManager_Log;
 
             Logger.Dispose();
 
