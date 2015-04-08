@@ -72,6 +72,10 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
+            ToggleIsUsageReportingApprovedCommand.ToolTip = string.Format(
+                Wpf.Properties.Resources.DynamoViewSettingMenuEnableDataReportingTooltip,
+                dynamoViewModel.BrandingResourceProvider.ProductName);
+
             Loaded += DynamoView_Loaded;
             Unloaded += DynamoView_Unloaded;
 
@@ -330,7 +334,7 @@ namespace Dynamo.Controls
 
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
-                                                                     _timer.Elapsed));
+                                                                     _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
             InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage();
@@ -522,7 +526,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(args);
+            var prompt = new CrashPrompt(args,dynamoViewModel);
             prompt.ShowDialog();
         }
 

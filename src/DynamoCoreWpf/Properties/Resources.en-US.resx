@@ -121,12 +121,12 @@
     <value>Could not get version.</value>
     <comment>To indicate not abe to get Dynamo version</comment>
   </data>
-  <data name="AboutWIndowDynamoWebsiteButton" xml:space="preserve">
-    <value>Dynamo Website</value>
+  <data name="AboutWindowDynamoWebsiteButton" xml:space="preserve">
+    <value>{0} Website</value>
     <comment>Click button to go to Dynamo website</comment>
   </data>
   <data name="AboutWindowTitle" xml:space="preserve">
-    <value>About Dynamo</value>
+    <value>About {0}</value>
     <comment>About window title</comment>
   </data>
   <data name="AboutWindowUpToDate" xml:space="preserve">
@@ -558,7 +558,7 @@ You will get a chance to save your work.</value>
     <comment>Setting menu | Enable data reporting during usage</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
-    <value>Detailed reporting sends behaviour data that we use for improving Dynamo.&amp;#x0a;It includes the graph being created as well as errors and warnings</value>
+    <value>Detailed reporting sends behaviour data that we use for improving {0}.&amp;#x0a;It includes the graph being created as well as errors and warnings</value>
     <comment>Setting menu | Tooltip for enable data reporting during usage menu item</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReporting" xml:space="preserve">
@@ -954,9 +954,9 @@ You will get a chance to save your work.</value>
     <comment>ErrorString</comment>
   </data>
   <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
-    <value>Dynamo has already installed {0}.
+    <value>{0} has already installed {1}.
 
-Dynamo will attempt to uninstall this package before installing.</value>
+{0} will attempt to uninstall this package before installing.</value>
   </data>
   <data name="MessageConfirmToInstallPackage" xml:space="preserve">
     <value>Are you sure you want to install {0} {1} ?</value>
@@ -1014,10 +1014,10 @@ You can always redownload the package.</value>
     <value>Failed to save the Workspace as image.</value>
   </data>
   <data name="MessageFailedToUninstall" xml:space="preserve">
-    <value>Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
+    <value>{0} failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
   </data>
   <data name="MessageFailToUninstallPackage" xml:space="preserve">
-    <value>Dynamo failed to uninstall the package: {0}.  The package may need to be reinstalled manually.</value>
+    <value>{0} failed to uninstall the package: {1}.  The package may need to be reinstalled manually.</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageFileNotFound" xml:space="preserve">
@@ -1032,7 +1032,7 @@ You can always redownload the package.</value>
     <value>{0} elapsed for loading Dynamo main window.</value>
   </data>
   <data name="MessageNeedToRestart" xml:space="preserve">
-    <value>Dynamo and its host application must restart before uninstall takes effect.</value>
+    <value>{0} and its host application must restart before uninstall takes effect.</value>
   </data>
   <data name="MessageNodeWithNullFunction" xml:space="preserve">
     <value>There is a null function definition for this node.</value>
@@ -1044,9 +1044,9 @@ You can always redownload the package.</value>
     <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
   </data>
   <data name="MessagePackageNewerDynamo" xml:space="preserve">
-    <value>The following packages use a newer version of Dynamo than you are currently using:
+    <value>The following packages use a newer version of {0} than you are currently using:
 
-{0}
+{1}
 
 Do you want to continue?</value>
   </data>
@@ -1059,7 +1059,7 @@ Do you want to continue?</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageSubmitSameNamePackage" xml:space="preserve">
-    <value>The node is part of the dynamo package called "{0}" - do you want to submit a new version of this package?
+    <value>The node is part of the {0} package called "{1}" - do you want to submit a new version of this package?
 
 If not, this node will be moved to the new package you are creating."</value>
     <comment>Message box content</comment>
@@ -1075,10 +1075,10 @@ You can always undeprecate the package.</value>
 You can always re-deprecate the package.</value>
   </data>
   <data name="MessageUninstallToContinue" xml:space="preserve">
-    <value>Dynamo needs to uninstall {0} to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.</value>
+    <value>{0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}.</value>
   </data>
-  <data name="MessageUnintallToContinue2" xml:space="preserve">
-    <value>Dynamo needs to uninstall {0} to continue but it contains binaries already loaded into Dynamo.  It's now marked for removal, but you'll need to first restart Dynamo.</value>
+  <data name="MessageUninstallToContinue2" xml:space="preserve">
+    <value>{0} needs to uninstall {1} to continue but it contains binaries already loaded into Dynamo.  It's now marked for removal, but you'll need to first restart {0}.</value>
   </data>
   <data name="MessageUnsavedChanges0" xml:space="preserve">
     <value>The following workspaces have not been saved:</value>
@@ -1173,7 +1173,7 @@ You can always re-deprecate the package.</value>
     <value>OK</value>
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
-    <value>Open Dynamo Definition...</value>
+    <value>Open {0} Definition...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Package Download Confirmation</value>
@@ -1393,7 +1393,7 @@ You can always re-deprecate the package.</value>
     <comment>Github repository</comment>
   </data>
   <data name="PublishPackageViewTitle" xml:space="preserve">
-    <value>Publish a Dynamo Package</value>
+    <value>Publish a {0} Package</value>
   </data>
   <data name="RunCompletedMessage" xml:space="preserve">
     <value>Run completed.</value>
