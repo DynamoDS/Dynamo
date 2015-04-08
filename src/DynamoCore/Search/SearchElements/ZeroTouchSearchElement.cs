@@ -33,7 +33,13 @@ namespace Dynamo.Search.SearchElements
             if (functionDescriptor.IsBuiltIn)
                 ElementType = ElementTypeEnum.RegularNode;
             else
-                ElementType = ElementTypeEnum.CustomDll;
+            {
+                // Assembly, that is located in package directory, considered as part of package.
+                if (Assembly.StartsWith(functionDescriptor.PathManager.PackagesDirectory))
+                    ElementType = ElementTypeEnum.Package;
+                else
+                    ElementType = ElementTypeEnum.CustomDll;
+            }
 
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
             outputParameters = new List<string>() { functionDescriptor.ReturnType };
