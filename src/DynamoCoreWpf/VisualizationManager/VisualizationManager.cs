@@ -159,12 +159,12 @@ namespace Dynamo
 
             dynamoModel.WorkspaceClearing += Stop;
             dynamoModel.WorkspaceCleared += ClearVisualizationsAndRestart;
-
+            
             dynamoModel.WorkspaceAdded += WorkspaceAdded;
             dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
 
             dynamoModel.DeletionStarted += Stop;
-            dynamoModel.DeletionComplete += StartAndUpdate;
+            dynamoModel.DeletionComplete += dynamoModel_DeletionComplete; 
 
             dynamoModel.CleaningUp += Clear;
 
@@ -318,7 +318,7 @@ namespace Dynamo
             dynamoModel.WorkspaceRemoved -= WorkspaceRemoved;
 
             dynamoModel.DeletionStarted -= Stop;
-            dynamoModel.DeletionComplete -= StartAndUpdate;
+            dynamoModel.DeletionComplete -= dynamoModel_DeletionComplete;
 
             dynamoModel.CleaningUp -= Clear;
 
@@ -330,11 +330,6 @@ namespace Dynamo
         #endregion
 
         #region private event handlers
-
-        private void StartAndUpdate(object sender, EventArgs e)
-        {
-            Start(true);
-        }
 
         private void WorkspaceAdded(WorkspaceModel model)
         {
@@ -397,6 +392,23 @@ namespace Dynamo
         #endregion
 
         #region private methods
+
+        private void dynamoModel_DeletionComplete(object sender, EventArgs e)
+        {
+            var hws = dynamoModel.CurrentWorkspace as HomeWorkspaceModel;
+            if (hws != null)
+            {
+                if (hws.RunSettings.RunType == RunType.Manual ||
+                    hws.RunSettings.RunType == RunType.Periodic)
+                {
+                    // We need to force a visualization update.
+                    Start(true);
+                    return;
+                }
+            }
+
+            Start();
+        }
 
         private void UnregisterEventListeners()
         {
