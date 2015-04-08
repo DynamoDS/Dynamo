@@ -40,7 +40,8 @@ namespace Dynamo.DSEngine
         private readonly List<string> importedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
-        public readonly ProtoCore.Core LibraryManagementCore;
+        public  ProtoCore.Core LibraryManagementCore;
+        public  ProtoCore.Core LiveCore;
 
         private class UpgradeHint
         {
@@ -60,6 +61,22 @@ namespace Dynamo.DSEngine
 
         private readonly Dictionary<string, UpgradeHint> priorNameHints =
             new Dictionary<string, UpgradeHint>();
+
+        /// <summary>
+        /// Create a library core based from the live core properties
+        /// The properties to copy are only those used by the library core
+        /// </summary>
+        /// <param name="liveCore"></param>
+        public void CreateLibraryCore(ProtoCore.Core liveCore)
+        {
+            Validity.Assert(liveCore != null);
+            //LibraryManagementCore = new ProtoCore.Core(liveCore.Options);
+            //LibraryManagementCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(LibraryManagementCore));
+            //LibraryManagementCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(LibraryManagementCore));
+
+            LibraryManagementCore.ProcTable = new ProtoCore.DSASM.ProcedureTable(liveCore.ProcTable);
+            LibraryManagementCore.ClassTable = new ProtoCore.DSASM.ClassTable(liveCore.ClassTable);
+        }
 
         public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
@@ -377,6 +394,7 @@ namespace Dynamo.DSEngine
 
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
 
+
                 if (LibraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format(Properties.Resources.LibraryBuildError, library);
@@ -411,6 +429,7 @@ namespace Dynamo.DSEngine
                 return false;
             }
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+            CreateLibraryCore(LiveCore);
             return true;
         }
 
