@@ -49,7 +49,6 @@ namespace Dynamo.Services
 
                 sessionID = Guid.NewGuid().ToString();
                 loggerImpl = new Log("Dynamo", userID, sessionID);
-
             
                 AutoMeasurement.Start(mc);
                 client = AutoMeasurement.Client;
