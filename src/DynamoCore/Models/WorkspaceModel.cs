@@ -668,19 +668,25 @@ namespace Dynamo.Models
         {
             var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
             var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
-
-            var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
+            //No Groups should be selected when creating a new group. This is to avoid creating multiple groups
+            //on the selected nodes.
+            var selectedAnnotation = this.Annotations == null ? null : this.Annotations.Where(s => s.IsSelected);
+            if (selectedAnnotation != null && !selectedAnnotation.Any())
             {
-                GUID = id,
-                AnnotationText = text
-            };
+                var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
+                {
+                    GUID = id,
+                    AnnotationText = text
+                };
 
-            var args = new ModelEventArgs(annotationModel, true);
-            OnRequestNodeCentered(this, args);
+                var args = new ModelEventArgs(annotationModel, true);
+                OnRequestNodeCentered(this, args);
 
-            Annotations.Add(annotationModel);
-            HasUnsavedChanges = true;
-            return annotationModel;
+                Annotations.Add(annotationModel);
+                HasUnsavedChanges = true;
+                return annotationModel;
+            }
+            return null;
         }
 
         /// <summary>
