@@ -430,8 +430,11 @@ namespace Dynamo.DSEngine
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
                 return false;
             }
+
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
-           UpdateLibraryCoreData();
+
+            // After a library is loaded, update the library core data with the liveRunner core data
+            UpdateLibraryCoreData();
             return true;
         }
 
