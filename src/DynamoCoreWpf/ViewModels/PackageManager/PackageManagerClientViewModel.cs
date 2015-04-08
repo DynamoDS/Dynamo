@@ -203,7 +203,8 @@ namespace Dynamo.ViewModels
 
                 if (DynamoViewModel.Model.PackageLoader.GetOwnerPackage(f.Item1) != null)
                 {
-                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, pkg.Name),
+                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, 
+                            DynamoViewModel.BrandingResourceProvider.ProductName,pkg.Name),
                             Resources.PackageWarningMessageBoxTitle, 
                             MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -269,7 +270,9 @@ namespace Dynamo.ViewModels
                                 }
                                 catch
                                 {
-                                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, packageDownloadHandle.Name),
+                                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, 
+                                        DynamoViewModel.BrandingResourceProvider.ProductName,
+                                        packageDownloadHandle.Name),
                                         Resources.UninstallFailureMessageBoxTitle, 
                                         MessageBoxButton.OK, MessageBoxImage.Error);
                                 }

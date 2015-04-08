@@ -125,7 +125,8 @@ namespace Dynamo.ViewModels
             if (Model.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    MessageBox.Show(Resources.MessageNeedToRestart,
+                    MessageBox.Show(string.Format(Resources.MessageNeedToRestart,
+                        dynamoViewModel.BrandingResourceProvider.ProductName),
                         Resources.UninstallingPackageMessageBoxTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Exclamation);
@@ -145,7 +146,8 @@ namespace Dynamo.ViewModels
             }
             catch (Exception)
             {
-                MessageBox.Show(Resources.MessageFailedToUninstall,
+                MessageBox.Show(string.Format(Resources.MessageFailedToUninstall,
+                    dynamoViewModel.BrandingResourceProvider.ProductName),
                     Resources.UninstallFailureMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }

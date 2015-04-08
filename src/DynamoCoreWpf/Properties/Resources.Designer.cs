@@ -70,16 +70,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Website.
+        ///   Looks up a localized string similar to {0} Website.
         /// </summary>
-        public static string AboutWIndowDynamoWebsiteButton {
+        public static string AboutWindowDynamoWebsiteButton {
             get {
-                return ResourceManager.GetString("AboutWIndowDynamoWebsiteButton", resourceCulture);
+                return ResourceManager.GetString("AboutWindowDynamoWebsiteButton", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to About Dynamo.
+        ///   Looks up a localized string similar to About {0}.
         /// </summary>
         public static string AboutWindowTitle {
             get {
@@ -169,7 +169,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can&apos;t submit a package in this version of Dynamo.  You&apos;ll need a host application, like Revit, to submit a package..
+        ///   Looks up a localized string similar to You can&apos;t submit a package in this version of {0}.  You&apos;ll need a host application, like Revit, to submit a package..
         /// </summary>
         public static string CannotSubmitPackage {
             get {
@@ -439,7 +439,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uh oh... something went wrong and dynamo has crashed, sorry about that.
+        ///   Looks up a localized string similar to Uh oh... something went wrong and {0} has crashed, sorry about that.
         ///
         ///You will get a chance to save your work..
         /// </summary>
@@ -477,7 +477,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo has crashed.
+        ///   Looks up a localized string similar to {0} has crashed.
         /// </summary>
         public static string CrashPromptDialogTitle {
             get {
@@ -578,9 +578,9 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to A Dynamo update is available. Click to install..
         /// </summary>
-        public static string DynamoUpdateAvailabeToolTip {
+        public static string DynamoUpdateAvailableToolTip {
             get {
-                return ResourceManager.GetString("DynamoUpdateAvailabeToolTip", resourceCulture);
+                return ResourceManager.GetString("DynamoUpdateAvailableToolTip", resourceCulture);
             }
         }
         
@@ -1233,7 +1233,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detailed reporting sends behaviour data that we use for improving Dynamo.&amp;#x0a;It includes the graph being created as well as errors and warnings.
+        ///   Looks up a localized string similar to Detailed reporting sends behaviour data that we use for improving {0}.&amp;#x0a;It includes the graph being created as well as errors and warnings.
         /// </summary>
         public static string DynamoViewSettingMenuEnableDataReportingTooltip {
             get {
@@ -1764,7 +1764,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Custom Node ({0})|{0}.
+        ///   Looks up a localized string similar to {0} Custom Node ({1})|{1}.
         /// </summary>
         public static string FileDialogDynamoCustomNode {
             get {
@@ -1773,7 +1773,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Definitions ({0})|{0}.
+        ///   Looks up a localized string similar to {0} Definitions ({1})|{1}.
         /// </summary>
         public static string FileDialogDynamoDefinitions {
             get {
@@ -1782,7 +1782,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo Workspace ({0})|{0}.
+        ///   Looks up a localized string similar to {0} Workspace ({1})|{1}.
         /// </summary>
         public static string FileDialogDynamoWorkspace {
             get {
@@ -2151,7 +2151,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Arugment lacing is disabled for this node..
+        ///   Looks up a localized string similar to Argument lacing is disabled for this node..
         /// </summary>
         public static string LacingDisabledToolTip {
             get {
@@ -2241,9 +2241,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo has already installed {0}.
+        ///   Looks up a localized string similar to {0} has already installed {1}.
         ///
-        ///Dynamo will attempt to uninstall this package before installing..
+        ///{0} will attempt to uninstall this package before installing..
         /// </summary>
         public static string MessageAlreadyInstallDynamo {
             get {
@@ -2395,7 +2395,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo failed to uninstall the package.  You may need to delete the package&apos;s root directory manually..
+        ///   Looks up a localized string similar to {0} failed to uninstall the package.  You may need to delete the package&apos;s root directory manually..
         /// </summary>
         public static string MessageFailedToUninstall {
             get {
@@ -2404,7 +2404,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo failed to uninstall the package: {0}.  The package may need to be reinstalled manually..
+        ///   Looks up a localized string similar to {0} failed to uninstall the package: {1}.  The package may need to be reinstalled manually..
         /// </summary>
         public static string MessageFailToUninstallPackage {
             get {
@@ -2431,7 +2431,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} elapsed for loading Dynamo main window..
+        ///   Looks up a localized string similar to {0} elapsed for loading {1} main window..
         /// </summary>
         public static string MessageLoadingTime {
             get {
@@ -2440,7 +2440,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo and its host application must restart before uninstall takes effect..
+        ///   Looks up a localized string similar to {0} and its host application must restart before uninstall takes effect..
         /// </summary>
         public static string MessageNeedToRestart {
             get {
@@ -2476,9 +2476,9 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The following packages use a newer version of Dynamo than you are currently using:
+        ///   Looks up a localized string similar to The following packages use a newer version of {0} than you are currently using:
         ///
-        ///{0}
+        ///{1}
         ///
         ///Do you want to continue?.
         /// </summary>
@@ -2507,7 +2507,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The node is part of the dynamo package called &quot;{0}&quot; - do you want to submit a new version of this package?
+        ///   Looks up a localized string similar to The node is part of the {0} package called &quot;{1}&quot; - do you want to submit a new version of this package?
         ///
         ///If not, this node will be moved to the new package you are creating.&quot;.
         /// </summary>
@@ -2540,7 +2540,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo needs to uninstall {0} to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo..
+        ///   Looks up a localized string similar to {0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}..
         /// </summary>
         public static string MessageUninstallToContinue {
             get {
@@ -2549,11 +2549,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo needs to uninstall {0} to continue but it contains binaries already loaded into Dynamo.  It&apos;s now marked for removal, but you&apos;ll need to first restart Dynamo..
+        ///   Looks up a localized string similar to {0} needs to uninstall {1} to continue but it contains binaries already loaded into Dynamo.  It&apos;s now marked for removal, but you&apos;ll need to first restart {0}..
         /// </summary>
-        public static string MessageUnintallToContinue2 {
+        public static string MessageUninstallToContinue2 {
             get {
-                return ResourceManager.GetString("MessageUnintallToContinue2", resourceCulture);
+                return ResourceManager.GetString("MessageUninstallToContinue2", resourceCulture);
             }
         }
         
@@ -2729,7 +2729,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Dynamo Definition....
+        ///   Looks up a localized string similar to Open {0} Definition....
         /// </summary>
         public static string OpenDynamoDefinitionDialogTitle {
             get {
@@ -2819,7 +2819,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while Dynamo is not running and try again..
+        ///   Looks up a localized string similar to Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again..
         /// </summary>
         public static string PackageDuplicateAssemblyWarning {
             get {
@@ -3161,7 +3161,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package Uses Newer Version of Dynamo!.
+        ///   Looks up a localized string similar to Package Uses Newer Version of {0}!.
         /// </summary>
         public static string PackageUseNewerDynamoMessageBoxTitle {
             get {
@@ -3359,7 +3359,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish a Dynamo Package.
+        ///   Looks up a localized string similar to Publish a {0} Package.
         /// </summary>
         public static string PublishPackageViewTitle {
             get {
@@ -3721,7 +3721,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I give my consent for Autodesk to collect information on how I use Dynamo..
+        ///   Looks up a localized string similar to I give my consent for Autodesk to collect information on how I use {0}..
         /// </summary>
         public static string UsageReportPromptDialogConsent {
             get {
@@ -3730,7 +3730,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The features and commands you use in Dynamo.
+        ///   Looks up a localized string similar to The features and commands you use in {0}.
         /// </summary>
         public static string UsageReportPromptDialogFeatureUsage {
             get {
@@ -3739,13 +3739,13 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We would like to collect some information about how Dynamo is used.
+        ///   Looks up a localized string similar to We would like to collect some information about how {0} is used.
         ///
         ///Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.
         ///
         ///The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).
         ///
-        ///The information being collected  [rest of string was truncated]&quot;;.
+        ///The information being collected is:.
         /// </summary>
         public static string UsageReportPromptDialogMessagePart1 {
             get {
@@ -3777,7 +3777,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agreement to collect usability data on your use of Dynamo.
+        ///   Looks up a localized string similar to Agreement to collect usability data on your use of {0}.
         /// </summary>
         public static string UsageReportPromptDialogTitle {
             get {
