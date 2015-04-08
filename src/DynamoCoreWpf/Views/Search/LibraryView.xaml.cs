@@ -8,6 +8,7 @@ using Dynamo.Controls;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.UI.Controls;
 
 namespace Dynamo.UI.Views
 {
@@ -18,24 +19,6 @@ namespace Dynamo.UI.Views
     {
         // See OnExpanderButtonMouseLeftButtonUp for details.
         private bool ignoreMouseEnter;
-
-        // This property is used to prevent a bug.
-        // When user clicks on category it scrolls instead of category content expanding.
-        // The reason is "CategoryTreeView" does not show full content because it is too
-        // big. On category clicking WPF makes autoscroll and doesn't expand content of 
-        // category. We are counting count of calling BringIntoViewCount() functions.        
-        private int bringIntoViewCount;
-        private int BringIntoViewCount
-        {
-            get
-            {
-                return bringIntoViewCount;
-            }
-            set
-            {
-                bringIntoViewCount = value >= 2 ? 2 : value;
-            }
-        }
 
         public LibraryView()
         {
@@ -90,7 +73,6 @@ namespace Dynamo.UI.Views
         /// list is cleared. As a result any visible StandardPanel will be hidden.
         private void OnExpanderCollapsed(object sender, System.Windows.RoutedEventArgs e)
         {
-            BringIntoViewCount++;
             var expanderContent = (sender as FrameworkElement);
 
             var buttons = expanderContent.ChildOfType<ListView>();
@@ -148,7 +130,27 @@ namespace Dynamo.UI.Views
                 {
                     // If class button was clicked, then handle, otherwise leave it.
                     e.Handled = selectedClass.SubCategories.Count == 0;
-                    selectedElement.BringIntoView();
+
+                    var classInfoPanel = wrapPanel.Children.Cast<FrameworkElement>().
+                        Where(child => child.DataContext is ClassInformationViewModel).FirstOrDefault();
+
+                    classInfoPanel.Loaded += (send, handler) =>
+                        {
+                            var selectedClassButton = WpfUtilities.FindUpVisualTree<Border>(selectedElement);
+                            var height = classInfoPanel.RenderSize.Height + selectedClassButton.RenderSize.Height;
+                            if (height > ScrollLibraryViewer.ActualHeight)
+                            {
+                                selectedClassButton.BringIntoView(new Rect(0, 0, 0, ScrollLibraryViewer.ActualHeight));
+                            }
+                            else
+                            {
+                                if (IsUserVisible(selectedClassButton, ScrollLibraryViewer))
+                                    classInfoPanel.BringIntoView();
+                                else
+                                    selectedClassButton.BringIntoView();
+                            }
+                        };
+
                 }
             }
 
@@ -157,6 +159,15 @@ namespace Dynamo.UI.Views
             e.Handled = !(selectedClass is RootNodeCategoryViewModel);
         }
 
+        private bool IsUserVisible(FrameworkElement element, FrameworkElement container)
+        {
+            if (!element.IsVisible)
+                return false;
+
+            Rect bounds = element.TransformToAncestor(container).TransformBounds(new Rect(0.0, 0.0, element.ActualWidth, element.ActualHeight));
+            Rect rect = new Rect(0.0, 0.0, container.ActualWidth, container.ActualHeight);
+            return rect.IntersectsWith(bounds);
+        }
 
         private bool ExpandCategory(IEnumerable<NodeCategoryViewModel> categories, NodeCategoryViewModel selectedClass)
         {
@@ -229,14 +240,6 @@ namespace Dynamo.UI.Views
             }
 
             return foundSelectedClass;
-        }
-
-        private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
-        {
-            // Because of bug we mark event as handled for all automatic requests 
-            // until count of our requests less than 1. First request is done for
-            // opened top category when dynamo starts.
-            e.Handled = BringIntoViewCount < 2;
         }
 
         // Clicking on a member node results in a node being placed on the canvas.
