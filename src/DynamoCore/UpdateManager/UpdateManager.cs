@@ -318,21 +318,32 @@ namespace Dynamo.UpdateManager
         /// <returns></returns>
         public static UpdateManagerConfiguration GetSettings(IUpdateManager updateManager = null)
         {
-            string location = Assembly.GetExecutingAssembly().Location;
-            string filePath = Path.Combine(
-                Path.GetDirectoryName(location),
-                DEFAULT_CONFIG_FILE_S);
+            string filePath;
+            var exists = TryGetConfigFilePath(out filePath);
 #if DEBUG
             //This code is just to create the default config file to
             //save the default settings, which later on can be modified
             //to re-direct it to other download target for testing.
-            if (!File.Exists(filePath))
+            if (!exists)
             {
                 var config = new UpdateManagerConfiguration();
                 config.Save(filePath, updateManager);
             }
 #endif
-            return File.Exists(filePath) ? Load(filePath, updateManager) : new UpdateManagerConfiguration();
+            return exists ? Load(filePath, updateManager) : new UpdateManagerConfiguration();
+        }
+
+        /// <summary>
+        /// Gets the update manager config file path.
+        /// </summary>
+        /// <param name="filePath">Full path for the config file</param>
+        /// <returns>True if file exists.</returns>
+        public static bool TryGetConfigFilePath(out string filePath)
+        {
+            string location = Assembly.GetExecutingAssembly().Location;
+            // ReSharper disable once AssignNullToNotNullAttribute, location is always available
+            filePath = Path.Combine(Path.GetDirectoryName(location), DEFAULT_CONFIG_FILE_S);
+            return File.Exists(filePath);
         }
     }
 
