@@ -126,6 +126,18 @@ namespace Dynamo.DSEngine
             }
         }
 
+        private class NumberingState
+        {
+            public int ID { get; set; }
+            public bool IsNewSession { get; set; }
+
+            public NumberingState()
+            {
+                ID = 0;
+                IsNewSession = false;
+            }
+        }
+
         private static void GetInputOutputMap(
             IEnumerable<NodeModel> nodes, 
             out Dictionary<string, string> inputMap,
@@ -213,11 +225,11 @@ namespace Dynamo.DSEngine
         private static void VariableNumbering(
             AssociativeNode astNode, 
             NodeModel node,
-            Dictionary<string, Tuple<int, bool>> numberingMap, 
+            Dictionary<string, NumberingState> numberingMap, 
             Dictionary<string, string> renamingMap,
             Dictionary<string, string> inputMap,
             Dictionary<string, string> outputMap,
-            Dictionary<string, string> allTrversedMap)
+            HashSet<string> mappedVariables)
         {
             Action<IdentifierNode> func = n =>
             {
@@ -228,20 +240,37 @@ namespace Dynamo.DSEngine
                 if (renamingMap.ContainsKey(ident) || inputMap.ContainsKey(ident))
                     return;
 
-                if (!numberingMap.ContainsKey(ident))
+                NumberingState ns; 
+                bool isInMap = numberingMap.TryGetValue(ident, out ns);
+                if (!isInMap)
                 {
-                    numberingMap[ident] = Tuple.Create(0, true);
-                }
-                var t = numberingMap[ident];
-                if (!t.Item2)
-                {
-                    numberingMap[ident] = Tuple.Create(t.Item1 + 1, true);
-                    t = numberingMap[ident];
+                    ns = new NumberingState();
+                    numberingMap[ident] = ns;
                 }
 
-                if (t.Item1 != 0)
+                // There has been a same name variable 
+                var newIdent = ident;
+                bool isNumbering = false;
+                if (!ns.IsNewSession || ns.ID != 0)
                 {
-                    var newIdent = ident + t.Item1.ToString();
+                    ns.ID += 1;
+                    ns.IsNewSession = true;
+                    newIdent += ns.ID.ToString();
+                    isNumbering = true;
+                }
+
+                if (isNumbering || (ns.ID == 0 && !isInMap))
+                {
+                    while (mappedVariables.Contains(newIdent))
+                    {
+                        ns.ID += 1;
+                        ns.IsNewSession = true;
+                        newIdent = ident + ns.ID.ToString();
+                    }
+                }
+
+                if (ns.ID != 0)
+                {
                     n.Name = n.Value = newIdent;
 
                     // If this variable is numbered, and it is also output to
@@ -261,6 +290,8 @@ namespace Dynamo.DSEngine
                         outputMap[mappedName] = newIdent;
                     }
                 }
+
+                mappedVariables.Add(newIdent);
             };
 
             IdentifierVisitor.Visit(astNode, func);
@@ -375,24 +406,22 @@ namespace Dynamo.DSEngine
             // Output variable to renamed output variable map
             Dictionary<string, string> outputMap = null;
 
-            Dictionary<string, string> allTraverseMap = new Dictionary<string, string>();
-
             // Collect all inputs/outputs/candidate renaming variables
             GetInputOutputMap(nodes, out inputMap, out outputMap, out renamingMap);
 
             // Vairable numbering map. The Tuple value indicates its number
             // sequence and if for the new UI node.
-            var numberingMap = new Dictionary<string, Tuple<int, bool>>();
+            var numberingMap = new Dictionary<string, NumberingState>();
 
+            var mappedVariables = new HashSet<string>();
             foreach (var t in allAstNodes)
             {
                 // Reset variable numbering map
-                numberingMap = numberingMap.ToDictionary(
-                    p => p.Key, 
-                    p => Tuple.Create(p.Value.Item1, false));
+                foreach (var p in numberingMap)
+                    p.Value.IsNewSession = true;
 
                 foreach (var astNode in t.Item2)
-                    VariableNumbering(astNode, t.Item1, numberingMap, renamingMap, inputMap, outputMap, allTraverseMap); 
+                    VariableNumbering(astNode, t.Item1, numberingMap, renamingMap, inputMap, outputMap, mappedVariables); 
             }
 
             renamingMap = renamingMap.Where(p => !p.Key.Contains("%"))
