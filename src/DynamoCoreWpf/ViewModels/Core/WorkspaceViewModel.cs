@@ -788,36 +788,6 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 1;
         }
 
-        private void EnableNodePreview(object parameter)
-        {
-            var modelGuids = DynamoSelection.Instance.Selection.
-                OfType<NodeModel>().Select(n => n.GUID);
-
-            if (!modelGuids.Any())
-                return;
-
-            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                modelGuids, "IsVisible", ((bool)parameter) ? "true" : "false");
-
-            DynamoViewModel.Model.ExecuteCommand(command);
-            RefreshViewOnSelectionChange();
-        }
-
-        private void EnableUpstreamPreview(object parameter)
-        {
-            var modelGuids = DynamoSelection.Instance.Selection.
-                OfType<NodeModel>().Select(n => n.GUID);
-
-            if (!modelGuids.Any())
-                return;
-
-            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-                modelGuids, "IsUpstreamVisible", ((bool)parameter) ? "true" : "false");
-
-            DynamoViewModel.Model.ExecuteCommand(command);
-            RefreshViewOnSelectionChange();
-        }
-
         private void ShowHideAllGeometryPreview(object parameter)
         {
             var modelGuids = DynamoSelection.Instance.Selection.
@@ -1152,8 +1122,8 @@ namespace Dynamo.ViewModels
         private void RefreshViewOnSelectionChange()
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
-            EnableNodePreviewCommand.RaiseCanExecuteChanged();
-            EnableUpstreamPreviewCommand.RaiseCanExecuteChanged();
+            ShowHideAllUpstreamPreviewCommand.RaiseCanExecuteChanged();
+            ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
             SetArgumentLacingCommand.RaiseCanExecuteChanged();
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("AnyNodeVisible");

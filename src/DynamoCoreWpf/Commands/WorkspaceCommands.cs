@@ -17,8 +17,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _resetFitViewToggleCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
-        private DelegateCommand _enableNodePreviewCommand;
-        private DelegateCommand _enableUpstreamPreviewCommand;
         private DelegateCommand _setArgumentLacingCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
@@ -137,34 +135,6 @@ namespace Dynamo.ViewModels
                     _alignSelectedCommand = new DelegateCommand(AlignSelected, CanAlignSelected);
 
                 return _alignSelectedCommand;
-            }
-        }
-
-        public DelegateCommand EnableNodePreviewCommand
-        {
-            get
-            {
-                if (_enableNodePreviewCommand == null)
-                {
-                    _enableNodePreviewCommand = new DelegateCommand(
-                        EnableNodePreview, p => HasSelection);
-                }
-
-                return _enableNodePreviewCommand;
-            }
-        }
-
-        public DelegateCommand EnableUpstreamPreviewCommand
-        {
-            get
-            {
-                if (_enableUpstreamPreviewCommand == null)
-                {
-                    _enableUpstreamPreviewCommand = new DelegateCommand(
-                        EnableUpstreamPreview, p => HasSelection);
-                }
-
-                return _enableUpstreamPreviewCommand;
             }
         }
 
