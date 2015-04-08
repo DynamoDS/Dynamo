@@ -184,6 +184,9 @@ namespace Dynamo.Models
                     if(!loadFromXML)
                         UpdateBoundaryFromSelection();
                     break;
+                case "Text":
+                    UpdateBoundaryFromSelection();
+                    break;
             }
         }
 
