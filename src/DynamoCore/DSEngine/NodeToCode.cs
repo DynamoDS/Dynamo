@@ -128,13 +128,24 @@ namespace Dynamo.DSEngine
 
         private class NumberingState
         {
+            public string Variable { get;  private set; }
+            public string NumberedVariable
+            {
+                get { return Variable + ((ID == 0) ? String.Empty : ID.ToString()); }
+            }
             public int ID { get; set; }
             public bool IsNewSession { get; set; }
 
-            public NumberingState()
+            public NumberingState(string variable)
             {
+                Variable = variable;
                 ID = 0;
                 IsNewSession = false;
+            }
+
+            public void BumpID()
+            {
+                ID += 1;
             }
         }
 
@@ -241,37 +252,27 @@ namespace Dynamo.DSEngine
                     return;
 
                 NumberingState ns; 
-                bool isInMap = numberingMap.TryGetValue(ident, out ns);
-                if (!isInMap)
+                if (numberingMap.TryGetValue(ident, out ns))
                 {
-                    ns = new NumberingState();
-                    numberingMap[ident] = ns;
-                }
-
-                // There has been a same name variable 
-                var newIdent = ident;
-                bool isNumbering = false;
-                if (!ns.IsNewSession || ns.ID != 0)
-                {
-                    ns.ID += 1;
-                    ns.IsNewSession = true;
-                    newIdent += ns.ID.ToString();
-                    isNumbering = true;
-                }
-
-                if (isNumbering || (ns.ID == 0 && !isInMap))
-                {
-                    while (mappedVariables.Contains(newIdent))
+                    if (ns.IsNewSession)
                     {
-                        ns.ID += 1;
-                        ns.IsNewSession = true;
-                        newIdent = ident + ns.ID.ToString();
+                        ns.BumpID();
+                        while (mappedVariables.Contains(ns.NumberedVariable))
+                            ns.BumpID();
                     }
+                }
+                else
+                {
+                    ns = new NumberingState(ident);
+                    numberingMap[ident] = ns;
+
+                    while (mappedVariables.Contains(ns.NumberedVariable))
+                        ns.BumpID();
                 }
 
                 if (ns.ID != 0)
                 {
-                    n.Name = n.Value = newIdent;
+                    n.Name = n.Value = ns.NumberedVariable;
 
                     // If this variable is numbered, and it is also output to
                     // other node, we should remap the output variable to
@@ -280,18 +281,18 @@ namespace Dynamo.DSEngine
                     if (renamingMap.ContainsKey(name))
                     {
                         var mappedName = renamingMap[name];
-                        renamingMap[mappedName] = newIdent;
+                        renamingMap[mappedName] = ns.NumberedVariable;
                     }
 
                     // Record in output map.
                     if (outputMap.ContainsKey(name))
                     {
                         var mappedName = outputMap[name];
-                        outputMap[mappedName] = newIdent;
+                        outputMap[mappedName] = ns.NumberedVariable;
                     }
                 }
 
-                mappedVariables.Add(newIdent);
+                mappedVariables.Add(ns.NumberedVariable);
             };
 
             IdentifierVisitor.Visit(astNode, func);
