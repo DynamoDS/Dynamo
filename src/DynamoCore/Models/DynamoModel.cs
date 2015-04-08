@@ -530,7 +530,7 @@ namespace Dynamo.Models
             AddHomeWorkspace();
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
-            UpdateManager.Log += updateManager_Log;
+            UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode)
                 DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
             
@@ -550,7 +550,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
         }
 
-        void updateManager_Log(LogEventArgs args)
+        void UpdateManager_Log(LogEventArgs args)
         {
             Logger.Log(args.Message, args.Level);
         }
@@ -615,7 +615,7 @@ namespace Dynamo.Models
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
             
-            UpdateManager.Log -= updateManager_Log;
+            UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
 
             EngineController.Dispose();
