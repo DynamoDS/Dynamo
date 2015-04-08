@@ -46,12 +46,14 @@ namespace Dynamo.Services
 
                 var mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
                     "Dynamo", appVersion);
+                mc.AnonymizeIp = true;
 
                 sessionID = Guid.NewGuid().ToString();
                 loggerImpl = new Log("Dynamo", userID, sessionID);
             
                 AutoMeasurement.Start(mc);
                 client = AutoMeasurement.Client;
+                
 
                 if (IS_VERBOSE_DIAGNOSTICS)
                     AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
