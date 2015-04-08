@@ -216,7 +216,8 @@ namespace Dynamo.DSEngine
             Dictionary<string, Tuple<int, bool>> numberingMap, 
             Dictionary<string, string> renamingMap,
             Dictionary<string, string> inputMap,
-            Dictionary<string, string> outputMap)
+            Dictionary<string, string> outputMap,
+            Dictionary<string, string> allTrversedMap)
         {
             Action<IdentifierNode> func = n =>
             {
@@ -276,11 +277,9 @@ namespace Dynamo.DSEngine
         {
             Action<IdentifierNode> func = n =>
                 {
-                    var ident = n.Value;
-                    if (renamingMap.ContainsKey(ident))
-                    {
-                        n.Value = n.Name = renamingMap[ident];
-                    }
+                    string newIdent;
+                    if (renamingMap.TryGetValue(n.Value, out newIdent))
+                        n.Value = n.Name = newIdent;
                 };
 
             IdentifierVisitor.Visit(astNode, func);
@@ -299,16 +298,15 @@ namespace Dynamo.DSEngine
         {
             Action<IdentifierNode> func = n =>
             {
-                var ident = n.Value;
-                if (shortNameMap.ContainsKey(ident))
+                string shortName;
+                if (shortNameMap.TryGetValue(n.Value, out shortName))
                 {
-                    var shortName = shortNameMap[ident];
                     if (shortName == string.Empty)
                     {
                         shortName = nameGenerator.GetNextName();
-                        shortNameMap[ident] = shortName;
+                        shortNameMap[n.Value] = shortName;
                     }
-                    n.Value = n.Name = shortNameMap[ident];
+                    n.Value = n.Name = shortName; 
                 }
             };
 
@@ -377,6 +375,8 @@ namespace Dynamo.DSEngine
             // Output variable to renamed output variable map
             Dictionary<string, string> outputMap = null;
 
+            Dictionary<string, string> allTraverseMap = new Dictionary<string, string>();
+
             // Collect all inputs/outputs/candidate renaming variables
             GetInputOutputMap(nodes, out inputMap, out outputMap, out renamingMap);
 
@@ -392,7 +392,7 @@ namespace Dynamo.DSEngine
                     p => Tuple.Create(p.Value.Item1, false));
 
                 foreach (var astNode in t.Item2)
-                    VariableNumbering(astNode, t.Item1, numberingMap, renamingMap, inputMap, outputMap); 
+                    VariableNumbering(astNode, t.Item1, numberingMap, renamingMap, inputMap, outputMap, allTraverseMap); 
             }
 
             renamingMap = renamingMap.Where(p => !p.Key.Contains("%"))
