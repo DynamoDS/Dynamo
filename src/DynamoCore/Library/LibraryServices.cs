@@ -40,8 +40,12 @@ namespace Dynamo.DSEngine
         private readonly List<string> importedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
-        public  ProtoCore.Core LibraryManagementCore;
-        public  ProtoCore.Core LiveCore;
+        public ProtoCore.Core LibraryManagementCore{get; private set;}
+        private ProtoCore.Core liveCore = null;
+        public void SetLiveCore(ProtoCore.Core core)
+        {
+            liveCore = core;
+        }
 
         private class UpgradeHint
         {
@@ -63,17 +67,12 @@ namespace Dynamo.DSEngine
             new Dictionary<string, UpgradeHint>();
 
         /// <summary>
-        /// Create a library core based from the live core properties
+        /// Copy properties from the liveCore
         /// The properties to copy are only those used by the library core
         /// </summary>
-        /// <param name="liveCore"></param>
-        public void CreateLibraryCore(ProtoCore.Core liveCore)
+        public void UpdateLibraryCoreData()
         {
             Validity.Assert(liveCore != null);
-            //LibraryManagementCore = new ProtoCore.Core(liveCore.Options);
-            //LibraryManagementCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(LibraryManagementCore));
-            //LibraryManagementCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(LibraryManagementCore));
-
             LibraryManagementCore.ProcTable = new ProtoCore.DSASM.ProcedureTable(liveCore.ProcTable);
             LibraryManagementCore.ClassTable = new ProtoCore.DSASM.ClassTable(liveCore.ClassTable);
         }
@@ -429,7 +428,7 @@ namespace Dynamo.DSEngine
                 return false;
             }
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
-            CreateLibraryCore(LiveCore);
+            UpdateLibraryCoreData();
             return true;
         }
 
