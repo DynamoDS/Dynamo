@@ -933,7 +933,7 @@ namespace Dynamo.Models
             var nodeList = selectedNodes.ToList();
             int nodeCount = nodeList.Count;
 
-            var nodeToCodeResult =  engineController.ConvertNodesToCode(selectedNodes);
+            var nodeToCodeResult =  engineController.ConvertNodesToCode(this.nodes, selectedNodes);
             CodeBlockNodeModel codeBlockNode = null;
 
             //UndoRedo Action Group----------------------------------------------

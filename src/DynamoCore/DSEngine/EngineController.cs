@@ -558,9 +558,9 @@ namespace Dynamo.DSEngine
 
         #region Node2Code
 
-        public NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> nodes)
+        public NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes)
         {
-            return NodeToCodeUtils.NodeToCode(astBuilder, nodes);
+            return NodeToCodeUtils.NodeToCode(astBuilder, graph, nodes);
         }
 
         private bool HasVariableDefined(string var)

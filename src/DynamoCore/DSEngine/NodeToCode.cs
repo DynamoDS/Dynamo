@@ -307,13 +307,15 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Compile a bunch of NodeModel to code which is in AST format. 
+        /// Compile a bunch of node to AST. 
         /// </summary>
         /// <param name="astBuilder"></param>
+        /// <param name="graph"></param>
         /// <param name="nodes"></param>
         /// <returns></returns>
         public static NodeToCodeResult NodeToCode(
             AstBuilder astBuilder, 
+            IEnumerable<NodeModel> graph,
             IEnumerable<NodeModel> nodes)
         {
             // The basic worflow is:
@@ -337,7 +339,10 @@ namespace Dynamo.DSEngine
             //   5. Do constant progation to optimize the generated code.
             #region Step 1 AST compilation
 
-            var allAstNodes = astBuilder.CompileToAstNodes(nodes, AstBuilder.CompilationContext.ForNodeToCode, false);
+            var sortedGraph = AstBuilder.TopologicalSortForGraph(graph);
+            var sortedNodes = sortedGraph.Where(nodes.Contains);
+
+            var allAstNodes = astBuilder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.ForNodeToCode, false);
 
             #endregion
 

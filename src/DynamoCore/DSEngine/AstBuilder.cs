@@ -93,8 +93,16 @@ namespace Dynamo.DSEngine
             return sortedNodes.Where(nodeModels.Contains);
         }
 
-        // Reverse post-order to sort nodes
-        private static void MarkNodeInPostOrder(NodeModel node, Dictionary<NodeModel, MarkFlag> nodeFlags, Stack<NodeModel> sortedList)
+        /// <summary>
+        /// BSS and post-order traverse.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="nodeFlags"></param>
+        /// <param name="sortedNodes"></param>
+        private static void BFSTraverse(
+            NodeModel node, 
+            Dictionary<NodeModel, MarkFlag> nodeFlags, 
+            Queue<NodeModel> sortedNodes)
         {
             MarkFlag flag;
             if (!nodeFlags.TryGetValue(node, out flag))
@@ -103,45 +111,59 @@ namespace Dynamo.DSEngine
                 nodeFlags[node] = flag;
             }
 
-            if (MarkFlag.NoMark == flag)
-            {
-                sortedList.Push(node);
-                nodeFlags[node] = MarkFlag.Marked;
+            if (flag != MarkFlag.NoMark)
+                return;
 
-                IEnumerable<NodeModel> inputs =
-                    node.InputNodes.Values.Select(t => t.Item2).Distinct().Reverse();
-                foreach (NodeModel input in inputs)
-                    MarkNodeInPostOrder(input, nodeFlags, sortedList);
-            }
-        }
+            nodeFlags[node] = MarkFlag.TempMark;
 
-        public static IEnumerable<NodeModel> PostOrderSort(IEnumerable<NodeModel> nodes)
-        {
-            // Get roots of these nodes
-            Dictionary<NodeModel, MarkFlag> nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
-            foreach (var node in nodes)
+            for (int i = 0; i < node.InPortData.Count; ++i)
             {
-                if (nodeFlags[node] == MarkFlag.Marked)
+                Tuple<int, NodeModel> t;
+                if (!node.TryGetInput(i, out t))
                     continue;
 
-                var outputs = node.OutputNodes.Values
-                                              .SelectMany(set => set.Select(t => t.Item2))
-                                              .Distinct();
-                foreach (var outputNode in outputs)
-                {
-                    if (nodeFlags.ContainsKey(outputNode))
-                        nodeFlags[node] = MarkFlag.Marked;
-                }
+                BFSTraverse(t.Item2, nodeFlags, sortedNodes);
             }
-            var roots = nodeFlags.Where(pair => pair.Value == MarkFlag.NoMark)
-                                 .Select(pair => pair.Key);
 
-            nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
-            var sortedNodes = new Stack<NodeModel>();
+            sortedNodes.Enqueue(node);
+            nodeFlags[node] = MarkFlag.Marked;
+        }
+
+        /// <summary>
+        /// Topological sort *the whole graph*. If the input nodes are part of a
+        /// graph, it does not promise to generate a good topological order. For 
+        /// example, for the following graph:
+        /// 
+        ///         +---+
+        ///         | A | -----+
+        ///         +---+      +----> +---+
+        ///                           | C |
+        ///                    +----> +---+
+        ///         +---+      |
+        ///         | B | -----+
+        ///         +---+
+        /// 
+        /// Their ideal topological order is A -> B -> C. If the input is only {A, B}, 
+        /// it may return {B, A} which is not OK in node to code.
+        ///
+        /// Note it is much slower that TopologiclSort().
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        public static IEnumerable<NodeModel> TopologicalSortForGraph(IEnumerable<NodeModel> nodes)
+        {
+            var nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
+            var sortedNodes = new Queue<NodeModel>();
+
+            // Get roots of these nodes
+            var roots = nodes.Where(n => !n.OutputNodes.Any());
             foreach (NodeModel candidate in roots)
-                MarkNodeInPostOrder(candidate, nodeFlags, sortedNodes);
+                BFSTraverse(candidate, nodeFlags, sortedNodes);
 
-            return sortedNodes.Where(nodes.Contains);
+            foreach (NodeModel candidate in SortCandidates(nodeFlags))
+                BFSTraverse(candidate, nodeFlags, sortedNodes);
+
+            return sortedNodes;
         }
 
         private static IEnumerable<NodeModel> SortCandidates(Dictionary<NodeModel, MarkFlag> nodeFlags)
@@ -239,6 +261,8 @@ namespace Dynamo.DSEngine
 
         /// <summary>
         /// Compile a collection of NodeModel to AST nodes in different contexts.
+        /// If the context is ForNodeToCode, nodes should already be in topological
+        /// order.
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="context"></param>
@@ -252,8 +276,9 @@ namespace Dynamo.DSEngine
             var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
 
             IEnumerable<NodeModel> sortedNodes = null;
+            // For node to code, node should already sorted!
             if (context == CompilationContext.ForNodeToCode)
-                sortedNodes = PostOrderSort(topScopedNodes);
+                sortedNodes = topScopedNodes;
             else
                 sortedNodes = TopologicalSort(topScopedNodes);
 
