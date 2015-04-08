@@ -139,7 +139,7 @@ namespace Dynamo.Models
             }
         }
 
-        private double fontSize = 10;
+        private double fontSize = 14;
         public Double FontSize
         {
             get { return fontSize; }
