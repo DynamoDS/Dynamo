@@ -3,21 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:conversions="clr-namespace:GeometryUI;assembly=GeometryUI"  
+             xmlns:geometryui="clr-namespace:GeometryUI;assembly=GeometryUI"  
              xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
              mc:Ignorable="d" Width="250" Height="Auto">
 
+    
     <Grid Width="Auto" Height="Auto">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
         <ComboBox Name="SelectExportedUnit"                
                 ItemsSource="{Binding SelectedFromConversionSource}"   
-                Grid.Row="0"
                 Height ="{x:Static ui2:Configurations.PortHeightInPixels}"
                 SelectedItem="{Binding SelectedMetricConversion}"/>
-        
+
     </Grid>
 </UserControl>
