@@ -254,15 +254,26 @@ namespace Dynamo.DSEngine
                 NumberingState ns; 
                 if (numberingMap.TryGetValue(ident, out ns))
                 {
+                    // ident already defined somewhere else. So we continue to 
+                    // bump its ID until numbered variable won't conflict with
+                    // all existing variables. 
                     if (ns.IsNewSession)
                     {
                         ns.BumpID();
                         while (mappedVariables.Contains(ns.NumberedVariable))
                             ns.BumpID();
+
+                        ns.IsNewSession = false;
                     }
+                    // ident already defined somewhere else, but we already
+                    // renumber this variable, so continue to use re-numbered
+                    // one.
                 }
                 else
                 {
+                    // It is a new variable. But we need to check if some other
+                    // variables are renamed to this one because of renumbering.
+                    // If there is confliction, continue to bump its ID.
                     ns = new NumberingState(ident);
                     numberingMap[ident] = ns;
 
