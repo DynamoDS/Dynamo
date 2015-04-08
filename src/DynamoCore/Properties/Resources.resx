@@ -592,6 +592,9 @@ value: bool = false</value>
   <data name="WatermarkLabelText" xml:space="preserve">
     <value>Your code goes here</value>
   </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
+   </data>
   <data name="DefaultValue" xml:space="preserve">
     <value>Default value</value>
     <comment>Default value</comment>

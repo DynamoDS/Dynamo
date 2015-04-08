@@ -58,8 +58,7 @@ namespace Dynamo.Controls
                 RenderMode.Default : RenderMode.SoftwareOnly;
             
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.UIDispatcher = Dispatcher;
-
+            this.dynamoViewModel.UIDispatcher = Dispatcher;            
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
