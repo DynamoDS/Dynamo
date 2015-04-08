@@ -124,7 +124,7 @@
 
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromSelection}"
                                Command="{Binding NodeFromSelectionCommand}" />
-                    <MenuItem Header="New Input State From Selection"
+                    <MenuItem Header="Create State From Selection"
                               Command="{Binding DynamoViewModel.ShowNewDesignOptionDialogCommand}" />
                     <!--
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"

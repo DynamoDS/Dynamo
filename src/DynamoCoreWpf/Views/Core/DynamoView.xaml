@@ -158,6 +158,9 @@
         <KeyBinding Key="F5"
                     Command="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunExpressionCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                     CommandParameter="{Binding Path=DataContext.HomeSpaceViewModel.RunSettingsViewModel.RunInDebug, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="T"
+                    Modifiers="Control"
+                    Command="{Binding ShowNewDesignOptionDialogCommand}"/>
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
@@ -333,6 +336,28 @@
                                   Name="paste"
                                   InputGestureText="Ctrl + V" />
                         <Separator />
+
+                        <!--TODO replace states with string-->
+                        <MenuItem Header ="States"
+                              Name = "StatesMenu"
+                              Focusable= "False"
+                              IsEnabled="True">
+                            <MenuItem Header="Create State From Selection"
+                                      Command="{Binding ShowNewDesignOptionDialogCommand}"
+                                      Name="newDesignOptions"
+                                      Focusable="False"
+                                      InputGestureText="Ctrl + T"/>
+                            <MenuItem Header="Restore State"
+                                    MouseEnter="LoadStateMenus"
+                                      Name="RestoreStateMenu"
+                                      Focusable="False" />
+                            <MenuItem Header="Delete State"
+                                    MouseEnter="LoadStateMenus"
+                                      Name="DeleteStateMenu"
+                                      Focusable="False" />
+                        </MenuItem>
+                        <Separator />
+                        
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNote}"
                                   Command="{Binding AddNoteCommand}"
@@ -514,24 +539,6 @@
                                   Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishCurrent" />
                     </MenuItem>
-                    <!--TODO replace states with string-->
-                    <MenuItem Header ="States"
-                              Name = "StatesMenu"
-                              Focusable= "False"
-                              IsEnabled="True">
-                              <MenuItem Header="Create Input State From Selection"
-                                      Command="{Binding ShowNewDesignOptionDialogCommand}"
-                                      Name="newDesignOptions"
-                                      Focusable="False" />
-                        <MenuItem Header="Restore State"
-                                    MouseEnter="LoadStateMenus"
-                                      Name="RestoreStateMenu"
-                                      Focusable="False" />
-                        <MenuItem Header="Delete State"
-                                    MouseEnter="LoadStateMenus"
-                                      Name="DeleteStateMenu"
-                                      Focusable="False" />
-                              </MenuItem>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenu}"
                               Name="SettingsMenu"

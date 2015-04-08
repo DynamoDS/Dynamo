@@ -896,12 +896,12 @@ namespace Dynamo.Controls
         {
             PresetState state = ((MenuItem)sender).Tag as PresetState;
             var workspace = dynamoViewModel.HomeSpace;
-            if (workspace.HasUnsavedChanges)
+           /* if (workspace.HasUnsavedChanges)
             {
                 if (!dynamoViewModel.AskUserToSaveWorkspaceOrCancel(workspace))
                     return; // User has not saved his/her work.
             }
-
+            */
             dynamoViewModel.Model.CurrentWorkspace = dynamoViewModel.HomeSpace;
             dynamoViewModel.ExecuteCommand(new DynamoModel.SetWorkSpaceToStateCommand(workspace.Guid, state.Guid));
         }
