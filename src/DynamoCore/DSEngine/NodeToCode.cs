@@ -4,6 +4,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using System;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 
 namespace Dynamo.DSEngine
 {
@@ -177,9 +178,17 @@ namespace Dynamo.DSEngine
                         var inputVar = thisCBN.GetAstIdentifierForOutputIndex(i).Value;
                         var originalVar = thisCBN.GetRawAstIdentifierForOutputIndex(i).Value;
 
-                        outputMap[inputVar] = originalVar;
-                        var key = String.Format("{0}%{1}", originalVar, thisCBN.GUID);
-                        outputMap[key] = inputVar;
+                        // non-assignable temp variables
+                        if (originalVar.StartsWith(Constants.kTempVarForNonAssignment))
+                        {
+                            outputMap[originalVar] = string.Empty;
+                        }
+                        else
+                        {
+                            outputMap[inputVar] = originalVar;
+                            var key = String.Format("{0}%{1}", originalVar, thisCBN.GUID);
+                            outputMap[key] = inputVar;
+                        }
                     }
                 }
                 else
