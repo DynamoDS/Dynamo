@@ -62,7 +62,7 @@
                                PreviewMouseDown="OnPreviewMouseDown"
                                HorizontalAlignment="Center">
                         <Run Foreground="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableBrushConverter}}" 
-                             Text="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
+                             Text="{Binding Model.UpdateManager, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
                              ConverterParameter=DataContext, Mode=OneWay}"/>
                     </TextBlock>
                 </StackPanel>

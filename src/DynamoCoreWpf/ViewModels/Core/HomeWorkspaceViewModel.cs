@@ -64,6 +64,13 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.EvaluationStarted += hwm_EvaluationStarted;
             hwm.EvaluationCompleted += hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
+
+            dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
+        }
+
+        void Model_ShutdownStarted(DynamoModel model)
+        {
+            StopPeriodicTimer(null);
         }
 
         /// <summary>
@@ -195,6 +202,8 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
+
+            DynamoViewModel.Model.ShutdownStarted -= Model_ShutdownStarted;
         }
     }
 
