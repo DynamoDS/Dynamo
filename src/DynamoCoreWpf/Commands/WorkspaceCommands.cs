@@ -235,11 +235,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public string ShowHideTextBubble
-        {
-            get { return Resources.ContextMenuShowAllTextBubble; }
-        }
-
         public bool HasSelection
         {
             get { return DynamoSelection.Instance.Selection.Count > 0; }
