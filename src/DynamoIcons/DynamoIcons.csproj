@@ -30,19 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AnalysisImages.resx" />
-    <EmbeddedResource Include="DynamoUnitsImages.resx" />
-    <EmbeddedResource Include="UnitsUIImages.resx" />
-    <EmbeddedResource Include="DynamoCoreImages.resx" />
-    <EmbeddedResource Include="DynamoWatch3DImages.resx" />
-    <EmbeddedResource Include="DSCoreNodesUIImages.resx" />
-    <EmbeddedResource Include="DSCoreNodesImages.resx" />
-    <EmbeddedResource Include="DSIronPythonNodeImages.resx" />
-    <EmbeddedResource Include="DSOfficeImages.resx" />
-    <EmbeddedResource Include="ProtoGeometryImages.resx" />
-    <EmbeddedResource Include="TessellationImages.resx" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

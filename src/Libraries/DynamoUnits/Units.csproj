@@ -52,6 +52,9 @@
   <ItemGroup>
     <Content Include="DynamoUnits_DynamoCustomization.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DynamoUnitsImages.resx" />
+  </ItemGroup>
   <Choose>
     <!-- Visual Studio 2010: Select FSchemeInterop.dll -->
     <When Condition=" '$(VisualStudioVersion)'=='10.0' ">

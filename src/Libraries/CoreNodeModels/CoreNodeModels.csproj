@@ -125,6 +125,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DSCoreNodesUIImages.resx" />
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>

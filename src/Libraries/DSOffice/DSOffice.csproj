@@ -78,6 +78,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DSOfficeImages.resx" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>copy /Y "$(ProjectDir)*_DynamoCustomization.xml" "$(OutputPath)"</PreBuildEvent>

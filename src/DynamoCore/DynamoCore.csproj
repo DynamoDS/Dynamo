@@ -273,6 +273,7 @@ limitations under the License.
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
     <Compile Include="DSEngine\RenderPackage.cs" />
+    <EmbeddedResource Include="DynamoCoreImages.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -283,6 +284,7 @@ limitations under the License.
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ProtoGeometryImages.resx" />
     <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
