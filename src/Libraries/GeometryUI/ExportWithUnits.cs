@@ -11,76 +11,35 @@ using System.Globalization;
 namespace GeometryUI
 {
     [NodeCategory(BuiltinNodeCategories.GEOMETRY)]
-    [NodeName("Export To SAT")]
+    [NodeName("ExportToSAT")]
     //[NodeDescription("ConversionNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("Export", "SAT")]
     [IsDesignScriptCompatible]
     public class ExportWithUnits : NodeModel
     {
-        private ConversionUnit selectedFromConversion;
-        private ConversionUnit selectedToConversion;
-        private ConversionMetricUnit selectedMetricConversion;
+        private ConversionUnit selectedExportedUnit;
         private bool isSelectionFromBoxEnabled;
         private string selectionFromBoxToolTip;
-        private List<ConversionUnit> selectedFromConversionSource;
-        private List<ConversionUnit> selectedToConversionSource;
+        private List<ConversionUnit> selectedExportedUnitsSource;
 
-        public List<ConversionUnit> SelectedFromConversionSource
+        public List<ConversionUnit> SelectedExportedUnitsSource
         {
-            get { return selectedFromConversionSource; }
+            get { return selectedExportedUnitsSource; }
             set
             {
-                selectedFromConversionSource = value;
-                RaisePropertyChanged("SelectedFromConversionSource");
+                selectedExportedUnitsSource = value;
+                RaisePropertyChanged("SelectedExportedUnitsSource");
             }
         }
 
-        public List<ConversionUnit> SelectedToConversionSource
+        public ConversionUnit SelectedExportedUnit
         {
-            get { return selectedToConversionSource; }
+            get { return selectedExportedUnit; }
             set
             {
-                selectedToConversionSource = value;
-                RaisePropertyChanged("SelectedToConversionSource");
-            }
-        }
-
-        public ConversionMetricUnit SelectedMetricConversion
-        {
-            get { return selectedMetricConversion; }
-            set
-            {
-                selectedMetricConversion = (ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString()); ;
-                SelectedFromConversionSource =
-                    Conversions.ConversionMetricLookup[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
-                SelectedToConversionSource =
-                    Conversions.ConversionMetricLookup[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
-                SelectedFromConversion = Conversions.ConversionDefaults[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
-                SelectedToConversion = Conversions.ConversionDefaults[(ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), value.ToString())];
-
-                RaisePropertyChanged("SelectedMetricConversion");
-            }
-        }
-
-        public ConversionUnit SelectedFromConversion
-        {
-            get { return selectedFromConversion; }
-            set
-            {
-                selectedFromConversion = (ConversionUnit)Enum.Parse(typeof(ConversionUnit), value.ToString());
+                selectedExportedUnit = (ConversionUnit)Enum.Parse(typeof(ConversionUnit), value.ToString());
                 this.OnNodeModified();
-                RaisePropertyChanged("SelectedFromConversion");
-            }
-        }
-
-        public ConversionUnit SelectedToConversion
-        {
-            get { return selectedToConversion; }
-            set
-            {
-                selectedToConversion = (ConversionUnit)Enum.Parse(typeof(ConversionUnit), value.ToString());
-                this.OnNodeModified();
-                RaisePropertyChanged("SelectedToConversion");
+                RaisePropertyChanged("SelectedExportedUnit");
             }
         }
 
@@ -106,10 +65,14 @@ namespace GeometryUI
 
         public ExportWithUnits()
         {
-            SelectedMetricConversion = ConversionMetricUnit.Length;
+            SelectedExportedUnit = ConversionUnit.Feet;
+            SelectedExportedUnitsSource =
+                Conversions.ConversionMetricLookup[ConversionMetricUnit.Length];
+
             AssociativeNode defaultNode = new DoubleNode(0.0);
-            InPortData.Add(new PortData("", "A numeric value for conversion.", defaultNode));
-            OutPortData.Add(new PortData("", "A converted numeric value."));
+            InPortData.Add(new PortData("geometry", "A piece of geometry to export.", defaultNode));
+            InPortData.Add(new PortData("filePath", "File to export the geometry to.", defaultNode));
+            OutPortData.Add(new PortData("string", "The file path of the exported file. Note this may change from the input in it contains non-ASCII characters."));
 
             ShouldDisplayPreviewCore = true;
             IsSelectionFromBoxEnabled = true;
@@ -120,24 +83,15 @@ namespace GeometryUI
             List<AssociativeNode> inputAstNodes)
         {
             var conversionToNode =
-                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[(ConversionUnit)SelectedToConversion]);
+                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[(ConversionUnit)SelectedExportedUnit]);
 
-            var conversionFromNode =
-                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[(ConversionUnit)SelectedFromConversion]);
             AssociativeNode node = null;
 
-            node = AstFactory.BuildFunctionCall(
-                        new Func<double, double, double, double>(Conversions.ConvertUnitTypes),
-                        new List<AssociativeNode> { inputAstNodes[0], conversionFromNode, conversionToNode });
+            //node = AstFactory.BuildFunctionCall(
+            //            new Func<double, double, double, double>(Conversions.ConvertUnitTypes),
+            //            new List<AssociativeNode> { inputAstNodes[0], conversionFromNode, conversionToNode });
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
-        }
-
-        public void ToggleDropdownValues()
-        {
-            var temp = this.SelectedFromConversion;
-            this.SelectedFromConversion = this.SelectedToConversion;
-            this.SelectedToConversion = temp;
         }
 
         #region Serialization/Deserialization Methods
@@ -147,28 +101,17 @@ namespace GeometryUI
             base.SerializeCore(element, context); // Base implementation must be called.
 
             var helper = new XmlElementHelper(element);
-            helper.SetAttribute("conversionMetric", SelectedMetricConversion.ToString());
-            helper.SetAttribute("conversionFrom", SelectedFromConversion.ToString());
-            helper.SetAttribute("conversionTo", SelectedToConversion.ToString());
+            helper.SetAttribute("exportedUnit", SelectedExportedUnit.ToString());
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
             var helper = new XmlElementHelper(element);
-            var metricConversion = helper.ReadString("conversionMetric");
-            var selectedMetricConversionFrom = helper.ReadString("conversionFrom");
-            var selectedMetricConversionTo = helper.ReadString("conversionTo");
+            var exportedUnit = helper.ReadString("exportedUnit");
 
-            SelectedMetricConversion = Enum.Parse(typeof(ConversionMetricUnit), metricConversion) is ConversionMetricUnit ?
-                                (ConversionMetricUnit)Enum.Parse(typeof(ConversionMetricUnit), metricConversion) : ConversionMetricUnit.Length;
-
-            SelectedFromConversion = Enum.Parse(typeof(ConversionUnit), selectedMetricConversionFrom) is ConversionUnit ?
-                             (ConversionUnit)Enum.Parse(typeof(ConversionUnit), selectedMetricConversionFrom) : ConversionUnit.Meters;
-
-            SelectedToConversion = Enum.Parse(typeof(ConversionUnit), selectedMetricConversionTo) is ConversionUnit ?
-                                (ConversionUnit)Enum.Parse(typeof(ConversionUnit), selectedMetricConversionTo) : ConversionUnit.Meters;
-
+            SelectedExportedUnit = Enum.Parse(typeof(ConversionUnit), exportedUnit) is ConversionUnit ?
+                                (ConversionUnit)Enum.Parse(typeof(ConversionUnit), exportedUnit) : ConversionUnit.Feet;
         }
 
         #endregion
