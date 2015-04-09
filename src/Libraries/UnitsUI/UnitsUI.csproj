@@ -119,9 +119,5 @@
     <AL TargetType="library" EmbedResources="$(ProjectDir)UnitsUIImages.resources" OutputAssembly="$(OutDir)UnitsUI.customization.dll" />
   </Target>
   <Target Name="AfterBuild">
-    <ItemGroup>
-      <DeleteFiles Include="$(TargetDir)$(ProjectName).*" />
-    </ItemGroup>
-    <Delete Files="@(DeleteFiles)" />
   </Target>
 </Project>

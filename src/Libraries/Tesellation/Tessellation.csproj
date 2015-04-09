@@ -99,9 +99,5 @@
     <AL TargetType="library" EmbedResources="$(ProjectDir)TessellationImages.resources" OutputAssembly="$(OutDir)Tessellation.customization.dll" />
   </Target>
   <Target Name="AfterBuild">
-    <ItemGroup>
-      <DeleteFiles Include="$(TargetDir)$(ProjectName).*" />
-    </ItemGroup>
-    <Delete Files="@(DeleteFiles)" />
   </Target>
 </Project>

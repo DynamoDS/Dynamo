@@ -93,9 +93,5 @@
     <AL TargetType="library" EmbedResources="$(ProjectDir)DSOfficeImages.resources" OutputAssembly="$(OutDir)DSOffice.customization.dll" />
   </Target>
   <Target Name="AfterBuild">
-    <ItemGroup>
-      <DeleteFiles Include="$(TargetDir)$(ProjectName).*" />
-    </ItemGroup>
-    <Delete Files="@(DeleteFiles)" />
   </Target>
 </Project>

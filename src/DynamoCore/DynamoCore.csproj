@@ -362,9 +362,5 @@ xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples\*" "$(OutputPath)samples\"</Po
     <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoCoreImages.resources" OutputAssembly="$(OutDir)DynamoCore.customization.dll" />
   </Target>
   <Target Name="AfterBuild">
-    <ItemGroup>
-      <DeleteFiles Include="$(TargetDir)$(ProjectName).*" />
-    </ItemGroup>
-    <Delete Files="@(DeleteFiles)" />
   </Target>
 </Project>

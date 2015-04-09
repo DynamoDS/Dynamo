@@ -117,9 +117,5 @@
     <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoWatch3DImages.resources" OutputAssembly="$(OutDir)DynamoWatch3D.customization.dll" />
   </Target>
   <Target Name="AfterBuild">
-    <ItemGroup>
-      <DeleteFiles Include="$(TargetDir)$(ProjectName).*" />
-    </ItemGroup>
-    <Delete Files="@(DeleteFiles)" />
   </Target>
 </Project>
