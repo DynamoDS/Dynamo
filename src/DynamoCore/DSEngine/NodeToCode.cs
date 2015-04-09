@@ -268,17 +268,9 @@ namespace Dynamo.DSEngine
                         var inputVar = thisCBN.GetAstIdentifierForOutputIndex(i).Value;
                         var originalVar = thisCBN.GetRawAstIdentifierForOutputIndex(i).Value;
 
-                        // non-assignable temp variables
-                        if (originalVar.StartsWith(Constants.kTempVarForNonAssignment))
-                        {
-                            outputMap[originalVar] = string.Empty;
-                        }
-                        else
-                        {
-                            outputMap[inputVar] = originalVar;
-                            var key = String.Format("{0}%{1}", originalVar, thisCBN.GUID);
-                            outputMap[key] = inputVar;
-                        }
+                        outputMap[inputVar] = originalVar;
+                        var key = String.Format("{0}%{1}", originalVar, thisCBN.GUID);
+                        outputMap[key] = inputVar;
                     }
                 }
                 else
@@ -524,6 +516,41 @@ namespace Dynamo.DSEngine
 
             #region Step 4 Generate short name
             var nameGenerator = new ShortNameGenerator();
+
+            foreach (var key in inputMap.Keys.ToList())
+            {
+               if (key.StartsWith(Constants.kTempVarForNonAssignment) &&
+                   inputMap[key].StartsWith(Constants.kTempVarForNonAssignment))
+               {
+                   string shortName = nameGenerator.GetNextName();
+                   while (mappedVariables.Contains(shortName))
+                       shortName = nameGenerator.GetNextName();
+
+                   var tempVar = inputMap[key];
+                   inputMap.Remove(key);
+                   inputMap[tempVar] = shortName;
+
+                   mappedVariables.Add(shortName);
+               }
+            }
+
+            foreach (var key in outputMap.Keys.ToList())
+            {
+               if (key.StartsWith(Constants.kTempVarForNonAssignment) &&
+                   outputMap[key].StartsWith(Constants.kTempVarForNonAssignment))
+               {
+                   string shortName = nameGenerator.GetNextName();
+                   while (mappedVariables.Contains(shortName))
+                       shortName = nameGenerator.GetNextName();
+
+                   var tempVar = outputMap[key];
+                   outputMap.Remove(key);
+                   outputMap[tempVar] = shortName;
+
+                   mappedVariables.Add(shortName);
+               }
+            }
+ 
             foreach (var ts in allAstNodes)
             {
                 foreach (var astNode in ts.Item2)
