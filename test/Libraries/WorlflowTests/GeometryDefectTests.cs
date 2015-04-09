@@ -460,11 +460,28 @@ namespace Dynamo.Tests
             var model = ViewModel.Model;
             string openPath = Path.Combine(TestDirectory, @"core\list\Listmap.dyn");
             RunModel(openPath);
+
+            //check the point.x , point.y and point.z
+            //get Point.X guid
+            var pointX = GetFlattenedPreviewValues("b63b850f-a9cc-4c5d-9bbd-ad144d74e227");
+            Assert.AreEqual(pointX,new object [] {1,2,3,4,10,20,30,40});
+
+            //get Point.y guid
+            var pointY = GetFlattenedPreviewValues("2a5daf0c-1316-4ff0-be16-74e3241eff58");
+            Assert.AreEqual(pointY, new object[] { 1, 2, 3, 4, 10, 20, 30, 40 });
+
+
+            //get Point.z guid
+            var pointZ = GetFlattenedPreviewValues("24b75bda-4e39-48d1-98ec-de103f739567");
+            Assert.AreEqual(pointY, new object[] { 1, 2, 3, 4, 10, 20, 30, 40 });
+            
+
+
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
-            Assert.AreEqual(5, model.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count());
 
             //get List.Map guid
             string ListMapGuid = "0af8a082-0d22-476f-bc28-e61b4ce01170";  
@@ -480,17 +497,10 @@ namespace Dynamo.Tests
             //check the first parameter is not null
             Assert.IsNotNull(levelList[0]);
             
-            // check list.map preview value
-            Point[] p = new Point[8];
-            p[0] = Point.ByCoordinates(1, 1, 1);
-            p[1] = Point.ByCoordinates(2, 2, 2);
-            p[2] = Point.ByCoordinates(3, 3, 3);
-            p[3] = Point.ByCoordinates(4, 4, 4);
-            p[4] = Point.ByCoordinates(10, 10, 10);
-            p[5] = Point.ByCoordinates(20, 20, 20);
-            p[6] = Point.ByCoordinates(30, 30, 30);
-            p[7] = Point.ByCoordinates(40, 40, 40);
-            Assert.AreEqual(levelList, p);
+          
+
+          
+
 
         }
         

@@ -159,13 +159,41 @@ namespace Dynamo.Tests
         public void AssertValue(MirrorData data, object value)
         {
             if (data.IsCollection)
+            {
+                if (!(value is IEnumerable))
+                {
+                    Assert.Fail("Data is collection but expected vlaue is not.");
+                }
                 AssertCollection(data, value as IEnumerable);
+            }
             else if (value == null)
+            {
                 Assert.IsTrue(data.IsNull);
+            }
             else if (value is int)
-                Assert.AreEqual((int)value, Convert.ToInt32(data.Data));
+            {
+                try
+                {
+                    int mirrorData = Convert.ToInt32(data.Data);
+                    Assert.AreEqual((int)value, mirrorData);
+                }
+                catch (Exception e)
+                {
+                    Assert.Fail(e.Message);
+                }
+            }
             else if (value is double)
-                Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+            {
+                try
+                {
+                    double mirrorData = Convert.ToDouble(data.Data);
+                    Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+                }
+                catch (Exception e)
+                {
+                    Assert.Fail(e.Message);
+                }
+            }
             else
                 Assert.AreEqual(value, data.Data);
         }
