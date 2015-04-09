@@ -75,6 +75,7 @@ namespace Dynamo.DSEngine
                 {
                     var node = astNode as ArrayNode;
                     Visit(node.Expr, func);
+                    Visit(node.Type, func);
                 }
                 else if (astNode is ExprListNode)
                 {
@@ -517,6 +518,7 @@ namespace Dynamo.DSEngine
             #region Step 4 Generate short name
             var nameGenerator = new ShortNameGenerator();
 
+            // temporary variables are double mapped.
             foreach (var key in inputMap.Keys.ToList())
             {
                if (key.StartsWith(Constants.kTempVarForNonAssignment) &&
@@ -527,7 +529,7 @@ namespace Dynamo.DSEngine
                        shortName = nameGenerator.GetNextName();
 
                    var tempVar = inputMap[key];
-                   inputMap.Remove(key);
+                   inputMap[key] = shortName;
                    inputMap[tempVar] = shortName;
 
                    mappedVariables.Add(shortName);
@@ -544,7 +546,7 @@ namespace Dynamo.DSEngine
                        shortName = nameGenerator.GetNextName();
 
                    var tempVar = outputMap[key];
-                   outputMap.Remove(key);
+                   outputMap[key] = shortName;
                    outputMap[tempVar] = shortName;
 
                    mappedVariables.Add(shortName);

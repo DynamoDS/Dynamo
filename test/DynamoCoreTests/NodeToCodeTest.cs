@@ -142,6 +142,31 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestVariableConfliction5()
+        {
+            // Test same name variables will be renamed in node to code
+            //
+            // Code blocks
+            //  
+            //   x = 1; --> a[x][x] = 2;
+            OpenModel(@"core\node2code\sameNames5.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            Assert.True(result != null && result.AstNodes != null && result.AstNodes.Count() == 3);
+            Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
+
+            var exprs = String.Concat(result.AstNodes
+                                            .Cast<BinaryExpressionNode>()
+                                            .Select(e => e.ToString().Replace(" ", String.Empty)));
+
+            // It totally depends on which code block node is compiled firstly.
+            // Variables in the first one won't be renamed.
+            Assert.IsTrue(exprs.Contains("x=1") && exprs.Contains("x1=x") && exprs.Contains("a[x1][x1]=2"));
+        }
+
+        [Test]
         public void TestTemporaryVariableRenaming1()
         {
             // Test temporary variables should be renamed
