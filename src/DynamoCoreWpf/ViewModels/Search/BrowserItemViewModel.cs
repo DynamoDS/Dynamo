@@ -210,7 +210,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public bool IsClassButton
         {
-            get { return SubCategories.Count == 0; ; }
+            get { return SubCategories.Count == 0; }
         }
 
         ///<summary>
