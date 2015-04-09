@@ -1,6 +1,9 @@
 ﻿using Dynamo.UI.Commands;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
+
+using Dynamo.UpdateManager;
+
 using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.UI.Controls
@@ -21,12 +24,13 @@ namespace Dynamo.UI.Controls
             get { return shortcutBarRightSideItems; }
         }
 
-        public ShortcutToolbar()
+        public ShortcutToolbar(IUpdateManager updateManager)
         {
             shortcutBarItems = new ObservableCollection<ShortcutBarItem>();
             shortcutBarRightSideItems = new ObservableCollection<ShortcutBarItem>();    
 
             InitializeComponent();
+            this.UpdateControl.DataContext = updateManager;
         }
     }
 
