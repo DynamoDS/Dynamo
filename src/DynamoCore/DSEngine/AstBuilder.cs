@@ -239,6 +239,10 @@ namespace Dynamo.DSEngine
                 OnAstNodeBuilt(node.GUID, astNodes);
                 resultList.AddRange(astNodes);
             }
+            else if (context == CompilationContext.ForNodeToCode)
+            {
+                resultList.AddRange(astNodes);
+            }
             else //Inside custom node compilation.
             {
                 bool notified = false;
