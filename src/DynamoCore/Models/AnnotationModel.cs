@@ -163,7 +163,7 @@ namespace Dynamo.Models
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
 
-            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();
+            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();            
             loadFromXML = loadFromGraph;
             if (!loadFromGraph)
                 UpdateBoundaryFromSelection();
@@ -337,7 +337,7 @@ namespace Dynamo.Models
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);
-            this.annotationText = helper.ReadString("annotationText", String.Empty);
+            this.annotationText = helper.ReadString("annotationText", Resources.GroupDefaultText);
             this.left = helper.ReadDouble("left", doubleValue);
             this.top = helper.ReadDouble("top", doubleValue);
             this.width = helper.ReadDouble("width", doubleValue);
