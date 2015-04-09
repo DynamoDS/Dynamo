@@ -1767,7 +1767,7 @@ namespace Dynamo.Controls
             if (um == null)
                 return Resources.AboutWindowCannotGetVersion;
 
-            if (!um.ForceUpdate && um.AvailableVersion <= um.ProductVersion) 
+            if (!um.IsUpdateAvailable) 
                 return Resources.AboutWindowUpToDate;
             
             var latest = um.AvailableVersion;
