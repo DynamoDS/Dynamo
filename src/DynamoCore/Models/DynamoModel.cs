@@ -471,11 +471,6 @@ namespace Dynamo.Models
                 {
                     Logger.Log(e.Message);
                 }
-                finally
-                {
-                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.End));
-                }
 
                 if (migrator != null)
                 {
