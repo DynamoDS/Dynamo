@@ -94,7 +94,7 @@ namespace DynamoSandbox
                 });
 
             var view = new DynamoView(viewModel);
-            view.Loaded += ViewLoaded;
+            view.Loaded += (sender, args) => CloseMigrationWindow();
 
             var app = new Application();
             app.Run(view);
@@ -102,10 +102,13 @@ namespace DynamoSandbox
             DynamoModel.RequestMigrationStatusDialog -= MigrationStatusDialogRequested;
         }
 
-        static void ViewLoaded(object sender, RoutedEventArgs e)
+        private static void CloseMigrationWindow()
         {
-            DynamoModel.OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.End));
+            if (migrationWindow == null)
+                return;
+
+            migrationWindow.Close();
+            migrationWindow = null;
         }
 
         private static void MigrationStatusDialogRequested(SettingsMigrationEventArgs args)
@@ -117,11 +120,7 @@ namespace DynamoSandbox
             }
             else if (args.EventStatus == SettingsMigrationEventArgs.EventStatusType.End)
             {
-                if (migrationWindow == null) 
-                    return;
-
-                migrationWindow.Close();
-                migrationWindow = null;
+                CloseMigrationWindow();
             }
         }
 
