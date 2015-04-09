@@ -678,10 +678,7 @@ namespace Dynamo.Models
                     GUID = id,
                     AnnotationText = text
                 };
-
-                var args = new ModelEventArgs(annotationModel, true);
-                OnRequestNodeCentered(this, args);
-
+             
                 Annotations.Add(annotationModel);
                 HasUnsavedChanges = true;
                 return annotationModel;
