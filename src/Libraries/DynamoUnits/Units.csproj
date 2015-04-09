@@ -77,11 +77,13 @@
   <PropertyGroup>
     <PreBuildEvent>copy /Y "$(ProjectDir)*_DynamoCustomization.xml" "$(OutputPath)"</PreBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
+    <GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
+      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    </GetReferenceAssemblyPaths>
+    <GenerateResource UseSourcePath="true" Sources="$(ProjectDir)DynamoUnitsImages.resx" OutputResources="$(ProjectDir)DynamoUnitsImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
+    <AL TargetType="library" EmbedResources="$(ProjectDir)DynamoUnitsImages.resources" OutputAssembly="$(OutDir)DynamoUnits.customization.dll" />
   </Target>
   <Target Name="AfterBuild">
   </Target>
-  -->
 </Project>
