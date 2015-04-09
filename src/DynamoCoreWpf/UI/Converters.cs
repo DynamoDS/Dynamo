@@ -2166,9 +2166,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var text = value == null ? String.Empty:value.ToString();
-            if (text == "" || text == String.Empty)
-                return Resources.GroupDefaultText;
+            var text = value == null ? String.Empty:value.ToString();             
             return text;
         }
 
