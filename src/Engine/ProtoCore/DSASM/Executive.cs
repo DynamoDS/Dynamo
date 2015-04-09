@@ -1677,13 +1677,23 @@ namespace ProtoCore.DSASM
             //List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
             //    Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
 
+            // Data flow execution prototype
+            // Dependency has already been resolved at compile time
+            // Get the reachable nodes directly from the executingGraphNode
             List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.whoDependsOnMeList);
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
-            foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+            int nextPC = Constants.kInvalidPC;
+            if (reachableGraphNodes.Count > 0)
             {
-                gnode.isDirty = true;
+                // Get the next pc to jump to
+                nextPC = reachableGraphNodes[0].updateBlock.startpc;
+                LX = StackValue.BuildInt(nextPC);
+                foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+                {
+                    gnode.isDirty = true;
+                }
             }
 
             // Get all redefined graphnodes
@@ -7089,7 +7099,23 @@ namespace ProtoCore.DSASM
                 ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
                 fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
             }
-            SetupNextExecutableGraph(fi, ci);
+
+            // Data flow execution prototype
+            // If the VM wrote the next pc to the LX register, jump to that PC
+            if (LX.optype == AddressType.Int && LX.opdata != Constants.kInvalidPC)
+            {
+                Properties.executingGraphNode = GetNextGraphNodeToExecute((int)LX.opdata, ci, fi);
+                if (Properties.executingGraphNode != null)
+                {
+                    Properties.executingGraphNode.isDirty = false;
+                    pc = Properties.executingGraphNode.updateBlock.startpc;
+                }
+                LX = StackValue.BuildInt(Constants.kInvalidPC);
+            }
+            else
+            {
+                SetupNextExecutableGraph(fi, ci);
+            }
         }
 
         private void PUSHDEP_Handler(Instruction instruction)
