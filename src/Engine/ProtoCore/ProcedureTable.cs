@@ -142,17 +142,13 @@ namespace ProtoCore.DSASM
 
     public class ProcedureTable
     {
-        public int runtimeIndex { get; set; }
+        public int runtimeIndex { get; private set; }
         public List<ProcedureNode> procList { get; set; }
         
         public ProcedureTable(int runtimeindex)
         {
             runtimeIndex = runtimeindex;
             procList = new List<ProcedureNode>();
-            foreach (ProcedureNode procNode in procList)
-            {
-                procList.Add(new ProcedureNode(procNode));
-            }
         }
 
         public ProcedureTable(ProcedureTable rhs)
