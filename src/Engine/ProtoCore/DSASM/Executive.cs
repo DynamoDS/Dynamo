@@ -1674,8 +1674,10 @@ namespace ProtoCore.DSASM
             }
 
             // Find reachable graphnodes
-            List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+            //List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+            //    Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+
+            List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.whoDependsOnMeList);
 
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);

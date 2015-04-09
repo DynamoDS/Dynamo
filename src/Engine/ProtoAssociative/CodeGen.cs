@@ -4059,6 +4059,8 @@ namespace ProtoAssociative
 
             ResolveFinalNodeRefs();
             ResolveSSADependencies();
+            ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
+                codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kGlobalScope));
 
             if (codeBlock.parent == null)  // top-most langauge block
             {
