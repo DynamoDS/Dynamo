@@ -17,8 +17,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _resetFitViewToggleCommand;
         private DelegateCommand _findByIdCommand;
         private DelegateCommand _alignSelectedCommand;
-        private DelegateCommand _enableNodePreviewCommand;
-        private DelegateCommand _enableUpstreamPreviewCommand;
         private DelegateCommand _setArgumentLacingCommand;
         private DelegateCommand _findNodesFromSelectionCommand;
         private DelegateCommand _selectAllCommand;
@@ -140,34 +138,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public DelegateCommand EnableNodePreviewCommand
-        {
-            get
-            {
-                if (_enableNodePreviewCommand == null)
-                {
-                    _enableNodePreviewCommand = new DelegateCommand(
-                        EnableNodePreview, p => HasSelection);
-                }
-
-                return _enableNodePreviewCommand;
-            }
-        }
-
-        public DelegateCommand EnableUpstreamPreviewCommand
-        {
-            get
-            {
-                if (_enableUpstreamPreviewCommand == null)
-                {
-                    _enableUpstreamPreviewCommand = new DelegateCommand(
-                        EnableUpstreamPreview, p => HasSelection);
-                }
-
-                return _enableUpstreamPreviewCommand;
-            }
-        }
-
         public DelegateCommand SetArgumentLacingCommand
         {
             get
@@ -263,11 +233,6 @@ namespace Dynamo.ViewModels
                 return DynamoSelection.Instance.Selection.
                     OfType<NodeModel>().Any(n => n.IsUpstreamVisible);
             }
-        }
-
-        public string ShowHideTextBubble
-        {
-            get { return Resources.ContextMenuShowAllTextBubble; }
         }
 
         public bool HasSelection
