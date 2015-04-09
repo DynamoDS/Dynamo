@@ -1,3 +1,5 @@
+﻿using Autodesk.DesignScript.Geometry;
+
 ﻿using System;
 using System.Collections;
 using System.Linq;
@@ -152,6 +154,7 @@ namespace Dynamo.Core.Threading
                     return;
                 }
 
+
                 var package = new RenderPackage(isNodeSelected, displayLabels)
                 {
                     Tag = labelMap.Count > count ? labelMap[count] : "?",
@@ -159,17 +162,33 @@ namespace Dynamo.Core.Threading
 
                 try
                 {
-                    graphicItem.Tessellate(
-                        package,
-                        tol: -1.0,
-                        maxGridLines: maxTesselationDivisions);
+                    graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
+
+                    var surf = graphicItem as Surface;
+                    if (surf != null)
+                    {
+                        foreach (var curve in surf.PerimeterCurves())
+                        {
+                            curve.Tessellate(package, -1.0, maxTesselationDivisions);
+                            curve.Dispose();
+                        }
+                    }
+
+                    var solid = graphicItem as Solid;
+                    if (solid != null)
+                    {
+                        foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry)) {
+                            geom.Tessellate(package, -1.0, maxTesselationDivisions);
+                            geom.Dispose();
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(
                         "PushGraphicItemIntoPackage: " + e);
                 }
-
+                    
                 package.ItemsCount++;
                 renderPackages.Add(package);
                 count++;

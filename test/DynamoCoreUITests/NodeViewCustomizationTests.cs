@@ -4,6 +4,7 @@ using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -60,11 +61,17 @@ namespace DynamoCoreUITests
         [Test]
         public void Watch3DHasViewer()
         {
+            var renderingTier = (System.Windows.Media.RenderCapability.Tier >> 16);
+            if (renderingTier < 2)
+            {
+                Assert.Inconclusive("Hardware rendering is not available. Watch3D is not created.");
+            }
+
             Open(@"UI\CoreUINodes.dyn");
 
             var nodeView = NodeViewWithGuid("6869c998-b819-4686-8849-6f36162c4182"); // NodeViewOf<Watch3D>();
             var watchView = nodeView.ChildrenOfType<Watch3DView>().First();
-            Assert.AreEqual(0, watchView.Points.Count);
+            Assert.Null(watchView.Points);
         }
 
         [Test]
@@ -273,7 +280,7 @@ namespace DynamoCoreUITests
 
             var watch3DView = watch3ds.First();
 
-            Assert.AreEqual(1, watch3DView.Points.Count);
+            Assert.AreEqual(1, watch3DView.Points.Positions.Count);
         }
 
         [Test]

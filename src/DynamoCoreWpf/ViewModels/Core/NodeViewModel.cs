@@ -219,10 +219,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                lock (nodeLogic.RenderPackagesMutex)
-                {
-                    return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
-                }
+                //lock (nodeLogic.RenderPackagesMutex)
+                //{
+                //    return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
+                //}
+
+                return true;
             }
         }
 
@@ -882,6 +884,17 @@ namespace Dynamo.ViewModels
 
             return false;
         }
+
+        private void CreateGroup(object parameters)
+        {
+            DynamoViewModel.AddAnnotationCommand.Execute(null);
+        }
+
+        private bool CanCreateGroup(object parameters)
+        {
+            return true;
+        }
+
 
         #region Private Helper Methods
         private Point GetTopLeft()

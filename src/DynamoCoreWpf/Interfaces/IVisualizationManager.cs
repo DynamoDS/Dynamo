@@ -1,14 +1,13 @@
-﻿using Dynamo.Models;
+﻿using System;
+
+using Autodesk.DesignScript.Interfaces;
+
+using Dynamo.Models;
 
 namespace Dynamo.Interfaces
 {
-    public interface IVisualizationManager
+    public interface IVisualizationManager : IDisposable
     {
-        /// <summary>
-        /// Flag allows us to pause visualization updates.
-        /// </summary>
-        bool UpdatingPaused { get; }
-
         /// <summary>
         /// Is another context available for drawing?
         /// This property can be queried indirectly by the view to enable or disable
@@ -27,15 +26,9 @@ namespace Dynamo.Interfaces
         string AlternateContextName { get; set; }
 
         /// <summary>
-        /// The maximum number of divisions in any direction of an analytical surface 
-        /// tesselation
-        /// </summary>
-        int MaxTesselationDivisions { get; set; }
-
-        /// <summary>
         /// An event triggered on the completion of visualization update.
         /// </summary>
-        event RenderCompleteEventHandler RenderComplete;
+        event Action RenderComplete;
 
         /// <summary>
         /// Display a label for one or several render packages 
@@ -47,18 +40,28 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// An event triggered when there are results to visualize
         /// </summary>
-        event ResultsReadyHandler ResultsReadyToVisualize;
+        event Action<VisualizationEventArgs> ResultsReadyToVisualize;
 
         /// <summary>
-        /// Pause the visualization manager.
+        /// Stop the visualization manager.
         /// </summary>
-        void Pause();
+        void Stop();
 
         /// <summary>
         /// Unpause the visualization manager.
         /// </summary>
-        void UnPause();
+        void Start(bool update = false);
 
+        /// <summary>
+        /// Request updated visuals for a branch of the graph.
+        /// </summary>
         void RequestBranchUpdate(NodeModel node);
+
+        /// <summary>
+        /// Create an IRenderPackage object provided an IGraphicItem
+        /// </summary>
+        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
+        /// <returns>An IRenderPackage object.</returns>
+        IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem);
     }
 }

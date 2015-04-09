@@ -156,7 +156,16 @@ namespace Dynamo.DSEngine
             {
                 case FunctionType.Constructor:
                     // XML documentation uses slightly different constructor names
-                    memberName = memberName.Replace(".ctor", "#ctor");
+                    int lastPoint = member.ClassName.LastIndexOf(".");
+                    if (lastPoint == -1)
+                        goto case FunctionType.InstanceMethod;
+
+                    string classNameWithoutNamespace = member.ClassName.Substring(lastPoint + 1);
+                    // If classname is the same as function name, then it's usual constructor.
+                    // Otherwise it's static method which return type is the same as class.
+                    if (classNameWithoutNamespace == member.FunctionName)
+                        memberName = member.ClassName + ".#ctor";
+
                     goto case FunctionType.InstanceMethod;
 
                 case FunctionType.InstanceMethod: 
