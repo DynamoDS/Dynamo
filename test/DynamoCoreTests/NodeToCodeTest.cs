@@ -149,7 +149,7 @@ namespace Dynamo.Tests
             // Code blocks
             //  
             //   x = 1; --> a[x][x] = 2;
-            OpenModel(@"core\node2code\sameNames5.dyn");
+            OpenModel(@"core\node2code\sameName5.dyn");
             var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
             var engine = ViewModel.Model.EngineController;
 
