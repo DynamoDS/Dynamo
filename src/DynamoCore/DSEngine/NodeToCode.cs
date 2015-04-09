@@ -42,20 +42,6 @@ namespace Dynamo.DSEngine
     public class NodeToCodeUtils
     {
         /// <summary>
-        /// Generate short variable name.
-        /// </summary>
-        private class ShortNameGenerator
-        {
-            private int counter = 0;
-
-            public string GetNextName()
-            {
-                counter++;
-                return AstBuilder.StringConstants.ShortVarPrefix + counter.ToString();
-            }
-        }
-
-        /// <summary>
         /// Traverse all identifiers in depth-first order and for each 
         /// identifier apply a function to it.
         /// </summary>
@@ -146,6 +132,24 @@ namespace Dynamo.DSEngine
             public void BumpID()
             {
                 ID += 1;
+            }
+        }
+
+        /// <summary>
+        /// Generate short variable name.
+        /// </summary>
+        private class ShortNameGenerator
+        {
+            private NumberingState ns = new NumberingState(AstBuilder.StringConstants.ShortVarPrefix);
+
+            public ShortNameGenerator()
+            {
+
+            }
+            public string GetNextName()
+            {
+                ns.BumpID();
+                return ns.NumberedVariable;
             }
         }
 
@@ -337,7 +341,8 @@ namespace Dynamo.DSEngine
         private static void ShortNameMapping(
             AssociativeNode astNode,
             Dictionary<string, string> shortNameMap,
-            ShortNameGenerator nameGenerator)
+            ShortNameGenerator nameGenerator,
+            HashSet<string> mappedVariables)
         {
             Action<IdentifierNode> func = n =>
             {
@@ -347,6 +352,9 @@ namespace Dynamo.DSEngine
                     if (shortName == string.Empty)
                     {
                         shortName = nameGenerator.GetNextName();
+                        while (mappedVariables.Contains(shortName))
+                            shortName = nameGenerator.GetNextName();
+
                         shortNameMap[n.Value] = shortName;
                     }
                     n.Value = n.Name = shortName; 
@@ -457,8 +465,8 @@ namespace Dynamo.DSEngine
             {
                 foreach (var astNode in ts.Item2)
                 {
-                    ShortNameMapping(astNode, inputMap, nameGenerator);
-                    ShortNameMapping(astNode, outputMap, nameGenerator);
+                    ShortNameMapping(astNode, inputMap, nameGenerator, mappedVariables);
+                    ShortNameMapping(astNode, outputMap, nameGenerator, mappedVariables);
                 }
             }
             #endregion
