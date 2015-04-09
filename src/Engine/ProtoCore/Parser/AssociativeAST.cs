@@ -1279,6 +1279,7 @@ namespace ProtoCore.AST.AssociativeAST
         protected List<string> returnKeys;
         public string ObsoleteMessage { get; protected set; }
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
+        public bool CanBeConvertedToCode { get; protected set; }
 
         /// <summary>
         /// Gets/Sets description for the method.
@@ -1290,6 +1291,7 @@ namespace ProtoCore.AST.AssociativeAST
             HiddenInLibrary = hiddenInLibrary;
             CanUpdatePeriodically = canUpdatePeriodically;
             ObsoleteMessage = msg;
+            CanBeConvertedToCode = true;
         }
     }
 

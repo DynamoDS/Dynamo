@@ -1318,6 +1318,10 @@ namespace ProtoFFI
                 {
                     CanUpdatePeriodically = (attr as CanUpdatePeriodicallyAttribute).CanUpdatePeriodically;
                 }
+                else if (attr is PreventNodeBeingConvertedToCode)
+                {
+                    CanBeConvertedToCode = false;
+                }
             }
         }
 
