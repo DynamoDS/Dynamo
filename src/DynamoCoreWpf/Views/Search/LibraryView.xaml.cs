@@ -129,7 +129,7 @@ namespace Dynamo.UI.Views
                 if (wrapPanel.MakeOrClearSelection(selectedClass))
                 {
                     // If class button was clicked, then handle, otherwise leave it.
-                    e.Handled = selectedClass.SubCategories.Count == 0;
+                    e.Handled = selectedClass.IsClassButton;
 
                     var classInfoPanel = wrapPanel.Children.Cast<FrameworkElement>().
                         Where(child => child.DataContext is ClassInformationViewModel).FirstOrDefault();
@@ -150,7 +150,6 @@ namespace Dynamo.UI.Views
                                     selectedClassButton.BringIntoView();
                             }
                         };
-
                 }
             }
 
@@ -201,12 +200,12 @@ namespace Dynamo.UI.Views
                 var searchFurtherInNextLevel = true;
 
                 // If class button was clicked.
-                if (selectedClass.SubCategories.Count == 0)
+                if (selectedClass.IsClassButton)
                 {
                     var categoryClasses = expandedCategory.Items[0] as ClassesNodeCategoryViewModel;
                     if (categoryClasses != null) // There are classes under this category...
                     {
-                        if (expandedCategory.SubCategories.Count == 0)
+                        if (expandedCategory.IsClassButton)
                         {
                             // If the category does not contain any sub category, 
                             // then we won't look for the selected class within it.
