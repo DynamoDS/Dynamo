@@ -370,12 +370,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var um = UpdateManager.UpdateManager.Instance;
-                if (um.ForceUpdate)
-                {
-                    return true;
-                }
-                return um.AvailableVersion > um.ProductVersion;
+                var um = model.UpdateManager;
+                return um.IsUpdateAvailable;
             }
         }
 
@@ -391,11 +387,11 @@ namespace Dynamo.ViewModels
 
         public int MaxTesselationDivisions
         {
-            get { return VisualizationManager.MaxTesselationDivisions; }
+            get { return model.MaxTesselationDivisions; }
             set
             {
-                VisualizationManager.MaxTesselationDivisions = value;
-                this.model.OnRequestsRedraw(this, EventArgs.Empty);
+                model.MaxTesselationDivisions = value;
+                model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
 
@@ -575,14 +571,14 @@ namespace Dynamo.ViewModels
 
         private void SubscribeUpdateManagerHandlers()
         {
-            UpdateManager.UpdateManager.Instance.UpdateDownloaded += Instance_UpdateDownloaded;
-            UpdateManager.UpdateManager.Instance.ShutdownRequested += updateManager_ShutdownRequested;
+            model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
+            model.UpdateManager.ShutdownRequested += UpdateManager_ShutdownRequested;
         }
 
         private void UnsubscribeUpdateManagerEvents()
         {
-            UpdateManager.UpdateManager.Instance.UpdateDownloaded -= Instance_UpdateDownloaded;
-            UpdateManager.UpdateManager.Instance.ShutdownRequested -= updateManager_ShutdownRequested;
+            model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
+            model.UpdateManager.ShutdownRequested -= UpdateManager_ShutdownRequested;
         }
 
         private void SubscribeModelUiEvents()
@@ -750,7 +746,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        void updateManager_ShutdownRequested(IUpdateManager updateManager)
+        void UpdateManager_ShutdownRequested(IUpdateManager updateManager)
         {
             PerformShutdownSequence(new ShutdownParams(
                 shutdownHost: true, allowCancellation: true));
@@ -819,7 +815,7 @@ namespace Dynamo.ViewModels
         //    }
         //}
 
-        private void CleanUp(DynamoModel dynamoModel)
+        private void CleanUp()
         {
             UnsubscribeAllEvents();
         }
@@ -877,6 +873,23 @@ namespace Dynamo.ViewModels
         internal bool CanAddNote(object parameters)
         {
             return true;
+        }
+
+        internal void AddAnnotation(object parameters)
+        {
+            if (null != parameters) // See above for details of this exception.
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+
+            var command = new DynamoModel.CreateAnnotationCommand(Guid.NewGuid(), null, 0, 0, true);
+            this.ExecuteCommand(command);
+        }
+
+        internal bool CanAddAnnotation(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
         }
 
         private void WorkspaceAdded(WorkspaceModel item)
@@ -998,7 +1011,7 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = string.Format(Resources.FileDialogDynamoDefinitions, "*.dyn; *.dyf") + "|" +
+                Filter = string.Format(Resources.FileDialogDynamoDefinitions, "*.dyn;*.dyf") + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
                 Title = Resources.OpenDynamoDefinitionDialogTitle
             };
@@ -1971,10 +1984,12 @@ namespace Dynamo.ViewModels
             if (shutdownParams.CloseDynamoView)
                 OnRequestClose(this, EventArgs.Empty);
 
+            VisualizationManager.Dispose();
+
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
             {
-                UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
+                model.UpdateManager.HostApplicationBeginQuit();
             }
 
             UsageReportingManager.DestroyInstance();
@@ -2026,11 +2041,7 @@ namespace Dynamo.ViewModels
 
         public bool CanGetBranchVisualization(object parameter)
         {
-            if (FullscreenWatchShowing)
-            {
-                return true;
-            }
-            return false;
+            return FullscreenWatchShowing;
         }
 
         public DynamoViewModel ViewModel { get { return this; } }

@@ -149,6 +149,10 @@
     <value>Switch to Geometry _View</value>
     <comment>Context menu item</comment>
   </data>
+  <data name="ContextCreateGroupFromSelection" xml:space="preserve">
+    <value>Create Group</value>
+    <comment>Context menu item</comment>
+  </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
     <value>Nodes From _Selected Geometry</value>
     <comment>Context menu item</comment>
@@ -260,6 +264,10 @@
   <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
     <value>_Create Note</value>
     <comment>Edit menu | Create note for a node</comment>
+  </data>
+  <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
+    <value>_Create Group</value>
+    <comment>Edit menu | Create Grouping for nodes</comment>
   </data>
   <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
     <value>_Delete Selected</value>
@@ -1610,5 +1618,24 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ContextMenuShowUpstreamPreview" xml:space="preserve">
     <value>Show upstream geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuBackground" xml:space="preserve">
+    <value>Select Background</value>
+  </data>
+  <data name="GroupContextMenuFont" xml:space="preserve">
+    <value>Font</value>
+  </data>
+  <data name="GroupContextMenuUngroup" xml:space="preserve">
+    <value>Ungroup</value>
+  </data>
+  <data name="MoreButton" xml:space="preserve">
+    <value>More</value>
+    <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
+  </data>
+  <data name="PublishPackage" xml:space="preserve">
+    <value>Publish Package !</value>
   </data>
 </root>

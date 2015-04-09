@@ -87,8 +87,8 @@ namespace SampleLibraryZeroTouch
                     var c = vertexCoords[i + 1, j];
                     var d = vertexCoords[i + 1, j + 1];
 
-                    var v1 = Vector.ByTwoPoints(b, a).Cross(Vector.ByTwoPoints(c, b));
-                    var v2 = Vector.ByTwoPoints(c, d).Cross(Vector.ByTwoPoints(b, d));
+                    var v1 = Vector.ByTwoPoints(b, a).Cross(Vector.ByTwoPoints(c, b)).Normalized().Reverse();
+                    var v2 = Vector.ByTwoPoints(c, d).Cross(Vector.ByTwoPoints(b, d)).Normalized().Reverse();
 
                     PushTriangleVertex(package, a, v1);
                     PushTriangleVertex(package, b, v1);
@@ -97,7 +97,6 @@ namespace SampleLibraryZeroTouch
                     PushTriangleVertex(package, d, v2);
                     PushTriangleVertex(package, c, v2);
                     PushTriangleVertex(package, b, v2);
-
                 }
             }
         }
@@ -105,7 +104,7 @@ namespace SampleLibraryZeroTouch
         private void PushTriangleVertex(IRenderPackage package, Point p, Vector n)
         {
             package.PushTriangleVertex(p.X, p.Y, p.Z);
-            package.PushTriangleVertexColor(255, 255, 0, 255);
+            package.PushTriangleVertexColor(255, 255, 255, 255);
             package.PushTriangleVertexNormal(n.X,n.Y,n.Z);
         }
     }

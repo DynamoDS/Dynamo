@@ -57,10 +57,11 @@ namespace Dynamo.Models
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
+                Enumerable.Empty<AnnotationModel>(),
                 new WorkspaceInfo(){FileName = fileName, Name = "Home"},
                 verboseLogging, 
                 isTestMode) { }
-
+       
         public HomeWorkspaceModel(
             EngineController engine, 
             DynamoScheduler scheduler, 
@@ -68,10 +69,11 @@ namespace Dynamo.Models
             IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
+            IEnumerable<AnnotationModel> a,
             WorkspaceInfo info, 
             bool verboseLogging,
             bool isTestMode)
-            : base(e, n, info, factory)
+            : base(e, n,a, info, factory)
         {
             EvaluationCount = 0;
 

@@ -35,6 +35,7 @@ using ProtoCore.Exceptions;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
 using Utils = Dynamo.Nodes.Utilities;
+using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
 
 namespace Dynamo.Models
 {
@@ -52,7 +53,6 @@ namespace Dynamo.Models
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
-
         #endregion
 
         #region events
@@ -160,8 +160,13 @@ namespace Dynamo.Models
         /// </summary>
         public string Version
         {
-            get { return UpdateManager.UpdateManager.Instance.ProductVersion.ToString(); }
+            get { return UpdateManager.ProductVersion.ToString(); }
         }
+
+        /// <summary>
+        /// UpdateManager to handle automatic upgrade to higher version.
+        /// </summary>
+        public IUpdateManager UpdateManager { get; private set; }
 
         /// <summary>
         ///     The path manager that configures path information required for 
@@ -224,7 +229,7 @@ namespace Dynamo.Models
             get
             {
                 return Process.GetCurrentProcess().ProcessName + "-"
-                    + UpdateManager.UpdateManager.Instance.ProductVersion;
+                    + DefaultUpdateManager.GetProductVersion();
             }
         }
 
@@ -459,20 +464,23 @@ namespace Dynamo.Models
             if (!isTestMode && this.PreferenceSettings.IsFirstRun)
             {
                 DynamoMigratorBase migrator = null;
+
+                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
-                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.Begin));
-
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
-
-                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                        SettingsMigrationEventArgs.EventStatusType.End));
                 }
                 catch (Exception e)
                 {
                     Logger.Log(e.Message);
                 }
+                finally
+                {
+                    OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
+                        SettingsMigrationEventArgs.EventStatusType.End));
+                }
+
                 if (migrator != null)
                 {
                     var isFirstRun = this.PreferenceSettings.IsFirstRun;
@@ -521,9 +529,11 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
+            UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
+            UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode)
-                UpdateManager.UpdateManager.CheckForProductUpdate();
-
+                DefaultUpdateManager.CheckForProductUpdate(UpdateManager);
+            
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
@@ -538,6 +548,11 @@ namespace Dynamo.Models
             InitializeNodeLibrary(preferences);
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
+        }
+
+        void UpdateManager_Log(LogEventArgs args)
+        {
+            Logger.Log(args.Message, args.Level);
         }
 
         /// <summary>
@@ -599,6 +614,8 @@ namespace Dynamo.Models
         {
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
+            
+            UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
 
             EngineController.Dispose();
@@ -1006,6 +1023,7 @@ namespace Dynamo.Models
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
+                nodeGraph.Annotations,               
                 workspaceInfo,
                 DebugSettings.VerboseLogging, 
                 IsTestMode
@@ -1041,7 +1059,7 @@ namespace Dynamo.Models
             if (null == CurrentWorkspace)
                 return;
 
-            OnDeletionStarted(this, EventArgs.Empty);
+            OnDeletionStarted();
 
             CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
 
@@ -1049,9 +1067,7 @@ namespace Dynamo.Models
             foreach (ModelBase model in modelsToDelete)
             {
                 selection.Remove(model); // Remove from selection set.
-                var node = model as NodeModel;
-                if (node != null)
-                    node.Dispose();
+                model.Dispose();              
             }
 
             OnDeletionComplete(this, EventArgs.Empty);
@@ -1198,6 +1214,7 @@ namespace Dynamo.Models
             var nodes = ClipBoard.OfType<NodeModel>();
             var connectors = ClipBoard.OfType<ConnectorModel>();
             var notes = ClipBoard.OfType<NoteModel>();
+            var annotations = ClipBoard.OfType<AnnotationModel>();
 
             var minX = Double.MaxValue;
             var minY = Double.MaxValue;
@@ -1234,7 +1251,8 @@ namespace Dynamo.Models
                     newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy);
                 }
 
-                newNode.ArgumentLacing = node.ArgumentLacing;
+                var lacing = node.ArgumentLacing.ToString();
+                newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
                 if (!string.IsNullOrEmpty(node.NickName))
                     newNode.NickName = node.NickName;
 
@@ -1305,6 +1323,23 @@ namespace Dynamo.Models
 
             createdModels.AddRange(newConnectors);
 
+            //Grouping depends on the selected node models. 
+            //so adding the group after nodes / notes are added to workspace.
+            var newAnnotations = new List<AnnotationModel>();
+            foreach (var annotation in annotations)
+            {
+                var annotationModel = new AnnotationModel(newNodeModels, newNoteModels) {GUID = Guid.NewGuid()};
+                newAnnotations.Add(annotationModel);              
+            }
+
+            // Add the new Annotation's to the Workspace
+            foreach (var newAnnotation in newAnnotations)
+            {
+                CurrentWorkspace.AddAnnotation(newAnnotation);
+                createdModels.Add(newAnnotation);
+                AddToSelection(newAnnotation);
+            }
+
             // Record models that are created as part of the command.
             CurrentWorkspace.RecordCreatedModels(createdModels);
         }
@@ -1315,16 +1350,11 @@ namespace Dynamo.Models
         /// <param name="parameters">The object to add to the selection.</param>
         public void AddToSelection(object parameters)
         {
-            var node = parameters as NodeModel;
-
-            //don't add if the object is null
-            if (node == null)
-                return;
-
-            if (!node.IsSelected)
+            var selectable = parameters as ISelectable;
+            if ((selectable != null) && !selectable.IsSelected)
             {
-                if (!DynamoSelection.Instance.Selection.Contains(node))
-                    DynamoSelection.Instance.Selection.Add(node);
+                if (!DynamoSelection.Instance.Selection.Contains(selectable))
+                    DynamoSelection.Instance.Selection.Add(selectable);
             }
         }
 
@@ -1333,7 +1363,7 @@ namespace Dynamo.Models
         /// </summary>
         public void ClearCurrentWorkspace()
         {
-            OnWorkspaceClearing(this, EventArgs.Empty);
+            OnWorkspaceClearing();
 
             CurrentWorkspace.Clear();
 
