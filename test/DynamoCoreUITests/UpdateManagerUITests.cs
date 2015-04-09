@@ -4,7 +4,7 @@ using Dynamo.UpdateManager;
 using Moq;
 using NUnit.Framework;
 using SystemTestServices;
-
+using DynamoCoreUITests.Utility;
 
 namespace DynamoCoreUITests
 {
@@ -36,6 +36,8 @@ namespace DynamoCoreUITests
 
             base.Setup();
 
+            DispatcherUtil.DoEvents();
+
             var stb = (ShortcutToolbar)View.shortcutBarGrid.Children[0];
             Assert.IsNotNull(stb);
             var updateControl = stb.UpdateControl;
@@ -50,6 +52,8 @@ namespace DynamoCoreUITests
             MockUpdateManager(isUpToDate:true);
 
             base.Setup();
+
+            DispatcherUtil.DoEvents();
 
             var stb = View.shortcutBarGrid.Children[0] as ShortcutToolbar;
             Assert.IsNotNull(stb);
