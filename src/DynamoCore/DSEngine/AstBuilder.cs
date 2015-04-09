@@ -32,7 +32,7 @@ namespace Dynamo.DSEngine
     public class AstBuilder : LogSourceBase
     {
         /// <summary>
-        /// Indicate the context of AST compilation
+        /// The context of AST compilation
         /// </summary>
         public enum CompilationContext
         {
@@ -94,7 +94,8 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// BSS and post-order traverse.
+        /// BFS and post-order traverse to ensure all inputs are visited in
+        /// order and before downstream node.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="nodeFlags"></param>
@@ -146,7 +147,7 @@ namespace Dynamo.DSEngine
         /// Their ideal topological order is A -> B -> C. If the input is only {A, B}, 
         /// it may return {B, A} which is not OK in node to code.
         ///
-        /// Note it is much slower that TopologiclSort().
+        /// Note it is much slower thanopologiclSort().
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
@@ -222,7 +223,7 @@ namespace Dynamo.DSEngine
                 scopedNode != null
                     ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
                     : node.BuildAst(inputAstNodes, context);
-           
+
             if (verboseLogging)
             {
                 foreach (var n in astNodes)
@@ -231,7 +232,7 @@ namespace Dynamo.DSEngine
                 }
             }
 
-            if (null == astNodes)
+            if(null == astNodes)
                 resultList.AddRange(new AssociativeNode[0]);
             else if (context == CompilationContext.ForDeltaExecution)
             {

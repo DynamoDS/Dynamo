@@ -963,17 +963,13 @@ namespace Dynamo.Models
                             if (startNode == node)
                             {
                                 if (nodeToCodeResult.OutputMap.ContainsKey(variableName))
-                                {
                                     variableName = nodeToCodeResult.OutputMap[variableName];
-                                }
                                 externalOutputConnections.Add(connector, variableName);
                             }
                             else
                             {
                                 if (nodeToCodeResult.InputMap.ContainsKey(variableName))
-                                {
                                     variableName = nodeToCodeResult.InputMap[variableName];
-                                }
                                 externalInputConnections.Add(connector, variableName);
                             }
                         }
@@ -1000,8 +996,8 @@ namespace Dynamo.Models
                 codeBlockNode = new CodeBlockNodeModel(
                     code,
                     nodeId,
-                    totalX / nodeCount,
-                    totalY / nodeCount, engineController.LibraryServices);
+                    totalX/nodeCount,
+                    totalY/nodeCount, engineController.LibraryServices);
                 UndoRecorder.RecordCreationForUndo(codeBlockNode);
                 Nodes.Add(codeBlockNode);
                 this.RegisterNode(codeBlockNode);

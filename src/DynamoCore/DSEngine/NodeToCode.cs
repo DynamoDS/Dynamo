@@ -30,7 +30,8 @@ namespace Dynamo.DSEngine
         /// </summary>
         public Dictionary<string, string> OutputMap { get; private set; }
 
-        public NodeToCodeResult(IEnumerable<AssociativeNode> astNodes, 
+        public NodeToCodeResult(
+            IEnumerable<AssociativeNode> astNodes, 
             Dictionary<string, string> inputMap, 
             Dictionary<string, string> outputMap)
         {
@@ -112,16 +113,38 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// The numbering state of a variable.
+        /// </summary>
         private class NumberingState
         {
+            /// <summary>
+            /// Variable name.
+            /// </summary>
             public string Variable { get;  private set; }
+
+            /// <summary>
+            /// Variable name with number suffix.
+            /// </summary>
             public string NumberedVariable
             {
                 get { return Variable + ((ID == 0) ? String.Empty : ID.ToString()); }
             }
+
+            /// <summary>
+            /// Number suffix.
+            /// </summary>
             public int ID { get; set; }
+
+            /// <summary>
+            /// Indicate it is for ASTs in a new code block
+            /// </summary>
             public bool IsNewSession { get; set; }
 
+            /// <summary>
+            /// Constructor.
+            /// </summary>
+            /// <param name="variable"></param>
             public NumberingState(string variable)
             {
                 Variable = variable;
@@ -129,6 +152,9 @@ namespace Dynamo.DSEngine
                 IsNewSession = false;
             }
 
+            /// <summary>
+            /// Increase number. 
+            /// </summary>
             public void BumpID()
             {
                 ID += 1;
@@ -153,6 +179,43 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// Collect input, output and renaming maps.
+        ///
+        /// Inputs are input variables from external node models, finally
+        /// shorter names will be given for these inputs. Note when the
+        /// function returns, values in inputMap are always empty strings.
+        ///
+        /// Outputs are variables that output to external node models. 
+        /// Shorter names will be given for these outupts. But if outputs are
+        /// from code block node, as variables may be re-named during variable
+        /// numbering, we can't simply record orignal output variable names. So
+        /// when function returns, if a variable is from output port of non 
+        /// code block node, there is an entry:
+        /// 
+        ///     outputMap[var_node_model_guid] = "" 
+        ///  
+        /// If a variable, say "foo", is from code block node, there are two 
+        /// entries:
+        /// 
+        ///     outputMap[foo_node_model_guid] = "foo"
+        ///     outputMap[foo%node_model_guid] = foo_node_model_guid
+        /// 
+        /// We need second entry because because finally we will use outputMap
+        /// to restore the connection, and if "foo" is renamed to something 
+        /// else, say "foo21", we can find the value of key from the second 
+        /// entry and update the first entry to:
+        /// 
+        ///     outputMap[foo_ndoe_mode_guid] = "foo21".
+        /// 
+        /// Renaming map are similar to output map. The difference is these
+        /// variables used internally and they may be renamed as well. In 
+        /// some sense, it is just subset of outputMap.
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <param name="inputMap"></param>
+        /// <param name="outputMap"></param>
+        /// <param name="renamingMap"></param>
         private static void GetInputOutputMap(
             IEnumerable<NodeModel> nodes, 
             out Dictionary<string, string> inputMap,
@@ -455,7 +518,7 @@ namespace Dynamo.DSEngine
             foreach (var ts in allAstNodes)
             {
                 foreach (var astNode in ts.Item2)
-                    VariableRemapping(astNode, renamingMap); 
+                    VariableRemapping(astNode, renamingMap);
             }
             #endregion
 
