@@ -370,12 +370,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var um = UpdateManager.UpdateManager.Instance;
-                if (um.ForceUpdate)
-                {
-                    return true;
-                }
-                return um.AvailableVersion > um.ProductVersion;
+                var um = model.UpdateManager;
+                return um.IsUpdateAvailable;
             }
         }
 
@@ -575,14 +571,14 @@ namespace Dynamo.ViewModels
 
         private void SubscribeUpdateManagerHandlers()
         {
-            UpdateManager.UpdateManager.Instance.UpdateDownloaded += Instance_UpdateDownloaded;
-            UpdateManager.UpdateManager.Instance.ShutdownRequested += updateManager_ShutdownRequested;
+            model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
+            model.UpdateManager.ShutdownRequested += UpdateManager_ShutdownRequested;
         }
 
         private void UnsubscribeUpdateManagerEvents()
         {
-            UpdateManager.UpdateManager.Instance.UpdateDownloaded -= Instance_UpdateDownloaded;
-            UpdateManager.UpdateManager.Instance.ShutdownRequested -= updateManager_ShutdownRequested;
+            model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
+            model.UpdateManager.ShutdownRequested -= UpdateManager_ShutdownRequested;
         }
 
         private void SubscribeModelUiEvents()
@@ -750,7 +746,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        void updateManager_ShutdownRequested(IUpdateManager updateManager)
+        void UpdateManager_ShutdownRequested(IUpdateManager updateManager)
         {
             PerformShutdownSequence(new ShutdownParams(
                 shutdownHost: true, allowCancellation: true));
@@ -1974,7 +1970,7 @@ namespace Dynamo.ViewModels
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
             {
-                UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
+                model.UpdateManager.HostApplicationBeginQuit();
             }
 
             UsageReportingManager.DestroyInstance();
