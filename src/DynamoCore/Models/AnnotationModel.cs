@@ -186,7 +186,7 @@ namespace Dynamo.Models
                     break;
                 case "Text":
                     UpdateBoundaryFromSelection();
-                    break;
+                    break;               
             }
         }
 
@@ -318,6 +318,7 @@ namespace Dynamo.Models
             helper.SetAttribute("fontSize", this.FontSize);
             helper.SetAttribute("InitialTop", this.InitialTop);
             helper.SetAttribute("InitialHeight", this.InitialHeight);
+            helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));        
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
@@ -344,6 +345,7 @@ namespace Dynamo.Models
             this.height = helper.ReadDouble("height", doubleValue);
             this.background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
+            this.textBlockHeight = helper.ReadDouble("TextblockHeight", doubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", doubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", doubleValue);
             //Deserialize Selected models
@@ -367,13 +369,14 @@ namespace Dynamo.Models
 
         #endregion
 
-        public virtual void Dispose()
+        public override void Dispose()
         {
             if (this.SelectedModels.Any())
             {
                 foreach (var model in this.SelectedModels)
                 {
                     model.PropertyChanged -= model_PropertyChanged;
+                    model.Disposed -= model_Disposed;
                 }
             }
         }

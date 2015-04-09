@@ -1314,7 +1314,13 @@ namespace Dynamo.Models
             var newAnnotations = new List<AnnotationModel>();
             foreach (var annotation in annotations)
             {
-                var annotationModel = new AnnotationModel(newNodeModels, newNoteModels) {GUID = Guid.NewGuid()};
+                var annotationModel = new AnnotationModel(newNodeModels, newNoteModels)
+                {
+                    GUID = Guid.NewGuid(),
+                    AnnotationText = annotation.AnnotationText,
+                    Background = annotation.Background
+                    
+                };
                 newAnnotations.Add(annotationModel);              
             }
 
