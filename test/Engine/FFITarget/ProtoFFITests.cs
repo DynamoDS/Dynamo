@@ -493,6 +493,11 @@ namespace FFITarget
         {
             return 0;
         }
+
+        [PreventNodeBeingConvertedToCode]
+        public static void MethodCannotBeConvertedToCode()
+        {
+        }
     }
 
     internal class InternalClass
