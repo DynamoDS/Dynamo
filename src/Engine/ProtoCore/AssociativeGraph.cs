@@ -15,8 +15,16 @@ namespace ProtoCore.AssociativeEngine
 
     public class Utils
     {
+        /// <summary>
+        /// Builds the dependencies within the list of graphNodes
+        /// </summary>
+        /// <param name="graphNodes"></param>
         public static void BuildGraphNodeDependencies(List<AssociativeGraph.GraphNode> graphNodes)
         {
+            if (graphNodes == null)
+            {
+                return;
+            }
             // Get the current graphnode to check against the list
             //  [a = 10]  -> this one
             //  c = 1
@@ -36,11 +44,16 @@ namespace ProtoCore.AssociativeEngine
                     if (i != j)
                     {
                         AssociativeGraph.GraphNode gnode = graphNodes[j];
-                        AssociativeGraph.GraphNode dependent = null;
-                        if (gnode.DependsOn(currentNode.updateNodeRefList[0], ref dependent))
+                        // Jun: Write a function to check if a graph has no LHS and describe why there are such graphs
+                        bool doesContainLHS = currentNode.updateNodeRefList != null && currentNode.updateNodeRefList.Count > 0;
+                        if (doesContainLHS)
                         {
-                            Validity.Assert(dependent != null);
-                            currentNode.whoDependsOnMeList.Add(gnode);
+                            AssociativeGraph.GraphNode dependent = null;
+                            if (gnode.DependsOn(currentNode.updateNodeRefList[0], ref dependent))
+                            {
+                                Validity.Assert(dependent != null);
+                                currentNode.whoDependsOnMeList.Add(gnode);
+                            }
                         }
                     }
                 }

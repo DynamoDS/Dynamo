@@ -56,9 +56,9 @@ namespace ProtoCore
         {
             ApplyUpdate = false;
 
-            DumpByteCode = true;
-            Verbose = true;
-            DumpIL = true;
+            DumpByteCode = false;
+            Verbose = false;
+            DumpIL = false;
 
             GenerateSSA = true;
             ExecuteSSA = true;

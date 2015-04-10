@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+//#define __USE_DIRECT_JUMP
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1673,15 +1676,18 @@ namespace ProtoCore.DSASM
                 }
             }
 
-            // Find reachable graphnodes
-            //List<AssociativeGraph.GraphNode> reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-            //    Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+            List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
 
+#if __USE_DIRECT_JUMP
             // Data flow execution prototype
             // Dependency has already been resolved at compile time
             // Get the reachable nodes directly from the executingGraphNode
-            List<AssociativeGraph.GraphNode> reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.whoDependsOnMeList);
-
+            reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.whoDependsOnMeList);
+#else
+            // Find reachable graphnodes
+            reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+#endif
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
             int nextPC = Constants.kInvalidPC;
@@ -7100,6 +7106,7 @@ namespace ProtoCore.DSASM
                 fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
             }
 
+#if __USE_DIRECT_JUMP
             // Data flow execution prototype
             // If the VM wrote the next pc to the LX register, jump to that PC
             if (LX.optype == AddressType.Int && LX.opdata != Constants.kInvalidPC)
@@ -7116,6 +7123,9 @@ namespace ProtoCore.DSASM
             {
                 SetupNextExecutableGraph(fi, ci);
             }
+#else
+            SetupNextExecutableGraph(fi, ci);
+#endif
         }
 
         private void PUSHDEP_Handler(Instruction instruction)
