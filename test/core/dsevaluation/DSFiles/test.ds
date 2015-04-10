@@ -1,0 +1,26 @@
+
+/*
+a = 10;
+c = 1;
+b = a;
+d = a;
+a = 20;
+*/
+
+class A
+{
+    a:var[]..[];
+    constructor A( c )
+    {
+        a = { 0, 1, 2 };
+        a = c > 1 ? a : a + 1;
+    }
+    def foo (c)
+    {
+        a = c == 4 ? a : a + 1;
+        return = a;
+    }
+}
+x = { A.A(0), A.A(2)};
+a1 = x.a;
+test = a1.foo(5);
