@@ -1626,7 +1626,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Select Background</value>
   </data>
   <data name="GroupContextMenuFont" xml:space="preserve">
-    <value>Font</value>
+    <value>Font Size</value>
   </data>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
     <value>Ungroup</value>
