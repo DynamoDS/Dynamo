@@ -348,9 +348,7 @@ namespace Dynamo.UI.Controls
     public class LibraryToolTipPopup : Popup
     {
         private ToolTipWindow tooltip = new ToolTipWindow();
-        private DispatcherTimer dispatcherTimer = new DispatcherTimer();
-        private DispatcherTimer showTimer = new DispatcherTimer();
-        private object nextDataContext;
+        private readonly LibraryToolTipTimer toolTipTimer;
         private DynamoView mainDynamoWindow;
 
         public LibraryToolTipPopup()
@@ -360,11 +358,13 @@ namespace Dynamo.UI.Controls
             this.CustomPopupPlacementCallback = PlacementCallback;
             this.DataContext = null;
             this.Child = tooltip;
-            this.dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 250);
-            this.dispatcherTimer.Tick += CloseLibraryToolTipPopup;
-            this.showTimer.Interval = new TimeSpan(0, 0, 0, 0, 60);
-            this.showTimer.Tick += OpenLibraryToolTipPopup;
             this.Loaded += LoadMainDynamoWindow;
+
+            toolTipTimer = new LibraryToolTipTimer();
+            toolTipTimer.TimerElapsed += (dataContext) =>
+            {
+                OpenCloseLibraryToolTipPopup(dataContext);
+            };
         }
 
         // We should load main window after Popup has been initialized.
@@ -390,26 +390,20 @@ namespace Dynamo.UI.Controls
             // If Dynamo window is not active, we should not show as well as hide tooltip or do any other staff.
             if (mainDynamoWindow == null || !mainDynamoWindow.IsActive) return;
 
-            if (dataContext == null)
+            if (closeImmediately)
             {
-                if (closeImmediately)
-                {
-                    CloseLibraryToolTipPopup(null, null);
-                    return;
-                }
-                showTimer.Stop();
-                dispatcherTimer.Start();
+                CloseLibraryToolTipPopup();
                 return;
             }
-            dispatcherTimer.Stop();
-            nextDataContext = dataContext;
-            showTimer.Start();
+
+            toolTipTimer.Start(dataContext, 150);
         }
 
-        private void OpenLibraryToolTipPopup(object sender, EventArgs e)
+        private void OpenCloseLibraryToolTipPopup(object dataContext)
         {
-            this.DataContext = nextDataContext;
-            IsOpen = true;
+            IsOpen = dataContext != null || this.IsMouseOver;
+            if (dataContext != null)
+                this.DataContext = dataContext;
 
             // This line is needed to change position of Popup.
             // As position changed PlacementCallback is called and
@@ -418,17 +412,13 @@ namespace Dynamo.UI.Controls
 
             // Moving tooltip back.
             HorizontalOffset--;
-
-            showTimer.Stop();
         }
 
-        private void CloseLibraryToolTipPopup(object sender, EventArgs e)
+        private void CloseLibraryToolTipPopup()
         {
-            if (!this.IsMouseOver)
-            {
-                this.DataContext = null;
-                IsOpen = false;
-            }
+            this.DataContext = null;
+            IsOpen = false;
+            toolTipTimer.Stop();
         }
 
         private CustomPopupPlacement[] PlacementCallback(Size popup, Size target, Point offset)
@@ -465,6 +455,45 @@ namespace Dynamo.UI.Controls
                     PrimaryAxis = PopupPrimaryAxis.Horizontal
                 }
             };
+        }
+
+        private class LibraryToolTipTimer
+        {
+            private readonly DispatcherTimer dispatcherTimer;
+
+            internal LibraryToolTipTimer()
+            {
+                dispatcherTimer = new DispatcherTimer();
+                dispatcherTimer.Tick += (sender, args) =>
+                {
+                    // Send the data context to caller.
+                    this.OnTimerElapsed(dispatcherTimer.Tag);
+                };
+
+            }
+            internal void Start(object dataContext, int milliseconds)
+            {
+                dispatcherTimer.Stop();
+                dispatcherTimer.Tag = dataContext;
+                dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds);
+                dispatcherTimer.Start();
+            }
+
+            internal void Stop()
+            {
+                dispatcherTimer.Stop();
+                dispatcherTimer.Tag = null;
+            }
+
+            internal event Action<object> TimerElapsed;
+            private void OnTimerElapsed(object dataContext)
+            {
+                this.Stop();
+
+                var handler = TimerElapsed;
+                if (handler != null)
+                    handler(dataContext);
+            }
         }
     }
 }

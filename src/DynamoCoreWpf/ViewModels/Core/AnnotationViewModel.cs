@@ -2,6 +2,8 @@
 using Dynamo.Models;
 using System;
 using Dynamo.UI.Commands;
+using Dynamo.Utilities;
+using Dynamo.Views;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
@@ -129,7 +131,10 @@ namespace Dynamo.ViewModels
         {            
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;                                     
-            model.PropertyChanged += model_PropertyChanged;          
+            model.PropertyChanged += model_PropertyChanged;
+            // Group is created already.So just populate it.
+            var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
+            WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
         }
 
         private bool CanChangeFontSize(object obj)
