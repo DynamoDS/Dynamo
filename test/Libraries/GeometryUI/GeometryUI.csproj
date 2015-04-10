@@ -64,6 +64,11 @@
       <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

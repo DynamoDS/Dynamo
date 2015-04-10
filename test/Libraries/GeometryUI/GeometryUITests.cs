@@ -7,46 +7,34 @@ using System.Threading.Tasks;
 
 using Autodesk.DesignScript.Geometry;
 
+using Dynamo.Tests;
+
 using DynamoConversions;
 
 using NUnit.Framework;
 
 namespace GeometryUITests
 {
-    //[TestFixture]
-    //public class GeometryUITests
-    //{
-    //    [Test]
-    //    [Category("UnitTests")]
-    //    public void ExportAsSAT_ExportsWithCorrectUnits()
-    //    {
-    //        var temp_file = System.IO.Path.GetTempFileName();
-    //        var c = Cuboid.ByLengths(3, 4, 5);
 
-    //        var testUnit = ConversionUnit.Feet;
-    //        var conversionFactor = Conversions.ConversionDictionary[testUnit]*1000;
+    public class GeometryUITests : DSEvaluationViewModelUnitTest
+    {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
 
-    //        c.ExportToSAT(temp_file, conversionFactor);
+        [Test]
+        public void TestExportWithUnits()
+        {
+            RunModel(@"core\geometryui\export_units_one_cuboid.dyn");
 
-    //        int i = 0;
+            var exportPreview = GetPreviewValue("71e5eea4-63ea-4c97-9d8d-aa9c8a2c420a") as string;
 
-    //        foreach (string line in File.ReadLines(temp_file))
-    //        {
-    //            ++i;
+            Assert.IsNotNull(exportPreview);
 
-    //            if (i != 3)
-    //                continue;
+            Assert.IsTrue(exportPreview.Contains("exported.sat"));
+        }
 
-    //            var fields = line.Split(' ');
-
-    //            var unitsString = fields[0];
-
-    //            var unit = Convert.ToDouble(unitsString);
-
-    //            Assert.IsTrue(Math.Abs(unit) - conversionFactor < 0.0001);
-
-    //            break;
-    //        }
-    //    }
-    //}
+    }
 }
