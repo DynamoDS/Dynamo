@@ -13,7 +13,6 @@ using DynamoConversions;
 
 using GeometryUI;
 
-
 namespace Dynamo.Wpf
 {
     public class ExportWithUnitsViewModel : NotificationObject 
@@ -41,24 +40,6 @@ namespace Dynamo.Wpf
             }
         }
 
-        public bool IsSelectionFromBoxEnabled
-        {
-            get { return exportWithUnitsModel.IsSelectionFromBoxEnabled; }
-            set
-            {
-                exportWithUnitsModel.IsSelectionFromBoxEnabled = value;                
-            }
-        }
-
-        public string SelectionFromBoxToolTip
-        {
-            get { return exportWithUnitsModel.SelectionFromBoxToolTip; }
-            set
-            {
-                exportWithUnitsModel.SelectionFromBoxToolTip = value;                
-            }
-        }
-
         public ExportWithUnitsViewModel(ExportWithUnits model, NodeView nodeView)
         {
             exportWithUnitsModel = model;           
@@ -77,14 +58,7 @@ namespace Dynamo.Wpf
                 case "SelectedExportedUnitsSource":
                     RaisePropertyChanged("SelectedExportedUnitsSource");
                     break;
-                case "IsSelectionFromBoxEnabled":
-                    RaisePropertyChanged("IsSelectionFromBoxEnabled");
-                    break;
-                case "SelectionFromBoxToolTip":
-                    RaisePropertyChanged("SelectionFromBoxToolTip");
-                    break;
             }
         }
-
     }
 }

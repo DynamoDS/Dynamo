@@ -15,14 +15,11 @@ namespace GeometryUI
 {
     [NodeCategory(BuiltinNodeCategories.GEOMETRY)]
     [NodeName("ExportToSAT")]
-    //[NodeDescription("ConversionNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeSearchTags("Export", "SAT")]
     [IsDesignScriptCompatible]
     public class ExportWithUnits : NodeModel
     {
         private ConversionUnit selectedExportedUnit;
-        private bool isSelectionFromBoxEnabled;
-        private string selectionFromBoxToolTip;
         private List<ConversionUnit> selectedExportedUnitsSource;
 
         public List<ConversionUnit> SelectedExportedUnitsSource
@@ -46,26 +43,6 @@ namespace GeometryUI
             }
         }
 
-        public bool IsSelectionFromBoxEnabled
-        {
-            get { return isSelectionFromBoxEnabled; }
-            set
-            {
-                isSelectionFromBoxEnabled = value;
-                RaisePropertyChanged("IsSelectionFromBoxEnabled");
-            }
-        }
-
-        public string SelectionFromBoxToolTip
-        {
-            get { return selectionFromBoxToolTip; }
-            set
-            {
-                selectionFromBoxToolTip = value;
-                RaisePropertyChanged("SelectionFromBoxToolTip");
-            }
-        }
-
         public ExportWithUnits()
         {
             SelectedExportedUnit = ConversionUnit.Feet;
@@ -79,7 +56,6 @@ namespace GeometryUI
             OutPortData.Add(new PortData("string", "The file path of the exported file. Note this may change from the input in it contains non-ASCII characters."));
 
             ShouldDisplayPreviewCore = true;
-            IsSelectionFromBoxEnabled = true;
             RegisterAllPorts();
         }
 

@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using DSCoreNodesUI;
-
 using Dynamo.Controls;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
 

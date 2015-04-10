@@ -67,8 +67,6 @@
                 SelectedItem="{Binding SelectedExportedUnit}"/>
         </Grid>
 
-
-
         </Grid>
     
 </UserControl>

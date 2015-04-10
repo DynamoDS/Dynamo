@@ -1,11 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
-using DSCoreNodesUI;
-
-using Dynamo.Nodes;
-using Dynamo.UI.Commands;
-using System.Xml;
 
 using GeometryUI;
 
