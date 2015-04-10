@@ -7,6 +7,9 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoConversions;
+
+using GeometryUI.Properties;
+
 using ProtoCore.AST.AssociativeAST;
 using System.Xml;
 using System.Globalization;
@@ -51,9 +54,9 @@ namespace GeometryUI
 
             AssociativeNode geometryNode = new ArrayNode();
             AssociativeNode stringNode = new StringNode();
-            InPortData.Add(new PortData("geometry", "Geometry to export into a SAT file.", geometryNode));
-            InPortData.Add(new PortData("filePath", "File to export the geometry to.", stringNode));
-            OutPortData.Add(new PortData("string", "The file path of the exported file. Note this may change from the input in it contains non-ASCII characters."));
+            InPortData.Add(new PortData("geometry", Resources.ExportToSatGeometryInputDescription, geometryNode));
+            InPortData.Add(new PortData("filePath", Resources.ExportToSatFilePathDescription, stringNode));
+            OutPortData.Add(new PortData("string", Resources.ExportToSatFilePathOutputDescription));
 
             ShouldDisplayPreviewCore = true;
             RegisterAllPorts();
