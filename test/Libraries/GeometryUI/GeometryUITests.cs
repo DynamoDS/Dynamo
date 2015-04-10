@@ -35,6 +35,5 @@ namespace GeometryUITests
 
             Assert.IsTrue(exportPreview.Contains("exported.sat"));
         }
-
     }
 }
