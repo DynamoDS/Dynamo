@@ -666,6 +666,52 @@ namespace ProtoAssociative
             return symbolindex;
         }
 
+        /// <summary>
+        /// Emits a block of code for the following cases:
+        ///     Language block body
+        ///     Function body
+        ///     Constructor body
+        /// </summary>
+        /// <param name="codeBlock"></param>
+        /// <param name="inferedType"></param>
+        /// <param name="subPass"></param>
+        private bool EmitCodeBlock(
+            List<AssociativeNode> codeBlock, 
+            ref ProtoCore.Type inferedType, 
+            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass
+            )
+        {
+            bool hasReturnStatement = false;
+            foreach (AssociativeNode bnode in codeBlock)
+            {
+                inferedType.UID = (int)PrimitiveType.kTypeVoid;
+                inferedType.rank = 0;
+
+                if (bnode is LanguageBlockNode)
+                {
+                    // Build a binaryn node with a temporary lhs for every stand-alone language block
+                    var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
+                    BinaryExpressionNode langBlockNode = new BinaryExpressionNode();
+                    langBlockNode.LeftNode = iNode;
+                    langBlockNode.Optr = ProtoCore.DSASM.Operator.assign;
+                    langBlockNode.RightNode = bnode;
+                    langBlockNode.IsProcedureOwned = true;
+                    DfsTraverse(langBlockNode, ref inferedType, false, null, subPass);
+                }
+                else
+                {
+                    bnode.IsProcedureOwned = true;
+                    DfsTraverse(bnode, ref inferedType, false, null, subPass);
+                }
+
+                if (NodeUtils.IsReturnExpressionNode(bnode))
+                {
+                    hasReturnStatement = true;
+                }
+            }
+            return hasReturnStatement;
+        }
+
         private void EmitAllocc(int type)
         {
             SetEntry();
@@ -4014,6 +4060,9 @@ namespace ProtoAssociative
                     }
                 }
 
+                //inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+                //hasReturnStatement = EmitCodeBlock(codeblock.Body, ref inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
+
                 foreach (AssociativeNode node in codeblock.Body)
                 {
                     inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0); 
@@ -4024,6 +4073,7 @@ namespace ProtoAssociative
                     //              
                     //              **Need to take care of EmitImportNode, in which I used the same code to handle imported language block nodes - Randy
                     //
+
                     if (node is LanguageBlockNode)
                     {
                         // Build a binaryn node with a temporary lhs for every stand-alone language block
@@ -5686,30 +5736,7 @@ namespace ProtoAssociative
                     }
                     emitDebugInfo = true;
 
-                    // Traverse definition
-                    foreach (AssociativeNode bnode in funcDef.FunctionBody.Body)
-                    {
-                        inferedType.UID = (int)PrimitiveType.kTypeVoid;
-                        inferedType.rank = 0;
-
-                        if (bnode is LanguageBlockNode)
-                        {
-                            // Build a binaryn node with a temporary lhs for every stand-alone language block
-                            var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
-                            BinaryExpressionNode langBlockNode = new BinaryExpressionNode();
-                            langBlockNode.LeftNode = iNode;
-                            langBlockNode.Optr = ProtoCore.DSASM.Operator.assign;
-                            langBlockNode.RightNode = bnode;
-                            langBlockNode.IsProcedureOwned = true;                        
-                            DfsTraverse(langBlockNode, ref inferedType, false, null, subPass);
-                        }
-                        else
-                        {
-                            bnode.IsProcedureOwned = true;
-                            DfsTraverse(bnode, ref inferedType, false, null, subPass);
-                        }
-                    }
-
+                    EmitCodeBlock(funcDef.FunctionBody.Body, ref inferedType, subPass);
 
                     // All locals have been stack allocated, update the local count of this function
                     localProcedure.localCount = core.BaseOffset;
@@ -6054,37 +6081,9 @@ namespace ProtoAssociative
 
                     EmitCompileLogFunctionStart(GetFunctionSignatureString(funcDef.Name, funcDef.ReturnType, funcDef.Signature));
 
-                    // Traverse definition
-                    foreach (AssociativeNode bnode in funcDef.FunctionBody.Body)
-                    {
+                    ProtoCore.Type itype = new ProtoCore.Type();
+                    hasReturnStatement = EmitCodeBlock(funcDef.FunctionBody.Body, ref itype, subPass);
 
-                        //
-                        // TODO Jun:    Handle stand alone language blocks
-                        //              Integrate the subPass into a proper pass
-                        //
-
-                        ProtoCore.Type itype = new ProtoCore.Type();
-                        itype.UID = (int)PrimitiveType.kTypeVar;
-
-                        if (bnode is LanguageBlockNode)
-                        {
-                            // Build a binaryn node with a temporary lhs for every stand-alone language block
-                            BinaryExpressionNode langBlockNode = new BinaryExpressionNode();
-                            langBlockNode.LeftNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
-                            langBlockNode.Optr = ProtoCore.DSASM.Operator.assign;
-                            langBlockNode.RightNode = bnode;
-                            langBlockNode.IsProcedureOwned = true;
-                            DfsTraverse(langBlockNode, ref itype, false, null, subPass);
-                        }
-                        else
-                        {
-                            bnode.IsProcedureOwned = true;
-                            DfsTraverse(bnode, ref itype, false, null, subPass);
-                        }
-
-                        if (NodeUtils.IsReturnExpressionNode(bnode))
-                            hasReturnStatement = true;
-                    }
                     EmitCompileLogFunctionEnd();
 
                     // All locals have been stack allocated, update the local count of this function
