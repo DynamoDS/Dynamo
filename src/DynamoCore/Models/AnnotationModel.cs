@@ -268,27 +268,7 @@ namespace Dynamo.Models
           
             return Tuple.Create(xgroup.Last().Width, ygroup.Last().Height);
         }
-        
-        /// <summary>
-        /// Deserializes the model guids from XML
-        /// and creates group on those model guids.
-        /// </summary>
-        private void DeserializeGroup()
-        {
-            var listOfModels = new List<ModelBase>();
-            foreach (var objGuid in modelGuids.Split(','))
-            {
-                Guid result;
-                if (Guid.TryParse(objGuid, out result))
-                    if (SelectedModels != null)
-                    {
-                        var model = SelectedModels.FirstOrDefault(x => x.GUID == result);
-                        listOfModels.Add(model);
-                    }
-            }
-            selectedModels = listOfModels;           
-        }
-
+              
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
