@@ -1,5 +1,6 @@
 ﻿
-//#define __USE_DIRECT_JUMP
+//#define __EXECUTE_DATAFLOW_DIRECT_DEPENDENCY
+//#define __EXECUTE_DATAFLOW_DIRECT_JUMP
 
 using System;
 using System.Collections.Generic;
@@ -1678,7 +1679,7 @@ namespace ProtoCore.DSASM
 
             List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
 
-#if __USE_DIRECT_JUMP
+#if __EXECUTE_DATAFLOW_DIRECT_DEPENDENCY
             // Data flow execution prototype
             // Dependency has already been resolved at compile time
             // Get the reachable nodes directly from the executingGraphNode
@@ -7106,7 +7107,7 @@ namespace ProtoCore.DSASM
                 fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
             }
 
-#if __USE_DIRECT_JUMP
+#if __EXECUTE_DATAFLOW_DIRECT_JUMP
             // Data flow execution prototype
             // If the VM wrote the next pc to the LX register, jump to that PC
             if (LX.optype == AddressType.Int && LX.opdata != Constants.kInvalidPC)

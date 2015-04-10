@@ -160,7 +160,7 @@ temp = test(1, 2);
 @"	class f	{		fx : var;		fy : var;		constructor f()		{			fx = 123;			fy = 345;		}	}		class g	{		gx : var;		gy : var;		constructor g()		{			// Construct a class within a class			gx = f.f();			gy = 678;		}	}	p = f.f();    a = p.fx;    b = p.fy;";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             Assert.IsTrue((Int64)mirror.GetValue("a").Payload == 123);
-            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 456);
+            Assert.IsTrue((Int64)mirror.GetValue("b").Payload == 345);
         }
 
         [Test]
