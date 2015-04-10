@@ -49,6 +49,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="Controls\ExportWithUnitsControl.xaml.cs">
       <DependentUpon>ExportWithUnitsControl.xaml</DependentUpon>
     </Compile>
