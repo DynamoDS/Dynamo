@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using Autodesk.DesignScript.Geometry;
+
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -69,9 +72,10 @@ namespace GeometryUI
             SelectedExportedUnitsSource =
                 Conversions.ConversionMetricLookup[ConversionMetricUnit.Length];
 
-            AssociativeNode defaultNode = new DoubleNode(0.0);
-            InPortData.Add(new PortData("geometry", "A piece of geometry to export.", defaultNode));
-            InPortData.Add(new PortData("filePath", "File to export the geometry to.", defaultNode));
+            AssociativeNode geometryNode = new ArrayNode();
+            AssociativeNode stringNode = new StringNode();
+            InPortData.Add(new PortData("geometry", "Geometry to export into a SAT file.", geometryNode));
+            InPortData.Add(new PortData("filePath", "File to export the geometry to.", stringNode));
             OutPortData.Add(new PortData("string", "The file path of the exported file. Note this may change from the input in it contains non-ASCII characters."));
 
             ShouldDisplayPreviewCore = true;
@@ -82,14 +86,17 @@ namespace GeometryUI
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {
-            var conversionToNode =
-                AstFactory.BuildDoubleNode(Conversions.ConversionDictionary[(ConversionUnit)SelectedExportedUnit]);
+            double unitsMM = Conversions.ConversionDictionary[SelectedExportedUnit]*1000.0;
 
+            var geometryListNode = inputAstNodes[0];
+            var filePathNode = inputAstNodes[1];
+            var unitsMMNode = AstFactory.BuildDoubleNode(unitsMM);
+            
             AssociativeNode node = null;
 
-            //node = AstFactory.BuildFunctionCall(
-            //            new Func<double, double, double, double>(Conversions.ConvertUnitTypes),
-            //            new List<AssociativeNode> { inputAstNodes[0], conversionFromNode, conversionToNode });
+            node = AstFactory.BuildFunctionCall(
+                        new Func<IEnumerable<Geometry>, string, double, string>(Geometry.ExportToSAT),
+                        new List<AssociativeNode> { geometryListNode, filePathNode, unitsMMNode });
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
