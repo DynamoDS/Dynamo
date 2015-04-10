@@ -41,11 +41,6 @@ namespace Dynamo.DSEngine
 
         private readonly IPathManager pathManager;
         public ProtoCore.Core LibraryManagementCore{get; private set;}
-        private ProtoCore.Core liveRunnerCore = null;
-        public void SetLiveCore(ProtoCore.Core core)
-        {
-            liveRunnerCore = core;
-        }
 
         private class UpgradeHint
         {
@@ -70,7 +65,7 @@ namespace Dynamo.DSEngine
         /// Copy properties from the liveCore
         /// The properties to copy are only those used by the library core
         /// </summary>
-        public void UpdateLibraryCoreData()
+        public void UpdateLibraryCoreData(ProtoCore.Core liveRunnerCore)
         {
             // If a liverunner core is provided, sync the library core data
             if (liveRunnerCore != null)
@@ -433,8 +428,6 @@ namespace Dynamo.DSEngine
 
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
 
-            // After a library is loaded, update the library core data with the liveRunner core data
-            UpdateLibraryCoreData();
             return true;
         }
 

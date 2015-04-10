@@ -55,7 +55,6 @@ namespace Dynamo.DSEngine
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
-            libraryServices.SetLiveCore(LiveRunnerCore);
 
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
 
@@ -527,7 +526,9 @@ namespace Dynamo.DSEngine
             // The LiveRunner core is newly instantiated whenever a new library is imported
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
-            libraryServices.SetLiveCore(LiveRunnerCore);
+
+            // After a library is loaded, update the library core data with the liveRunner core data
+            libraryServices.UpdateLibraryCoreData(LiveRunnerCore);
         }
 
         #region Implement IAstNodeContainer interface
