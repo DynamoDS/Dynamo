@@ -21,13 +21,18 @@ namespace GeometryUITests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
         [Test]
         public void TestExportWithUnits()
         {
-            RunModel(@"core\geometryui\export_units_one_cuboid.dyn");
+            string openPath = Path.Combine(
+                TestDirectory,
+                @"core\geometryui\export_units_one_cuboid.dyn");
+
+            RunModel(openPath);
 
             var exportPreview = GetPreviewValue("71e5eea4-63ea-4c97-9d8d-aa9c8a2c420a") as string;
 
