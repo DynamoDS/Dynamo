@@ -2912,34 +2912,10 @@ namespace ProtoCore.DSASM
                 Exec(istream.instrList[pc]);
             }
 
-            // the exception won't handled at this level, so need to unwind
-#if ENABLE_EXCEPTION_HANDLING
-            if (!core.ExceptionHandlingManager.IsStackUnwinding)
-            {
-                // Comment Jun:
-                // X-lang dependency should be done for all languages 
-                // as they can potentially trigger parent block updates 
-
-                // Comment Jun: XLang dep is only done in RestoreFromBounce 
-                // Propagate only on lang block bounce (non fep)
-                //if (!fepRun)
-                //{
-                //    XLangUpdateDependencyGraph(exeblock);
-                //}
-
-
-
-                if (!fepRun || fepRun && debugRun)
-                {
-                    logVMMessage("End JIL Execution - " + engine);
-                }
-            }
-#else
             if (!fepRun || fepRun && debugRun)
             {
                 logVMMessage("End JIL Execution - " + engine);
             }
-#endif
         }
 
         protected SymbolNode GetSymbolNode(int blockId, int classIndex, int symbolIndex)
