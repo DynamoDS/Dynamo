@@ -1298,17 +1298,17 @@ namespace Dynamo.Models
                 // re-connect to the original.
                 let startNode =
                     modelLookup.TryGetValue(c.Start.Owner.GUID, out start)
-                        ? start
+                        ? start as NodeModel
                         : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.Start.Owner.GUID)
                 let endNode =
                     modelLookup.TryGetValue(c.End.Owner.GUID, out end)
-                        ? end
+                        ? end as NodeModel
                         : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
-
+             
                 // Don't make a connector if either end is null.
                 where startNode != null && endNode != null
                 select
-                    ConnectorModel.Make(startNode as NodeModel, endNode as NodeModel, c.Start.Index, c.End.Index);
+                    ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
 
             createdModels.AddRange(newConnectors);
 
