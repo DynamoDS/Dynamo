@@ -240,13 +240,19 @@ namespace Dynamo.Models
                         if (overlap.Rect.Top < this.X ||
                                     overlap.Rect.Bottom > region.Bottom) //Overlap in height - increase the region height
                         {
-                            this.Height += overlap.Rect.Bottom - region.Bottom + 10;
+                            if (overlap.Rect.Bottom - region.Bottom > 0)
+                            {
+                                this.Height += overlap.Rect.Bottom - region.Bottom + 10;
+                            }
                             region.Height = this.Height;
                         }
                         if (overlap.Rect.Left < this.Y ||
                                 overlap.Rect.Right > region.Right) //Overlap in width - increase the region width
                         {
-                            this.Width += overlap.Rect.Right - region.Right + 10;
+                            if (overlap.Rect.Right - region.Right > 0)
+                            {
+                                this.Width += overlap.Rect.Right - region.Right + 10;
+                            }
                             region.Width = this.Width;
                         }
                     }
