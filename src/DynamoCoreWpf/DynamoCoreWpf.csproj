@@ -203,7 +203,6 @@
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
-    <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
     <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />

@@ -145,7 +145,6 @@ limitations under the License.
     </Compile>
     <Compile Include="Nodes\DummyNode.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Search\Legacy\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
     <Compile Include="Search\SearchElementGroup.cs" />
