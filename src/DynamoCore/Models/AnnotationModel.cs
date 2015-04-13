@@ -314,7 +314,7 @@ namespace Dynamo.Models
             this.Y = helper.ReadDouble("top", doubleValue);
             this.width = helper.ReadDouble("width", doubleValue);
             this.height = helper.ReadDouble("height", doubleValue);
-            this.background = helper.ReadString("backgrouund", "");
+            this.Background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", doubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", doubleValue);

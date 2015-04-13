@@ -49,14 +49,30 @@ namespace Dynamo.Nodes
             if (e.AddedItems == null || (e.AddedItems.Count <= 0))
                 return;
 
+            //store the old one
+            if (e.RemovedItems != null || e.RemovedItems.Count > 0)
+            {
+                var orectangle = e.AddedItems[0] as Rectangle;
+                if (orectangle != null)
+                {
+                    var brush = orectangle.Fill as SolidColorBrush;
+                    if (brush != null)
+                    {
+                        ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                         new DynCmd.UpdateModelValueCommand(
+                         System.Guid.Empty, ViewModel.AnnotationModel.GUID, "Background", brush.Color.ToString()));
+                    }
+                        
+                }               
+            }
+
             var rectangle = e.AddedItems[0] as Rectangle;
             if (rectangle != null)
             {
                 var brush = rectangle.Fill as SolidColorBrush;
                 if (brush != null)
                     ViewModel.Background = brush.Color;
-            }
-            ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            }                                
         }
 
         private void OnDeleteAnnotation(object sender, RoutedEventArgs e)
