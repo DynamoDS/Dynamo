@@ -908,7 +908,7 @@ namespace Dynamo.Controls
 
                 if (i == 0 && ((RenderPackage)p).DisplayLabels)
                 {
-                    text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), pt));
+                    text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                 }
 
                 // The default point color is black. If the point
@@ -948,11 +948,11 @@ namespace Dynamo.Controls
                     var z1 = (float)p.LineStripVertices[idx + 2];
 
                     // DirectX convention - Y Up
-                    var point = new Vector3(x1, z1, -y1);
+                    var pt = new Vector3(x1, z1, -y1);
 
                     if (i == 0 && outerCount == 0 && ((RenderPackage)p).DisplayLabels)
                     {
-                        text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), point));
+                        text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
 
                     Color4 startColor = Color.Black;
@@ -978,12 +978,12 @@ namespace Dynamo.Controls
                     if (i != 0 && i != count - 1)
                     {
                         geom.Indices.Add(geom.Indices.Count);
-                        geom.Positions.Add(point);
+                        geom.Positions.Add(pt);
                         geom.Colors.Add(((RenderPackage)p).Selected ? selectionColor : startColor);
                     }
 
                     geom.Indices.Add(geom.Indices.Count);
-                    geom.Positions.Add(point);
+                    geom.Positions.Add(pt);
                     geom.Colors.Add(((RenderPackage)p).Selected ? selectionColor : startColor);
                     
                     idx += 3;
