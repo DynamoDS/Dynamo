@@ -18,7 +18,8 @@ namespace DynamoCore.UI.Controls
 
         private void OnInstallButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (!(DataContext is UpdateManager)) return;
+            var um = DataContext as IUpdateManager;
+            if (um == null) return;
 
             var result = MessageBox.Show(Dynamo.Wpf.Properties.Resources.UpdateMessage, 
                 Dynamo.Wpf.Properties.Resources.InstallMessageCaption, 
@@ -26,7 +27,7 @@ namespace DynamoCore.UI.Controls
 
             if (result == MessageBoxResult.OK)
             {
-                UpdateManager.Instance.QuitAndInstallUpdate();
+                um.QuitAndInstallUpdate();
             }
         }
     }

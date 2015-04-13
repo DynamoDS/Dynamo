@@ -58,8 +58,7 @@ namespace Dynamo.Controls
                 RenderMode.Default : RenderMode.SoftwareOnly;
             
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.UIDispatcher = Dispatcher;
-
+            this.dynamoViewModel.UIDispatcher = Dispatcher;            
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
@@ -187,7 +186,7 @@ namespace Dynamo.Controls
 
         void InitializeShortcutBar()
         {
-            ShortcutToolbar shortcutBar = new ShortcutToolbar();
+            ShortcutToolbar shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager);
             shortcutBar.Name = "ShortcutToolbar";
 
             ShortcutBarItem newScriptButton = new ShortcutBarItem();
@@ -388,6 +387,8 @@ namespace Dynamo.Controls
 
             // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
+
+            watchSettingsControl.DataContext = background_preview;
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)

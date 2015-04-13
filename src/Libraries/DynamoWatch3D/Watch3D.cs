@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Annotations;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -41,6 +42,9 @@ namespace Dynamo.Nodes
             model.ViewModel = nodeView.ViewModel.DynamoViewModel;
             this.watch3dModel = model;
 
+            var renderingTier = (RenderCapability.Tier >> 16);
+            if (renderingTier < 2) return;
+
             View = new Watch3DView(model.GUID, watch3dModel)
             {
                 Width = model.WatchWidth,
@@ -55,8 +59,10 @@ namespace Dynamo.Nodes
 
             // When user sizes a watch node, only view gets resized. The actual 
             // NodeModel does not get updated. This is where the view updates the 
-            // model whenever its size is updated.
-            View.SizeChanged += (sender, args) => 
+            // model whenever its size is updated. 
+            //Updated from (Watch3d)View.SizeChanged to nodeView.SizeChanged - height 
+            // and width should correspond to node model and not watch3Dview
+            nodeView.SizeChanged += (sender, args) =>
                 model.SetSize(args.NewSize.Width, args.NewSize.Height);
 
             model.RequestUpdateLatestCameraPosition += this.UpdateLatestCameraPosition;
@@ -94,6 +100,8 @@ namespace Dynamo.Nodes
 
         private void UpdateLatestCameraPosition()
         {
+            if (View == null) return;
+
             var pos = View.View.Camera.Position;
             var viewDir = View.View.Camera.LookDirection;
 
@@ -104,12 +112,16 @@ namespace Dynamo.Nodes
 
         private void RenderData(object data)
         {
+            if (View == null) return;
+
             View.RenderDrawables(
                 new VisualizationEventArgs(UnpackRenderData(data).Select(this.watch3dModel.VisualizationManager.CreateRenderPackageFromGraphicItem), watch3dModel.GUID));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
         {
+            if (View == null) return;
+
             View.View.ZoomExtents();
         }
 

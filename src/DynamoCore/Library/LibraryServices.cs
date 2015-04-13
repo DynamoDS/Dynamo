@@ -40,7 +40,12 @@ namespace Dynamo.DSEngine
         private readonly List<string> importedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
-        public readonly ProtoCore.Core LibraryManagementCore;
+        public ProtoCore.Core LibraryManagementCore{get; private set;}
+        private ProtoCore.Core liveRunnerCore = null;
+        public void SetLiveCore(ProtoCore.Core core)
+        {
+            liveRunnerCore = core;
+        }
 
         private class UpgradeHint
         {
@@ -60,6 +65,20 @@ namespace Dynamo.DSEngine
 
         private readonly Dictionary<string, UpgradeHint> priorNameHints =
             new Dictionary<string, UpgradeHint>();
+
+        /// <summary>
+        /// Copy properties from the liveCore
+        /// The properties to copy are only those used by the library core
+        /// </summary>
+        public void UpdateLibraryCoreData()
+        {
+            // If a liverunner core is provided, sync the library core data
+            if (liveRunnerCore != null)
+            {
+                LibraryManagementCore.ProcTable = new ProtoCore.DSASM.ProcedureTable(liveRunnerCore.ProcTable);
+                LibraryManagementCore.ClassTable = new ProtoCore.DSASM.ClassTable(liveRunnerCore.ClassTable);
+            }
+        }
 
         public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
@@ -377,6 +396,7 @@ namespace Dynamo.DSEngine
 
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
 
+
                 if (LibraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format(Properties.Resources.LibraryBuildError, library);
@@ -410,7 +430,11 @@ namespace Dynamo.DSEngine
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
                 return false;
             }
+
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+
+            // After a library is loaded, update the library core data with the liveRunner core data
+            UpdateLibraryCoreData();
             return true;
         }
 

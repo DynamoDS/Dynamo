@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DSCore {
+namespace GeometryUI.Properties {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace DSCore {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CoreNodesResources {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CoreNodesResources() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace DSCore {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DSCore.CoreNodesResources", typeof(CoreNodesResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GeometryUI.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,38 +61,29 @@ namespace DSCore {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You must provide a center point..
+        ///   Looks up a localized string similar to File to export the geometry to..
         /// </summary>
-        internal static string FindPointsWithinRadiusNullPointMessage {
+        internal static string ExportToSatFilePathDescription {
             get {
-                return ResourceManager.GetString("FindPointsWithinRadiusNullPointMessage", resourceCulture);
+                return ResourceManager.GetString("ExportToSatFilePathDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The search radius cannot be zero..
+        ///   Looks up a localized string similar to The file path of the exported file. Note this may change from the input in it contains non-ASCII characters..
         /// </summary>
-        internal static string FindPointsWithinRadiusSearchRadiusMessage {
+        internal static string ExportToSatFilePathOutputDescription {
             get {
-                return ResourceManager.GetString("FindPointsWithinRadiusSearchRadiusMessage", resourceCulture);
+                return ResourceManager.GetString("ExportToSatFilePathOutputDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You cannot construct a quadtree from an empty set of points..
+        ///   Looks up a localized string similar to Geometry to export into a SAT file..
         /// </summary>
-        internal static string QuadtreeConstructionEmptyUVSetMessage {
+        internal static string ExportToSatGeometryInputDescription {
             get {
-                return ResourceManager.GetString("QuadtreeConstructionEmptyUVSetMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A Quadtree cannot be constructed from a null set of UVs..
-        /// </summary>
-        internal static string QuadtreeConstructionNullUVSetMessage {
-            get {
-                return ResourceManager.GetString("QuadtreeConstructionNullUVSetMessage", resourceCulture);
+                return ResourceManager.GetString("ExportToSatGeometryInputDescription", resourceCulture);
             }
         }
     }
