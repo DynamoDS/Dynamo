@@ -116,7 +116,6 @@ namespace ProtoCore.DSASM
         PUSHB,
         POPB,
 
-        THROW,
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
         SETEXPUID
