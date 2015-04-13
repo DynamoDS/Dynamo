@@ -412,7 +412,7 @@ namespace Dynamo.Controls
             DirectionalLightColor = new Color4(0.45f, 0.4f, 0.4f, 1.0f);
             DirectionalLightDirection = new Vector3(0.0f, -1.0f, 0.0f);
 
-            FillLightColor = new Color4(new Vector4(0.2f, 0.2f, 0.3f, 1.0f));
+            FillLightColor = new Color4(new Vector4(0.1f, 0.1f, 0.1f, 1.0f));
             FillLightDirection = new Vector3(0.0f, 1.0f, 0.0f);
 
             RenderTechnique = Techniques.RenderPhong;
@@ -714,11 +714,11 @@ namespace Dynamo.Controls
         {
             var c1 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#c5d1d8");
             c1.Clamp();
-            var c2 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#a0b4c0");
+            var c2 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#ddeaf2");
             c2.Clamp();
 
-            var lightGridColor = new Color4(new Vector4(c1.ScR,c1.ScG ,c1.ScB, 1));
-            var darkGridColor = new Color4(new Vector4(c2.ScR, c2.ScG, c2.ScB, 1));
+            var darkGridColor = new Color4(new Vector4(c1.ScR,c1.ScG ,c1.ScB, 1));
+            var lightGridColor = new Color4(new Vector4(c2.ScR, c2.ScG, c2.ScB, 1));
 
             var size = 10;
 
