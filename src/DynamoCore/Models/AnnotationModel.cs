@@ -277,7 +277,26 @@ namespace Dynamo.Models
               
         #region Serialization/Deserialization Methods
 
-        protected override void SerializeCore(XmlElement element, SaveContext context)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
+            switch (name)
+            {
+                case "FSize":
+                    FontSize = Convert.ToDouble(value);
+                    break;
+                case "Background":
+                    Background = value;
+                    break;                    
+            }
+
+            return base.UpdateValueCore(updateValueParams);
+        }
+
+        protected override
+             void SerializeCore(XmlElement element, SaveContext context)
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("guid", this.GUID);
@@ -335,6 +354,9 @@ namespace Dynamo.Models
                 }
                 selectedModels = listOfModels;        
             }
+
+            RaisePropertyChanged("Background");
+            RaisePropertyChanged("FontSize");
           
         }
 

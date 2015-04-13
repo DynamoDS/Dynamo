@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System.Globalization;
+using System.Windows.Media;
 using Dynamo.Models;
 using System;
 using Dynamo.UI.Commands;
@@ -146,7 +147,12 @@ namespace Dynamo.ViewModels
         {
             if (parameter != null)
             {
-                FontSize = Convert.ToDouble(parameter);
+                this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                    System.Guid.Empty, this.AnnotationModel.GUID, "FSize", parameter.ToString()));
+
+                this.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                this.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();                              
             }
         }
 
