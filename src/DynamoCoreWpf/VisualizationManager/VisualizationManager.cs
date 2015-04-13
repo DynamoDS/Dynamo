@@ -12,6 +12,7 @@ using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Wpf.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
 
@@ -52,7 +53,8 @@ namespace Dynamo
         protected readonly DynamoModel dynamoModel;
         private readonly List<RenderPackage> currentTaggedPackages = new List<RenderPackage>();
         private bool alternateDrawingContextAvailable;
-        
+        private List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
+ 
         #endregion
 
         #region public properties
@@ -158,13 +160,13 @@ namespace Dynamo
             dynamoModel = model;
 
             dynamoModel.WorkspaceClearing += Stop;
-            dynamoModel.WorkspaceCleared += ClearVisualizations;
-
+            dynamoModel.WorkspaceCleared += ClearVisualizationsAndRestart;
+            
             dynamoModel.WorkspaceAdded += WorkspaceAdded;
             dynamoModel.WorkspaceRemoved += WorkspaceRemoved;
 
             dynamoModel.DeletionStarted += Stop;
-            dynamoModel.DeletionComplete += StartAndUpdate;
+            dynamoModel.DeletionComplete += dynamoModel_DeletionComplete; 
 
             dynamoModel.CleaningUp += Clear;
 
@@ -172,6 +174,12 @@ namespace Dynamo
             dynamoModel.RequestsRedraw += RequestAllNodesVisualsUpdate;
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionChanged;
+
+            // The initial workspace will have been created before the viz manager
+            // is created. So we have to hook to that workspace's events during
+            // construction of the viz manager to make sure we don't miss handling
+            // events from the pre-existing workspace.
+            WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
             Start();
         }
@@ -306,13 +314,13 @@ namespace Dynamo
 
             UnregisterEventListeners();
 
-            dynamoModel.WorkspaceCleared -= ClearVisualizations;
+            dynamoModel.WorkspaceCleared -= ClearVisualizationsAndRestart;
 
             dynamoModel.WorkspaceAdded -= WorkspaceAdded;
             dynamoModel.WorkspaceRemoved -= WorkspaceRemoved;
 
             dynamoModel.DeletionStarted -= Stop;
-            dynamoModel.DeletionComplete -= StartAndUpdate;
+            dynamoModel.DeletionComplete -= dynamoModel_DeletionComplete;
 
             dynamoModel.CleaningUp -= Clear;
 
@@ -324,11 +332,6 @@ namespace Dynamo
         #endregion
 
         #region private event handlers
-
-        private void StartAndUpdate(object sender, EventArgs e)
-        {
-            Start(true);
-        }
 
         private void WorkspaceAdded(WorkspaceModel model)
         {
@@ -353,7 +356,7 @@ namespace Dynamo
             foreach (var node in workspace.Nodes)
                 NodeRemovedFromHomeWorkspace(node);
 
-            Clear();
+            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<RenderPackage> { }, Guid.Empty));
         }
 
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
@@ -364,6 +367,8 @@ namespace Dynamo
         private void NodeAddedToHomeWorkspace(NodeModel node)
         {
             node.PropertyChanged += NodePropertyChanged;
+
+            recentlyAddedNodes.Add(node);
         }
 
         private void NodePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -382,8 +387,24 @@ namespace Dynamo
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (updatingPaused)
+            if (updatingPaused || e.Action == NotifyCollectionChangedAction.Reset)
                 return;
+
+            Debug.WriteLine("Viz manager responding to selection changed.");
+
+            // When a node is added to the workspace, it is also added
+            // to the selection. When running automatically, this addition
+            // also triggers an execution. This would successive calls to render.
+            // To prevent this, we maintain a collection of recently added nodes, and
+            // we check if the selection is an addition and if all of the recently
+            // added nodes are contained in that selection. if so, we skip the render
+            // as this render will occur after the upcoming execution.
+            if (e.Action == NotifyCollectionChangedAction.Add && recentlyAddedNodes.Any()
+                && recentlyAddedNodes.TrueForAll(n=>e.NewItems.Contains((object)n)))
+            {
+                recentlyAddedNodes.Clear();
+                return;
+            }
 
             OnRenderComplete();
         }
@@ -391,6 +412,23 @@ namespace Dynamo
         #endregion
 
         #region private methods
+
+        private void dynamoModel_DeletionComplete(object sender, EventArgs e)
+        {
+            var hws = dynamoModel.CurrentWorkspace as HomeWorkspaceModel;
+            if (hws != null)
+            {
+                if (hws.RunSettings.RunType == RunType.Manual ||
+                    hws.RunSettings.RunType == RunType.Periodic)
+                {
+                    // We need to force a visualization update.
+                    Start(true);
+                    return;
+                }
+            }
+
+            Start();
+        }
 
         private void UnregisterEventListeners()
         {
@@ -400,8 +438,12 @@ namespace Dynamo
 
         private void RequestAllNodesVisualsUpdate(object sender, EventArgs e)
         {
+            Debug.WriteLine("Viz manager responding to execution.");
+
+            recentlyAddedNodes.Clear();
+
             // do nothing if it has come on EvaluationCompleted
-            // and no evaluation was
+            // and no evaluation took place
             var args = e as EvaluationCompletedEventArgs;
             if (args != null && !args.EvaluationTookPlace)
                 return;
@@ -473,13 +515,13 @@ namespace Dynamo
         private void Clear()
         {
             // Send along an empty render set to clear all visualizations.
-            Stop();
             OnResultsReadyToVisualize(new VisualizationEventArgs(new List<RenderPackage>{}, Guid.Empty));
         }
 
-        private void ClearVisualizations(object sender, EventArgs e)
+        private void ClearVisualizationsAndRestart(object sender, EventArgs e)
         {
             Clear();
+            Start();
         }
 
         #endregion
