@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
 
@@ -132,7 +133,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCreateGroup(object parameters)
         {
-            return true;
+            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
         }
     }
 }

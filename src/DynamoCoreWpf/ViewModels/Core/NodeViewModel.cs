@@ -11,7 +11,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 
 using System.Windows;
-
+using Dynamo.Selection;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -892,7 +892,7 @@ namespace Dynamo.ViewModels
 
         private bool CanCreateGroup(object parameters)
         {
-            return true;
+            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
         }
 
 
