@@ -1199,8 +1199,8 @@ namespace Dynamo.Models
             DynamoSelection.Instance.ClearSelection();
 
             //make a lookup table to store the guids of the
-            //old nodes and the guids of their pasted versions
-            var nodeLookup = new Dictionary<Guid, NodeModel>();
+            //old models and the guids of their pasted versions
+            var modelLookup = new Dictionary<Guid, ModelBase>();
 
             //make a list of all newly created models so that their
             //creations can be recorded in the undo recorder.
@@ -1218,7 +1218,10 @@ namespace Dynamo.Models
             var newNoteModels = new List<NoteModel>();
             foreach (var note in notes)
             {
-                newNoteModels.Add(new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid()));
+                var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
+                //Store the old note as Key and newnote as value.
+                modelLookup.Add(note.GUID,noteModel);
+                newNoteModels.Add(noteModel);
 
                 minX = Math.Min(note.X, minX);
                 minY = Math.Min(note.Y, minY);
@@ -1251,7 +1254,7 @@ namespace Dynamo.Models
                 if (!string.IsNullOrEmpty(node.NickName))
                     newNode.NickName = node.NickName;
 
-                nodeLookup.Add(node.GUID, newNode);
+                modelLookup.Add(node.GUID, newNode);
 
                 newNodeModels.Add( newNode );
 
@@ -1295,22 +1298,22 @@ namespace Dynamo.Models
                 AddToSelection(newNote);
             }
 
-            NodeModel start;
-            NodeModel end;
+            ModelBase start;
+            ModelBase end;
             var newConnectors =
                 from c in connectors
 
                 // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
                 // re-connect to the original.
                 let startNode =
-                    nodeLookup.TryGetValue(c.Start.Owner.GUID, out start)
-                        ? start
+                    modelLookup.TryGetValue(c.Start.Owner.GUID, out start)
+                        ? start as NodeModel
                         : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.Start.Owner.GUID)
                 let endNode =
-                    nodeLookup.TryGetValue(c.End.Owner.GUID, out end)
-                        ? end
+                    modelLookup.TryGetValue(c.End.Owner.GUID, out end)
+                        ? end as NodeModel
                         : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
-
+             
                 // Don't make a connector if either end is null.
                 where startNode != null && endNode != null
                 select
@@ -1320,11 +1323,35 @@ namespace Dynamo.Models
 
             //Grouping depends on the selected node models. 
             //so adding the group after nodes / notes are added to workspace.
+            //select only those nodes that are part of a group.             
             var newAnnotations = new List<AnnotationModel>();
             foreach (var annotation in annotations)
             {
-                var annotationModel = new AnnotationModel(newNodeModels, newNoteModels) {GUID = Guid.NewGuid()};
-                newAnnotations.Add(annotationModel);              
+                var annotationNodeModel = new List<NodeModel>();
+                var annotationNoteModel = new List<NoteModel>();
+                //checked condition here that supports pasting of multiple groups
+                foreach (var models in annotation.SelectedModels)
+                {
+                    ModelBase mbase;
+                    modelLookup.TryGetValue(models.GUID, out mbase);
+                    if (mbase is NodeModel)
+                    {
+                        annotationNodeModel.Add(mbase as NodeModel);
+                    }
+                    if (mbase is NoteModel)
+                    {
+                        annotationNoteModel.Add(mbase as NoteModel);
+                    }
+                }
+
+                var annotationModel = new AnnotationModel(annotationNodeModel, annotationNoteModel)
+                {
+                    GUID = Guid.NewGuid(),
+                    AnnotationText = annotation.AnnotationText,
+                    Background = annotation.Background
+
+                };
+                newAnnotations.Add(annotationModel);
             }
 
             // Add the new Annotation's to the Workspace
