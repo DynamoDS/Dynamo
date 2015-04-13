@@ -79,7 +79,7 @@ namespace Dynamo.Nodes
             {
                 var annotationGuid = this.ViewModel.AnnotationModel.GUID;
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+                    new DynCmd.SelectModelCommand(annotationGuid, Dynamo.Utilities.ModifierKeys.Shift));
 
                 foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
                 {
