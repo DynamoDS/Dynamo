@@ -964,5 +964,21 @@ namespace Dynamo.Tests
             // Dummy node should be serialized to its original node
             Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
         }
+
+        [Test]
+        public void TestUndoRedoOnConnectedNodes()
+        {
+            ViewModel.OpenCommand.Execute(Path.Combine(TestDirectory, "core", "LacingTest.dyn"));
+            var workspace = ViewModel.CurrentSpaceViewModel;
+
+            Assert.IsFalse(workspace.SetArgumentLacingCommand.CanExecute(null));
+            workspace.SelectAllCommand.Execute(null);
+            Assert.IsTrue(workspace.SetArgumentLacingCommand.CanExecute(null));
+
+            Assert.DoesNotThrow(() =>
+            {
+                workspace.SetArgumentLacingCommand.Execute(LacingStrategy.Longest.ToString());
+            });
+        }
     }
 }

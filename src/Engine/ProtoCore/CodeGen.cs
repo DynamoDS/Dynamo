@@ -2038,20 +2038,6 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-        protected void EmitThrow()
-        {
-            SetEntry();
-
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.THROW;
-            instr.op1 = StackValue.BuildBlockIndex(codeBlock.codeBlockId);
-            instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
-            instr.op3 = StackValue.BuildFunctionIndex(globalProcIndex);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
         protected abstract void EmitRetb(int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
              int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex);
 			

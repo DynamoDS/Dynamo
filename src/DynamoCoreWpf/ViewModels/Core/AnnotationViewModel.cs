@@ -2,6 +2,8 @@
 using Dynamo.Models;
 using System;
 using Dynamo.UI.Commands;
+using Dynamo.Utilities;
+using Dynamo.Views;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
@@ -38,17 +40,17 @@ namespace Dynamo.ViewModels
 
         public Double Top
         {
-            get { return annotationModel.Top; }
+            get { return annotationModel.Y; }
             set
             {
-                annotationModel.Top = value;                
+                annotationModel.Y = value;                
             }
         }
        
         public Double Left
         {
-            get { return annotationModel.Left; }
-            set { annotationModel.Left = value; }
+            get { return annotationModel.X; }
+            set { annotationModel.X = value; }
         }
 
         public double ZIndex
@@ -129,7 +131,10 @@ namespace Dynamo.ViewModels
         {            
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;                                     
-            model.PropertyChanged += model_PropertyChanged;          
+            model.PropertyChanged += model_PropertyChanged;
+            // Group is created already.So just populate it.
+            var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
+            WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
         }
 
         private bool CanChangeFontSize(object obj)
@@ -149,10 +154,10 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "Left":
+                case "X":
                     RaisePropertyChanged("Left");
                     break;
-                case "Top":
+                case "Y":
                     RaisePropertyChanged("Top");
                     break;
                 case "Width":

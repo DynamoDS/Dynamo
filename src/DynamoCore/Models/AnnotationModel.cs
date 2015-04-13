@@ -20,6 +20,35 @@ namespace Dynamo.Models
         private string modelGuids { get; set; }   
         private const double doubleValue = 0.0;
         public bool loadFromXML { get; set; }
+
+        private double width;
+        public new double Width
+        {
+            get
+            {
+                return width;
+            }
+            set
+            {
+                width = value;
+                RaisePropertyChanged("Width");
+            }
+        }
+
+        private double height;
+        public new double Height
+        {
+            get
+            {
+                return height;
+            }
+            set
+            {
+                height = value;
+                RaisePropertyChanged("Height");
+            }
+        }
+
         private string text;
         public string Text
         {
@@ -30,51 +59,7 @@ namespace Dynamo.Models
                 RaisePropertyChanged("Text");
             }
         }
-
-        private double width;
-        public double Width
-        {
-            get { return width; }
-            set
-            {
-                width = value;
-                RaisePropertyChanged("Width");
-            }
-        }
-
-        private double height;
-        public double Height
-        {
-            get { return height; }
-            set
-            {
-                height = value;
-                RaisePropertyChanged("Height");
-            }
-        }
-
-        private double top;
-        public double Top
-        {
-            get { return top; }
-            set
-            {
-                top = value;
-                RaisePropertyChanged("Top");
-            }
-        }
-
-        private double left;
-        public double Left
-        {
-            get { return left; }
-            set
-            {
-                left = value;
-                RaisePropertyChanged("Left");
-            }
-        }
-
+       
         private string annotationText;
         public String AnnotationText
         {
@@ -124,7 +109,7 @@ namespace Dynamo.Models
         /// </summary>      
         public override Rect2D Rect
         {
-            get { return new Rect2D(this.Left, this.Top, this.Width, this.Height); }
+            get { return new Rect2D(this.X, this.Y, this.Width, this.Height); }
         }
 
         private Double textBlockHeight;
@@ -134,12 +119,12 @@ namespace Dynamo.Models
             set
             {
                 textBlockHeight = value;                
-                Top = InitialTop - textBlockHeight;
+                Y = InitialTop - textBlockHeight;
                 Height = InitialHeight + textBlockHeight;
             }
         }
 
-        private double fontSize = 10;
+        private double fontSize = 14;
         public Double FontSize
         {
             get { return fontSize; }
@@ -163,7 +148,7 @@ namespace Dynamo.Models
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
 
-            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();
+            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();            
             loadFromXML = loadFromGraph;
             if (!loadFromGraph)
                 UpdateBoundaryFromSelection();
@@ -184,6 +169,9 @@ namespace Dynamo.Models
                     if(!loadFromXML)
                         UpdateBoundaryFromSelection();
                     break;
+                case "Text":
+                    UpdateBoundaryFromSelection();
+                    break;               
             }
         }
 
@@ -237,8 +225,8 @@ namespace Dynamo.Models
                     Height = yDistance + maxHeight + 10
                 };
              
-                this.Left = region.X;              
-                this.Top = region.Y;
+                this.X = region.X;              
+                this.Y = region.Y;
                 this.Width = region.Width;
                 this.Height = region.Height;
 
@@ -249,13 +237,13 @@ namespace Dynamo.Models
                     if (!region.Contains(nodes.Rect))
                     {
                         overlap = nodes;
-                        if (overlap.Rect.Top < this.Top ||
+                        if (overlap.Rect.Top < this.X ||
                                     overlap.Rect.Bottom > region.Bottom) //Overlap in height - increase the region height
                         {
                             this.Height += overlap.Rect.Bottom - region.Bottom + 10;
                             region.Height = this.Height;
                         }
-                        if (overlap.Rect.Left < this.Left ||
+                        if (overlap.Rect.Left < this.Y ||
                                 overlap.Rect.Right > region.Right) //Overlap in width - increase the region width
                         {
                             this.Width += overlap.Rect.Right - region.Right + 10;
@@ -280,41 +268,22 @@ namespace Dynamo.Models
           
             return Tuple.Create(xgroup.Last().Width, ygroup.Last().Height);
         }
-        
-        /// <summary>
-        /// Deserializes the model guids from XML
-        /// and creates group on those model guids.
-        /// </summary>
-        private void DeserializeGroup()
-        {
-            var listOfModels = new List<ModelBase>();
-            foreach (var objGuid in modelGuids.Split(','))
-            {
-                Guid result;
-                if (Guid.TryParse(objGuid, out result))
-                    if (SelectedModels != null)
-                    {
-                        var model = SelectedModels.FirstOrDefault(x => x.GUID == result);
-                        listOfModels.Add(model);
-                    }
-            }
-            selectedModels = listOfModels;           
-        }
-
+              
         #region Serialization/Deserialization Methods
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
-            helper.SetAttribute("GUID", this.GUID);
+            helper.SetAttribute("guid", this.GUID);
             helper.SetAttribute("annotationText", this.AnnotationText);
-            helper.SetAttribute("left", this.Left);
-            helper.SetAttribute("top", this.Top);
+            helper.SetAttribute("left", this.X);
+            helper.SetAttribute("top", this.Y);
             helper.SetAttribute("width", this.Width);
             helper.SetAttribute("height", this.Height);
             helper.SetAttribute("fontSize", this.FontSize);
             helper.SetAttribute("InitialTop", this.InitialTop);
             helper.SetAttribute("InitialHeight", this.InitialHeight);
+            helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));        
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
@@ -333,14 +302,15 @@ namespace Dynamo.Models
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
-            this.GUID = helper.ReadGuid("GUID", this.GUID);
-            this.annotationText = helper.ReadString("annotationText", String.Empty);
-            this.left = helper.ReadDouble("left", doubleValue);
-            this.top = helper.ReadDouble("top", doubleValue);
+            this.GUID = helper.ReadGuid("guid", this.GUID);
+            this.annotationText = helper.ReadString("annotationText", Resources.GroupDefaultText);
+            this.X = helper.ReadDouble("left", doubleValue);
+            this.Y = helper.ReadDouble("top", doubleValue);
             this.width = helper.ReadDouble("width", doubleValue);
             this.height = helper.ReadDouble("height", doubleValue);
             this.background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
+            this.textBlockHeight = helper.ReadDouble("TextblockHeight", doubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", doubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", doubleValue);
             //Deserialize Selected models
@@ -364,13 +334,14 @@ namespace Dynamo.Models
 
         #endregion
 
-        public virtual void Dispose()
+        public override void Dispose()
         {
             if (this.SelectedModels.Any())
             {
                 foreach (var model in this.SelectedModels)
                 {
                     model.PropertyChanged -= model_PropertyChanged;
+                    model.Disposed -= model_Disposed;
                 }
             }
         }
