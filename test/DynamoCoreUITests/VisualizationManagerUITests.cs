@@ -477,7 +477,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
-            //Assert.AreEqual(6,BackgroundPreview.Text.Count());
+            Assert.AreEqual(6,BackgroundPreview.Text.TextInfo.Count());
         }
 
         [Test]
