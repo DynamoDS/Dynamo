@@ -50,10 +50,9 @@ namespace Dynamo.Services
 
                 sessionID = Guid.NewGuid().ToString();
                 loggerImpl = new Log("Dynamo", userID, sessionID);
-            
+
                 AutoMeasurement.Start(mc);
                 client = AutoMeasurement.Client;
-                
 
                 if (IS_VERBOSE_DIAGNOSTICS)
                     AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
