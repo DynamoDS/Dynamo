@@ -529,51 +529,34 @@ namespace Dynamo.Nodes
                 throw new ArgumentException();
             if (rows.Count() == 0)
                 return rows;
-            List<string> resultRows = new List<string>();
+
             int twoDotsLength = Configurations.TwoDots.Length;
-
-            // If there is just 1 row.
-            if (rows.Count() == 1)
-            {
-                var row = rows.ElementAt(0);
-                if (row.Length <= maxCharacters)
-                    resultRows.Add(row);
-                else
-                    resultRows.Add(row.Substring(0, maxCharacters - twoDotsLength) + Configurations.TwoDots);
-                return resultRows;
-            }
-
-            string currentRow;
+            var maxAfterTruncate = maxCharacters - twoDotsLength;
+            var results = new List<string>();
             var lastRow = rows.Last();
+
             foreach (var row in rows)
             {
-                if (row.Length > maxCharacters)
+                if (row.Length <= maxCharacters)
                 {
-                    string partOfRow; 
-                    var charactersToCut = maxCharacters - twoDotsLength;
+                    results.Add(row);
+                    continue;
+                }
 
-                    // If it's last row, cut from the beginning.
-                    if (row == lastRow)
-                        partOfRow = row.Substring(row.Length - charactersToCut, charactersToCut);
-                    // If it isn't last row, cut from the end.
-                    else
-                        partOfRow = row.Substring(0, charactersToCut);
-
-
-                    if (row == lastRow)
-                        currentRow = String.Concat(Configurations.TwoDots, partOfRow); 
-                    else
-                        currentRow = String.Concat(partOfRow, Configurations.TwoDots);
+                if (row != lastRow)
+                {
+                    // Rows other than the last get dots appended to the end.
+                    results.Add(row.Substring(0, maxAfterTruncate) + Configurations.TwoDots);
                 }
                 else
                 {
-                    currentRow = row;
+                    // The final row gets the dots added to the front. 
+                    var offset = row.Length - maxAfterTruncate;
+                    results.Add(Configurations.TwoDots + row.Substring(offset));
                 }
-                resultRows.Add(currentRow);
-                currentRow = String.Empty;
             }
 
-            return resultRows;
+            return results;
         }
 
         internal static string NormalizeAsResourceName(string resource)
