@@ -7,6 +7,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.AST;
 using ProtoCore.Namespace;
 using Symbol = Dynamo.Nodes.Symbol;
 
@@ -172,7 +173,7 @@ namespace Dynamo.Core
                 }
             };
             InfoUpdated += infoUpdatedHandler;
-            node.Disposed += () =>
+            node.Disposed += (args) =>
             {
                 if (!disposed)
                     InfoUpdated -= infoUpdatedHandler;
@@ -195,7 +196,7 @@ namespace Dynamo.Core
                 node.Category = info.Category;
             };
             workspace.InfoChanged += infoChangedHandler;
-            node.Disposed += () =>
+            node.Disposed += (args) =>
             {
                 workspace.DefinitionUpdated -= defUpdatedHandler;
                 workspace.InfoChanged -= infoChangedHandler;
@@ -495,7 +496,9 @@ namespace Dynamo.Core
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
+                nodeGraph.Annotations,                               
                 workspaceInfo);
+
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -1036,6 +1039,7 @@ namespace Dynamo.Core
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
+                    Enumerable.Empty<AnnotationModel>(),                
                     new WorkspaceInfo()
                     {
                         X = 0,

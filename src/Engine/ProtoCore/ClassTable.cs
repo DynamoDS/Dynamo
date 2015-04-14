@@ -61,6 +61,34 @@ namespace ProtoCore.DSASM
             coerceTypes.Add((int)ProtoCore.PrimitiveType.kTypeNull, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
         }
 
+        public ClassNode(ClassNode rhs)
+        {
+            IsImportedClass = rhs.IsImportedClass;
+            name = rhs.name;
+            size = rhs.size;
+            hasCachedDisposeMethod = rhs.hasCachedDisposeMethod;
+            disposeMethod = rhs.disposeMethod;
+            rank = rhs.rank;
+            symbols = new SymbolTable("classscope", 0);
+            if (rhs.symbols != null)
+            {
+                symbols = new SymbolTable(rhs.symbols.ScopeName, rhs.symbols.RuntimeIndex);
+            }
+            defaultArgExprList = new List<AST.AssociativeAST.BinaryExpressionNode>();
+            classId = rhs.classId;
+
+            int classRuntimProc = ProtoCore.DSASM.Constants.kInvalidIndex;
+            vtable = new ProcedureTable(classRuntimProc);
+            if (rhs.vtable != null)
+            {
+                vtable = new ProcedureTable(rhs.vtable);
+            }
+            baseList = new List<int>(rhs.baseList);
+            ExternLib = rhs.ExternLib;
+            typeSystem = rhs.typeSystem;
+            coerceTypes = new Dictionary<int, int>(rhs.coerceTypes);
+        }
+
         public bool ConvertibleTo(int type)
         {
             Validity.Assert(null != coerceTypes);
@@ -422,6 +450,17 @@ namespace ProtoCore.DSASM
 
         public ClassTable()
         {
+        }
+
+        public ClassTable(ClassTable rhs)
+        {
+            classNodes = new List<ClassNode>();
+            for (int n = 0; n < rhs.classNodes.Count; ++n)
+            {
+                classNodes.Add(new ClassNode(rhs.classNodes[n]));
+            }
+
+            symbolTable = new Namespace.SymbolTable(rhs.symbolTable);
         }
 
         public void Reserve(int size)

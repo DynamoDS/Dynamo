@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
@@ -1759,9 +1760,14 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value != true) return Resources.AboutWindowUpToDate;
+            var um = value as IUpdateManager;
+            if (um == null)
+                return Resources.AboutWindowCannotGetVersion;
 
-            var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
+            if (!um.IsUpdateAvailable) 
+                return Resources.AboutWindowUpToDate;
+            
+            var latest = um.AvailableVersion;
 
             return latest != null ? latest.ToString() : Resources.AboutWindowCannotGetVersion;
         }
@@ -2141,4 +2147,37 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public class MenuItemCheckConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var fontsize = System.Convert.ToDouble(value);
+            var param = System.Convert.ToDouble(parameter);
+
+            return fontsize == param;            
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class AnnotationTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value == null ? String.Empty:value.ToString();             
+            return text;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value.ToString();           
+            return text;
+        }
+    }
+
+    
 }

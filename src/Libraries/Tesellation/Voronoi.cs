@@ -18,7 +18,7 @@ namespace Tessellation
         /// <param name="face">Surface to tesselate.</param>
         public static IEnumerable<Curve> ByParametersOnSurface(IEnumerable<UV> uvs, Surface face)
         {
-            var verts = uvs.Select(Vertex2.FromUV);
+            var verts = uvs.Select(Vertex2.FromUV).ToList();
             var voronoiMesh = VoronoiMesh.Create<Vertex2, Cell2>(verts);
 
             return from edge in voronoiMesh.Edges

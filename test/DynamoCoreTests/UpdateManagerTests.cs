@@ -16,40 +16,6 @@ namespace Dynamo.Tests
     /// </summary>
     public class UpdateManagerTestNotUpToDate
     {
-        /// <summary>
-        /// Utility class to inject the UpdateManagerConfiguration to
-        /// UpdateManager instance and then resets it to previous value
-        /// when its disposed.
-        /// </summary>
-        class ConfigInjection : IDisposable
-        {
-            private readonly IUpdateManager updateManager; //updatemanager instance.
-            private readonly object configuration; //old configuration value.
-            private readonly FieldInfo fieldInfo; //internal configuration field.
-
-            /// <summary>
-            /// Creates ConfigInjection instance.
-            /// </summary>
-            /// <param name="updateManager">UpdateManager instance to which configuration is to be injected.</param>
-            /// <param name="configuration">The configuration for injection.</param>
-            public ConfigInjection(IUpdateManager updateManager, UpdateManagerConfiguration configuration)
-            {
-                this.updateManager = updateManager;
-                fieldInfo = updateManager.GetType()
-                    .GetField("configuration", BindingFlags.NonPublic | BindingFlags.Instance);
-                Assert.IsNotNull(fieldInfo);
-
-                this.configuration = fieldInfo.GetValue(updateManager);
-                fieldInfo.SetValue(updateManager, configuration);
-            }
-
-            public void Dispose()
-            {
-                //Restore the old configuration
-                fieldInfo.SetValue(updateManager, configuration);
-            }
-        }
-
         private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
         private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
 
@@ -71,12 +37,9 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
 
-            var updateManager = UpdateManager.UpdateManager.Instance;
-            using (new ConfigInjection(updateManager, NewConfiguration()))
-            {
-                updateManager.UpdateDataAvailable(updateRequest.Object);
-                Assert.NotNull(updateManager.UpdateInfo);
-            }
+            var updateManager = new DynUpdateManager(NewConfiguration());
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            Assert.NotNull(updateManager.UpdateInfo);
         }
 
         [Test]
@@ -86,19 +49,62 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.dailyBuildAvailableData);
 
-            var updateManager = UpdateManager.UpdateManager.Instance;
-            using (new ConfigInjection(updateManager, NewConfiguration(checkNewerDailyBuild:true)))
-            {
-                updateManager.UpdateDataAvailable(updateRequest.Object);
-                Assert.NotNull(updateManager.UpdateInfo);
-            }
+            var updateManager = new DynUpdateManager(NewConfiguration(checkNewerDailyBuild: true));
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            Assert.NotNull(updateManager.UpdateInfo);
         }
 
-        [Test]
-        [Category("UnitTests")]
+        [Test, Category("UnitTests")]
+        public void IsUpdateAvailableWhenNewerVersionAvaialable()
+        {
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
+
+            var updateManager = new DynUpdateManager(NewConfiguration());
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            updateManager.DownloadedUpdateInfo = updateManager.UpdateInfo;
+
+            Assert.IsTrue(updateManager.IsUpdateAvailable);
+        }
+
+        [Test, Category("UnitTests")]
+        public void IsUpdateAvailableWhenForceUpdateIsTrue()
+        {
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noUpdateAvailableData);
+
+            var updateManager = new DynUpdateManager(NewConfiguration(forceUpdate:true));
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            updateManager.DownloadedUpdateInfo = updateManager.UpdateInfo;
+
+            Assert.IsTrue(updateManager.IsUpdateAvailable);
+        }
+
+        [Test, Category("UnitTests")]
+        public void NoUpdateAvailableWhenUpToDate()
+        {
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noUpdateAvailableData);
+
+            var updateManager = new DynUpdateManager(NewConfiguration());
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            updateManager.DownloadedUpdateInfo = updateManager.UpdateInfo;
+
+            Assert.IsFalse(updateManager.IsUpdateAvailable);
+        }
+
+        [Test, Category("UnitTests")]
+        public void NoUpdateAvailableWhenUpdateInfoIsNotYetDownloaded()
+        {
+            var updateManager = new DynUpdateManager(NewConfiguration());
+            
+            Assert.IsFalse(updateManager.IsUpdateAvailable);
+        }
+
+        [Test, Category("UnitTests")]
         public void UpdateCheckReturnsCorrectVersionWhenAvailable()
         {
-            var um = UpdateManager.UpdateManager.Instance as DynUpdateManager;
+            var um = new DynUpdateManager(NewConfiguration());
             Assert.IsNotNull(um);
 
             var updateRequest = new Mock<IAsynchronousRequest>();
@@ -140,9 +146,6 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void ConfigurationRedirection()
         {
-            var um = DynUpdateManager.Instance as DynUpdateManager;
-            Assert.IsNotNull(um);
-
             //Inject test config to UpdateManager instance, using reflection.
             var config = new UpdateManagerConfiguration()
             {
@@ -150,22 +153,22 @@ namespace Dynamo.Tests
                 SignatureSourcePath = SIGNATURE_SOURCE_PATH_S
             };
 
-            using (new ConfigInjection(um, config))
-            {
-                var updateRequest = new Mock<IAsynchronousRequest>();
-                updateRequest.Setup(ur => ur.Data)
-                    .Returns(UpdateManagerTestHelpers.updateAvailableData);
-                um.UpdateDataAvailable(updateRequest.Object);
+            var um = new DynUpdateManager(config);
+            Assert.IsNotNull(um);
+        
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data)
+                .Returns(UpdateManagerTestHelpers.updateAvailableData);
+            um.UpdateDataAvailable(updateRequest.Object);
 
-                // Spoof a download completion by setting the downloaded update info to the update info
-                um.DownloadedUpdateInfo = um.UpdateInfo;
-                Assert.NotNull(um.UpdateInfo);
-                Assert.AreEqual("9.9.9.0", um.AvailableVersion.ToString());
-                Assert.AreEqual(DOWNLOAD_SOURCE_PATH_S, um.UpdateInfo.VersionInfoURL);
-                Assert.AreEqual(
-                    SIGNATURE_SOURCE_PATH_S + @"DynamoInstall9.9.9.sig",
-                    um.UpdateInfo.SignatureURL);
-            }
+            // Spoof a download completion by setting the downloaded update info to the update info
+            um.DownloadedUpdateInfo = um.UpdateInfo;
+            Assert.NotNull(um.UpdateInfo);
+            Assert.AreEqual("9.9.9.0", um.AvailableVersion.ToString());
+            Assert.AreEqual(DOWNLOAD_SOURCE_PATH_S, um.UpdateInfo.VersionInfoURL);
+            Assert.AreEqual(
+                SIGNATURE_SOURCE_PATH_S + @"DynamoInstall9.9.9.sig",
+                um.UpdateInfo.SignatureURL);
         }
 
         [Test]
@@ -174,9 +177,10 @@ namespace Dynamo.Tests
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noUpdateAvailableData);
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
+            var um = new DynUpdateManager(NewConfiguration());
+            um.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.Null(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            Assert.Null(um.UpdateInfo);
         }
 
         [Test]
@@ -185,9 +189,10 @@ namespace Dynamo.Tests
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noData);
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
+            var um = new DynUpdateManager(NewConfiguration());
+            um.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.Null(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            Assert.Null(um.UpdateInfo);
         }
 
         [Test]
@@ -197,9 +202,10 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(string.Empty);
 
-            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(updateRequest.Object);
+            var um = new DynUpdateManager(NewConfiguration());
+            um.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.Null(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            Assert.Null(um.UpdateInfo);
         }
 
         [Test]
@@ -273,9 +279,10 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.badData);
 
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
+            var um = new DynUpdateManager(NewConfiguration());
+            um.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.Null(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            Assert.Null(um.UpdateInfo);
         }
 
         [Test, Category("UnitTests")]

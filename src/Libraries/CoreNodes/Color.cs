@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Media;
+
+using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
@@ -130,21 +137,98 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Get a color from a color gradient between a start color and an end color.
+        /// Get a color from a color gradient between a start color and an end color.
         /// </summary>
-        /// <param name="start">The starting color of the range.</param>
-        /// <param name="end">The end color of the range.</param>
-        /// <param name="value">The value between 0 and 1 along the range for which you would like to sample the color.</param>
-        /// <returns name="color">Color in the given range.</returns>
+        /// <param name="parameters">The values between 0 and 1 along the range for which you would like to sample the color.</param>
+        /// <returns name="colors">Colors in the given range.</returns>
         /// <search>color,range,gradient</search>
         [IsVisibleInDynamoLibrary(false)]
-        public static Color BuildColorFromRange(Color start, Color end, double value)
+        public static Color BuildColorFrom1DRange(List<Color> colors, List<double> parameters, double parameter)
         {
-            var selRed = (int)(start.Red + (end.Red - start.Red) * value);
-            var selGreen = (int)(start.Green + (end.Green - start.Green) * value);
-            var selBlue = (int)(start.Blue + (end.Blue - start.Blue) * value);
+            var colorRange = ColorRange1D.ByColorsAndParameters(colors, parameters);
+            return colorRange.GetColorAtParameter(parameter);
+        }
 
-            return ByARGB(255, selRed, selGreen, selBlue);
+        [IsVisibleInDynamoLibrary(false)]
+        public static Color BuildColorFrom2DRange(IList<Color> colors, IList<UV> parameters, UV parameter)
+        {
+            var colorRange = ColorRange2D.ByColorsAndParameters(colors, parameters);
+            return colorRange.GetColorAtParameter(parameter);
+        }
+
+        /// <summary>
+        /// Linearly interpolate between two colors.
+        /// </summary>
+        /// <param name="start">The start color.</param>
+        /// <param name="end">The end color.</param>
+        /// <param name="t">A parameter between 0.0 and 1.0.</param>
+        /// <returns>The interpolated color or white.</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static Color Lerp(Color start, Color end, double t)
+        {
+            if (start == null || 
+                end == null || 
+                t < 0.0 || t > 1.0)
+            {
+                return Color.ByARGB(255, 255, 255, 255);
+            }
+
+            // Calculate the weighted average
+            var num = new double[4];
+
+            var d1 = 1 - Math.Sqrt(Math.Pow(t - 0.0, 2));
+            var d2 = 1 - Math.Sqrt(Math.Pow(t - 1.0, 2));
+
+            num[0] += (start.Alpha * d1)    + (end.Alpha * d2);
+            num[1] += (start.Red * d1)      + (end.Red * d2);
+            num[2] += (start.Green * d1)    + (end.Green * d2);
+            num[3] += (start.Blue * d1)     + (end.Blue * d2);
+
+            return ByARGB((int)(num[0] / (d1 + d2)),
+                (int)(num[1] / (d1 + d2)),
+                (int)(num[2] / (d1 + d2)),
+                (int)(num[3] / (d1 + d2)));
+        }
+
+        /// <summary>
+        /// Bilinearly interpolate between a set of colors.
+        /// </summary>
+        /// <param name="start">The start color.</param>
+        /// <param name="end">The end color.</param>
+        /// <param name="t">A parameter between 0.0 and 1.0.</param>
+        /// <returns>The interpolated color or white.</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static Color Blerp(IList<IndexedColor2D> colors, UV parameter)
+        {
+            // Calculate the weighted average
+            var num = new double[4];
+            var totalArea = 0.0;
+            foreach (var ci in colors)
+            {
+                var a = 1 - ci.Parameter.Area(parameter);
+                num[0] += ci.Color.Alpha * a;
+                num[1] += ci.Color.Red * a;
+                num[2] += ci.Color.Green * a;
+                num[3] += ci.Color.Blue * a;
+                totalArea += a;
+            }
+
+            if (totalArea == 0.0)
+            {
+                return ByARGB();
+            }
+
+            return ByARGB((int)(num[0] / totalArea),
+                (int)(num[1] / totalArea),
+                (int)(num[2] / totalArea),
+                (int)(num[3] / totalArea));
+        }
+
+        private static double Area(UV min, UV max)
+        {
+            var u = System.Math.Sqrt(System.Math.Pow(max.U - min.U, 2));
+            var v = System.Math.Sqrt(System.Math.Pow(max.V - min.V, 2));
+            return u * v;
         }
 
         public override string ToString()
@@ -166,10 +250,329 @@ namespace DSCore
             return Equals((Color)obj);
         }
 
+        public static Color Add(DSCore.Color c1, DSCore.Color c2)
+        {
+            return Color.ByARGB(
+                c1.Alpha + c2.Alpha,
+                c1.Red + c2.Red,
+                c1.Green + c2.Green,
+                c1.Blue + c2.Blue);
+        }
+
+        public static Color Multiply(DSCore.Color c1, double div)
+        {
+            return Color.ByARGB(
+                (int)(c1.Alpha * div),
+                (int)(c1.Red * div),
+                (int)(c1.Green * div),
+                (int)(c1.Blue * div));
+        }
+
+        public static Color Divide(DSCore.Color c1, double div)
+        {
+            return Color.ByARGB(
+                (int)(c1.Alpha / div),
+                (int)(c1.Red / div),
+                (int)(c1.Green / div),
+                (int)(c1.Blue / div));
+        }
+
         public override int GetHashCode()
         {
             return color.GetHashCode();
         }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public class IndexedColor1D: IComparable
+        {
+            public Color Color { get; set; }
+            public double Parameter { get; set; }
+
+            public IndexedColor1D(Color color, double parameter)
+            {
+                Color = color;
+                Parameter = parameter;
+            }
+
+            public int CompareTo(object obj)
+            {
+                var ic = obj as IndexedColor1D;
+
+                if (ic == null)
+                {
+                    return -1;
+                }
+
+                if (ic.Parameter > Parameter)
+                {
+                    return -1;
+                }
+
+                if (ic.Parameter < Parameter)
+                {
+                    return 1;
+                }
+
+                if (ic.Parameter.Equals(Parameter))
+                {
+                    return 0;
+                }
+
+                return -1;
+            }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public class IndexedColor2D
+        {
+            public Color Color { get; set; }
+            public UV Parameter { get; set; }
+
+            public IndexedColor2D(Color color, UV parameter)
+            {
+                Color = color;
+                Parameter = parameter;
+            }
+        }
     }
 
+    [IsVisibleInDynamoLibrary(false)]
+    public class ColorRange1D
+    {
+        private IList<Color.IndexedColor1D> indexedColors; 
+ 
+        private ColorRange1D(IEnumerable<Color> colors, IEnumerable<double> parameters)
+        {
+            var colorMap = colors.Zip(parameters, (c, i) => new Color.IndexedColor1D(c, i)).ToList();
+
+            // Sort the colors by index.
+            indexedColors = colorMap.OrderBy(ci => ci.Parameter).ToList();
+        }
+
+        /// <summary>
+        /// Create a ColorRange1D by supplying lists of colors and parameters.
+        /// </summary>
+        /// <param name="colors">A list of colors.</param>
+        /// <param name="parameters">A list of parameters between 0.0 and 1.0.</param>
+        /// <returns>A ColorRange1D object.</returns>
+        public static ColorRange1D ByColorsAndParameters(
+            List<Color> colors, List<double> parameters)
+        {
+            var blue = Color.ByARGB(255, 0, 0, 255);
+            var red = Color.ByARGB(255, 255, 0, 0);
+
+            if (colors == null)
+                colors = new List<Color>();
+
+            colors.RemoveAll(c => c == null);
+
+            colors = colors.Where(c => c != null).ToList();
+
+            if(parameters == null)
+                parameters = new List<double>();
+
+            // If there's no colors supplied, then supply
+            // a red->blue gradient.
+            if (!colors.Any())
+            {
+                colors = new List<Color>(){ red, blue};
+            }
+
+            // If there's no parameters supplied, then set the parameters
+            // in an even range across the colors. 
+            if (!parameters.Any())
+            {
+                if (colors.Any())
+                {
+                    var step = 1.0/(colors.Count()-1);
+                    for (var i = 0; i < colors.Count(); i ++)
+                    {
+                        parameters.Add(i*step);
+                    }
+                }
+            }
+
+            // Remap the parameters into the 0->1 range
+            var max = parameters.Max();
+            var min = parameters.Min();
+            var domain = max - min;
+
+            if (domain == 0.0)
+            {
+                parameters.Clear();
+                parameters.Add(0.0);
+            }
+            else
+            {
+                for (var i = 0; i < parameters.Count(); i++)
+                {
+                    parameters[i] = (parameters[i] - min) / domain;
+                }
+            }
+            
+
+            // If the number of colors is greater than the 
+            // number of parameters
+            if (colors.Count() > parameters.Count())
+            {
+                var diff = colors.Count() - parameters.Count();
+                for (var i = 0; i < diff; i++)
+                {
+                    parameters.Add(1.0);
+                }
+            }
+            // If the number of parameters is greater than the
+            // number of colors
+            else if (parameters.Count() > colors.Count())
+            {
+                var diff = parameters.Count() - colors.Count();
+                for (var i = 0; i < diff; i++)
+                {
+                    colors.Add(blue);
+                }
+            }
+
+            return new ColorRange1D(colors, parameters);
+        }
+
+        /// <summary>
+        /// Get the color in this color range at the specified parameter.
+        /// </summary>
+        /// <param name="parameter">A value between 0.0 and 1.0.</param>
+        /// <returns>A Color.</returns>
+        public Color GetColorAtParameter(double parameter = 0.0)
+        {
+            // If the supplied index matches one of the indexed colors' indices,
+            // then just return that color.
+            var found = indexedColors.FirstOrDefault(ci => ci.Parameter == parameter);
+            if (found != null)
+            {
+                return found.Color;
+            }
+
+            if (indexedColors.Count == 1)
+            {
+                return indexedColors.First().Color;
+            }
+
+            Color.IndexedColor1D c1, c2;
+
+            c1 = indexedColors.First();
+            c2 = indexedColors.Last();
+
+            // Find the leading and trailing indexed color
+            // between which we will linearly interpolate.
+            foreach (var ci in indexedColors)
+            {
+                if (ci.Parameter > c1.Parameter && ci.Parameter < parameter)
+                {
+                    c1 = ci;
+                }
+
+                if (ci.Parameter > parameter && ci.Parameter < c2.Parameter)
+                {
+                    c2 = ci;
+                }
+            }
+
+            return Color.Lerp(c1.Color, c2.Color, (parameter - c1.Parameter) / (c2.Parameter - c1.Parameter));
+        }
+    }
+
+    [IsVisibleInDynamoLibrary(false)]
+    public class ColorRange2D
+    {
+        private Quadtree quadtree;
+
+        private IList<Color.IndexedColor2D> indexedColors;
+
+        private ColorRange2D(IEnumerable<Color> colors, IEnumerable<UV> parameters)
+        {
+            var parameterList = parameters as UV[] ?? parameters.ToArray();
+            var colorList = colors as Color[] ?? colors.ToArray();
+
+            quadtree = Quadtree.ByUVs(parameterList);
+
+            // Store the colors
+            for (int i = 0; i < parameterList.Count(); i++)
+            {
+                Node node;
+                if (quadtree.Root.TryFind(parameterList[i], out node))
+                {
+                    node.Item = colorList[i];
+                }
+            }
+
+            indexedColors = colorList.Zip(parameterList, (c, t) => new Color.IndexedColor2D(c, t)).ToList();
+        }
+
+        /// <summary>
+        /// Create a ColorRange2D by supplying lists of colors and UVs.
+        /// </summary>
+        /// <param name="colors">A list of colors.</param>
+        /// <param name="parameters">A list of parameters between (0.0,0.0) and (1.0,1.0).</param>
+        /// <returns>A ColorRange1D object.</returns>
+        public static ColorRange2D ByColorsAndParameters(
+            IList<Color> colors, IList<UV> parameters)
+        {
+            return new ColorRange2D(colors, parameters);
+        }
+
+        /// <summary>
+        /// Get the color in this color range at the specified parameter.
+        /// </summary>
+        /// <param name="parameter">A UV between (0.0,0.0) and (1.0,1.0).</param>
+        /// <returns>A Color.</returns>
+        public Color GetColorAtParameter(UV parameter)
+        {
+            var color = Color.ByARGB(255, 255, 255, 255);
+
+            Node node = quadtree.Root.FindNodeWhichContains(parameter);
+            if (node == null) return color;
+
+            //var weightedColors = indexedColors.ToList()
+            //    .OrderBy(ic => ic.Parameter.Area(parameter)).Take(4).ToList();
+
+            var nodes = node.FindAllNodesUpLevel(1);
+            var weightedColors =
+                nodes.Where(n => n.Point != null)
+                    .Where(n => n.Item != null)
+                    .Select(n => new Color.IndexedColor2D((Color)n.Item, n.Point)).ToList();
+
+            color = Color.Blerp(weightedColors, parameter);
+
+            return color;
+        }
+
+        /// <summary>
+        /// Create a two-dimensional map of colors which use bi-linear interpolation
+        /// to blend the colors at a UV based on the weighted average of the
+        /// other colors.
+        /// </summary>
+        /// <param name="width">The width of the color map.</param>
+        /// <param name="height">The height of the color map.</param>
+        /// <returns>A two-dimensional array of colors.</returns>
+        public Color[,] CreateColorMap(int width, int height)
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+
+            var colorMap = new Color[width, height];
+
+            Parallel.For(0, width,
+                         w => Parallel.For(
+                             0,
+                             height,
+                             h =>
+                             {
+                                 var uv = UV.ByCoordinates((double)w/width, (double)h/height);
+                                 colorMap[w, h] = GetColorAtParameter(uv);
+                             }));
+            
+            sw.Stop();
+            Debug.WriteLine("{0} ellapsed for generating the color map.", sw.Elapsed);
+
+            return colorMap;
+        }
+    }
 }
