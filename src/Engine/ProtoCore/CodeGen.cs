@@ -2882,7 +2882,7 @@ namespace ProtoCore
         {
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.DEPX;
-            EmitInstrConsole(ProtoCore.DSASM.kw.depx);
+         
 
             ++pc;
             AppendInstruction(instr);
