@@ -144,7 +144,7 @@ namespace Dynamo.Tests
             name = "ClassWithReallyLongName";
             parameter = "ClassButton";
             result = converter.Convert(name, null, parameter, null);
-            Assert.AreEqual("Class\n..Name", result);
+            Assert.AreEqual("Class\n..ng Name", result);
 
             // 7 case
             name = "";

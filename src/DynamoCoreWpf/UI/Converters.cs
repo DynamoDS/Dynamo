@@ -1824,20 +1824,17 @@ namespace Dynamo.Controls
                         return text.Insert(text.LastIndexOf(".") + 1, "\n");
                     return text;
                 case "ClassButton":
-                    string original = text;
-                    text = Dynamo.Nodes.Utilities.InsertSpacesToString(text);
 
                     int maxRowLength = Configurations.MaxLengthRowClassButtonTitle;
                     int maxRowNumbers = Configurations.MaxRowNumber;
 
-                    if (text.Length > maxRowLength)
-                    {
-                        var words = Dynamo.Nodes.Utilities.WrapText(original, maxRowLength);
-                        if (words.Count() > maxRowNumbers)
-                            words = Dynamo.Nodes.Utilities.ReduceRowCount(words, maxRowNumbers, maxRowLength);
-                        words = Dynamo.Nodes.Utilities.TruncateRows(words, maxRowLength);
-                        text = String.Join("\n", words);
-                    }
+                    var words = Dynamo.Nodes.Utilities.WrapText(text, maxRowLength);
+                    if (words.Count() > maxRowNumbers)
+                        words = Dynamo.Nodes.Utilities.ReduceRowCount(words.ToList(), maxRowNumbers);
+
+                    words = Dynamo.Nodes.Utilities.TruncateRows(words, maxRowLength);
+                    text = String.Join("\n", words);
+
                     return text;
 
                 // Maybe, later we need more string converters.

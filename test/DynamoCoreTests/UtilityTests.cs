@@ -588,32 +588,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void InsertSpacesToStringTest()
-        {
-            string testingSTR = string.Empty;
-            //1. When original is empty string
-            //2. When original is null
-            //3. When original is whitespaces (\n, \t or space)
-            //4. When original is AaaBbbbCDE
-
-            // case 1
-            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("");
-            Assert.AreEqual("", testingSTR);
-
-            // case 2
-            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString(null);
-            Assert.AreEqual("", testingSTR);
-
-            // case 3
-            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("    ");
-            Assert.AreEqual("", testingSTR);
-
-            //case 4
-            testingSTR = Dynamo.Nodes.Utilities.InsertSpacesToString("AaaBbbbCDE");
-            Assert.AreEqual("Aaa Bbbb CDE", testingSTR);
-        }
-
-        [Test]
         public void WrapTextTest()
         {
             string testingSTR = string.Empty;
@@ -622,10 +596,11 @@ namespace Dynamo.Tests
             //2. When original is null
             //3. When original is whitespace
             //4. When original is AaaBbbbCDE
-            //5. When original is AaaaaaaaaBbbb
-            //6. When original is SurfaceAnalysisData
-            //7. When original is BoundingBox
+            //5. When original is SurfaceAnalysisData
+            //6. When original is BoundingBox
+            //7. When original is ImportFromCSV
             //8. When original is ImportFromCSV
+            //9. When original is ImportFromCSV
 
             // case 1
             result = Dynamo.Nodes.Utilities.WrapText("", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
@@ -640,70 +615,71 @@ namespace Dynamo.Tests
             Assert.AreEqual(new List<string>() { }, result);
 
             // case 4
-            result = Dynamo.Nodes.Utilities.WrapText("AaaBbbbCDE", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            result = Dynamo.Nodes.Utilities.WrapText("AaaBbbbCDE", 3);
             Assert.AreEqual(new List<string>() { "Aaa", "Bbbb", "CDE" }, result);
 
             // case 5
-            result = Dynamo.Nodes.Utilities.WrapText("More_then_eight_charsBbbb", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
-            Assert.AreEqual(new List<string>() { "More_then_eight_chars", "Bbbb" }, result);
-
-            // case 6
-            result = Dynamo.Nodes.Utilities.WrapText("SurfaceAnalysisData", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            result = Dynamo.Nodes.Utilities.WrapText("SurfaceAnalysisData", 9);
             Assert.AreEqual(new List<string>() { "Surface", "Analysis", "Data" }, result);
 
-            // case 7
-            result = Dynamo.Nodes.Utilities.WrapText("BoundingBox", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            // case 6
+            result = Dynamo.Nodes.Utilities.WrapText("BoundingBox", 9);
             Assert.AreEqual(new List<string>() { "Bounding", "Box" }, result);
 
-            // case 8
-            result = Dynamo.Nodes.Utilities.WrapText("ImportFromCSV", Dynamo.UI.Configurations.MaxLengthRowClassButtonTitle);
+            // case 7
+            result = Dynamo.Nodes.Utilities.WrapText("ImportFromCSV", 4);
             Assert.AreEqual(new List<string>() { "Import", "From", "CSV" }, result);
+
+            // case 8
+            result = Dynamo.Nodes.Utilities.WrapText("ImportFromCSV", 6);
+            Assert.AreEqual(new List<string>() { "Import", "From", "CSV" }, result);
+
+            // case 9
+            result = Dynamo.Nodes.Utilities.WrapText("ImportFromCSV", 11);
+            Assert.AreEqual(new List<string>() { "Import From", "CSV" }, result);
         }
 
         [Test]
         public void ReduceRowCountTest()
         {
             IEnumerable<string> result;
-            IEnumerable<string> original;
+            List<string> original;
             //1. When original is null, 0, 0
-            //2. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 1, maxCharacters = 9
-            //3. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 2, maxCharacters = 9
-            //4. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 3, maxCharacters = 4
-            //5. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 2, maxCharacters = 4
-            //6. When original is ("Day", "Of", "Week"), maxRows = 2, maxCharacters = 9
-            //7. When original is ("Import", "From", "CSV"), maxRows = 2, maxCharacters = 9
+            //2. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 1
+            //3. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 2
+            //4. When original is ("Aaa", "Bbbb", "CDE"), maxRows = 3
+            //5. When original is ("Day", "Of", "Week"), maxRows = 2
+            //6. When original is ("Import", "From", "CSV"), maxRows = 2
 
             // case 1
             Assert.Throws<ArgumentException>(() =>
             {
-                Dynamo.Nodes.Utilities.ReduceRowCount(null, 0, 0);
+                Dynamo.Nodes.Utilities.ReduceRowCount(null, 0);
             });
 
             // case 2
             original = new List<string>() { "Aaa", "Bbbb", "CDE" };
-            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 1, 9);
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 1);
             Assert.AreEqual(new List<string>() { "Aaa Bbbb CDE" }, result);
 
             // case 3
-            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2, 9);
-            Assert.AreEqual(new List<string>() { "Aaa Bbbb", "CDE" }, result);
+            original = new List<string>() { "Aaa", "Bbbb", "CDE" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2);
+            Assert.AreEqual(new List<string>() { "Aaa", "Bbbb CDE" }, result);
 
             // case 4
-            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 3, 4);
+            original = new List<string>() { "Aaa", "Bbbb", "CDE" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 3);
             Assert.AreEqual(new List<string>() { "Aaa", "Bbbb", "CDE" }, result);
 
             // case 5
-            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2, 4);
-            Assert.AreEqual(new List<string>() { "Aaa", "Bbbb CDE" }, result);
+            original = new List<string>() { "Day", "Of", "Week" };
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2);
+            Assert.AreEqual(new List<string>() { "Day", "Of Week" }, result);
 
             // case 6
-            original = new List<string>() { "Day", "Of", "Week" };
-            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2, 9);
-            Assert.AreEqual(new List<string>() { "Day Of", "Week" }, result);
-
-            // case 7
             original = new List<string>() { "Import", "From", "CSV" };
-            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2, 9);
+            result = Dynamo.Nodes.Utilities.ReduceRowCount(original, 2);
             Assert.AreEqual(new List<string>() { "Import", "From CSV" }, result);
         }
 
@@ -728,7 +704,7 @@ namespace Dynamo.Tests
             // case 2
             original = new List<string>() { "Aaa", "Bbbb" };
             result = Dynamo.Nodes.Utilities.TruncateRows(original, 3);
-            Assert.AreEqual(new List<string>() { "Aaa", "..bbb" }, result);
+            Assert.AreEqual(new List<string>() { "Aaa", "..b" }, result);
 
             // case 3
             original = new List<string>() { "Day", "Of", "Week" };
@@ -737,15 +713,15 @@ namespace Dynamo.Tests
 
             // case 4
             original = new List<string>() { "Surface", "Analysis Data" };
-            result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
-            Assert.AreEqual(new List<string>() { "Surface", "..Data" }, result);
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 8);
+            Assert.AreEqual(new List<string>() { "Surface", "..s Data" }, result);
 
             // case 5
             original = new List<string>() { "Coordinate", "System" };
             result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
-            Assert.AreEqual(new List<string>() { "Coordinat..", "System" }, result);
+            Assert.AreEqual(new List<string>() { "Coordin..", "System" }, result);
 
-            // case 5
+            // case 6
             original = new List<string>() { "Rectangle" };
             result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
             Assert.AreEqual(new List<string>() { "Rectangle" }, result);

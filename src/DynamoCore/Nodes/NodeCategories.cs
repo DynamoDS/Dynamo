@@ -430,31 +430,6 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Add spaces to string before capital letters e.g. CoordinateSystem to Coordinate System.
-        /// </summary>
-        /// <param name="original">incoming string</param>
-        internal static string InsertSpacesToString(string original)
-        {
-            if (string.IsNullOrWhiteSpace(original))
-                return "";
-            StringBuilder newText = new StringBuilder(original.Length * 2);
-            newText.Append(original[0]);
-            for (int i = 1; i < original.Length; i++)
-            {
-                // We also have to check was previous character capital letter, e.g. Import From CSV                
-                var curr = original[i];
-                var prev = original[i - 1];
-                if ((Char.IsUpper(curr) || curr.Equals('(')) &&
-                    ((prev != ' ') && (!Char.IsUpper(prev))))
-                {
-                    newText.Append(" ");
-                }
-                newText.Append(original[i]);
-            }
-            return newText.ToString();
-        }
-
-        /// <summary>
         /// Gets words from text, e.g. ImportFromCSV to ("Import","From","CSV")
         /// </summary>
         /// <param name="text">incoming string</param>
@@ -462,17 +437,16 @@ namespace Dynamo.Nodes
         internal static IEnumerable<string> WrapText(string text, int maxCharacters)
         {
             List<string> words = new List<string>();
-            if (string.IsNullOrWhiteSpace(text))
+            if (string.IsNullOrWhiteSpace(text) || maxCharacters < 2)
                 return words;
 
-            StringBuilder currentWord = new StringBuilder();
-            currentWord.Append(text[0]);
+            StringBuilder currentWord = new StringBuilder(text[0].ToString());
             for (int i = 1; i < text.Length; i++)
             {
                 var curr = text[i];
                 var prev = text[i - 1];
 
-                if (Char.IsUpper(curr) && i != 0 && !Char.IsUpper(prev) && (!curr.Equals(" ")))
+                if (Char.IsUpper(curr) && !Char.IsUpper(prev))
                 {
                     words.Add(currentWord.ToString());
                     currentWord.Clear();
@@ -480,67 +454,78 @@ namespace Dynamo.Nodes
                 currentWord.Append(curr);
             }
             // Add last word.
-            words.Add(currentWord.ToString());
-            return words;
-        }
+            if (currentWord.Length != 0)
+                words.Add(currentWord.ToString());
 
-        /// <summary>
-        /// Merge rows according max nuber characters per row, e.g. ("Day","Of","Week") => ("Day Of","Week")
-        /// Last row can contain remaining rows, if there is no place to store them,
-        /// e.g. ("Import","From","CSV") => ("Import","From CSV")
-        /// </summary>
-        /// <param name="rows">Incoming rows</param>
-        /// <param name="maxRows">Max number of rows</param>
-        /// <param name="maxCharacters">Max number characters per row</param>
-        internal static IEnumerable<string> ReduceRowCount(IEnumerable<string> rows, int maxRows, int maxCharacters)
-        {
-            if (rows == null || maxRows <= 0 || maxCharacters <= 0)
-                throw new ArgumentException();
-            if (rows.Count() == 0 || rows.Count() == maxRows)
-                return rows;
-            List<string> resultRows = new List<string>();
-
-            StringBuilder currentRow = new StringBuilder();
-            foreach (var row in rows)
+            // Try to merge words.
+            List<string> result_words = new List<string>();
+            currentWord.Clear();
+            currentWord.Append(words.First());
+            for (int i = 1; i < words.Count; i++)
             {
-                // +1, because we need to add space between rows.
-                if ((currentRow.Length + row.Length + 1) <= maxCharacters)
+                var word = words.ElementAt(i);
+                if ((currentWord.Length + word.Length + 1) <= maxCharacters)
                 {
-                    if (currentRow.Length != 0)
-                        currentRow.Append(" ");
-                    currentRow.Append(row);
+                    currentWord.Append(" ");
+                    currentWord.Append(word);
                 }
                 else
                 {
-                    if (resultRows.Count < maxRows - 1)
-                    {
-                        resultRows.Add(currentRow.ToString());
-                        currentRow.Clear();
-                        currentRow.Append(row);
-                    }
-                    else
-                    {
-                        if (currentRow.Length != 0)
-                            currentRow.Append(" ");
-                        currentRow.Append(row);
-                    }
+                    result_words.Add(currentWord.ToString());
+                    currentWord.Clear();
+                    currentWord.Append(word);
                 }
             }
-            // Add last row, if it's not empty.
-            if (currentRow.Length != 0)
-                resultRows.Add(currentRow.ToString());
+            // Add last word.
+            if (currentWord.Length != 0)
+                result_words.Add(currentWord.ToString());
 
-            return resultRows;
+            return result_words;
         }
 
         /// <summary>
-        /// Trincate rows by adding dots, e.g. ("Surface", "Analysis Data") => ("Surface..","..Data")
+        /// Reduces the number of rows, based on the entries inside rows parameter.
+        /// E.g. rows = { "Insert", "Day", "Of", "Week", "Here" }, maxRows == 3
+        /// Result { "Insert", "Day", "Of Week Here" }
+        /// </summary>
+        /// <param name="rows">Incoming rows</param>
+        /// <param name="maxRows">Max number of rows</param>
+        internal static IEnumerable<string> ReduceRowCount(List<string> rows, int maxRows)
+        {
+            if (rows == null || maxRows <= 0)
+                throw new ArgumentException();
+            if (rows.Count() == 0 || rows.Count() <= maxRows)
+                return rows;
+
+            while (rows.Count() != maxRows)
+            {
+                int penultimateIndex = rows.Count() - 2;
+                var penultimateRow = rows.ElementAt(penultimateIndex);
+                var lastRow = rows.Last();
+
+                string mergedRow = String.Concat(penultimateRow, " ", lastRow);
+                
+                // Remove 2 old rows and add 1 new.
+                rows.RemoveRange(penultimateIndex, 2);
+                rows.Add(mergedRow);
+            }
+
+            return rows;
+        }
+
+        /// <summary>
+        /// Truncate each entry in the given "rows" to a maximum of "maxCharacters".
+        /// For examples, given that "maxCharacters" equals to "8":
+        /// 
+        ///     { "Surface", "Analysis Data" } => { "Surface", "..s Data" }
+        ///     { "By", "Geometry", "Coordinate", "System" } => { "By", "Geometry", "Coordi..", "System" }
+        ///     { "By Geometry", "Coordinate System" } => { "By Geo..", "..System" }
         /// </summary>
         /// <param name="rows">Incomming rows</param>
         /// <param name="maxCharacters">Max number characters per row</param>
         internal static IEnumerable<string> TruncateRows(IEnumerable<string> rows, int maxCharacters)
         {
-            if (rows == null || maxCharacters <= 0)
+            if (rows == null || maxCharacters <= 2)
                 throw new ArgumentException();
             if (rows.Count() == 0)
                 return rows;
@@ -564,20 +549,16 @@ namespace Dynamo.Nodes
                 if (row.Length > maxCharacters)
                 {
                     string partOfRow;
-                    int spaceIndex = row.LastIndexOf(" ") + 1;
+                    int twoDotsLength = Configurations.TwoDots.Length;
+                    maxCharacters = maxCharacters - twoDotsLength;
 
-                    if (row.Length - spaceIndex >= maxCharacters)
-                    {
-                        // If it's last row, cut from the beginning.
-                        if (row == lastRow)
-                            partOfRow = row.Substring(row.Length - maxCharacters, maxCharacters);
-                        // If it isn't last row, cut from the end.
-                        else
-                            partOfRow = row.Substring(spaceIndex, maxCharacters);
-                    }
-                    // If there is space between words, then use last word.
+                    // If it's last row, cut from the beginning.
+                    if (row == lastRow)
+                        partOfRow = row.Substring(row.Length - maxCharacters, maxCharacters);
+                    // If it isn't last row, cut from the end.
                     else
-                        partOfRow = row.Substring(spaceIndex);
+                        partOfRow = row.Substring(0, maxCharacters);
+
 
                     if (row != lastRow)
                         currentRow = String.Concat(partOfRow, Configurations.TwoDots);
