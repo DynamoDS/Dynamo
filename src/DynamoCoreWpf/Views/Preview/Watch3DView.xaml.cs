@@ -966,11 +966,6 @@ namespace Dynamo.Controls
                             1);
                     }
 
-                    if (startColor == Color.White)
-                    {
-                        startColor = Color.Black;
-                    }
-
                     // Line segments are represented as a 
                     // start point and an end point. Except
                     // where we are starting the curve or ending it,
