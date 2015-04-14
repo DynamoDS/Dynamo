@@ -879,10 +879,10 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
 
             Assert.IsTrue(
-                astLiveRunner.Core.DSExecutable.RuntimeData.CallsiteCache.First().Value.TraceData[0].HasNestedData);
+                astLiveRunner.Core.DSExecutable.CallsiteCache.First().Value.TraceData[0].HasNestedData);
 
             Assert.IsTrue(
-                astLiveRunner.Core.DSExecutable.RuntimeData.CallsiteCache.First().Value.TraceData[0].NestedData.Count == 3);
+                astLiveRunner.Core.DSExecutable.CallsiteCache.First().Value.TraceData[0].NestedData.Count == 3);
 
 
             // Simulate a new new CBN
@@ -1353,11 +1353,11 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 }, astLiveRunner);
 
             Assert.IsTrue(
-                astLiveRunner.Core.DSExecutable.RuntimeData.CallsiteCache.First().Value.TraceData[0].HasNestedData);
+                astLiveRunner.Core.DSExecutable.CallsiteCache.First().Value.TraceData[0].HasNestedData);
 
 
             Assert.IsTrue(
-                astLiveRunner.Core.DSExecutable.RuntimeData.CallsiteCache.First().Value.TraceData[0].NestedData.Count == 3);
+                astLiveRunner.Core.DSExecutable.CallsiteCache.First().Value.TraceData[0].NestedData.Count == 3);
 
             // Simulate a new new CBN
             Guid guid2 = System.Guid.NewGuid();
@@ -1596,7 +1596,7 @@ mtcAID = mtcA.ID;";
 
             TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 1}, astLiveRunner);
 
-            Assert.IsTrue(astLiveRunner.Core.DSExecutable.RuntimeData.CallsiteCache.Count == 1);
+            Assert.IsTrue(astLiveRunner.Core.DSExecutable.CallsiteCache.Count == 1);
 
 
             Console.WriteLine("==============Completed first verification ===================");
@@ -1688,7 +1688,7 @@ mtcAID = mtcA.ID;";
 
             TestFrameWork.AssertValue("mtcAID", new List<int>() { 0, 1 }, astLiveRunner);
 
-            Assert.IsTrue(astLiveRunner.Core.DSExecutable.RuntimeData.CallsiteCache.Count == 1);
+            Assert.IsTrue(astLiveRunner.Core.DSExecutable.CallsiteCache.Count == 1);
             //astLiveRunner.Core.CallsiteCache.First().Value.
 
             Console.WriteLine("==============Completed first verification ===================");
