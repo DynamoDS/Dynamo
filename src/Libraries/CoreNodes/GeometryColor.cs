@@ -25,7 +25,7 @@ namespace DSCore
         /// </summary>
         /// <param name="geometry">The geometry to which you would like to apply color.</param>
         /// <param name="color">The color.</param>
-        /// <returns></returns>
+        /// <returns>A Display object.</returns>
         public static Display ByGeometryColor(Geometry geometry, Color color)
         {
             if (geometry == null)
