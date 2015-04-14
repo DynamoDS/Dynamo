@@ -530,6 +530,7 @@ namespace Dynamo.Nodes
             if (rows.Count() == 0)
                 return rows;
             List<string> resultRows = new List<string>();
+            int twoDotsLength = Configurations.TwoDots.Length;
 
             // If there is just 1 row.
             if (rows.Count() == 1)
@@ -538,7 +539,7 @@ namespace Dynamo.Nodes
                 if (row.Length <= maxCharacters)
                     resultRows.Add(row);
                 else
-                    resultRows.Add(row.Substring(0,maxCharacters) + Configurations.TwoDots);
+                    resultRows.Add(row.Substring(0, maxCharacters - twoDotsLength) + Configurations.TwoDots);
                 return resultRows;
             }
 
@@ -548,8 +549,7 @@ namespace Dynamo.Nodes
             {
                 if (row.Length > maxCharacters)
                 {
-                    string partOfRow;
-                    int twoDotsLength = Configurations.TwoDots.Length;
+                    string partOfRow; 
                     maxCharacters = maxCharacters - twoDotsLength;
 
                     // If it's last row, cut from the beginning.
@@ -560,10 +560,10 @@ namespace Dynamo.Nodes
                         partOfRow = row.Substring(0, maxCharacters);
 
 
-                    if (row != lastRow)
-                        currentRow = String.Concat(partOfRow, Configurations.TwoDots);
+                    if (row == lastRow)
+                        currentRow = String.Concat(Configurations.TwoDots, partOfRow); 
                     else
-                        currentRow = String.Concat(Configurations.TwoDots, partOfRow);
+                        currentRow = String.Concat(partOfRow, Configurations.TwoDots);
                 }
                 else
                 {
