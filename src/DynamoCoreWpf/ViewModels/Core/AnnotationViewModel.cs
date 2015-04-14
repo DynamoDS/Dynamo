@@ -129,7 +129,8 @@ namespace Dynamo.ViewModels
         }
        
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
-        {            
+        {
+            ZIndex = 0; //Dont want the group to be in the foreground
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;                                     
             model.PropertyChanged += model_PropertyChanged;
