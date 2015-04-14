@@ -179,7 +179,7 @@ namespace Analysis
             var sw = new Stopwatch();
             sw.Start();
 
-            DelaunayTesselate(Surface, package, 30, 30);
+            DelaunayTesselate(Surface, package, 30, 30, ValueLocations);
 
             DebugTime(sw, "Ellapsed for tessellation.");
 
@@ -228,7 +228,7 @@ namespace Analysis
         /// <param name="package">The IRenderPackage object into which the graphics data will be pushed.</param>
         /// <param name="uDiv">The number of divisions of the grid on the surface in the U direction.</param>
         /// <param name="vDiv">The number of divisions of the grid on the surface in the V direction.</param>
-        private static void DelaunayTesselate(Surface surface, IRenderPackage package, int uDiv, int vDiv)
+        private static void DelaunayTesselate(Surface surface, IRenderPackage package, int uDiv, int vDiv, IEnumerable<UV> additionalUVs)
         {
             var uvs = new List<UV>();
             for (var i = 0; i <= uDiv; i += 1)
@@ -241,6 +241,8 @@ namespace Analysis
                     uvs.Add(uv);
                 }
             }
+
+            uvs.AddRange(additionalUVs);
 
             var curves = surface.PerimeterCurves();
             var coords = GetEdgeCoordinates(curves, 100, surface);
