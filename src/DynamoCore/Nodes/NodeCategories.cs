@@ -494,23 +494,24 @@ namespace Dynamo.Nodes
         {
             if (rows == null || maxRows <= 0)
                 throw new ArgumentException();
-            if (rows.Count() == 0 || rows.Count() <= maxRows)
-                return rows;
 
-            while (rows.Count() != maxRows)
+            var results = new List<string>();
+            foreach (var row in rows)
             {
-                int penultimateIndex = rows.Count() - 2;
-                var penultimateRow = rows.ElementAt(penultimateIndex);
-                var lastRow = rows.Last();
+                // There are still room in the results list.
+                if (results.Count < maxRows)
+                {
+                    results.Add(row);
+                    continue;
+                }
 
-                string mergedRow = String.Concat(penultimateRow, " ", lastRow);
-                
-                // Remove 2 old rows and add 1 new.
-                rows.RemoveRange(penultimateIndex, 2);
-                rows.Add(mergedRow);
+                // Already full, keep appending to last row.
+                var lastRow = results.Last();
+                results.Remove(lastRow);
+                results.Add(lastRow + " " + row);
             }
 
-            return rows;
+            return results;
         }
 
         /// <summary>
