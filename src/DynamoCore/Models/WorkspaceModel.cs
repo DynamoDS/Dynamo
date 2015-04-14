@@ -15,7 +15,7 @@ using Dynamo.Nodes;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-
+using ProtoCore.AST;
 using ProtoCore.Namespace;
 
 using Utils = Dynamo.Nodes.Utilities;
@@ -668,10 +668,8 @@ namespace Dynamo.Models
         {
             var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
             var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
-            //No Groups should be selected when creating a new group. This is to avoid creating multiple groups
-            //on the selected nodes.
-            var selectedAnnotation = this.Annotations == null ? null : this.Annotations.Where(s => s.IsSelected);
-            if (selectedAnnotation != null && !selectedAnnotation.Any())
+           
+            if (!CheckIfModelExistsInSameGroup(selectedNodes, selectedNotes))
             {
                 var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
                 {
@@ -684,6 +682,27 @@ namespace Dynamo.Models
                 return annotationModel;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Checks if model exists in same group.
+        /// </summary>
+        /// <param name="selectNodes">The select nodes.</param>
+        /// <param name="selectNotes">The select notes.</param>
+        /// <returns>true if the models are already in the same group</returns>
+        private bool CheckIfModelExistsInSameGroup(IEnumerable<NodeModel> selectNodes, IEnumerable<NoteModel> selectNotes)
+        {
+            var selectedModels = selectNodes.Concat(selectNotes.Cast<ModelBase>()).ToList();
+            bool nodesInSameGroup = false;
+            foreach (var group in this.Annotations)
+            {
+                var groupModels = group.SelectedModels;
+                nodesInSameGroup = groupModels.Except(selectedModels).ToList().Count <= 0;
+                if (nodesInSameGroup)
+                    break;
+            }
+
+            return nodesInSameGroup;
         }
 
         /// <summary>

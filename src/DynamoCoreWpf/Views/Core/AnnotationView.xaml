@@ -227,30 +227,7 @@
                     Style="{StaticResource SZoomFadeTextBox}">                  
             </TextBox>
             
-            <Grid.Triggers>                
-                <EventTrigger  SourceName="GroupTextBlock" RoutedEvent="UserControl.MouseDoubleClick">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <ObjectAnimationUsingKeyFrames Duration="0"  
-                                                               Storyboard.TargetName="GroupTextBlock"
-                                                               Storyboard.TargetProperty="(TextBlock.Visibility)">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}" />
-                            </ObjectAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames Duration="0"  
-                                                               Storyboard.TargetName="GroupTextBox"
-                                                               Storyboard.TargetProperty="(TextBox.Visibility)">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
-                            </ObjectAnimationUsingKeyFrames>
-                            <BooleanAnimationUsingKeyFrames
-                                    Storyboard.TargetName="GroupTextBox"
-                                    Storyboard.TargetProperty="(TextBox.Focusable)">
-                                <DiscreteBooleanKeyFrame
-                                            KeyTime="0"
-                                            Value="True" />
-                            </BooleanAnimationUsingKeyFrames>                            
-                        </Storyboard>                      
-                    </BeginStoryboard>
-                </EventTrigger>
+            <Grid.Triggers>                           
                 <EventTrigger  SourceName="GroupTextBox" RoutedEvent="TextBox.LostKeyboardFocus">
                     <BeginStoryboard>
                         <Storyboard>
