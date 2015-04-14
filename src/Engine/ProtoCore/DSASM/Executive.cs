@@ -839,12 +839,12 @@ namespace ProtoCore.DSASM
 
             if (null != Properties.executingGraphNode)
             {
-                exe.RuntimeData.ExecutingGraphnode = Properties.executingGraphNode;
+                exe.ExecutingGraphnode = Properties.executingGraphNode;
             }
 
             // Get the cached callsite, creates a new one for a first-time call
             CallSite callsite = exe.RuntimeData.GetCallSite(
-                exe.RuntimeData.ExecutingGraphnode, 
+                exe.ExecutingGraphnode, 
                 classIndex, 
                 fNode.name, 
                 exe,
@@ -890,12 +890,12 @@ namespace ProtoCore.DSASM
                     if (counter.times == 0)
                     {
                         counter.times++;
-                        exe.RuntimeData.calledInFunction = true;
+                        exe.calledInFunction = true;
                     }
 
                     else if (counter.times >= 1)
                     {
-                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && exe.RuntimeData.calledInFunction)
+                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && exe.calledInFunction)
                         {
                             counter.times++;
                         }
@@ -912,11 +912,11 @@ namespace ProtoCore.DSASM
                 else
                 {
                     FindRecursivePoints();
-                    string message = String.Format(Resources.kMethodStackOverflow, exe.RuntimeData.recursivePoint[0].name);
+                    string message = String.Format(Resources.kMethodStackOverflow, exe.recursivePoint[0].name);
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
 
-                    exe.RuntimeData.recursivePoint = new List<FunctionCounter>();
-                    exe.RuntimeData.funcCounterTable = new List<FunctionCounter>();
+                    exe.recursivePoint = new List<FunctionCounter>();
+                    exe.funcCounterTable = new List<FunctionCounter>();
                     sv = StackValue.Null;
                 }
             }
@@ -1062,7 +1062,7 @@ namespace ProtoCore.DSASM
 
                 if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_')
                 {
-                    exe.RuntimeData.calledInFunction = false;
+                    exe.calledInFunction = false;
                 }
             }
             return sv;
@@ -1123,7 +1123,7 @@ namespace ProtoCore.DSASM
                                             registers,
                                             new List<bool>());
 
-            var callsite = exe.RuntimeData.GetCallSite(exe.RuntimeData.ExecutingGraphnode,
+            var callsite = exe.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
                                             classIndex,
                                             procNode.name,
                                             exe, runtimeCore.RunningBlock, runtimeCore.Options, runtimeCore.RuntimeStatus);
@@ -1174,20 +1174,20 @@ namespace ProtoCore.DSASM
 
         private void FindRecursivePoints()
         {
-            foreach (FunctionCounter c in exe.RuntimeData.funcCounterTable)
+            foreach (FunctionCounter c in exe.funcCounterTable)
             {
                 if (c.times == Constants.kRecursionTheshold || c.times == Constants.kRecursionTheshold - 1)
                 {
-                    exe.RuntimeData.recursivePoint.Add(c);
+                    exe.recursivePoint.Add(c);
                 }
-                exe.RuntimeData.recursivePoint.Add(c);
+                exe.recursivePoint.Add(c);
             }
         }
 
 
         private FunctionCounter FindCounter(int funcIndex, int classScope, string name)
         {
-            foreach (FunctionCounter c in exe.RuntimeData.funcCounterTable)
+            foreach (FunctionCounter c in exe.funcCounterTable)
             {
                 if (c.classScope == classScope && c.functionIndex == funcIndex)
                 {
@@ -1195,7 +1195,7 @@ namespace ProtoCore.DSASM
                 }
             }
             FunctionCounter newC = new FunctionCounter(funcIndex, classScope, 0, name, 1);
-            exe.RuntimeData.funcCounterTable.Add(newC);
+            exe.funcCounterTable.Add(newC);
             return newC;
         }
 
@@ -3089,7 +3089,7 @@ namespace ProtoCore.DSASM
                     SymbolNode symbol = GetSymbolNode(blockId, (int)op2.opdata, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(symbol);
                     rmem.SetSymbolValue(symbol, opVal);
-                    exe.RuntimeData.UpdatedSymbols.Add(symbol);
+                    exe.UpdatedSymbols.Add(symbol);
 
                     if (IsDebugRun())
                     {
@@ -3107,7 +3107,7 @@ namespace ProtoCore.DSASM
                     var staticMember = GetSymbolNode( blockId, Constants.kGlobalScope, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(staticMember);
                     rmem.SetSymbolValue(staticMember, opVal);
-                    exe.RuntimeData.UpdatedSymbols.Add(staticMember);
+                    exe.UpdatedSymbols.Add(staticMember);
 
                     if (IsDebugRun())
                     {
@@ -3708,7 +3708,7 @@ namespace ProtoCore.DSASM
         private bool ProcessDynamicVariable(bool isArray, ref StackValue svPtr, int classIndex)
         {
             int variableDynamicIndex = (int)svPtr.opdata;
-            var dynamicVariableNode = exe.RuntimeData.DynamicVarTable.variableTable[variableDynamicIndex];
+            var dynamicVariableNode = exe.DynamicVarTable.variableTable[variableDynamicIndex];
 
             SymbolNode node = null;
             bool isStatic = false;
@@ -3770,7 +3770,7 @@ namespace ProtoCore.DSASM
                 functionDynamicIndex = (int)rmem.Pop().opdata;
             }
 
-            var dynamicFunction = exe.RuntimeData.DynamicFuncTable.GetFunctionAtIndex(functionDynamicIndex);
+            var dynamicFunction = exe.DynamicFuncTable.GetFunctionAtIndex(functionDynamicIndex);
 
             if (isDotMemFuncBody)
             {
@@ -3959,7 +3959,7 @@ namespace ProtoCore.DSASM
             if (isFunctionPointerCall)
             {
                 FunctionPointerNode fptrNode;
-                if (exe.RuntimeData.FuncPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
+                if (exe.FuncPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
                 {
                     int blockId = fptrNode.blockId;
                     int procId = fptrNode.procId;

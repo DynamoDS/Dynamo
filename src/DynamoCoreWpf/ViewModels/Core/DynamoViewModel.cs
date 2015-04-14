@@ -441,6 +441,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool showWatchSettingsControl = false;
+
+        public bool ShowWatchSettingsControl
+        {
+            get { return showWatchSettingsControl; }
+            set
+            {
+                showWatchSettingsControl = value;
+                RaisePropertyChanged("ShowWatchSettingsControl");   
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration

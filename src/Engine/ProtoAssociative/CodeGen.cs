@@ -4049,8 +4049,8 @@ namespace ProtoAssociative
                             this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus, graphNode);
                         }
                         codeblock.Body = BuildSSA(codeblock.Body, context);
-                        core.RuntimeData.CachedSSANodes.Clear();
-                        core.RuntimeData.CachedSSANodes.AddRange(codeblock.Body);
+                        core.DSExecutable.CachedSSANodes.Clear();
+                        core.DSExecutable.CachedSSANodes.AddRange(codeblock.Body);
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
                         {
@@ -4127,7 +4127,7 @@ namespace ProtoAssociative
             this.localCodeBlockNode = codeBlockNode;
 
             // Reset the callsite guids in preparation for the next compilation
-            core.RuntimeData.CallsiteGuidMap = new Dictionary<Guid, int>();
+            core.DSExecutable.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
         }
