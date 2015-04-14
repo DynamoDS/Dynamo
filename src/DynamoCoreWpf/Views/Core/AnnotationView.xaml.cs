@@ -29,8 +29,7 @@ namespace Dynamo.Nodes
             Resources.MergedDictionaries.Add(SharedDictionaryManager.PortsDictionary);
 
             InitializeComponent();
-            Loaded += AnnotationView_Loaded;           
-            this.GroupTextBlock.MouseLeftButtonDown += UIElement_OnMouseLeftButtonDown;   
+            Loaded += AnnotationView_Loaded;                      
             this.GroupTextBlock.SizeChanged +=GroupTextBlock_SizeChanged;          
         }
      
@@ -112,12 +111,7 @@ namespace Dynamo.Nodes
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
         }
-
-        private void UIElement_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {                      
-            e.Handled = true;
-        }
-
+       
         /// <summary>
         /// Handles the OnTextChanged event of the GroupTextBox control.
         /// Calculates the height of a Group based on the height of textblock

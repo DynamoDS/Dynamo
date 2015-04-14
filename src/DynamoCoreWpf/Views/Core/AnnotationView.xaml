@@ -11,7 +11,7 @@
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
              MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"              
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
-             Canvas.Top="{Binding Top, Mode=TwoWay}">
+             Canvas.Top="{Binding Top, Mode=TwoWay}">   
     <UserControl.Resources>
         <Style x:Key="ColorSelectorListBox"
            TargetType="ListBox">
@@ -101,22 +101,29 @@
         </Style>    
     </UserControl.Resources>
     <UserControl.Triggers>
-        <EventTrigger  SourceName="Group" RoutedEvent="UserControl.MouseLeftButtonDown">
+        <EventTrigger  SourceName="Group" RoutedEvent="UserControl.MouseDoubleClick">
             <BeginStoryboard>
                 <Storyboard>
                     <ObjectAnimationUsingKeyFrames Duration="0"  
                                                                Storyboard.TargetName="GroupTextBlock"
                                                                Storyboard.TargetProperty="(TextBlock.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}" />
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Duration="0"  
                                                                Storyboard.TargetName="GroupTextBox"
                                                                Storyboard.TargetProperty="(TextBox.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}" />
+                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
                     </ObjectAnimationUsingKeyFrames>
+                    <BooleanAnimationUsingKeyFrames
+                                    Storyboard.TargetName="GroupTextBox"
+                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                        <DiscreteBooleanKeyFrame
+                                            KeyTime="0"
+                                            Value="True" />
+                    </BooleanAnimationUsingKeyFrames>
                 </Storyboard>
             </BeginStoryboard>
-        </EventTrigger>
+        </EventTrigger>      
     </UserControl.Triggers>
     <Grid Name="AnnotationGrid" Height="Auto">    
         <Grid.RowDefinitions>
@@ -221,7 +228,7 @@
             </TextBox>
             
             <Grid.Triggers>                
-                <EventTrigger  SourceName="GroupTextBlock" RoutedEvent="TextBlock.MouseLeftButtonDown">
+                <EventTrigger  SourceName="GroupTextBlock" RoutedEvent="UserControl.MouseDoubleClick">
                     <BeginStoryboard>
                         <Storyboard>
                             <ObjectAnimationUsingKeyFrames Duration="0"  
@@ -270,4 +277,5 @@
             </Grid.Triggers>
         </Grid>              
     </Grid>
+    
 </UserControl>
