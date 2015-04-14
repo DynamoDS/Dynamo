@@ -1339,8 +1339,8 @@ namespace Dynamo.Models
                 {
                     GUID = Guid.NewGuid(),
                     AnnotationText = annotation.AnnotationText,
-                    Background = annotation.Background
-
+                    Background = annotation.Background,
+                    FontSize = annotation.FontSize
                 };
                 newAnnotations.Add(annotationModel);
             }
