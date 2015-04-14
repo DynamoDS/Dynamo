@@ -16,7 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="100"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="60"></RowDefinition>
         </Grid.RowDefinitions>
         <!-- The top banner image -->
@@ -77,6 +77,7 @@
                   FontSize="13.333"
                   Background="White">
             <TextBlock FontWeight="SemiBold"
+                       Foreground="#4790cd"
                        Name="ConsentTextBlock" />
         </CheckBox>
         <!-- Accept or Cancel -->
