@@ -550,14 +550,14 @@ namespace Dynamo.Nodes
                 if (row.Length > maxCharacters)
                 {
                     string partOfRow; 
-                    maxCharacters = maxCharacters - twoDotsLength;
+                    var charactersToCut = maxCharacters - twoDotsLength;
 
                     // If it's last row, cut from the beginning.
                     if (row == lastRow)
-                        partOfRow = row.Substring(row.Length - maxCharacters, maxCharacters);
+                        partOfRow = row.Substring(row.Length - charactersToCut, charactersToCut);
                     // If it isn't last row, cut from the end.
                     else
-                        partOfRow = row.Substring(0, maxCharacters);
+                        partOfRow = row.Substring(0, charactersToCut);
 
 
                     if (row == lastRow)

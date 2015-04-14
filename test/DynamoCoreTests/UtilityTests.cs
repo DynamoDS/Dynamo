@@ -694,6 +694,8 @@ namespace Dynamo.Tests
             //4. When original is ("Surface", "Analysis Data"), maxCharacters = 9
             //5. When original is ("Coordinate", "System"), maxCharacters = 9
             //6. When original is ("Rectangle"), maxCharacters = 9
+            //7. When original is ("By", "Geometry", "Coordinate", "System"), maxCharacters = 9
+            //8. When original is ("By Geometry", "Coordinate System"), maxCharacters = 9
 
             // case 1
             Assert.Throws<ArgumentException>(() =>
@@ -725,6 +727,16 @@ namespace Dynamo.Tests
             original = new List<string>() { "Rectangle" };
             result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
             Assert.AreEqual(new List<string>() { "Rectangle" }, result);
+
+            // case 7
+            original = new List<string>() { "By", "Geometry", "Coordinate", "System" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
+            Assert.AreEqual(new List<string>() { "By", "Geometry", "Coordin..", "System" }, result);
+
+            // case 8
+            original = new List<string>() { "By Geometry", "Coordinate System" };
+            result = Dynamo.Nodes.Utilities.TruncateRows(original, 9);
+            Assert.AreEqual(new List<string>() { "By Geom..", ".. System" }, result);
         }
 
         [Test]
