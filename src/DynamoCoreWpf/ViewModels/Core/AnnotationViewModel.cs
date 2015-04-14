@@ -13,8 +13,7 @@ namespace Dynamo.ViewModels
     {
         private AnnotationModel annotationModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;        
-        private double zIndex = 2;
-        
+      
         public AnnotationModel AnnotationModel
         {
             get { return annotationModel; }
@@ -56,12 +55,8 @@ namespace Dynamo.ViewModels
 
         public double ZIndex
         {
-            get { return zIndex; }
-            set
-            {
-                zIndex = value;
-                RaisePropertyChanged("ZIndex");
-            }
+            get { return 1; }
+            
         }
 
         public String AnnotationText
@@ -129,8 +124,7 @@ namespace Dynamo.ViewModels
         }
        
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
-        {
-            ZIndex = 0; //Dont want the group to be in the foreground
+        {             
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;                                     
             model.PropertyChanged += model_PropertyChanged;
