@@ -29,7 +29,7 @@ namespace Dynamo.Tests
         {
             // goto custom node workspace
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             Assert.AreEqual(model.CurrentWorkspace.Name, "Sequence2");
@@ -54,7 +54,7 @@ namespace Dynamo.Tests
         {
             // goto custom node workspace
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\combine", "Sequence2.dyf");
+            var examplePath = Path.Combine(TestDirectory, @"core\combine", "Sequence2.dyf");
             ViewModel.OpenCommand.Execute(examplePath);
 
             Assert.AreEqual(model.CurrentWorkspace.Name, "Sequence2");

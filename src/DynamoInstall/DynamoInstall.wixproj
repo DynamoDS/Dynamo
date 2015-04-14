@@ -9,7 +9,7 @@
     <ProductVersion>3.8</ProductVersion>
     <ProjectGuid>c7495640-0d0c-46ab-a5f3-d5be78f89a0d</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>DynamoCore</OutputName>
+    <OutputName>DynamoInstall</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
@@ -34,6 +34,10 @@
     <Compile Include="Samples.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixUtilExtension">
+      <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
+      <Name>WixUtilExtension</Name>
+    </WixExtension>
     <WixExtension Include="WixUIExtension">
       <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
       <Name>WixUIExtension</Name>
@@ -43,6 +47,8 @@
   <PropertyGroup>
     <PreBuildEvent>rd /s /q $(DYNAMO_HARVEST_PATH)
 robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) -XF %2aTest%2a.dll %2a.pdb TestResult.xml -e -XD int -XD samples
+copy $(DYNAMO_BASE_PATH)\tools\install\Extra\DynamoAddinGenerator.exe $(DYNAMO_HARVEST_PATH)\DynamoAddinGenerator.exe
+copy $(DYNAMO_BASE_PATH)\tools\install\Extra\RevitAddinUtility.dll $(DYNAMO_HARVEST_PATH)\RevitAddinUtility.dll
 
 "%25WIX%25bin\heat.exe" dir $(DYNAMO_HARVEST_PATH) -cg RELEASE -gg -scom -sreg -srd -dr DYNAMO_INSTALLDIR -var var.harvest -out "$(ProjectDir)Release.wxs"
 "%25WIX%25bin\heat.exe" dir $(DYNAMO_SAMPLES_PATH) -cg SAMPLES -gg -scom -sreg -dr PROGDATA -var var.samples -t "$(ProjectDir)Samples.xsl" -out "$(ProjectDir)Samples.wxs"
@@ -76,4 +82,7 @@ robocopy $(DYNAMO_BASE_PATH)\bin\AnyCPU\$(Configuration) $(DYNAMO_HARVEST_PATH) 
   </Target>
   <Target Name="AfterBuild">
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy $(OutputPath)$(OutputName).msi  $(DYNAMO_BASE_PATH)\tools\install\Installers\ /y</PostBuildEvent>
+  </PropertyGroup>
 </Project>

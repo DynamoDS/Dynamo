@@ -472,7 +472,7 @@ namespace ProtoTestFx
                     {
                         if (opCode == ProtoCore.DSASM.OpCode.POP)
                         {
-                            VerifyWatch_Run(lineAtPrevBreak, runtimeCore.DebugProps.CurrentSymbolName, core, map, watchNestedMode, defectID: defectID);
+                            VerifyWatch_Run(lineAtPrevBreak, runtimeCore.DebugProps.CurrentSymbolName, core, runtimeCore, map, watchNestedMode, defectID: defectID);
                         }
                         // if previous breakpoint was at a CALLR
                         else if (opCode == ProtoCore.DSASM.OpCode.CALLR)
@@ -480,7 +480,7 @@ namespace ProtoTestFx
                             if (runtimeCore.DebugProps.IsPopmCall)
                             {
                                 int ci = (int)currentVms.mirror.MirrorTarget.rmem.GetAtRelative(ProtoCore.DSASM.StackFrame.kFrameIndexClass).opdata;
-                                VerifyWatch_Run(InjectionExecutive.callrLineNo, runtimeCore.DebugProps.CurrentSymbolName, core, map, watchNestedMode, ci, defectID);
+                                VerifyWatch_Run(InjectionExecutive.callrLineNo, runtimeCore.DebugProps.CurrentSymbolName, core, runtimeCore, map, watchNestedMode, ci, defectID);
                             }
                         }
                     }
@@ -562,7 +562,7 @@ namespace ProtoTestFx
             }
         }*/
 
-        internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core,
+        internal static void VerifyWatch_Run(int lineAtPrevBreak, string symbolName, Core core, RuntimeCore runtimeCore,
             Dictionary<int, List<string>> map, bool watchNestedMode = false, int ci = Constants.kInvalidIndex, string defectID = "")
         {
             //bool check = true;
@@ -571,8 +571,6 @@ namespace ProtoTestFx
             // verify that the LHS identifier name equals 'symbolName'
             // pass the LHS string to GetWatchValue() and inspect it
             // verify the watch values with the log output
-
-            ProtoCore.RuntimeCore runtimeCore = core.__TempCoreHostForRefactoring;
             if (!map.ContainsKey(lineAtPrevBreak))
                 return;
 

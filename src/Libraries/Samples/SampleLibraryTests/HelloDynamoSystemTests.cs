@@ -1,5 +1,7 @@
 ﻿using SystemTestServices;
 
+using Autodesk.DesignScript.Runtime;
+
 using Dynamo.Nodes;
 using Dynamo.Tests;
 
@@ -23,6 +25,7 @@ namespace SampleLibraryTests
     /// moves the output from this project to the Dynamo core directory.
     /// </summary>
     [TestFixture]
+    [IsVisibleInDynamoLibrary(false)]
     public class HelloDynamoSystemTests : SystemTestBase
     {
         // The RequiresSTA attribute is required by

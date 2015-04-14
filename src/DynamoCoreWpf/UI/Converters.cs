@@ -237,16 +237,12 @@ namespace Dynamo.Controls
     // (these properties are also to be bound in the exact order as stated here):
     // 
     //      SearchViewModel.SearchRootCategories.Count (int)
-    //      SearchViewModel.SearchAddonsVisibility (bool)
     //      SearchViewModel.SearchText (string)
-    //
-    // Rewrite converter when Addons treeview will be visible.
-    // Task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6226.
     public class SearchResultsToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[2] as string))
+            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
             {
                 return Visibility.Visible;
             }
@@ -1985,21 +1981,6 @@ namespace Dynamo.Controls
         }
     }
 
-    // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
-    public class HasParentRootElement : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return (value is RootNodeCategoryViewModel);
-        }
-
-        public object ConvertBack(
-            object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class NullValueToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2127,7 +2108,7 @@ namespace Dynamo.Controls
         }
     }
 
-    // This converter is used to show text label of Addon type in AddonsTreeView control.
+    // This converter is used to show text label of Addon type.
     public class ElementTypeToShorthandConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

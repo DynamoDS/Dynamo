@@ -302,7 +302,6 @@ namespace ProtoCore.Lang
                         Validity.Assert(svFalse.IsInteger);
                         int blockId = (1 == (int)svCondition.opdata) ? (int)svTrue.opdata : (int)svFalse.opdata;
 
-                        ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
                         int oldRunningBlockId = runtimeCore.RunningBlock;
                         runtimeCore.RunningBlock = blockId;
 
@@ -339,7 +338,7 @@ namespace ProtoCore.Lang
                         blockCaller = runtimeCore.DebugProps.CurrentBlockId;
                         StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
 
-                        ret = interpreter.runtime.Bounce(blockId, 0, context, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
+                        ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
 
                         runtimeCore.RunningBlock = oldRunningBlockId;
                         break;

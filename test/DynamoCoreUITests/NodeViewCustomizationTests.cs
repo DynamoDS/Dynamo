@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
@@ -47,6 +48,13 @@ namespace DynamoCoreUITests
             base.Run();
 
             DispatcherUtil.DoEvents();
+        }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
         }
 
         [Test]
