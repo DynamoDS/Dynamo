@@ -214,6 +214,9 @@
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
+      <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\BrowserWindow.xaml.cs">
       <DependentUpon>BrowserWindow.xaml</DependentUpon>
     </Compile>
@@ -965,6 +968,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Preview\Watch3DSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\BrowserWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

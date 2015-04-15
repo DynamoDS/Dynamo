@@ -441,6 +441,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool showWatchSettingsControl = false;
+
+        public bool ShowWatchSettingsControl
+        {
+            get { return showWatchSettingsControl; }
+            set
+            {
+                showWatchSettingsControl = value;
+                RaisePropertyChanged("ShowWatchSettingsControl");   
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration
@@ -952,12 +964,12 @@ namespace Dynamo.ViewModels
             if (workspace == HomeSpace)
             {
                 ext = ".dyn";
-                fltr = string.Format(Resources.FileDialogDynamoWorkspace,"*.dyn");
+                fltr = string.Format(Resources.FileDialogDynamoWorkspace,BrandingResourceProvider.ProductName,"*.dyn");
             }
             else
             {
                 ext = ".dyf";
-                fltr = string.Format(Resources.FileDialogDynamoCustomNode,"*.dyf");
+                fltr = string.Format(Resources.FileDialogDynamoCustomNode,BrandingResourceProvider.ProductName,"*.dyf");
             }
             fltr += "|" + string.Format(Resources.FileDialogAllFiles, "*.*");
 
@@ -1011,9 +1023,10 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = string.Format(Resources.FileDialogDynamoDefinitions, "*.dyn;*.dyf") + "|" +
+                Filter = string.Format(Resources.FileDialogDynamoDefinitions,
+                         BrandingResourceProvider.ProductName, "*.dyn;*.dyf") + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
-                Title = Resources.OpenDynamoDefinitionDialogTitle
+                Title = string.Format(Resources.OpenDynamoDefinitionDialogTitle,BrandingResourceProvider.ProductName)
             };
 
             // if you've got the current space path, use it as the inital dir

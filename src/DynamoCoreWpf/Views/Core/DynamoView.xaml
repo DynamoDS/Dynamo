@@ -18,6 +18,7 @@
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -808,6 +809,10 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />
+                        <MenuItem Focusable="False"
+                                  Header="Show Watch Settings Control"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding ShowWatchSettingsControl, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
 
@@ -860,11 +865,13 @@
                     <SolidColorBrush Color="{Binding ViewingHomespace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
+
             <controls:Watch3DView x:Name="background_preview"
                                   Margin="0,20,0,0"
                                   Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                   IsHitTestVisible="{Binding WatchPreviewHitTest}">
             </controls:Watch3DView>
+            
         </Grid>
 
         <!--
@@ -1687,6 +1694,13 @@
             </ItemsControl.Visibility>
         </ItemsControl>
 
+        <Grid Grid.Row="2"
+              Grid.Column="2" Visibility="{Binding ShowWatchSettingsControl, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <preview:Watch3DSettingsControl x:Name="watchSettingsControl"  
+                                            DataContext=""
+                                            HorizontalAlignment="Left" 
+                                            VerticalAlignment="Top" Margin="10,30" />
+        </Grid>
     </Grid>
 
 

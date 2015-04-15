@@ -40,17 +40,17 @@ namespace Dynamo.ViewModels
 
         public Double Top
         {
-            get { return annotationModel.Top; }
+            get { return annotationModel.Y; }
             set
             {
-                annotationModel.Top = value;                
+                annotationModel.Y = value;                
             }
         }
        
         public Double Left
         {
-            get { return annotationModel.Left; }
-            set { annotationModel.Left = value; }
+            get { return annotationModel.X; }
+            set { annotationModel.X = value; }
         }
 
         public double ZIndex
@@ -154,10 +154,10 @@ namespace Dynamo.ViewModels
         {
             switch (e.PropertyName)
             {
-                case "Left":
+                case "X":
                     RaisePropertyChanged("Left");
                     break;
-                case "Top":
+                case "Y":
                     RaisePropertyChanged("Top");
                     break;
                 case "Width":

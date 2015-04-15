@@ -665,8 +665,8 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, Model.CurrentWorkspace.Annotations.Count);
 
             //verify whether group is not empty
-            Assert.AreNotEqual(0, annotation.Top);
-            Assert.AreNotEqual(0, annotation.Left);
+            Assert.AreNotEqual(0, annotation.Y);
+            Assert.AreNotEqual(0, annotation.X);
             Assert.AreNotEqual(0, annotation.Width);
             Assert.AreNotEqual(0, annotation.Height);
 

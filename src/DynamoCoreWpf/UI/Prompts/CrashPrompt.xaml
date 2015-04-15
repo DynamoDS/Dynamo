@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-        Title="{x:Static p:Resources.CrashPromptDialogTitle}"
         Width="660"
         SizeToContent="Height"
         ResizeMode="NoResize"
@@ -40,8 +39,7 @@
                            FontSize="13"
                            Foreground="#aaaaaa"
                            HorizontalAlignment="Stretch"
-                           TextWrapping="Wrap"
-                           Text="{x:Static p:Resources.CrashPromptDialogCrashMessage}"/>
+                           TextWrapping="Wrap"/>
             </StackPanel>
 
             <StackPanel Grid.Row="1"
