@@ -85,15 +85,38 @@ namespace DSCore
                 ReColorVerticesFromTo(start, end, package);
             }
 
+            for (var i = 0; i < package.TriangleVertices.Count; i += 3)
+            {
+                NudgeVertexAlongVector(package.TriangleVertices, package.TriangleNormals, i, 0.001);
+            }
+
+        }
+
+        private void NudgeVertexAlongVector(IList<double> vertices, IList<double> normals, int i, double amount)
+        {
+            var x = (float)vertices[i];
+            var y = (float)vertices[i + 1];
+            var z = (float)vertices[i + 2];
+            var v = Vector.ByCoordinates(x, y, z);
+
+            var nx = (float)vertices[i];
+            var ny = (float)vertices[i + 1];
+            var nz = (float)vertices[i + 2];
+            var n = Vector.ByCoordinates(nx, ny, nz);
+
+            var nudge = v.Add(n.Normalized().Scale(amount));
+            vertices[i] = nudge.X;
+            vertices[i + 1] = nudge.Y;
+            vertices[i + 2] = nudge.Z;
         }
 
         private void ReColorVerticesFromTo(int start, int end, IRenderPackage package)
         {
             for (var i = start; i < end; i += 4)
             {
-                package.LineStripVertexColors[i] = 0;
-                package.LineStripVertexColors[i + 1] = 0;
-                package.LineStripVertexColors[i + 2] = 0;
+                package.LineStripVertexColors[i] = color.Red;
+                package.LineStripVertexColors[i + 1] = color.Green;
+                package.LineStripVertexColors[i + 2] = color.Blue;
             }
         }
 
