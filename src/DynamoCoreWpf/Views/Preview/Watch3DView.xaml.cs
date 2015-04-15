@@ -14,8 +14,8 @@ using System.Windows.Media.Media3D;
 
 using Autodesk.DesignScript.Interfaces;
 
-using Dynamo.DSEngine;
 using Dynamo.ViewModels;
+using Dynamo.DSEngine;
 
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -25,6 +25,7 @@ using SharpDX;
 
 using Camera = HelixToolkit.Wpf.SharpDX.Camera;
 using Color = SharpDX.Color;
+using ColorConverter = System.Windows.Media.ColorConverter;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
@@ -407,23 +408,31 @@ namespace Dynamo.Controls
             ShowShadows = false;
             
             // setup lighting            
-            AmbientLightColor = new Color4(0.4f, 0.4f, 0.4f, 1.0f);
+            AmbientLightColor = new Color4(0.3f, 0.3f, 0.3f, 1.0f);
 
-            DirectionalLightColor = new Color4(0.45f, 0.4f, 0.4f, 1.0f);
-            DirectionalLightDirection = new Vector3(0.0f, -1.0f, 0.0f);
-
-            FillLightColor = new Color4(new Vector4(0.1f, 0.1f, 0.1f, 1.0f));
-            FillLightDirection = new Vector3(0.0f, 1.0f, 0.0f);
+            DirectionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
+            DirectionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
+            
+            FillLightColor = new Color4(new Vector4(0.2f, 0.2f, 0.2f, 1.0f));
+            FillLightDirection = new Vector3(0.5f, 1.0f, 0f);
 
             RenderTechnique = Techniques.RenderPhong;
-            WhiteMaterial = PhongMaterials.PureWhite;
+            WhiteMaterial = new PhongMaterial
+            {
+                Name = "White",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = PhongMaterials.ToColor(0.992157, 0.992157, 0.992157, 1.0),
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+            };
 
             Model1Transform = new TranslateTransform3D(0, -0, 0);
 
             // camera setup
             Camera = new PerspectiveCamera
             {
-                Position = new Point3D(10, 10, 10),
+                Position = new Point3D(10, 15, 10),
                 LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
             };
@@ -712,9 +721,9 @@ namespace Dynamo.Controls
         private static void DrawGridPatch(
             Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY)
         {
-            var c1 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#c5d1d8");
+            var c1 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#c5d1d8");
             c1.Clamp();
-            var c2 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#ddeaf2");
+            var c2 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#ddeaf2");
             c2.Clamp();
 
             var darkGridColor = new Color4(new Vector4(c1.ScR,c1.ScG ,c1.ScB, 1));
@@ -990,7 +999,7 @@ namespace Dynamo.Controls
         }
 
         private void ConvertMeshes(IRenderPackage p, MeshGeometry3D mesh)
-        {
+        { 
             // DirectX has a different winding than we store in
             // render packages. Re-wind triangles here...
             var color_idx = 0;
@@ -1005,6 +1014,9 @@ namespace Dynamo.Controls
                 var an = GetVertex(p.TriangleNormals, i);
                 var bn = GetVertex(p.TriangleNormals, i + 3);
                 var cn = GetVertex(p.TriangleNormals, i + 6);
+                an.Normalize();
+                bn.Normalize();
+                cn.Normalize();
 
                 var ca = GetColor(p, color_idx);
                 var cb = GetColor(p, color_idx + 4);
