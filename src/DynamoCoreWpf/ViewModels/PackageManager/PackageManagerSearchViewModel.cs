@@ -425,6 +425,9 @@ namespace Dynamo.PackageManager
 
         private void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version)
         {
+            if (!PromptForTermsOfUseAcceptance())
+                return; // Terms of use not accepted.
+
             var result = MessageBox.Show(String.Format(Resources.MessageConfirmToInstallPackage, element.Name, version.version), 
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
@@ -722,6 +725,38 @@ namespace Dynamo.PackageManager
                     results.Sort((e1, e2) => e1.Model.Maintainers.ToLower().CompareTo(e2.Model.Maintainers.ToLower()));
                     break;
             }
+        }
+
+        /// <summary>
+        /// Call this method to optionally bring up terms of use dialog. User 
+        /// needs to accept terms of use before any packages can be downloaded 
+        /// from package manager.
+        /// </summary>
+        /// <returns>Returns true if the terms of use for downloading a package 
+        /// is accepted by the user, or false otherwise. If this method returns 
+        /// false, then download of package should be terminated.</returns>
+        /// 
+        private bool PromptForTermsOfUseAcceptance()
+        {
+            var vm = PackageManagerClientViewModel;
+            if (vm == null || (vm.DynamoViewModel == null))
+                return false; // Do not proceed with downloading.
+
+            var prefSettings = vm.DynamoViewModel.Model.PreferenceSettings;
+            if (prefSettings.PackageDownloadTouAccepted)
+                return true; // User accepts the terms of use.
+
+
+            var e = new DisplayTermsOfUseEventArgs(true);
+            vm.DynamoViewModel.OnDisplayTermsOfUse(e);
+
+            if (e.TermsOfUseAccepted)
+            {
+                // Update preference settings for savings later.
+                prefSettings.PackageDownloadTouAccepted = true;
+            }
+
+            return e.TermsOfUseAccepted; // User may or may not accept the terms.
         }
 
         /// <summary>

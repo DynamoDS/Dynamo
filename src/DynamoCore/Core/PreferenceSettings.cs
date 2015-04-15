@@ -114,6 +114,10 @@ namespace Dynamo
         /// </summary>
         public bool UseHardwareAcceleration { get; set; }
 
+        /// <summary>
+        /// Indicates if the user has accepted the terms of 
+        /// use for downloading packages from package manager.
+        /// </summary>
         public bool PackageDownloadTouAccepted { get; set; }
 
         public PreferenceSettings()
