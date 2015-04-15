@@ -16,6 +16,9 @@ using ProtoCore.Utils;
 using StackFrame = ProtoCore.DSASM.StackFrame;
 using System.Xml;
 using ProtoCore.Properties;
+using ProtoCore.Runtime;
+
+using WarningID = ProtoCore.Runtime.WarningID;
 
 namespace ProtoCore
 {
@@ -70,7 +73,6 @@ namespace ProtoCore
             {
                 get { return Data != null;  }
             }
-
 
             internal static SingleRunTraceData DeserialseFromData(SerializationInfo info, StreamingContext context, int objectID, string marker)
             {
@@ -196,7 +198,6 @@ namespace ProtoCore
                 return false;
             }
 
-
             public List<ISerializable> RecursiveGetNestedData()
             {
                 List<ISerializable> ret = new List<ISerializable>();
@@ -212,7 +213,6 @@ namespace ProtoCore
 
                 return ret;
             }
-
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace ProtoCore
         /// 4. Recreate using the special constructor
         /// </summary>
         [Serializable]
-        public class TraceSerialiserHelper : ISerializable
+        private class TraceSerialiserHelper : ISerializable
         {
             /// <summary>
             /// Empty defaul
@@ -270,11 +270,8 @@ namespace ProtoCore
                 var data = Convert.FromBase64String(callSiteData);
                 var formatter = new SoapFormatter();
                 var s = new MemoryStream(data);
-                var helper = (CallSite.TraceSerialiserHelper)formatter.Deserialize(s);
+                var helper = (TraceSerialiserHelper)formatter.Deserialize(s);
                 return helper;
-
-                //var serializables = helper.TraceData.SelectMany(std => std.RecursiveGetNestedData());
-                //return serializables;
             }
 
             public List<SingleRunTraceData> TraceData { get; set; }
@@ -332,7 +329,7 @@ namespace ProtoCore
             Validity.Assert(methodName != null);
             Validity.Assert(globalFunctionTable != null);
 
-            runID = ProtoCore.DSASM.Constants.kInvalidIndex;
+            runID = Constants.kInvalidIndex;
             executionMode = execMode;
             this.classScope = classScope;
             this.methodName = methodName;
@@ -343,7 +340,7 @@ namespace ProtoCore
                     "Parrallel Mode is not yet implemented {46F83CBB-9D37-444F-BA43-5E662784B1B3}");
 
             // Found preloaded trace data, reconstruct the instances from there.
-            if (!string.IsNullOrEmpty(serializedTraceData))
+            if (!String.IsNullOrEmpty(serializedTraceData))
             {
                 LoadSerializedDataIntoTraceCache(serializedTraceData);
                 
@@ -417,7 +414,6 @@ namespace ProtoCore
 
         #endregion
 
-        
         /// <summary>
         ///  This function handles generating a unique callsite ID and serializing the data associated with this callsite
         /// </summary>
@@ -493,8 +489,8 @@ namespace ProtoCore
 
 
 
-        private void ComputeFeps(StringBuilder log, ProtoCore.Runtime.Context context, List<StackValue> arguments, FunctionGroup funcGroup, ReplicationControl replicationControl,
-                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
+        private void ComputeFeps(StringBuilder log, Context context, List<StackValue> arguments, FunctionGroup funcGroup, ReplicationControl replicationControl,
+                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
             out List<FunctionEndPoint> resolvesFeps, out List<ReplicationInstruction> replicationInstructions)
         {
 
@@ -813,7 +809,7 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        private FunctionEndPoint Case1GetCompleteMatchFEP(ProtoCore.Runtime.Context context, List<StackValue> arguments,
+        private FunctionEndPoint Case1GetCompleteMatchFEP(Context context, List<StackValue> arguments,
                                                           FunctionGroup funcGroup,
                                                           ReplicationControl replicationControl, StackFrame stackFrame,
                                                           RuntimeCore runtimeCore, StringBuilder log)
@@ -921,14 +917,14 @@ namespace ProtoCore
 
                 for (int i = 0; i < argumentsList.Count; i++)
                 {
-                    if (fep.FormalParams[i].rank == DSASM.Constants.kArbitraryRank)
+                    if (fep.FormalParams[i].rank == Constants.kArbitraryRank)
                         noArbitraries++;
 
                     numberOfArbitraryRanks.Add(noArbitraries);
                 }
             }
 
-            int smallest = int.MaxValue;
+            int smallest = Int32.MaxValue;
             List<int> indeciesOfSmallest = new List<int>();
 
             for (int i = 0; i < feps.Count; i++)
@@ -962,7 +958,7 @@ namespace ProtoCore
 
                 possibleFuncs.AppendLine("Error code: {DCE486C0-0975-49F9-BE2C-2E7D8CCD17DD}");
 
-                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kAmbiguousMethodDispatch, possibleFuncs.ToString());
             }
 
             return feps[0];
@@ -972,7 +968,7 @@ namespace ProtoCore
             //throw new Exceptions.CompilerInternalException("{CA6E1A93-4CF4-4030-AD94-3BF1C3CFC5AF}");
         }
 
-        private FunctionEndPoint GetCompliantTarget(ProtoCore.Runtime.Context context, List<StackValue> formalParams,
+        private FunctionEndPoint GetCompliantTarget(Context context, List<StackValue> formalParams,
                                                     List<ReplicationInstruction> replicationControl,
                                                     StackFrame stackFrame, RuntimeCore runtimeCore,
                                                     Dictionary<FunctionEndPoint, int> candidatesWithCastDistances,
@@ -1072,7 +1068,7 @@ namespace ProtoCore
 
         
 
-        private FunctionEndPoint SelectFinalFep(ProtoCore.Runtime.Context context,
+        private FunctionEndPoint SelectFinalFep(Context context,
                                                 List<FunctionEndPoint> functionEndPoint,
                                                 List<StackValue> formalParameters, StackFrame stackFrame, RuntimeCore runtimeCore)
         {
@@ -1140,7 +1136,7 @@ namespace ProtoCore
 
                 if (candidateFunctions.Count == 0)
                 {
-                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kAmbiguousMethodDispatch,
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.kAmbiguousMethodDispatch,
                                                   Resources.kAmbigousMethodDispatch);
                     return null;
                 }
@@ -1157,13 +1153,12 @@ namespace ProtoCore
 
         #endregion
 
-
         #region Execution methods
 
         
         //Inbound methods
 
-        public StackValue JILDispatchViaNewInterpreter(ProtoCore.Runtime.Context context, List<StackValue> arguments, List<List<ProtoCore.ReplicationGuide>> replicationGuides,
+        public StackValue JILDispatchViaNewInterpreter(Context context, List<StackValue> arguments, List<List<ReplicationGuide>> replicationGuides,
                                                        StackFrame stackFrame, RuntimeCore runtimeCore)
         {
 #if DEBUG
@@ -1176,8 +1171,8 @@ namespace ProtoCore
             return DispatchNew(context, arguments, replicationGuides, stackFrame, runtimeCore);
         }
 
-        public StackValue JILDispatch(List<StackValue> arguments, List<List<ProtoCore.ReplicationGuide>> replicationGuides,
-                                      StackFrame stackFrame, RuntimeCore runtimeCore, Runtime.Context context)
+        public StackValue JILDispatch(List<StackValue> arguments, List<List<ReplicationGuide>> replicationGuides,
+                                      StackFrame stackFrame, RuntimeCore runtimeCore, Context context)
         {
 #if DEBUG
 
@@ -1192,8 +1187,8 @@ namespace ProtoCore
 
 
         //Dispatch
-        private StackValue DispatchNew(ProtoCore.Runtime.Context context, List<StackValue> arguments,
-                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore)
+        private StackValue DispatchNew(Context context, List<StackValue> arguments,
+                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore)
         {
 
             // Update the CallsiteExecutionState with 
@@ -1288,9 +1283,9 @@ namespace ProtoCore
 
        
 
-        private StackValue Execute(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
+        private StackValue Execute(List<FunctionEndPoint> functionEndPoint, Context c,
                                    List<StackValue> formalParameters,
-                                   List<ReplicationInstruction> replicationInstructions, DSASM.StackFrame stackFrame,
+                                   List<ReplicationInstruction> replicationInstructions, StackFrame stackFrame,
                                    RuntimeCore runtimeCore, FunctionGroup funcGroup)
         {
             StackValue ret;
@@ -1387,7 +1382,7 @@ namespace ProtoCore
         /// <param name="stackFrame"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        private StackValue ExecWithRISlowPath(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
+        private StackValue ExecWithRISlowPath(List<FunctionEndPoint> functionEndPoint, Context c,
                                               List<StackValue> formalParameters,
                                               List<ReplicationInstruction> replicationInstructions,
                                               StackFrame stackFrame, RuntimeCore runtimeCore, FunctionGroup funcGroup, 
@@ -1720,7 +1715,7 @@ namespace ProtoCore
         /// <summary>
         /// Dispatch without replication
         /// </summary>
-        private StackValue ExecWithZeroRI(List<FunctionEndPoint> functionEndPoint, ProtoCore.Runtime.Context c,
+        private StackValue ExecWithZeroRI(List<FunctionEndPoint> functionEndPoint, Context c,
                                           List<StackValue> formalParameters, StackFrame stackFrame, RuntimeCore runtimeCore,
                                           FunctionGroup funcGroup, SingleRunTraceData previousTraceData, SingleRunTraceData newTraceData)
         {
@@ -1734,12 +1729,12 @@ namespace ProtoCore
 
             if (functionEndPoint == null)
             {
-                runtimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure,
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kMethodResolutionFailure,
                                               "Function dispatch could not be completed {2EB39E1B-557C-4819-94D8-CF7C9F933E8A}");
                 return StackValue.Null;
             }
 
-            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
+            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
                 DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
                 debugFrame.FinalFepChosen = finalFep;
@@ -1780,7 +1775,7 @@ namespace ProtoCore
             }
 
             //TLS -> TraceCache
-            Dictionary<String, ISerializable> traceRet = TraceUtils.GetObjectFromTLS();
+            Dictionary<string, ISerializable> traceRet = TraceUtils.GetObjectFromTLS();
 
             if (traceRet.ContainsKey(TRACE_KEY))
             {
@@ -1847,8 +1842,7 @@ namespace ProtoCore
         /// <param name="core"></param>
         /// <returns></returns>
         public static List<StackValue> PerformRepGuideForcedPromotion(List<StackValue> arguments,
-                                                                      List<List<ProtoCore.ReplicationGuide>>
-                                                                          providedRepGuides, RuntimeCore runtimeCore)
+                                                                      List<List<ReplicationGuide>> providedRepGuides, RuntimeCore runtimeCore)
         {
 
             if (providedRepGuides.Count == 0)
@@ -1934,7 +1928,7 @@ namespace ProtoCore
             {
                 //@TODO(Luke): log no-type coercion possible warning
 
-                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kConversionNotPossible,
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kConversionNotPossible,
                                               Resources.kConvertNonConvertibleTypes);
 
                 return StackValue.Null;
@@ -1953,7 +1947,6 @@ namespace ProtoCore
 
         #endregion
 
-
         /// <summary>
         /// Conservative guess as to whether this call will replicate or not
         /// This may give inaccurate answers if the node cluster doesn't actually exist
@@ -1963,8 +1956,8 @@ namespace ProtoCore
         /// <param name="stackFrame"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public bool WillCallReplicate(ProtoCore.Runtime.Context context, List<StackValue> arguments,
-                                      List<List<ProtoCore.ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
+        public bool WillCallReplicate(Context context, List<StackValue> arguments,
+                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
                                       out List<List<ReplicationInstruction>> replicationTrials)
         {
             replicationTrials = new List<List<ReplicationInstruction>>();
@@ -2091,6 +2084,19 @@ namespace ProtoCore
             #endregion
 
             return true; //It'll replicate if it suceeds
+        }
+
+        /// <summary>
+        /// Get a flat collection of ISerializable objects from a serialized representation of a SingleRunTraceData object.
+        /// </summary>
+        /// <param name="callSiteData">The serialized representation of a SingleRunTraceData object.</param>
+        /// <returns>A flat collection of ISerializable objects.</returns>
+        public static IEnumerable<ISerializable> GetAllSerializablesFromSingleRunTraceData(
+            string callSiteData)
+        {
+            var helper = TraceSerialiserHelper.FromCallSiteData(callSiteData);
+            var serializables = helper.TraceData.SelectMany(std => std.RecursiveGetNestedData());
+            return serializables;
         }
 
         #region Unused legacy code
