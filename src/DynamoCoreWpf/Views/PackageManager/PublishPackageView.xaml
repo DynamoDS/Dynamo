@@ -13,7 +13,6 @@
         Height="590" Width="700" 
         ResizeMode="CanResizeWithGrip" 
         Name="PublishInfoControl" 
-        Title="{x:Static p:Resources.PublishPackageViewTitle}" 
         Visibility="Visible">
     
     <Window.Resources>
