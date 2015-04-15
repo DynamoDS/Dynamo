@@ -205,13 +205,20 @@ namespace Dynamo.ViewModels
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
 
-
+       
         public List<PackageManagerSearchElement> ListAll()
         {
-            CachedPackageList =
-                    Model.ListAll()
-                               .Select((header) => new PackageManagerSearchElement(Model, header))
-                               .ToList();
+            CachedPackageList = new List<PackageManagerSearchElement>();
+
+            foreach (var header in Model.ListAll())
+            {
+                var ele = new PackageManagerSearchElement(header);
+
+                ele.RequestUpvote += this.Model.Upvote;
+                ele.RequestDownvote += this.Model.Downvote;
+
+                CachedPackageList.Add( ele );
+            }
 
             return CachedPackageList;
         }
