@@ -5,8 +5,6 @@ namespace Dynamo.ViewModels
 {
     public delegate void ImageSaveEventHandler(object sender, ImageSaveEventArgs e);
 
-    public delegate void DisplayTermsOfUseHandler(DisplayTermsOfUseEventArgs e);
-
     public delegate void WorkspaceSaveEventHandler(object sender, WorkspaceSaveEventArgs e);
 
     public delegate void RequestPackagePublishDialogHandler(PublishPackageViewModel publishViewModel);

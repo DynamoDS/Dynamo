@@ -396,10 +396,6 @@ namespace Dynamo.Controls
             watchSettingsControl.DataContext = background_preview;
         }
 
-        void Controller_DisplayTermsOfUse(DisplayTermsOfUseEventArgs e)
-        {
-        }
-
         /// <summary>
         /// Call this method to optionally bring up terms of use dialog. User 
         /// needs to accept terms of use before any packages can be downloaded 

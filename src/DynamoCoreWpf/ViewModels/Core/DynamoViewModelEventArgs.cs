@@ -103,19 +103,7 @@ namespace Dynamo.ViewModels
         }
     }
 
-    public class DisplayTermsOfUseEventArgs : EventArgs
-    {
-        public DisplayTermsOfUseEventArgs(bool displayForDownload)
-        {
-            TermsOfUseAccepted = false;
-            DisplayForDownload = displayForDownload;
-        }
-
-        public bool DisplayForDownload { get; private set; }
-        public bool TermsOfUseAccepted { get; set; }
-    }
-
-    public class IconRequestEventArgs : EventArgs
+\    public class IconRequestEventArgs : EventArgs
     {
         public string IconAssembly { get; private set; }
 
