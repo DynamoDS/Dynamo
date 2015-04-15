@@ -13,10 +13,10 @@ using System.Xml;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+using Dynamo.Extensions;
 using Dynamo.Interfaces;
 using Dynamo.Library;
 using Dynamo.Nodes;
-using Dynamo.PackageManager;
 using Dynamo.Search;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -186,16 +186,6 @@ namespace Dynamo.Models
         public readonly NodeModelAssemblyLoader Loader;
 
         /// <summary>
-        ///     Manages loading of packages.
-        /// </summary>
-        public readonly PackageLoader PackageLoader;
-
-        /// <summary>
-        ///     Dynamo Package Manager Instance.
-        /// </summary>
-        public readonly PackageManagerClient PackageManagerClient;
-
-        /// <summary>
         ///     Custom Node Manager instance, manages all loaded custom nodes.
         /// </summary>
         public readonly CustomNodeManager CustomNodeManager;
@@ -247,6 +237,11 @@ namespace Dynamo.Models
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
         /// </summary>
         public readonly NodeFactory NodeFactory;
+
+        /// <summary>
+        ///     A collection of extensions currently registered with the application
+        /// </summary>
+        public readonly IEnumerable<IExtension> Extensions;
 
         /// <summary>
         ///     Migration Manager, upgrades old Dynamo file formats to the current version.
@@ -349,6 +344,12 @@ namespace Dynamo.Models
             Dispose();
             PreferenceSettings.SaveInternal(pathManager.PreferenceFilePath);
 
+            foreach (var ext in Extensions)
+            {
+                // TODO proper unsubscription
+                ext.Dispose();
+            }
+
             OnCleanup();
 
             DynamoSelection.DestroyInstance();
@@ -377,7 +378,7 @@ namespace Dynamo.Models
             ISchedulerThread SchedulerThread { get; set; }
             string GeometryFactoryPath { get; set; }
             IAuthProvider AuthProvider { get; set; }
-            string PackageManagerAddress { get; set; }
+            IEnumerable<IExtension> Extensions { get; set; }
         }
 
         /// <summary>
@@ -394,7 +395,7 @@ namespace Dynamo.Models
             public ISchedulerThread SchedulerThread { get; set; }
             public string GeometryFactoryPath { get; set; }
             public IAuthProvider AuthProvider { get; set; }
-            public string PackageManagerAddress { get; set; }
+            public IEnumerable<IExtension> Extensions { get; set; }
         }
 
         /// <summary>
@@ -423,6 +424,14 @@ namespace Dynamo.Models
         
         protected DynamoModel(IStartConfiguration config)
         {
+            this.Extensions = new List<IExtension>();
+
+            // TODO(Peter) better place for this?
+            foreach (var ext in config.Extensions)
+            {
+                this.AddExtension(ext);
+            }
+
             ClipBoard = new ObservableCollection<ModelBase>();
             MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
@@ -500,11 +509,13 @@ namespace Dynamo.Models
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
-            PackageLoader = new PackageLoader(pathManager.PackagesDirectory);
-            PackageLoader.MessageLogged += LogMessage;
-            PackageLoader.RequestLoadNodeLibrary += LoadNodeLibrary;
-            PackageLoader.RequestLoadCustomNodeDirectory +=
-                (dir) => this.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode);
+            // TODO(Peter) better place for this?
+            foreach (var ext in Extensions)
+            {
+                ext.RequestLoadNodeLibrary += LoadNodeLibrary;
+                ext.RequestLoadCustomNodeDirectory +=
+                    (dir) => this.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode);
+            }
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -532,17 +543,21 @@ namespace Dynamo.Models
             Logger.Log(
                 string.Format("Dynamo -- Build {0}", Assembly.GetExecutingAssembly().GetName().Version));
 
-            var url = config.PackageManagerAddress ??
-                      AssemblyConfiguration.Instance.GetAppSetting("packageManagerAddress");
-
-            PackageManagerClient = InitializePackageManager(config.AuthProvider, url,
-                PackageLoader.RootPackagesDirectory, CustomNodeManager);
-
-            Logger.Log("Dynamo will use the package manager server at : " + url);
-
             InitializeNodeLibrary(preferences);
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
+        }
+
+        private void AddExtension(IExtension ext)
+        {
+            // TODO validate is not dup, id and name are non-null
+
+            LogMessage(Interfaces.LogMessage.Info(String.Format("Loading extension \"{0}\" with id \"{1}\"", ext.Name, ext.Id)));
+        }
+
+        private void RemoveExtension(IExtension ext)
+        {
+            // TODO validate and remove
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -626,28 +641,6 @@ namespace Dynamo.Models
             {
                 ws.Dispose(); 
             }
-        }
-
-        /// <summary>
-        ///     Validate the package manager url and initialize the PackageManagerClient object
-        /// </summary>
-        /// <param name="provider">A possibly null IAuthProvider</param>
-        /// <param name="url">The end point for the package manager server</param>
-        /// <param name="rootDirectory">The root directory for the package manager</param>
-        /// <param name="customNodeManager">A valid CustomNodeManager object</param>
-        /// <returns>Newly created object</returns>
-        private static PackageManagerClient InitializePackageManager(IAuthProvider provider, string url, string rootDirectory,
-            CustomNodeManager customNodeManager)
-        {
-            if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
-            {
-                throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
-            }
-
-            return new PackageManagerClient(
-                new GregClient(provider, url),
-                rootDirectory,
-                customNodeManager);
         }
 
         private void InitializeCustomNodeManager()
@@ -773,13 +766,11 @@ namespace Dynamo.Models
             DumpLibrarySnapshot(functionGroups);
 #endif
 
-            // Load Packages
-            PackageLoader.DoCachedPackageUninstalls(preferences);
-            PackageLoader.LoadAll(new LoadPackageParams
+            //TODO best place for this?
+            foreach (var ext in Extensions)
             {
-                Preferences = preferences,
-                PathManager = pathManager
-            });
+                ext.Load(preferences, pathManager);
+            }
 
             // Load local custom nodes
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.UserDefinitions, IsTestMode);

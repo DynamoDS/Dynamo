@@ -2,7 +2,7 @@
 
 namespace Dynamo.Utilities
 {
-    internal static class FailFunc
+    public static class FailFunc
     {
         /// <summary>
         ///     Attempt to run a computation.  If the function throws, return the second 
@@ -12,7 +12,7 @@ namespace Dynamo.Utilities
         /// <param name="func">The function</param>
         /// <param name="failureResult">The result</param>
         /// <returns></returns>
-        internal static T TryExecute<T>(Func<T> func, T failureResult)
+        public static T TryExecute<T>(Func<T> func, T failureResult)
         {
             try
             {
