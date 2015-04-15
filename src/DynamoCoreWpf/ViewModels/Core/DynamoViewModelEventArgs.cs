@@ -103,7 +103,7 @@ namespace Dynamo.ViewModels
         }
     }
 
-\    public class IconRequestEventArgs : EventArgs
+    public class IconRequestEventArgs : EventArgs
     {
         public string IconAssembly { get; private set; }
 
