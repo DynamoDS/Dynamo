@@ -32,7 +32,6 @@ using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Controls
 {
-
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
@@ -74,6 +73,28 @@ namespace Dynamo.Controls
         #endregion
 
         #region public properties
+
+        /// <summary>
+        /// The LeftClickCommand is set according to the
+        /// ViewModel's IsPanning or IsOrbiting properties.
+        /// When those properties are changed, this command is
+        /// set to ViewportCommand.Pan or ViewportCommand.Rotate depending. 
+        /// If neither panning or rotating is set, this property is set to null 
+        /// and left clicking should have no effect.
+        /// </summary>
+        public RoutedCommand LeftClickCommand
+        {
+            get
+            {
+                var vm = DataContext as DynamoViewModel;
+                if (vm == null) return null;
+
+                if (vm.IsPanning) return ViewportCommands.Pan;
+                if (vm.IsOrbiting) return ViewportCommands.Rotate;
+
+                return null;
+            }
+        }
 
         public LineGeometry3D Grid
         {
@@ -455,11 +476,10 @@ namespace Dynamo.Controls
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as IWatchViewModel;
-            if (vm != null)
-            {
-                vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-                vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
-            }
+            if (vm == null) return;
+            vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+            vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
@@ -474,49 +494,37 @@ namespace Dynamo.Controls
             MouseRightButtonUp += view_MouseRightButtonUp;
             PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
 
-            watch_view.InputBindings.Add(new KeyBinding(ViewportCommands.ZoomExtents, Key.E, ModifierKeys.Control));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.ZoomExtents, new MouseGesture(MouseAction.LeftDoubleClick, ModifierKeys.Control)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(ViewportCommands.Rotate, new MouseGesture(MouseAction.RightClick, ModifierKeys.None)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(ViewportCommands.Zoom, new MouseGesture(MouseAction.RightClick, ModifierKeys.Control)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(ViewportCommands.Pan, new MouseGesture(MouseAction.MiddleClick)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.ChangeFieldOfView, new MouseGesture(MouseAction.RightClick, ModifierKeys.Alt)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.ZoomRectangle,
-                    new MouseGesture(MouseAction.RightClick, ModifierKeys.Control | ModifierKeys.Shift)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.SetTarget, new MouseGesture(MouseAction.RightDoubleClick, ModifierKeys.Control)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.Reset, new MouseGesture(MouseAction.MiddleDoubleClick, ModifierKeys.Control)));
-
             var vm = DataContext as IWatchViewModel;
             
             //check this for null so the designer can load the preview
-            if (vm != null)
+            if (vm == null) return;
+
+            vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+            vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+
+            var renderingTier = (RenderCapability.Tier >> 16);
+            var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
+            var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
+            var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
+            var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
+
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
+
+            vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
             {
-                vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-                vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
-
-                var renderingTier = (RenderCapability.Tier >> 16);
-                var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
-                var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
-                var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
-                var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
-
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
+                case "IsPanning":
+                case "IsOrbiting":
+                    NotifyPropertyChanged("LeftClickCommand");
+                    break;
             }
         }
 

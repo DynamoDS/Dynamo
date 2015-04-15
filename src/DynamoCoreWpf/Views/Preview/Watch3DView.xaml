@@ -108,7 +108,18 @@
             IsChangeFieldOfViewEnabled="False" 
             SpinReleaseTime="0" 
             ShowFieldOfView="False">
-
+            <hx:Viewport3DX.InputBindings>
+                <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+E"/>
+                <MouseBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+LeftDoubleClick"/>
+                <MouseBinding Command="hx:ViewportCommands.Rotate" MouseAction="RightClick"/>
+                <MouseBinding Command="hx:ViewportCommands.Pan" MouseAction="MiddleClick"/>
+                <MouseBinding Command="hx:ViewportCommands.Zoom" Gesture="Ctrl+RightClick"/>
+                <MouseBinding Command="hx:ViewportCommands.ChangeFieldOfView" Gesture="Alt+RightClick"/>
+                <MouseBinding Command="hx:ViewportCommands.ZoomRectangle" Gesture="Ctrl+Shift+RightClick"/>
+                <MouseBinding Command="hx:ViewportCommands.SetTarget" Gesture="Ctrl+RightDoubleClick"/>
+                <MouseBinding Command="hx:ViewportCommands.Reset" Gesture="Ctrl+MiddleDoubleClick"/>
+                <MouseBinding Command="{Binding LeftClickCommand}" Gesture="LeftClick"/>
+            </hx:Viewport3DX.InputBindings>
             <hx:ShadowMap3D x:Name="shadowMap" Resolution="{Binding ShadowMapResolution}" />
             <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
             <hx:DirectionalLight3D Name="key" Color="{Binding DirectionalLightColor}" Direction = "{Binding DirectionalLightDirection}"/>
