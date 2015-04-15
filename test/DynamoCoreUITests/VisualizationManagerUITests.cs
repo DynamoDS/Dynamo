@@ -137,6 +137,12 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, watchNodes.Count());
 
             var watch3DNodeView = watchNodes.First();
+            if (!watch3DNodeView.PresentationGrid.Children().Any())
+            {
+                // Watch3D views on nodes are disabled on CI without GPUs.
+                Assert.Inconclusive();
+            }
+
             var watchView = watch3DNodeView.PresentationGrid.Children().First(c => c is Watch3DView) as Watch3DView;
             Assert.Null(watchView.Points);
         }
