@@ -376,6 +376,7 @@ namespace Dynamo.Controls
 
             dynamoViewModel.Model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
             dynamoViewModel.Model.RequestTaskDialog += Controller_RequestTaskDialog;
+            dynamoViewModel.Model.DisplayTermsOfUse += Controller_DisplayTermsOfUse;
 
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
@@ -393,6 +394,10 @@ namespace Dynamo.Controls
             dynamoViewModel.BeginCommandPlayback(this);
 
             watchSettingsControl.DataContext = background_preview;
+        }
+
+        void Controller_DisplayTermsOfUse(DisplayTermsOfUseEventArgs e)
+        {
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -742,6 +747,7 @@ namespace Dynamo.Controls
             {
                 dynamoViewModel.Model.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
                 dynamoViewModel.Model.RequestTaskDialog -= Controller_RequestTaskDialog;
+                dynamoViewModel.Model.DisplayTermsOfUse -= Controller_DisplayTermsOfUse;
                 dynamoViewModel.Model.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
             }
 
