@@ -6009,15 +6009,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void CALLC_Handler()
-        {
-            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-            {
-                runtimeCore.RuntimeMemory.PushConstructBlockId(-1);
-            }
-            throw new NotImplementedException();
-        }
-
+     
         protected virtual void CALLR_Handler(Instruction instruction)
         {
             bool isDynamicCall = instruction.op1.IsDynamic;
@@ -7353,11 +7345,7 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.CALLC:
-                    {
-                        CALLC_Handler();
-                        return;
-                    }
+               
 
                 case OpCode.CALLR:
                     {
@@ -7478,11 +7466,7 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.DEPX:
-                    {
-                        DEPX_Handler();
-                        return;
-                    }
+               
 
                 case OpCode.SETEXPUID:
                     {
