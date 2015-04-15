@@ -460,10 +460,13 @@ namespace Dynamo.Nodes
             // Try to merge words.
             List<string> result_words = new List<string>();
             currentWord.Clear();
-            currentWord.Append(words.First());
-            for (int i = 1; i < words.Count; i++)
+            currentWord.Append(words[0]);
+            foreach (var word in words)
             {
-                var word = words.ElementAt(i);
+                // Case for first word, just pass it.
+                if (currentWord.ToString() == word)
+                    continue;
+
                 if ((currentWord.Length + word.Length + 1) <= maxCharacters)
                 {
                     currentWord.Append(" ");
