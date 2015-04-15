@@ -1649,6 +1649,7 @@ namespace ProtoCore.AST.AssociativeAST
         public AssociativeNode LeftNode { get; set; }
         public Operator Optr { get; set; }
         public AssociativeNode RightNode { get; set; }
+        public bool IsInputExpression { get; set; }
 
         // These properties are used only for the GraphUI ProtoAST
         public uint Guid { get; set; }
@@ -1668,6 +1669,7 @@ namespace ProtoCore.AST.AssociativeAST
             LeftNode = left;
             Optr = optr;
             RightNode = right;
+            IsInputExpression = false;
         }
 
         public BinaryExpressionNode(BinaryExpressionNode rhs) : base(rhs)
@@ -1688,6 +1690,7 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 RightNode = NodeUtils.Clone(rhs.RightNode);
             }
+            IsInputExpression = rhs.IsInputExpression;
         }
 
         /// <summary>
@@ -1711,6 +1714,7 @@ namespace ProtoCore.AST.AssociativeAST
              Optr = Operator.assign;
              LeftNode = lhs;
              RightNode = NodeUtils.Clone(rhs);
+             IsInputExpression = false;
              
          }
 
@@ -2364,130 +2368,6 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class ThrowNode : AssociativeNode
-    {
-        public AssociativeNode expression { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as ThrowNode;
-            if (null == otherNode)
-                return false;
-               
-            return expression.Equals(otherNode.expression);
-        }
-
-        public override int GetHashCode()
-        {
-            var expressionHashCode =
-                (expression == null ? base.GetHashCode() : expression.GetHashCode());
-
-            return expressionHashCode;
-        }
-    }
-
-    public class TryBlockNode : AssociativeNode
-    {
-        public List<AssociativeNode> body { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as TryBlockNode;
-            if (null == otherNode)
-                return false;
-
-            return body.SequenceEqual(otherNode.body);
-        }
-
-        public override int GetHashCode()
-        {
-            var bodyHashCode =
-                (body == null ? base.GetHashCode() : body.GetHashCode());
-
-            return bodyHashCode;
-        }
-    }
-
-    public class CatchFilterNode : AssociativeNode
-    {
-        public IdentifierNode var { get; set; }
-        public Type type { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as CatchFilterNode;
-            if (null == otherNode)
-                return false;
-
-            return var.Equals(otherNode.var) &&
-                   type.Equals(otherNode.type);
-        }
-
-        public override int GetHashCode()
-        {
-            var varHashCode =
-                (var == null ? base.GetHashCode() : var.GetHashCode());
-            var typeHashCode = type.GetHashCode();
-
-            return varHashCode ^ typeHashCode;
-        }
-    }
-
-    public class CatchBlockNode : AssociativeNode
-    {
-        public CatchFilterNode catchFilter { get; set; }
-        public List<AssociativeNode> body { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as CatchBlockNode;
-            if (null == otherNode)
-                return false;
-
-            return catchFilter.Equals(otherNode.catchFilter) && body.SequenceEqual(otherNode.body);
-        }
-
-        public override int GetHashCode()
-        {
-            var catchFilterHashCode =
-                (catchFilter == null ? base.GetHashCode() : catchFilter.GetHashCode());
-            var bodyHashCode =
-                (body == null ? base.GetHashCode() : body.GetHashCode());
-
-            return catchFilterHashCode ^ bodyHashCode;
-        }
-    }
-
-    public class ExceptionHandlingNode : AssociativeNode
-    {
-        public TryBlockNode tryBlock { get; set; }
-        public List<CatchBlockNode> catchBlocks { get; set; }
-
-        public ExceptionHandlingNode()
-        {
-            catchBlocks = new List<CatchBlockNode>();
-        }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as ExceptionHandlingNode;
-            if (null == otherNode)
-                return false;
-
-            return tryBlock.Equals(otherNode.tryBlock) && catchBlocks.SequenceEqual(otherNode.catchBlocks);
-        }
-
-        public override int GetHashCode()
-        {
-            var tryBlockHashCode =
-                (tryBlock == null ? base.GetHashCode() : tryBlock.GetHashCode());
-            var catchBlocksHashCode =
-                (catchBlocks == null ? base.GetHashCode() : catchBlocks.GetHashCode());
-
-            return tryBlockHashCode ^ catchBlocksHashCode;
-        }
-    }
-
     public class AstFactory
     {
         public static NullNode BuildNullNode()
@@ -3085,32 +2965,6 @@ namespace ProtoCore.AST.AssociativeAST
             return result;
         }
 
-        public static ImperativeAST.CatchBlockNode ToImperativeNode(this CatchBlockNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.CatchBlockNode
-            {
-                body = aNode.body.Select(ToImperativeAST).ToList(),
-                catchFilter = aNode.catchFilter.ToImperativeNode()
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.CatchFilterNode ToImperativeNode(this CatchFilterNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.CatchFilterNode
-            {
-                type = aNode.type,
-                var = aNode.var.ToImperativeNode()
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
         public static ImperativeAST.CharNode ToImperativeNode(this CharNode aNode)
         {
             if (aNode == null) return null;
@@ -3172,19 +3026,6 @@ namespace ProtoCore.AST.AssociativeAST
             if (aNode == null) return null;
 
             var result = new ImperativeAST.DoubleNode(aNode.Value);
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.ExceptionHandlingNode ToImperativeNode(this ExceptionHandlingNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.ExceptionHandlingNode
-            {
-                catchBlocks = aNode.catchBlocks.Select(ToImperativeNode).ToList(),
-                tryBlock = aNode.tryBlock.ToImperativeNode()
-            };
             CopyProps(aNode, result);
             return result;
         }
@@ -3379,30 +3220,6 @@ namespace ProtoCore.AST.AssociativeAST
             var result = new ImperativeAST.StringNode
             {
                 value = aNode.value
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.ThrowNode ToImperativeNode(this ThrowNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.ThrowNode
-            {
-                expression = aNode.ToImperativeAST()
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.TryBlockNode ToImperativeNode(this TryBlockNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.TryBlockNode
-            {
-                body = aNode.body.Select(ToImperativeAST).ToList()
             };
             CopyProps(aNode, result);
             return result;

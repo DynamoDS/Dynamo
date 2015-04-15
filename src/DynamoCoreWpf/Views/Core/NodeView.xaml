@@ -40,47 +40,45 @@
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
-                         x:FieldModifier="public">
+                         x:FieldModifier="public">               
                 <MenuItem Name="deleteElem_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuDelete}"
+                          Header="{x:Static p:Resources.ContextMenuDelete}"
                           Command="{Binding Path=DeleteCommand}" />
-                <MenuItem Header="{x:Static p:Resources.NodeContextMenuLacing}"
-                          Name="lacingStrategy"
-                          Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
-                    <MenuItem Name="lacing_strategy_single"
-                              IsCheckable="True"
+                <MenuItem Name="createGroup_cm"
+                          Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
+                          Command="{Binding Path=CreateGroupCommand}" />
+                <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
+                          Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
+                    <MenuItem IsCheckable="True"
                               IsEnabled="False"
-                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=First,Mode=TwoWay}"
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=First,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="First"
-                              Header="{x:Static p:Resources.NodeContextMenuLacingFirst}" />
-                    <MenuItem Name="lacing_strategy_shortest"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest, Mode=TwoWay}"
+                              Header="{x:Static p:Resources.ContextMenuLacingFirst}" />
+                    <MenuItem IsCheckable="True"
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Shortest,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="Shortest"
-                              Header="{x:Static p:Resources.NodeContextMenuLacingShortest}" />
-                    <MenuItem Name="lacing_strategy_longest"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Longest,Mode=TwoWay}"
+                              Header="{x:Static p:Resources.ContextMenuLacingShortest}" />
+                    <MenuItem IsCheckable="True"
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Longest,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="Longest"
-                              Header="{x:Static p:Resources.NodeContextMenuLacingLongest}" />
-                    <MenuItem Name="lacing_strategy_cross"
-                              IsCheckable="True"
-                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CrossProduct,Mode=TwoWay}"
+                              Header="{x:Static p:Resources.ContextMenuLacingLongest}" />
+                    <MenuItem IsCheckable="True"
+                              IsChecked="{Binding Path=ArgumentLacing,Converter={StaticResource EnumToBoolConverter},ConverterParameter=CrossProduct,Mode=OneWay}"
                               Command="{Binding Path=SetLacingTypeCommand}"
                               CommandParameter="CrossProduct"
-                              Header="{x:Static p:Resources.NodeContextMenuLacingCrossProduct}" />
+                              Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}" />
                 </MenuItem>
                 <MenuItem Name="isVisible_cm"
                           Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                          IsChecked="{Binding Path=IsVisible}"
+                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"
                           Command="{Binding Path=ToggleIsVisibleCommand}"
                           Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="isUpstreamVisible_cm"
                           Header="{x:Static p:Resources.NodeContextMenuPreviewUpstream}"
-                          IsChecked="{Binding Path=IsUpstreamVisible}"
+                          IsChecked="{Binding Path=IsUpstreamVisible,Mode=OneWay}"
                           Command="{Binding Path=ToggleIsUpstreamVisibleCommand}"
                           Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="isDisplayLabelsEnabled_cm"
@@ -306,19 +304,19 @@
                            Fill="#FFB1ACA6"
                            Visibility="Hidden" />
             </Canvas>
-            
+
             <TextBlock Name="lacingOptionTextBlock"
-                   Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
-                   ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
-                   FontFamily="Tahoma"
-                   FontSize="8"
-                   Margin="5"
-                   HorizontalAlignment="Right"
-                   VerticalAlignment="Center"
-                   Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
-                   Foreground="#99000000"
-                   FontWeight="Bold"/>
-        
+                       Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
+                       ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
+                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
+                       FontFamily="Tahoma"
+                       FontSize="8"
+                       Margin="5"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Foreground="#99000000"
+                       FontWeight="Bold" />
+
         </StackPanel>
 
         <Grid Name="PresentationGrid"

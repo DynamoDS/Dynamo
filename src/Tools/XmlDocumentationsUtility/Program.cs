@@ -102,36 +102,40 @@ namespace XmlDocumentationsUtility
         /// is derived from the en-US resources
         /// </summary>
         /// <param name="searchDirectory"></param>
-        private static void recursiveCultureXmlSearch(string searchDirectory)
+        private static void RecursiveCultureXmlSearch(string searchDirectory)
         {
-            try
+            foreach (string directory in Directory.GetDirectories(searchDirectory))
             {
-                foreach (string directory in Directory.GetDirectories(searchDirectory))
+                DirectoryInfo dirInfo = new DirectoryInfo(directory);
+
+                if(dirInfo.Name == "en-US")
                 {
-                    DirectoryInfo dirInfo = new DirectoryInfo(directory);
+                    string[] xmlFiles = Directory.GetFiles(directory, "*.xml");
 
-                    if(dirInfo.Name == "en-US")
+                    foreach (string xmlPath in xmlFiles)
                     {
-                        string[] xmlFiles = Directory.GetFiles(directory, "*.xml");
+                        string xmlName = Path.GetFileNameWithoutExtension(xmlPath);
+                        string dllPath = Path.Combine(Path.GetDirectoryName(xmlPath), @"..\", string.Format("{0}.dll", xmlName));
+                        if (!File.Exists(dllPath))
+                            continue;
 
-                        foreach (string xmlPath in xmlFiles)
+                        string path = Path.GetFullPath(dllPath);
+                        ZeroTouchModule zeroTouchModule = null;
+
+                        try
                         {
-                            string xmlName = Path.GetFileNameWithoutExtension(xmlPath);
-                            string dllPath = Path.Combine(Path.GetDirectoryName(xmlPath), @"..\", string.Format("{0}.dll", xmlName));
-                            if (!File.Exists(dllPath))
-                                continue;
-
-                            string path = Path.GetFullPath(dllPath);
-                            ZeroTouchModule zeroTouchModule = new ZeroTouchModule(path);
-                            RemoveDocumentationForHiddenNodes(Path.GetFullPath(xmlPath), zeroTouchModule);
+                            zeroTouchModule = new ZeroTouchModule(path);
                         }
+                        catch(System.Exception e)
+                        {
+                            Console.WriteLine("Cannot load the ZeroTouchModule dll\n"
+                                             +"Only Properties.Resources will be removed for this xml documentation\n"
+                                             + e.Message);
+                        }
+                        RemoveDocumentationForHiddenNodes(Path.GetFullPath(xmlPath), zeroTouchModule);
                     }
-                    recursiveCultureXmlSearch(directory);
                 }
-            }
-            catch (System.Exception excpt)
-            {
-                Console.WriteLine(excpt.Message);
+                RecursiveCultureXmlSearch(directory);
             }
         }
 
@@ -147,7 +151,7 @@ namespace XmlDocumentationsUtility
                 DirectoryInfo dirInfo = new DirectoryInfo(rootDir);
 
                 if(dirInfo.Exists)
-                    recursiveCultureXmlSearch(rootDir);  
+                    RecursiveCultureXmlSearch(rootDir);
             }
             catch (Exception e)
             {
@@ -176,31 +180,39 @@ namespace XmlDocumentationsUtility
                 string elementName = elemList[i].Attributes["name"].Value;
                 bool hasToBeRemoved = false;
                 memberData = ParseMemberElement(elementName);
-                
-                switch(memberData.type)
+
+                if (zeroTouchModule == null)
                 {
-                    case Type.Field   :
+                    if (memberData.TypeName.Contains("Properties.Resources"))
+                        hasToBeRemoved = true;
+                }
+                else
+                {
+                    switch (memberData.type)
+                    {
+                        case Type.Field:
 
-                    case Type.Property:
+                        case Type.Property:
 
-                        if (!zeroTouchModule.PropertyExists(memberData.TypeName, memberData.MemberName))
-                            hasToBeRemoved = true;
-                        break;
+                            if (!zeroTouchModule.PropertyExists(memberData.TypeName, memberData.MemberName))
+                                hasToBeRemoved = true;
+                            break;
 
-                    case Type.Method  :
+                        case Type.Method:
 
-                        if (!zeroTouchModule.MethodExists(memberData.TypeName, memberData.MemberName))
-                            hasToBeRemoved = true;
-                        break;
+                            if (!zeroTouchModule.MethodExists(memberData.TypeName, memberData.MemberName))
+                                hasToBeRemoved = true;
+                            break;
 
-                    case Type.Type    :
+                        case Type.Type:
 
-                        if (!zeroTouchModule.TypeExists(memberData.TypeName))
-                            hasToBeRemoved = true;
-                        break;
+                            if (!zeroTouchModule.TypeExists(memberData.TypeName))
+                                hasToBeRemoved = true;
+                            break;
 
-                    default: break;
+                        default: break;
 
+                    }
                 }
 
                 if (hasToBeRemoved)

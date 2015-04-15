@@ -18,8 +18,8 @@ namespace Tessellation
         /// <param name="face">Surface to triangulate.</param>
         public static IEnumerable<Curve> ByParametersOnSurface(IEnumerable<UV> uvs, Surface face)
         {
-            var verts = uvs.Select(Vertex2.FromUV);
-            var triangulation = DelaunayTriangulation<Vertex2, Cell2>.Create(verts);
+            var verts = uvs.Select(Vertex2.FromUV).ToList();
+            var triangulation = DelaunayTriangulation<Vertex2, Cell2>.Create(verts, new TriangulationComputationConfig());
 
             // there are three vertices per cell in 2D
             foreach (var cell in triangulation.Cells)
@@ -58,8 +58,8 @@ namespace Tessellation
         /// <param name="points">A set of points.</param>
         public static IEnumerable<Curve> ByPoints(IEnumerable<Point> points)
         {
-            var verts = points.Select(Vertex3.FromPoint);
-            var triResult = DelaunayTriangulation<Vertex3, Tetrahedron>.Create(verts);
+            var verts = points.Select(Vertex3.FromPoint).ToList();
+            var triResult = DelaunayTriangulation<Vertex3, Tetrahedron>.Create(verts, new TriangulationComputationConfig());
 
             // make edges
             foreach (var cell in triResult.Cells)

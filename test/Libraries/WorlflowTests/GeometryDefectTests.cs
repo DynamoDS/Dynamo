@@ -450,6 +450,7 @@ namespace Dynamo.Tests
             }
         }
 
+
         
         [Test]
         public void MAGN_6799_ListMapDoesntWorkWithFlatten()
@@ -503,6 +504,24 @@ namespace Dynamo.Tests
 
 
         }
+
+        [Test]
+        public void TestExportWithUnits()
+        {
+            string openPath = Path.Combine(
+                TestDirectory,
+                @"core\geometryui\export_units_one_cuboid.dyn");
+
+            RunModel(openPath);
+
+            var exportPreview = GetPreviewValue("71e5eea4-63ea-4c97-9d8d-aa9c8a2c420a") as string;
+
+            Assert.IsNotNull(exportPreview);
+
+            Assert.IsTrue(exportPreview.Contains("exported.sat"));
+        }
+     
+
         
     }
 }

@@ -609,9 +609,9 @@ namespace Dynamo.Tests
             sumNode.X = 250;
             sumNode.Y = 0;
             sumNode.NickName = "TestNode";
-            sumNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            sumNode.IsVisible = false;
-            sumNode.IsUpstreamVisible = false;
+            sumNode.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
+            sumNode.UpdateValue(new UpdateValueParams("IsVisible", "false"));
+            sumNode.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
             sumNode.State = ElementState.Active;
 
             //Assert New Changes
@@ -963,6 +963,22 @@ namespace Dynamo.Tests
 
             // Dummy node should be serialized to its original node
             Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
+        }
+
+        [Test]
+        public void TestUndoRedoOnConnectedNodes()
+        {
+            ViewModel.OpenCommand.Execute(Path.Combine(TestDirectory, "core", "LacingTest.dyn"));
+            var workspace = ViewModel.CurrentSpaceViewModel;
+
+            Assert.IsFalse(workspace.SetArgumentLacingCommand.CanExecute(null));
+            workspace.SelectAllCommand.Execute(null);
+            Assert.IsTrue(workspace.SetArgumentLacingCommand.CanExecute(null));
+
+            Assert.DoesNotThrow(() =>
+            {
+                workspace.SetArgumentLacingCommand.Execute(LacingStrategy.Longest.ToString());
+            });
         }
     }
 }

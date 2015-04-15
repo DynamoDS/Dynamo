@@ -13,7 +13,6 @@
         Height="590" Width="700" 
         ResizeMode="CanResizeWithGrip" 
         Name="PublishInfoControl" 
-        Title="{x:Static p:Resources.PublishPackageViewTitle}" 
         Visibility="Visible">
     
     <Window.Resources>
@@ -107,7 +106,7 @@
                         <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="KeywordsInput" Padding="5" Text="{Binding Path=Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
-                            <Button Style="{DynamicResource ResourceKey=SBadgeButton}" Margin="0, 10" Command="{Binding Path=ToggleMoreCommand }" Width ="80">More</Button>
+                            <Button Style="{DynamicResource ResourceKey=SBadgeButton}" Margin="0, 10" Command="{Binding Path=ToggleMoreCommand}" Width="80" Content="{x:Static p:Resources.MoreButton}" />
                         </StackPanel>
                           
                         <StackPanel Name="OptionalFields" Visibility="{Binding Path=MoreExpanded, Converter={StaticResource ResourceKey=BooleanToVisibilityCollapsedConverter}}">
@@ -135,7 +134,7 @@
         </Border>
 
         <StackPanel Grid.Row="2" Background="#444">
-            <Button Style="{DynamicResource ResourceKey=STextButton}" Width="130" Margin="10,5" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" >Publish Package!</Button>
+            <Button Style="{DynamicResource ResourceKey=STextButton}" Width="130" Margin="10,5" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" Content="{x:Static p:Resources.PublishPackage}"></Button>
         </StackPanel>
  
         <Grid Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="1">

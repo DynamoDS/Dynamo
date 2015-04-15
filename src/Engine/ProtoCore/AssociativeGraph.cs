@@ -488,6 +488,36 @@ namespace ProtoCore.AssociativeEngine
             return nodesInScope[indexOfDirtyNode + 1];
         }
 
+       
+
+        /// <summary>
+        /// Marks a graphnode dirty and returns the graphnode
+        /// </summary>
+        /// <param name="runtimeCore"></param>
+        /// <param name="astID"></param>
+        /// <returns></returns>
+        public static AssociativeGraph.GraphNode MarkGraphNodeDirty(RuntimeCore runtimeCore, int astID)
+        {
+            Executable exe = runtimeCore.DSExecutable;
+            List<AssociativeGraph.GraphNode> nodesInScope = 
+                exe.instrStreamList[0].dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
+            foreach (var gnode in nodesInScope)
+            {
+                if (gnode.isActive && gnode.OriginalAstID == astID)
+                {
+                    gnode.isDirty = true;
+                    gnode.isActive = true;
+
+                    if (gnode.updateBlock.updateRegisterStartPC != Constants.kInvalidIndex)
+                    {
+                        gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;
+                    }
+                    return gnode;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         ///  Finds all graphnodes associated with each AST and marks them dirty. Returns the first dirty node
         /// </summary>
@@ -526,7 +556,7 @@ namespace ProtoCore.AssociativeEngine
             return firstDirtyNode;
         }
 
-        public static void MarkGraphNodesDirtyFromFunctionRedef(Core core, List<AST.AssociativeAST.AssociativeNode> fnodeList)
+        public static void MarkGraphNodesDirtyFromFunctionRedef(RuntimeCore runtimeCore, List<AST.AssociativeAST.AssociativeNode> fnodeList)
         {
             bool entrypointSet = false;
             foreach (var node in fnodeList)
@@ -538,7 +568,7 @@ namespace ProtoCore.AssociativeEngine
                 }
 
                 int exprId = Constants.kInvalidIndex;
-                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                foreach (var gnode in runtimeCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
                     if (gnode.isActive)
                     {
@@ -551,7 +581,7 @@ namespace ProtoCore.AssociativeEngine
                                     exprId = gnode.exprUID;
                                     if (!entrypointSet)
                                     {
-                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                        runtimeCore.SetStartPC(gnode.updateBlock.startpc);
                                         entrypointSet = true;
                                     }
                                 }
@@ -582,11 +612,13 @@ namespace ProtoCore.AssociativeGraph
     {
         public int startpc { get; set; }
         public int endpc { get; set; }
+        public int updateRegisterStartPC { get; set; }
 
         public UpdateBlock()
         {
             startpc = Constants.kInvalidIndex;
             endpc = Constants.kInvalidIndex;
+            updateRegisterStartPC = Constants.kInvalidIndex;
         }
     }
 

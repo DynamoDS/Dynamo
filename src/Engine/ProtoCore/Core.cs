@@ -344,7 +344,6 @@ namespace ProtoCore
 
         public ParseMode ParsingMode { get; set; }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -446,7 +445,7 @@ namespace ProtoCore
 
 
             // Update the function definition in global function tables
-            foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in DSExecutable.RuntimeData.FunctionTable.GlobalFuncTable)
+            foreach (KeyValuePair<int, Dictionary<string, FunctionGroup>> functionGroupList in DSExecutable.FunctionTable.GlobalFuncTable)
             {
                 foreach (KeyValuePair<string, FunctionGroup> functionGroup in functionGroupList.Value)
                 {
@@ -619,7 +618,7 @@ namespace ProtoCore
             DynamicVariableTable = new DynamicVariableTable();
             DynamicFunctionTable = new DynamicFunctionTable();
 
-            startPC = Constants.kInvalidIndex;
+            watchStartPC = Constants.kInvalidIndex;
 
             deltaCompileStartPC = Constants.kInvalidIndex;
 
@@ -690,7 +689,7 @@ namespace ProtoCore
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AssociativeNode AssocNode { get; set; }
-        public int startPC { get; set; }
+        public int watchStartPC { get; set; }
 
 
         //
@@ -910,7 +909,14 @@ namespace ProtoCore
             // TODO Jun: Determine if we really need another executable for the expression interpreter
             Validity.Assert(null == ExprInterpreterExe);
             ExprInterpreterExe = new Executable();
-
+            ExprInterpreterExe.FunctionTable = FunctionTable;
+            ExprInterpreterExe.DynamicVarTable = DynamicVariableTable;
+            ExprInterpreterExe.FuncPointerTable = FunctionPointerTable;
+            ExprInterpreterExe.DynamicFuncTable = DynamicFunctionTable;
+            ExprInterpreterExe.ContextDataMngr = ContextDataManager;
+            ExprInterpreterExe.Configurations = Configurations;
+            ExprInterpreterExe.CodeToLocation = codeToLocation;
+            ExprInterpreterExe.CurrentDSFileName = CurrentDSFileName;
             ExprInterpreterExe.RuntimeData = GenerateRuntimeData();
             // Copy all tables
             ExprInterpreterExe.classTable = DSExecutable.classTable;
@@ -954,14 +960,14 @@ namespace ProtoCore
         private RuntimeData GenerateRuntimeData()
         {
             Validity.Assert(RuntimeData != null);
-            RuntimeData.FunctionTable = FunctionTable;
-            RuntimeData.DynamicVarTable = DynamicVariableTable;
-            RuntimeData.DynamicFuncTable = DynamicFunctionTable;
-            RuntimeData.FuncPointerTable = FunctionPointerTable;
-            RuntimeData.ContextDataMngr = ContextDataManager;
-            RuntimeData.Configurations = Configurations;
-            RuntimeData.CodeToLocation = codeToLocation;
-            RuntimeData.CurrentDSFileName = CurrentDSFileName;
+          //  RuntimeData.FunctionTable = FunctionTable;
+          //  RuntimeData.DynamicVarTable = DynamicVariableTable;
+          //  RuntimeData.DynamicFuncTable = DynamicFunctionTable;
+          //  RuntimeData.FuncPointerTable = FunctionPointerTable;
+          //  RuntimeData.ContextDataMngr = ContextDataManager;
+           // RuntimeData.Configurations = Configurations;
+          //  RuntimeData.CodeToLocation = codeToLocation;
+          //  RuntimeData.CurrentDSFileName = CurrentDSFileName;
             return RuntimeData;
         }
 
@@ -1014,7 +1020,14 @@ namespace ProtoCore
                 DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
             }
             GenerateExprExe();
-
+            DSExecutable.FunctionTable = FunctionTable;
+            DSExecutable.DynamicVarTable = DynamicVariableTable;
+            DSExecutable.DynamicFuncTable = DynamicFunctionTable;
+            DSExecutable.FuncPointerTable = FunctionPointerTable;
+            DSExecutable.ContextDataMngr = ContextDataManager;
+            DSExecutable.Configurations = Configurations;
+            DSExecutable.CodeToLocation = codeToLocation;
+            DSExecutable.CurrentDSFileName = CurrentDSFileName;
             DSExecutable.RuntimeData = GenerateRuntimeData();
         }
 

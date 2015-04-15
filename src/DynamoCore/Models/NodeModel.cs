@@ -61,10 +61,8 @@ namespace Dynamo.Models
 
         #region public members
 
-        public Dictionary<int, Tuple<int, NodeModel>> Inputs = new Dictionary<int, Tuple<int, NodeModel>>();
-
-        public Dictionary<int, HashSet<Tuple<int, NodeModel>>> Outputs =
-            new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
+        private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
+        private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
 
         public Object RenderPackagesMutex = new object();
         public List<IRenderPackage> RenderPackages
@@ -98,11 +96,6 @@ namespace Dynamo.Models
         #region events
 
         //TODO(Steve): Model should not have to worry about UI thread synchronization -- MAGN-5709
-
-        /// <summary>
-        ///     Fired when this NodeModel is disposed.
-        /// </summary>
-        public event Action Disposed;
 
         /// <summary>
         ///     Called by nodes for behavior that they want to dispatch on the UI thread
@@ -160,11 +153,18 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsVisible
         {
-            get { return isVisible; }
-            set
+            get
             {
-                isVisible = value;
-                RaisePropertyChanged("IsVisible");
+                return isVisible;
+            }
+
+            private set // Private setter, see "ArgumentLacing" for details.
+            {
+                if (isVisible != value)
+                {
+                    isVisible = value;
+                    RaisePropertyChanged("IsVisible");
+                }
             }
         }
 
@@ -174,11 +174,18 @@ namespace Dynamo.Models
         /// </summary>
         public bool IsUpstreamVisible
         {
-            get { return isUpstreamVisible; }
-            set
+            get
             {
-                isUpstreamVisible = value;
-                RaisePropertyChanged("IsUpstreamVisible");
+                return isUpstreamVisible;
+            }
+
+            private set // Private setter, see "ArgumentLacing" for details.
+            {
+                if (isUpstreamVisible != value)
+                {
+                    isUpstreamVisible = value;
+                    RaisePropertyChanged("IsUpstreamVisible");
+                }
             }
         }
 
@@ -278,13 +285,42 @@ namespace Dynamo.Models
             }
         }
 
+        public IDictionary<int, Tuple<int, NodeModel>> InputNodes
+        {
+            get { return inputNodes; }
+        }
+
+        public IDictionary<int, HashSet<Tuple<int, NodeModel>>> OutputNodes
+        {
+            get { return outputNodes; }
+        }
+
         /// <summary>
         ///     Control how arguments lists of various sizes are laced.
         /// </summary>
         public LacingStrategy ArgumentLacing
         {
-            get { return argumentLacing; }
-            set
+            get
+            {
+                return argumentLacing;
+            }
+
+            // The property setter is marked as private/protected because it 
+            // should not be set from an external component directly. The ability
+            // to directly set the property value causes a NodeModel to be altered 
+            // without careful consideration of undo/redo recording. If changing 
+            // this property value should be undo-able, then the caller should use 
+            // "DynamoModel.UpdateModelValueCommand" to set the property value. 
+            // The command ensures changes to the NodeModel is recorded for undo.
+            // 
+            // In some cases being able to set the property value directly is 
+            // desirable, for example, some unit test scenarios require the given 
+            // NodeModel property to be of certain value. In such cases the 
+            // easiest workaround is to use "NodeModel.UpdateValue" method:
+            // 
+            //      someNode.UpdateValue("ArgumentLacing", "CrossProduct");
+            // 
+            protected set
             {
                 if (argumentLacing != value)
                 {
@@ -558,6 +594,9 @@ namespace Dynamo.Models
             InPortData = new ObservableCollection<PortData>();
             OutPortData = new ObservableCollection<PortData>();
 
+            inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
+            outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
+
             IsVisible = true;
             IsUpstreamVisible = true;
             ShouldDisplayPreviewCore = true;
@@ -593,14 +632,7 @@ namespace Dynamo.Models
 
             RaisesModificationEvents = true;
         }
-
-        public virtual void Dispose()
-        {
-            var handler = Disposed;
-            if (handler != null)
-                handler();
-        }
-
+     
         /// <summary>
         ///     Gets the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
@@ -817,19 +849,19 @@ namespace Dynamo.Models
         
         internal void ConnectInput(int inputData, int outputData, NodeModel node)
         {
-            Inputs[inputData] = Tuple.Create(outputData, node);
+            inputNodes[inputData] = Tuple.Create(outputData, node);
         }
 
         internal void ConnectOutput(int portData, int inputData, NodeModel nodeLogic)
         {
-            if (!Outputs.ContainsKey(portData))
-                Outputs[portData] = new HashSet<Tuple<int, NodeModel>>();
-            Outputs[portData].Add(Tuple.Create(inputData, nodeLogic));
+            if (!outputNodes.ContainsKey(portData))
+                outputNodes[portData] = new HashSet<Tuple<int, NodeModel>>();
+            outputNodes[portData].Add(Tuple.Create(inputData, nodeLogic));
         }
 
         internal void DisconnectInput(int data)
         {
-            Inputs[data] = null;
+            inputNodes[data] = null;
         }
 
         /// <summary>
@@ -840,7 +872,7 @@ namespace Dynamo.Models
         /// <returns>True if there is an input, false otherwise.</returns>
         public bool TryGetInput(int data, out Tuple<int, NodeModel> input)
         {
-            return Inputs.TryGetValue(data, out input) && input != null;
+            return inputNodes.TryGetValue(data, out input) && input != null;
         }
 
         /// <summary>
@@ -851,7 +883,7 @@ namespace Dynamo.Models
         /// <returns>True if there is an output, false otherwise.</returns>
         public bool TryGetOutput(int output, out HashSet<Tuple<int, NodeModel>> newOutputs)
         {
-            return Outputs.TryGetValue(output, out newOutputs);
+            return outputNodes.TryGetValue(output, out newOutputs);
         }
 
         /// <summary>
@@ -872,7 +904,7 @@ namespace Dynamo.Models
         /// <returns>True if there is an input, false otherwise.</returns>
         public bool HasConnectedInput(int data)
         {
-            return Inputs.ContainsKey(data) && Inputs[data] != null;
+            return inputNodes.ContainsKey(data) && inputNodes[data] != null;
         }
 
         /// <summary>
@@ -882,13 +914,13 @@ namespace Dynamo.Models
         /// <returns>True if there is an output, false otherwise.</returns>
         public bool HasOutput(int portData)
         {
-            return Outputs.ContainsKey(portData) && Outputs[portData].Any();
+            return outputNodes.ContainsKey(portData) && outputNodes[portData].Any();
         }
 
         internal void DisconnectOutput(int portData, int inPortData, NodeModel nodeModel)
         {
             HashSet<Tuple<int, NodeModel>> output;
-            if (Outputs.TryGetValue(portData, out output))
+            if (outputNodes.TryGetValue(portData, out output))
                 output.RemoveWhere(x => x.Item2 == nodeModel && x.Item1 == inPortData);
         }
 
@@ -1005,24 +1037,12 @@ namespace Dynamo.Models
 
         #region Port Management
 
-        internal int GetPortIndexAndType(PortModel portModel, out PortType portType)
+        internal int GetPortModelIndex(PortModel portModel)
         {
-            int index = inPorts.IndexOf(portModel);
-            if (-1 != index)
-            {
-                portType = PortType.Input;
-                return index;
-            }
-
-            index = outPorts.IndexOf(portModel);
-            if (-1 != index)
-            {
-                portType = PortType.Output;
-                return index;
-            }
-
-            portType = PortType.Input;
-            return -1; // No port found.
+            if (portModel.PortType == PortType.Input)
+                return InPorts.IndexOf(portModel);
+            else
+                return OutPorts.IndexOf(portModel);
         }
 
         /// <summary>
@@ -1036,8 +1056,7 @@ namespace Dynamo.Models
         internal double GetPortVerticalOffset(PortModel portModel)
         {
             double verticalOffset = 2.9;
-            PortType portType;
-            int index = GetPortIndexAndType(portModel, out portType);
+            int index = portModel.Index;
 
             //If the port was not found, then it should have just been deleted. Return from function
             if (index == -1)
@@ -1045,7 +1064,7 @@ namespace Dynamo.Models
 
             double portHeight = portModel.Height;
 
-            switch (portType)
+            switch (portModel.PortType)
             {
                 case PortType.Input:
                     for (int i = 0; i < index; i++)
@@ -1190,45 +1209,29 @@ namespace Dynamo.Models
             switch (portType)
             {
                 case PortType.Input:
-
-                    bool hasDefaultValue = data.DefaultValue != null;
-
                     if (inPorts.Count > index)
                     {
                         p = inPorts[index];
-
-                        //update the name on the node
-                        //e.x. when the node is being re-registered during a custom
-                        //node save
-                        p.PortName = data.NickName;
-                        if (hasDefaultValue)
-                        {
-                            p.UsingDefaultValue = true;
-                            p.DefaultValueEnabled = true;
-                        }
-                        p.ToolTipContent = data.ToolTipString;
-                        return p;
+                        p.SetPortData(data);
                     }
-
-                    p = new PortModel(portType, this, data)
+                    else
                     {
-                        UsingDefaultValue = hasDefaultValue,
-                        DefaultValueEnabled = hasDefaultValue
-                    };
+                        p = new PortModel(portType, this, data);
 
-                    p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
-                    {
-                        if (args.PropertyName == "UsingDefaultValue")
+                        p.PropertyChanged += delegate(object sender, PropertyChangedEventArgs args)
                         {
-                            OnNodeModified();
-                        }
-                    };
+                            if (args.PropertyName == "UsingDefaultValue")
+                            {
+                                OnNodeModified();
+                            }
+                        };
 
-                    InPorts.Add(p);
+                        //register listeners on the port
+                        p.PortConnected += PortConnected;
+                        p.PortDisconnected += PortDisconnected;
 
-                    //register listeners on the port
-                    p.PortConnected += PortConnected;
-                    p.PortDisconnected += PortDisconnected;
+                        InPorts.Add(p);
+                    }
                     
                     return p;
 
@@ -1236,22 +1239,17 @@ namespace Dynamo.Models
                     if (outPorts.Count > index)
                     {
                         p = outPorts[index];
-                        p.PortName = data.NickName;
-                        p.MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0);
-                        return p;
+                        p.SetPortData(data);
                     }
-
-                    p = new PortModel(portType, this, data)
+                    else
                     {
-                        UsingDefaultValue = false,
-                        MarginThickness = new Thickness(0, data.VerticalMargin, 0, 0)
-                    };
+                        p = new PortModel(portType, this, data);
+                        OutPorts.Add(p);
 
-                    OutPorts.Add(p);
-
-                    //register listeners on the port
-                    p.PortConnected += PortConnected;
-                    p.PortDisconnected += PortDisconnected;
+                        //register listeners on the port
+                        p.PortConnected += PortConnected;
+                        p.PortDisconnected += PortDisconnected;
+                    }
 
                     return p;
             }
@@ -1359,33 +1357,42 @@ namespace Dynamo.Models
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (name == "NickName")
+            switch(name)
             {
-                NickName = value;
-                return true;
-            }
-
-            if (name == "UsingDefaultValue")
-            {
-                if (string.IsNullOrWhiteSpace(value))
+                case "NickName":
+                    NickName = value;
                     return true;
 
-                // Here we expect a string that represents an array of Boolean values which are separated by ";"
-                var arr = value.Split(';');
-                for (int i = 0; i < arr.Length; i++)
-                {
-                    InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
-                }
-                return true;
-            }
+                case "UsingDefaultValue":
+                    if (string.IsNullOrWhiteSpace(value))
+                        return true;
 
-            if (name == "ArgumentLacing")
-            {
-                LacingStrategy strategy;
-                if (!Enum.TryParse(value, out strategy))
-                    strategy = LacingStrategy.Disabled;
-                ArgumentLacing = strategy;
-                return true;
+                    // Here we expect a string that represents an array of Boolean values which are separated by ";"
+                    var arr = value.Split(';');
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        InPorts[i].UsingDefaultValue = !bool.Parse(arr[i]);
+                    }
+                    return true;
+
+                case "ArgumentLacing":
+                    LacingStrategy strategy;
+                    if (!Enum.TryParse(value, out strategy))
+                        strategy = LacingStrategy.Disabled;
+                    ArgumentLacing = strategy;
+                    return true;
+
+                case "IsVisible":
+                    bool newVisibilityValue;
+                    if (bool.TryParse(value, out newVisibilityValue))
+                        IsVisible = newVisibilityValue;
+                    return true;
+
+                case "IsUpstreamVisible":
+                    bool newUpstreamVisibilityValue;
+                    if (bool.TryParse(value, out newUpstreamVisibilityValue))
+                        IsUpstreamVisible = newUpstreamVisibilityValue;
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);

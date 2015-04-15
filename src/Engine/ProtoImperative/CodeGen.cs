@@ -927,7 +927,7 @@ namespace ProtoImperative
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
-            core.startPC = this.pc;
+            core.watchStartPC = this.pc;
             compilePass = ProtoCore.CompilerDefinitions.Imperative.CompilePass.kGlobalScope;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
 
@@ -942,7 +942,7 @@ namespace ProtoImperative
             }
             core.InferedType = inferedType;
 
-            this.pc = core.startPC;
+            this.pc = core.watchStartPC;
 
             return codeBlock.codeBlockId;
         }
@@ -950,7 +950,7 @@ namespace ProtoImperative
 
         public override int Emit(ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
-            core.startPC = this.pc;
+            core.watchStartPC = this.pc;
             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
             {
                 return EmitExpressionInterpreter(codeBlockNode);
@@ -1259,10 +1259,6 @@ namespace ProtoImperative
                 //Validity.Assert(codeBlock.children[codeBlock.children.Count - 1].blockType == ProtoCore.DSASM.CodeBlockType.kLanguage);
                 codeBlock.children[codeBlock.children.Count - 1].Attributes = PopulateAttributes(langblock.Attributes);
 
-#if ENABLE_EXCEPTION_HANDLING
-                core.ExceptionHandlingManager.Register(blockId, globalProcIndex, globalClassIndex);
-#endif
-
                 EmitInstrConsole("bounce " + blockId + ", " + entry.ToString());
                 EmitBounceIntrinsic(blockId, entry);
 
@@ -1359,9 +1355,6 @@ namespace ProtoImperative
                     // The first node in the top level block is a function
                     core.DSExecutable.isSingleAssocBlock = false;
                 }
-#if ENABLE_EXCEPTION_HANDLING
-                core.ExceptionHandlingManager.Register(codeBlock.codeBlockId, globalProcIndex, globalClassIndex);
-#endif
             }
             else if (parseGlobalFunctionBody)
             {
@@ -2922,127 +2915,6 @@ namespace ProtoImperative
             }
         }
 
-        protected void EmitExceptionHandlingNode(ProtoCore.AST.Node node, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
-        {
-#if ENABLE_EXCEPTION_HANDLING
-            if (!IsParsingGlobal() && !IsParsingGlobalFunctionBody())
-            {
-                return;
-            }
-
-            ExceptionHandlingNode exceptionNode = node as ExceptionHandlingNode;
-            if (exceptionNode == null)
-                return;
-
-            tryLevel++;
-            ExceptionHandler exceptionHandler = new ExceptionHandler();
-            exceptionHandler.TryLevel = tryLevel;
-
-            ExceptionRegistration registration = core.ExceptionHandlingManager.Register(codeBlock.codeBlockId, globalProcIndex, globalClassIndex);
-            registration.Add(exceptionHandler);
-
-            exceptionHandler.StartPc = pc;
-            TryBlockNode tryNode = exceptionNode.tryBlock;
-            Validity.Assert(tryNode != null);
-            foreach (var subnode in tryNode.body)
-            {
-                ProtoCore.Type inferedType = new ProtoCore.Type();
-                inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
-                inferedType.IsIndexable = false;
-                DfsTraverse(subnode, ref inferedType, false, graphNode, subPass);
-            }
-            exceptionHandler.EndPc = pc;
-
-            // Jmp to code after catch block
-            BackpatchTable backpatchTable = new BackpatchTable();
-            backpatchTable.Append(pc);
-            EmitJmp(ProtoCore.DSASM.Constants.kInvalidIndex);
-
-            foreach (var catchBlock in exceptionNode.catchBlocks)
-            {
-                CatchHandler catchHandler = new CatchHandler();
-                exceptionHandler.AddCatchHandler(catchHandler);
-
-                CatchFilterNode filterNode = catchBlock.catchFilter;
-                Validity.Assert(filterNode != null);
-                catchHandler.FilterTypeUID = core.TypeSystem.GetType(filterNode.type.Name);
-                if (catchHandler.FilterTypeUID == (int)PrimitiveType.kInvalidType)
-                {
-                    string message = String.Format(ProtoCore.Properties.Resources.kExceptionTypeUndefined, filterNode.type.Name);
-                    buildStatus.LogWarning(ProtoCore.BuildData.WarningID.kTypeUndefined, message, null, filterNode.line, filterNode.col);
-                    catchHandler.FilterTypeUID = (int)PrimitiveType.kTypeVar;
-                }
-
-                // For filter expression catch(e:int), generate an assignment
-                //    e = LX;
-                catchHandler.Entry = pc;
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regLX);
-                StackValue opLx = StackValue.BuildRegister(Registers.LX);
-                EmitPush(opLx);
-
-                ProtoCore.DSASM.SymbolNode excpVarSymbol = null;
-                bool stub;
-                bool isAllocated = VerifyAllocation(filterNode.var.Value, globalClassIndex, globalProcIndex, out excpVarSymbol, out stub);
-                int runtimeIndex = (!isAllocated) ? codeBlock.symbolTable.runtimeIndex : excpVarSymbol.runtimeTableIndex;
-                if (!isAllocated)
-                {
-                    excpVarSymbol = Allocate(filterNode.var.Value, globalProcIndex, new ProtoCore.Type());
-                }
-                EmitPushVarData(runtimeIndex, 0, (int)PrimitiveType.kTypeVar, 0);
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, filterNode.var.Value);
-                EmitPopForSymbol(excpVarSymbol, filterNode.var.line, filterNode.var.col, filterNode.var.endLine, filterNode.var.endCol);
-
-                ProtoCore.Type inferedType = new ProtoCore.Type();
-                inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
-                inferedType.IsIndexable = false;
-                
-                foreach (var subnode in catchBlock.body)
-                {
-                    inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
-                    inferedType.IsIndexable = false;
-                    DfsTraverse(subnode, ref inferedType, false, graphNode, subPass);
-                }
-
-                // Jmp to code after catch block
-                backpatchTable.Append(pc);
-                EmitJmp(ProtoCore.DSASM.Constants.kInvalidIndex);
-            }
-
-            Backpatch(backpatchTable.backpatchList, pc);
-
-            tryLevel--;
-#endif
-        }
-
-        protected void EmitThrowNode(ProtoCore.AST.Node node, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
-        {
-#if ENABLE_EXCEPTION_HANDLING
-            if (!IsParsingGlobal() && !IsParsingGlobalFunctionBody())
-            {
-                return;
-            }
-
-            ThrowNode throwNode = node as ThrowNode;
-            if (throwNode == null)
-            {
-                return;
-            }
-
-            ProtoCore.Type inferedType = new ProtoCore.Type();
-            inferedType.UID = (int)ProtoCore.PrimitiveType.kTypeVar;
-            inferedType.IsIndexable = false;
-            DfsTraverse(throwNode.expression, ref inferedType, false, graphNode, subPass);
-
-            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regLX);
-            StackValue opLx = StackValue.BuildRegister(Registers.LX);
-            EmitPop(opLx, Constants.kGlobalScope);
-
-            EmitInstrConsole(ProtoCore.DSASM.kw.throwexception);
-            EmitThrow();
-#endif
-        }
-
         // what we are going to do here is go through the identifier list node,
         // and for each identifier node we convert it to a getter. Say:
         // 
@@ -3523,14 +3395,6 @@ namespace ProtoImperative
             else if (node is DefaultArgNode)
             {
                 EmitDefaultArgNode();
-            }
-            else if (node is ExceptionHandlingNode)
-            {
-                EmitExceptionHandlingNode(node);
-            }
-            else if (node is ThrowNode)
-            {
-                EmitThrowNode(node);
             }
             else if (node is GroupExpressionNode)
             {

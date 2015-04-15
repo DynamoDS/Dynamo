@@ -128,6 +128,22 @@ namespace Dynamo.ViewModels
             return HasAuthProvider;
         }
 
+        public void PublishCustomNode(Dynamo.Nodes.Function m)
+        {
+            CustomNodeInfo currentFunInfo;
+            if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
+                m.Definition.FunctionId,
+                out currentFunInfo))
+            {
+                ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, m.Definition) });
+            }
+        }
+
+        public bool CanPublishCustomNode(Dynamo.Nodes.Function m)
+        {
+            return HasAuthProvider && m != null;
+        }
+
         public void PublishSelectedNodes(object m)
         {
             var nodeList = DynamoSelection.Instance.Selection
@@ -187,7 +203,8 @@ namespace Dynamo.ViewModels
 
                 if (DynamoViewModel.Model.PackageLoader.GetOwnerPackage(f.Item1) != null)
                 {
-                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, pkg.Name),
+                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, 
+                            DynamoViewModel.BrandingResourceProvider.ProductName,pkg.Name),
                             Resources.PackageWarningMessageBoxTitle, 
                             MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -253,7 +270,9 @@ namespace Dynamo.ViewModels
                                 }
                                 catch
                                 {
-                                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, packageDownloadHandle.Name),
+                                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, 
+                                        DynamoViewModel.BrandingResourceProvider.ProductName,
+                                        packageDownloadHandle.Name),
                                         Resources.UninstallFailureMessageBoxTitle, 
                                         MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
