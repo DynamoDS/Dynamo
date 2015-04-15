@@ -373,5 +373,11 @@ namespace Dynamo.Models
                 }
             }
         }
+
+        internal bool CheckForEmptyModels(List<ModelBase> modelsToDelete)
+        {
+            var checkForModels = this.SelectedModels.Except(modelsToDelete).ToList();
+            return !checkForModels.Any() ;
+        }
     }   
 }

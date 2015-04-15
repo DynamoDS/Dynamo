@@ -1045,6 +1045,14 @@ namespace Dynamo.Models
             if (null == CurrentWorkspace)
                 return;
 
+            //Check for empty group
+            var annotations = Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Annotations);
+            foreach (var annotation in annotations)
+            {
+                if(annotation.CheckForEmptyModels(modelsToDelete))
+                    modelsToDelete.Add(annotation);
+            }
+
             OnDeletionStarted();
 
             CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
