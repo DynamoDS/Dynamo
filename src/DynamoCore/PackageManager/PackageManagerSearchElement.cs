@@ -47,7 +47,7 @@ namespace Dynamo.PackageManager
         /// Header property </summary>
         /// <value>
         /// The PackageHeader used to instantiate this object </value>
-        public PackageHeader Header { get; set; }
+        public PackageHeader Header { get; private set; }
 
         /// <summary>
         /// Type property </summary>
