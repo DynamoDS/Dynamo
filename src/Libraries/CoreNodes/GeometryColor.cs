@@ -60,25 +60,42 @@ namespace DSCore
             var surf = geometry as Surface;
             if (surf != null)
             {
+                var start = package.LineStripVertexColors.Count;
                 surf.PerimeterCurves().ForEach(
                         e =>
                             e.Tessellate(
                                 package,
                                 tol,
                                 maxGridLines));
+                var end = package.LineStripVertexColors.Count - 1;
+                ReColorVerticesFromTo(start, end, package);
             }
 
             var solid = geometry as Solid;
             if (solid != null)
             {
+                var start = package.LineStripVertexColors.Count;
                 solid.Edges.ForEach(
                         e =>
                             e.CurveGeometry.Tessellate(
                                 package,
                                 tol,
                                 maxGridLines));
+                var end = package.LineStripVertexColors.Count - 1;
+                ReColorVerticesFromTo(start, end, package);
             }
-    }
+
+        }
+
+        private void ReColorVerticesFromTo(int start, int end, IRenderPackage package)
+        {
+            for (var i = start; i < end; i += 4)
+            {
+                package.LineStripVertexColors[i] = 0;
+                package.LineStripVertexColors[i + 1] = 0;
+                package.LineStripVertexColors[i + 2] = 0;
+            }
+        }
 
         private void SetColorOnArray(IList<byte> array, Color color, int startIndex)
         {

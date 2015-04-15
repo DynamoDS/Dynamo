@@ -186,8 +186,7 @@ namespace Dynamo.Core.Threading
                     // The default color coming from the geometry library for
                     // curves is 255,255,255,255 (White). Because we want a default
                     // color of 0,0,0,255 (Black), we adjust the color components here.
-                    var packageCurve = graphicItem as Curve;
-                    if (packageCurve != null)
+                    if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid)
                     {
                         for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
                         {
