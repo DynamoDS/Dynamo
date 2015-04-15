@@ -103,8 +103,8 @@
   
 	<!-- Get System.Drawing.dll -->
 	<GetReferenceAssemblyPaths TargetFrameworkMoniker=".NETFramework, Version=v2.0">
-      <Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
-    </GetReferenceAssemblyPaths>
+      		<Output TaskParameter="FullFrameworkReferenceAssemblyPaths" PropertyName="FrameworkAssembliesPath" />
+    	</GetReferenceAssemblyPaths>
 	
 	<!-- Get assembly -->
 	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(ProjectName).dll">
@@ -113,6 +113,6 @@
 	
 	<!-- Generate customization dll -->
 	<GenerateResource UseSourcePath="true" Sources="$(ProjectDir)AnalysisImages.resx" OutputResources="$(ProjectDir)AnalysisImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
-    <AL TargetType="library" EmbedResources="$(ProjectDir)AnalysisImages.resources" OutputAssembly="$(OutDir)Analysis.customization.dll" Version="%(AssemblyInfo.Version)" />
+    	<AL TargetType="library" EmbedResources="$(ProjectDir)AnalysisImages.resources" OutputAssembly="$(OutDir)Analysis.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>
