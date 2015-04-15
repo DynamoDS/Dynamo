@@ -47,7 +47,7 @@ namespace Dynamo.PackageManager
         /// Header property </summary>
         /// <value>
         /// The PackageHeader used to instantiate this object </value>
-        public PackageHeader Header { get; internal set; }
+        public PackageHeader Header { get; set; }
 
         /// <summary>
         /// Type property </summary>
@@ -94,6 +94,10 @@ namespace Dynamo.PackageManager
         public string RepositoryUrl { get { return Header.repository_url; } }
 
         #endregion
+
+        public PackageManagerSearchElement() : this(new PackageHeader())
+        {
+        }
 
         /// <summary>
         ///     The class constructor

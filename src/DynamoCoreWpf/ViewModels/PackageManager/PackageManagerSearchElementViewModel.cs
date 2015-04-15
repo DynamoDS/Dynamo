@@ -20,7 +20,7 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
 
-        public new PackageManagerSearchElement Model { get; private set; }
+        public new PackageManagerSearchElement Model { get; internal set; }
 
         public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
         {
@@ -35,7 +35,6 @@ namespace Dynamo.PackageManager.ViewModels
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
         }
-
 
         private static string FormatUrl(string url)
         {
@@ -65,7 +64,7 @@ namespace Dynamo.PackageManager.ViewModels
             {
                 return
                     Model.Header.versions.Select(
-                        x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() => OnRequestDownload(x)))).ToList();
+                        x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() => OnRequestDownload(x)))).Reverse().ToList();
             }
         }
 
