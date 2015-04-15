@@ -262,11 +262,22 @@ namespace ProtoCore
                 {
                     TraceData[i].GetObjectData(info, context, i, "Base-");
                 }
+            }
 
+            internal static TraceSerialiserHelper FromCallSiteData(string callSiteData)
+            {
+                Validity.Assert(!String.IsNullOrEmpty(callSiteData));
+                var data = Convert.FromBase64String(callSiteData);
+                var formatter = new SoapFormatter();
+                var s = new MemoryStream(data);
+                var helper = (CallSite.TraceSerialiserHelper)formatter.Deserialize(s);
+                return helper;
+
+                //var serializables = helper.TraceData.SelectMany(std => std.RecursiveGetNestedData());
+                //return serializables;
             }
 
             public List<SingleRunTraceData> TraceData { get; set; }
-
         }
 
         private int runID;
@@ -297,8 +308,6 @@ namespace ProtoCore
                 return callsiteID;
             }
         }
-
-
 
         /// <summary>
         /// Constructs an instance of the CallSite object given its scope and 
@@ -347,18 +356,9 @@ namespace ProtoCore
         /// <param name="serializedTraceData">The data to load</param>
         public void LoadSerializedDataIntoTraceCache(string serializedTraceData)
         {
-            Validity.Assert(!String.IsNullOrEmpty(serializedTraceData));
-
-            Byte[] data = Convert.FromBase64String(serializedTraceData);
-
-            IFormatter formatter = new SoapFormatter();
-            MemoryStream s = new MemoryStream(data);
-
-            TraceSerialiserHelper helper = (TraceSerialiserHelper)formatter.Deserialize(s);
-
+            var helper = TraceSerialiserHelper.FromCallSiteData(serializedTraceData);
             this.traceData = helper.TraceData;
         }
-        
 
         public void UpdateCallSite(int classScope, string methodName)
         {
