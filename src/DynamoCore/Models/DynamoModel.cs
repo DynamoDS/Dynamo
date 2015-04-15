@@ -680,7 +680,7 @@ namespace Dynamo.Models
                     }
                 };
             };
-            CustomNodeManager.DefinitionUpdated += RegisterCustomNodeDefinitionWithEngine;
+            CustomNodeManager.DefinitionUpdated += UpdateCustomNodeDefinition;
         }
 
         private void InitializeIncludedNodes()
@@ -880,6 +880,17 @@ namespace Dynamo.Models
         #region engine management
 
         /// <summary>
+        ///     Register custom node defintion and execute all custom node 
+        ///     instances.
+        /// </summary>
+        /// <param name="?"></param>
+        private void UpdateCustomNodeDefinition(CustomNodeDefinition definition)
+        {
+            RegisterCustomNodeDefinitionWithEngine(definition);
+            MarkAllDependenciesAsModified(definition);
+        }
+
+        /// <summary>
         ///     Registers (or re-registers) a Custom Node definition with the DesignScript VM,
         ///     so that instances of the custom node can be evaluated.
         /// </summary>
@@ -890,8 +901,6 @@ namespace Dynamo.Models
                 Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Nodes),
                 definition,
                 DebugSettings.VerboseLogging);
-
-            MarkAllDependenciesAsModified(definition);
         }
 
         /// <summary>
