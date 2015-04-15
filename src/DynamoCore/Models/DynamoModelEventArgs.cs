@@ -278,14 +278,4 @@ namespace Dynamo.Models
 
     }
 
-    public class DisplayTermsOfUseEventArgs : EventArgs
-    {
-        public DisplayTermsOfUseEventArgs(bool displayForDownload)
-        {
-            DisplayForDownload = displayForDownload;
-        }
-
-        public bool DisplayForDownload { get; private set; }
-    }
-
 }

@@ -376,11 +376,11 @@ namespace Dynamo.Controls
 
             dynamoViewModel.Model.RequestsCrashPrompt += Controller_RequestsCrashPrompt;
             dynamoViewModel.Model.RequestTaskDialog += Controller_RequestTaskDialog;
-            dynamoViewModel.Model.DisplayTermsOfUse += Controller_DisplayTermsOfUse;
 
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow += DynamoViewModelRequestUserSaveWorkflow;
+            dynamoViewModel.DisplayTermsOfUse += Controller_DisplayTermsOfUse;
 
             dynamoViewModel.Model.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
@@ -742,12 +742,12 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
+            dynamoViewModel.DisplayTermsOfUse += Controller_DisplayTermsOfUse;
 
             if (dynamoViewModel.Model != null)
             {
                 dynamoViewModel.Model.RequestsCrashPrompt -= Controller_RequestsCrashPrompt;
                 dynamoViewModel.Model.RequestTaskDialog -= Controller_RequestTaskDialog;
-                dynamoViewModel.Model.DisplayTermsOfUse -= Controller_DisplayTermsOfUse;
                 dynamoViewModel.Model.ClipBoard.CollectionChanged -= ClipBoard_CollectionChanged;
             }
 

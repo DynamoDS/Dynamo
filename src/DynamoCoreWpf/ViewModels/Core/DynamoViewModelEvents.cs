@@ -41,6 +41,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal event DisplayTermsOfUseHandler DisplayTermsOfUse;
+        internal void OnDisplayTermsOfUse(DisplayTermsOfUseEventArgs e)
+        {
+            var handler = DisplayTermsOfUse;
+            if (handler != null)
+                handler(e);
+        }
+
         public event EventHandler RequestClose;
         public virtual void OnRequestClose(Object sender, EventArgs e)
         {

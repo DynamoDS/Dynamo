@@ -174,15 +174,6 @@ namespace Dynamo.Models
                 RequestTaskDialog(sender, args);
         }
 
-        internal delegate void DisplayTermsOfUseHandler(DisplayTermsOfUseEventArgs e);
-        internal event DisplayTermsOfUseHandler DisplayTermsOfUse;
-        internal void OnDisplayTermsOfUse(DisplayTermsOfUseEventArgs e)
-        {
-            var handler = DisplayTermsOfUse;
-            if (handler != null)
-                handler(e);
-        }
-
         internal delegate void VoidHandler();
         internal event VoidHandler RequestDownloadDynamo;
         internal void OnRequestDownloadDynamo()
