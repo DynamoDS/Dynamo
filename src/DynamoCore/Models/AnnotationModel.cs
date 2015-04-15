@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Text;
 using System.Xml;
 using Dynamo.Properties;
 using Dynamo.Utilities;
@@ -19,6 +20,7 @@ namespace Dynamo.Models
         public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group 
         private string modelGuids { get; set; }   
         private const double doubleValue = 0.0;
+        public List<ModelBase> DeletedModelBases { get; set; }
         public bool loadFromXML { get; set; }
 
         private double width;
@@ -98,8 +100,7 @@ namespace Dynamo.Models
                         model.Disposed+=model_Disposed;
                     }
                 }
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -147,7 +148,7 @@ namespace Dynamo.Models
         {                                 
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
-
+            DeletedModelBases = new List<ModelBase>(); 
             this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();            
             loadFromXML = loadFromGraph;
             if (!loadFromGraph)
@@ -185,6 +186,7 @@ namespace Dynamo.Models
             bool remove = modelList.Remove(model);
             if (remove)
             {
+                DeletedModelBases.Add(model);
                 SelectedModels = modelList;
                 UpdateBoundaryFromSelection();
             }
@@ -193,7 +195,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Updates the group boundary based on the nodes / notes selection.
         /// </summary>      
-        private void UpdateBoundaryFromSelection()
+        internal void UpdateBoundaryFromSelection()
         {
             var selectedModelsList = selectedModels.ToList();
           
@@ -372,12 +374,6 @@ namespace Dynamo.Models
                     model.Disposed -= model_Disposed;
                 }
             }
-        }
-
-        internal bool CheckForEmptyModels(List<ModelBase> modelsToDelete)
-        {
-            var checkForModels = this.SelectedModels.Except(modelsToDelete).ToList();
-            return !checkForModels.Any() ;
-        }
+        }     
     }   
 }

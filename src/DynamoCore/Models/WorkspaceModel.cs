@@ -1327,6 +1327,20 @@ namespace Dynamo.Models
             {
                 var noteModel = NodeGraph.LoadNoteFromXml(modelData);
                 Notes.Add(noteModel);
+
+                //check whether this note belongs to a group
+                foreach (var annotation in Annotations)
+                {
+                    //this note "was" in a group
+                    if (annotation.DeletedModelBases.Any(m => m.GUID == noteModel.GUID))
+                    {
+                        var list = annotation.SelectedModels.ToList();
+                        list.Add(noteModel);
+                        annotation.SelectedModels = list;
+                        annotation.loadFromXML = false;
+                        annotation.UpdateBoundaryFromSelection();
+                    }
+                }
             }
             else if (typeName.StartsWith("Dynamo.Models.AnnotationModel"))
             {
@@ -1338,6 +1352,20 @@ namespace Dynamo.Models
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
                 RegisterNode(nodeModel);
+                
+                //check whether this node belongs to a group
+                foreach (var annotation in Annotations)
+                {
+                    //this node "was" in a group
+                    if (annotation.DeletedModelBases.Any(m=>m.GUID == nodeModel.GUID))
+                    {
+                        var list = annotation.SelectedModels.ToList();
+                        list.Add(nodeModel);
+                        annotation.SelectedModels = list;
+                        annotation.loadFromXML = false;
+                        annotation.UpdateBoundaryFromSelection();
+                    }
+                }
             }
         }
 
