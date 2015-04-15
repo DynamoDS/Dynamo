@@ -107,7 +107,7 @@
     	</GetReferenceAssemblyPaths>
 	
 	<!-- Get assembly -->
-	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(ProjectName).dll">
+	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetNamee).dll">
 		<Output TaskParameter="Assemblies" ItemName="AssemblyInfo"/>
 	</GetAssemblyIdentity>
 	

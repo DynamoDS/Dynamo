@@ -362,7 +362,7 @@ xcopy /Y /e "$(SolutionDir)..\doc\distrib\Samples\*" "$(OutputPath)samples\"</Po
     	</GetReferenceAssemblyPaths>
 
 	<!-- Get DynamoCore -->
-	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(ProjectName).dll">
+	<GetAssemblyIdentity AssemblyFiles="$(OutDir)$(TargetName).dll">
 		<Output TaskParameter="Assemblies" ItemName="DynamoCoreInfo"/>
 	</GetAssemblyIdentity>
 
