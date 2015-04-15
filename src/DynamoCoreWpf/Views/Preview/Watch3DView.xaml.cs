@@ -674,9 +674,9 @@ namespace Dynamo.Controls
             var indices = new IntCollection();
             var colors = new Color4Collection();
 
-            for(int i= 0; i < 10; i += 1)
+            for(var i= 0; i < 10; i += 1)
             {
-                for (int j = 0; j < 10; j += 1)
+                for (var j = 0; j < 10; j += 1)
                 {
                     DrawGridPatch(positions, indices, colors, -50 + i * 10, -50 + j * 10);
                 }
@@ -694,7 +694,7 @@ namespace Dynamo.Controls
             // Draw the coordinate axes
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(5, 0, 0));
+            axesPositions.Add(new Vector3(50, 0, 0));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Red);
             axesColors.Add(Color.Red);
@@ -708,7 +708,7 @@ namespace Dynamo.Controls
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(0, 0, -5));
+            axesPositions.Add(new Vector3(0, 0, -50));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Green);
             axesColors.Add(Color.Green);
@@ -716,6 +716,7 @@ namespace Dynamo.Controls
             Axes.Positions = axesPositions;
             Axes.Indices = axesIndices;
             Axes.Colors = axesColors;
+
         }
 
         private static void DrawGridPatch(
