@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Xml;
 
+using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 
@@ -11,21 +15,38 @@ namespace Dynamo.Models
     {
         public EngineController EngineController { get; private set; }
         private readonly DynamoScheduler scheduler;
+        private PulseMaker pulseMaker;
+        private readonly bool verboseLogging;
+        private bool graphExecuted;
 
-        public bool RunEnabled
-        {
-            get { return runEnabled; }
-            set
-            {
-                if (Equals(value, runEnabled)) return;
-                runEnabled = value;
-                RaisePropertyChanged("RunEnabled");
-            }
-        }
+        /// <summary>
+        ///     Flag specifying if this workspace is operating in "test mode".
+        /// </summary>
+        public bool IsTestMode { get; set; }
 
-        public bool DynamicRunEnabled;
+        /// <summary>
+        ///     Indicates whether a run has completed successfully.   
+        /// 
+        ///     This flag is critical to ensuring that crashing run-auto files
+        ///     are not left in run-auto upon reopening.  
+        /// </summary>
+        public bool HasRunWithoutCrash { get; private set; }
 
+        /// <summary>
+        ///     Before the Workspace has been built the first time, we do not respond to 
+        ///     NodeModification events.
+        /// </summary>
+        private bool silenceNodeModifications = true;
+   
         public readonly bool VerboseLogging;
+
+        public RunSettings RunSettings { get; protected set; }
+       
+        /// <summary>
+        /// Evaluation count is incremented whenever the graph is evaluated. 
+        /// It is set to zero when the graph is Cleared.
+        /// </summary>
+        public long EvaluationCount { get; private set; }
 
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler, 
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName="")
@@ -36,23 +57,41 @@ namespace Dynamo.Models
                 Enumerable.Empty<KeyValuePair<Guid, List<string>>>(),
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
-                0,
-                0, verboseLogging, isTestMode, fileName) { }
-
+                Enumerable.Empty<AnnotationModel>(),
+                new WorkspaceInfo(){FileName = fileName, Name = "Home"},
+                verboseLogging, 
+                isTestMode) { }
+       
         public HomeWorkspaceModel(
-            EngineController engine, DynamoScheduler scheduler, NodeFactory factory,
-            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, bool verboseLogging,
-            bool isTestMode, string fileName="") : base("Home", e, n, x, y, factory, fileName)
+            EngineController engine, 
+            DynamoScheduler scheduler, 
+            NodeFactory factory,
+            IEnumerable<KeyValuePair<Guid, List<string>>> traceData, 
+            IEnumerable<NodeModel> e, 
+            IEnumerable<NoteModel> n, 
+            IEnumerable<AnnotationModel> a,
+            WorkspaceInfo info, 
+            bool verboseLogging,
+            bool isTestMode)
+            : base(e, n,a, info, factory)
         {
-            RunEnabled = true;
+            EvaluationCount = 0;
+
+            // This protects the user from a file that might have crashed during
+            // its last run.  As a side effect, this also causes all files set to
+            // run auto but lacking the HasRunWithoutCrash flag to run manually.
+            if (info.RunType == RunType.Automatic && !info.HasRunWithoutCrash)
+            {
+                info.RunType = RunType.Manual;
+            }
+
+            RunSettings = new RunSettings(info.RunType, info.RunPeriod);
+
             PreloadedTraceData = traceData;
             this.scheduler = scheduler;
-            VerboseLogging = verboseLogging;
-
-            ResetEngine(engine);
-
+            this.verboseLogging = verboseLogging;
             IsTestMode = isTestMode;
+            EngineController = engine;
         }
 
         public override void Dispose()
@@ -62,23 +101,17 @@ namespace Dynamo.Models
             {
                 EngineController.MessageLogged -= Log;
                 EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+                EngineController.Dispose();
             }
+
+            if (pulseMaker == null) return;
+
+            pulseMaker.Stop();
         }
 
         /// <summary>
-        /// This does not belong here, period. It is here simply because there is 
-        /// currently no better place to put it. A DYN file is loaded by DynamoModel,
-        /// subsequently populating WorkspaceModel, along the way, the trace data 
-        /// gets preloaded with the file. The best place for this cached data is in 
-        /// the EngineController (or even LiveRunner), but the engine gets reset in 
-        /// a rather nondeterministic way (for example, when Revit idle thread 
-        /// decides it is time to execute a pre-scheduled engine reset). And it gets 
-        /// done more than once during file open. So that's out. The second best 
-        /// place to store this information is then the WorkspaceModel, where file 
-        /// loading is SUPPOSED TO BE done. As of now we let DynamoModel sets the 
-        /// loaded data (since it deals with loading DYN file), but in near future,
-        /// the file loading mechanism will be completely moved into WorkspaceModel,
-        /// that's the time we removed this property setter below.
+        /// In near future, the file loading mechanism will be completely moved 
+        /// into WorkspaceModel, that's the time we removed this property setter below.
         /// </summary>
         internal IEnumerable<KeyValuePair<Guid, List<string>>> PreloadedTraceData
         {
@@ -100,8 +133,6 @@ namespace Dynamo.Models
         }
         private IEnumerable<KeyValuePair<Guid, List<string>>> preloadedTraceData;
 
-        private bool runEnabled;
-
         internal bool IsEvaluationPending
         {
             get
@@ -116,37 +147,36 @@ namespace Dynamo.Models
             EngineController.NodeDeleted(node);
         }
 
-        protected override void ResetWorkspaceCore()
-        {
-            // Reset Run Automatic option to false on resetting the workspace
-#if DEBUG
-            DynamicRunEnabled = true;
-#else
-            DynamicRunEnabled = false;
-#endif
-        }
-
+        
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
-            foreach (var node in Nodes)
-            {
-                node.MarkNodeAsModified();
-            }
-            OnNodesModified();
+            MarkNodesAsModifiedAndRequestRun(Nodes);
         }
 
-        public override void OnNodesModified()
+        /// <summary>
+        ///     Invoked when a change to the workspace that requires re-execution
+        ///     has taken place.  If in run-automatic, a new run will take place,
+        ///     otherwise nothing will happen.
+        /// </summary>
+        protected override void RequestRun()
         {
-            base.OnNodesModified();
+            base.RequestRun();
 
-            // When Dynamo is shut down, the workspace is cleared, which results
-            // in Modified() being called. But, we don't want to run when we are
-            // shutting down so we check that shutdown has not been requested.
-            if (DynamicRunEnabled && EngineController != null)
+            if (RunSettings.RunType != RunType.Manual)
             {
-                DynamoModel.OnRequestDispatcherBeginInvoke(Run);
+                Run();
+            }
+        }
+
+        protected override void NodeModified(NodeModel node)
+        {
+            base.NodeModified(node);
+
+            if (!silenceNodeModifications)
+            {
+                RequestRun();
             }
         }
 
@@ -157,6 +187,68 @@ namespace Dynamo.Models
         {
             base.Clear();
             PreloadedTraceData = null;
+            RunSettings.Reset();
+            EvaluationCount = 0;
+        }
+
+        /// <summary>
+        /// Start periodic evaluation by the given amount of time. If there
+        /// is an on-going periodic evaluation, an exception will be thrown.
+        /// </summary>
+        /// <param name="milliseconds">The desired amount of time between two 
+        /// evaluations in milliseconds.</param>
+        public void StartPeriodicEvaluation(int milliseconds)
+        {
+            if (pulseMaker == null)
+            {
+                pulseMaker = new PulseMaker();
+            }
+
+            pulseMaker.RunStarted += PulseMakerRunStarted;
+            EvaluationCompleted += pulseMaker.OnRunExpressionCompleted;
+
+            if (pulseMaker.TimerPeriod != 0)
+            {
+                throw new InvalidOperationException(
+                    "Periodic evaluation cannot be started without stopping");
+            }
+
+            pulseMaker.Start(milliseconds);
+        }
+
+        private void PulseMakerRunStarted()
+        {
+            var nodesToUpdate = Nodes.Where(n => n.CanUpdatePeriodically);
+            MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
+        }
+
+        /// <summary>
+        /// Stop the on-going periodic evaluation, if there is any.
+        /// </summary>
+        /// 
+        public void StopPeriodicEvaluation()
+        {
+            if (pulseMaker == null || (pulseMaker.TimerPeriod == 0)) return;
+
+            pulseMaker.RunStarted -= PulseMakerRunStarted;
+            EvaluationCompleted -= pulseMaker.OnRunExpressionCompleted;
+            pulseMaker.Stop();
+        }
+
+        protected override bool PopulateXmlDocument(XmlDocument document)
+        {
+            if (!base.PopulateXmlDocument(document))
+                return false;
+
+            var root = document.DocumentElement;
+            if (root == null)
+                return false;
+
+            root.SetAttribute("RunType", RunSettings.RunType.ToString());
+            root.SetAttribute("RunPeriod", RunSettings.RunPeriod.ToString(CultureInfo.InvariantCulture));
+            root.SetAttribute("HasRunWithoutCrash", HasRunWithoutCrash.ToString(CultureInfo.InvariantCulture));
+
+            return true;
         }
 
         #region evaluation
@@ -185,15 +277,32 @@ namespace Dynamo.Models
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                foreach (var node in Nodes)
-                {
-                    node.MarkNodeAsModified();
-                }
-                OnNodesModified();
+                MarkNodesAsModifiedAndRequestRun(Nodes); 
             }
 
-            if (DynamicRunEnabled)
+            if (RunSettings.RunType == RunType.Automatic)
                 Run();
+        }
+
+        /// <summary>
+        /// Mark the input nodes as modified
+        /// </summary>
+        /// <param name="nodes">The nodes to modify</param>
+        /// <param name="forceExecute">The argument to NodeModel.MarkNodeAsModified</param>
+        public void MarkNodesAsModifiedAndRequestRun(IEnumerable<NodeModel> nodes, bool forceExecute = false)
+        {
+            if (nodes == null)
+                throw new ArgumentNullException("nodes");
+
+            foreach (var node in nodes)
+            {
+                node.MarkNodeAsModified(forceExecute);
+            } 
+
+            if (nodes.Any())
+            {
+                RequestRun();
+            } 
         }
 
         /// <summary>
@@ -237,7 +346,9 @@ namespace Dynamo.Models
 
             // Refresh values of nodes that took part in update.
             foreach (var modifiedNode in updateTask.ModifiedNodes)
-                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);
+            {
+                modifiedNode.RequestValueUpdateAsync(scheduler, EngineController);                
+            }
 
             foreach (var node in Nodes)
             {
@@ -245,7 +356,10 @@ namespace Dynamo.Models
             }
 
             // Notify listeners (optional) of completion.
-            RunEnabled = true; // Re-enable 'Run' button.
+            RunSettings.RunEnabled = true; // Re-enable 'Run' button.
+
+            //set the node execution preview to false;
+            OnSetNodeDeltaState(new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted));
 
             // This method is guaranteed to be called in the context of 
             // ISchedulerThread (for Revit's case, it is the idle thread).
@@ -255,13 +369,10 @@ namespace Dynamo.Models
                 ? new EvaluationCompletedEventArgs(true)
                 : new EvaluationCompletedEventArgs(true, task.Exception);
 
+            EvaluationCount ++;
+
             OnEvaluationCompleted(e);
         }
-
-        /// <summary>
-        ///     Flag specifying if this workspace is operating in "test mode".
-        /// </summary>
-        public bool IsTestMode { get; set; }
 
         /// <summary>
         /// This method is typically called from the main application thread (as 
@@ -273,6 +384,16 @@ namespace Dynamo.Models
         /// </summary>
         public void Run()
         {
+            graphExecuted = true;
+
+            // When Dynamo is shut down, the workspace is cleared, which results
+            // in Modified() being called. But, we don't want to run when we are
+            // shutting down so we check whether an engine controller is available.
+            if (this.EngineController == null)
+            {
+                return;
+            }
+
             var traceData = PreloadedTraceData;
             if ((traceData != null) && traceData.Any())
             {
@@ -287,11 +408,16 @@ namespace Dynamo.Models
             // 
             EngineController.ProcessPendingCustomNodeSyncData(scheduler);
 
-            var task = new UpdateGraphAsyncTask(scheduler, VerboseLogging);
+            var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
             if (task.Initialize(EngineController, this))
             {
                 task.Completed += OnUpdateGraphCompleted;
-                RunEnabled = false; // Disable 'Run' button.
+                RunSettings.RunEnabled = false; // Disable 'Run' button.
+
+                // The workspace has been built for the first time
+                silenceNodeModifications = false;
+
+                OnEvaluationStarted(EventArgs.Empty);
                 scheduler.ScheduleForExecution(task);
             }
             else
@@ -302,13 +428,69 @@ namespace Dynamo.Models
             }
         }
 
-        public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
-        protected virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
+        public event EventHandler<EventArgs> EvaluationStarted;
+        public virtual void OnEvaluationStarted(EventArgs e)
         {
+            this.HasRunWithoutCrash = false;
+
+            var handler = EvaluationStarted;
+            if (handler != null) handler(this, e);
+        }
+
+        public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
+        public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
+        {
+            this.HasRunWithoutCrash = true;
+
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
         }
 
+        public event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
+        public virtual void OnSetNodeDeltaState(DeltaComputeStateEventArgs e)
+        {
+            var handler = SetNodeDeltaState;
+            if (handler != null) handler(this, e);
+        }
+
+        /// <summary>
+        /// This function gets the set of nodes that will get executed in the next run.
+        /// This function will be called when the nodes are modified or when showrunpreview is set
+        /// the executing nodes will be sent via SetNodeDeltaState event.
+        /// </summary>
+        /// <param name="showRunPreview">This parameter controls the delta state computation </param>
+        public void GetExecutingNodes(bool showRunPreview)
+        {
+            var task = new PreviewGraphAsyncTask(scheduler, VerboseLogging);
+                        
+            //The Graph is executed and Show node execution is checked on the Settings menu
+            if (graphExecuted && showRunPreview)
+            {
+                if (task.Initialize(EngineController, this) != null)
+                {
+                    task.Completed += OnPreviewGraphCompleted;
+                    scheduler.ScheduleForExecution(task);
+                }
+            }
+            //Show node exection is checked but the graph has not RUN
+            else
+            {
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(new List<Guid>(), graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs); 
+            }
+        }
+
+        private void OnPreviewGraphCompleted(AsyncTask asyncTask)
+        {
+            var updateTask = asyncTask as PreviewGraphAsyncTask;
+            if (updateTask != null)
+            {
+                var nodeGuids = updateTask.previewGraphData;
+                var deltaComputeStateArgs = new DeltaComputeStateEventArgs(nodeGuids,graphExecuted);
+                OnSetNodeDeltaState(deltaComputeStateArgs);               
+            }            
+        }
+       
         #endregion
     }
 }

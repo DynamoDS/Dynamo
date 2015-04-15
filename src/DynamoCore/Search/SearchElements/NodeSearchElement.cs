@@ -6,6 +6,7 @@ using Dynamo.Annotations;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Search.Interfaces;
+using Dynamo.UI;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -14,10 +15,14 @@ namespace Dynamo.Search.SearchElements
     /// </summary>
     public abstract class NodeSearchElement : INotifyPropertyChanged, ISearchEntry, ISource<NodeModel>
     {
+        protected string iconName;
+
         private readonly HashSet<string> keywords = new HashSet<string>();
         private string fullCategoryName;
         private string description;
         private string name;
+        private SearchElementGroup group;
+        private string assembly;
         private bool isVisibleInSearch = true;
 
         /// <summary>
@@ -34,6 +39,11 @@ namespace Dynamo.Search.SearchElements
                 OnPropertyChanged("IsVisibleInSearch");
             }
         }
+
+        /// <summary>
+        /// The name that is used during node creation
+        /// </summary>
+        public virtual string CreationName { get { return this.Name; } }
 
         /// <summary>
         ///     List of nested categories this search element is contained in.
@@ -61,6 +71,14 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
+        ///     The full name of entry which consists of category name and entry name.
+        /// </summary>
+        public string FullName
+        {
+            get { return FullCategoryName + "." + Name; }
+        }
+
+        /// <summary>
         ///     The category name of this node.
         /// </summary>
         public string FullCategoryName
@@ -78,7 +96,7 @@ namespace Dynamo.Search.SearchElements
         /// <summary>
         ///     The name of this entry in search.
         /// </summary>
-        string ISearchEntry.Name 
+        string ISearchEntry.Name
         {
             get { return FullCategoryName + "." + Name; }
         }
@@ -115,12 +133,81 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         public string Description
         {
-            get { return description; }
+            get
+            {
+                if (string.IsNullOrEmpty(description))
+                    return Dynamo.UI.Configurations.NoDescriptionAvailable;
+
+                return description;
+            }
             set
             {
                 if (value == description) return;
                 description = value;
                 OnPropertyChanged("Description");
+            }
+        }
+
+        public string IconName
+        {
+            get { return iconName; }
+        }
+
+        /// <summary>
+        ///     Group to which Node belongs to 
+        /// </summary>        
+        public SearchElementGroup Group
+        {
+            get { return group; }
+            set
+            {
+                if (value == group) return;
+                group = value;
+            }
+        }
+
+        /// <summary>
+        ///     Group to which Node belongs to 
+        /// </summary>        
+        public string Assembly
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(assembly))
+                    return assembly;
+
+                // If there wasn't any assembly, then it's builtin function, operator or custom node.
+                // Icons for these members are in DynamoCore project.
+                return Configurations.DefaultAssembly;
+            }
+            set
+            {
+                if (value == assembly) return;
+                assembly = value;
+            }
+        }
+
+        protected List<Tuple<string, string>> inputParameters;
+        public IEnumerable<Tuple<string, string>> InputParameters
+        {
+            get
+            {
+                if (!inputParameters.Any())
+                    GenerateInputParameters();
+
+                return inputParameters;
+            }
+        }
+
+        protected List<string> outputParameters;
+        public IEnumerable<string> OutputParameters
+        {
+            get
+            {
+                if (!outputParameters.Any())
+                    GenerateOutputParameters();
+
+                return outputParameters;
             }
         }
 
@@ -134,7 +221,7 @@ namespace Dynamo.Search.SearchElements
             var handler = ItemProduced;
             if (handler != null) handler(obj);
         }
-        
+
         /// <summary>
         ///     Creates a new NodeModel to be inserted into the current Dynamo workspace.
         /// </summary>
@@ -147,6 +234,11 @@ namespace Dynamo.Search.SearchElements
         public void ProduceNode()
         {
             OnItemProduced(ConstructNewNodeModel());
+        }
+
+        public NodeModel CreateNode()
+        {
+            return ConstructNewNodeModel();
         }
 
         ICollection<string> ISearchEntry.SearchTags
@@ -164,6 +256,18 @@ namespace Dynamo.Search.SearchElements
         {
             var handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected virtual IEnumerable<string> GenerateOutputParameters()
+        {
+            outputParameters.Add("none");
+            return outputParameters;
+        }
+
+        protected virtual IEnumerable<Tuple<string, string>> GenerateInputParameters()
+        {
+            inputParameters.Add(Tuple.Create("", "none"));
+            return inputParameters;
         }
     }
 }

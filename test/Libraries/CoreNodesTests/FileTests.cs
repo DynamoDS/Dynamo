@@ -1,15 +1,9 @@
-﻿using System;
-using System.CodeDom;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DSCore.IO;
-using Dynamo.Models;
 using Dynamo.Nodes;
-using Dynamo.Tests;
-using Dynamo.Utilities;
 using NUnit.Framework;
 using Color = DSCore.Color;
 using Directory = System.IO.Directory;
@@ -247,7 +241,7 @@ namespace Dynamo.Tests
         #region Images
         private IEnumerable<string> GetTestImageFiles()
         {
-            string imagePath = Path.Combine(GetTestDirectory(), @"core\files\images\testImage");
+            string imagePath = Path.Combine(TestDirectory, @"core\files\images\testImage");
             return new[] { "png", "jpg", "bmp", "tif" }.Select(
                 ext => Path.ChangeExtension(imagePath, ext));
         }
@@ -326,7 +320,7 @@ namespace Dynamo.Tests
         public void Image_Write()
         {
             var tmp = GetNewFileNameOnTempPath("png");
-            using (var bmp = new Bitmap(Path.Combine(GetTestDirectory(), @"core\files\images\testImage.png")))
+            using (var bmp = new Bitmap(Path.Combine(TestDirectory, @"core\files\images\testImage.png")))
             {
                 Image.WriteToFile(tmp, bmp);
                 using (var newBmp = new Bitmap(tmp))
@@ -371,12 +365,18 @@ namespace Dynamo.Tests
     [TestFixture]
     class FileWritingTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void FileWriter()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\files\FileWriter.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\files\FileWriter.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
@@ -394,7 +394,7 @@ namespace Dynamo.Tests
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\files\ImageFileWriter.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\files\ImageFileWriter.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded
@@ -411,12 +411,18 @@ namespace Dynamo.Tests
     [TestFixture]
     public class ZeroTouchMigrationFileTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test]
         public void TestZeroTouchMigrationFile()
         {
             var model = ViewModel.Model;
 
-            string openPath = Path.Combine(GetTestDirectory(), @"core\files\MigrationHintGetClosestPoint.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\files\MigrationHintGetClosestPoint.dyn");
             RunModel(openPath);
 
             // check all the nodes and connectors are loaded

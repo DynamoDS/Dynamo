@@ -16,7 +16,7 @@ namespace ProtoTest.TD.MultiLangTests
             base.Setup();
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new ProtoScript.Runners.DebugRunner(core, runtimeCore);
+            fsr = new ProtoScript.Runners.DebugRunner(core);
         }
 
         public override void TearDown()
@@ -8589,7 +8589,7 @@ result3 =
             string errmsg = "";
             ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
             thisTest.Verify("a", null);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kMethodResolutionFailure);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kMethodResolutionFailure);
         }
 
         [Test]

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using Dynamo.Annotations;
 using Dynamo.Core;
+
+using DynamoServices;
 
 namespace Dynamo.Models
 {
@@ -40,6 +43,15 @@ namespace Dynamo.Models
                 action();
         }
 
+        // public delegate void SettingsMigrationHandler(object sender, SettingsMigrationEventArgs args);
+        public static event SettingsMigrationHandler RequestMigrationStatusDialog;
+
+        public static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
+        {
+            if (RequestMigrationStatusDialog != null)
+                RequestMigrationStatusDialog(args);
+        }
+
         public event EventHandler RequestLayoutUpdate;
         public virtual void OnRequestLayoutUpdate(object sender, EventArgs e)
         {
@@ -47,11 +59,11 @@ namespace Dynamo.Models
                 RequestLayoutUpdate(this, e);
         }
 
-        public event EventHandler WorkspaceClearing;
-        public virtual void OnWorkspaceClearing(object sender, EventArgs e)
+        public event Action WorkspaceClearing;
+        public virtual void OnWorkspaceClearing()
         {
             if (WorkspaceClearing != null)
-                WorkspaceClearing(this, e);
+                WorkspaceClearing();
         }
 
         public event EventHandler WorkspaceCleared;
@@ -66,6 +78,8 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceAdded;
             if (handler != null) handler(obj);
+
+            WorkspaceEvents.OnWorkspaceAdded(obj.Guid, obj.Name);
         }
 
         public event Action<WorkspaceModel> WorkspaceRemoved;
@@ -73,13 +87,15 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceRemoved;
             if (handler != null) handler(obj);
+
+            WorkspaceEvents.OnWorkspaceRemoved(obj.Guid, obj.Name);
         }
 
-        public event EventHandler DeletionStarted;
-        public virtual void OnDeletionStarted(object sender, EventArgs e)
+        public event Action DeletionStarted;
+        public virtual void OnDeletionStarted()
         {
             if (DeletionStarted != null)
-                DeletionStarted(this, e);
+                DeletionStarted();
         }
 
         public event EventHandler DeletionComplete;
@@ -92,11 +108,11 @@ namespace Dynamo.Models
         /// <summary>
         /// An event triggered when the workspace is being cleaned.
         /// </summary>
-        public event CleanupHandler CleaningUp;
+        public event Action CleaningUp;
         public virtual void OnCleanup()
         {
             if (CleaningUp != null)
-                CleaningUp(this);
+                CleaningUp();
         }
 
         public event NodeHandler RequestCancelActiveStateForNode;
@@ -183,7 +199,7 @@ namespace Dynamo.Models
             {
                 Action showFailureMessage = () => DisplayEngineFailureMessage(e.Error);
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
-            }
+           }
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);

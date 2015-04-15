@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
+using Dynamo.Interfaces;
 using Dynamo.Library;
 
 using ProtoCore.DSASM;
@@ -23,6 +23,12 @@ namespace Dynamo.DSEngine
         string DisplayName { get; }
 
         /// <summary>
+        ///     An unique name to identify a function. It is used to create 
+        ///     a corresponding node instance
+        /// </summary>
+        string MangledName { get; }
+
+        /// <summary>
         ///     Return keys for multi-output functions.
         /// </summary>
         IEnumerable<string> ReturnKeys { get; }
@@ -38,6 +44,31 @@ namespace Dynamo.DSEngine
         string FunctionName { get; }
     }
 
+    public class FunctionDescriptorParams
+    {
+        public FunctionDescriptorParams()
+        {
+            IsVisibleInLibrary = true;
+            Parameters = new List<TypedParameter>();
+            ReturnKeys = new List<string>();
+            ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar);
+        }
+
+        public string Assembly { get; set; }
+        public string ClassName { get; set; }
+        public string FunctionName { get; set; }
+        public string Summary { get; set; }
+        public string ObsoleteMsg { get; set; }
+        public IEnumerable<TypedParameter> Parameters { get; set; }
+        public ProtoCore.Type ReturnType { get; set; }
+        public FunctionType FunctionType { get; set; }
+        public bool IsVisibleInLibrary { get; set; }
+        public bool CanUpdatePeriodically { get; set; }
+        public IEnumerable<string> ReturnKeys { get; set; }
+        public IPathManager PathManager { get; set; }
+        public bool IsVarArg { get; set; }
+    }
+
     /// <summary>
     ///     Describe a DesignScript function in a imported library
     /// </summary>
@@ -48,55 +79,48 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
-        public FunctionDescriptor(string name, IEnumerable<TypedParameter> parameters, FunctionType type)
-            : this(null, null, name, parameters, TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar), type)
-        { }
+        private readonly IPathManager pathManager;
 
-        public FunctionDescriptor(
-            string assembly, string className, string functionName, IEnumerable<TypedParameter> parameters,
-            ProtoCore.Type returnType, FunctionType type,  bool isVisibleInLibrary = true,
-            IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
-            : this(
-                assembly,
-                className,
-                functionName,
-                null,
-                parameters,
-                returnType,
-                type,
-                isVisibleInLibrary,
-                returnKeys,
-                isVarArg,
-                obsoleteMsg) { }
-
-        public FunctionDescriptor(
-            string assembly, string className, string functionName, string summary,
-            IEnumerable<TypedParameter> parameters, ProtoCore.Type returnType, FunctionType type, 
-            bool isVisibleInLibrary = true, IEnumerable<string> returnKeys = null, bool isVarArg = false, string obsoleteMsg = "")
+        public FunctionDescriptor(FunctionDescriptorParams funcDescParams)
         {
-            this.summary = summary;
-            Assembly = assembly;
-            ClassName = className;
-            FunctionName = functionName;
+            summary = funcDescParams.Summary;
+            pathManager = funcDescParams.PathManager;
+            Assembly = funcDescParams.Assembly;
+            ClassName = funcDescParams.ClassName;
+            FunctionName = funcDescParams.FunctionName;
 
-            if (parameters == null)
-                Parameters = new List<TypedParameter>();
-            else
+            Parameters = funcDescParams.Parameters.Select(
+                x =>
+                {
+                    x.UpdateFunctionDescriptor(this);
+                    return x;
+                }).ToList();
+
+            var type = funcDescParams.FunctionType;
+            var inputParameters = new List<Tuple<string, string>>();
+            //Add instance parameter as one of the inputs for instance method as well as properties.
+            if(type == FunctionType.InstanceMethod || type == FunctionType.InstanceProperty)
+                inputParameters.Add(Tuple.Create(UnqualifedClassName.ToLower(), UnqualifedClassName));
+
+            if (Parameters.Any())
             {
-                Parameters = parameters.Select(
-                    x =>
-                    {
-                        x.Function = this;
-                        return x;
-                    });
+                inputParameters.AddRange(Parameters.Select(
+                    par => Tuple.Create(par.Name, par.DisplayTypeName)));
             }
 
-            ReturnType = returnType.ToShortString();
+            InputParameters = inputParameters;
+            
+            //Not sure why returnType for constructors are var[]..[], use UnqualifiedClassName
+            ReturnType = (type == FunctionType.Constructor) ?
+                UnqualifedClassName :
+                funcDescParams.ReturnType.ToShortString();
+
             Type = type;
-            ReturnKeys = returnKeys ?? new List<string>();
-            IsVarArg = isVarArg;
-            IsVisibleInLibrary = isVisibleInLibrary;
-            ObsoleteMessage = obsoleteMsg;
+            ReturnKeys = funcDescParams.ReturnKeys;
+            IsVarArg = funcDescParams.IsVarArg;
+            IsVisibleInLibrary = funcDescParams.IsVisibleInLibrary;
+            ObsoleteMessage = funcDescParams.ObsoleteMsg;
+            CanUpdatePeriodically = funcDescParams.CanUpdatePeriodically;
         }
 
         public bool IsOverloaded { get; set; }
@@ -156,9 +180,17 @@ namespace Dynamo.DSEngine
         /// </summary>
         public string Description
         {
-            get { return !String.IsNullOrEmpty(Summary) ? Summary + "\n\n" + Signature : Signature; }
+            get { return !String.IsNullOrEmpty(Summary) ? Summary : string.Empty; }
         }
 
+        /// <summary>
+        ///     Inputs for Node
+        /// </summary>
+        public IEnumerable<Tuple<string, string>> InputParameters
+        {
+            get;
+            private set;
+        }
         /// <summary>
         ///     The category of this function.
         /// </summary>
@@ -289,6 +321,11 @@ namespace Dynamo.DSEngine
         /// </summary>
         public bool IsVisibleInLibrary { get; private set; }
 
+        /// <summary>
+        /// This attribute sets whether the function enables periodic update of the workspace.
+        /// </summary>
+        public bool CanUpdatePeriodically { get; private set; }
+
         public string UnqualifedClassName
         {
             get
@@ -313,6 +350,8 @@ namespace Dynamo.DSEngine
             }
         }
 
+        public IPathManager PathManager { get { return pathManager; } }
+
         public override bool Equals(object obj)
         {
             if (null == obj || GetType() != obj.GetType())
@@ -335,7 +374,7 @@ namespace Dynamo.DSEngine
                     : LibraryServices.Categories.BuiltIns;
             }
 
-            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly);
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly, pathManager);
 
             if (cust != null)
             {

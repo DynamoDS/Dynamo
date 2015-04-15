@@ -110,15 +110,8 @@ namespace Dynamo
                 WarningLevel = WarningLevel.Mild;
                 Warning = "";
 
-                UpdateManager.UpdateManager.Instance.Log += UpdateManager_Log;
-                
                 StartLogging(logDirectory);
             }
-        }
-
-        private void UpdateManager_Log(LogEventArgs args)
-        {
-            Log(args.Message, args.Level);
         }
 
         public void Log(string message, LogLevel level)
@@ -292,7 +285,7 @@ namespace Dynamo
                 try
                 {
                     FileWriter.Flush();
-                    Log("Goodbye", LogLevel.Console, false);
+                    Log(Properties.Resources.GoodByeLog, LogLevel.Console, false);
                     FileWriter.Close();
                 }
                 catch
@@ -302,8 +295,6 @@ namespace Dynamo
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
-
-            UpdateManager.UpdateManager.Instance.Log -= UpdateManager_Log;
         }
 
         public void Dispose()

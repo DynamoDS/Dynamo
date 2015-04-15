@@ -10,6 +10,7 @@ using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
 
@@ -50,7 +51,7 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "extra"); }
         }
 
-        public bool Loaded { get; private set; }
+        public bool Loaded { get; internal set; }
 
         private bool typesVisibleInManager;
         public bool TypesVisibleInManager
@@ -193,36 +194,6 @@ namespace Dynamo.PackageManager
 
         }
 
-        /// <summary>
-        /// Load the Package into Dynamo.  
-        /// </summary>
-        /// <param name="loader"></param>
-        /// <param name="logger"></param>
-        /// <param name="libraryServices"></param>
-        /// <param name="context"></param>
-        /// <param name="isTestMode"></param>
-        /// <param name="customNodeManager"></param>
-        public void LoadIntoDynamo(
-            DynamoLoader loader, ILogger logger, LibraryServices libraryServices, string context,
-            bool isTestMode, CustomNodeManager customNodeManager)
-        {
-            // Prevent duplicate loads
-            if (Loaded) return;
-
-            try
-            {
-                LoadAssembliesIntoDynamo(loader, libraryServices, context);
-                LoadCustomNodesIntoDynamo(customNodeManager, isTestMode);
-                EnumerateAdditionalFiles();
-                Loaded = true;
-            }
-            catch (Exception e)
-            {
-                Log("Exception when attempting to load package " + Name + " from " + RootDirectory);
-                Log(e.GetType() + ": " + e.Message);
-            }
-        }
-
         public void EnumerateAdditionalFiles()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return;
@@ -246,46 +217,6 @@ namespace Dynamo.PackageManager
             return Directory.EnumerateFiles(RootDirectory, "*.dll", SearchOption.AllDirectories);
         }
 
-        private void LoadCustomNodesIntoDynamo(CustomNodeManager loader, bool isTestMode)
-        {
-            foreach (var info in loader.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
-                LoadedCustomNodes.Add(info);
-        }
-
-        private void LoadAssembliesIntoDynamo(DynamoLoader loader, LibraryServices libraryServices, string context)
-        {
-            var assemblies = LoadAssembliesInBinDirectory();
-
-            // filter the assemblies
-            var zeroTouchAssemblies = new List<Assembly>();
-            var nodeModelAssemblies = new List<Assembly>();
-
-            // categorize the assemblies to load, skipping the ones that are not identified as node libraries
-            foreach (var assem in assemblies.Where(x => x.IsNodeLibrary).Select(x => x.Assembly))
-            {
-                if (loader.ContainsNodeModelSubType(assem))
-                    nodeModelAssemblies.Add(assem);
-                else
-                    zeroTouchAssemblies.Add(assem);
-            }
-
-            // load the zero touch assemblies
-            foreach (var zeroTouchAssem in zeroTouchAssemblies)
-                libraryServices.ImportLibrary(zeroTouchAssem.Location);
-
-            // load the node model assemblies
-            var nodes = nodeModelAssemblies.SelectMany(
-                assem =>
-                {
-                    var assemblyNodes = new List<TypeLoadData>();
-                    loader.LoadNodesFromAssembly(assem, context, assemblyNodes, new List<TypeLoadData>());
-                    return assemblyNodes;
-                });
-
-            foreach (var node in nodes)
-                LoadedTypes.Add(node.Type);
-        }
-
         /// <summary>
         ///     Add assemblies at runtime to the package.  Does not load the assembly into the node library.
         ///     If the package is already present in LoadedAssemblies, this will mutate it's IsNodeLibrary property.
@@ -295,7 +226,7 @@ namespace Dynamo.PackageManager
         {
             foreach (var assem in assems)
             {
-                var existingAssem = LoadedAssemblies.FirstOrDefault(x => x.Assembly.FullName == assem.Assembly.FullName);
+                var existingAssem = LoadedAssemblies.FirstOrDefault(x => x.Assembly.GetName().Name == assem.Assembly.GetName().Name);
                 if (existingAssem != null)
                 {
                     existingAssem.IsNodeLibrary = assem.IsNodeLibrary;
@@ -308,19 +239,20 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Loads all possible assemblies in node library and returns the list of loaded node library assemblies
+        ///     Enumerates all assemblies in the package
         /// </summary>
         /// <returns>The list of all node library assemblies</returns>
-        private IEnumerable<PackageAssembly> LoadAssembliesInBinDirectory()
+        internal IEnumerable<PackageAssembly> EnumerateAssembliesInBinDirectory()
         {
             var assemblies = new List<PackageAssembly>();
 
             if (!Directory.Exists(BinaryDirectory))
                 return assemblies;
 
-            // use the pkg header to determine which assemblies to load
+            // Use the pkg header to determine which assemblies to load and prevent multiple enumeration
+            // In earlier packages, this field could be null, which is correctly handled by IsNodeLibrary
             var nodeLibraries = Header.node_libraries;
-
+            
             foreach (var assemFile in (new DirectoryInfo(BinaryDirectory)).EnumerateFiles("*.dll"))
             {
                 Assembly assem;
@@ -329,11 +261,16 @@ namespace Dynamo.PackageManager
                 var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
                 if (result)
                 {
+                    // IsNodeLibrary may fail, we store the warnings here and then show
+                    IList<ILogMessage> warnings = new List<ILogMessage>();
+
                     assemblies.Add(new PackageAssembly()
                     {
                         Assembly = assem,
-                        IsNodeLibrary = (nodeLibraries == null || nodeLibraries.Contains(assem.FullName))
+                        IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
                     });
+
+                    warnings.ToList().ForEach(this.Log);
                 }
             }
 
@@ -343,6 +280,49 @@ namespace Dynamo.PackageManager
             }
 
             return assemblies;
+        }
+
+        /// <summary>
+        ///     Determine if an assembly is in the "node_libraries" list for the package.
+        /// 
+        ///     This algorithm accepts assemblies that don't have the same version, but the same name.
+        ///     This is important when a package author has updated a dll in their package.  
+        /// 
+        ///     This algorithm assumes all of the entries in nodeLibraryFullNames are properly formatted
+        ///     as returned by the Assembly.FullName property.  If they are not, it ignores the entry.
+        /// </summary>
+        internal static bool IsNodeLibrary(IEnumerable<string> nodeLibraryFullNames, AssemblyName name, ref IList<ILogMessage> messages)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (nodeLibraryFullNames == null)
+            {
+                return true;
+            }
+
+            foreach (var n in nodeLibraryFullNames)
+            {
+                try
+                {
+                    // The AssemblyName constructor throws an exception for an improperly formatted string
+                    if (new AssemblyName(n).Name == name.Name)
+                    {
+                        return true;
+                    }
+                }
+                catch (Exception _)
+                {
+                    if (messages != null)
+                    {
+                        messages.Add(LogMessage.Warning(Resources.IncorrectlyFormattedNodeLibraryWarning, WarningLevel.Mild));
+                        messages.Add(LogMessage.Warning(String.Format(Resources.IncorrectlyFormattedNodeLibraryDisplay + " {0}", n), WarningLevel.Mild));
+                    }
+                }
+            }
+            return false;
         }
 
         internal bool ContainsFile(string path)
@@ -406,7 +386,7 @@ namespace Dynamo.PackageManager
             try
             {
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
-                packageLoader.LocalPackages.Remove(this);
+                packageLoader.Remove(this);
                 Directory.Delete(RootDirectory, true);
             }
             catch (Exception e)

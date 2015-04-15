@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI.Controls"
              xmlns:views="clr-namespace:Dynamo.Views"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
@@ -92,67 +93,131 @@
 
             <Canvas.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Name="WorkspaceLacingMenu"
+                              Header="{x:Static p:Resources.ContextMenuLacing}">
+                        <MenuItem IsCheckable="True"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="Shortest"
+                                  Header="{x:Static p:Resources.ContextMenuLacingShortest}">
+                            <MenuItem.IsChecked>
+                                <Binding Path="SelectionArgumentLacing"
+                                         Mode="OneWay"
+                                         Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="Shortest" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+                        <MenuItem IsCheckable="True"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="Longest"
+                                  Header="{x:Static p:Resources.ContextMenuLacingLongest}">
+                            <MenuItem.IsChecked>
+                                <Binding Path="SelectionArgumentLacing"
+                                         Mode="OneWay"
+                                         Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="Longest" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+                        <MenuItem IsCheckable="True"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="CrossProduct"
+                                  Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}">
+                            <MenuItem.IsChecked>
+                                <Binding Path="SelectionArgumentLacing"
+                                         Mode="OneWay"
+                                         Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="CrossProduct" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+                    </MenuItem>
 
-                    <MenuItem  Header="_Align Selection"
+
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
+                              Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
+                              CommandParameter="true"
+                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
+
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static p:Resources.ContextMenuHideAllGeometry}"
+                              Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
+                              CommandParameter="false"
+                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static  p:Resources.ContextMenuShowUpstreamPreview}"
+                              Command="{Binding Path=ShowHideAllUpstreamPreviewCommand}"
+                              CommandParameter="true"
+                              Visibility="{Binding Path=AnyNodeUpstreamVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
+
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static p:Resources.ContextMenuHideUpstreamPreview}"
+                              Command="{Binding Path=ShowHideAllUpstreamPreviewCommand}"
+                              CommandParameter="false"
+                              Visibility="{Binding Path=AnyNodeUpstreamVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+
+                    <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}"
                                Name="Align">
-                        <MenuItem  Header="_X Average"
+                        <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}"
                                    Command="{Binding AlignSelectedCommand}"
                                    CommandParameter="HorizontalCenter" />
-                        <MenuItem  Header="_Left"
+                        <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignLeft}"
                                    Command="{Binding AlignSelectedCommand}"
                                    CommandParameter="HorizontalLeft" />
-                        <MenuItem  Header="_Right"
+                        <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignRight}"
                                    Command="{Binding AlignSelectedCommand}"
                                    CommandParameter="HorizontalRight" />
-                        <MenuItem  Header="_Y Average"
+                        <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignYAverage}"
                                    Command="{Binding AlignSelectedCommand}"
                                    CommandParameter="VerticalCenter" />
-                        <MenuItem  Header="_Top"
+                        <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignTop}"
                                    Command="{Binding AlignSelectedCommand}"
                                    CommandParameter="VerticalTop" />
-                        <MenuItem  Header="_Bottom"
+                        <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlighBottom}"
                                    Command="{Binding AlignSelectedCommand}"
                                    CommandParameter="VerticalBottom" />
-                        <MenuItem  Header="_Y Distribute"
+                        <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignYDistribute}"
                                    Command="{Binding AlignSelectedCommand}"
                                    CommandParameter="VerticalDistribute" />
-                        <MenuItem  Header="_X Distribute"
+                        <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignXDistribute}"
                                    Command="{Binding AlignSelectedCommand}"
                                    CommandParameter="HorizontalDistribute" />
                     </MenuItem>
 
-                    <MenuItem  Header="New Node F_rom Selection"
+                    <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromSelection}"
                                Command="{Binding NodeFromSelectionCommand}" />
                     <!--
-                    <MenuItem  Header="Node to _Code"
+                    <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
                                Command="{Binding NodeToCodeCommand}" />
                     -->
-                    <MenuItem  Header="Nodes From _Selected Geometry"
+                    <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"                                 
+                               Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
+                    
+                    <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                                Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                Command="{Binding FindNodesFromSelectionCommand}" />
 
                     <Separator Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
-                    <MenuItem  Header="_Edit Custom Node Properties..."
+                    <MenuItem  Header="{x:Static p:Resources.ContextMenuEditCustomNodeProperty}"
                                Click="WorkspacePropertyEditClick"
                                Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
-                    <MenuItem  Header="_Publish This Custom Node..."
+                    <MenuItem  Header="{x:Static p:Resources.ContextMenuPublishCustomNode}"
                                Name="Publish"
                                Command="{Binding DynamoViewModel.PublishCurrentWorkspaceCommand }"
                                Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
 
                     <Separator />
 
-                    <MenuItem Header="Switch to Geometry _View"
+                    <MenuItem Header="{x:Static p:Resources.ContextMenuGeometryView}"
                               Command="{Binding DynamoViewModel.ToggleCanNavigateBackgroundCommand}" />
-                    <MenuItem Header="Pa_n"
+                    <MenuItem Header="{x:Static p:Resources.ContextMenuPan}"
                               Command="{Binding DynamoViewModel.TogglePanCommand}">
                         <MenuItem.IsChecked>
                             <Binding Path="DynamoViewModel.IsPanning"
                                      Mode="OneWay" />
                         </MenuItem.IsChecked>
                     </MenuItem>
-                    <MenuItem Header="_Fit to Screen"
+                    <MenuItem Header="{x:Static p:Resources.ContextMenuFitToScreen}"
                               Command="{Binding DynamoViewModel.FitViewCommand}" />
 
                 </ContextMenu>
@@ -239,7 +304,9 @@
                               Height="30"
                               Margin="4,4,0,4"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-states.png"
-                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png">
+                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-geom-check.png"
+                              ToolTip="{x:Static p:Resources.InCanvasGeomButtonToolTip}"
+                              >
                 <ui:ImageCheckBox.IsChecked>
                     <Binding Path="DataContext.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
@@ -249,7 +316,8 @@
                               Height="30"
                               Margin="0,4,4,4"
                               StateImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-states.png"
-                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png">
+                              CheckImage="/DynamoCoreWpf;component/UI/Images/Canvas/canvas-button-node-check.png"
+                              ToolTip="{x:Static p:Resources.InCanvasNodeButtonToolTip}">
                 <ui:ImageCheckBox.IsChecked>
                     <Binding Path="DataContext.CanNavigateBackground"
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"

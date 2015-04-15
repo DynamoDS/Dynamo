@@ -3,6 +3,8 @@ using Autodesk.DesignScript.Interfaces;
 using ProtoCore.Utils;
 using ProtoCore.DSASM;
 using System.Linq;
+using System;
+using System.Globalization;
 
 namespace ProtoCore
 {
@@ -28,7 +30,6 @@ namespace ProtoCore
             //      2. Do the data analysis of the MirrorData in the MirrorData class itself
             //
             private ProtoCore.Core core;
-
             private ProtoCore.RuntimeCore runtimeCore;
 
             /// <summary>
@@ -38,12 +39,23 @@ namespace ProtoCore
 
             /// <summary>
             /// Experimental constructor that takes in a core object
+            /// Takes a core object to read static data
             /// </summary>
             /// <param name="sv"></param>
-            public MirrorData(ProtoCore.Core core, RuntimeCore rtCore, StackValue sv)
+            public MirrorData(ProtoCore.Core core, StackValue sv)
             {
                 this.core = core;
-                this.runtimeCore = rtCore;
+                svData = sv;
+            }       
+            
+            /// <summary>
+            /// Takes a runtime core object to read runtime data
+            /// </summary>
+            /// <param name="sv"></param>
+            public MirrorData(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, StackValue sv)
+            {
+                this.core = core;
+                this.runtimeCore = runtimeCore;
                 svData = sv;
             }
 
@@ -65,7 +77,7 @@ namespace ProtoCore
                 List<IGraphicItem> graphicItems = new List<IGraphicItem>();
                 foreach (var sv in values)
                 {
-                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.core, this.runtimeCore);
+                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.runtimeCore);
                     if (items != null && (items.Count > 0))
                         graphicItems.AddRange(items);
                 }
@@ -88,7 +100,7 @@ namespace ProtoCore
                         values.Add(sv);
                         break;
                     case ProtoCore.DSASM.AddressType.ArrayPointer:
-                        var stackValues = ArrayUtils.GetValues(sv, core);
+                        var stackValues = ArrayUtils.GetValues(sv, runtimeCore);
                         foreach (var item in stackValues)
                             GetPointersRecursively(item, values);
 
@@ -143,13 +155,13 @@ namespace ProtoCore
             /// else null.
             /// </summary>
             /// <returns>List of MirrorData represented by this data.</returns>
-            public List<MirrorData> GetElements()
+            public List<MirrorData> GetElements() 
             {
                 //This is not a collection
                 if (!this.IsCollection)
                     return null;
 
-                return ArrayUtils.GetValues(svData, core).Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
+                return ArrayUtils.GetValues(svData, runtimeCore).Select(x => new MirrorData(this.core, this.runtimeCore, x)).ToList();
             }
 
             /// <summary>
@@ -166,7 +178,7 @@ namespace ProtoCore
             /// <param name="sv">StackValue</param>
             /// <param name="core">ProtoCore.Core</param>
             /// <returns>System.Object</returns>
-            internal static object GetData(StackValue sv, Core core, RuntimeCore runtimeCore)
+            internal static object GetData(StackValue sv, RuntimeCore runtimeCore)
             {
                 switch (sv.optype)
                 {
@@ -179,9 +191,9 @@ namespace ProtoCore
                     case AddressType.Char:
                         return ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(sv.opdata);
                     case AddressType.String:
-                        return StringUtils.GetStringValue(sv, core, runtimeCore);
+                        return StringUtils.GetStringValue(sv, runtimeCore);
                     case AddressType.Pointer:
-                        return dataProvider.GetCLRObject(sv, core, runtimeCore);
+                        return dataProvider.GetCLRObject(sv, runtimeCore);
                     default:
                         break;
                 }
@@ -195,24 +207,26 @@ namespace ProtoCore
             {
                 get
                 {
-                    if (object.ReferenceEquals(Data, null))
+                    if (object.ReferenceEquals(Data, null) || this.IsNull)
                     {
                         return "null";
                     }
+                    else if (Data is bool)
+                    {
+                        return Data.ToString().ToLower();
+                    }
+                    else if (Data is IFormattable)
+                    {
+                        // Object.ToString() by default will use the current 
+                        // culture to do formatting. For example, Double.ToString()
+                        // https://msdn.microsoft.com/en-us/library/3hfd35ad(v=vs.110).aspx
+                        // We should always use invariant culture format for formattable 
+                        // object.
+                        return (Data as IFormattable).ToString(null, CultureInfo.InvariantCulture);
+                    }
                     else
                     {
-                        if (this.IsNull)
-                        {
-                            return "null";
-                        }
-                        else if (Data is bool)
-                        {
-                            return Data.ToString().ToLower();
-                        }
-                        else
-                        {
-                            return Data.ToString();
-                        }
+                        return Data.ToString();
                     }
                 }
             }
@@ -225,7 +239,7 @@ namespace ProtoCore
                 get
                 {
                     if (null == clrdata)
-                        clrdata = GetData(svData, core, runtimeCore);
+                        clrdata = GetData(svData, runtimeCore);
 
                     return clrdata;
                 }
@@ -278,7 +292,7 @@ namespace ProtoCore
                 if (null == data)
                     return false;
 
-                return StackUtils.CompareStackValues(this.svData, data.svData, this.core, data.core);
+                return StackUtils.CompareStackValues(this.svData, data.svData, this.runtimeCore, data.runtimeCore);
             }
         }
     }

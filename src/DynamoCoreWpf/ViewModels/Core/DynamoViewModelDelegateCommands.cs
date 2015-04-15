@@ -1,4 +1,7 @@
-﻿using Dynamo.UI.Commands;
+﻿using Dynamo.Nodes;
+using Dynamo.Wpf.ViewModels;
+using Microsoft.Practices.Prism.Commands;
+using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
 {
@@ -15,10 +18,10 @@ namespace Dynamo.ViewModels
             ShowSaveDialogIfNeededAndSaveResultCommand = new DelegateCommand(ShowSaveDialogIfNeededAndSaveResult, CanShowSaveDialogIfNeededAndSaveResultCommand);
             SaveImageCommand = new DelegateCommand(SaveImage, CanSaveImage);
             ShowSaveImageDialogAndSaveResultCommand = new DelegateCommand(ShowSaveImageDialogAndSaveResult, CanShowSaveImageDialogAndSaveResult);
-
             WriteToLogCmd = new DelegateCommand(o => model.Logger.Log(o.ToString()), CanWriteToLog);
             PostUiActivationCommand = new DelegateCommand(model.PostUIActivation);
             AddNoteCommand = new DelegateCommand(AddNote, CanAddNote);
+            AddAnnotationCommand = new DelegateCommand(AddAnnotation,CanAddAnnotation);
             AddToSelectionCommand = new DelegateCommand(model.AddToSelection, CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
@@ -40,10 +43,8 @@ namespace Dynamo.ViewModels
             CopyCommand = new DelegateCommand(_ => model.Copy(), CanCopy);
             PasteCommand = new DelegateCommand(_ => model.Paste(), CanPaste);
             ToggleConsoleShowingCommand = new DelegateCommand(ToggleConsoleShowing, CanToggleConsoleShowing);
-            CancelRunCommand = new DelegateCommand(CancelRunCmd, CanCancelRunCmd);
-            RunExpressionCommand = new DelegateCommand(RunExprCmd, CanRunExprCmd);
-            ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, CanRunExprCmd);
-            MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, CanRunExprCmd);
+            ForceRunExpressionCommand = new DelegateCommand(ForceRunExprCmd, RunSettingsViewModel.CanRunExpression);
+            MutateTestDelegateCommand = new DelegateCommand(MutateTestCmd, RunSettingsViewModel.CanRunExpression);
             DisplayFunctionCommand = new DelegateCommand(DisplayFunction, CanDisplayFunction);
             SetConnectorTypeCommand = new DelegateCommand(SetConnectorType, CanSetConnectorType);
             ReportABugCommand = new DelegateCommand(ReportABug, CanReportABug);
@@ -55,6 +56,7 @@ namespace Dynamo.ViewModels
             ShowInstalledPackagesCommand = new DelegateCommand(ShowInstalledPackages, CanShowInstalledPackages);
             PublishCurrentWorkspaceCommand = new DelegateCommand(PackageManagerClientViewModel.PublishCurrentWorkspace, PackageManagerClientViewModel.CanPublishCurrentWorkspace);
             PublishSelectedNodesCommand = new DelegateCommand(PackageManagerClientViewModel.PublishSelectedNodes, PackageManagerClientViewModel.CanPublishSelectedNodes);
+            PublishCustomNodeCommand = new DelegateCommand<Function>(PackageManagerClientViewModel.PublishCustomNode, PackageManagerClientViewModel.CanPublishCustomNode);
             ShowHideConnectorsCommand = new DelegateCommand(ShowConnectors, CanShowConnectors);
             SelectNeighborsCommand = new DelegateCommand(SelectNeighbors, CanSelectNeighbors);
             ClearLogCommand = new DelegateCommand(ClearLog, CanClearLog);
@@ -67,14 +69,9 @@ namespace Dynamo.ViewModels
             EscapeCommand = new DelegateCommand(Escape, CanEscape);
             ExportToSTLCommand = new DelegateCommand(ExportToSTL, CanExportToSTL);
             ImportLibraryCommand = new DelegateCommand(ImportLibrary, CanImportLibrary);
-            SetLengthUnitCommand = new DelegateCommand(SetLengthUnit, CanSetLengthUnit);
-            SetAreaUnitCommand = new DelegateCommand(SetAreaUnit, CanSetAreaUnit);
-            SetVolumeUnitCommand = new DelegateCommand(SetVolumeUnit, CanSetVolumeUnit);
             ShowAboutWindowCommand = new DelegateCommand(ShowAboutWindow, CanShowAboutWindow);
             SetNumberFormatCommand = new DelegateCommand(SetNumberFormat, CanSetNumberFormat);
-
             GetBranchVisualizationCommand = new DelegateCommand(GetBranchVisualization, CanGetBranchVisualization);
-            CheckForLatestRenderCommand = new DelegateCommand(CheckForLatestRender, CanCheckForLatestRender);
             DumpLibraryToXmlCommand = new DelegateCommand(model.DumpLibraryToXml, model.CanDumpLibraryToXml);
         }
 
@@ -83,6 +80,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand WriteToLogCmd { get; set; }
         public DelegateCommand PostUiActivationCommand { get; set; }
         public DelegateCommand AddNoteCommand { get; set; }
+        public DelegateCommand AddAnnotationCommand { get; set; }
         public DelegateCommand UndoCommand { get; set; }
         public DelegateCommand RedoCommand { get; set; }
         public DelegateCommand CopyCommand { get; set; }
@@ -114,8 +112,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowSaveImageDialogAndSaveResultCommand { get; set; }
         public DelegateCommand ToggleConsoleShowingCommand { get; set; }
         public DelegateCommand ShowPackageManagerCommand { get; set; }
-        public DelegateCommand CancelRunCommand { get; set; }
-        public DelegateCommand RunExpressionCommand { get; set; }
         public DelegateCommand ForceRunExpressionCommand { get; set; }
         public DelegateCommand MutateTestDelegateCommand { get; set; }
         public DelegateCommand DisplayFunctionCommand { get; set; }
@@ -131,6 +127,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand PublishNewPackageCommand { get; set; }
         public DelegateCommand PublishCurrentWorkspaceCommand { get; set; }
         public DelegateCommand PublishSelectedNodesCommand { get; set; }
+        public DelegateCommand<Function> PublishCustomNodeCommand { get; set; }
         public DelegateCommand PanCommand { get; set; }
         public DelegateCommand ZoomInCommand { get; set; }
         public DelegateCommand ZoomOutCommand { get; set; }
@@ -140,9 +137,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand EscapeCommand { get; set; }
         public DelegateCommand ExportToSTLCommand { get; set; }
         public DelegateCommand ImportLibraryCommand { get; set; }
-        public DelegateCommand SetLengthUnitCommand { get; set; }
-        public DelegateCommand SetAreaUnitCommand { get; set; }
-        public DelegateCommand SetVolumeUnitCommand { get; set; }
         public DelegateCommand ShowAboutWindowCommand { get; set; }
         public DelegateCommand SetNumberFormatCommand { get; set; }
         public DelegateCommand OpenRecentCommand { get; set; }

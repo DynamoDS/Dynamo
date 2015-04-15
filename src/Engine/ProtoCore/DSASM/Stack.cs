@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoCore.DSASM
 {
@@ -326,13 +327,13 @@ namespace ProtoCore.DSASM
         /// <param name="sv2"></param>
         /// <param name="core"></param>
         /// <returns></returns>
-        public static bool CompareStackValues(StackValue sv1, StackValue sv2, Core core)
+        public static bool CompareStackValues(StackValue sv1, StackValue sv2, RuntimeCore runtimeCore)
         {
-            return CompareStackValues(sv1, sv2, core, core);
+            return CompareStackValues(sv1, sv2, runtimeCore, runtimeCore);
         }
 
         //this method compares the values of the stack variables passed
-        public static bool CompareStackValues(StackValue sv1, StackValue sv2, Core c1, Core c2, ProtoCore.Runtime.Context context = null)
+        public static bool CompareStackValues(StackValue sv1, StackValue sv2, RuntimeCore rtCore1, RuntimeCore rtCore2, ProtoCore.Runtime.Context context = null)
         {
             if (sv1.optype != sv2.optype)
                 return false;
@@ -351,21 +352,26 @@ namespace ProtoCore.DSASM
                 case AddressType.Boolean:
                     return (sv1.opdata > 0 && sv2.opdata > 0) || (sv1.opdata == 0 && sv2.opdata == 0);
                 case AddressType.ArrayPointer:
-                case AddressType.String:
-                    if (Object.ReferenceEquals(c1,c2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
-                    return CompareStackValuesFromHeap(sv1, sv2, c1, c2, context);
+                    return CompareStackValuesFromHeap(sv1, sv2, rtCore1, rtCore2, context);
+                case AddressType.String:
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) 
+                        return true;
+                    string s1 = rtCore1.RuntimeMemory.Heap.GetString(sv1);
+                    string s2 = rtCore1.RuntimeMemory.Heap.GetString(sv2);
+                    return s1.Equals(s2);
                 case AddressType.Pointer:
                     if (sv1.metaData.type != sv2.metaData.type) //if the type of class is different, then stack values can never be equal
                         return false;
-                    if (Object.ReferenceEquals(c1, c2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
+                    if (Object.ReferenceEquals(rtCore1, rtCore2) && sv1.opdata == sv2.opdata) //if both cores are same and the stack values point to the same heap element, then the stack values are equal
                         return true;
-                    ClassNode classnode = c1.DSExecutable.classTable.ClassNodes[sv1.metaData.type];
+                    ClassNode classnode = rtCore1.DSExecutable.classTable.ClassNodes[sv1.metaData.type];
                     if (classnode.IsImportedClass)
                     {
                         var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                        var marshaller1 = helper.GetMarshaller(c1);
-                        var marshaller2 = helper.GetMarshaller(c2);
+                        var marshaller1 = helper.GetMarshaller(rtCore1);
+                        var marshaller2 = helper.GetMarshaller(rtCore2);
                         try
                         {
                             //the interpreter is passed as null as it is not expected to be sued while unmarshalling in this scenario
@@ -374,7 +380,7 @@ namespace ProtoCore.DSASM
                             //cores are different in debugger nunit testing only. Most of the imported objects don't have implementation of Object.Equals. It
                             //also does not make sense to compare these objects deeply, as only dummy objects are created in nunit testing, and these dummy objects
                             //might have random values. So we just check whether the object tpye is the same for this testing.
-                            if (!object.ReferenceEquals(c1, c2))
+                            if (!object.ReferenceEquals(rtCore1, rtCore2))
                                 return Object.ReferenceEquals(dsObject1.GetType(), dsObject2.GetType());
 
                             return Object.Equals(dsObject1, dsObject2);
@@ -386,7 +392,7 @@ namespace ProtoCore.DSASM
                     }
                     else
                     {
-                        return CompareStackValuesFromHeap(sv1, sv2, c1, c2, context);
+                        return CompareStackValuesFromHeap(sv1, sv2, rtCore1, rtCore2, context);
                     }
                 default :
                     return sv1.opdata == sv2.opdata;
@@ -394,10 +400,10 @@ namespace ProtoCore.DSASM
         }
 
         //this method compares the heap for the stack variables and determines if the values of the heap are same
-        private static bool CompareStackValuesFromHeap(StackValue sv1, StackValue sv2, Core c1, Core c2, ProtoCore.Runtime.Context context)
+        private static bool CompareStackValuesFromHeap(StackValue sv1, StackValue sv2, RuntimeCore rtCore1, RuntimeCore rtCore2, ProtoCore.Runtime.Context context)
         {
-            HeapElement heap1 = ArrayUtils.GetHeapElement(sv1, c1); 
-            HeapElement heap2 = ArrayUtils.GetHeapElement(sv2, c2);
+            HeapElement heap1 = ArrayUtils.GetHeapElement(sv1, rtCore1);
+            HeapElement heap2 = ArrayUtils.GetHeapElement(sv2, rtCore2);
 
             if (heap1.Stack.Length != heap2.Stack.Length)
             {
@@ -406,7 +412,7 @@ namespace ProtoCore.DSASM
 
             for (int i = 0; i < heap1.Stack.Length; i++)
             {
-                if (!CompareStackValues(heap1.Stack[i], heap2.Stack[i], c1, c2, context))
+                if (!CompareStackValues(heap1.Stack[i], heap2.Stack[i], rtCore1, rtCore2, context))
                 {
                     return false;
                 }
@@ -428,7 +434,7 @@ namespace ProtoCore.DSASM
                         return false;
                     }
 
-                    if (!CompareStackValues(value1, value2, c1, c2))
+                    if (!CompareStackValues(value1, value2, rtCore1, rtCore2))
                     {
                         return false;
                     }
@@ -447,13 +453,13 @@ namespace ProtoCore.DSASM
         }
 
         // heaper method to support negative index into stack
-        public static StackValue GetValue(this HeapElement hs, int ix, Core core)
+        public static StackValue GetValue(this HeapElement hs, int ix, RuntimeCore runtimeCore)
         {
             int index = ix < 0 ? ix + hs.VisibleSize : ix;
             if (index >= hs.VisibleSize || index < 0)
             {
-                //throw new IndexOutOfRangeException();
-                core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing, StringConstants.kArrayOverIndexed);
+                runtimeCore.RuntimeStatus.LogWarning(
+                    ProtoCore.Runtime.WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                 return StackValue.Null;
             }
 

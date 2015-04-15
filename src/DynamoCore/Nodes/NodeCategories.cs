@@ -4,6 +4,9 @@ using System.Linq;
 using System.Xml;
 using Dynamo.UI;
 using System.IO;
+using System.Text;
+using Dynamo.DSEngine;
+using Dynamo.Library;
 
 namespace Dynamo.Nodes
 {
@@ -18,90 +21,23 @@ namespace Dynamo.Nodes
         public const string CORE_INPUT = "Core.Input";
         public const string CORE_STRINGS = "Core.Strings";
         public const string CORE_LISTS_CREATE = "Core.List.Create";
-        public const string CORE_LISTS_ACTION = "Core.List.Actions";        
+        public const string CORE_LISTS_ACTION = "Core.List.Actions";
         public const string CORE_LISTS_QUERY = "Core.List.Query";
         public const string CORE_VIEW = "Core.View";
-        public const string CORE_ANNOTATE = "Core.Annotate";
         public const string CORE_EVALUATE = "Core.Evaluate";
-        public const string CORE_TIME = "Core.Time";
         public const string CORE_SCRIPTING = "Core.Scripting";
-        public const string CORE_FUNCTIONS = "Core.Functions";
         public const string CORE_IO = "Core.File";
+        public const string CORE_UNITS = "Core.Units";
 
         public const string LOGIC = "Core.Logic";
-        public const string LOGIC_MATH_ARITHMETIC = "Logic.Math.Arithmetic";
-        public const string LOGIC_MATH_ROUNDING = "Logic.Math.Rounding";
-        public const string LOGIC_MATH_CONSTANTS = "Logic.Math.Constants";
-        public const string LOGIC_MATH_TRIGONOMETRY = "Logic.Math.Trigonometry";
-        public const string LOGIC_MATH_RANDOM = "Logic.Math.Random";
         public const string LOGIC_MATH_OPTIMIZE = "Logic.Math.Optimize";
-        public const string LOGIC_EFFECT = "Logic.Effect";
-        public const string LOGIC_COMPARISON = "Logic.Comparison";
-        public const string LOGIC_LOOP = "Logic.Loop";
 
 
         public const string GEOMETRY = "Geometry";
 
-        public const string GEOMETRY_CURVE_CREATE = "Geometry.Curve.Create";
-        public const string GEOMETRY_CURVE_DIVIDE = "Geometry.Curve.Divide";
-        public const string GEOMETRY_CURVE_PRIMITIVES = "Geometry.Curve.Primitives";
-        public const string GEOMETRY_CURVE_QUERY = "Geometry.Curve.Query";
-        public const string GEOMETRY_CURVE_FIT = "Geometry.Curve.Fit";
-
-        public const string GEOMETRY_POINT_CREATE = "Geometry.Point.Create";
-        public const string GEOMETRY_POINT_MODIFY = "Geometry.Point.Modify";
-        public const string GEOMETRY_POINT_QUERY = "Geometry.Point.Query";
-        public const string GEOMETRY_POINT_GRID = "Geometry.Point.Grid";
-        public const string GEOMETRY_POINT_TESSELATE = "Geometry.Point.Tesselate";
-
-        public const string GEOMETRY_SOLID_BOOLEAN = "Geometry.Solid.Boolean";
-        public const string GEOMETRY_SOLID_CREATE = "Geometry.Solid.Create";
-        public const string GEOMETRY_SOLID_MODIFY = "Geometry.Solid.Modify";
-        public const string GEOMETRY_SOLID_PRIMITIVES = "Geometry.Solid.Primitives";
-        public const string GEOMETRY_SOLID_QUERY = "Geometry.Solid.Extract";
-        public const string GEOMETRY_SOLID_REPAIR = "Geometry.Solid.Repair";
-
-        public const string GEOMETRY_SURFACE_CREATE = "Geometry.Surface.Create";
-        public const string GEOMETRY_SURFACE_QUERY = "Geometry.Surface.Query";
-        public const string GEOMETRY_SURFACE_UV = "Geometry.Surface.UV";
-        public const string GEOMETRY_SURFACE_DIVIDE = "Geometry.Surface.Divide";
-
-        public const string GEOMETRY_TRANSFORM_APPLY = "Geometry.Transform.Apply";
-        public const string GEOMETRY_TRANSFORM_MODIFY = "Geometry.Transform.Modify";
-        public const string GEOMETRY_TRANSFORM_CREATE = "Geometry.Transform.Create";
-
-        public const string GEOMETRY_INTERSECT = "Geometry.Intersect";
-
-        public const string GEOMETRY_EXPERIMENTAL_PRIMITIVES = "Geometry.Experimental.Primitives";
-        public const string GEOMETRY_EXPERIMENTAL_SURFACE = "Geometry.Experimental.Surface";
-        public const string GEOMETRY_EXPERIMENTAL_CURVE = "Geometry.Experimental.Curve";
-        public const string GEOMETRY_EXPERIMENTAL_SOLID = "Geometry.Experimental.Solid";
-        public const string GEOMETRY_EXPERIMENTAL_MODIFY = "Geometry.Experimental.Modify";
-        public const string GEOMETRY_EXPERIMENTAL_VIEW = "Geometry.Experimental.View";
-
-        public const string REVIT = "Revit";
-        public const string REVIT_DOCUMENT = "Revit.Document";
-        public const string REVIT_DATUMS = "Revit.Datums";
-        public const string REVIT_FAMILIES = "Revit.Families";
-        public const string REVIT_SELECTION = "Revit.Selection";
-        public const string REVIT_VIEW = "Revit.View";
-        public const string REVIT_REFERENCE = "Revit.Reference";
-        public const string REVIT_PARAMETERS = "Revit.Parameters";
-        public const string REVIT_BAKE = "Revit.Bake";
-        public const string REVIT_API = "Revit.API";
-
-        public const string ANALYZE = "Analyze";
-        public const string ANALYZE_MEASURE = "Analyze.Measure";
-        public const string ANALYZE_DISPLAY = "Analyze.Display";
-        public const string ANALYZE_COLOR = "Analyze.Color";
-        public const string ANALYZE_STRUCTURE = "Analyze.Structure";
-        public const string ANALYZE_CLIMATE = "Analyze.Climate";
-        public const string ANALYZE_ACOUSTIC = "Analyze.Acoustic";
         public const string ANALYZE_SOLAR = "Analyze.Solar";
 
         public const string IO = "Input/Output";
-        public const string IO_FILE = "Input/Output.File";
-        public const string IO_NETWORK = "Input/Output.Network";
         public const string IO_HARDWARE = "Input/Output.Hardware";
     }
 
@@ -160,6 +96,88 @@ namespace Dynamo.Nodes
             className = className.Replace("XYZ", "Xyz");
             className = className.Replace("UV", "Uv");
             return newPrefix + className; // Always new prefix from now on.
+        }
+
+        /// <summary>
+        /// This method returns a name for the icon based on name of the node.
+        /// </summary>
+        /// <param name="descriptor">Function descriptor, that contains all info about node.</param>
+        /// <param name="overridePrefix">
+        /// overridePrefix is used as default value for generating node icon name.
+        /// If overridePrefix is empty, it uses QualifiedName property.
+        /// e.g. Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin
+        /// </param>
+        public static string TypedParametersToString(FunctionDescriptor descriptor, string overridePrefix = "")
+        {
+            var builder = new StringBuilder();
+
+            foreach (TypedParameter tp in descriptor.Parameters)
+            {
+                string typeOfParameter = tp.Type.ToString();
+
+                // Check to see if there is array indexer symbols '[]', if so turn their 
+                // dimensionality into a number (e.g. 'bool[][]' turned into 'bool2').
+                int squareBrackets = typeOfParameter.Count(x => x == '[');
+                if (squareBrackets > 0)
+                {
+                    if (typeOfParameter.Contains("[]..[]"))
+                    {
+                        // Remove square brackets.
+                        typeOfParameter = typeOfParameter.Replace("[]..[]", "");
+                        // Add number of them.
+                        typeOfParameter = String.Concat(typeOfParameter, "N");
+                    }
+                    else
+                    {
+                        // Remove square brackets.
+                        int index = typeOfParameter.IndexOf('[');
+                        typeOfParameter = typeOfParameter.Substring(0, index).TrimEnd();
+
+                        // Add number of them.
+                        typeOfParameter = String.Concat(typeOfParameter, squareBrackets.ToString());
+                    }
+                }
+
+                if (builder.Length > 0)
+                    builder.Append("-");
+
+                typeOfParameter = typeOfParameter.Split('.').Last();
+                builder.Append(typeOfParameter);
+            }
+
+            // If the caller does not supply a prefix, use default logic to generate one.
+            if (string.IsNullOrEmpty(overridePrefix))
+                overridePrefix = NormalizeAsResourceName(descriptor.QualifiedName);
+
+            return overridePrefix + "." + builder.ToString();
+        }
+
+        internal static string ShortenCategoryName(string fullCategoryName)
+        {
+            if (string.IsNullOrEmpty(fullCategoryName))
+                return string.Empty;
+
+            var catName = fullCategoryName.Replace(Configurations.CategoryDelimiterString, Configurations.CategoryDelimiterWithSpaces);
+
+            // if the category name is too long, we strip off the interior categories
+            if (catName.Length > 50)
+            {
+                var s = catName.Split(Configurations.ShortenedCategoryDelimiter.ToArray()).Select(x => x.Trim()).ToList();
+                if (s.Count() > 4)
+                {
+                    s = new List<string>()
+                                        {
+                                            s[0],
+                                            "...",
+                                            s[s.Count - 3],
+                                            s[s.Count - 2],
+                                            s[s.Count - 1]
+                                        };
+                    catName = String.Join(Configurations.CategoryDelimiterWithSpaces, s);
+                }
+            }
+
+            return catName;
         }
 
         /// <summary>
@@ -409,6 +427,55 @@ namespace Dynamo.Nodes
             var relativeUri = new Uri(relativePath, UriKind.Relative);
             var resultUri = new Uri(baseUri, relativeUri);
             return resultUri.LocalPath;
+        }
+
+        /// <summary>
+        /// Add spaces to string before capital letters e.g. CoordinateSystem to Coordinate System.
+        /// </summary>
+        /// <param name="original">incoming string</param>
+        internal static string InsertSpacesToString(string original)
+        {
+            if (string.IsNullOrWhiteSpace(original))
+                return "";
+            StringBuilder newText = new StringBuilder(original.Length * 2);
+            newText.Append(original[0]);
+            for (int i = 1; i < original.Length; i++)
+            {
+                // We also have to check was previous character capital letter, e.g. Import From CSV                
+                var curr = original[i];
+                var prev = original[i - 1];
+                if ((Char.IsUpper(curr) || curr.Equals('(')) &&
+                    ((prev != ' ') && (!Char.IsUpper(prev))))
+                {
+                    newText.Append(" ");
+                }
+                newText.Append(original[i]);
+            }
+            return newText.ToString();
+        }
+
+        internal static string NormalizeAsResourceName(string resource)
+        {
+            if (string.IsNullOrWhiteSpace(resource))
+                return "";
+
+            StringBuilder newText = new StringBuilder(resource.Length);
+
+            // Dots and minus we add, they are for overloaded methods.
+            var query = resource.Where(
+                c =>
+                {
+                    if (c == '.' || (c == '-'))
+                        return true;
+
+                    return Char.IsLetterOrDigit(c);
+                });
+
+            foreach (var c in query)
+                newText.Append(c);
+
+            var result = newText.ToString();
+            return ((result == "-") ? string.Empty : result);
         }
 
         private static bool HasPathInformation(string fileNameOrPath)

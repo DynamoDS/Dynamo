@@ -42,5 +42,13 @@ namespace Dynamo.Models.NodeLoaders
             node.Deserialize(nodeElement, context);
             return node;
         }
+
+        public Function CreateProxyNode(Guid funcId, string nickname, Guid nodeId, int inputNum, int outputNum)
+        {
+            var node = customNodeManager.CreateCustomNodeInstance(funcId, nickname, isTestMode);
+            // create its definition and add inputs and outputs
+            node.LoadNode(nodeId, inputNum, outputNum);
+            return node;
+        }
     }
 }

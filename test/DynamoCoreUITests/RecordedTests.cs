@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
-using System.Windows.Input;
 using System.Xml;
 
 using SystemTestServices;
-
-using DSCoreNodesUI.Input;
 
 using DSIronPythonNode;
 using Dynamo;
@@ -18,23 +14,30 @@ using Dynamo.Nodes;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoShapeManager;
 using NUnit.Framework;
 using Dynamo.UI;
 using DynamoUtilities;
 using System.Reflection;
+using TestServices;
+using Dynamo.Wpf.ViewModels.Core;
+using Microsoft.Practices.Prism.Logging;
+using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DynamoCoreUITests
 {
     public delegate void CommandCallback(string commandTag);
 
-    [TestFixture]
-    public class RecordedTests : DSEvaluationViewModelUnitTest
+    public class RecordedUnitTestBase : DSEvaluationViewModelUnitTest
     {
         #region Generic Set-up Routines and Data Members
 
-        private System.Random randomizer = null;
-        private IEnumerable<string> customNodesToBeLoaded = null;
-        private CommandCallback commandCallback = null;
+        protected System.Random randomizer = null;
+        private IEnumerable<string> customNodesToBeLoaded;
+        private CommandCallback commandCallback;
+
+        // Geometry preloading related members.
+        protected bool preloadGeometry;
 
         // For access within test cases.
         protected DynamoView dynamoView = null;
@@ -43,25 +46,24 @@ namespace DynamoCoreUITests
         protected double tolerance = 1e-6;
         protected double codeBlockPortHeight = Configurations.CodeBlockPortHeightInPixels;
 
-        public override void Init()
-        {
-            // We do not call "base.Init()" here because we want to be able 
-            // to create our own copy of Controller here with command file path.
-            DynamoPathManager.Instance.InitializeCore(
-              Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-
-            DynamoPathManager.PreloadAsmLibraries(DynamoPathManager.Instance);
-        }
-
-        [SetUp]
-        public void Start()
+        public override void Setup()
         {
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
             SetupDirectories();
+
+            // We do not call "base.Init()" here because we want to be able 
+            // to create our own copy of Controller here with command file path.
+            // 
+            // base.Init();
         }
 
-        [TearDown]
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            Exit();
+        }
+
         protected void Exit()
         {
             commandCallback = null;
@@ -81,11 +83,210 @@ namespace DynamoCoreUITests
                 this.ViewModel = null;
             }
 
-            GC.Collect();
+            preloader = null; // Invalid preloader object for the test.
         }
 
         #endregion
 
+        #region Private Helper Methods
+
+        protected ModelBase GetNode(string guid)
+        {
+            Guid id = Guid.Parse(guid);
+            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
+        }
+
+        /// <summary>
+        /// Call this method to load custom nodes from their file paths. This 
+        /// call, if made, must precede the call to RunCommandsFromFile. This 
+        /// call cannot be made more than once for a single test case. If more 
+        /// than one custom node files are needed for the test case, they must 
+        /// be specified in the same call.
+        /// </summary>
+        /// <param name="customNodeFilePaths">And array of custom node file paths.
+        /// This array cannot be null or empty.</param>
+        /// 
+        protected void LoadCustomNodes(string[] customNodeFilePaths)
+        {
+            if (customNodeFilePaths == null || (customNodeFilePaths.Length <= 0))
+            {
+                var message = "Argument must be one or more valid file paths";
+                throw new ArgumentException(message);
+            }
+
+            if (this.customNodesToBeLoaded != null)
+                throw new InvalidOperationException("LoadCustomNodes called twice");
+
+            if (this.ViewModel != null)
+            {
+                var message = "'LoadCustomNodes' should be called before 'RunCommandsFromFile'";
+                throw new InvalidOperationException(message);
+            }
+
+            var fileList = new List<string>();
+            foreach (var customNodeFilePath in customNodeFilePaths)
+            {
+                if (File.Exists(customNodeFilePath) != false)
+                {
+                    fileList.Add(customNodeFilePath);
+                    continue;
+                }
+
+                var message = "Custom node file not found";
+                throw new System.IO.FileNotFoundException(message, customNodeFilePath);
+            }
+
+            this.customNodesToBeLoaded = fileList;
+        }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        protected void RunCommandsFromFile(string commandFileName,
+            bool autoRun = false, CommandCallback commandCallback = null)
+        {
+            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
+            commandFilePath = Path.Combine(commandFilePath, commandFileName);
+
+            if (this.ViewModel != null)
+            {
+                var message = "Multiple DynamoViewModel instances detected!";
+                throw new InvalidOperationException(message);
+            }
+
+            var geometryFactoryPath = string.Empty;
+            if (preloadGeometry && (preloader == null))
+            {
+                var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+                preloader.Preload();
+
+                geometryFactoryPath = preloader.GeometryFactoryPath;
+                preloadGeometry = false;
+            }
+
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
+            var model = DynamoModel.Start(
+                new DynamoModel.DefaultStartConfiguration()
+                {
+                    StartInTestMode = true,
+                    PathResolver = pathResolver,
+                    GeometryFactoryPath = geometryFactoryPath
+                });
+
+            // Create the DynamoViewModel to control the view
+            this.ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    CommandFilePath = commandFilePath,
+                    DynamoModel = model
+                });
+
+            ViewModel.HomeSpace.RunSettings.RunType = autoRun ?
+                RunType.Automatic :
+                RunType.Manual;
+
+            // Load all custom nodes if there is any specified for this test.
+            if (this.customNodesToBeLoaded != null)
+            {
+                foreach (var customNode in this.customNodesToBeLoaded)
+                {
+                    CustomNodeInfo info;
+                    if (!ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(customNode, true, out info))
+                    {
+                        throw new System.IO.FileFormatException(string.Format(
+                            "Failed to load custom node: {0}", customNode));
+                    }
+                }
+            }
+
+            RegisterCommandCallback(commandCallback);
+
+            // Create the view.
+            dynamoView = new DynamoView(this.ViewModel);
+            dynamoView.ShowDialog();
+
+            Assert.IsNotNull(this.ViewModel);
+            Assert.IsNotNull(this.ViewModel.Model);
+            Assert.IsNotNull(this.ViewModel.Model.CurrentWorkspace);
+            workspace = this.ViewModel.Model.CurrentWorkspace;
+            workspaceViewModel = this.ViewModel.CurrentSpaceViewModel;
+        }
+
+        private void RegisterCommandCallback(CommandCallback commandCallback)
+        {
+            if (commandCallback == null)
+                return;
+
+            if (this.commandCallback != null)
+                throw new InvalidOperationException("RunCommandsFromFile called twice");
+
+            this.commandCallback = commandCallback;
+            var automation = this.ViewModel.Automation;
+            automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
+        }
+
+        private void OnAutomationPlaybackStateChanged(object sender, PlaybackStateChangedEventArgs e)
+        {
+            if (e.OldState == AutomationSettings.State.Paused)
+            {
+                if (e.NewState == AutomationSettings.State.Playing)
+                {
+                    // Call back to the delegate registered by the test case. We
+                    // only handle command transition from Paused to Playing. Note 
+                    // that "commandCallback" is not checked against "null" value 
+                    // because "OnAutomationPlaybackStateChanged" would not have 
+                    // been called if the "commandCallback" was not registered.
+                    // 
+                    this.commandCallback(e.NewTag);
+                }
+            }
+        }
+
+        protected CmdType DuplicateAndCompare<CmdType>(CmdType command)
+            where CmdType : DynamoModel.RecordableCommand
+        {
+            Assert.IsNotNull(command); // Ensure we have an input command.
+
+            // Serialize the command into an XmlElement.
+            XmlDocument xmlDocument = new XmlDocument();
+            XmlElement element = command.Serialize(xmlDocument);
+            Assert.IsNotNull(element);
+
+            // Deserialized the XmlElement into a new instance of the command.
+            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
+            Assert.IsNotNull(duplicate);
+            Assert.IsTrue(duplicate is CmdType);
+            return duplicate as CmdType;
+        }
+
+        #endregion
+    }
+
+    [TestFixture]
+    public class RecordedTests : RecordedUnitTestBase
+    {
         #region Recorded Test Cases for Command Framework
 
         [Test, RequiresSTA]
@@ -268,16 +469,40 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        public void TestUpdateModelValueCommand()
+        public void TestUpdateModelValueCommand0()
         {
             Guid modelGuid = Guid.NewGuid();
             string name = randomizer.Next().ToString();
             string value = randomizer.Next().ToString();
 
-            var cmdOne = new DynamoModel.UpdateModelValueCommand(modelGuid, name, value);
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, modelGuid, name, value);
             var cmdTwo = DuplicateAndCompare(cmdOne);
 
-            Assert.AreEqual(cmdOne.ModelGuid, cmdTwo.ModelGuid);
+            Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
+            Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
+            Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
+        }
+
+        [Test, RequiresSTA]
+        public void TestUpdateModelValueCommand1()
+        {
+            var modelGuids = new[]
+            {
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid(),
+                Guid.NewGuid()
+            };
+
+            string name = randomizer.Next().ToString();
+            string value = randomizer.Next().ToString();
+
+            var cmdOne = new DynamoModel.UpdateModelValueCommand(System.Guid.Empty, modelGuids, name, value);
+            var cmdTwo = DuplicateAndCompare(cmdOne);
+
+            Assert.IsTrue(cmdOne.ModelGuids.SequenceEqual(cmdTwo.ModelGuids));
             Assert.AreEqual(cmdOne.Name, cmdTwo.Name);
             Assert.AreEqual(cmdOne.Value, cmdTwo.Value);
         }
@@ -301,19 +526,20 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.Description, cmdTwo.Description);
             Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
         }
-        [Test]
+
+        
         public void TestCustomNode()
         {
             RunCommandsFromFile("TestCustomNode.xml");
             var workspaces = this.ViewModel.Model.Workspaces;
             Assert.IsNotNull(workspaces);
-            Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+            Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
             // 1 custom node + 1 number node
             Assert.AreEqual(1, workspace.Connectors.Count());
             Assert.AreEqual(2, workspace.Nodes.Count);
 
-            var customWorkspace = workspaces[1];
+            var customWorkspace = workspaces.ElementAt(1);
             Assert.IsNotNull(customWorkspace);
 
             // 1 inputs + 1 output 
@@ -326,8 +552,8 @@ namespace DynamoCoreUITests
             AssertPreviewValue("04f6dab5-0a0b-4563-9f20-d0e58fcae7a5", 1.0);
         }
 
-        [Test]
-        [Category("Failure")] //TODO(Steve): Recorded Commands have changed for custom nodes.
+        [Test, Category("Failure")]
+        
         public void TestCustomNodeUI()
         {
             RunCommandsFromFile("CustomNodeUI.xml", false, (commandTag) =>
@@ -337,13 +563,13 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+                    Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(3, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
@@ -361,13 +587,13 @@ namespace DynamoCoreUITests
                 {
 
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+                    Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(3, workspace.Connectors.Count());
                     Assert.AreEqual(4, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
@@ -391,11 +617,11 @@ namespace DynamoCoreUITests
                 //So the process is separated into two steps. At the second step. the button status is checked.
                 if (commandTag == "OpenFile")
                 {
-                    ViewModel.HomeSpace.RunEnabled = false;
+                    ViewModel.HomeSpace.RunSettings.RunEnabled = false;
                 }
                 else if (commandTag == "CheckButtonIsDisabled")
                 {
-                    Assert.IsFalse(dynamoView.RunButton.IsEnabled);
+                    Assert.IsFalse(dynamoView.RunSettingsControl.RunButton.IsEnabled);
                 }
             });
         }
@@ -411,40 +637,30 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count);
+                    Assert.AreEqual(2, workspaces.Count());
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(1, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
                     Assert.AreEqual(1, customWorkspace.Nodes.Count);
 
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
-
-
                 }
                 else if (commandTag == "SecondRun")
                 {
-
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count);
-
+                    Assert.AreEqual(2, workspaces.Count());
 
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(1, workspace.Nodes.Count);
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
                     Assert.AreEqual(1, customWorkspace.Nodes.Count);
-
-
-
-
                 }
-
-
             });
         }
         [Test]
@@ -457,13 +673,13 @@ namespace DynamoCoreUITests
                 if (commandTag == "FirstRun")
                 {
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+                    Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(1, workspace.Connectors.Count());
                     Assert.AreEqual(2, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
@@ -479,13 +695,13 @@ namespace DynamoCoreUITests
                 {
 
                     Assert.IsNotNull(workspaces);
-                    Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+                    Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
                     // 1 custom node + 1 number node
                     Assert.AreEqual(1, workspace.Connectors.Count());
                     Assert.AreEqual(2, workspace.Nodes.Count);
 
-                    var customWorkspace = workspaces[1];
+                    var customWorkspace = workspaces.ElementAt(1);
                     Assert.IsNotNull(customWorkspace);
 
                     // 2 inputs + 1 output 
@@ -506,7 +722,7 @@ namespace DynamoCoreUITests
         {
             var cmdOne = new DynamoModel.SwitchTabCommand(randomizer.Next());
             var cmdTwo = DuplicateAndCompare(cmdOne);
-            Assert.AreEqual(cmdOne.TabIndex, cmdTwo.TabIndex);
+            Assert.AreEqual(cmdOne.WorkspaceModelIndex, cmdTwo.WorkspaceModelIndex);
         }
 
         #endregion
@@ -581,13 +797,13 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("CreateAndUseCustomNode.xml");
             var workspaces = this.ViewModel.Model.Workspaces;
             Assert.IsNotNull(workspaces);
-            Assert.AreEqual(2, workspaces.Count); // 1 custom node + 1 home space
+            Assert.AreEqual(2, workspaces.Count()); // 1 custom node + 1 home space
 
             // 1 custom node + 3 number nodes + 1 watch node
             Assert.AreEqual(4, workspace.Connectors.Count());
             Assert.AreEqual(5, workspace.Nodes.Count);
 
-            var customWorkspace = workspaces[1];
+            var customWorkspace = workspaces.ElementAt(1);
             Assert.IsNotNull(customWorkspace);
 
             // 3 inputs + 1 output + 1 addition + 1 multiplication
@@ -598,167 +814,19 @@ namespace DynamoCoreUITests
         }
 
         #endregion
-
-        #region Private Helper Methods
-
-        protected ModelBase GetNode(string guid)
-        {
-            Guid id = Guid.Parse(guid);
-            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
-        }
-
-        /// <summary>
-        /// Call this method to load custom nodes from their file paths. This 
-        /// call, if made, must precede the call to RunCommandsFromFile. This 
-        /// call cannot be made more than once for a single test case. If more 
-        /// than one custom node files are needed for the test case, they must 
-        /// be specified in the same call.
-        /// </summary>
-        /// <param name="customNodeFilePaths">And array of custom node file paths.
-        /// This array cannot be null or empty.</param>
-        /// 
-        protected void LoadCustomNodes(string[] customNodeFilePaths)
-        {
-            if (customNodeFilePaths == null || (customNodeFilePaths.Length <= 0))
-            {
-                var message = "Argument must be one or more valid file paths";
-                throw new ArgumentException(message);
-            }
-
-            if (this.customNodesToBeLoaded != null)
-                throw new InvalidOperationException("LoadCustomNodes called twice");
-
-            if (this.ViewModel != null)
-            {
-                var message = "'LoadCustomNodes' should be called before 'RunCommandsFromFile'";
-                throw new InvalidOperationException(message);
-            }
-
-            var fileList = new List<string>();
-            foreach (var customNodeFilePath in customNodeFilePaths)
-            {
-                if (File.Exists(customNodeFilePath) != false)
-                {
-                    fileList.Add(customNodeFilePath);
-                    continue;
-                }
-
-                var message = "Custom node file not found";
-                throw new System.IO.FileNotFoundException(message, customNodeFilePath);
-            }
-
-            this.customNodesToBeLoaded = fileList;
-        }
-
-        protected void RunCommandsFromFile(string commandFileName,
-            bool autoRun = false, CommandCallback commandCallback = null)
-        {
-            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
-            commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
-            commandFilePath = Path.Combine(commandFilePath, commandFileName);
-
-            if (this.ViewModel != null)
-            {
-                var message = "Multiple DynamoViewModel instances detected!";
-                throw new InvalidOperationException(message);
-            }
-
-            var model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
-                {
-                    StartInTestMode = true
-                });
-
-            // Create the DynamoViewModel to control the view
-            this.ViewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    CommandFilePath = commandFilePath,
-                    DynamoModel = model
-                });
-
-            this.ViewModel.DynamicRunEnabled = autoRun;
-
-            // Load all custom nodes if there is any specified for this test.
-            if (this.customNodesToBeLoaded != null)
-            {
-                foreach (var customNode in this.customNodesToBeLoaded)
-                {
-                    CustomNodeInfo info;
-                    if (!ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(customNode, true, out info))
-                    {
-                        throw new System.IO.FileFormatException(string.Format(
-                            "Failed to load custom node: {0}", customNode));
-                    }
-                }
-            }
-
-            RegisterCommandCallback(commandCallback);
-
-            // Create the view.
-            dynamoView = new DynamoView(this.ViewModel);
-            dynamoView.ShowDialog();
-
-            Assert.IsNotNull(this.ViewModel);
-            Assert.IsNotNull(this.ViewModel.Model);
-            Assert.IsNotNull(this.ViewModel.Model.CurrentWorkspace);
-            workspace = this.ViewModel.Model.CurrentWorkspace;
-            workspaceViewModel = this.ViewModel.CurrentSpaceViewModel;
-        }
-
-        private void RegisterCommandCallback(CommandCallback commandCallback)
-        {
-            if (commandCallback == null)
-                return;
-
-            if (this.commandCallback != null)
-                throw new InvalidOperationException("RunCommandsFromFile called twice");
-
-            this.commandCallback = commandCallback;
-            var automation = this.ViewModel.Automation;
-            automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
-        }
-
-        private void OnAutomationPlaybackStateChanged(object sender, PlaybackStateChangedEventArgs e)
-        {
-            if (e.OldState == AutomationSettings.State.Paused)
-            {
-                if (e.NewState == AutomationSettings.State.Playing)
-                {
-                    // Call back to the delegate registered by the test case. We
-                    // only handle command transition from Paused to Playing. Note 
-                    // that "commandCallback" is not checked against "null" value 
-                    // because "OnAutomationPlaybackStateChanged" would not have 
-                    // been called if the "commandCallback" was not registered.
-                    // 
-                    this.commandCallback(e.NewTag);
-                }
-            }
-        }
-
-        private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynamoModel.RecordableCommand
-        {
-            Assert.IsNotNull(command); // Ensure we have an input command.
-
-            // Serialize the command into an XmlElement.
-            XmlDocument xmlDocument = new XmlDocument();
-            XmlElement element = command.Serialize(xmlDocument);
-            Assert.IsNotNull(element);
-
-            // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
-            Assert.IsNotNull(duplicate);
-            Assert.IsTrue(duplicate is CmdType);
-            return duplicate as CmdType;
-        }
-
-        #endregion
     }
 
-    
-    class RecordedTestsDSEngine : RecordedTests
+
+    class RecordedTestsDSEngine : RecordedUnitTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSIronPython.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         #region Basic CodeBlockNode Test Cases
 
         [Test, RequiresSTA, Category("Failure")]
@@ -1063,8 +1131,6 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void ReExecuteASTTest()
         {
-            DynamoUtilities.DynamoPathManager.Instance.AddPreloadLibrary("FFITarget.dll");
-
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -1320,6 +1386,7 @@ namespace DynamoCoreUITests
         [Category("RegressionTests")]
         public void Defect_MAGN_590()
         {
+            preloadGeometry = true;
             RunCommandsFromFile("Defect-MAGN-590.xml");
 
             //Check the nodes
@@ -1467,6 +1534,7 @@ namespace DynamoCoreUITests
         {
             // Further testing of this defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-590
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_590.xml");
 
             //Check the nodes and connectors count
@@ -1732,7 +1800,7 @@ namespace DynamoCoreUITests
 
             // Reset current test case
             Exit();
-            Start();
+            Setup();
 
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithNodeToCode.xml");
@@ -1740,7 +1808,7 @@ namespace DynamoCoreUITests
 
             // Reset current test case
             Exit();
-            Start();
+            Setup();
 
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithNodeToCodeUndo.xml");
@@ -1838,7 +1906,7 @@ namespace DynamoCoreUITests
             AssertValue("p_d4d53e201514434983e17cb5c533a3e0", 0);
             
             Exit();
-            Start();
+            Setup();
             
             // redefine function - test if the CBN reexecuted
             RunCommandsFromFile("Function_redef01a.xml");
@@ -1861,7 +1929,7 @@ namespace DynamoCoreUITests
             AssertValue("p_c9827e41855647f68e9d6c600a2e45ee", 0);
 
             Exit();
-            Start();
+            Setup();
 
             // redefine function call - CBN with function definition is not expected to be executed
             RunCommandsFromFile("Function_redef02a.xml");
@@ -1884,7 +1952,7 @@ namespace DynamoCoreUITests
             AssertValue("d_f34e01e225e446349eb8e815e8ee580d", 1);
 
             Exit();
-            Start();
+            Setup();
 
             // redefine function call - CBN with function definition is not expected to be executed
             RunCommandsFromFile("Function_redef03a.xml");
@@ -1906,7 +1974,7 @@ namespace DynamoCoreUITests
             AssertValue("b_9b638b99d63145838b82662a60cdf6bc", 0);
             
             Exit();
-            Start();
+            Setup();
             
             // redefine function call - change type of argument
             RunCommandsFromFile("Function_redef04a.xml");
@@ -1942,20 +2010,21 @@ namespace DynamoCoreUITests
             Guid callsiteGuidSecondCall = Guid.Empty;
             Guid FunctionCallNodeGuid = new Guid("22939bf5-50bc-4aa3-9c91-0dc5b5017252");
 
+            preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", false, (commandTag) =>
             {
                 ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -1963,14 +2032,14 @@ namespace DynamoCoreUITests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -1999,6 +2068,7 @@ namespace DynamoCoreUITests
         {
             // This is a UI test to test for interaction crashes the application
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_1344_PythonEditor.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
             Assert.AreEqual(2, workspace.Connectors.Count());
@@ -2016,6 +2086,7 @@ namespace DynamoCoreUITests
         [Category("RegressionTests")]
         public void Defect_MAGN_2201_WatchCBN()
         {
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2201_WatchCBN.xml");
             Assert.AreEqual(3, workspace.Nodes.Count);
         }
@@ -2037,20 +2108,21 @@ namespace DynamoCoreUITests
             Guid callsiteGuidSecondCall = Guid.Empty;
             Guid FunctionCallNodeGuid = new Guid("16e960e5-8a24-44e7-ac81-3759aaf11d25");
 
+            preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", false, (commandTag) =>
             {
                 ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2058,14 +2130,14 @@ namespace DynamoCoreUITests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -2085,6 +2157,7 @@ namespace DynamoCoreUITests
 
         public void Defect_MAGN_2521()
         {
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2521.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2114,12 +2187,13 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("RegressionTests")]
+        [Category("RegressionTests"), Category("Failure")]
         public void Defect_MAGN_2378()
         {
             // this is using CBN. 
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2378.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2149,6 +2223,7 @@ namespace DynamoCoreUITests
             // this is using Point.ByCoordinates node.
             // more details available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2378
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2378_Another.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2516,6 +2591,7 @@ namespace DynamoCoreUITests
         {
             // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2247
 
+            preloadGeometry = true;
             RunCommandsFromFile("Defect_MAGN_2247.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -2955,13 +3031,13 @@ namespace DynamoCoreUITests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
+                    Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
                 {
@@ -2985,13 +3061,13 @@ namespace DynamoCoreUITests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(false, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.CancellationPending);
-                    Assert.AreEqual(true, ViewModel.HomeSpace.RunEnabled);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
+                    Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
                 {
@@ -3096,7 +3172,7 @@ namespace DynamoCoreUITests
         }
 
         [Test, RequiresSTA]
-        [Category("RegressionTests"), Category("Failure")]
+        [Category("RegressionTests")]
         public void RunAutomatically_On_5068()
         {
             // If Run Automatically On, third file onwards it executes to null
@@ -3442,7 +3518,144 @@ namespace DynamoCoreUITests
 
             AssertPreviewValue("9182323d-a4fd-40eb-905b-8ec415d17926", 69.12);
         }
+        [Test]
+        public void TestScopeIf_6322()
+        {
+            // to test scope if 
+            RunCommandsFromFile("ScopeIf_6322.xml", true);
 
+            AssertPreviewValue("cd759105-3c6b-4f8e-81e7-73266e92f357", false);
+        }
+
+        [Test]
+        public void modifyCN_6191()
+        {
+
+            RunCommandsFromFile("modifyCN_6191.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "First")
+                {
+                    AssertPreviewValue("64fbab72-84ee-4bd1-9767-5eea9d751018", 3);
+
+                }
+                else if (commandTag == "Second")
+                {
+
+                    AssertPreviewValue("64fbab72-84ee-4bd1-9767-5eea9d751018", 6);
+
+                }
+            });
+
+        }
+        [Test]
+        public void recursion_6415()
+        {
+
+
+
+            RunCommandsFromFile("recursion_6415.xml", true);
+
+            AssertPreviewValue("3e30c7d3-6316-4fb6-aec7-13c3ca706621", 10);
+        }
+        [Test]
+        public void workspace_5919()
+        {
+
+            RunCommandsFromFile("workspace_5919.xml", true);
+
+            AssertPreviewValue("3f42da77-4fb9-4af0-ade0-444e81614133", 0);
+        }
+        [Test]
+        public void DeleteInput_887()
+        {
+
+            
+            RunCommandsFromFile("DeleteInput_887.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(2, workspace.Nodes.Count); 
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("c5f12fff-e9bb-4182-ae32-626177252aa0");
+
+                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                }
+            });
+        }
+        [Test]
+        public void EmptyCBN_Save_5454()
+        {
+
+            RunCommandsFromFile("EmptyCBN_Save_5454.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(1, workspace.Nodes.Count); // assert that  CBN is created
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    Assert.AreEqual(0, workspace.Nodes.Count); // assert that  CBN is created                  
+                }
+            });
+        }
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void Lacing_Deffect_5759()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2279
+
+            RunCommandsFromFile("Lacing_Deffect_5759.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                // check for number of Nodes and Connectors
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                    AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
+                        new int[] { 2, 4, 6, 8, 9 });
+
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("333b1ad0-2330-41d9-9619-d064c5012ad2");
+
+                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                    AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
+                        new int[] { 2, 4, 6, 8 });
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("333b1ad0-2330-41d9-9619-d064c5012ad2");
+
+                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                    AssertPreviewValue("333b1ad0-2330-41d9-9619-d064c5012ad2",
+                        new int[][] { new int[] { 2, 3, 4, 5, 6 }, new int[] { 3, 4, 5, 6, 7 }, new int[] { 4, 5, 6, 7, 8 }, new int[] { 5, 6, 7, 8, 9 } });
+                }
+
+            });
+
+        }
         #endregion
     }
 

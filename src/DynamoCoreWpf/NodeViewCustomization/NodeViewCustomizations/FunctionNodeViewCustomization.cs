@@ -1,8 +1,13 @@
+using System;
 using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf;
+using Dynamo.Wpf.Properties;
+
 
 namespace Dynamo.Wpf
 {
@@ -21,7 +26,7 @@ namespace Dynamo.Wpf
             // edit contents
             var editItem = new MenuItem
             {
-                Header = "Edit Custom Node...",
+                Header = Resources.ContextMenuEditCustomNode,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(editItem);
@@ -30,7 +35,7 @@ namespace Dynamo.Wpf
             // edit properties
             var editPropertiesItem = new MenuItem
             {
-                Header = "Edit Custom Node Properties...",
+                Header = Resources.ContextMenuEditCustomNodeProperty,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(editPropertiesItem);
@@ -39,19 +44,13 @@ namespace Dynamo.Wpf
             // publish
             var publishCustomNodeItem = new MenuItem
             {
-                Header = "Publish This Custom Node...",
+                Header = Resources.ContextMenuPublishCustomNode,
                 IsCheckable = false
             };
             nodeView.MainContextMenu.Items.Add(publishCustomNodeItem);
-            publishCustomNodeItem.Click += (sender, args) =>
-            {
-                GoToWorkspace(nodeView.ViewModel);
 
-                if (nodeView.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.CanExecute(null))
-                {
-                    nodeView.ViewModel.DynamoViewModel.PublishCurrentWorkspaceCommand.Execute(null);
-                }
-            };
+            publishCustomNodeItem.Command = nodeView.ViewModel.DynamoViewModel.PublishSelectedNodesCommand;
+            publishCustomNodeItem.CommandParameter = functionNodeModel;
 
             nodeView.UpdateLayout();
         }
@@ -59,7 +58,13 @@ namespace Dynamo.Wpf
         private void EditCustomNodeProperties()
         {
             CustomNodeInfo info;
-            dynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(functionNodeModel.Definition.FunctionId, out info);
+            var model = dynamoViewModel.Model;
+
+            if (!model.CustomNodeManager.TryGetNodeInfo(functionNodeModel.Definition.FunctionId,
+                    out info))
+            {
+                return;
+            }
             
             // copy these strings
             var newName = info.Name.Substring(0);
@@ -74,19 +79,19 @@ namespace Dynamo.Wpf
                 CanEditName = false
             };
 
-            dynamoViewModel.Model.OnRequestsFunctionNamePrompt(functionNodeModel, args);
+            model.OnRequestsFunctionNamePrompt(functionNodeModel, args);
 
             if (args.Success)
             {
                 CustomNodeWorkspaceModel ws;
-                dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                model.CustomNodeManager.TryGetFunctionWorkspace(
                     functionNodeModel.Definition.FunctionId,
                     DynamoModel.IsTestMode,
                     out ws);
                 ws.SetInfo(args.Name, args.Category, args.Description);
                 
                 if (!string.IsNullOrEmpty(ws.FileName))
-                    ws.Save(dynamoViewModel.EngineController.LiveRunnerCore);
+                    ws.Save(model.EngineController.LiveRunnerCore);
             }
         }
 
@@ -102,6 +107,7 @@ namespace Dynamo.Wpf
 
         public void Dispose()
         {
+           
         }
     }
 }

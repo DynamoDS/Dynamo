@@ -1,19 +1,24 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using Dynamo.Nodes;
 using NUnit.Framework;
 using DSCoreNodesUI;
-using Dynamo.Utilities;
 using System.Xml;
 
 namespace Dynamo.Tests
 {
-    public class NodeMigrationTests : Dynamo.Tests.DSEvaluationViewModelUnitTest
+    public class NodeMigrationTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSOffice.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         #region Dynamo Core Node Migration Tests
 
         [Test]
@@ -1993,7 +1998,7 @@ namespace Dynamo.Tests
         public void TestSaveDontCorruptForUnresolvedNodes()
         {
             var model = ViewModel.Model;
-            var exPath = Path.Combine(GetTestDirectory(), @"core\migration");
+            var exPath = Path.Combine(TestDirectory, @"core\migration");
             var oldPath = Path.Combine(exPath, @"TestSaveDontCorruptForUnresolvedNodes.dyn");
             OpenModel(oldPath);
 
@@ -2033,7 +2038,7 @@ namespace Dynamo.Tests
         public void TestSaveDontCorruptForDeprecatedNodes()
         {
             var model = ViewModel.Model;
-            var exPath = Path.Combine(GetTestDirectory(), @"core\migration");
+            var exPath = Path.Combine(TestDirectory, @"core\migration");
             var oldPath = Path.Combine(exPath, @"TestSaveDontCorruptForDeprecatedNodes.dyn");
             OpenModel(oldPath);
 
@@ -2068,7 +2073,7 @@ namespace Dynamo.Tests
 
         private string GetDynPath(string sourceDynFile)
         {
-            string sourceDynPath = this.GetTestDirectory();
+            string sourceDynPath = this.TestDirectory;
             sourceDynPath = Path.Combine(sourceDynPath, @"core\migration\");
             return Path.Combine(sourceDynPath, sourceDynFile);
         }

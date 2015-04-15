@@ -11,15 +11,14 @@
 // while "NodeSampleTests" resides in "Dynamo.Nodes". So by relocating the 
 // "NodeSampleTests" to "Dynamo.Tests" helps NUnit locating the "Setup" class. 
 // 
+
 using System.Collections.Generic;
 using System.Linq;
-
-using DSCoreNodesUI.Input;
-
-using Dynamo.Core;
-using Dynamo.Nodes;
+using Dynamo.Models;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
+using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
+using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
 namespace DSCoreNodesTests
 {
@@ -27,7 +26,6 @@ namespace DSCoreNodesTests
     class NodeWithUITests
     {
         [Test]
-        [Category("Failure")]
         [Category("UnitTests")]
         public void SliderASTGeneration()
         {
@@ -40,17 +38,18 @@ namespace DSCoreNodesTests
         }
 
         [Test]
-        [Category("Failure")]
         public void SliderMaxValue()
         {
             var sliderNode = new DoubleSlider() { Value = 500 };
-            sliderNode.UpdateValue("Value", "1000", null);
+            var updateValueParams = new UpdateValueParams("Value", "1000");
+            sliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
                  1000,
                  sliderNode.Max);
 
-            sliderNode.UpdateValue("Value", "-1", null);
+            updateValueParams = new UpdateValueParams("Value", "-1");
+            sliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
                  -1,
@@ -58,21 +57,36 @@ namespace DSCoreNodesTests
         }
 
         [Test]
-        [Category("Failure")]
         public void IntegerSliderMaxValue()
         {
             var integerSliderNode = new IntegerSlider() { Value = 500 };
-            integerSliderNode.UpdateValue("Value", "1000", null);
+            var updateValueParams = new UpdateValueParams("Value", "1000");
+            integerSliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
                  1000,
                  integerSliderNode.Max);
 
-            integerSliderNode.UpdateValue("Value", "-1", null);
+            updateValueParams = new UpdateValueParams("Value", "-1");
+            integerSliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
                  -1,
                  integerSliderNode.Min);
+
+            updateValueParams = new UpdateValueParams("Value", "2147483648");
+            integerSliderNode.UpdateValue(updateValueParams);
+
+            Assert.AreEqual(
+                2147483647,
+                integerSliderNode.Max);
+
+            updateValueParams = new UpdateValueParams("Value", "-2147483649");
+            integerSliderNode.UpdateValue(updateValueParams);
+
+            Assert.AreEqual(
+                -2147483648,
+                integerSliderNode.Min);
         }
     }
 }

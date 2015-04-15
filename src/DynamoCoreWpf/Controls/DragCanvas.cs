@@ -195,19 +195,33 @@ namespace Dynamo.Controls
        
         protected override void OnIsKeyboardFocusWithinChanged(DependencyPropertyChangedEventArgs e)
         {
+            if (this.owningWorkspace == null)
+            {
+                return;
+            }
+
             // If the focus falls on a node's text box, or a slider's thumb, 
             // this method will be called with "e.NewValue" sets to "true". 
             // In such cases the state machine should be notified, and any 
             // connection that is in progress should be cancelled off.
-            // 
+            
             object dataContext = this.owningWorkspace.DataContext;
             WorkspaceViewModel wvm = dataContext as WorkspaceViewModel;
-            wvm.HandleFocusChanged(this, ((bool)e.NewValue));
+            // when there is a connection on a dynamonodebutton, then the connection should not be cancelled
+            if (wvm != null && !wvm.CheckActiveConnectorCompatibility(wvm.portViewModel))
+            {
+                wvm.HandleFocusChanged(this, ((bool) e.NewValue));
+            }
             base.OnIsKeyboardFocusWithinChanged(e);
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
+            if (owningWorkspace == null)
+            {
+                return;
+            }
+
             // If we are snapping to a port when the mouse is clicked, the 
             // DragCanvas should not handle the event here (e.Handled should
             // be set to 'false') so that workspace view gets a chance of 

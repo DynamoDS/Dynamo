@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+
 using DSCore;
 using Dynamo.Models;
-
+using DSCoreNodesUI.Properties;
 using ProtoCore.AST.AssociativeAST;
 
 namespace DSCoreNodesUI
@@ -12,7 +13,7 @@ namespace DSCoreNodesUI
     [IsDesignScriptCompatible]
     [NodeName("Color Range")]
     [NodeCategory("Core.Color.Create")]
-    [NodeDescription("Get a color given a color range.")]
+    [NodeDescription("ColorRangeDescription",typeof(DSCoreNodesUI.Properties.Resources))]
     public class ColorRange : NodeModel
     {
         public event EventHandler RequestChangeColorRange;
@@ -24,12 +25,15 @@ namespace DSCoreNodesUI
 
         public ColorRange()
         {
-            InPortData.Add(new PortData("start", "The start color."));
-            InPortData.Add(new PortData("end", "The end color."));
-            InPortData.Add(new PortData("value", "The value between 0 and 1 of the selected color."));
-            OutPortData.Add(new PortData("color", "The selected color."));
+            InPortData.Add(new PortData("colors", Resources.ColorRangePortDataColorsToolTip));
+            InPortData.Add(new PortData("indices", Resources.ColorRangePortDataIndicesToolTip));
+            InPortData.Add(new PortData("value", Resources.ColorRangePortDataValueToolTip));
+            OutPortData.Add(new PortData("color",  Resources.ColorRangePortDataResultToolTip));
 
             RegisterAllPorts();
+
+
+            ArgumentLacing = LacingStrategy.Disabled;
 
             this.PropertyChanged += ColorRange_PropertyChanged; 
             
@@ -49,10 +53,9 @@ namespace DSCoreNodesUI
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            //var functionCall = AstFactory.BuildFunctionCall("Color", "BuildColorFromRange", inputAstNodes);
             var functionCall =
                 AstFactory.BuildFunctionCall(
-                    new Func<Color, Color, double, Color>(Color.BuildColorFromRange),
+                    new Func<List<Color>, List<double>, double, Color>(Color.BuildColorFrom1DRange),
                     inputAstNodes);
             return new[]
             {

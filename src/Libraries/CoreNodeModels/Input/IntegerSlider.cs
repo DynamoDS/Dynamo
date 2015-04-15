@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
+using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
-using DSCoreNodesUI.Input;
-using Dynamo.Core;
+
 using Dynamo.Models;
+using Dynamo.Nodes;
+
 using ProtoCore.AST.AssociativeAST;
 
-namespace Dynamo.Nodes
+namespace DSCoreNodesUI.Input
 {
     [NodeName("Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("A slider that produces integer values.")]
+    [NodeDescription("IntegerSliderNodeDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     public class IntegerSlider : SliderBase<int>
@@ -28,9 +31,26 @@ namespace Dynamo.Nodes
             ShouldDisplayPreviewCore = false;
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        //If the value field in the slider has a number greater than
+        //In32.Maxvalue (or MinValue), the value will be changed to Int32.MaxValue (or MinValue)
+        //The value will be changed, but to update the UI, this property is overridden here. 
+        public override int Value
         {
-            WorkspaceModel.RecordModelForModification(this, recorder);
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                base.Value = value;              
+                RaisePropertyChanged("Value");
+            }
+        }
+
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
 
             switch (name)
             {
@@ -44,7 +64,7 @@ namespace Dynamo.Nodes
                     return true; // UpdateValueCore handled.
                 case "Value":
                 case "ValueText":
-                    Value = ConvertStringToInt(value);
+                    Value = ConvertStringToInt(value);                   
                     return true; // UpdateValueCore handled.
                 case "Step":
                 case "StepText":
@@ -52,7 +72,7 @@ namespace Dynamo.Nodes
                     return true;
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -129,5 +149,22 @@ namespace Dynamo.Nodes
         }
 
         #endregion
+    }
+}
+
+namespace Dynamo.Nodes
+{
+    public class IntegerSlider
+    {
+        [NodeMigration(@from: "0.7.5.0")]
+        public static NodeMigrationData Migrate_0750(NodeMigrationData data)
+        {
+            var migrationData = new NodeMigrationData(data.Document);
+            XmlElement oldNode = data.MigratedNodes.ElementAt(0);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "DSCoreNodesUI.Input.IntegerSlider", "Integer Slider", true);
+
+            migrationData.AppendNode(newNode);
+            return migrationData;
+        }
     }
 }

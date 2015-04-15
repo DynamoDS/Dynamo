@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Xml;
-using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Utilities;
-using Double = System.Double;
+using ProtoCore.AST;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Core
 {
@@ -15,7 +14,9 @@ namespace Dynamo.Core
         public List<NodeModel> Nodes { get; private set; }
         public List<ConnectorModel> Connectors { get; private set; }
         public List<NoteModel> Notes { get; private set; }
-
+        public List<AnnotationModel> Annotations { get; private set; }
+        public ElementResolver ElementResolver { get; private set; }
+  
         private NodeGraph() { }
 
         private static IEnumerable<NodeModel> LoadNodesFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
@@ -109,19 +110,42 @@ namespace Dynamo.Core
                 : Enumerable.Empty<NoteModel>();
         }
 
+        internal static AnnotationModel LoadAnnotationFromXml(XmlNode annotation, IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
+        {
+            var instance = new AnnotationModel(nodes,notes,true);             
+            instance.Deserialize(annotation as XmlElement, SaveContext.File);
+            return instance;
+        }
+
+        private static IEnumerable<AnnotationModel> LoadAnnotationsFromXml(XmlDocument xmlDoc, IEnumerable<NodeModel> nodes,
+                                                                                IEnumerable<NoteModel> notes )
+        {
+            XmlNodeList nNodes = xmlDoc.GetElementsByTagName("Annotations");
+            if (nNodes.Count == 0)
+                nNodes = xmlDoc.GetElementsByTagName("dynAnnotations");
+            XmlNode nNodesList = nNodes[0];
+            if (nNodesList != null)
+                return from XmlElement annotation in nNodesList.ChildNodes.Cast<XmlNode>() select LoadAnnotationFromXml(annotation, nodes, notes);
+            
+            return Enumerable.Empty<AnnotationModel>();
+        }
+
         /// <summary>
         ///     Loads NodeModels, ConnectorModels, and NoteModels from an XmlDocument.
         /// </summary>
         /// <param name="xmlDoc">An XmlDocument representing a serialized Dynamo workspace.</param>
         /// <param name="nodeFactory">A NodeFactory, used to load and instantiate nodes.</param>
+        /// <param name="elementResolver"></param>
         /// <returns></returns>
         public static NodeGraph LoadGraphFromXml(XmlDocument xmlDoc, NodeFactory nodeFactory)
         {
             var nodes = LoadNodesFromXml(xmlDoc, nodeFactory).ToList();
             var connectors = LoadConnectorsFromXml(xmlDoc, nodes.ToDictionary(node => node.GUID)).ToList();
             var notes = LoadNotesFromXml(xmlDoc).ToList();
+            var annotations = LoadAnnotationsFromXml(xmlDoc, nodes, notes).ToList();
 
-            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes };
+            return new NodeGraph { Nodes = nodes, Connectors = connectors, Notes = notes, Annotations =annotations};
         }
+
     }
 }

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ProtoCore.DSASM;
-using ProtoCore.RuntimeData;
+using ProtoCore.Runtime;
 using ProtoCore.Utils;
+using ProtoCore.Properties;
 
 namespace ProtoCore.Lang
 {
@@ -20,13 +21,13 @@ namespace ProtoCore.Lang
         {
             Validity.Assert(pointer.IsFunctionPointer);
             interpreter = dsi;
-            Core core = dsi.runtime.Core;
+            RuntimeCore runtimeCore = dsi.runtime.RuntimeCore;
 
             int fptr = (int)pointer.opdata;
             FunctionPointerNode fptrNode;
             int classScope = Constants.kGlobalScope;
 
-            if (core.FunctionPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
+            if (runtimeCore.DSExecutable.FuncPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
             {
                 int blockId = fptrNode.blockId;
                 int procId = fptrNode.procId;
@@ -34,20 +35,19 @@ namespace ProtoCore.Lang
                 procNode = dsi.runtime.GetProcedureNode(blockId, classScope, procId);
             }
 
-            callsite = new ProtoCore.CallSite(classScope, Name, core.FunctionTable, core.Options.ExecutionMode);
+            callsite = new ProtoCore.CallSite(classScope, Name, interpreter.runtime.exe.FunctionTable, runtimeCore.Options.ExecutionMode);
         }
 
         public StackValue Evaluate(List<StackValue> args, StackFrame stackFrame)
         {
             // Build the stackframe
-            var core = interpreter.runtime.Core;
-            var runtimeCore = interpreter.runtime.runtimeCore;
+            var runtimeCore = interpreter.runtime.RuntimeCore;
 
             int classScopeCaller = stackFrame.ClassScope;
             int returnAddr = stackFrame.ReturnPC;
             int blockDecl = procNode.runtimeIndex;
             int blockCaller = stackFrame.FunctionCallerBlock;
-            int framePointer = core.Rmem.FramePointer;
+            int framePointer = runtimeCore.RuntimeMemory.FramePointer;
             StackValue thisPtr = StackValue.BuildPointer(Constants.kInvalidIndex);
 
             // Functoion has variable input parameter. This case only happen
@@ -68,7 +68,7 @@ namespace ProtoCore.Lang
                 var varParams = args.GetRange(paramCount - 1, varParamCount).ToArray();
                 args.RemoveRange(paramCount - 1, varParamCount);
 
-                var packedParams = interpreter.runtime.Core.Heap.AllocateArray(varParams, null);
+                var packedParams = interpreter.runtime.rmem.Heap.AllocateArray(varParams, null);
                 args.Add(packedParams);
             }
 
@@ -83,7 +83,7 @@ namespace ProtoCore.Lang
                 thisPtr = args[0];
                 if (thisPtr.IsArray)
                 {
-                    isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, core);
+                    isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(thisPtr, ref thisPtr, runtimeCore);
                 }
                 else
                 {
@@ -93,8 +93,8 @@ namespace ProtoCore.Lang
 
             if (!isValidThisPointer || (!thisPtr.IsPointer && !thisPtr.IsArray))
             {
-                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
-                                                     StringConstants.kDeferencingNonPointer);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer,
+                                              Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
 
@@ -121,11 +121,12 @@ namespace ProtoCore.Lang
                                                registers, 
                                                null);
 
-            bool isInDebugMode = core.Options.IDEDebugMode &&
-                                 core.ExecMode != InterpreterMode.kExpressionInterpreter;
+            bool isInDebugMode = runtimeCore.Options.IDEDebugMode &&
+                                 runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter;
             if (isInDebugMode)
             {
-                core.DebugProps.SetUpCallrForDebug(core, 
+                runtimeCore.DebugProps.SetUpCallrForDebug(
+                                                          runtimeCore,
                                                           interpreter.runtime, 
                                                           procNode, 
                                                           returnAddr - 1, 
@@ -140,13 +141,12 @@ namespace ProtoCore.Lang
                                         new Runtime.Context(), 
                                         args, 
                                         repGuides, 
-                                        newStackFrame, 
-                                        core,
+                                        newStackFrame,
                                         runtimeCore);
 
             if (isInDebugMode)
             {
-                core.DebugProps.RestoreCallrForNoBreak(core, procNode);
+                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }
 
             return rx;

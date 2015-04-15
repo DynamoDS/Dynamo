@@ -20,7 +20,7 @@ namespace ProtoTest.Associative
             // Specify some of the requirements of IDE.
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core, runtimeCore);
+            fsr = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             CLRModuleType.ClearTypes();
         }
@@ -53,7 +53,8 @@ namespace ProtoTest.Associative
                         Zipped = true
                     }
                 );
-            List<List<StackValue>> combin = ProtoCore.Lang.Replication.Replicator.ComputeAllReducedParams(args, ris, core);
+            runtimeCore = fsr.runtimeCore;
+            List<List<StackValue>> combin = ProtoCore.Lang.Replication.Replicator.ComputeAllReducedParams(args, ris, runtimeCore);
             Assert.IsTrue(combin[0][0].opdata == 1);
             Assert.IsTrue(combin[0][1].opdata == 3);
             Assert.IsTrue(combin[1][0].opdata == 2);

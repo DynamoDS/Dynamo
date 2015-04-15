@@ -18,17 +18,16 @@ namespace DynamoCore.UI.Controls
 
         private void OnInstallButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (DataContext is UpdateManager)
+            var um = DataContext as IUpdateManager;
+            if (um == null) return;
+
+            var result = MessageBox.Show(Dynamo.Wpf.Properties.Resources.UpdateMessage, 
+                Dynamo.Wpf.Properties.Resources.InstallMessageCaption, 
+                MessageBoxButton.OKCancel);
+
+            if (result == MessageBoxResult.OK)
             {
-                var message = string.Format("An update is available for {0}.\n\n" +
-                    "Click OK to close {0} and install\nClick CANCEL to cancel the update.", "Dynamo");
-
-                var result = MessageBox.Show(message, "Install Dynamo", MessageBoxButton.OKCancel);
-
-                if (result == MessageBoxResult.OK)
-                {
-                    UpdateManager.Instance.QuitAndInstallUpdate();
-                }
+                um.QuitAndInstallUpdate();
             }
         }
     }

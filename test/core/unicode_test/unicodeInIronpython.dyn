@@ -1,0 +1,25 @@
+<Workspace Version="0.7.6.4073" X="0" Y="0" zoom="1" Name="Home">
+  <NamespaceResolutionMap />
+  <Elements>
+    <DSIronPythonNode.PythonNode guid="5b91e128-0f9e-411d-9b8f-76ed6f9aa85c" type="DSIronPythonNode.PythonNode" nickname="Python Script" x="145.5" y="169.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1">
+      <Script>import clr
+clr.AddReference('ProtoGeometry')
+from Autodesk.DesignScript.Geometry import *
+#The inputs to this node will be stored as a list in the IN variable.
+dataEnteringNode = IN
+
+#Assign your output to the OUT variable
+中文 = "中文字符123"
+OUT = 中文</Script>
+    </DSIronPythonNode.PythonNode>
+    <Dynamo.Nodes.Watch guid="159e0b1b-4109-4cfa-a5ad-274687755449" type="Dynamo.Nodes.Watch" nickname="Watch" x="420.5" y="172.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction guid="4192b7c7-c4f8-42ce-9144-2f058e68be6b" type="Dynamo.Nodes.DSFunction" nickname="String.Length" x="419.5" y="66.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.Length@string" />
+    <Dynamo.Nodes.Watch guid="0c45bd1c-3748-472b-8951-3a513241c829" type="Dynamo.Nodes.Watch" nickname="Watch" x="688.5" y="86.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5b91e128-0f9e-411d-9b8f-76ed6f9aa85c" start_index="0" end="159e0b1b-4109-4cfa-a5ad-274687755449" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5b91e128-0f9e-411d-9b8f-76ed6f9aa85c" start_index="0" end="4192b7c7-c4f8-42ce-9144-2f058e68be6b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4192b7c7-c4f8-42ce-9144-2f058e68be6b" start_index="0" end="0c45bd1c-3748-472b-8951-3a513241c829" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -25,7 +25,7 @@ namespace ProtoTest.DSASM
             string code = @"a = {10, 20, 30};";
             thisTest.RunScriptSource(code);
 
-            Assert.IsFalse(thisTest.GetTestCore().Heap.IsHeapCyclic());
+            Assert.IsFalse(thisTest.GetTestRuntimeCore().Heap.IsHeapCyclic());
         }
 
 
@@ -47,14 +47,14 @@ p = {Obj.Obj(1),Obj.Obj(2),Obj.Obj(3)};
 ";
             thisTest.RunScriptSource(code);
 
-            Assert.IsFalse(thisTest.GetTestCore().Heap.IsHeapCyclic());
+            Assert.IsFalse(thisTest.GetTestRuntimeCore().Heap.IsHeapCyclic());
         }
 
         [Test]
         public void TestCyclicPointer01()
         {
             var core = thisTest.GetTestCore();
-            DebugRunner fsr = new DebugRunner(core, runtimeCore);
+            DebugRunner fsr = new DebugRunner(core);
             // Execute and verify the main script in a debug session
             fsr.PreStart(
             @"
@@ -78,7 +78,8 @@ m = p.x;
             vms = fsr.StepOver();
 
             // Test the heap contains a cycle
-            Assert.IsTrue(core.Heap.IsHeapCyclic());
+            var runtimeCore = fsr.runtimeCore;
+            Assert.IsTrue(runtimeCore.Heap.IsHeapCyclic());
 
         }
     }

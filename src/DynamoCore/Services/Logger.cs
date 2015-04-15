@@ -40,22 +40,26 @@ namespace Dynamo.Services
         {
             InstrumentationLogger.dynamoModel = dynamoModel;
 
-            string appVersion = dynamoModel.AppVersion;
+            if (IsAnalyticsEnabled)
+            {
+                string appVersion = dynamoModel.AppVersion;
 
-            var mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
-                "Dynamo", appVersion);
+                var mc = new MeasurementConfiguration(ANALYTICS_PROPERTY,
+                    "Dynamo", appVersion);
+                mc.AnonymizeIp = true;
 
-            sessionID = Guid.NewGuid().ToString();
-            loggerImpl = new Log("Dynamo", userID, sessionID);
-
+                sessionID = Guid.NewGuid().ToString();
+                loggerImpl = new Log("Dynamo", userID, sessionID);
             
-            AutoMeasurement.Start(mc);
-            client = AutoMeasurement.Client;
+                AutoMeasurement.Start(mc);
+                client = AutoMeasurement.Client;
 
-            if (IS_VERBOSE_DIAGNOSTICS)
-                AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
+                if (IS_VERBOSE_DIAGNOSTICS)
+                    AutoMeasurement.DebugWriter = d => Debug.WriteLine(d);
 
-            started = true;
+                started = true;
+            }
+
 
             // The following starts the heartbeat, do not remove this 
             // because of the unreferenced "heartbeat" variable.
@@ -82,6 +86,21 @@ namespace Dynamo.Services
             }
 
             started = false;
+        }
+
+        private static bool IsAnalyticsEnabled
+        {
+            get
+            {
+                if (DynamoModel.IsTestMode)
+                    return false;
+
+                if (dynamoModel != null)
+                    return dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved;
+
+                return false;
+            }
+
         }
 
         private static bool IsPIILoggingEnabled
@@ -136,6 +155,9 @@ namespace Dynamo.Services
             if (IsTestMode)
                 return;
 
+            if (!IsAnalyticsEnabled)
+                return;
+
             if (!started)
                 return;
 
@@ -147,6 +169,9 @@ namespace Dynamo.Services
             if (IsTestMode)
                 return;
 
+            if (!IsAnalyticsEnabled)
+                return;
+
             if (!started)
                 return;
 
@@ -156,6 +181,9 @@ namespace Dynamo.Services
         public static void LogAnonymousScreen(string screenName)
         {
             if (IsTestMode)
+                return;
+
+            if (!IsAnalyticsEnabled)
                 return;
 
             if (!started)
@@ -174,8 +202,11 @@ namespace Dynamo.Services
             if (!started)
                 return;
 
-            //Log anonymous version
-            AutoMeasurement.Client.TrackException(e.GetType().ToString());
+            if (IsAnalyticsEnabled)
+            {
+                //Log anonymous version
+                AutoMeasurement.Client.TrackException(e.GetType().ToString());
+            }
 
             //Protect PII
             if (!IsPIILoggingEnabled)

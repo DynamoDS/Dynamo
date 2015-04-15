@@ -11,6 +11,8 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.UI;
 using System.Collections.Specialized;
+using System.Threading;
+
 using Dynamo.Wpf.Utilities;
 
 
@@ -86,20 +88,11 @@ namespace Dynamo.Views
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-
-            ViewModel.DragSelectionStarted += OnViewModelDragSelectionStarted;
-            ViewModel.DragSelectionEnded += OnViewModelDragSelectionEnded;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
-
-            if (ViewModel != null)
-            {
-                ViewModel.DragSelectionStarted -= OnViewModelDragSelectionStarted;
-                ViewModel.DragSelectionEnded -= OnViewModelDragSelectionEnded;
-            }
         }
 
         /// <summary>
@@ -110,9 +103,9 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void OnViewModelDragSelectionEnded(object sender, EventArgs e)
         {
-            if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(false))
+            if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(true))
             {
-                ViewModel.UnPauseVisualizationManagerCommand.Execute(false);
+                ViewModel.UnPauseVisualizationManagerCommand.Execute(true);
             }
         }
 
@@ -154,6 +147,7 @@ namespace Dynamo.Views
         {
             if (ViewModel == null) return;
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.AddAnnotationCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
@@ -185,6 +179,8 @@ namespace Dynamo.Views
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+                oldViewModel.DragSelectionStarted -= OnViewModelDragSelectionStarted;
+                oldViewModel.DragSelectionEnded -= OnViewModelDragSelectionEnded;
             }
 
             if (ViewModel != null)
@@ -200,6 +196,8 @@ namespace Dynamo.Views
                 ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
                 ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
                 ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+                ViewModel.DragSelectionStarted += OnViewModelDragSelectionStarted;
+                ViewModel.DragSelectionEnded += OnViewModelDragSelectionEnded;
 
                 ViewModel.Loaded();
             }

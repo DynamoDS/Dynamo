@@ -6,16 +6,17 @@ using System.Xml;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Nodes;
-
+using Dynamo.Utilities;
 using NCalc;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Namespace;
 using Expression = NCalc.Expression;
 
 namespace DSCoreNodesUI
 {
     [NodeName("Formula")]
-    [NodeDescription("Evaluates mathematical formulas. Uses NCalc: http://ncalc.codeplex.com/")]
+    [NodeDescription("FormulaDescription", typeof(DSCoreNodesUI.Properties.Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [IsDesignScriptCompatible]
     public class Formula : NodeModel
@@ -53,19 +54,22 @@ namespace DSCoreNodesUI
         public Formula()
         {
             ArgumentLacing = LacingStrategy.Shortest;
-            OutPortData.Add(new PortData("", "Result of math computation"));
+            OutPortData.Add(new PortData("", Properties.Resources.FormulaPortDataResultToolTip));
             RegisterAllPorts();
         }
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name == "FormulaString")
             {
                 FormulaString = value;
                 return true; // UpdateValueCore handled.
             }
 
-            return base.UpdateValueCore(name, value, recorder);
+            return base.UpdateValueCore(updateValueParams);
         }
 
         #region Serialization/Deserialization methods

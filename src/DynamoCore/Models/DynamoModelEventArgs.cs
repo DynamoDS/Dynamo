@@ -127,13 +127,6 @@ namespace Dynamo.Models
     {
         private readonly IOption<Exception> error;
 
-        public EvaluationCompletedEventArgs(bool evaluationTookPlace, Exception errorMsg = null)
-        {
-            EvaluationTookPlace = evaluationTookPlace;
-
-            error = errorMsg != null ? Option.Some(errorMsg) : Option.None<Exception>();
-        }
-
         public bool EvaluationTookPlace { get; private set; }
 
         public bool EvaluationSucceeded
@@ -153,6 +146,13 @@ namespace Dynamo.Models
                             "Evaluation success, no error message recorded.");
                     });
             }
+        }
+
+        public EvaluationCompletedEventArgs(bool evaluationTookPlace, Exception errorMsg = null)
+        {
+            EvaluationTookPlace = evaluationTookPlace;
+
+            error = errorMsg != null ? Option.Some(errorMsg) : Option.None<Exception>();
         }
     }
 
@@ -246,6 +246,36 @@ namespace Dynamo.Models
             PositionSpecified = true;
             TransformCoordinates = transformCoordinates;
         }
+    }
+
+    public class DeltaComputeStateEventArgs : EventArgs
+    {
+        public List<Guid> NodeGuidList;
+        public bool GraphExecuted;
+      
+        public DeltaComputeStateEventArgs(List<Guid> nodeGuidList, bool graphExecuted)
+        {
+            this.NodeGuidList = nodeGuidList;
+            this.GraphExecuted = graphExecuted;
+        }
+    }
+
+    public class SettingsMigrationEventArgs : EventArgs
+    {
+        public enum EventStatusType
+        { 
+            Invalid = 0,
+            Begin,
+            End 
+        }
+
+        public EventStatusType EventStatus;
+
+        public SettingsMigrationEventArgs(EventStatusType eventStatus)
+        {
+            EventStatus = eventStatus;
+        }
+
     }
 
 }

@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Dynamo.ViewModels;
 using System.IO;
-using System.Reflection;
-using Dynamo.Utilities;
 using Dynamo.Nodes;
 using Dynamo.Models;
-using Dynamo.DSEngine;
-using ProtoCore.DSASM;
-using ProtoCore.Mirror;
-using System.Collections;
-using String = System.String;
 
 namespace Dynamo.Tests
 {
     class StringTests : DSEvaluationViewModelUnitTest
     {
-        string localDynamoStringTestFolder { get { return Path.Combine(GetTestDirectory(), "core", "string");}}
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        string localDynamoStringTestFolder { get { return Path.Combine(TestDirectory, "core", "string");}}
 
         #region concat string test cases  
 
@@ -899,6 +897,20 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
             AssertPreviewValue("88ecf13c-40dc-42c2-89b3-375c2773f5b1", 42);
             AssertPreviewValue("257aaba5-5e11-4646-a25f-6cd17eb8d200", 42);
+        }
+        #endregion
+
+        #region Test localized string
+        [Test]
+        public void TestLocalizedString()
+        {
+            DynamoModel model = ViewModel.Model;
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestLocalizedString.dyn");
+            RunModel(testFilePath);
+
+            AssertPreviewValue("29eff272-d6db-4bdf-a47f-0641b78709b8", "中文");
+            AssertPreviewValue("70f3cb75-aac9-4bd9-8609-00958cddcd97", true);
+            AssertPreviewValue("9c1ee001-352d-480f-a8f5-757804d0f107", "中文");
         }
         #endregion
     }

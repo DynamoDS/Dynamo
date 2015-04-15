@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
-        Title="Agreement to collect usability data on your use of Dynamo"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         SizeToContent="WidthAndHeight"
         WindowStyle="SingleBorderWindow" ResizeMode="NoResize"
         ShowInTaskbar="False"
@@ -16,33 +16,23 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="100"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="60"></RowDefinition>
         </Grid.RowDefinitions>
         <!-- The top banner image -->
         <Rectangle Width="544"
                    Height="100"
                    Stroke="Transparent"
-                   VerticalAlignment="Top">
-            <Rectangle.Fill>
-                <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/consent_form_image.png" />
-            </Rectangle.Fill>
+                   VerticalAlignment="Top"
+                   Name="ConsentFormImageRectangle">
         </Rectangle>
         <StackPanel Grid.Row="1"
                     Margin="15,4,8,15"
                     Orientation="Vertical">
             <TextBlock TextWrapping="Wrap"
                        FontSize="13"
-                       Foreground="#FFC8C8C8">
-                <Run>We would like to collect some information about how Dynamo is used.</Run>
-                <LineBreak /><Run /><LineBreak />
-            
-                <Run>Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.</Run>
-                <LineBreak /><Run /><LineBreak />
-            
-                <Run>The information will be de-identified and it will not be used for advertising. We will not contact you unless you specifically request it (and provide an email address).</Run>
-                <LineBreak /><Run /><LineBreak />
-                <Run>The information being collected is:</Run>
+                       Foreground="#FFC8C8C8"
+                       Name="Message1TextBlock">
             </TextBlock>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -63,22 +53,18 @@
                             Orientation="Vertical">
                     <TextBlock TextWrapping="Wrap"
                                FontSize="13"
-                               Foreground="#FFC8C8C8">The features and commands you use in Dynamo</TextBlock>
+                               Foreground="#FFC8C8C8" 
+                               Name="FeatureTextBlock"/>
                     <TextBlock TextWrapping="Wrap"
                                FontSize="13"
-                               Foreground="#FFC8C8C8">The nodes that you use and the code that you write - this includes the script that is typed into the editor and run, the names of the files that are loaded/saved, and error messages that are reported (build time and runtime).
-                    </TextBlock>
+                               Foreground="#FFC8C8C8" 
+                               Name="NodeTextBlock"/>
                 </StackPanel>
             </Grid>
             <TextBlock TextWrapping="Wrap"
                        FontSize="13"
-                       Foreground="#FFC8C8C8">
-                <LineBreak />
-                <Run>It will be a great help to us if you consent to provide this information. You can opt in by selecting the check box below.  You can withdraw your consent and opt-out of data collection at any time by unselecting 'Enable usability data reporting' in the settings menu of the UI.</Run>
-                <LineBreak /><LineBreak />
-                <Run>ALTHOUGH WE WILL ONLY USE DATA SENT FOR INTERNAL PRODUCT DEVELOPMENT, PLEASE DO NOT AGREE TO DATA COLLECTION IF YOU HAVE CONCERNS ABOUT INFORMATION YOU CONSIDER CONFIDENTIAL BEING SENT TO AUTODESK.</Run>
-                <LineBreak /><Run /><LineBreak />
-                <Run>Many thanks!</Run>
+                       Foreground="#FFC8C8C8"
+                       Name="Message2TextBlock">
             </TextBlock>
         </StackPanel>
 
@@ -90,7 +76,9 @@
                   Foreground="#FFC8C8C8"
                   FontSize="13.333"
                   Background="White">
-            <TextBlock FontWeight="SemiBold">I give my consent for Autodesk to collect information on how I use Dynamo.</TextBlock>
+            <TextBlock FontWeight="SemiBold"
+                       Foreground="#4790cd"
+                       Name="ConsentTextBlock" />
         </CheckBox>
         <!-- Accept or Cancel -->
         <Button Grid.Row="3"
@@ -100,7 +88,7 @@
                 VerticalAlignment="Bottom"
                 Margin="5"
                 Width="100"
-                Content="Continue"
+                Content="{x:Static p:Resources.ContinueButton}"
                 HorizontalAlignment="Right"
                 Click="OnContinueClick" />
 

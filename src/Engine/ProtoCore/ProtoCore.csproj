@@ -103,11 +103,13 @@
     <Compile Include="CodeFile.cs" />
     <Compile Include="CodeGenDS.cs" />
     <Compile Include="CodePoint.cs" />
-    <Compile Include="CompileCore.cs" />
+    <Compile Include="Compiler.cs" />
     <Compile Include="CompilerOptions.cs" />
     <Compile Include="CompilerUtils.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="ClassTable.cs" />
+    <Compile Include="DebuggerProperties.cs" />
+    <Compile Include="Diagnostics\RuntimeDiagnostics.cs" />
     <Compile Include="DSASM\FunctionCounter.cs" />
     <Compile Include="DSASM\DSAsmDefs.cs" />
     <Compile Include="DSASM\Interpreter.cs" />
@@ -135,14 +137,22 @@
     <Compile Include="Lang\Replication\ReplicationInstruction.cs" />
     <Compile Include="Lang\Replication\Replicator.cs" />
     <Compile Include="Lang\TraceUtils.cs" />
+    <Compile Include="Namespace\ElementRewriter.cs" />
+    <Compile Include="Namespace\ElementResolver.cs" />
     <Compile Include="Namespace\SymbolTable.cs" />
     <Compile Include="ParserUtils.cs" />
+    <Compile Include="Properties\Resources.en-US.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+    </Compile>
     <Compile Include="Reflection\GraphicDataProvider.cs" />
     <Compile Include="Reflection\Mirror.cs" />
     <Compile Include="Reflection\MirrorData.cs" />
     <Compile Include="Reflection\Reflection.cs" />
     <Compile Include="RuntimeContext.cs" />
     <Compile Include="RuntimeCore.cs" />
+    <Compile Include="RuntimeData.cs" />
     <Compile Include="RuntimeMemory.cs" />
     <Compile Include="RuntimeStatus.cs" />
     <Compile Include="DSDefinitions.cs" />
@@ -151,7 +161,6 @@
     <Compile Include="FFI\CLRFFIFunctionPointer.cs" />
     <Compile Include="FFI\CLRObjectMarshler.cs" />
     <Compile Include="FFI\ImportModuleHandler.cs" />
-    <Compile Include="Lang\CSFFIFunctionEndPoint.cs" />
     <Compile Include="Parser\AssociativeAST.cs" />
     <Compile Include="Parser\AST.cs" />
     <Compile Include="Parser\DependencyTracker.cs" />
@@ -177,12 +186,11 @@
     <Compile Include="Lang\FunctionEndPoint.cs" />
     <Compile Include="Lang\FunctionGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringConstants.Designer.cs">
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>StringConstants.resx</DependentUpon>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="StringConstantsOLD.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="Utils\ArrayUtils.cs" />
     <Compile Include="Utils\ClassUtils.cs" />
@@ -218,9 +226,13 @@
     <None Include="Parser\Scanner.frame" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="StringConstants.resx">
+    <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>StringConstants.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

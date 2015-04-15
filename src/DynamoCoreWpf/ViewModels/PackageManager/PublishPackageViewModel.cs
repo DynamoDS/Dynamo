@@ -19,6 +19,7 @@ using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
 using Double = System.Double;
 using String = System.String;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.PackageManager
 {
@@ -31,7 +32,10 @@ namespace Dynamo.PackageManager
         #region Properties/Fields
 
         private readonly DynamoViewModel dynamoViewModel;
-
+        public DynamoViewModel DynamoViewModel
+        {
+            get { return dynamoViewModel; }
+        }
         /// <summary>
         /// A event called when publishing was a success
         /// </summary>
@@ -416,7 +420,12 @@ namespace Dynamo.PackageManager
             set
             {
                 customNodeDefinitions = value;
-                Name = CustomNodeDefinitions[0].DisplayName;
+
+                if (customNodeDefinitions.Count > 0 && Name == null)
+                {
+                    Name = CustomNodeDefinitions[0].DisplayName;
+                }
+                
                 UpdateDependencies();
             }
         }
@@ -523,7 +532,6 @@ namespace Dynamo.PackageManager
                 Description = l.Description,
                 Keywords = l.Keywords != null ? String.Join(" ", l.Keywords) : "",
                 CustomNodeDefinitions = defs,
-                Assemblies = l.LoadedAssemblies.ToList(),
                 Name = l.Name,
                 RepositoryUrl = l.RepositoryUrl ?? "",
                 SiteUrl = l.SiteUrl ?? "",
@@ -545,6 +553,7 @@ namespace Dynamo.PackageManager
             {
                 Assembly assem;
                 var result = PackageLoader.TryReflectionOnlyLoadFrom(file, out assem);
+
                 if (result)
                 {
                     var isNodeLibrary = nodeLibraryNames == null || nodeLibraryNames.Contains(assem.FullName);
@@ -637,8 +646,9 @@ namespace Dynamo.PackageManager
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select(ws => ws.Name).ToList();
             if (unsavedWorkspaceNames.Any())
             {
-                throw new Exception("The following workspaces have not been saved: " +
-                                    String.Join(", ", unsavedWorkspaceNames) + ". Please save them and try again.");
+                throw new Exception(Wpf.Properties.Resources.MessageUnsavedChanges0 +
+                                    String.Join(", ", unsavedWorkspaceNames) +
+                                    Wpf.Properties.Resources.MessageUnsavedChanges1);
             }
 
             // omit files currently already under package control
@@ -762,7 +772,7 @@ namespace Dynamo.PackageManager
                             x.Name,
                             !String.IsNullOrEmpty(x.Description)
                                 ? x.Description
-                                : "No description provided"));
+                                : Wpf.Properties.Resources.MessageNoNodeDescription));
         }
 
         private string _errorString = "";
@@ -785,8 +795,9 @@ namespace Dynamo.PackageManager
             {
                 fDialog = new OpenFileDialog()
                 {
-                    Filter = "Custom Node, DLL, XML (*.dyf, *.dll, *.xml)|*.dyf;*.dll;*.xml",
-                    Title = "Add Custom Node, Library, or XML file to Package..."
+                    Filter = string.Format(Resources.FileDialogCustomNodeDLLXML, "*.dyf;*.dll;*.xml") + "|" +
+                         string.Format(Resources.FileDialogAllFiles, "*.*"),
+                    Title = Resources.AddCustomFileToPackageDialogTitle
                 };
             }
 
@@ -798,9 +809,10 @@ namespace Dynamo.PackageManager
             }
             else // use the definitions directory
             {
-                if (Directory.Exists(DynamoPathManager.Instance.UserDefinitions))
+                var pathManager = dynamoViewModel.Model.PathManager;
+                if (Directory.Exists(pathManager.UserDefinitions))
                 {
-                    fDialog.InitialDirectory = DynamoPathManager.Instance.UserDefinitions;
+                    fDialog.InitialDirectory = pathManager.UserDefinitions;
                 }
             }
 
@@ -876,6 +888,20 @@ namespace Dynamo.PackageManager
                 var result = PackageLoader.TryLoadFrom(filename, out assem);
                 if (result)
                 {
+                    var assemName = assem.GetName().Name;
+
+                    // The user has attempted to load an existing dll from another path. This is not allowed 
+                    // as the existing assembly cannot be modified while Dynamo is active.
+                    if (this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name))
+                    {
+                        MessageBox.Show(string.Format(Resources.PackageDuplicateAssemblyWarning, 
+                                        dynamoViewModel.BrandingResourceProvider.ProductName),
+                                        Resources.PackageDuplicateAssemblyWarningTitle, 
+                                        MessageBoxButtons.OK, 
+                                        MessageBoxIcon.Stop);
+                        return; // skip loading assembly
+                    }
+
                     Assemblies.Add(new PackageAssembly()
                     {
                         Assembly = assem,
@@ -921,7 +947,9 @@ namespace Dynamo.PackageManager
                 var files = GetAllFiles().ToList();
 
                 if (isNewPackage)
-                    dynamoViewModel.Model.PackageLoader.LocalPackages.Add(Package);
+                {
+                    dynamoViewModel.Model.PackageLoader.Add(Package);
+                }
 
                 Package.AddAssemblies(Assemblies);
 
@@ -951,57 +979,57 @@ namespace Dynamo.PackageManager
         {
             // Typically, this code should never be seen as the publish package dialogs should not 
             // be active when there is no authenticator
-            if (dynamoViewModel == null || !dynamoViewModel.Model.PackageManagerClient.HasAuthenticator)
+            if (dynamoViewModel == null || !dynamoViewModel.Model.PackageManagerClient.HasAuthProvider)
             {
-                ErrorString = "Your package must contain at least one file.";
+                ErrorString = string.Format(Resources.CannotSubmitPackage,dynamoViewModel.BrandingResourceProvider.ProductName);
                 return false;
             }
 
             if (Name.Contains(@"\") || Name.Contains(@"/") || Name.Contains(@"*"))
             {
-                ErrorString = @"The name of the package cannot contain /,\, or *.";
+                ErrorString = Resources.PackageNameCannotContainTheseCharacters;
                 return false;
             }
 
             if (Name.Length < 3)
             {
-                ErrorString = "Name must be at least 3 characters.";
+                ErrorString = Resources.NameNeedMoreCharacters;
                 return false;
             }
 
             if (Description.Length <= 10)
             {
-                ErrorString = "Description must be longer than 10 characters.";
+                ErrorString = Resources.DescriptionNeedMoreCharacters;
                 return false;
             }
 
             if (MajorVersion.Length <= 0)
             {
-                ErrorString = "You must provide a Major version as a non-negative integer.";
+                ErrorString = Resources.MajorVersionNonNegative;
                 return false;
             }
 
             if (MinorVersion.Length <= 0)
             {
-                ErrorString = "You must provide a Minor version as a non-negative integer.";
+                ErrorString = Resources.MinorVersionNonNegative;
                 return false;
             }
 
             if (BuildVersion.Length <= 0)
             {
-                ErrorString = "You must provide a Build version as a non-negative integer.";
+                ErrorString = Resources.BuildVersionNonNegative;
                 return false;
             }
 
             if (Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
             {
-                ErrorString = "At least one of your version values must be greater than 0.";
+                ErrorString = Resources.VersionValueGreaterThan0;
                 return false;
             }
 
             if (!PackageContents.Any())
             {
-                ErrorString = "Your package must contain at least one file.";
+                ErrorString = Resources.PackageNeedAtLeastOneFile;
                 return false;
             }
 

@@ -21,16 +21,16 @@ namespace ProtoTestConsoleRunner
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
             ProtoCore.Core core = new Core(opts);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             core.Options.DumpByteCode = verbose;
             core.Options.Verbose = verbose;
             ProtoFFI.DLLFFIHandler.Register(ProtoFFI.FFILanguage.CSharp, new ProtoFFI.CSModuleHelper());
 
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
 
-            RuntimeCore runtimeCore = new RuntimeCore();
-            ExecutionMirror mirror = runner.LoadAndExecute(filename, core, runtimeCore);
+            RuntimeCore runtimeCore = null;
+            ExecutionMirror mirror = runner.LoadAndExecute(filename, core, out runtimeCore);
         }
 
         static void DevRun()
@@ -42,8 +42,8 @@ namespace ProtoTestConsoleRunner
             var opts = new Options();
             opts.ExecutionMode = ExecutionMode.Serial;
             ProtoCore.Core core = new Core(opts);
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 #if DEBUG
             core.Options.DumpByteCode = true;
             core.Options.Verbose = true;
@@ -55,8 +55,8 @@ namespace ProtoTestConsoleRunner
             ProtoScriptTestRunner runner = new ProtoScriptTestRunner();
 
             // Assuming current directory in test/debug mode is "...\Dynamo\bin\AnyCPU\Debug"
-            RuntimeCore runtimeCore = new RuntimeCore();
-            ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core, runtimeCore);
+            RuntimeCore runtimeCore = null;
+            ExecutionMirror mirror = runner.LoadAndExecute(@"..\..\..\test\core\dsevaluation\DSFiles\test.ds", core, out runtimeCore);
 
             long ms = sw.ElapsedMilliseconds;
             sw.Stop();

@@ -36,29 +36,17 @@ namespace Dynamo.ViewModels
                 LocalPackages.Add(new PackageViewModel(this.dynamoViewModel, pkg));
             }
 
-
-            this.Model.LocalPackages.CollectionChanged += LocalPackagesOnCollectionChanged;
-        }
-
-        private void LocalPackagesOnCollectionChanged(object sender, 
-            NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
+            this.Model.PackageAdded += (pkg) =>
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var item in e.NewItems)
-                        LocalPackages.Add(new PackageViewModel(dynamoViewModel, item as Package));
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var item in e.OldItems)
-                        LocalPackages.Remove(_localPackages.ToList().First(x => x.Model == item));
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    LocalPackages.Clear();
-                    break;
-            }
+                LocalPackages.Add(new PackageViewModel(dynamoViewModel, pkg));
+                RaisePropertyChanged("LocalPackages");
+            };
 
-            RaisePropertyChanged("LocalPackages");
+            this.Model.PackageRemoved += (pkg) =>
+            {
+                LocalPackages.Remove(_localPackages.ToList().First(x => x.Model == pkg));
+                RaisePropertyChanged("LocalPackages");
+            };
         }
     }
 }

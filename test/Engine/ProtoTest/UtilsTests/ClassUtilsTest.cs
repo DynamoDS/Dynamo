@@ -15,21 +15,19 @@ namespace ProtoTest.UtilsTests
         public void GetUpcastChainTest()
         {
             String code =
-@"class A {}
-class B extends A {}
-class C extends B {}
-";
+@"class A {}class B extends A {}class C extends B {}";
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-            ExecutionMirror mirror = fsr.Execute(code, core, runtimeCore);
+            ProtoCore.RuntimeCore runtimeCore = null;
+            ExecutionMirror mirror = fsr.Execute(code, core, out runtimeCore);
             int idA = core.ClassTable.IndexOf("A");
             int idB = core.ClassTable.IndexOf("B");
             int idC = core.ClassTable.IndexOf("C");
             ClassNode cnA = core.ClassTable.ClassNodes[idA];
             ClassNode cnB = core.ClassTable.ClassNodes[idB];
             ClassNode cnC = core.ClassTable.ClassNodes[idC];
-            List<int> idsA = ClassUtils.GetClassUpcastChain(cnA, core);
-            List<int> idsB = ClassUtils.GetClassUpcastChain(cnB, core);
-            List<int> idsC = ClassUtils.GetClassUpcastChain(cnC, core);
+            List<int> idsA = ClassUtils.GetClassUpcastChain(cnA, runtimeCore);
+            List<int> idsB = ClassUtils.GetClassUpcastChain(cnB, runtimeCore);
+            List<int> idsC = ClassUtils.GetClassUpcastChain(cnC, runtimeCore);
             Assert.IsTrue(idsA.Count == 2);
             Assert.IsTrue(idsA.Contains(idA));
 

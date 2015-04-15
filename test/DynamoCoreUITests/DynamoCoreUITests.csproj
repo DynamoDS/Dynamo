@@ -37,16 +37,16 @@
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HelixToolkit.Wpf, Version=2012.4.24.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2014.2.1.1, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\extern\Helix3D\NET40\HelixToolkit.Wpf.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\extern\Helix3D\NET40\Helix3D_SharpDX\HelixToolkit.Wpf.SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
@@ -66,13 +66,13 @@
       <HintPath>..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="SharpDX, Version=2.5.0.0, Culture=neutral, PublicKeyToken=627a3d6d1956f55a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Helix3D\NET40\Helix3D_SharpDX\SharpDX.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -83,15 +83,21 @@
     <Compile Include="CodeBlockNodeTests.cs" />
     <Compile Include="CoreUITests.cs" />
     <Compile Include="DropDownTests.cs" />
+    <Compile Include="DynamoConverterTest.cs" />
     <Compile Include="DynamoTestUIBase.cs" />
+    <Compile Include="NodePreviewTests.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordedTests.cs" />
+    <Compile Include="RunSettingsTests.cs" />
+    <Compile Include="Setup.cs" />
     <Compile Include="SliderTests.cs" />
+    <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
     <Compile Include="VisualizationManagerUITests.cs" />
+    <Compile Include="WebRequestTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -99,15 +105,8 @@
       <Name>DynamoCoreWpf</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
-      <Project>{7318d5e5-9d15-4abe-8a51-92f58d4f0b85}</Project>
-      <Name>ProtoAssociative</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
-      <Name>ProtoCore</Name>
-      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -131,6 +130,11 @@
       <Name>CoreNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DynamoConversions\DynamoConversions.csproj">
+      <Project>{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}</Project>
+      <Name>DynamoConversions</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
       <Name>IronPythonUI</Name>
@@ -141,6 +145,10 @@
       <Name>UnitsUI</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
+      <Name>DynamoShapeManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
@@ -149,11 +157,6 @@
     <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
-      <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
-      <Name>Units</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>

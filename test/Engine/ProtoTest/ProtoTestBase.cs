@@ -17,16 +17,26 @@ namespace ProtoTest
         public virtual void Setup()
         {
             core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
 
-            runtimeCore = new ProtoCore.RuntimeCore();
+            // This is set when a test is executed 
+            runtimeCore = null;
+        }
+
+        private void CleanupRuntimeCore()
+        {
+            // If a runtimeCore was used for the test, call its Cleanup
+            if (runtimeCore != null)
+            {
+                runtimeCore.Cleanup();
+            }
         }
 
         [TearDown]
         public virtual void TearDown()
         {
-            core.Cleanup();
+            CleanupRuntimeCore();
             thisTest.CleanUp();
         }
     }

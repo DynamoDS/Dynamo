@@ -37,7 +37,6 @@ namespace Dynamo.ViewModels
         ObservableCollection<PortViewModel> inPorts = new ObservableCollection<PortViewModel>();
         ObservableCollection<PortViewModel> outPorts = new ObservableCollection<PortViewModel>();
         NodeModel nodeLogic;
-        private bool isFullyConnected = false;
         private double zIndex = 3;
         private string astText = string.Empty;
 
@@ -50,24 +49,9 @@ namespace Dynamo.ViewModels
 
         public NodeModel NodeModel { get { return nodeLogic; } private set { nodeLogic = value; } }
 
-        public bool IsFullyConnected
-        {
-            get { return isFullyConnected; }
-            set
-            {
-                isFullyConnected = value;
-                RaisePropertyChanged("IsFullyConnected");
-            }
-        }
-
         public LacingStrategy ArgumentLacing
         {
             get { return nodeLogic.ArgumentLacing; }
-            set
-            {
-                nodeLogic.ArgumentLacing = value;
-                RaisePropertyChanged("ArgumentLacing");
-            }
         }
 
         public NodeModel NodeLogic
@@ -104,7 +88,10 @@ namespace Dynamo.ViewModels
 
         public bool IsSelected
         {
-            get { return nodeLogic.IsSelected; }
+            get
+            {
+                return nodeLogic.IsSelected;
+            }
         }
 
         public string NickName
@@ -175,11 +162,6 @@ namespace Dynamo.ViewModels
             {
                 return nodeLogic.IsVisible;
             }
-            set
-            {
-                nodeLogic.IsVisible = value;
-                RaisePropertyChanged("IsVisible");
-            }
         }
 
         public bool IsUpstreamVisible
@@ -188,11 +170,21 @@ namespace Dynamo.ViewModels
             {
                 return nodeLogic.IsUpstreamVisible;
             }
-            set
+        }
+
+        public Visibility PeriodicUpdateVisibility
+        {
+            get
             {
-                nodeLogic.IsUpstreamVisible = value;
-                RaisePropertyChanged("IsUpstreamVisible");
+                return nodeLogic.CanUpdatePeriodically
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
             }
+        }
+        public bool EnablePeriodicUpdate
+        {
+            get { return nodeLogic.CanUpdatePeriodically; }
+            set { nodeLogic.CanUpdatePeriodically = value; }
         }
 
         public bool ShowsVisibilityToggles
@@ -227,10 +219,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                lock (nodeLogic.RenderPackagesMutex)
-                {
-                    return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
-                }
+                //lock (nodeLogic.RenderPackagesMutex)
+                //{
+                //    return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
+                //}
+
+                return true;
             }
         }
 
@@ -258,6 +252,52 @@ namespace Dynamo.ViewModels
             get
             {
                 return NodeModel.NeedsForceExecution;
+            }
+        }
+
+        private bool showExectionPreview;
+        public bool ShowExecutionPreview
+        {
+            get
+            {
+                return showExectionPreview;
+            }
+            set
+            {
+                showExectionPreview = value;
+                RaisePropertyChanged("ShowExecutionPreview");
+                RaisePropertyChanged("PreviewState");
+            }
+        }
+
+        public PreviewState PreviewState
+        {
+            get
+            {
+                if (ShowExecutionPreview)
+                {
+                    return PreviewState.ExecutionPreview;
+                }
+
+                if (NodeModel.IsSelected)
+                {
+                    return PreviewState.Selection;
+                }
+
+                return PreviewState.None;
+            }
+        }
+
+        private bool isNodeNewlyAdded;
+        public bool IsNodeAddedRecently
+        {
+            get
+            {
+                return isNodeNewlyAdded;
+            }
+            set
+            {
+                isNodeNewlyAdded = value;
             }
         }
 
@@ -299,7 +339,7 @@ namespace Dynamo.ViewModels
         {
             this.WorkspaceViewModel = workspaceViewModel;
             this.DynamoViewModel = workspaceViewModel.DynamoViewModel;
-
+           
             nodeLogic = logic;
             
             //respond to collection changed events to sadd
@@ -325,6 +365,8 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.EngineController.AstBuilt += EngineController_AstBuilt;
             }
+            ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
+            IsNodeAddedRecently = true;
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -433,6 +475,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
+                    RaisePropertyChanged("PreviewState");
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -466,6 +509,10 @@ namespace Dynamo.ViewModels
                     break;
                 case "ForceReExecuteOfNode":
                     RaisePropertyChanged("WillForceReExecuteOfNode");
+                    break;             
+                case "CanUpdatePeriodically":
+                    RaisePropertyChanged("EnablePeriodicUpdate");
+                    RaisePropertyChanged("PeriodicUpdateVisibility");
                     break;
             }
         }
@@ -551,7 +598,7 @@ namespace Dynamo.ViewModels
         {           
             this.DynamoViewModel.ExecuteCommand(
               new DynamoModel.UpdateModelValueCommand(
-                    this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
+                    System.Guid.Empty, this.NodeModel.GUID, "ArgumentLacing", param.ToString()));
           
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
@@ -718,26 +765,24 @@ namespace Dynamo.ViewModels
 
         private void ToggleIsVisible(object parameter)
         {
-            // Record the state of this node before changes.
-            DynamoModel dynamo = DynamoViewModel.Model;
-            WorkspaceModel.RecordModelForModification(nodeLogic, dynamo.CurrentWorkspace.UndoRecorder);
+            // Invert the visibility before setting the value
+            var visibility = (!nodeLogic.IsVisible).ToString();
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                new[] { nodeLogic.GUID }, "IsVisible", visibility);
 
-            nodeLogic.IsVisible = !nodeLogic.IsVisible;
-
-            RaisePropertyChanged("IsVisible");
+            DynamoViewModel.Model.ExecuteCommand(command);
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
 
         private void ToggleIsUpstreamVisible(object parameter)
         {
-            // Record the state of this node before changes.
-            DynamoModel dynamo = DynamoViewModel.Model;
-            WorkspaceModel.RecordModelForModification(nodeLogic, dynamo.CurrentWorkspace.UndoRecorder);
+            // Invert the visibility before setting the value
+            var visibility = (!nodeLogic.IsUpstreamVisible).ToString();
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                new[] { nodeLogic.GUID }, "IsUpstreamVisible", visibility);
 
-            nodeLogic.IsUpstreamVisible = !nodeLogic.IsUpstreamVisible;
-
-            RaisePropertyChanged("IsUpstreamVisible");
+            DynamoViewModel.Model.ExecuteCommand(command);
             DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
             DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
         }
@@ -839,6 +884,17 @@ namespace Dynamo.ViewModels
 
             return false;
         }
+
+        private void CreateGroup(object parameters)
+        {
+            DynamoViewModel.AddAnnotationCommand.Execute(null);
+        }
+
+        private bool CanCreateGroup(object parameters)
+        {
+            return true;
+        }
+
 
         #region Private Helper Methods
         private Point GetTopLeft()

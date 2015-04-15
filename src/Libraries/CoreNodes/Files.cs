@@ -97,7 +97,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        /// 
+        ///  Moves a specified file to a new location
         /// </summary>
         /// <param name="path"></param>
         /// <param name="newPath"></param>
@@ -110,7 +110,7 @@ namespace DSCore.IO
         }
 
         /// <summary>
-        /// 
+        ///   Deletes the specified file.
         /// </summary>
         /// <param name="path"></param>
         public static void Delete(string path)
@@ -349,7 +349,11 @@ namespace DSCore.IO
         [MultiReturn("width", "height")]
         public static Dictionary<string, int> Dimensions(Bitmap image)
         {
-            return new Dictionary<string, int> { { "width", image.Width }, { "height", image.Height } };
+            return new Dictionary<string, int> 
+            { 
+                { "width", image.Width }, 
+                { "height", image.Height } 
+            };
         }
 
         /// <summary>

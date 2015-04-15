@@ -1,15 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-
 using Dynamo.UpdateManager;
-
-using ProtoCore.Lang;
-
-using DynUpdateManager = Dynamo.UpdateManager.UpdateManager;
 using Moq;
 using NUnit.Framework;
+using DynUpdateManager = Dynamo.UpdateManager.UpdateManager;
+
 
 namespace Dynamo.Tests
 {
@@ -18,42 +16,19 @@ namespace Dynamo.Tests
     /// </summary>
     public class UpdateManagerTestNotUpToDate
     {
-        /// <summary>
-        /// Utility class to inject the UpdateManagerConfiguration to
-        /// UpdateManager instance and then resets it to previous value
-        /// when its disposed.
-        /// </summary>
-        class ConfigInjection : IDisposable
-        {
-            private readonly DynUpdateManager updateManager; //updatemanager instance.
-            private readonly object configuration; //old configuration value.
-            private readonly FieldInfo fieldInfo; //internal configuration field.
-
-            /// <summary>
-            /// Creates ConfigInjection instance.
-            /// </summary>
-            /// <param name="updateManager">UpdateManager instance to which configuration is to be injected.</param>
-            /// <param name="configuration">The configuration for injection.</param>
-            public ConfigInjection(DynUpdateManager updateManager, UpdateManagerConfiguration configuration)
-            {
-                this.updateManager = updateManager;
-                fieldInfo = updateManager.GetType()
-                    .GetField("configuration", BindingFlags.NonPublic | BindingFlags.Instance);
-                Assert.IsNotNull(fieldInfo);
-
-                this.configuration = fieldInfo.GetValue(updateManager);
-                fieldInfo.SetValue(updateManager, configuration);
-            }
-
-            public void Dispose()
-            {
-                //Restore the old configuration
-                fieldInfo.SetValue(updateManager, configuration);
-            }
-        }
-
         private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
         private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
+
+        static UpdateManagerConfiguration NewConfiguration(bool checkNewerDailyBuild =false, bool forceUpdate =false)
+        {
+            return new UpdateManagerConfiguration()
+            {
+                DownloadSourcePath = DOWNLOAD_SOURCE_PATH_S,
+                SignatureSourcePath = SIGNATURE_SOURCE_PATH_S,
+                CheckNewerDailyBuild = checkNewerDailyBuild,
+                ForceUpdate = forceUpdate,
+            };
+        }
 
         [Test]
         [Category("UnitTests")]
@@ -62,10 +37,9 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
 
-            UpdateManager.UpdateManager.Instance.CheckNewerDailyBuilds = false;
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
-
-            Assert.NotNull(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            var updateManager = new DynUpdateManager(NewConfiguration());
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            Assert.NotNull(updateManager.UpdateInfo);
         }
 
         [Test]
@@ -75,17 +49,62 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.dailyBuildAvailableData);
 
-            UpdateManager.UpdateManager.Instance.CheckNewerDailyBuilds = true;
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
-            
-            Assert.NotNull(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            var updateManager = new DynUpdateManager(NewConfiguration(checkNewerDailyBuild: true));
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            Assert.NotNull(updateManager.UpdateInfo);
         }
 
-        [Test]
-        [Category("UnitTests")]
+        [Test, Category("UnitTests")]
+        public void IsUpdateAvailableWhenNewerVersionAvaialable()
+        {
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.updateAvailableData);
+
+            var updateManager = new DynUpdateManager(NewConfiguration());
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            updateManager.DownloadedUpdateInfo = updateManager.UpdateInfo;
+
+            Assert.IsTrue(updateManager.IsUpdateAvailable);
+        }
+
+        [Test, Category("UnitTests")]
+        public void IsUpdateAvailableWhenForceUpdateIsTrue()
+        {
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noUpdateAvailableData);
+
+            var updateManager = new DynUpdateManager(NewConfiguration(forceUpdate:true));
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            updateManager.DownloadedUpdateInfo = updateManager.UpdateInfo;
+
+            Assert.IsTrue(updateManager.IsUpdateAvailable);
+        }
+
+        [Test, Category("UnitTests")]
+        public void NoUpdateAvailableWhenUpToDate()
+        {
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noUpdateAvailableData);
+
+            var updateManager = new DynUpdateManager(NewConfiguration());
+            updateManager.UpdateDataAvailable(updateRequest.Object);
+            updateManager.DownloadedUpdateInfo = updateManager.UpdateInfo;
+
+            Assert.IsFalse(updateManager.IsUpdateAvailable);
+        }
+
+        [Test, Category("UnitTests")]
+        public void NoUpdateAvailableWhenUpdateInfoIsNotYetDownloaded()
+        {
+            var updateManager = new DynUpdateManager(NewConfiguration());
+            
+            Assert.IsFalse(updateManager.IsUpdateAvailable);
+        }
+
+        [Test, Category("UnitTests")]
         public void UpdateCheckReturnsCorrectVersionWhenAvailable()
         {
-            var um = UpdateManager.UpdateManager.Instance as DynUpdateManager;
+            var um = new DynUpdateManager(NewConfiguration());
             Assert.IsNotNull(um);
 
             var updateRequest = new Mock<IAsynchronousRequest>();
@@ -127,9 +146,6 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void ConfigurationRedirection()
         {
-            var um = DynUpdateManager.Instance as DynUpdateManager;
-            Assert.IsNotNull(um);
-
             //Inject test config to UpdateManager instance, using reflection.
             var config = new UpdateManagerConfiguration()
             {
@@ -137,22 +153,22 @@ namespace Dynamo.Tests
                 SignatureSourcePath = SIGNATURE_SOURCE_PATH_S
             };
 
-            using (new ConfigInjection(um, config))
-            {
-                var updateRequest = new Mock<IAsynchronousRequest>();
-                updateRequest.Setup(ur => ur.Data)
-                    .Returns(UpdateManagerTestHelpers.updateAvailableData);
-                um.UpdateDataAvailable(updateRequest.Object);
+            var um = new DynUpdateManager(config);
+            Assert.IsNotNull(um);
+        
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data)
+                .Returns(UpdateManagerTestHelpers.updateAvailableData);
+            um.UpdateDataAvailable(updateRequest.Object);
 
-                // Spoof a download completion by setting the downloaded update info to the update info
-                um.DownloadedUpdateInfo = um.UpdateInfo;
-                Assert.NotNull(um.UpdateInfo);
-                Assert.AreEqual("9.9.9.0", um.AvailableVersion.ToString());
-                Assert.AreEqual(DOWNLOAD_SOURCE_PATH_S, um.UpdateInfo.VersionInfoURL);
-                Assert.AreEqual(
-                    SIGNATURE_SOURCE_PATH_S + @"DynamoInstall9.9.9.sig",
-                    um.UpdateInfo.SignatureURL);
-            }
+            // Spoof a download completion by setting the downloaded update info to the update info
+            um.DownloadedUpdateInfo = um.UpdateInfo;
+            Assert.NotNull(um.UpdateInfo);
+            Assert.AreEqual("9.9.9.0", um.AvailableVersion.ToString());
+            Assert.AreEqual(DOWNLOAD_SOURCE_PATH_S, um.UpdateInfo.VersionInfoURL);
+            Assert.AreEqual(
+                SIGNATURE_SOURCE_PATH_S + @"DynamoInstall9.9.9.sig",
+                um.UpdateInfo.SignatureURL);
         }
 
         [Test]
@@ -161,9 +177,10 @@ namespace Dynamo.Tests
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noUpdateAvailableData);
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
+            var um = new DynUpdateManager(NewConfiguration());
+            um.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.Null(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            Assert.Null(um.UpdateInfo);
         }
 
         [Test]
@@ -172,9 +189,10 @@ namespace Dynamo.Tests
         {
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.noData);
-            UpdateManager.UpdateManager.Instance.UpdateDataAvailable(updateRequest.Object);
+            var um = new DynUpdateManager(NewConfiguration());
+            um.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.Null(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            Assert.Null(um.UpdateInfo);
         }
 
         [Test]
@@ -184,9 +202,10 @@ namespace Dynamo.Tests
             var updateRequest = new Mock<IAsynchronousRequest>();
             updateRequest.Setup(ur => ur.Data).Returns(string.Empty);
 
-            UpdateManager.UpdateManager.Instance.CheckForProductUpdate(updateRequest.Object);
+            var um = new DynUpdateManager(NewConfiguration());
+            um.UpdateDataAvailable(updateRequest.Object);
 
-            Assert.Null(UpdateManager.UpdateManager.Instance.UpdateInfo);
+            Assert.Null(um.UpdateInfo);
         }
 
         [Test]
@@ -246,6 +265,76 @@ namespace Dynamo.Tests
 
             dateTime = UpdateManager.UpdateManager.GetBuildTimeFromFilePath("DynamoInstall", "DynamoInstall0.7.1.exe");
             Assert.AreEqual(dateTime, DateTime.MinValue);
+        }
+
+        [Test, Category("UnitTests")]
+        public void UpdateCheckReturnsNothingWhenGivenBadData()
+        {
+            // Here we simulate some xml that is returned that is well-formed
+            // but not what we are looking for. This is the case often when you
+            // are logging into a network that requires an additional login, like
+            // hotel wi-fi. In this case, the ListBucketResult element will not 
+            // be found in the xml and we'll get null UpdateInfo.
+
+            var updateRequest = new Mock<IAsynchronousRequest>();
+            updateRequest.Setup(ur => ur.Data).Returns(UpdateManagerTestHelpers.badData);
+
+            var um = new DynUpdateManager(NewConfiguration());
+            um.UpdateDataAvailable(updateRequest.Object);
+
+            Assert.Null(um.UpdateInfo);
+        }
+
+        [Test, Category("UnitTests")]
+        public void GetLatestProductFromGoodData()
+        {
+            var products = new Dictionary<string, Version>
+            {
+                { "A", new Version(0, 1, 2, 3) },
+                { "B", new Version(0, 1, 2, 3) },
+                { "C", new Version(1, 2, 0, 0) },
+                { "D", new Version(0, 1, 3, 3) },
+            };
+
+            var lookup = new Mock<DynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstalls()).Returns(products.Keys);
+            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+                .Returns<string>(s => products[s]);
+
+            var latest = lookup.Object.LatestProduct;
+            Assert.AreEqual("1.2.0.0", latest.ToString());
+        }
+
+        [Test, Category("UnitTests")]
+        public void NoLatestProductVersion()
+        {
+            var lookup = new Mock<DynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstalls()).Returns(new[] { "A" });
+            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+                .Returns<string>(null);
+
+            var latest = lookup.Object.LatestProduct;
+            Assert.AreEqual(null, latest);
+        }
+
+        [Test, Category("UnitTests")]
+        public void GetLatestProductVersion()
+        {
+            var products = new Dictionary<string, Version>
+            {
+                { "A", new Version() },
+                { "B", new Version(0, 1, 2, 3) },
+                { "C", new Version(1, 2, 0, 0) },
+                { "D", null },
+            };
+
+            var lookup = new Mock<DynamoLookUp>();
+            lookup.Setup(l => l.GetDynamoInstalls()).Returns(products.Keys);
+            lookup.Setup(l => l.GetDynamoVersion(It.IsAny<string>()))
+                .Returns<string>(s => products[s]);
+
+            var latest = lookup.Object.LatestProduct;
+            Assert.AreEqual("1.2.0.0", latest.ToString());
         }
     }
 
@@ -323,6 +412,15 @@ namespace Dynamo.Tests
                 "<MaxKeys>1000</MaxKeys>" +
                 "<IsTruncated>true</IsTruncated>" +
                 "</ListBucketResult>";
+
+        public const string badData =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                "<note>" +
+                "<to> Foo</to>" +
+                "<from>Bar</from>" +
+                "<heading>Reminder</heading>" +
+                "<body>This is some bad xml!</body>" +
+                "</note>";
 
         public static void DoNothing()
         {

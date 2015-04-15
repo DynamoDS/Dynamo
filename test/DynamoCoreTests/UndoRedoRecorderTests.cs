@@ -1,21 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
 using System.IO;
 
-using DSCoreNodesUI.Input;
-
 using Dynamo.Core;
-using Dynamo.DSEngine;
-using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using DSCoreNodesUI;
 using NUnit.Framework;
-using System.Reflection;
+using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 
 namespace Dynamo.Tests
 {
@@ -614,9 +609,9 @@ namespace Dynamo.Tests
             sumNode.X = 250;
             sumNode.Y = 0;
             sumNode.NickName = "TestNode";
-            sumNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            sumNode.IsVisible = false;
-            sumNode.IsUpstreamVisible = false;
+            sumNode.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
+            sumNode.UpdateValue(new UpdateValueParams("IsVisible", "false"));
+            sumNode.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
             sumNode.State = ElementState.Active;
 
             //Assert New Changes
@@ -864,7 +859,7 @@ namespace Dynamo.Tests
         public void TestFunctionNode()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_serialization\");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_serialization\");
             string openPath = Path.Combine(examplePath, "graph function.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
@@ -882,7 +877,7 @@ namespace Dynamo.Tests
             Assert.AreEqual("07e6b150-d902-4abb-8103-79193552eee7", graphNode.Definition.FunctionId.ToString());
             Assert.AreEqual("GraphFunction", graphNode.NickName);
             Assert.AreEqual(4, graphNode.InPortData.Count);
-            Assert.AreEqual("y", graphNode.InPortData[3].NickName);
+            Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
 
             //Serialize node and then change values
             XmlDocument xmlDoc = new XmlDocument();
@@ -901,14 +896,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(534.75, graphNode.X);
             Assert.AreEqual(4, graphNode.InPortData.Count);
             Assert.AreEqual("GraphFunction", graphNode.NickName);
-            Assert.AreEqual("y", graphNode.InPortData[3].NickName);
+            Assert.AreEqual("y = f(x)", graphNode.InPortData[3].NickName);
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDummyNodeInternals00()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            var folder = Path.Combine(TestDirectory, @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -929,10 +923,9 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void TestDummyNodeInternals01()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\migration\");
+            var folder = Path.Combine(TestDirectory, @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -953,6 +946,39 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(3, dummyNode.InPorts.Count);
             Assert.AreEqual(2, dummyNode.OutPorts.Count);
+        }
+
+        [Test]
+        public void TestDummyNodeSerialization()
+        {
+            var folder = Path.Combine(TestDirectory, @"core\dummy_node\");
+            ViewModel.OpenCommand.Execute(Path.Combine(folder, "dummyNode.dyn"));
+
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var dummyNode = workspace.Nodes.OfType<DSCoreNodesUI.DummyNode>().FirstOrDefault();
+
+            Assert.IsNotNull(dummyNode);
+            var xmlDocument = new XmlDocument();
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
+
+            // Dummy node should be serialized to its original node
+            Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
+        }
+
+        [Test]
+        public void TestUndoRedoOnConnectedNodes()
+        {
+            ViewModel.OpenCommand.Execute(Path.Combine(TestDirectory, "core", "LacingTest.dyn"));
+            var workspace = ViewModel.CurrentSpaceViewModel;
+
+            Assert.IsFalse(workspace.SetArgumentLacingCommand.CanExecute(null));
+            workspace.SelectAllCommand.Execute(null);
+            Assert.IsTrue(workspace.SetArgumentLacingCommand.CanExecute(null));
+
+            Assert.DoesNotThrow(() =>
+            {
+                workspace.SetArgumentLacingCommand.Execute(LacingStrategy.Longest.ToString());
+            });
         }
     }
 }

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:l="clr-namespace:Dynamo.UI.Controls"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d"
              d:DesignWidth="640"
              d:DesignHeight="480"
@@ -45,7 +46,7 @@
                        FontSize="11"
                        Width="172"
                        FontFamily="{StaticResource OpenSansRegular}"
-                       Text="Start"
+                       Text="{x:Static p:Resources.StartPageStart}"
                        Foreground="#888888"
                        VerticalAlignment="Center" />
 
@@ -74,11 +75,11 @@
 
         <!-- Begin Dynamo logo -->
 
-        <Image Grid.Row="1"
+        <Image Name="StartPageLogo"
+               Grid.Row="1"
                Width="250"
                Margin="0,32,0,32"
-               HorizontalAlignment="Center"
-               Source="/DynamoCoreWpf;component/UI/Images/StartPage/dynamo-logo.png" />
+               HorizontalAlignment="Center"/>
 
         <!-- Begin inner grid control for all other list boxes -->
 
@@ -102,7 +103,7 @@
 
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
-                        <TextBlock Text="FILES"
+                        <TextBlock Text="{x:Static p:Resources.StartPageFiles}"
                                    FontSize="13"
                                    FontFamily="{StaticResource OpenSansRegular}"
                                    Foreground="#3395a2"
@@ -118,7 +119,7 @@
 
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
-                        <TextBlock Text="RECENT"
+                        <TextBlock Text="{x:Static p:Resources.StartPageRecent}"
                                    FontSize="13"
                                    FontFamily="{StaticResource OpenSansRegular}"
                                    Foreground="#62895b"
@@ -134,7 +135,7 @@
 
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
-                        <TextBlock Text="SAMPLES"
+                        <TextBlock Text="{x:Static p:Resources.StartPageSamples}"
                                    FontSize="13"
                                    FontFamily="{StaticResource OpenSansRegular}"
                                    Foreground="#5e8f80"
@@ -176,7 +177,7 @@
 
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
-                        <TextBlock Text="ASK"
+                        <TextBlock Text="{x:Static p:Resources.StartPageAsk}"
                                    FontSize="13"
                                    FontFamily="{StaticResource OpenSansRegular}"
                                    Foreground="#a55553"
@@ -192,7 +193,7 @@
 
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
-                        <TextBlock Text="REFERENCE"
+                        <TextBlock Text="{x:Static p:Resources.StartPageReference}"
                                    FontSize="13"
                                    FontFamily="{StaticResource OpenSansRegular}"
                                    Foreground="#6f4c76"
@@ -208,7 +209,7 @@
 
                     <Border BorderThickness="0,0,0,1"
                             BorderBrush="#dfd8cf">
-                        <TextBlock Text="CODE"
+                        <TextBlock Text="{x:Static p:Resources.StartPageCode}"
                                    FontSize="13"
                                    FontFamily="{StaticResource OpenSansRegular}"
                                    Foreground="#4b9dbf"

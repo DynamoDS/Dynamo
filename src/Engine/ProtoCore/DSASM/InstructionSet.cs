@@ -116,7 +116,6 @@ namespace ProtoCore.DSASM
         PUSHB,
         POPB,
 
-        THROW,
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
         SETEXPUID
@@ -477,8 +476,9 @@ namespace ProtoCore.DSASM
             StackValue value = new StackValue();
             value.optype = AddressType.ArrayKey;
             value.opdata = index;
+            value.metaData = array.metaData;
 
-            Validity.Assert(array.IsArray);
+            Validity.Assert(array.IsArray || array.IsString);
             value.opdata_d = (int)array.opdata;
 
             return value;
@@ -719,7 +719,11 @@ namespace ProtoCore.DSASM
                 return false;
             }
 
-            array = StackValue.BuildArrayPointer((int)RawDoubleValue);
+            if (this.metaData.type == (int)PrimitiveType.kTypeString)
+                array = StackValue.BuildString((long)RawDoubleValue);
+            else
+                array = StackValue.BuildArrayPointer((long)RawDoubleValue);
+
             index = (int)this.opdata;
 
             return true;
@@ -732,7 +736,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         /// <param name="core"></param>
         /// <returns></returns>
-        public StackValue ToBoolean(Core core)
+        public StackValue ToBoolean(RuntimeCore runtimeCore)
         {
             switch (optype)
             {
@@ -753,8 +757,8 @@ namespace ProtoCore.DSASM
                     return StackValue.BuildBoolean(true);
 
                 case AddressType.String:
-                    int size = ArrayUtils.GetElementSize(this, core);
-                    return (size == 0) ? StackValue.False : StackValue.True;
+                    string str = runtimeCore.RuntimeMemory.Heap.GetString(this);
+                    return string.IsNullOrEmpty(str) ? StackValue.False : StackValue.True;
 
                 case AddressType.Char:
                     char c = EncodingUtils.ConvertInt64ToCharacter(opdata);

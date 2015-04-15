@@ -42,13 +42,14 @@ namespace Dynamo.DSEngine
             }
         }
 
-        public ProtoCore.RuntimeCore RTCore
+        public ProtoCore.RuntimeCore RuntimeCore
         {
             get
             {
-                return liveRunner.RTCore;
+                return liveRunner.RuntimeCore;
             }
         }
+
 
         /// <summary>
         /// TPDP
@@ -82,10 +83,22 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
+        /// Preview graph with graph sync data.
+        /// </summary>
+        /// <param name="graphData"></param>
+        public List<Guid> PreviewGraph(GraphSyncData graphData, bool verboseLogging)
+        {
+            if (verboseLogging)
+               Log("LRS.PreviewGraph: " + graphData);
+
+            return liveRunner.PreviewGraph(graphData);
+        }
+
+        /// <summary>
         /// Return runtime warnings for this run.
         /// </summary>
         /// <returns></returns>
-        public IDictionary<Guid, List<ProtoCore.RuntimeData.WarningEntry>> GetRuntimeWarnings()
+        public IDictionary<Guid, List<ProtoCore.Runtime.WarningEntry>> GetRuntimeWarnings()
         {
             return liveRunner.GetRuntimeWarnings();
         }

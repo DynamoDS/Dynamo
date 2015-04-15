@@ -9,14 +9,14 @@ namespace ProtoCore.DSASM
 
     public interface IExecutiveProvider
     {
-        Executive CreateExecutive(Core core, RuntimeCore runtimeCore, bool isFep);
+        Executive CreateExecutive(RuntimeCore runtimeCore, bool isFep);
     }
 
     public class ExecutiveProvider : IExecutiveProvider
     {
-        public Executive CreateExecutive(Core core, RuntimeCore runtimeCore, bool isFep)
+        public Executive CreateExecutive(RuntimeCore runtimeCore, bool isFep)
         {
-            return new Executive(core, runtimeCore, isFep);
+            return new Executive(runtimeCore, isFep);
         }
     }
 

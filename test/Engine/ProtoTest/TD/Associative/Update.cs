@@ -18,7 +18,7 @@ namespace ProtoTest.TD.Associative
            
             runnerConfig = new ProtoScript.Config.RunConfiguration();
             runnerConfig.IsParrallel = false;
-            fsr = new DebugRunner(core, runtimeCore);
+            fsr = new DebugRunner(core);
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
             CLRModuleType.ClearTypes();
@@ -1284,7 +1284,7 @@ test1 = b1.a2[0];
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             //Assert.Fail("1467116 Sprint24 : rev 2806 : Cross language update issue");
             //Verification   
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kCyclicDependency);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kCyclicDependency);
         }
 
         [Test]

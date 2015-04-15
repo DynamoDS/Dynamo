@@ -612,7 +612,7 @@ x1; x2; x3; x4;
         {
             string code = @"[Imperative]{    arr1 = {true, false};    arr2 = {1, 2, 3};    arr3 = {false, true};    t = arr2[1][0];}";
             thisTest.RunScriptSource(code);
-            TestFrameWork.VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID.kOverIndexing);
+            TestFrameWork.VerifyRuntimeWarning(ProtoCore.Runtime.WarningID.kOverIndexing);
         }
 
         [Test]
@@ -1025,6 +1025,25 @@ class VisibilityAttribute
             thisTest.Verify("r1", true);
             thisTest.Verify("r2", true);
             thisTest.Verify("r3", Convert.ToInt64('h') + 1);
+        }
+
+        [Test]
+        public void TestStringForloop()
+        {
+            string code = 
+@"
+r = [Imperative]
+{
+    s = ""foo"";
+    for (x in ""bar"")
+    {
+         s  = s + x;
+    }
+    return = s;
+}
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("r", "foobar");
         }
 
         [Test]

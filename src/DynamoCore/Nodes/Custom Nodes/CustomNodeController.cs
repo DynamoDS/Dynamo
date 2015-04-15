@@ -24,7 +24,7 @@ namespace Dynamo.Nodes
             if (Definition.DisplayParameters == null || Definition.Parameters == null)
                 return;
 
-            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.DisplayTypeName, p.DefaultValue));
+            var inputs = Definition.DisplayParameters.Zip(Definition.Parameters, (dp, p) => Tuple.Create(dp, p.Description, p.DefaultValue));
             foreach (var p in inputs)
                 model.InPortData.Add(new PortData(p.Item1, p.Item2, p.Item3));
         }
@@ -35,10 +35,10 @@ namespace Dynamo.Nodes
             if (Definition.ReturnKeys != null && Definition.ReturnKeys.Any())
             {
                 foreach (string key in Definition.ReturnKeys)
-                    model.OutPortData.Add(new PortData(key, "return value"));
+                    model.OutPortData.Add(new PortData(key, Properties.Resources.ToolTipReturnValue));
             }
             else
-                model.OutPortData.Add(new PortData("", "return value"));
+                model.OutPortData.Add(new PortData("", Properties.Resources.ToolTipReturnValue));
         }
 
         protected override AssociativeNode GetFunctionApplication(NodeModel model, List<AssociativeNode> inputAstNodes)
@@ -135,13 +135,15 @@ namespace Dynamo.Nodes
             if (Definition == null)
                 return true;
 
+            if (Definition.DisplayParameters != null)
+            {
+                var paramNames = model.InPortData.Select(p => p.NickName);
+                if (!Definition.DisplayParameters.SequenceEqual(paramNames))
+                    return false;
+            }
+
             if (Definition.Parameters != null)
             {
-                var defParamNames = Definition.Parameters.Select(p => p.Name);
-                var paramNames = model.InPortData.Select(p => p.NickName);
-                if (!defParamNames.SequenceEqual(paramNames))
-                    return false;
-
                 var defParamTypes = Definition.Parameters.Select(p => p.Type.ToShortString());
                 var paramTypes = model.InPortData.Select(p => p.ToolTipString);
                 if (!defParamTypes.SequenceEqual(paramTypes))

@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
+using Dynamo.Utilities;
+using ProtoCore.AST;
+using ProtoCore.Namespace;
+using Symbol = Dynamo.Nodes.Symbol;
 
-namespace Dynamo.Utilities
+namespace Dynamo.Core
 {
     /// <summary>
     ///     Manages instantiation of custom nodes.  All custom nodes known to Dynamo should be stored
@@ -56,6 +59,16 @@ namespace Dynamo.Utilities
         public IEnumerable<CustomNodeWorkspaceModel> LoadedWorkspaces
         {
             get { return loadedWorkspaceModels.Values; }
+        }
+
+        /// <summary>
+        /// Gets custom node workspace by a specified custom node ID
+        /// </summary>
+        /// <param name="customNodeId">Custom node ID of a requested workspace</param>
+        /// <returns>Custom node workspace by a specified ID</returns>
+        public CustomNodeWorkspaceModel GetWorkspaceById (Guid customNodeId)
+        {
+            return loadedWorkspaceModels.ContainsKey(customNodeId) ? loadedWorkspaceModels[customNodeId] : null;
         }
 
         #endregion
@@ -122,10 +135,14 @@ namespace Dynamo.Utilities
                 
                 // Couldn't find the workspace at all, prepare for a late initialization.
                 Log(
-                    "Unable to create instance of custom node with id: \"" + id + "\"",
+                    Properties.Resources.UnableToCreateCustomNodeID + id + "\"",
                     WarningLevel.Moderate);
                 info = new CustomNodeInfo(id, nickname ?? "", "", "", "");
-                def = null;
+            }
+
+            if (def == null)
+            {
+                def = CustomNodeDefinition.MakeProxy(id, info.Name);
             }
 
             var node = new Function(def, info.Name, info.Description, info.Category);
@@ -156,7 +173,7 @@ namespace Dynamo.Utilities
                 }
             };
             InfoUpdated += infoUpdatedHandler;
-            node.Disposed += () =>
+            node.Disposed += (args) =>
             {
                 if (!disposed)
                     InfoUpdated -= infoUpdatedHandler;
@@ -179,7 +196,7 @@ namespace Dynamo.Utilities
                 node.Category = info.Category;
             };
             workspace.InfoChanged += infoChangedHandler;
-            node.Disposed += () =>
+            node.Disposed += (args) =>
             {
                 workspace.DefinitionUpdated -= defUpdatedHandler;
                 workspace.InfoChanged -= infoChangedHandler;
@@ -415,18 +432,16 @@ namespace Dynamo.Utilities
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(path);
 
-                WorkspaceHeader header;
-                if (!WorkspaceHeader.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
+                WorkspaceInfo header;
+                if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, AsLogger(), out header))
                 {
-                    Log(
-                        "ERROR: The header for the custom node at " + path
-                            + " failed to load.  It will be left out of search.");
+                    Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                     info = null;
                     return false;
                 }
                 info = new CustomNodeInfo(
-                    Guid.Parse(header.ID), 
-                    header.Name, 
+                    Guid.Parse(header.ID),
+                    header.Name,
                     header.Category,
                     header.Description, 
                     path);
@@ -434,9 +449,7 @@ namespace Dynamo.Utilities
             }
             catch (Exception e)
             {
-                Log(
-                    "ERROR: The header for the custom node at " + path
-                        + " failed to load.  It will be left out of search.");
+                Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                 Log(e.ToString());
                 info = null;
                 return false;
@@ -444,7 +457,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceHeader.
+        ///     Opens a Custom Node workspace from an XmlDocument, given a pre-constructed WorkspaceInfo.
         /// </summary>
         /// <param name="xmlDoc">XmlDocument representing the parsed custom node file.</param>
         /// <param name="workspaceInfo">Workspace header describing the custom node file.</param>
@@ -454,11 +467,10 @@ namespace Dynamo.Utilities
         /// <param name="workspace"></param>
         /// <returns></returns>
         public bool OpenCustomNodeWorkspace(
-            XmlDocument xmlDoc, WorkspaceHeader workspaceInfo, bool isTestMode, out WorkspaceModel workspace)
+            XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, bool isTestMode, out WorkspaceModel workspace)
         {
             CustomNodeWorkspaceModel customNodeWorkspace;
             if (InitializeCustomNode(
-                Guid.Parse(workspaceInfo.ID),
                 workspaceInfo,
                 xmlDoc,
                 out customNodeWorkspace))
@@ -471,25 +483,22 @@ namespace Dynamo.Utilities
         }
 
         private bool InitializeCustomNode(
-            Guid functionId, WorkspaceHeader workspaceInfo,
+            WorkspaceInfo workspaceInfo,
             XmlDocument xmlDoc, out CustomNodeWorkspaceModel workspace)
         {
             // Add custom node definition firstly so that a recursive
             // custom node won't recursively load itself.
-            SetPreloadFunctionDefinition(functionId);
-
+            SetPreloadFunctionDefinition(Guid.Parse(workspaceInfo.ID));
+ 
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
-
+           
             var newWorkspace = new CustomNodeWorkspaceModel(
-                workspaceInfo.Name,
-                workspaceInfo.Category,
-                workspaceInfo.Description,
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
-                workspaceInfo.X,
-                workspaceInfo.Y,
-                functionId, workspaceInfo.FileName);
+                nodeGraph.Annotations,                               
+                workspaceInfo);
+
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -550,31 +559,32 @@ namespace Dynamo.Utilities
 
                 var xmlPath = customNodeInfo.Path;
 
-                Log("Loading node definition for \"" + customNodeInfo + "\" from: " + xmlPath);
+                Log(String.Format(Properties.Resources.LoadingNodeDefinition, customNodeInfo, xmlPath));
 
                 var xmlDoc = new XmlDocument();
                 xmlDoc.Load(xmlPath);
 
-                WorkspaceHeader header;
-                if (WorkspaceHeader.FromXmlDocument(
+                WorkspaceInfo info;
+                if (WorkspaceInfo.FromXmlDocument(
                     xmlDoc,
                     xmlPath,
                     isTestMode,
                     AsLogger(),
-                    out header) && header.IsCustomNodeWorkspace)
+                    out info) && info.IsCustomNodeWorkspace)
                 {
-                    if (migrationManager.ProcessWorkspace(header, xmlDoc, isTestMode, nodeFactory))
+                    info.ID = functionId.ToString();
+                    if (migrationManager.ProcessWorkspace(info, xmlDoc, isTestMode, nodeFactory))
                     {
-                        return InitializeCustomNode(functionId, header, xmlDoc, out workspace);
+                        return InitializeCustomNode(info, xmlDoc, out workspace);
                     }
                 }
-                Log(string.Format("Custom node \"{0}\" could not be initialized.", customNodeInfo.Name));
+                Log(string.Format(Properties.Resources.CustomNodeCouldNotBeInitialized, customNodeInfo.Name));
                 workspace = null;
                 return false;
             }
             catch (Exception ex)
             {
-                Log("There was an error opening the workspace.");
+                Log(Properties.Resources.OpenWorkspaceError);
                 Log(ex);
 
                 if (isTestMode)
@@ -598,7 +608,19 @@ namespace Dynamo.Utilities
         public WorkspaceModel CreateCustomNode(string name, string category, string description, Guid? functionId = null)
         {
             var newId = functionId ?? Guid.NewGuid();
-            var workspace = new CustomNodeWorkspaceModel(name, category, description, 0, 0, newId, nodeFactory, string.Empty);
+
+            var info = new WorkspaceInfo()
+            {
+                Name = name,
+                Category = category,
+                Description = description,
+                X = 0,
+                Y = 0,
+                ID = newId.ToString(), 
+                FileName = string.Empty
+            };
+            var workspace = new CustomNodeWorkspaceModel(info, nodeFactory);
+
             RegisterCustomNodeWorkspace(workspace);
             return workspace;
         }
@@ -639,7 +661,7 @@ namespace Dynamo.Utilities
         /// <param name="currentWorkspace"> The workspace where</param>
         /// <param name="isTestMode"></param>
         /// <param name="args"></param>
-        public WorkspaceModel Collapse(
+        public CustomNodeWorkspaceModel Collapse(
             IEnumerable<NodeModel> selectedNodes, WorkspaceModel currentWorkspace,
             bool isTestMode, FunctionNamePromptEventArgs args)
         {
@@ -671,7 +693,7 @@ namespace Dynamo.Utilities
                             node =>
                                 Enumerable.Range(0, node.InPortData.Count)
                                 .Where(node.HasConnectedInput)
-                                .Select(data => Tuple.Create(node, data, node.Inputs[data]))
+                                .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
                                 .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
                 var outputs =
@@ -682,7 +704,7 @@ namespace Dynamo.Utilities
                                 .Where(node.HasOutput)
                                 .SelectMany(
                                     data =>
-                                        node.Outputs[data].Where(
+                                        node.OutputNodes[data].Where(
                                             output => !selectedNodeSet.Contains(output.Item2))
                                         .Select(output => Tuple.Create(node, data, output)))));
 
@@ -690,7 +712,7 @@ namespace Dynamo.Utilities
 
                 #region Detect 1-node holes (higher-order function extraction)
 
-                Log("Could not repair 1-node holes", WarningLevel.Mild);
+                Log(Properties.Resources.CouldNotRepairOneNodeHoles, WarningLevel.Mild);
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-5603
 
                 //var curriedNodeArgs =
@@ -825,7 +847,7 @@ namespace Dynamo.Utilities
                     node.GUID = Guid.NewGuid();
                     node.RenderPackages.Clear();
 
-                    // shit nodes
+                    // shift nodes
                     node.X = node.X - leftShift;
                     node.Y = node.Y - topMost;
 
@@ -1014,15 +1036,23 @@ namespace Dynamo.Utilities
 
                 var newId = Guid.NewGuid();
                 newWorkspace = new CustomNodeWorkspaceModel(
-                    args.Name,
-                    args.Category,
-                    args.Description,
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
-                    0,
-                    0,
-                    newId, string.Empty);
+                    Enumerable.Empty<AnnotationModel>(),                
+                    new WorkspaceInfo()
+                    {
+                        X = 0,
+                        Y = 0,
+                        Name = args.Name,
+                        Category = args.Category,
+                        Description = args.Description,
+                        ID = newId.ToString(),
+                        FileName = string.Empty
+                    },
+                    currentWorkspace.ElementResolver);
+
+                newWorkspace.HasUnsavedChanges = true;
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -1059,6 +1089,27 @@ namespace Dynamo.Utilities
                 }
             }
             return newWorkspace;
+        }
+
+        internal IEnumerable<Guid> GetAllDependenciesGuids(CustomNodeDefinition def)
+        {
+            var idSet = new HashSet<Guid>();
+            idSet.Add(def.FunctionId);
+
+            while (true)
+            {
+                bool isUpdated = false;
+                foreach (var d in this.LoadedDefinitions)
+                {
+                    if (d.Dependencies.Any(x => idSet.Contains(x.FunctionId)))
+                        isUpdated = isUpdated || idSet.Add(d.FunctionId);
+                }
+
+                if (!isUpdated)
+                    break;
+            }
+
+            return idSet;
         }
     }
 }

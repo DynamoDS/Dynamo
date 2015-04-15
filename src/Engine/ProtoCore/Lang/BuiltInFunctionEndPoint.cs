@@ -10,8 +10,8 @@ using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 using ProtoFFI;
 using System.Collections;
-using ProtoCore.RuntimeData;
 using ProtoCore.Runtime;
+using ProtoCore.Properties;
 
 namespace ProtoCore.Lang
 {
@@ -29,10 +29,10 @@ namespace ProtoCore.Lang
         }
 
 
-        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, Core core, RuntimeCore runtimeCore)
+        public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-
-            ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(core, runtimeCore);
+            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
+            ProtoCore.DSASM.Interpreter interpreter = new DSASM.Interpreter(runtimeCore);
             StackValue ret;
 
             switch (buildInMethodId)
@@ -41,7 +41,7 @@ namespace ProtoCore.Lang
                     {
                         if (!formalParameters[0].IsArray)
                             ret = ProtoCore.DSASM.StackValue.BuildInt(1);
-                        else if (!ArrayUtils.ContainsNonArrayElement(formalParameters[0], core))
+                        else if (!ArrayUtils.ContainsNonArrayElement(formalParameters[0], runtimeCore))
                             ret = ProtoCore.DSASM.StackValue.BuildInt(0);
                         else
                             ret = ProtoCore.DSASM.StackValue.BuildInt(ArrayUtilsForBuiltIns.Count(formalParameters[0], interpreter));
@@ -115,7 +115,7 @@ namespace ProtoCore.Lang
                                                                 formalParameters[3],
                                                                 formalParameters[4],
                                                                 formalParameters[5],
-                                                                core);
+                                                                runtimeCore);
                     break;
                 case ProtoCore.Lang.BuiltInMethods.MethodID.kAllFalse:
                     {
@@ -162,9 +162,9 @@ namespace ProtoCore.Lang
                             System.Threading.Thread.Sleep((int)stackValue.opdata);
                         else
                         {
-                            interpreter.runtime.Core.RuntimeStatus.LogWarning(
-                                RuntimeData.WarningID.kInvalidArguments,
-                                StringConstants.kInvalidArguments);
+                            runtimeCore.RuntimeStatus.LogWarning(
+                                Runtime.WarningID.kInvalidArguments,
+                                Resources.kInvalidArguments);
                         }
 
                         ret = DSASM.StackValue.Null;
@@ -284,7 +284,7 @@ namespace ProtoCore.Lang
                         {
                             // Comment Jun: Perhaps we can allow coercion?
                             Type booleanType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeBool, 0);
-                            svCondition = TypeSystem.Coerce(svCondition, booleanType, core);
+                            svCondition = TypeSystem.Coerce(svCondition, booleanType, runtimeCore);
                         }
 
                         StackValue svTrue = formalParameters[1];
@@ -293,7 +293,7 @@ namespace ProtoCore.Lang
                         // If run in delta execution environment, we don't 
                         // create language blocks for true and false branch, 
                         // so directly return the value.
-                        if (core.Options.IsDeltaExecution)
+                        if (runtimeCore.Options.IsDeltaExecution)
                         {
                             return svCondition.RawBooleanValue ? svTrue : svFalse;
                         }
@@ -302,9 +302,8 @@ namespace ProtoCore.Lang
                         Validity.Assert(svFalse.IsInteger);
                         int blockId = (1 == (int)svCondition.opdata) ? (int)svTrue.opdata : (int)svFalse.opdata;
 
-                        ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-                        int oldRunningBlockId = core.RunningBlock;
-                        core.RunningBlock = blockId;
+                        int oldRunningBlockId = runtimeCore.RunningBlock;
+                        runtimeCore.RunningBlock = blockId;
 
                         int returnAddr = stackFrame.ReturnPC;
 
@@ -323,7 +322,7 @@ namespace ProtoCore.Lang
                         int blockCaller = oldRunningBlockId;
                         StackFrameType type = StackFrameType.kTypeLanguage;
                         int depth = (int)interpreter.runtime.rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameDepth).opdata;
-                        int framePointer = core.Rmem.FramePointer;
+                        int framePointer = rmem.FramePointer;
                         List<StackValue> registers = new List<StackValue>();
 
                         // Comment Jun: Calling convention data is stored on the TX register
@@ -335,19 +334,13 @@ namespace ProtoCore.Lang
                         // Comment Jun: the caller type is the current type in the stackframe
                         StackFrameType callerType = stackFrame.StackFrameType;
 
-                        if (core.ExecMode != DSASM.InterpreterMode.kExpressionInterpreter && core.Options.IDEDebugMode)
-                        {
-                            blockCaller = core.DebugProps.CurrentBlockId;
-                            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(runtimeCore, blockId, 0, context, core.Breakpoints, bounceStackFrame, 0, core.CurrentExecutive.CurrentDSASMExec);
-                        }
-                        else
-                        {
-                            StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
-                            ret = core.Bounce(runtimeCore, blockId, 0, context, bounceStackFrame);
-                        }
+                        
+                        blockCaller = runtimeCore.DebugProps.CurrentBlockId;
+                        StackFrame bounceStackFrame = new StackFrame(svThisPtr, ci, fi, returnAddr, blockDecl, blockCaller, callerType, type, depth, framePointer, registers, null);
 
-                        core.RunningBlock = oldRunningBlockId;
+                        ret = interpreter.runtime.Bounce(blockId, 0, bounceStackFrame, 0, false, runtimeCore.CurrentExecutive.CurrentDSASMExec, runtimeCore.Breakpoints);
+
+                        runtimeCore.RunningBlock = oldRunningBlockId;
                         break;
                     }
 
@@ -409,10 +402,10 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.kToString:
                 case BuiltInMethods.MethodID.kToStringFromObject:
                 case BuiltInMethods.MethodID.kToStringFromArray:
-                    ret = StringUtils.ConvertToString(formalParameters[0], core, runtimeCore, core.Rmem);
+                    ret = StringUtils.ConvertToString(formalParameters[0], runtimeCore, rmem);
                     break;
                 case BuiltInMethods.MethodID.kImportData:
-                    ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], core, runtimeCore, interpreter, c);
+                    ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], runtimeCore, interpreter, c);
                     break;
                 case BuiltInMethods.MethodID.kBreak:
                     {
@@ -424,14 +417,15 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.kGetKeys:
                     {
                         StackValue array = formalParameters[0];
-                        StackValue[] result = ArrayUtils.GetKeys(array, core);
-                        if (null == result)
+                        if (!array.IsArray)
                         {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                             ret = StackValue.Null;
                         }
                         else
                         {
-                            ret = core.Heap.AllocateArray(result, null);
+                            var result = ArrayUtils.GetKeys(array, runtimeCore);
+                            ret = rmem.Heap.AllocateArray(result, null);
                         }
                         break;
                     }
@@ -440,12 +434,13 @@ namespace ProtoCore.Lang
                         StackValue array = formalParameters[0];
                         if (!array.IsArray)
                         {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.kOverIndexing, Resources.kArrayOverIndexed);
                             ret = StackValue.Null;
                         }
                         else
                         {
-                            var result = ArrayUtils.GetValues(array, core);
-                            ret = core.Heap.AllocateArray(result, null);
+                            var result = ArrayUtils.GetValues(array, runtimeCore);
+                            ret = rmem.Heap.AllocateArray(result, null);
                         }
                         break;
                     }
@@ -453,7 +448,7 @@ namespace ProtoCore.Lang
                     {
                         StackValue array = formalParameters[0];
                         StackValue key = formalParameters[1];
-                        bool result = ArrayUtils.ContainsKey(array, key, core);
+                        bool result = ArrayUtils.ContainsKey(array, key, runtimeCore);
                         ret = StackValue.BuildBoolean(result);
                         break;
                     }
@@ -461,7 +456,7 @@ namespace ProtoCore.Lang
                     {
                         StackValue array = formalParameters[0];
                         StackValue key = formalParameters[1];
-                        bool result = ArrayUtils.RemoveKey(array, key, core);
+                        bool result = ArrayUtils.RemoveKey(array, key, runtimeCore);
                         ret = StackValue.BuildBoolean(result);
                         break;
                     }
@@ -475,7 +470,7 @@ namespace ProtoCore.Lang
                     break;
                 case BuiltInMethods.MethodID.kTryGetValueFromNestedDictionaries:
                     StackValue value;
-                    if (ArrayUtils.TryGetValueFromNestedDictionaries(formalParameters[0], formalParameters[1], out value, core))
+                    if (ArrayUtils.TryGetValueFromNestedDictionaries(formalParameters[0], formalParameters[1], out value, runtimeCore))
                     {
                         ret = value;
                     }
@@ -486,7 +481,7 @@ namespace ProtoCore.Lang
                     break;
                 case BuiltInMethods.MethodID.kNodeAstFailed:
                     var nodeFullName = formalParameters[0];
-                    var fullName = StringUtils.GetStringValue(nodeFullName, core, runtimeCore);
+                    var fullName = StringUtils.GetStringValue(nodeFullName, runtimeCore);
                     ret = StackValue.Null;
                     break;
                 default:
@@ -498,20 +493,20 @@ namespace ProtoCore.Lang
 
         private StackValue DotMethod(StackValue lhs, StackFrame stackFrame, DSASM.Executive runtime, Context context)
         {
-            var core = runtime.Core;
-            var runtimeCore = runtime.runtimeCore;
+            var runtimeCore = runtime.RuntimeCore;
             var rmem = runtime.rmem;
+            var runtimeData = runtime.exe.RuntimeData;
 
             bool isValidThisPointer = true;
             StackValue thisObject = lhs;
             if (thisObject.IsArray)
             {
-                isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, core);
+                isValidThisPointer = ArrayUtils.GetFirstNonArrayStackValue(lhs, ref thisObject, runtimeCore);
             }
 
             if (!isValidThisPointer || (!thisObject.IsPointer && !thisObject.IsArray))
             {
-                core.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, StringConstants.kDeferencingNonPointer);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.kDereferencingNonPointer, Resources.kDeferencingNonPointer);
                 return StackValue.Null;
             }
 
@@ -557,13 +552,13 @@ namespace ProtoCore.Lang
 
             // Find the first visible method in the class and its heirarchy
             // The callsite will handle the overload
-            var dynamicFunction = core.DynamicFunctionTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
+            var dynamicFunction = runtimeCore.DSExecutable.DynamicFuncTable.GetFunctionAtIndex((int)dynamicTableIndex.opdata);
             string functionName = dynamicFunction.Name;
 
             var replicationGuides = new List<List<ProtoCore.ReplicationGuide>>();
             if (!CoreUtils.IsGetterSetter(functionName))
             {
-                replicationGuides = runtime.GetCachedReplicationGuides(core, functionArgs);
+                replicationGuides = runtime.GetCachedReplicationGuides(functionArgs);
                 if (removeFirstArgument)
                 {
                     replicationGuides.RemoveAt(0);
@@ -631,20 +626,28 @@ namespace ProtoCore.Lang
                                                stackFrame.StackFrameType,
                                                StackFrameType.kTypeFunction, 
                                                0,
-                                               core.Rmem.FramePointer, 
+                                               rmem.FramePointer, 
                                                stackFrame.GetRegisters(), 
                                                null);
 
-            ProtoCore.CallSite callsite = core.GetCallSite(core.ExecutingGraphnode, thisObjectType, functionName);
+            ProtoCore.CallSite callsite = runtimeData.GetCallSite(
+                runtime.exe.ExecutingGraphnode, 
+                thisObjectType, 
+                functionName, 
+                runtime.exe,
+                runtimeCore.RunningBlock,
+                runtimeCore.Options, 
+                runtimeCore.RuntimeStatus);
             Validity.Assert(null != callsite);
 
             // TODO: Disabling support for stepping into replicated function calls temporarily - pratapa
-            if (core.Options.IDEDebugMode &&
-                core.ExecMode != InterpreterMode.kExpressionInterpreter &&
+            if (runtimeCore.Options.IDEDebugMode &&
+                runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
-                core.DebugProps.SetUpCallrForDebug(core,
-                                                   core.CurrentExecutive.CurrentDSASMExec,
+                runtimeCore.DebugProps.SetUpCallrForDebug(
+                                                   runtimeCore,
+                                                   runtimeCore.CurrentExecutive.CurrentDSASMExec,
                                                    procNode,
                                                    stackFrame.ReturnPC - 1,
                                                    false, callsite,
@@ -657,14 +660,14 @@ namespace ProtoCore.Lang
                                                    thisObject);
             }
 
-            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, core, runtimeCore);
+            StackValue ret = callsite.JILDispatchViaNewInterpreter(context, arguments, replicationGuides, newStackFrame, runtimeCore);
 
             // Restore debug properties after returning from a CALL/CALLR
-            if (core.Options.IDEDebugMode && 
-                core.ExecMode != InterpreterMode.kExpressionInterpreter &&
+            if (runtimeCore.Options.IDEDebugMode &&
+                runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter &&
                 procNode != null)
             {
-                core.DebugProps.RestoreCallrForNoBreak(core, procNode);
+                runtimeCore.DebugProps.RestoreCallrForNoBreak(runtimeCore, procNode);
             }
 
             return ret;
@@ -673,16 +676,16 @@ namespace ProtoCore.Lang
 
     internal class ContextDataBuiltIns
     {
-        internal static StackValue ImportData(StackValue svAppName, StackValue svConnectionParameters, Core core, RuntimeCore runtimeCore, Interpreter interpreter, ProtoCore.Runtime.Context c)
+        internal static StackValue ImportData(StackValue svAppName, StackValue svConnectionParameters, RuntimeCore runtimeCore, Interpreter interpreter, ProtoCore.Runtime.Context c)
         {
-            string appname = StringUtils.GetStringValue(svAppName, core, runtimeCore);
+            string appname = StringUtils.GetStringValue(svAppName, runtimeCore);
 
-            IContextDataProvider provider = ContextDataManager.GetInstance(core).GetDataProvider(appname);
+            IContextDataProvider provider = runtimeCore.DSExecutable.ContextDataMngr.GetDataProvider(appname);
             ProtoCore.Utils.Validity.Assert(null != provider, string.Format("Couldn't locate data provider for {0}", appname));
 
-            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(core);
+            CLRObjectMarshler marshaler = CLRObjectMarshler.GetInstance(runtimeCore);
 
-            Dictionary<string, Object> parameters = new Dictionary<string,object>();
+            Dictionary<string, Object> parameters = new Dictionary<string, object>();
             if (!svConnectionParameters.IsArray)
             {
                 Object connectionParameters = marshaler.UnMarshal(svConnectionParameters, c, interpreter, typeof(Object));
@@ -690,13 +693,13 @@ namespace ProtoCore.Lang
             }
             else
             {
-                StackValue[] svArray = ArrayUtils.GetValues(svConnectionParameters, interpreter.runtime.Core).ToArray();
-                ProtoCore.Utils.Validity.Assert(svArray.Length%2 == 0, string.Format("Connection parameters for ImportData should be array of Parameter Name followed by value"));
+                StackValue[] svArray = ArrayUtils.GetValues(svConnectionParameters, interpreter.runtime.RuntimeCore).ToArray();
+                ProtoCore.Utils.Validity.Assert(svArray.Length % 2 == 0, string.Format("Connection parameters for ImportData should be array of Parameter Name followed by value"));
                 int nParameters = svArray.Length / 2;
                 for (int i = 0; i < nParameters; ++i)
                 {
-                    string paramName = StringUtils.GetStringValue(svArray[2*i], core, runtimeCore);
-                    Object paramData = marshaler.UnMarshal(svArray[2*i+1], c, interpreter, typeof(Object));
+                    string paramName = StringUtils.GetStringValue(svArray[2 * i], runtimeCore);
+                    Object paramData = marshaler.UnMarshal(svArray[2 * i + 1], c, interpreter, typeof(Object));
                     parameters.Add(paramName, paramData);
                 }
             }
@@ -729,7 +732,7 @@ namespace ProtoCore.Lang
         //return the number of milliseconds past from executing the program 
         internal static int GetElapsedTime(ProtoCore.DSASM.Interpreter runtime)
         {
-            TimeSpan ts = runtime.runtime.Core.GetCurrentTime();
+            TimeSpan ts = runtime.runtime.RuntimeCore.GetCurrentTime();
             int ms = ts.Milliseconds;
             return ms;
         }
@@ -739,18 +742,18 @@ namespace ProtoCore.Lang
         // set a breakpoint at the next breakable instruction
         internal static void Break(Interpreter interpreter, StackFrame stackFrame)
         {
-            Core core = interpreter.runtime.Core;
-            if (!core.Options.IDEDebugMode)
+            RuntimeCore runtimeCore = interpreter.runtime.RuntimeCore;
+            if (!runtimeCore.Options.IDEDebugMode)
                 return;
 
-            if (core.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
+            if (runtimeCore.DebugProps.DebugStackFrameContains(DebugProperties.StackFrameFlagOptions.IsReplicating))
                 return;
 
             // Search for next breakable instruction in list of instructions and add to RegisteredBreakPoints
 
             int pc = stackFrame.ReturnPC;
             int blockId = stackFrame.FunctionCallerBlock;
-            List<Instruction> instructions = core.DSExecutable.instrStreamList[blockId].instrList;
+            List<Instruction> instructions = runtimeCore.DSExecutable.instrStreamList[blockId].instrList;
 
             // Search instructions from DebugEntryPC onwards for the next breakpoint and add it to current list of breakpoints
             // if there is a bounce, then jump to new lang block and continue searching
@@ -758,14 +761,14 @@ namespace ProtoCore.Lang
             {
                 if (instructions[pc].debug != null)
                 {
-                    if(!core.Breakpoints.Contains(instructions[pc]))
-                        core.Breakpoints.Add(instructions[pc]);
+                    if(!runtimeCore.Breakpoints.Contains(instructions[pc]))
+                        runtimeCore.Breakpoints.Add(instructions[pc]);
                     break;
                 }
                 else if (instructions[pc].opCode == OpCode.BOUNCE)
                 {
                     blockId = (int)instructions[pc].op1.opdata;
-                    instructions = core.DSExecutable.instrStreamList[blockId].instrList;
+                    instructions = runtimeCore.DSExecutable.instrStreamList[blockId].instrList;
                     pc = 0;
                     continue;
                 }
@@ -780,16 +783,10 @@ namespace ProtoCore.Lang
         internal static string ConvertToString(StackValue st, ProtoCore.DSASM.Interpreter runtime)
         {
             string result = "";
-            if (!st.IsString) { return result; }
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            if (!st.IsString) 
+                return result;
 
-            var values = ArrayUtils.GetValues(st, runtime.runtime.Core); 
-            foreach (StackValue element in values)
-            {
-                char ch = ProtoCore.Utils.EncodingUtils.ConvertInt64ToCharacter(element.opdata);
-                sb.Append(ch);
-            }
-            result = sb.ToString();
+            result = runtime.runtime.rmem.Heap.GetString(st);
             result.Replace("\\\\", "\\");
             return result;
         }
@@ -801,20 +798,21 @@ namespace ProtoCore.Lang
         }
         internal static StackValue LoadCSVWithMode(StackValue fn, StackValue trans, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!trans.IsBoolean)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, ProtoCore.StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
             string filename = ConvertToString(fn, runtime);
-            string path = FileUtils.GetDSFullPathName(filename, runtime.runtime.Core.Options);
+            string path = FileUtils.GetDSFullPathName(filename, runtime.runtime.RuntimeCore.Options);
             // File not existing.
             if(null==path || !File.Exists(path))
             {
-                string message = String.Format(ProtoCore.StringConstants.kFileNotFound, path);
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kFileNotExist, message);
+                string message = String.Format(Resources.kFileNotFound, path);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kFileNotExist, message);
                 return DSASM.StackValue.Null;
             }
             // Open the file to read from.
@@ -898,18 +896,19 @@ namespace ProtoCore.Lang
         internal static StackValue Print(StackValue msg, ProtoCore.DSASM.Interpreter runtime)
         {
             //TODO: Change Execution mirror class to have static methods, so that an instance does not have to be created
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.Core, runtime.runtime.runtimeCore);
-            string result = mirror.GetStringValue(msg, runtime.runtime.Core.Heap, 0, true);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = new DSASM.Mirror.ExecutionMirror(runtime.runtime, runtime.runtime.RuntimeCore);
+            string result = mirror.GetStringValue(msg, runtime.runtime.rmem.Heap, 0, true);
             //For Console output
             Console.WriteLine(result);
-            //For IDE output
-            ProtoCore.Core core = runtime.runtime.Core;
+            
+            ////For IDE output
+            //ProtoCore.Core core = runtime.runtime.Core;
+            //OutputMessage t_output = new OutputMessage(result);
+            //core.BuildStatus.MessageHandler.Write(t_output);
+            ProtoCore.RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             OutputMessage t_output = new OutputMessage(result);
-            core.BuildStatus.MessageHandler.Write(t_output);
-            if (core.Options.WebRunner)
-            {
-                core.BuildStatus.WebMsgHandler.Write(t_output);
-            }
+            runtimeCore.RuntimeStatus.MessageHandler.Write(t_output);
+
             return DSASM.StackValue.Null;
         }
     }
@@ -1024,13 +1023,14 @@ namespace ProtoCore.Lang
                                                    StackValue svOp,
                                                    StackValue svHasStep,
                                                    StackValue svHasAmountOp,
-                                                   ProtoCore.Core core)
+                                                   ProtoCore.RuntimeCore runtimeCore)
         {
+
             if (!svStart.IsNumeric || !svEnd.IsNumeric)
             {
-                core.RuntimeStatus.LogWarning(
+                runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
@@ -1041,41 +1041,41 @@ namespace ProtoCore.Lang
             {
                 if (!svEnd.IsNumeric)
                 {
-                    core.RuntimeStatus.LogWarning(
+                    runtimeCore.RuntimeStatus.LogWarning(
                         WarningID.kInvalidArguments, 
-                        StringConstants.kInvalidAmountInRangeExpression);
+                        Resources.kInvalidAmountInRangeExpression);
                     return StackValue.Null;
                 }
                 else if (!hasStep)
                 {
-                    core.RuntimeStatus.LogWarning(
+                    runtimeCore.RuntimeStatus.LogWarning(
                         WarningID.kInvalidArguments, 
-                        StringConstants.kNoStepSizeInAmountRangeExpression);
+                        Resources.kNoStepSizeInAmountRangeExpression);
                     return StackValue.Null;
                 }
             }
 
             if (svStep.IsNull && hasStep)
             {
-                core.RuntimeStatus.LogWarning(
+                runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
             else if (!svStep.IsNull && !svStep.IsNumeric)
             {
-                core.RuntimeStatus.LogWarning(
+                runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
 
             double startValue = svStart.ToDouble().RawDoubleValue;
             if (double.IsInfinity(startValue) || double.IsNaN(startValue))
             {
-                core.RuntimeStatus.LogWarning(
+                runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
             decimal start = new decimal(startValue);
@@ -1083,9 +1083,9 @@ namespace ProtoCore.Lang
             double endValue = svEnd.ToDouble().RawDoubleValue;
             if (double.IsInfinity(endValue) || double.IsNaN(endValue))
             {
-                core.RuntimeStatus.LogWarning(
+                runtimeCore.RuntimeStatus.LogWarning(
                     WarningID.kInvalidArguments, 
-                    StringConstants.kInvalidArgumentsInRangeExpression);
+                    Resources.kInvalidArgumentsInRangeExpression);
                 return StackValue.Null;
             }
             decimal end = new decimal(endValue);
@@ -1095,9 +1095,9 @@ namespace ProtoCore.Lang
                 double stepValue = svStep.RawDoubleValue;
                 if (double.IsInfinity(stepValue) || double.IsNaN(stepValue))
                 {
-                    core.RuntimeStatus.LogWarning(
+                    runtimeCore.RuntimeStatus.LogWarning(
                         WarningID.kInvalidArguments, 
-                        StringConstants.kInvalidArgumentsInRangeExpression);
+                        Resources.kInvalidArgumentsInRangeExpression);
                     return StackValue.Null;
                 }
             }
@@ -1110,9 +1110,9 @@ namespace ProtoCore.Lang
                 long amount = svEnd.ToInteger().opdata;
                 if (amount < 0)
                 {
-                   core.RuntimeStatus.LogWarning(
+                    runtimeCore.RuntimeStatus.LogWarning(
                        WarningID.kInvalidArguments, 
-                       StringConstants.kInvalidAmountInRangeExpression);
+                       Resources.kInvalidAmountInRangeExpression);
                    return StackValue.Null;
                 }
                 decimal stepsize = new decimal(svStep.ToDouble().RawDoubleValue);
@@ -1176,7 +1176,7 @@ namespace ProtoCore.Lang
                         }
                 }
             }
-            return range == null ? StackValue.Null : core.Heap.AllocateArray(range, null);
+            return range == null ? StackValue.Null : runtimeCore.RuntimeMemory.Heap.AllocateArray(range, null);
         }
     }
     internal class ArrayUtilsForBuiltIns
@@ -1186,7 +1186,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
 
-            return ArrayUtils.GetElementSize(sv, runtime.runtime.Core);
+            return ArrayUtils.GetElementSize(sv, runtime.runtime.RuntimeCore);
         }
 
         internal static int Rank(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
@@ -1194,7 +1194,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
                 return 0;
 
-            var values = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var values = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             if (values.Any())
             {
                 return values.Select(x => x.IsArray ? Rank(x, runtime) : 0).Max() + 1;
@@ -1213,7 +1213,7 @@ namespace ProtoCore.Lang
 
             List<StackValue> newElements = new List<DSASM.StackValue>();
             GetFlattenedArrayElements(sv, runtime, ref newElements);
-            return runtime.runtime.Core.Heap.AllocateArray(newElements, null);
+            return runtime.runtime.rmem.Heap.AllocateArray(newElements, null);
         }
 
         internal static StackValue Concat(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
@@ -1221,8 +1221,8 @@ namespace ProtoCore.Lang
             if (!sv1.IsArray || !sv2.IsArray)
                 return DSASM.StackValue.Null;
 
-            var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
-            var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.Core);
+            var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore);
+            var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.RuntimeCore);
             var values = svArray1.Concat(svArray2).ToList();
             return runtime.runtime.rmem.Heap.AllocateArray(values);
         }
@@ -1235,7 +1235,7 @@ namespace ProtoCore.Lang
                 return;
             }
 
-            var heapElement = ArrayUtils.GetHeapElement(sv, runtime.runtime.Core);
+            var heapElement = ArrayUtils.GetHeapElement(sv, runtime.runtime.RuntimeCore);
             foreach (var item in heapElement.VisibleItems)
             {
                 GetFlattenedArrayElements(item, runtime, ref list); 
@@ -1252,12 +1252,12 @@ namespace ProtoCore.Lang
                 return DSASM.StackValue.Null;
             sv1 = RemoveDuplicates(sv1, runtime, context);
             sv2 = RemoveDuplicates(sv2, runtime, context);
-            var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
-            var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.Core);
+            var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore);
+            var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.RuntimeCore);
             List<StackValue> svList = new List<StackValue>();
             foreach (var item1 in svArray1)
             {
-                if (svArray2.All(item2 => !StackUtils.CompareStackValues(item1, item2, runtime.runtime.Core)))
+                if (svArray2.All(item2 => !StackUtils.CompareStackValues(item1, item2, runtime.runtime.RuntimeCore)))
                 {
                     svList.Add(item1);
                 }
@@ -1274,10 +1274,13 @@ namespace ProtoCore.Lang
         //Union
         internal static StackValue Union(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime, ProtoCore.Runtime.Context context)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if ((Rank(sv1, runtime) != 1) || (Rank(sv2, runtime) != 1))
             {
                 //LC urgent patch
-                runtime.runtime.Core.RuntimeStatus.LogWarning(ProtoCore.RuntimeData.WarningID.kTypeMismatch, "Both arguments were expected to be one-dimensional array type!");
+                runtimeCore.RuntimeStatus.LogWarning(
+                    ProtoCore.Runtime.WarningID.kTypeMismatch, 
+                    "Both arguments were expected to be one-dimensional array type!");
                 return DSASM.StackValue.Null;
             }
             return RemoveDuplicates(Concat(sv1, sv2, runtime), runtime, context);
@@ -1294,12 +1297,12 @@ namespace ProtoCore.Lang
                 return DSASM.StackValue.Null;
             sv1 = RemoveDuplicates(sv1, runtime, context);
             sv2 = RemoveDuplicates(sv2, runtime, context);
-            var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
-            var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.Core);
+            var svArray1 = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore);
+            var svArray2 = ArrayUtils.GetValues(sv2, runtime.runtime.RuntimeCore);
             List<StackValue> svList = new List<StackValue>();
             foreach (var item1 in svArray1)
             {
-                if (svArray2.Any(item2 => StackUtils.CompareStackValues(item1, item2, runtime.runtime.Core)))
+                if (svArray2.Any(item2 => StackUtils.CompareStackValues(item1, item2, runtime.runtime.RuntimeCore)))
                 {
                     svList.Add(item1);
                 }
@@ -1316,7 +1319,7 @@ namespace ProtoCore.Lang
         //CountFalse
         internal static int CountFalse(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
-            var values = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var values = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             int countFalse = 0;
             foreach (var element in values)
             {
@@ -1336,7 +1339,7 @@ namespace ProtoCore.Lang
         {
             int countTrue = 0;
 
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             foreach (var item in svArray)
             {
                 if (item.IsArray)
@@ -1349,14 +1352,15 @@ namespace ProtoCore.Lang
         }
         internal static bool Exists(StackValue sv, ProtoCore.DSASM.Interpreter runtime, Predicate<StackValue> pred)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return false;
             }
 
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             foreach (var element in svArray)
             {
                 if (element.IsArray)
@@ -1375,14 +1379,15 @@ namespace ProtoCore.Lang
         }
         internal static bool ForAll(StackValue sv, ProtoCore.DSASM.Interpreter runtime, Predicate<StackValue> pred)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return true;
             }
 
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             foreach (var element in svArray)
             {
                 if (element.IsArray)
@@ -1424,13 +1429,14 @@ namespace ProtoCore.Lang
         //isHomogeneous
         internal static bool IsHomogeneous(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return true;// ProtoCore.DSASM.Constants.kInvalidIndex;
             }
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             if (!svArray.Any())
             {
                 return true;
@@ -1458,16 +1464,16 @@ namespace ProtoCore.Lang
                 return ProtoCore.DSASM.StackValue.Null;
             }
 
-            if (!ArrayUtils.ContainsNonArrayElement(sv, runtime.runtime.Core))
+            if (!ArrayUtils.ContainsNonArrayElement(sv, runtime.runtime.RuntimeCore))
                 return ProtoCore.DSASM.StackValue.Null;
 
             StackValue svnew = ArrayUtilsForBuiltIns.Flatten(sv, runtime);
 
             bool bContainsValidElement = false;
-            bool anyDouble = ArrayUtils.ContainsDoubleElement(svnew, runtime.runtime.Core);
+            bool anyDouble = ArrayUtils.ContainsDoubleElement(svnew, runtime.runtime.RuntimeCore);
             double sum = 0;
             AddressType type = anyDouble ? AddressType.Double : AddressType.Int;
-            var svArray = ArrayUtils.GetValues(svnew, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(svnew, runtime.runtime.RuntimeCore);
             foreach (var element in svArray)
             {
                 if (element.optype != type)
@@ -1494,7 +1500,7 @@ namespace ProtoCore.Lang
             if (!sv.IsArray)
                 return ProtoCore.DSASM.Constants.kInvalidIndex;
 
-            var values = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var values = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             return values.Count(v => v.IsInteger || v.IsDouble);
         }
         //Average
@@ -1505,7 +1511,7 @@ namespace ProtoCore.Lang
                 return ProtoCore.DSASM.StackValue.Null;
             }
 
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             if (!svArray.Any())
                 return ProtoCore.DSASM.StackValue.Null;
 
@@ -1524,14 +1530,15 @@ namespace ProtoCore.Lang
         //Remove
         internal static StackValue Remove(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv1.IsArray || !sv2.IsInteger)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
-            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core).ToArray();
+            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore).ToArray();
             int length = svArray.Length;
             int indexToBeRemoved = (int)sv2.opdata;
             if (indexToBeRemoved < 0)
@@ -1542,7 +1549,7 @@ namespace ProtoCore.Lang
             if ((indexToBeRemoved < 0) || (indexToBeRemoved >= length))
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kIndexOutOfRange, StringConstants.kIndexOutOfRange);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kIndexOutOfRange, Resources.kIndexOutOfRange);
                 return DSASM.StackValue.Null;
             }
             List<StackValue> svList = new List<StackValue>();
@@ -1560,7 +1567,7 @@ namespace ProtoCore.Lang
             {
                 return sv;
             }
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core).ToArray();
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore).ToArray();
             List<StackValue> svList = new List<StackValue>();
             int length = svArray.Length;
             for (int outIx = length-1; outIx >= 0; --outIx)
@@ -1570,7 +1577,7 @@ namespace ProtoCore.Lang
                 for (int inIx = 0; inIx < outIx; ++inIx)
                 {
                     StackValue inOp = svArray[inIx];
-                    if (StackUtils.CompareStackValues(outOp, inOp, runtime.runtime.Core, runtime.runtime.Core , context))
+                    if (StackUtils.CompareStackValues(outOp, inOp, runtime.runtime.RuntimeCore, runtime.runtime.RuntimeCore, context))
                     {
                         duplicate = true;
                         break;
@@ -1587,23 +1594,24 @@ namespace ProtoCore.Lang
 
         internal static StackValue Equals(StackValue sv1, StackValue sv2, Interpreter runtime, ProtoCore.Runtime.Context context)
         {
-            return StackValue.BuildBoolean(StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core, runtime.runtime.Core, context));
+            return StackValue.BuildBoolean(StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.RuntimeCore, runtime.runtime.RuntimeCore, context));
         }
        
         //RemoveNulls
         internal static StackValue RemoveNulls(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
             List<StackValue> svList = new List<StackValue>();
             int index = 0;
 
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             foreach (StackValue op in svArray)
             {
                 if (!op.IsArray)
@@ -1631,10 +1639,11 @@ namespace ProtoCore.Lang
         //RemoveIfNot
         internal static StackValue RemoveIfNot(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv1.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             string typeString = FileIOBuiltIns.ConvertToString(sv2, runtime);
@@ -1643,9 +1652,9 @@ namespace ProtoCore.Lang
 
             if (typeString == "array")
                 typeString = ProtoCore.DSDefinitions.Keyword.Array;
-            int type = runtime.runtime.Core.TypeSystem.GetType(typeString);
+            int type = runtimeCore.DSExecutable.TypeSystem.GetType(typeString);
 
-            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore);
             foreach (StackValue op in svArray)
             {
                 if (op.metaData.type == type)
@@ -1664,32 +1673,34 @@ namespace ProtoCore.Lang
         //Reverse
         internal static StackValue Reverse(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
-            var reverseArray = ArrayUtils.GetValues(sv, runtime.runtime.Core).Reverse().ToList();
+            var reverseArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore).Reverse().ToList();
             return runtime.runtime.rmem.Heap.AllocateArray(reverseArray);
         }
         //Contains & ArrayContainsArray ::: sv1 contains sv2
         internal static bool Contains(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv1.IsArray)
             {
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return false;
             }
 
-            if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core))
+            if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.RuntimeCore))
             {
                 return true;
             }
 
             bool contains = false;
-            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore);
             foreach (StackValue op in svArray)
             {
                 if (!op.IsArray)
@@ -1712,14 +1723,15 @@ namespace ProtoCore.Lang
         }
         internal static bool ContainsArray(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv1.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return false;
             }
             bool contains = false;
-            if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core)) 
+            if (StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.RuntimeCore)) 
                 return true;
 
             var he = runtime.runtime.rmem.Heap.GetHeapElement(sv1);
@@ -1742,7 +1754,7 @@ namespace ProtoCore.Lang
                 {
                     if (op.IsArray)
                     {
-                        contains = StackUtils.CompareStackValues(op, sv2, runtime.runtime.Core);
+                        contains = StackUtils.CompareStackValues(op, sv2, runtime.runtime.RuntimeCore);
                         if (!contains)
                         {
                             contains = ContainsArray(op, sv2, runtime);
@@ -1756,16 +1768,17 @@ namespace ProtoCore.Lang
         //IndexOf & IOndexOfArray::: sv2 is index of sv1
         internal static int IndexOf(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             int notExist = -1;
             if (!sv1.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return notExist;
             }
-            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore);
             int sv1Length = svArray.Count();
-            if ((sv1Length == 1) && StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core)) return 0;
+            if ((sv1Length == 1) && StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.RuntimeCore)) return 0;
             int index = 0; //index for sv1
             foreach (StackValue op in svArray)
             {
@@ -1776,20 +1789,21 @@ namespace ProtoCore.Lang
         }
         internal static int ArrayIndexOfArray(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             int notExist = -1;
             if (!sv1.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return notExist;
             }
-            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore);
             int sv1Length = svArray.Count();
-            if ((sv1Length == 1) && StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.Core)) return 0;
+            if ((sv1Length == 1) && StackUtils.CompareStackValues(sv1, sv2, runtime.runtime.RuntimeCore)) return 0;
             int index = 0; //index for sv2
             foreach (StackValue op in svArray)
             {
-                if (StackUtils.CompareStackValues(sv2, op, runtime.runtime.Core)) 
+                if (StackUtils.CompareStackValues(sv2, op, runtime.runtime.RuntimeCore)) 
                     return index;
                 index++;
             }
@@ -1804,15 +1818,16 @@ namespace ProtoCore.Lang
     
         internal static StackValue SortWithMode(StackValue sv, StackValue mode, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray || !mode.IsBoolean)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
                 
             bool ascending = mode.opdata != 0;
-            var svList = ArrayUtils.GetValues(sv, runtime.runtime.Core).ToList();
+            var svList = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore).ToList();
             svList.Sort(new StackValueComparerForDouble(ascending));
 
             return runtime.runtime.rmem.Heap.AllocateArray(svList);
@@ -1826,14 +1841,15 @@ namespace ProtoCore.Lang
         }
         internal static StackValue SortIndexByValueWithMode(StackValue sv, StackValue mode, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray || !mode.IsBoolean)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             bool ascending = mode.opdata != 0;
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             //That means an empty array
             if (!svArray.Any())
                 return DSASM.StackValue.Null;
@@ -1861,15 +1877,16 @@ namespace ProtoCore.Lang
         //Reorder
         internal static StackValue Reorder(StackValue sv1, StackValue sv2, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if ((!sv1.IsArray) || (!sv2.IsArray))
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             if ((Rank(sv1, runtime) != 1) || (Rank(sv2, runtime) != 1))
             {
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             int length1 = runtime.runtime.rmem.Heap.GetHeapElement(sv1).Stack.Length;
@@ -1882,8 +1899,8 @@ namespace ProtoCore.Lang
                     sv1 = Insert(sv1, DSASM.StackValue.Null, DSASM.StackValue.BuildInt(n), runtime);
                 }
             }
-            StackValue[] svArray = ArrayUtils.GetValues(sv1, runtime.runtime.Core).ToArray();
-            var svIdxArray = ArrayUtils.GetValues(sv2, runtime.runtime.Core);
+            StackValue[] svArray = ArrayUtils.GetValues(sv1, runtime.runtime.RuntimeCore).ToArray();
+            var svIdxArray = ArrayUtils.GetValues(sv2, runtime.runtime.RuntimeCore);
             List<StackValue> svList = new List<StackValue>();
             foreach (StackValue idx in svIdxArray)
             {
@@ -1909,10 +1926,11 @@ namespace ProtoCore.Lang
         //Insert
         internal static StackValue InsertArray(StackValue sv1, StackValue sv2, StackValue idx, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv1.IsArray || !sv2.IsArray|| !idx.IsInteger)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
@@ -1920,10 +1938,11 @@ namespace ProtoCore.Lang
         }
         internal static StackValue Insert(StackValue sv1, StackValue sv2, StackValue idx, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv1.IsArray || !idx.IsInteger)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
 
@@ -1934,7 +1953,7 @@ namespace ProtoCore.Lang
             int idxToBeInsert = (int)idx.opdata;
 
             List<StackValue> svList = new List<StackValue>();
-            var elements = ArrayUtils.GetValues(array, runtime.runtime.Core);
+            var elements = ArrayUtils.GetValues(array, runtime.runtime.RuntimeCore);
             int length = elements.Count();
 
             if (idxToBeInsert < 0)
@@ -1966,10 +1985,11 @@ namespace ProtoCore.Lang
         //IsUniformDepth
         internal static bool IsUniformDepth(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return true;
             }
             int overallRank = Rank(sv,runtime);
@@ -1977,7 +1997,7 @@ namespace ProtoCore.Lang
             {
                 return true;
             }
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             foreach (StackValue element in svArray)
             {
                 if (Rank(element, runtime) != (overallRank - 1))
@@ -1995,7 +2015,7 @@ namespace ProtoCore.Lang
 
             int count = -1;
             bool bCountInitialized = false;
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             foreach (var item in svArray)
             {
                 if (1 != Rank(item, runtime))
@@ -2017,10 +2037,11 @@ namespace ProtoCore.Lang
         //NomalizaeDepth & NomalizeDepthWithRank
         internal static StackValue NormalizeDepthWithRank(StackValue sv, StackValue r, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             int overallDepth = Rank(sv, runtime);
@@ -2032,10 +2053,11 @@ namespace ProtoCore.Lang
         }
         internal static StackValue NormalizeDepth(StackValue sv, ProtoCore.DSASM.Interpreter runtime)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             if (!sv.IsArray)
             {
                 // Type mismatch.
-                runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kInvalidArguments, StringConstants.kInvalidArguments);
+                runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidArguments, Resources.kInvalidArguments);
                 return DSASM.StackValue.Null;
             }
             int overallDepth = Rank(sv, runtime);
@@ -2044,7 +2066,7 @@ namespace ProtoCore.Lang
         }
         internal static StackValue Traverse(StackValue sv, int expectedRank, int overallRank, int UpRankOffset, ProtoCore.DSASM.Interpreter runtime)
         {
-            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svArray = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             List<StackValue> svList = new List<StackValue>();
             foreach (StackValue element in svArray)
             {
@@ -2076,7 +2098,7 @@ namespace ProtoCore.Lang
             //Convert list to Operand
             if (svList.Count >= 0)
             {
-                return runtime.runtime.Core.Heap.AllocateArray(svList, null);
+                return runtime.runtime.rmem.Heap.AllocateArray(svList, null);
             }
             //That means an empty array
             return DSASM.StackValue.Null;
@@ -2085,7 +2107,7 @@ namespace ProtoCore.Lang
         {
             for (; countBraces > 0; countBraces--)
             {
-                sv = runtime.runtime.Core.Heap.AllocateArray(new StackValue[] { sv }, null);
+                sv = runtime.runtime.rmem.Heap.AllocateArray(new StackValue[] { sv }, null);
             }
             return sv;
         }
@@ -2105,7 +2127,7 @@ namespace ProtoCore.Lang
                 return sv;
             }
             bool is2DArray = false;
-            var svarr = ArrayUtils.GetValues(sv, runtime.runtime.Core);
+            var svarr = ArrayUtils.GetValues(sv, runtime.runtime.RuntimeCore);
             int numOfCols = 0;
             int numOfRows = svarr.Count();
             foreach(StackValue element in svarr)
@@ -2167,8 +2189,9 @@ namespace ProtoCore.Lang
 
         internal static StackValue SortPointers(StackValue svFunction, StackValue svArray, Interpreter runtime, StackFrame stackFrame)
         {
+            RuntimeCore runtimeCore = runtime.runtime.RuntimeCore;
             var evaluator = new FunctionPointerEvaluator(svFunction, runtime);
-            var svList = ArrayUtils.GetValues(svArray, runtime.runtime.Core).ToList();
+            var svList = ArrayUtils.GetValues(svArray, runtime.runtime.RuntimeCore).ToList();
             Comparison<StackValue> comparer = (StackValue x, StackValue y) => 
             {
                 List<StackValue> args = new List<StackValue>();
@@ -2190,11 +2213,11 @@ namespace ProtoCore.Lang
             catch (System.Exception e)
             {
                 if (e.InnerException is Exceptions.CompilerInternalException)
-                    runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAurgumentIsNotExpected, "Failed to resolve the comparison function for sorting, expected def sorter : int(x,y)");
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kAurgumentIsNotExpected, "Failed to resolve the comparison function for sorting, expected def sorter : int(x,y)");
                 else if(e.InnerException != null)
-                    runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAurgumentIsNotExpected, e.InnerException.Message);
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kAurgumentIsNotExpected, e.InnerException.Message);
                 else
-                    runtime.runtime.Core.RuntimeStatus.LogWarning(RuntimeData.WarningID.kAurgumentIsNotExpected, e.Message);
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kAurgumentIsNotExpected, e.Message);
 
                 return StackValue.Null;
             }
@@ -2210,7 +2233,7 @@ namespace ProtoCore.Lang
             StackValue ret;
             if (unpackParams.IsBoolean && unpackParams.RawBooleanValue)
             {
-                var args = ArrayUtils.GetValues(parameters, runtime.runtime.Core);
+                var args = ArrayUtils.GetValues(parameters, runtime.runtime.RuntimeCore);
                 ret = evaluator.Evaluate(args.ToList(), stackFrame);
             }
             else

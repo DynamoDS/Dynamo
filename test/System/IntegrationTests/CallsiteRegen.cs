@@ -64,7 +64,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
@@ -74,7 +74,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
 
                 var core = astLiveRunner.Core;
-                var ctorCallsites = core.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 Guid guid = ctorCallsites.First().CallSiteID;
@@ -88,7 +88,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 TestFrameWork.AssertValue("mtcAWasTraced", true, astLiveRunner);
 
                 //Verify that the GUID has been adjusted
-                var ctorCallsites2 = core.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var ctorCallsites2 = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites2.Count() == 1);
                 Guid guid2 = ctorCallsites2.First().CallSiteID;
@@ -121,14 +121,14 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
 
                 //Get the callsite for the ctor
                 var core = astLiveRunner.Core;
-                var ctorCallsites = core.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 ProtoCore.CallSite cs = ctorCallsites.First();
@@ -165,14 +165,14 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
 
                 //Get the callsite for the ctor
                 var core = astLiveRunner.Core;
-                var ctorCallsites = core.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 ProtoCore.CallSite cs = ctorCallsites.First();
@@ -228,14 +228,14 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
 
                 //Get the callsite for the ctor
                 var core = astLiveRunner.Core;
-                var ctorCallsites = core.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 ProtoCore.CallSite cs = ctorCallsites.First();
@@ -284,7 +284,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 // Simulate a new new CBN
                 Guid guid1 = System.Guid.NewGuid();
-                added.Add(CreateSubTreeFromCode(guid1, setupCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid1, setupCode));
 
                 var syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
@@ -305,7 +305,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
 
                 //Get the callsite for the ctor
                 var core = astLiveRunner.Core;
-                var ctorCallsites = core.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
+                var ctorCallsites = core.DSExecutable.CallsiteCache.Values.Where(c => c.MethodName == "IncrementerTracedClass");
 
                 Assert.IsTrue(ctorCallsites.Count() == 1);
                 ProtoCore.CallSite cs = ctorCallsites.First();
@@ -327,7 +327,7 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
                 // Simulate a new new CBN
                 Guid guid2 = System.Guid.NewGuid();
                 added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid2, "x = 1..2;"));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, "x = 1..2;"));
 
 
                 syncData = new GraphSyncData(null, added, null);
@@ -351,18 +351,11 @@ mtcAWasTraced = mtcA.WasCreatedWithTrace(); ";
             {
                 Guid guid2 = System.Guid.NewGuid();
                 List<Subtree> added = new List<Subtree>();
-                added.Add(CreateSubTreeFromCode(guid2, newCode));
+                added.Add(ProtoTestFx.TD.TestFrameWork.CreateSubTreeFromCode(guid2, newCode));
 
 
                 GraphSyncData syncData = new GraphSyncData(null, added, null);
                 astLiveRunner.UpdateGraph(syncData);
-            }
-
-            private Subtree CreateSubTreeFromCode(Guid guid, string code)
-            {
-                var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
-                var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
-                return subtree;
             }
         }
     }

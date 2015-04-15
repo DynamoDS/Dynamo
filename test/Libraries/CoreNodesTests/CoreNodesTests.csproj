@@ -66,6 +66,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorRangeTests.cs" />
     <Compile Include="DateTimeTests.cs" />
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
@@ -79,6 +80,7 @@
     <Compile Include="NodeWithUITests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProtoNodesTests.cs" />
+    <Compile Include="QuadtreeTests.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="WebTests.cs" />
     <Compile Include="StringTests.cs" />
@@ -117,6 +119,10 @@
     <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
       <Name>SystemTestServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestServices\TestServices.csproj">
+      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
+      <Name>TestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

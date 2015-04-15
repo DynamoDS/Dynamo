@@ -60,10 +60,10 @@ namespace Dynamo.PackageManager
             this.DownloadPath = filePath;
         }
 
-        private string BuildInstallDirectoryString()
+        private string BuildInstallDirectoryString(string packagesDirectory)
         {
             // <user>/appdata/roaming/packages/package_name
-            return DynamoPathManager.Instance.Packages + @"\" + this.Name.Replace("/", "_").Replace(@"\", "_");
+            return packagesDirectory + @"\" + this.Name.Replace("/", "_").Replace(@"\", "_");
         }
 
         public bool Extract(DynamoModel dynamoModel, out Package pkg)
@@ -74,10 +74,11 @@ namespace Dynamo.PackageManager
             var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
             if (!Directory.Exists(unzipPath))
             {
-                throw new Exception("The package was found to be empty and was not installed.");
+                throw new Exception(Properties.Resources.PackageEmpty);
             }
 
-            var installedPath = BuildInstallDirectoryString();
+            var packagesDirectory = dynamoModel.PathManager.PackagesDirectory;
+            var installedPath = BuildInstallDirectoryString(packagesDirectory);
             Directory.CreateDirectory(installedPath);
 
             // Now create all of the directories

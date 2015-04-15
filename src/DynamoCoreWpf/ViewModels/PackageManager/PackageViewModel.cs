@@ -9,6 +9,7 @@ using Dynamo.PackageManager;
 
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.ViewModel;
+using Dynamo.Wpf.Properties;
 
 namespace Dynamo.ViewModels
 {
@@ -124,15 +125,18 @@ namespace Dynamo.ViewModels
             if (Model.LoadedAssemblies.Any())
             {
                 var resAssem =
-                    MessageBox.Show("Dynamo and its host application must restart before uninstall takes effect.",
-                        "Uninstalling Package",
+                    MessageBox.Show(string.Format(Resources.MessageNeedToRestart,
+                        dynamoViewModel.BrandingResourceProvider.ProductName),
+                        Resources.UninstallingPackageMessageBoxTitle,
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Exclamation);
                 if (resAssem == MessageBoxResult.Cancel) return;
             }
 
-            var res = MessageBox.Show("Are you sure you want to uninstall " + Model.Name + "?  This will delete the packages root directory.\n\n"+
-                " You can always redownload the package.", "Uninstalling Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var res = MessageBox.Show(String.Format(Resources.MessageConfirmToUninstallPackage, this.Model.Name),
+                                      Resources.UninstallingPackageMessageBoxTitle,
+                                      MessageBoxButton.YesNo, MessageBoxImage.Question);
+
             if (res == MessageBoxResult.No) return;
 
             try
@@ -142,7 +146,10 @@ namespace Dynamo.ViewModels
             }
             catch (Exception)
             {
-                MessageBox.Show("Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.", "Uninstall Failure", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.Format(Resources.MessageFailedToUninstall,
+                    dynamoViewModel.BrandingResourceProvider.ProductName),
+                    Resources.UninstallFailureMessageBoxTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -164,7 +171,9 @@ namespace Dynamo.ViewModels
 
         private void Deprecate()
         {
-            var res = MessageBox.Show("Are you sure you want to deprecate " + Model.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.  \n\n You can always undeprecate the package.", "Deprecating Package", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var res = MessageBox.Show(String.Format(Resources.MessageToDeprecatePackage, this.Model.Name),
+                                      Resources.DeprecatingPackageMessageBoxTitle, 
+                                      MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
             dynamoViewModel.Model.PackageManagerClient.Deprecate(Model.Name);
@@ -172,12 +181,14 @@ namespace Dynamo.ViewModels
 
         private bool CanDeprecate()
         {
-            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthProvider;
         }
 
         private void Undeprecate()
         {
-            var res = MessageBox.Show("Are you sure you want to undeprecate " + Model.Name + "?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.  \n\n You can always re-deprecate the package.", "Removing Package Deprecation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var res = MessageBox.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
+                                      Resources.UndeprecatingPackageMessageBoxTitle, 
+                                      MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (res == MessageBoxResult.No) return;
 
             dynamoViewModel.Model.PackageManagerClient.Undeprecate(Model.Name);
@@ -185,7 +196,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthProvider;
         }
 
         private void PublishNewPackageVersion(bool isTestMode)
@@ -199,7 +210,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackageVersion()
         {
-            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthProvider;
         }
 
         private void PublishNewPackage(bool isTestMode)
@@ -213,7 +224,7 @@ namespace Dynamo.ViewModels
 
         private bool CanPublishNewPackage()
         {
-            return dynamoViewModel.Model.PackageManagerClient.HasAuthenticator;
+            return dynamoViewModel.Model.PackageManagerClient.HasAuthProvider;
         }
 
         private void GetLatestVersion()

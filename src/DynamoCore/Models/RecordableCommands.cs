@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Dynamo.Properties;
 using Dynamo.Utilities;
+using Newtonsoft.Json;
+using System.Runtime.Serialization;
+using Newtonsoft.Json.Serialization;
 
 namespace Dynamo.Models
 {
@@ -15,13 +20,30 @@ namespace Dynamo.Models
         /// DynamoViewModel. It is mandatory for each RecordableCommand-derived 
         /// class to be serializable to/deserializable from an XmlElement.
         /// </summary>
-        /// 
+        [DataContract]
         public abstract class RecordableCommand
         {
             #region Class Data Members
 
             // See property for more details.
             protected bool redundant = false;
+
+            /// <summary>
+            /// Settings that is used for serializing commands
+            /// </summary>
+            protected static JsonSerializerSettings jsonSettings;
+
+            /// <summary>
+            /// Initialize commands serializing settings
+            /// </summary>
+            static RecordableCommand()
+            {
+                jsonSettings = new JsonSerializerSettings()
+                {
+                    TypeNameHandling = TypeNameHandling.Objects,
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+            }
 
             #endregion
 
@@ -33,9 +55,7 @@ namespace Dynamo.Models
             /// can only be instantiated through a derived class.
             /// </summary>
             protected RecordableCommand()
-                : this(string.Empty)
-            {
-            }
+                : this(string.Empty) { }
 
             /// <summary>
             /// Constructs an instance of RecordableCommand derived class, 
@@ -86,13 +106,25 @@ namespace Dynamo.Models
             }
 
             /// <summary>
+            /// This method serializes the RecordableCommand object in the json form. 
+            /// The resulting string contains command type name and all the 
+            /// arguments that are required by this command.
+            /// </summary>
+            /// <returns>The string can be used for reconstructing RecordableCommand 
+            /// using Deserialize method</returns>
+            internal string Serialize()
+            {
+                return JsonConvert.SerializeObject(this, jsonSettings);
+            }
+
+            /// <summary>
             /// Call this static method to reconstruct a RecordableCommand-derived 
             /// object given an XmlElement that was previously saved with Serialize 
             /// method. This method simply redirects the XmlElement to respective 
             /// RecordableCommand-derived classes based on its type.
             /// </summary>
             /// <param name="element">The XmlElement from which the RecordableCommand
-            ///     can be reconstructed.</param>
+            /// can be reconstructed.</param>
             /// <returns>Returns the reconstructed RecordableCommand object. If a 
             /// RecordableCommand cannot be reconstructed, this method throws a 
             /// relevant exception.</returns>
@@ -166,6 +198,29 @@ namespace Dynamo.Models
                 throw new ArgumentException(message);
             }
 
+            /// <summary>
+            /// Call this static method to reconstruct a RecordableCommand from json 
+            /// string that contains command name - name of corresponding class inherited 
+            /// from RecordableCommand, - and all the arguments that are required by this 
+            /// command.
+            /// </summary>
+            /// <param name="jsonString">Json string that contains command name and all 
+            /// its arguments.</param>
+            /// <returns>Reconstructed RecordableCommand</returns>
+            internal static RecordableCommand Deserialize(string jsonString)
+            {
+                RecordableCommand command = null;
+                try
+                {
+                    command = JsonConvert.DeserializeObject(jsonString, jsonSettings) as RecordableCommand;
+                    command.IsInPlaybackMode = true;
+                    return command;
+                }
+                catch
+                {
+                    throw new ApplicationException("Invalid jsonString for creating RecordableCommand");
+                }
+            }
             #endregion
 
             #region Public Command Properties
@@ -190,6 +245,7 @@ namespace Dynamo.Models
             /// the property that it is bound to. This is a runtime flag, it is not 
             /// serialized in anyway.
             /// </summary>
+            [DataMember]
             internal bool IsInPlaybackMode { get; private set; }
 
             /// <summary>
@@ -200,6 +256,7 @@ namespace Dynamo.Models
             /// possible usage of command tags. If a command is not tagged, its 
             /// default tag value is an empty string.
             /// </summary>
+            [DataMember]
             internal string Tag { get; private set; }
 
             #endregion
@@ -231,6 +288,69 @@ namespace Dynamo.Models
             #endregion
         }
 
+        /// <summary>
+        /// This class is base for those RecordableCommands that should have 
+        /// Guid NodeId that causes the problems during deserialization
+        /// </summary>
+        [DataContract]
+        public abstract class NodeSpecificRecordableCommand : RecordableCommand
+        {
+            internal Guid NodeId { get; private set; }
+
+            [DataMember]
+            internal string NodeIdAsString
+            {
+                get { return NodeId.ToString(); }
+                private set
+                {
+                    Guid guid;
+                    NodeId = Guid.TryParse(value, out guid) ? guid : new Guid();
+                }
+            }
+
+            protected NodeSpecificRecordableCommand(string node)
+            {
+                NodeIdAsString = node;
+            }
+
+            protected NodeSpecificRecordableCommand(Guid node)
+            {
+                NodeId = node;
+            }
+        }
+
+        /// <summary>
+        /// This class is base for those RecordableCommands that should have 
+        /// Guid ModelGuid that causes the problems during deserialization
+        /// </summary>
+        [DataContract]
+        public abstract class ModelSpecificRecordableCommand : RecordableCommand
+        {
+            public Guid ModelGuid { get; private set; }
+
+            [DataMember]
+            public string ModelGuidAsString
+            {
+                get { return ModelGuid.ToString(); }
+                private set
+                {
+                    Guid guid;
+                    ModelGuid = Guid.TryParse(value, out guid) ? guid : new Guid();
+                }
+            }
+
+            protected ModelSpecificRecordableCommand(string node)
+            {
+                ModelGuidAsString = node;
+            }
+
+            protected ModelSpecificRecordableCommand(Guid node)
+            {
+                ModelGuid = node;
+            }
+        }
+
+        [DataContract]
         public class PausePlaybackCommand : RecordableCommand
         {
             #region Public Class Methods
@@ -252,6 +372,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
+            [DataMember]
             internal int PauseDurationInMs { get; private set; }
 
             #endregion
@@ -291,6 +412,7 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
         public class OpenFileCommand : RecordableCommand
         {
             #region Public Class Methods
@@ -300,34 +422,42 @@ namespace Dynamo.Models
                 XmlFilePath = xmlFilePath;
             }
 
-            internal static OpenFileCommand DeserializeCore(XmlElement element)
+            static string TryFindFile(string xmlFilePath, string uriString = null)
             {
-                var helper = new XmlElementHelper(element);
-                string xmlFilePath = helper.ReadString("XmlFilePath");
                 if (File.Exists(xmlFilePath)) 
-                    return new OpenFileCommand(xmlFilePath);
+                    return xmlFilePath;
+                
+                var xmlFileName = Path.GetFileName(xmlFilePath);
+                if (uriString != null)
+                {
+                    // Try to find the file right next to the command XML file.
+                    Uri uri = new Uri(uriString);
+                    string directory = Path.GetDirectoryName(uri.AbsolutePath);
+                    xmlFilePath = Path.Combine(directory, xmlFileName);
 
-                // Try to find the file right next to the command XML file.
-                string xmlFileName = Path.GetFileName(xmlFilePath);
-                var uri = new Uri(element.OwnerDocument.BaseURI);
-                string directory = Path.GetDirectoryName(uri.AbsolutePath);
-                xmlFilePath = Path.Combine(directory, xmlFileName);
+                    // If it still cannot be resolved, fall back to system search.
+                    if (!File.Exists(xmlFilePath))
+                        xmlFilePath = Path.GetFullPath(xmlFileName);
 
-                // If it still cannot be resolved, fall back to system search.
-                if (File.Exists(xmlFilePath) == false)
-                    xmlFilePath = Path.GetFullPath(xmlFileName);
+                    if (File.Exists(xmlFilePath)) 
+                        return xmlFilePath;
+                }
 
-                if (File.Exists(xmlFilePath)) 
-                    return new OpenFileCommand(xmlFilePath);
-
-                const string message = "Target file cannot be found!";
+                var message = "Target file cannot be found!";
                 throw new FileNotFoundException(message, xmlFileName);
             }
+
+            internal static OpenFileCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                string xmlFilePath = TryFindFile(helper.ReadString("XmlFilePath"), element.OwnerDocument.BaseURI);
+                return new OpenFileCommand(xmlFilePath);            }
 
             #endregion
 
             #region Public Command Properties
 
+            [DataMember]
             internal string XmlFilePath { get; private set; }
 
             #endregion
@@ -348,6 +478,7 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
         public class RunCancelCommand : RecordableCommand
         {
             #region Public Class Methods
@@ -370,7 +501,10 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
+            [DataMember]
             internal bool ShowErrors { get; private set; }
+
+            [DataMember]
             internal bool CancelRun { get; private set; }
 
             #endregion
@@ -392,25 +526,16 @@ namespace Dynamo.Models
             #endregion
         }
 
-
-
-
-
+        [DataContract]
         public class ForceRunCancelCommand : RunCancelCommand
         {
-
             public ForceRunCancelCommand(bool showErrors, bool cancelRun)
-                : base(showErrors, cancelRun)
-            {
-            }
-
+                : base(showErrors, cancelRun) { }
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-
                 dynamoModel.ForceRunCancelImpl(this);
             }
-
         }
 
         public class MutateTestCommand : RecordableCommand
@@ -424,40 +549,52 @@ namespace Dynamo.Models
             }
 
         }
-        
-        public class CreateNodeCommand : RecordableCommand
+
+        [DataContract]
+        public class CreateNodeCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
 
+            private void SetProperties(double x, double y, bool defaultPosition, bool transformCoordinates)            {
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+                TransformCoordinates = transformCoordinates;
+            }
+
             public CreateNodeCommand(
                 NodeModel node, double x, double y, bool defaultPosition, bool transformCoordinates)
-                : this(x, y, defaultPosition, transformCoordinates)
+                : base(node != null ? node.GUID: Guid.Empty)
             {
                 Node = node;
+                SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
             private CreateNodeCommand(
                XmlElement node, double x, double y, bool defaultPosition, bool transformCoordinates)
-                : this(x, y, defaultPosition, transformCoordinates)
+                : base(Guid.Empty)
             {
                 NodeXml = node;
+                SetProperties(x, y, defaultPosition, transformCoordinates);
             }
 
-            public CreateNodeCommand(Guid nodeId, string name, double x, double y, bool defaultPos, bool transformCoords)
-                : this(x, y, defaultPos, transformCoords)
+            public CreateNodeCommand(Guid nodeId, string nodeName,
+                double x, double y, bool defaultPosition, bool transformCoordinates)
+                : base(nodeId)
+            {                
+			    Name = nodeName;
+                SetProperties(x, y, defaultPosition, transformCoordinates);
+            }
+
+            [JsonConstructor]
+            public CreateNodeCommand(string nodeId, string nodeName,
+                double x, double y, bool defaultPosition, bool transformCoordinates)
+                : base(nodeId)
             {
-                NodeId = nodeId;
-                Name = name;
+                Name = nodeName;
+                SetProperties(x, y, defaultPosition, transformCoordinates);
             }
-
-            private CreateNodeCommand(double x, double y, bool defaultPos, bool transformCoords)
-            {
-                X = x;
-                Y = y;
-                DefaultPosition = defaultPos;
-                TransformCoordinates = transformCoords;
-            }
-
+            
             internal static CreateNodeCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
@@ -490,14 +627,21 @@ namespace Dynamo.Models
             // If it was deserialized
             internal XmlElement NodeXml { get; private set; }
 
+
+            [DataMember]
             internal double X { get; private set; }
+
+            [DataMember]
             internal double Y { get; private set; }
+
+            [DataMember]
             internal bool DefaultPosition { get; private set; }
+
+            [DataMember]
             internal bool TransformCoordinates { get; private set; }
 
             //Legacy properties
             internal string Name { get; private set; }
-            internal Guid NodeId { get; private set; }
 
             #endregion
 
@@ -535,22 +679,106 @@ namespace Dynamo.Models
             #endregion
         }
 
-        public class CreateNoteCommand : RecordableCommand
+        /// <summary>
+        /// Contains additional information needed for creating proxy custom node
+        /// </summary>
+        [DataContract]
+        public class CreateProxyNodeCommand : CreateNodeCommand
         {
             #region Public Class Methods
 
-            public CreateNoteCommand(Guid nodeId, string noteText,
+            [JsonConstructor]
+            public CreateProxyNodeCommand(string nodeId, string nodeName,
+                double x, double y,
+                bool defaultPosition, bool transformCoordinates,
+                string nickName, int inputs, int outputs)
+                : base(nodeId, nodeName, x, y, defaultPosition, transformCoordinates)
+            {
+                this.NickName = nickName;
+                this.Inputs = inputs;
+                this.Outputs = outputs;
+            }
+
+            internal static CreateProxyNodeCommand DeserializeCore(XmlElement element)
+            {
+                var baseCommand = CreateNodeCommand.DeserializeCore(element);
+                var helper = new XmlElementHelper(element);
+                string nickName = helper.ReadString("NickName");
+                int inputs = helper.ReadInteger("Inputs");
+                int outputs = helper.ReadInteger("Outputs");
+
+                return new CreateProxyNodeCommand(baseCommand.NodeIdAsString,
+                    baseCommand.Name,
+                    baseCommand.X,
+                    baseCommand.Y,
+                    baseCommand.DefaultPosition,
+                    baseCommand.TransformCoordinates,
+                    nickName,
+                    inputs,
+                    outputs);
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            [DataMember]
+            internal string NickName { get; private set; }
+
+            [DataMember]
+            internal int Inputs { get; private set; }
+
+            [DataMember]
+            internal int Outputs { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                base.SerializeCore(element);
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("NickName", NickName);
+                helper.SetAttribute("Inputs", Inputs);
+                helper.SetAttribute("Outputs", Outputs);
+            }
+
+            #endregion
+        }
+
+        [DataContract]
+        public class CreateNoteCommand : NodeSpecificRecordableCommand
+        {
+            #region Public Class Methods
+
+            private void SetProperties(string noteText,
                 double x, double y, bool defaultPosition)
             {
                 if (string.IsNullOrEmpty(noteText))
                     noteText = string.Empty;
 
-                NodeId = nodeId;
                 NoteText = noteText;
                 X = x;
                 Y = y;
                 DefaultPosition = defaultPosition;
             }
+
+            public CreateNoteCommand(Guid nodeId, string noteText,
+                double x, double y, bool defaultPosition)
+                : base(nodeId)
+            {
+                SetProperties(noteText, x, y, defaultPosition);
+            }
+
+            [JsonConstructor]
+            public CreateNoteCommand(string nodeId, string noteText,
+                double x, double y, bool defaultPosition)
+                : base(nodeId)
+            {
+                SetProperties(noteText, x, y, defaultPosition);
+            }
+
 
             internal static CreateNoteCommand DeserializeCore(XmlElement element)
             {
@@ -568,10 +796,16 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal Guid NodeId { get; private set; }
+            [DataMember]
             internal string NoteText { get; private set; }
+
+            [DataMember]
             internal double X { get; private set; }
+
+            [DataMember]
             internal double Y { get; private set; }
+
+            [DataMember]
             internal bool DefaultPosition { get; private set; }
 
             #endregion
@@ -596,13 +830,21 @@ namespace Dynamo.Models
             #endregion
         }
 
-        public class SelectModelCommand : RecordableCommand
+        [DataContract]
+        public class SelectModelCommand : ModelSpecificRecordableCommand
         {
             #region Public Class Methods
 
-            public SelectModelCommand(Guid modelGuid, ModifierKeys modifiers)
+            [JsonConstructor]
+            public SelectModelCommand(string modelGuid, ModifierKeys modifiers)
+                : base(modelGuid)
             {
-                ModelGuid = modelGuid;
+                Modifiers = modifiers;
+            }
+
+            public SelectModelCommand(Guid modelGuid, ModifierKeys modifiers)
+                : base(modelGuid)
+            {
                 Modifiers = modifiers;
             }
 
@@ -618,7 +860,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal Guid ModelGuid { get; private set; }
+            [DataMember]
             internal ModifierKeys Modifiers { get; private set; }
 
             #endregion
@@ -640,6 +882,7 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
         public class SelectInRegionCommand : RecordableCommand
         {
             #region Public Class Methods
@@ -670,6 +913,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
+            [DataMember]
             internal Rect2D Region { get; private set; }
             internal bool IsCrossSelection { get; private set; }
 
@@ -692,6 +936,7 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
         public class DragSelectionCommand : RecordableCommand
         {
             #region Public Class Methods
@@ -717,7 +962,10 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
+            [DataMember]
             internal Operation DragOperation { get; private set; }
+
+            [DataMember]
             internal Point2D MouseCursor { get; private set; }
 
             #endregion
@@ -737,18 +985,31 @@ namespace Dynamo.Models
             #endregion
         }
 
-        public class MakeConnectionCommand : RecordableCommand
+        [DataContract]
+        public class MakeConnectionCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
 
             public enum Mode { Begin, End, Cancel }
 
-            public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
+            void setProperties(int portIndex, PortType portType, Mode mode)
             {
-                NodeId = nodeId;
                 PortIndex = portIndex;
                 Type = portType;
                 ConnectionMode = mode;
+            }
+
+            [JsonConstructor]
+            public MakeConnectionCommand(string nodeId, int portIndex, PortType portType, Mode mode)
+                : base(nodeId)
+            {
+                setProperties(portIndex, portType, mode);
+            }
+
+            public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
+                : base(nodeId)
+            {
+                setProperties(portIndex, portType, mode);
             }
 
             internal static MakeConnectionCommand DeserializeCore(XmlElement element)
@@ -765,9 +1026,13 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal Guid NodeId { get; private set; }
+            [DataMember]
             internal int PortIndex { get; private set; }
+
+            [DataMember]
             internal PortType Type { get; private set; }
+
+            [DataMember]
             internal Mode ConnectionMode { get; private set; }
 
             #endregion
@@ -791,14 +1056,15 @@ namespace Dynamo.Models
             #endregion
         }
 
-        public class DeleteModelCommand : RecordableCommand
+        [DataContract]
+        public class DeleteModelCommand : ModelSpecificRecordableCommand
         {
             #region Public Class Methods
 
-            public DeleteModelCommand(Guid modelGuid)
-            {
-                ModelGuid = modelGuid;
-            }
+            [JsonConstructor]
+            public DeleteModelCommand(string modelGuid) : base(modelGuid) { }
+
+            public DeleteModelCommand(Guid modelGuid) : base(modelGuid) { }
 
             internal static DeleteModelCommand DeserializeCore(XmlElement element)
             {
@@ -806,12 +1072,6 @@ namespace Dynamo.Models
                 Guid modelGuid = helper.ReadGuid("ModelGuid");
                 return new DeleteModelCommand(modelGuid);
             }
-
-            #endregion
-
-            #region Public Command Properties
-
-            internal Guid ModelGuid { get; private set; }
 
             #endregion
 
@@ -831,6 +1091,7 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
         public class UndoRedoCommand : RecordableCommand
         {
             #region Public Class Methods
@@ -853,6 +1114,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
+            [DataMember]
             internal Operation CmdOperation { get; private set; }
 
             #endregion
@@ -873,13 +1135,21 @@ namespace Dynamo.Models
             #endregion
         }
 
-        public class ModelEventCommand : RecordableCommand
+        [DataContract]
+        public class ModelEventCommand : ModelSpecificRecordableCommand
         {
             #region Public Class Methods
 
-            internal ModelEventCommand(Guid modelGuid, string eventName)
+            [JsonConstructor]
+            public ModelEventCommand(string modelGuid, string eventName)
+                : base(modelGuid)
             {
-                ModelGuid = modelGuid;
+                EventName = eventName;
+            }
+
+            public ModelEventCommand(Guid modelGuid, string eventName)
+                : base(modelGuid)
+            {
                 EventName = eventName;
             }
 
@@ -895,7 +1165,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal Guid ModelGuid { get; private set; }
+            [DataMember]
             internal string EventName { get; private set; }
 
             #endregion
@@ -917,13 +1187,46 @@ namespace Dynamo.Models
             #endregion
         }
 
-        public class UpdateModelValueCommand : RecordableCommand
+        [DataContract]
+        public class UpdateModelValueCommand : ModelSpecificRecordableCommand
         {
+            private readonly List<Guid> modelGuids;
+
             #region Public Class Methods
 
-            public UpdateModelValueCommand(Guid modelGuid, string name, string value)
+            /// <summary>
+            /// </summary>
+            /// <param name="workspaceGuid">Guid of the target workspace. Guid.Empty means current workspace</param>
+            /// <param name="modelGuid">Guid of node model</param>
+            /// <param name="name"></param>
+            /// <param name="value"></param>
+            public UpdateModelValueCommand(Guid workspaceGuid, Guid modelGuid, string name, string value)
+                : this(workspaceGuid, new[] {modelGuid}, name, value) { }
+
+            [JsonConstructor]
+            public UpdateModelValueCommand(string modelGuid, string name, string value)
+                : base(modelGuid)
             {
-                ModelGuid = modelGuid;
+                this.modelGuids = new List<Guid>() { this.ModelGuid };
+                Name = name;
+                Value = value;
+            }
+
+            public UpdateModelValueCommand(Guid modelGuid, string name, string value)
+                : this(Guid.Empty, new[] {modelGuid}, name, value) { }
+				
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="workspaceGuid">Guid of the target workspace. Guid.Empty means current workspace</param>
+            /// <param name="modelGuids"></param>
+            /// <param name="name"></param>
+            /// <param name="value"></param>
+            public UpdateModelValueCommand(Guid workspaceGuid, IEnumerable<Guid> modelGuids, string name, string value)
+                : base(modelGuids != null && modelGuids.Count() > 0 ? modelGuids.First() : Guid.Empty)
+            {
+                this.modelGuids = new List<Guid>(modelGuids);                
+                WorkspaceGuid = workspaceGuid;
                 Name = name;
                 Value = value;
             }
@@ -931,19 +1234,51 @@ namespace Dynamo.Models
             internal static UpdateModelValueCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                Guid modelGuid = helper.ReadGuid("ModelGuid");
                 string name = helper.ReadString("Name");
                 string value = helper.ReadString("Value");
-                return new UpdateModelValueCommand(modelGuid, name, value);
+
+                Guid workspaceGuid = helper.ReadGuid("WorkspaceGuid", Guid.Empty);
+
+                // TODO: once recordable framework serialize workspace's GUID, 
+                // we should use the GUID that read from file instead of using 
+                // empty GUID. Empty GUID means the command will be executed on 
+                // the current workspace, but it may not be the desired target 
+                // workspace.
+                workspaceGuid = Guid.Empty;
+
+                Guid modelGuid = helper.ReadGuid("ModelGuid", Guid.Empty);
+                if (modelGuid != Guid.Empty)
+                {
+                    // An old type of 'UpdateModelValueCommand' works for only one 
+                    // 'NodeModel' whose Guid is stored under 'ModelGuid' attribute.
+                    return new UpdateModelValueCommand(workspaceGuid, modelGuid, name, value);
+                }
+                else
+                {
+                    // Parsing a new type of 'UpdateModelValueCommand' that works 
+                    // for multiple 'NodeModel' whose Guid values are each stored 
+                    // as a 'ModelGuid' child element under the main element.
+                    // 
+                    var modelGuids = (from XmlNode xmlNode in element.ChildNodes
+                                      where xmlNode.Name.Equals("ModelGuid")
+                                      select Guid.Parse(xmlNode.InnerText)).ToList();
+
+                    return new UpdateModelValueCommand(workspaceGuid, modelGuids, name, value);
+                }
             }
 
             #endregion
 
             #region Public Command Properties
 
-            internal Guid ModelGuid { get; private set; }
-            internal string Name { get; private set; }
+            internal IEnumerable<Guid> ModelGuids { get { return modelGuids; } }
+
+            [DataMember]
+            public string Name { get; private set; }
+
+            [DataMember]
             internal string Value { get; private set; }
+            internal Guid WorkspaceGuid { get; private set; } 
 
             #endregion
 
@@ -957,28 +1292,38 @@ namespace Dynamo.Models
             protected override void SerializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                helper.SetAttribute("ModelGuid", ModelGuid);
                 helper.SetAttribute("Name", Name);
                 helper.SetAttribute("Value", Value);
+                helper.SetAttribute("WorkspaceGuid", WorkspaceGuid.ToString());
+
+                var document = element.OwnerDocument;
+                foreach (var modelGuid in modelGuids)
+                {
+                    var childNode = document.CreateElement("ModelGuid");
+                    childNode.InnerText = modelGuid.ToString();
+                    element.AppendChild(childNode);
+                }
             }
 
             public override string ToString()
             {
-                return String.Format("ModelGuid: {0}, Name: {1}, Value: {2}", ModelGuid, Name, Value);
+                // This method will be removed if no one is referencing it.
+                throw new NotImplementedException("UpdateModelValueCommand.ToString");
             }
 
             #endregion
         }
 
+        [DataContract]
         [Obsolete("Node to Code not enabled, API subject to change.")]
-        public class ConvertNodesToCodeCommand : RecordableCommand
+        public class ConvertNodesToCodeCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
 
-            internal ConvertNodesToCodeCommand(Guid nodeId)
-            {
-                NodeId = nodeId;
-            }
+            [JsonConstructor]
+            internal ConvertNodesToCodeCommand(string nodeId) : base(nodeId) { }
+
+            internal ConvertNodesToCodeCommand(Guid nodeId) : base(nodeId) { }
 
             internal static ConvertNodesToCodeCommand DeserializeCore(XmlElement element)
             {
@@ -986,12 +1331,6 @@ namespace Dynamo.Models
                 Guid nodeId = helper.ReadGuid("NodeId");
                 return new ConvertNodesToCodeCommand(nodeId);
             }
-
-            #endregion
-
-            #region Public Command Properties
-
-            internal Guid NodeId { get; private set; }
 
             #endregion
 
@@ -1011,18 +1350,33 @@ namespace Dynamo.Models
             #endregion
         }
 
-        public class CreateCustomNodeCommand : RecordableCommand
+        [DataContract]
+        public class CreateCustomNodeCommand : NodeSpecificRecordableCommand
         {
             #region Public Class Methods
 
-            internal CreateCustomNodeCommand(Guid nodeId, string name,
+            private void SetProperties(string name,
                 string category, string description, bool makeCurrent)
             {
-                NodeId = nodeId;
                 Name = name;
                 Category = category;
                 Description = description;
                 MakeCurrent = makeCurrent;
+            }
+
+            [JsonConstructor]
+            public CreateCustomNodeCommand(string nodeId, string name,
+                string category, string description, bool makeCurrent)
+                : base(nodeId)
+            {
+                SetProperties(name, category, description, makeCurrent);
+            }
+
+            public CreateCustomNodeCommand(Guid nodeId, string name,
+                string category, string description, bool makeCurrent)
+                : base(nodeId)
+            {
+                SetProperties(name, category, description, makeCurrent);
             }
 
             internal static CreateCustomNodeCommand DeserializeCore(XmlElement element)
@@ -1041,10 +1395,16 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal Guid NodeId { get; private set; }
+            [DataMember]
             internal string Name { get; private set; }
+
+            [DataMember]
             internal string Category { get; private set; }
+
+            [DataMember]
             internal string Description { get; private set; }
+
+            [DataMember]
             internal bool MakeCurrent { get; private set; }
 
             #endregion
@@ -1069,13 +1429,15 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
         public class SwitchTabCommand : RecordableCommand
         {
             #region Public Class Methods
 
-            public SwitchTabCommand(int tabIndex)
+            [JsonConstructor]
+            public SwitchTabCommand(int modelIndex)
             {
-                TabIndex = tabIndex;
+                WorkspaceModelIndex = modelIndex;
             }
 
             internal static SwitchTabCommand DeserializeCore(XmlElement element)
@@ -1088,7 +1450,8 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
-            internal int TabIndex { get; private set; }
+            [DataMember]
+            internal int WorkspaceModelIndex { get; private set; }
 
             #endregion
 
@@ -1096,24 +1459,86 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoModel.SwitchTabImpl(this);
+                dynamoModel.SwitchWorkspaceImpl(this);
             }
 
             protected override void SerializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                helper.SetAttribute("TabIndex", TabIndex);
+                helper.SetAttribute("TabIndex", WorkspaceModelIndex);
             }
 
             #endregion
         }
+
+        public class CreateAnnotationCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public CreateAnnotationCommand(Guid nodeId, string annotationText,
+                double x, double y, bool defaultPosition)
+            {
+                if (string.IsNullOrEmpty(annotationText))
+                    annotationText = Resources.GroupDefaultText;
+
+                AnnotationId = nodeId;
+                AnnotationText = annotationText;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+            }
+
+            internal static CreateAnnotationCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Guid annotationId = helper.ReadGuid("AnnotationId");
+                string annotationText = helper.ReadString("AnnotationText");
+                double x = helper.ReadDouble("X");
+                double y = helper.ReadDouble("Y");
+
+                return new CreateAnnotationCommand(annotationId, annotationText, x, y,
+                    helper.ReadBoolean("DefaultPosition"));
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid AnnotationId { get; private set; }
+            internal string AnnotationText { get; private set; }
+            internal double X { get; private set; }
+            internal double Y { get; private set; }
+            internal bool DefaultPosition { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.CreateAnnotationImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("NodeId", AnnotationId);
+                helper.SetAttribute("NoteText", AnnotationText);
+                helper.SetAttribute("X", X);
+                helper.SetAttribute("Y", Y);
+                helper.SetAttribute("DefaultPosition", DefaultPosition);
+            }
+
+            #endregion
+        }
+
     }
 
     // public class XxxYyyCommand : RecordableCommand
     // {
     //     #region Public Class Methods
     // 
-    //     internal XxxYyyCommand()
+    //     public XxxYyyCommand()
     //     {
     //     }
     // 

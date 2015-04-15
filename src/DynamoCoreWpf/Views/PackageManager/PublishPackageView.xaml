@@ -1,15 +1,19 @@
 ﻿<Window x:Class="Dynamo.PackageManager.PublishPackageView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:packagemanager="clr-namespace:Dynamo.PackageManager.UI"
         d:DataContext="{d:DesignData Source=./SampleData/PublishPackageViewModelSampleData.xaml}"
         xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         mc:Ignorable="d" 
-             Height="590" Width="700" ResizeMode="CanResizeWithGrip" Name="PublishInfoControl" Title="Publish a Dynamo Package" Visibility="Visible">
+        Height="590" Width="700" 
+        ResizeMode="CanResizeWithGrip" 
+        Name="PublishInfoControl" 
+        Visibility="Visible">
     
     <Window.Resources>
         <ResourceDictionary>
@@ -44,25 +48,25 @@
                 <Border Width="{Binding Path=ActualWidth,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}}" >
                     <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
 
-                        <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="Publish a Package Online"/>
+                        <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.PublishPackageViewPublish}"/>
 
-                        <Label Content="Name" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
+                        <Label Content="{x:Static p:Resources.PublishPackageViewPackageName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                             <Label.ToolTip>
                                 <TextBlock>A unique name for the package.</TextBlock>
                             </Label.ToolTip>
                         </Label>
                         <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="TitleInput" Padding="5" IsEnabled ="{Binding Path=CanEditName}" Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <Label Content="Description" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
+                        <Label Content="{x:Static p:Resources.PublishPackageViewPackageDescription}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="DescriptionLabel" VerticalAlignment="Top" >
                             <Label.ToolTip>
                                 <TextBlock>A description that helps people understand what the package might be used for.</TextBlock>
                             </Label.ToolTip>
                         </Label>
                         <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <Label Content="Version (major minor build)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                        <Label Content="{x:Static p:Resources.PublishPackageViewPackageVersion}" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
                             <Label.ToolTip>
-                                <TextBlock>A version name helps a submitter keep track of updates to the package.  A new version of a package will be REJECTED if this is not incremeneted.</TextBlock>
+                                <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageVersionTooltip}"/>
                             </Label.ToolTip>
                         </Label>
                         <Grid>
@@ -85,37 +89,37 @@
 
                         </Grid>
 
-                        <Label Content="Group (optional)" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="GroupLabel" VerticalAlignment="Top">
+                        <Label Content="{x:Static p:Resources.PublishPackageViewPackageGroup}" Foreground="DarkGray" Height="28"  HorizontalAlignment="Left" Name="GroupLabel" VerticalAlignment="Top">
                             <Label.ToolTip>
-                                <TextBlock>A group to help categorize this package.  Might be useful for a collection of packages related to a firm, school, etc.</TextBlock>
+                                <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageGroupTooltip}"/>
                             </Label.ToolTip>
                         </Label>
                         <StackPanel Orientation="Horizontal">
                             <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="GroupInput" Width ="200" Padding="5" TextWrapping="Wrap" Text="{Binding Path=Group, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
 
-                        <Label Content="Keywords (optional)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                        <Label Content="{x:Static p:Resources.PublishPackageViewPackageKeywords}" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
                             <Label.ToolTip>
-                                <TextBlock>Keywords help find your package in the database.  Separate them by spaces.</TextBlock>
+                                <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageKeywordsTooltip}"/>
                             </Label.ToolTip>
                         </Label>
                         <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="KeywordsInput" Padding="5" Text="{Binding Path=Keywords, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
-                            <Button Style="{DynamicResource ResourceKey=SBadgeButton}" Margin="0, 10" Command="{Binding Path=ToggleMoreCommand }" Width ="80">More</Button>
+                            <Button Style="{DynamicResource ResourceKey=SBadgeButton}" Margin="0, 10" Command="{Binding Path=ToggleMoreCommand}" Width="80" Content="{x:Static p:Resources.MoreButton}" />
                         </StackPanel>
                           
                         <StackPanel Name="OptionalFields" Visibility="{Binding Path=MoreExpanded, Converter={StaticResource ResourceKey=BooleanToVisibilityCollapsedConverter}}">
       
-                            <Label Content="Website Url (optional)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                            <Label Content="{x:Static p:Resources.PublishPackageViewPublisherWebiSite}" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
                             </Label>
                             <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="SiteUrlInput" Padding="5" Text="{Binding Path=SiteUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                            <Label Content="Repository Url (optional)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                            <Label Content="{x:Static p:Resources.PublishPackageViewRepositoryUrl}" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
                             </Label>
                             <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="RepositoryUrlInput" Padding="5" Text="{Binding Path=RepositoryUrl, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                            <Label Content="License (optional - default is MIT)" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
+                            <Label Content="{x:Static p:Resources.PublishPackageViewLicense}" Height="28" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" >
                             </Label>
                             <TextBox Style="{DynamicResource ResourceKey=SDarkTextBox}" Name="LicenseInput" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Text="{Binding Path=License, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -130,7 +134,7 @@
         </Border>
 
         <StackPanel Grid.Row="2" Background="#444">
-            <Button Style="{DynamicResource ResourceKey=STextButton}" Width="130" Margin="10,5" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" >Publish Package!</Button>
+            <Button Style="{DynamicResource ResourceKey=STextButton}" Width="130" Margin="10,5" HorizontalAlignment="Right" Command="{Binding Path=SubmitCommand}" Content="{x:Static p:Resources.PublishPackage}"></Button>
         </StackPanel>
  
         <Grid Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="1">
@@ -149,8 +153,14 @@
                 </Grid.RowDefinitions>
 
                 <DockPanel Background="#222" Grid.Row="0">
-                    <Label Content="Package Contents" FontSize="12" Margin="10,8,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-                    <Button Style="{DynamicResource ResourceKey=SBadgeButton}" Command="{Binding Path=ShowAddFileDialogAndAddCommand}" HorizontalAlignment="Right" Height="27" ToolTip="Add File To Package" Margin="5">Add file...</Button>
+                    <Label Content="{x:Static p:Resources.PublishPackagePackageContent}" FontSize="12" Margin="10,8,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+                    <Button Style="{DynamicResource ResourceKey=SBadgeButton}" 
+                            Command="{Binding Path=ShowAddFileDialogAndAddCommand}" 
+                            HorizontalAlignment="Right" 
+                            Height="27" 
+                            ToolTip="{x:Static p:Resources.PublishPackageViewAddFileButtonTooltip}" 
+                            Margin="5"
+                            Content="{x:Static p:Resources.PublishPackageViewAddFileButton}"/>
                 </DockPanel>
                 
                 <ScrollViewer Grid.Row="1" Margin="0" VerticalScrollBarVisibility="Visible" Name="BrowserScrollView" Background="#222" BorderThickness="0">
@@ -293,7 +303,7 @@
                                     <StackPanel.ContextMenu>
 
                                         <ContextMenu Name="DepContextMenu" >
-                                            <MenuItem Name="IsNodeLibraryButton" Header="Is Node Library" Visibility="Collapsed" IsCheckable="True" IsChecked="{Binding IsNodeLibrary}"></MenuItem>
+                                            <MenuItem Name="IsNodeLibraryButton" Header="{x:Static p:Resources.PublishPackageViewContextMenuIsNodeLibrary}" Visibility="Collapsed" IsCheckable="True" IsChecked="{Binding IsNodeLibrary}"></MenuItem>
                                         </ContextMenu>
 
                                     </StackPanel.ContextMenu>
@@ -305,21 +315,21 @@
                                         <DataTrigger.Value>
                                             <packagemanager:DependencyType>File</packagemanager:DependencyType>
                                         </DataTrigger.Value>
-                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/files.png"/>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/files.png"/>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding DependencyType}">
                                         <DataTrigger.Value>
                                             <packagemanager:DependencyType>Assembly</packagemanager:DependencyType>
                                         </DataTrigger.Value>
-                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/assemblies.png"/>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/assemblies.png"/>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding DependencyType}">
                                         <DataTrigger.Value>
                                             <packagemanager:DependencyType>CustomNode</packagemanager:DependencyType>
                                         </DataTrigger.Value>
-                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCore;component/UI/Images/nodes.png"/>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/nodes.png"/>
                                     </DataTrigger>
 
                                     <DataTrigger Binding="{Binding DependencyType}">
@@ -376,8 +386,7 @@
                 </Grid.RowDefinitions>
 
                 <DockPanel Background="#222" Grid.Row="0" >
-                    <Label Content="Dependencies" FontSize="12" Margin="10,8,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-                    <!--<Button Style="{DynamicResource ResourceKey=SBadgeButton}" HorizontalAlignment="Right" Height="27" ToolTip="Add File To Package" Margin="5">+</Button>-->
+                    <Label Content="{x:Static p:Resources.PublishPackageViewPackageDependencies}" FontSize="12" Margin="10,8,0,0" Foreground="DarkGray" HorizontalAlignment="Left"  VerticalAlignment="Top" />
                 </DockPanel>
 
                 <ScrollViewer Grid.Row="1" Grid.ZIndex="1">

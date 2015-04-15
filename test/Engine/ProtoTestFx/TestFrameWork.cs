@@ -24,6 +24,7 @@ namespace ProtoTestFx.TD
     {
         private static ProtoCore.Core testCore;
         private static ProtoCore.RuntimeCore testRuntimeCore;
+
         private ExecutionMirror testMirror;
         private readonly ProtoScriptTestRunner runner;
         private static string mErrorMessage = "";
@@ -43,25 +44,24 @@ namespace ProtoTestFx.TD
             return testCore;
         }
 
-        public ProtoCore.RuntimeCore GetTesRuntimetCore()
+        public ProtoCore.RuntimeCore GetTestRuntimeCore()
         {
             return testRuntimeCore;
         }
+
         public ProtoCore.Core SetupTestCore()
         {
             testCore = new ProtoCore.Core(new ProtoCore.Options());
+
             testCore.Configurations.Add(ConfigurationKeys.GeometryFactory, "DSGeometry.dll");
             testCore.Configurations.Add(ConfigurationKeys.PersistentManager, "DSGeometry.dll");
-            testCore.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(testCore));
-            testCore.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(testCore));
+            testCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(testCore));
 
             // this setting is to fix the random failure of replication test case
             testCore.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             testCore.Options.Verbose = false;
-//            testCore.Options.kDynamicCycleThreshold = 5;
 
-            testRuntimeCore = new ProtoCore.RuntimeCore();
-            
             //FFI registration and cleanup
             DLLFFIHandler.Register(FFILanguage.CPlusPlus, new ProtoFFI.PInvokeModuleHelper());
             DLLFFIHandler.Register(FFILanguage.CSharp, new CSModuleHelper());
@@ -98,8 +98,8 @@ namespace ProtoTestFx.TD
         public ProtoCore.Core CreateTestCore()
         {
             ProtoCore.Core core = new ProtoCore.Core(new ProtoCore.Options());
-            core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-            core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+            core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+            core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
             core.Options.ExecutionMode = ProtoCore.ExecutionMode.Serial;
             core.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
             core.IsParsingCodeBlockNode = true;
@@ -169,7 +169,7 @@ namespace ProtoTestFx.TD
                     Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
             }
-            testMirror = runner.LoadAndExecute(pathname, testCore, testRuntimeCore);
+            testMirror = runner.LoadAndExecute(pathname, testCore, out testRuntimeCore);
             SetErrorMessage(errorstring);
             return testMirror;
         }
@@ -259,8 +259,7 @@ namespace ProtoTestFx.TD
                         Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                     }
                 }
-                ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore();
-                testMirror = runner.Execute(sourceCode, testCore, runtimeCore);
+                testMirror = runner.Execute(sourceCode, testCore, out testRuntimeCore);
                 
                 if (dumpDS )
                 {
@@ -301,7 +300,7 @@ namespace ProtoTestFx.TD
                     Console.WriteLine(String.Format("Path: {0} does not exist.", includePath));
                 }
             }
-            testMirror = runner.Execute(astList, testCore, testRuntimeCore);
+            testMirror = runner.Execute(astList, testCore);
             SetErrorMessage(errorstring);
             return testMirror;
         }
@@ -463,32 +462,17 @@ namespace ProtoTestFx.TD
             }
             else if (expectedObject is String)
             {
-                char[] chars = (expectedObject as String).ToCharArray();
-                object[] objs = new object[chars.Length];
-                Array.Copy(chars, objs, chars.Length);
-
-                ProtoCore.DSASM.Mirror.DsasmArray dsArray = dsObject.Payload as ProtoCore.DSASM.Mirror.DsasmArray;
-                if (dsArray == null)
+                string stringValue = dsObject.Payload as string;
+                if (stringValue == null)
                 {
                     Assert.Fail(String.Format("\t{0}{1} is expected to be a string, but its actual value is not a string\n{2}", dsVariable, 
                         BuildIndicesString(indices), mErrorMessage));
                 }
-                else if (chars.Count() != dsArray.members.Count())
+                else if (!expectedObject.Equals(stringValue))
                 {
-                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string of length {2}, but its actual length is {3}.\n{4}", dsVariable, 
-                        BuildIndicesString(indices), objs.Count(), dsArray.members.Count(), mErrorMessage));
+                    Assert.Fail(String.Format("\t{0}{1} is expected to be a string \"{2}\", but its actual value is \"{3}\".\n{4}", dsVariable, 
+                        BuildIndicesString(indices), expectedObject, stringValue, mErrorMessage));
                 }
-                else
-                {
-                    for (int i = 0; i < objs.Count(); ++i)
-                    {
-                        indices.Add(i);
-                        TestFrameWork.VerifyInternal(objs[i], dsArray.members[i], dsVariable, indices);
-                        indices.RemoveAt(indices.Count - 1);
-                    }
-                }
-
-                // VerifyInternal(objs, dsObject, dsVariable, indices);
             }
             else if (typeof(IEnumerable).IsAssignableFrom(expectedType))
             {
@@ -584,7 +568,7 @@ namespace ProtoTestFx.TD
 
         public void Verify(string dsVariable, object expectedValue, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore, testRuntimeCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, GetTestRuntimeCore());
             AssertValue(mirror.GetData(), expectedValue);
             //Verify(testMirror, dsVariable, expectedValue, startBlock);
         }
@@ -614,19 +598,19 @@ namespace ProtoTestFx.TD
             Assert.IsTrue(warningCount == count, mErrorMessage);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.RuntimeData.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.Runtime.WarningID id)
         {
-            VerifyRuntimeWarning(testCore, id);
+            VerifyRuntimeWarning(testRuntimeCore, id);
         }
 
-        public static void VerifyRuntimeWarning(ProtoCore.Core core, ProtoCore.RuntimeData.WarningID id)
+        public static void VerifyRuntimeWarning(ProtoCore.RuntimeCore runtimeCore, ProtoCore.Runtime.WarningID id)
         {
-            Assert.IsTrue(core.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
+            Assert.IsTrue(runtimeCore.RuntimeStatus.Warnings.Any(w => w.ID == id), mErrorMessage);
         }
 
         public void VerifyRuntimeWarningCount(int count)
         {
-            Assert.IsTrue(testCore.RuntimeStatus.WarningCount == count, mErrorMessage);
+            Assert.IsTrue(testRuntimeCore.RuntimeStatus.WarningCount == count, mErrorMessage);
         }
 
         public void VerifyProperty(string dsVariable, string propertyName, object expectedValue, int startBlock = 0)
@@ -650,7 +634,7 @@ namespace ProtoTestFx.TD
         string GetFFIObjectStringValue(string dsVariable, int startBlock = 1, int arrayIndex = -1)
         {
             var helper = DLLFFIHandler.GetModuleHelper(FFILanguage.CSharp);
-            var marshaller = helper.GetMarshaller(TestFrameWork.testCore);
+            var marshaller = helper.GetMarshaller(TestFrameWork.testRuntimeCore);
             Obj val = testMirror.GetFirstValue(dsVariable, startBlock);
             StackValue sv;
 
@@ -693,14 +677,14 @@ namespace ProtoTestFx.TD
 
         public static void AssertInfinity(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore, testRuntimeCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             MirrorData data = mirror.GetData();
             Assert.IsTrue( Double.IsInfinity(Convert.ToDouble(data.Data)));
         }
 
         public static void AssertNan(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore, testRuntimeCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             MirrorData data = mirror.GetData();
             Assert.IsTrue(Double.IsNaN(Convert.ToDouble(data.Data)));
         }
@@ -744,6 +728,13 @@ namespace ProtoTestFx.TD
             }
         }
 
+        public static Subtree CreateSubTreeFromCode(Guid guid, string code)
+        {
+            var cbn = ProtoCore.Utils.ParserUtils.Parse(code) as CodeBlockNode;
+            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
+            return subtree;
+        }
+
         public IList<MethodMirror> GetMethods(string className, string methodName)
         {
             ClassMirror classMirror = new ClassMirror(className, testCore);
@@ -763,15 +754,19 @@ namespace ProtoTestFx.TD
 
         public void AssertPointer(string dsVariable, int startBlock = 0)
         {
-            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testCore, testRuntimeCore);
+            RuntimeMirror mirror = new RuntimeMirror(dsVariable, startBlock, testRuntimeCore);
             Assert.IsTrue(mirror.GetData().IsPointer);
         }
 
         public void CleanUp()
         {
+            if (testRuntimeCore != null)
+            {
+                testRuntimeCore.Cleanup();
+            }
+
             if (testCore != null)
             {
-                testCore.Cleanup();
                 testCore = null;
             }
         }

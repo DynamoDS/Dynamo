@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace Dynamo.Utilities
@@ -62,8 +60,6 @@ namespace Dynamo.Utilities
             _inner.Reset();
         }
     }
-
-
 
     /// <summary>
     /// A thread-safe IList implementation using the custom SafeEnumerator class

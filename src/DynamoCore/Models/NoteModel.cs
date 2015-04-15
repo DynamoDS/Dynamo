@@ -3,11 +3,13 @@ using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.Utilities;
+using ProtoCore.Namespace;
+
 namespace Dynamo.Models
 {
     public class NoteModel : ModelBase
     {
-        private string text;
+        private string text;      
         public string Text
         {
             get { return text; }
@@ -28,15 +30,17 @@ namespace Dynamo.Models
 
         #region Command Framework Supporting Methods
 
-        protected override bool UpdateValueCore(string name, string value, UndoRedoRecorder recorder)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
             if (name != "Text") 
-                return base.UpdateValueCore(name, value, recorder);
+                return base.UpdateValueCore(updateValueParams);
             
             Text = value;
             return true;
-        }
-
+        }        
         #endregion
 
         #region Serialization/Deserialization Methods

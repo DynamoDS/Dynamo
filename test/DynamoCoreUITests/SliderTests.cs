@@ -3,8 +3,9 @@ using System.IO;
 using System.Reflection;
 
 using DSCoreNodesUI.Input;
-using Dynamo.Nodes;
+using Dynamo.Models;
 using NUnit.Framework;
+using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 
 namespace DynamoCoreUITests
 {
@@ -78,5 +79,54 @@ namespace DynamoCoreUITests
             var slider = new IntegerSlider();
             Assert.NotNull(slider);
         }
+
+        [Test]
+        public void SliderCanNotBeSetGreaterThanMaxIntValue()
+        {
+            var slider = new IntegerSlider();
+            Assert.NotNull(slider);
+
+            var param = new UpdateValueParams("Value", "2147483648");
+            slider.UpdateValue(param);
+
+            Assert.AreEqual(slider.Value, Int32.MaxValue);
+        }
+
+        [Test]
+        public void  SliderCanNotBeSetLessThanMinIntValue()
+        {
+            var slider = new IntegerSlider();
+            Assert.NotNull(slider);
+
+            var param = new UpdateValueParams("Value", "-2147483649");
+            slider.UpdateValue(param);
+
+            Assert.AreEqual(slider.Value, Int32.MinValue);
+        }
+
+        [Test]
+        public void SliderMaxResetsToIntMax()
+        {
+            var slider = new IntegerSlider();
+            Assert.NotNull(slider);
+
+            var param = new UpdateValueParams("Max", "2147483648");
+            slider.UpdateValue(param);
+
+            Assert.AreEqual(slider.Max, Int32.MaxValue);
+        }
+
+        [Test]
+        public void SliderMinResetsToIntMin()
+        {
+            var slider = new IntegerSlider();
+            Assert.NotNull(slider);
+
+            var param = new UpdateValueParams("Min", "-2147483649");
+            slider.UpdateValue(param);
+
+            Assert.AreEqual(slider.Min, Int32.MinValue);
+        }
+
     }
 }

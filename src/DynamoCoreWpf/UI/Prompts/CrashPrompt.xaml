@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
-        Title="Dynamo has crashed"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         Width="660"
         SizeToContent="Height"
         ResizeMode="NoResize"
@@ -39,12 +39,7 @@
                            FontSize="13"
                            Foreground="#aaaaaa"
                            HorizontalAlignment="Stretch"
-                           TextWrapping="Wrap">
-                Uh oh... something went wrong and dynamo has crashed, sorry about that.
-                <LineBreak /><LineBreak />
-                You will get a chance to save your work.
-                </TextBlock>
-
+                           TextWrapping="Wrap"/>
             </StackPanel>
 
             <StackPanel Grid.Row="1"
@@ -54,13 +49,13 @@
                         Margin="10,0,10,10">
 
                 <Button Name="btnDetails"
-                        Content="Details"
+                        Content="{x:Static p:Resources.CrashPromptDialogDetailButton}"
                         Style="{DynamicResource ResourceKey=STextButton}"
                         Visibility="Collapsed"
                         Click="Details_Click"/>
 
                 <Button Name="btnCopy"
-                        Content="Copy"
+                        Content="{x:Static p:Resources.CrashPromptDialogCopyButton}"
                         Style="{DynamicResource ResourceKey=STextButton}"
                         Visibility="Collapsed"
                         Click="Copy_Click" />
@@ -73,17 +68,17 @@
                         Margin="10,0,10,10">
                 
                 <Button Name="btnOpenFolder"
-                        Content="Open Folder"
+                        Content="{x:Static p:Resources.CrashPromptDialogOpenFolderButton}"
                         Style="{DynamicResource ResourceKey=STextButton}"
                         Visibility="Collapsed"
                         Click="OpenFolder_Click"/>
 
-                <Button Content="Submit Bug To Github"
+                <Button Content="{x:Static p:Resources.CrashPromptDialogSubmitBugButton}"
                         Style="{DynamicResource ResourceKey=STextButton}"
                         Margin="10,0,0,0"
                         Click="PostOnGithub_Click" />
 
-                <Button Content="Continue"
+                <Button Content="{x:Static p:Resources.ContinueButton}"
                         Style="{DynamicResource ResourceKey=STextButton}"
                         Margin="10,0,0,0"
                         Click="Continue_Click"

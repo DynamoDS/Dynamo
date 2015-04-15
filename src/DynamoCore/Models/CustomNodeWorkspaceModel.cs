@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Dynamo.Nodes;
+using ProtoCore.Namespace;
 
 namespace Dynamo.Models
 {
@@ -30,32 +31,41 @@ namespace Dynamo.Models
 
         #region Contructors
 
-        public CustomNodeWorkspaceModel(
-            string name, string category, string description, double x, double y, Guid customNodeId,
-            NodeFactory factory, string fileName="")
+        public CustomNodeWorkspaceModel( 
+            WorkspaceInfo info, 
+            NodeFactory factory)
             : this(
-                name,
-                category,
-                description,
                 factory,
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
-                x,
-                y,
-                customNodeId, fileName) { }
+                Enumerable.Empty<AnnotationModel>(),
+                info) { }
 
-        public CustomNodeWorkspaceModel(
-            string name, string category, string description, NodeFactory factory, IEnumerable<NodeModel> e, IEnumerable<NoteModel> n, 
-            double x, double y, Guid customNodeId, string fileName="") 
-            : base(name, e, n, x, y, factory, fileName)
+        public CustomNodeWorkspaceModel( 
+            NodeFactory factory, 
+            IEnumerable<NodeModel> e, 
+            IEnumerable<NoteModel> n, 
+            IEnumerable<AnnotationModel> a,
+            WorkspaceInfo info,
+            ElementResolver elementResolver = null) 
+            : base(e, n,a,info, factory)
+
         {
-            CustomNodeId = customNodeId;
             HasUnsavedChanges = false;
-            Category = category;
-            Description = description;
+
+            CustomNodeId = Guid.Parse(info.ID);
+            Category = info.Category;
+            Description = info.Description;
+
+            if (elementResolver != null)
+            {
+                ElementResolver.CopyResolutionMap(elementResolver);
+            }
 
             PropertyChanged += OnPropertyChanged;
         }
+
+        #endregion
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
         {
@@ -69,7 +79,6 @@ namespace Dynamo.Models
             }
         }
 
-        #endregion
 
         /// <summary>
         ///     All CustomNodeDefinitions which this Custom Node depends on.
@@ -151,11 +160,17 @@ namespace Dynamo.Models
         }
         private string description;
 
-        public override void OnNodesModified()
+        protected override void RequestRun()
         {
-            base.OnNodesModified();
+            base.RequestRun();
             HasUnsavedChanges = true;
             OnDefinitionUpdated();
+        }
+
+        protected override void NodeModified(NodeModel node)
+        {
+            base.NodeModified(node);
+            RequestRun();
         }
 
         public event Action InfoChanged;
@@ -190,7 +205,9 @@ namespace Dynamo.Models
             // custom node with a new function id
             if (originalPath != newPath)
             {
-                CustomNodeId = Guid.NewGuid();
+                // If it is a newly created node, no need to generate a new guid
+                if (!string.IsNullOrEmpty(originalPath))
+                    CustomNodeId = Guid.NewGuid();
 
                 // This comes after updating the Id, as if to associate the new name
                 // with the new Id.

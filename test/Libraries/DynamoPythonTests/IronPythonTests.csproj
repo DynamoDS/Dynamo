@@ -72,7 +72,6 @@
     <Compile Include="PythonEvalTests.cs" />
     <Compile Include="PythonEditTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Setup.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">

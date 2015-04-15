@@ -1,4 +1,4 @@
-﻿namespace DSNodeServices
+﻿namespace DynamoServices
 {
     public class DisposeLogic
     {

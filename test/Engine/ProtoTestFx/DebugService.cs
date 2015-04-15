@@ -69,15 +69,14 @@ namespace ProtoTestFx
                 core = new ProtoCore.Core(options);
                 core.BuildStatus.SetStream(stringStream);
                 core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(dsPath);
-                core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-                core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+                core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+                core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
-                
                 ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
-                runtimeCore = new ProtoCore.RuntimeCore();
 
-                ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core, runtimeCore);
+                ExecutionMirror mirror = fsr.LoadAndExecute(dsPath, core, out runtimeCore);
                 executionLog.AppendLine("Script executed successfully.");
 
                 executionLog.AppendLine();
@@ -117,7 +116,7 @@ namespace ProtoTestFx
                 if (core != null)
                 {
                     core.BuildStatus.SetStream(null);
-                    core.Cleanup();
+                    runtimeCore.Cleanup();
                 }
             }
 
@@ -139,18 +138,19 @@ namespace ProtoTestFx
             System.IO.StringWriter stringStream = new StringWriter();
             executionLog = new StringBuilder();
             ProtoCore.Core core = null;
+            ProtoCore.RuntimeCore runtimeCore = null;
             try
             {
                 core = new ProtoCore.Core(new ProtoCore.Options());
                 core.BuildStatus.SetStream(stringStream);
                 core.Options.RootModulePathName = ProtoCore.Utils.FileUtils.GetFullPathName(dsPath);
-                core.Executives.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Executive(core));
-                core.Executives.Add(ProtoCore.Language.kImperative, new ProtoImperative.Executive(core));
+                core.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(core));
+                core.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(core));
+
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.GeometryFactory, GeometryFactoryName);
                 core.Configurations.Add(Autodesk.DesignScript.Interfaces.ConfigurationKeys.PersistentManager, PersistenceManagerName);
 
-                ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore();
-                ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core, runtimeCore);
+                ProtoScript.Runners.DebugRunner debugRunner = new ProtoScript.Runners.DebugRunner(core);
                 ProtoScript.Config.RunConfiguration runnerConfig = new ProtoScript.Config.RunConfiguration();
                 runnerConfig.IsParrallel = false; 
                 ExecutionMirror mirror; 
