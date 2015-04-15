@@ -121,7 +121,7 @@
     <value>An attribute argument must be a constant expression</value>
   </data>
   <data name="BaseIsExpectedToCallBaseConstructor" xml:space="preserve">
-    <value>The keyword 'base' is expected here to call base constructor</value>
+    <value>The keyword 'base' is expected here to call the base class constructor</value>
   </data>
   <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
     <value>Checks if all the elements in the specified list are of the same type</value>
@@ -157,7 +157,7 @@
     <value>Failed to import {0}</value>
   </data>
   <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
-    <value>A function call is not allowed to the left hand side of an assignment</value>
+    <value>A function call is not allowed on the left hand side of an assignment</value>
   </data>
   <data name="FUNCTION_GROUP_RESOLUTION_FAILURE" xml:space="preserve">
     <value>No function called {0} could be found. Please check the name of the function</value>
@@ -178,7 +178,7 @@
     <value>Imports data from a text file containing comma separated values into two-dimensional list and also transpose the output list if specified</value>
   </data>
   <data name="ImportStatementNotSupported" xml:space="preserve">
-    <value>Imports statements are not supported in CodeBlock Nodes</value>
+    <value>Imports statements are not supported in CodeBlock Nodes, please use the Library UI instead</value>
   </data>
   <data name="InsertsAnElementIntoList" xml:space="preserve">
     <value>Inserts an element into a list at specified index</value>
@@ -196,28 +196,28 @@
     <value>File : '{0}' is already imported</value>
   </data>
   <data name="kAmbigousMethodDispatch" xml:space="preserve">
-    <value>Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}</value>
+    <value>Internal error, please report: Function could not be found on final dispatch (e5235508)</value>
   </data>
   <data name="kArgumentTypeUndefined" xml:space="preserve">
     <value>Type '{0}' of argument '{1}' is not defined</value>
   </data>
   <data name="kArrayOverIndexed" xml:space="preserve">
-    <value>Variable is over indexed</value>
+    <value>The index is outside the given range</value>
   </data>
   <data name="kArrayRankReduction" xml:space="preserve">
     <value>Type conversion would cause array rank reduction. This is not permitted outside of replication. {511ED65F-FB66-4709-BDDA-DCD5E053B87F}</value>
   </data>
   <data name="kAssignNonCharacterToString" xml:space="preserve">
-    <value>Only character can be assigned to a position in a string</value>
+    <value>A string must be made up of characters</value>
   </data>
   <data name="kAssingToThis" xml:space="preserve">
     <value>'this' is readonly and cannot be assigned to</value>
   </data>
   <data name="kCallingConstructorInConstructor" xml:space="preserve">
-    <value>Cannot call constructor '{0}()' in itself</value>
+    <value>Cannot call the constructor '{0}()' inside itself</value>
   </data>
   <data name="KCallingConstructorOnInstance" xml:space="preserve">
-    <value>Cannot call constructor '{0}()' on instance</value>
+    <value>Cannot call the constructor '{0}()' on an existing object</value>
   </data>
   <data name="kCallingNonStaticMethod" xml:space="preserve">
     <value>'{0}.{1}()' is not a static method</value>
@@ -232,34 +232,34 @@
     <value>Converting an array to {0} would cause array rank reduction and is not permitted</value>
   </data>
   <data name="kConvertDoubleToInt" xml:space="preserve">
-    <value>Converting double to int will cause possible information loss</value>
+    <value>Converting a double to an int may lose information</value>
   </data>
   <data name="kConvertNonConvertibleTypes" xml:space="preserve">
     <value>Asked to convert non-convertible types</value>
   </data>
   <data name="kCyclicDependency" xml:space="preserve">
-    <value>Cyclic dependency detected at '{0}' and '{1}'</value>
+    <value>A cyclic dependency exists between '{0}' and '{1}'</value>
   </data>
   <data name="kDeferencingNonPointer" xml:space="preserve">
-    <value>Dereferencing a non-pointer</value>
+    <value>Internal error, please report: Dereferencing a non-pointer. (3f47aacd)</value>
   </data>
   <data name="kExceptionTypeUndefined" xml:space="preserve">
-    <value>Exception type '{0}' is not defined</value>
+    <value>The exception type '{0}' is not defined</value>
   </data>
   <data name="keywordCannotBeUsedAsConstructorName" xml:space="preserve">
-    <value>\"{0}\" is a keyword, can't be used as constructor name</value>
+    <value>\"{0}\" is a keyword, it can't be used as constructor name</value>
   </data>
   <data name="keywordCantBeUsedAsIdentifier" xml:space="preserve">
-    <value>\"{0}\" is a keyword, identifier expected</value>
+    <value>\"{0}\" is a keyword, but an identifier was expected</value>
   </data>
   <data name="kFailToConverToFunction" xml:space="preserve">
-    <value>Converting other objects to a function pointer is not allowed</value>
+    <value>Converting objects to a function pointer is not allowed</value>
   </data>
   <data name="kFailToConverToNull" xml:space="preserve">
     <value>Converting other things to null is not allowed</value>
   </data>
   <data name="kFailToConverToPointer" xml:space="preserve">
-    <value>Converting other things to pointer is not allowed</value>
+    <value>Cannot convert objects to function pointers</value>
   </data>
   <data name="kFFIFailedToObtainObject" xml:space="preserve">
     <value>Failed to obtain object '{0}' for '{1}.{2}'</value>
@@ -277,7 +277,7 @@
     <value>No candidate function could be found</value>
   </data>
   <data name="kFunctionNotReturnAtAllCodePaths" xml:space="preserve">
-    <value>Method '{0}()' doesn't return at all code paths</value>
+    <value>All paths through the method '{0}()' must return a value</value>
   </data>
   <data name="kIndexOutOfRange" xml:space="preserve">
     <value>Index is out of range</value>
@@ -289,22 +289,22 @@
     <value>Argument is invalid</value>
   </data>
   <data name="kInvalidArgumentsInRangeExpression" xml:space="preserve">
-    <value>The value that used in range expression should be either integer or double</value>
+    <value>The value used in a range expression must be a number</value>
   </data>
   <data name="kInvalidBreakForFunction" xml:space="preserve">
-    <value>Statement break causes function to abnormally return null</value>
+    <value>Internal error, please report: Statement break causes function to abnormally return null. (6ced82a9)</value>
   </data>
   <data name="kInvalidContinueForFunction" xml:space="preserve">
-    <value>Statement continue cause function to abnormally return null</value>
+    <value>Internal error, please report: Statement continue cause function to abnormally return null. (fd67aaee)</value>
   </data>
   <data name="kInvalidStaticCyclicDependency" xml:space="preserve">
-    <value>Cyclic dependency detected at '{0}' and '{1}'</value>
+    <value>A cyclic dependency exists between '{0}' and '{1}'</value>
   </data>
   <data name="kInvalidThis" xml:space="preserve">
-    <value>'this' can only be used in member methods</value>
+    <value>'this' can only be used in methods that are members of a class</value>
   </data>
   <data name="kInvokeMethodOnInvalidObject" xml:space="preserve">
-    <value>Method '{0}()' is invoked on invalid object</value>
+    <value>Internal error, please report: Method '{0}()' is invoked on an invalid object. (fa006d2b)</value>
   </data>
   <data name="kMethodAlreadyDefined" xml:space="preserve">
     <value>Method '{0}()' is already defined</value>
@@ -313,22 +313,22 @@
     <value>'{0}()' has some invalid arguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
-    <value>Method '{0}()' is inaccessible</value>
+    <value>Method '{0}()' can't be reached from here</value>
   </data>
   <data name="kMethodNotFound" xml:space="preserve">
     <value>Method '{0}()' not found</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B</value>
+    <value>Internal error, please report: Method resolution failure on: {0}() - (8bc0db87)</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn't find a version of {0} that takes arguments of type {1}</value>
+    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>
   </data>
   <data name="kMethodStackOverflow" xml:space="preserve">
-    <value>Stack overflow caused by calling method '{0}()' recursively.</value>
+    <value>'{0}()' recursed until Dynamo ran out of memory, please add a base case.</value>
   </data>
   <data name="kMultipleSymbolFound" xml:space="preserve">
     <value>Multiple definitions for '{0}' are found as {1}</value>
@@ -352,7 +352,7 @@
     <value>Class '{0}' does not have a property '{1}'</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
-    <value>The amount operator cannot be used together with step operator</value>
+    <value>An amount operator cannot be used together with a step operator</value>
   </data>
   <data name="kRangeExpressionWithInvalidAmount" xml:space="preserve">
     <value>The amount of step is invalid.</value>
@@ -488,5 +488,365 @@
   </data>
   <data name="ModuloByZero" xml:space="preserve">
     <value>Integer modulo by zero</value>
+  </data>
+  <data name="addadd_expected" xml:space="preserve">
+    <value>"++" expected</value>
+  </data>
+  <data name="add_expected" xml:space="preserve">
+    <value>"+" expected</value>
+  </data>
+  <data name="andand_expected" xml:space="preserve">
+    <value>"&amp;&amp;" expected</value>
+  </data>
+  <data name="and_expected" xml:space="preserve">
+    <value>"&amp;" expected</value>
+  </data>
+  <data name="asterisk_expected" xml:space="preserve">
+    <value>"*" expected</value>
+  </data>
+  <data name="catch_expected" xml:space="preserve">
+    <value>"catch" expected</value>
+  </data>
+  <data name="char_expected" xml:space="preserve">
+    <value>char expected</value>
+  </data>
+  <data name="closebrace_expected" xml:space="preserve">
+    <value>"}" expected</value>
+  </data>
+  <data name="closebracket_expected" xml:space="preserve">
+    <value>closebracket expected</value>
+  </data>
+  <data name="closeparen_expected" xml:space="preserve">
+    <value>closeparen expected</value>
+  </data>
+  <data name="comma_expected" xml:space="preserve">
+    <value>"," expected</value>
+  </data>
+  <data name="curvedash_expected" xml:space="preserve">
+    <value>"~\" expected</value>
+  </data>
+  <data name="dashdash_expected" xml:space="preserve">
+    <value>"--" expected</value>
+  </data>
+  <data name="divider_expected" xml:space="preserve">
+    <value>"/" expected</value>
+  </data>
+  <data name="doublecolumn_expected" xml:space="preserve">
+    <value>":" expected</value>
+  </data>
+  <data name="endline_expected" xml:space="preserve">
+    <value>endline expected</value>
+  </data>
+  <data name="EOF_expected" xml:space="preserve">
+    <value>EOF expected</value>
+  </data>
+  <data name="equalmark_expected" xml:space="preserve">
+    <value>"=" expected</value>
+  </data>
+  <data name="equalright_expected" xml:space="preserve">
+    <value>"=&gt;" expected</value>
+  </data>
+  <data name="equal_expected" xml:space="preserve">
+    <value>equal expected</value>
+  </data>
+  <data name="error" xml:space="preserve">
+    <value>error</value>
+  </data>
+  <data name="float_expected" xml:space="preserve">
+    <value>float expected</value>
+  </data>
+  <data name="greaterequal_expected" xml:space="preserve">
+    <value>greaterequal expected</value>
+  </data>
+  <data name="greaterthan_expected" xml:space="preserve">
+    <value>greaterthan expected</value>
+  </data>
+  <data name="hax_expected" xml:space="preserve">
+    <value>"#" expected</value>
+  </data>
+  <data name="ident_expected" xml:space="preserve">
+    <value>ident expected</value>
+  </data>
+  <data name="invalid_Associative_AccessSpecifier" xml:space="preserve">
+    <value>invalid Associative_AccessSpecifier</value>
+  </data>
+  <data name="invalid_Associative_AddOp" xml:space="preserve">
+    <value>invalid_Associative_AddOp</value>
+  </data>
+  <data name="invalid_Associative_BinaryOps" xml:space="preserve">
+    <value>invalid Associative_BinaryOps</value>
+  </data>
+  <data name="invalid_Associative_BitOp" xml:space="preserve">
+    <value>invalid Associative_BitOp</value>
+  </data>
+  <data name="invalid_Associative_classdecl" xml:space="preserve">
+    <value>invalid Associative_classdecl</value>
+  </data>
+  <data name="invalid_Associative_ComparisonOp" xml:space="preserve">
+    <value>invalid Associative_ComparisonOp</value>
+  </data>
+  <data name="invalid_Associative_DecoratedIdentifier" xml:space="preserve">
+    <value>invalid Associative_DecoratedIdentifier</value>
+  </data>
+  <data name="invalid_Associative_Factor" xml:space="preserve">
+    <value>invalid Associative_Factor</value>
+  </data>
+  <data name="invalid_Associative_FunctionalStatement" xml:space="preserve">
+    <value>invalid Associative_FunctionalStatement</value>
+  </data>
+  <data name="invalid_Associative_functiondecl" xml:space="preserve">
+    <value>invalid Associative_functiondecl</value>
+  </data>
+  <data name="invalid_Associative_LanguageBlock" xml:space="preserve">
+    <value>invalid Associative_LanguageBlock</value>
+  </data>
+  <data name="invalid_Associative_LogicalOp" xml:space="preserve">
+    <value>invalid Associative_LogicalOp</value>
+  </data>
+  <data name="invalid_Associative_MulOp" xml:space="preserve">
+    <value>invalid Associative_MulOp</value>
+  </data>
+  <data name="invalid_Associative_NameReference" xml:space="preserve">
+    <value>invalid Associative_NameReference</value>
+  </data>
+  <data name="invalid_Associative_negop" xml:space="preserve">
+    <value>invalid Associative_negop</value>
+  </data>
+  <data name="invalid_Associative_Number" xml:space="preserve">
+    <value>invalid Associative_Number</value>
+  </data>
+  <data name="invalid_Associative_PostFixOp" xml:space="preserve">
+    <value>invalid Associative_PostFixOp</value>
+  </data>
+  <data name="invalid_Associative_Statement" xml:space="preserve">
+    <value>invalid Associative_Statement</value>
+  </data>
+  <data name="invalid_Associative_UnaryExpression" xml:space="preserve">
+    <value>invalid Associative_UnaryExpression</value>
+  </data>
+  <data name="invalid_Associative_unaryop" xml:space="preserve">
+    <value>invalid Associative_unaryop</value>
+  </data>
+  <data name="invalid_Hydrogen" xml:space="preserve">
+    <value>invalid Hydrogen</value>
+  </data>
+  <data name="invalid_Imperative_addop" xml:space="preserve">
+    <value>invalid Imperative_addop</value>
+  </data>
+  <data name="invalid_Imperative_assignstmt" xml:space="preserve">
+    <value>invalid Imperative_assignstmt</value>
+  </data>
+  <data name="invalid_Imperative_bitop" xml:space="preserve">
+    <value>invalid Imperative_bitop</value>
+  </data>
+  <data name="invalid_Imperative_decoratedIdentifier" xml:space="preserve">
+    <value>invalid Imperative_decoratedIdentifier</value>
+  </data>
+  <data name="invalid_Imperative_factor" xml:space="preserve">
+    <value>invalid Imperative_factor</value>
+  </data>
+  <data name="invalid_Imperative_forloop" xml:space="preserve">
+    <value>invalid Imperative_forloop</value>
+  </data>
+  <data name="invalid_Imperative_functiondecl" xml:space="preserve">
+    <value>invalid Imperative_functiondecl</value>
+  </data>
+  <data name="invalid_Imperative_ifstmt" xml:space="preserve">
+    <value>invalid Imperative_ifstmt</value>
+  </data>
+  <data name="invalid_Imperative_languageblock" xml:space="preserve">
+    <value>invalid Imperative_languageblock</value>
+  </data>
+  <data name="invalid_Imperative_logicalop" xml:space="preserve">
+    <value>invalid Imperative_logicalop</value>
+  </data>
+  <data name="invalid_Imperative_mulop" xml:space="preserve">
+    <value>invalid Imperative_mulop</value>
+  </data>
+  <data name="invalid_Imperative_NameReference" xml:space="preserve">
+    <value>invalid Imperative_NameReference</value>
+  </data>
+  <data name="invalid_Imperative_num" xml:space="preserve">
+    <value>invalid Imperative_num</value>
+  </data>
+  <data name="invalid_Imperative_PostFixOp" xml:space="preserve">
+    <value>invalid Imperative_PostFixOp</value>
+  </data>
+  <data name="invalid_Imperative_relop" xml:space="preserve">
+    <value>invalid Imperative_relop</value>
+  </data>
+  <data name="invalid_Imperative_stmt" xml:space="preserve">
+    <value>invalid Imperative_stmt</value>
+  </data>
+  <data name="invalid_Imperative_unaryexpr" xml:space="preserve">
+    <value>invalid Imperative_unaryexpr</value>
+  </data>
+  <data name="invalid_Imperative_unaryop" xml:space="preserve">
+    <value>invalid Imperative_unaryop</value>
+  </data>
+  <data name="invalid_Import_Statement" xml:space="preserve">
+    <value>invalid Import_Statement</value>
+  </data>
+  <data name="in_expected" xml:space="preserve">
+    <value>"in" expected</value>
+  </data>
+  <data name="kw_break_expected" xml:space="preserve">
+    <value>kw_break expected</value>
+  </data>
+  <data name="kw_class_expected" xml:space="preserve">
+    <value>kw_class expected</value>
+  </data>
+  <data name="kw_constructor_expected" xml:space="preserve">
+    <value>kw_constructor expected</value>
+  </data>
+  <data name="kw_continue_expected" xml:space="preserve">
+    <value>kw_continue expected</value>
+  </data>
+  <data name="kw_def_expected" xml:space="preserve">
+    <value>kw_def expected</value>
+  </data>
+  <data name="kw_elseif_expected" xml:space="preserve">
+    <value>kw_elseif expected</value>
+  </data>
+  <data name="kw_else_expected" xml:space="preserve">
+    <value>kw_else expected</value>
+  </data>
+  <data name="kw_extend_expected" xml:space="preserve">
+    <value>kw_extend expected</value>
+  </data>
+  <data name="kw_external_expected" xml:space="preserve">
+    <value>kw_external expected</value>
+  </data>
+  <data name="kw_for_expected" xml:space="preserve">
+    <value>kw_for expected</value>
+  </data>
+  <data name="kw_from_expected" xml:space="preserve">
+    <value>kw_from expected</value>
+  </data>
+  <data name="kw_heap_expected" xml:space="preserve">
+    <value>kw_heap expected</value>
+  </data>
+  <data name="kw_if_expected" xml:space="preserve">
+    <value>kw_if expected</value>
+  </data>
+  <data name="kw_import_expected" xml:space="preserve">
+    <value>kw_import expected</value>
+  </data>
+  <data name="kw_local_expected" xml:space="preserve">
+    <value>kw_local expected</value>
+  </data>
+  <data name="kw_native_expected" xml:space="preserve">
+    <value>kw_native expected</value>
+  </data>
+  <data name="kw_prefix_expected" xml:space="preserve">
+    <value>kw_prefix expected</value>
+  </data>
+  <data name="kw_static_expected" xml:space="preserve">
+    <value>kw_static expected</value>
+  </data>
+  <data name="kw_while_expected" xml:space="preserve">
+    <value>kw_while expected</value>
+  </data>
+  <data name="lessequal_expected" xml:space="preserve">
+    <value>lessequal expected</value>
+  </data>
+  <data name="lessthan_expected" xml:space="preserve">
+    <value>lessthan expected</value>
+  </data>
+  <data name="literal_false_expected" xml:space="preserve">
+    <value>literal_false expected</value>
+  </data>
+  <data name="literal_null_expected" xml:space="preserve">
+    <value>literal_null expected</value>
+  </data>
+  <data name="literal_true_expected" xml:space="preserve">
+    <value>literal_true expected</value>
+  </data>
+  <data name="neg_expected" xml:space="preserve">
+    <value>neg expected</value>
+  </data>
+  <data name="notequal_expected" xml:space="preserve">
+    <value>notequal expected</value>
+  </data>
+  <data name="not_expected" xml:space="preserve">
+    <value>not expected</value>
+  </data>
+  <data name="number_expected" xml:space="preserve">
+    <value>number expected</value>
+  </data>
+  <data name="openbrace_expected" xml:space="preserve">
+    <value>"{" expected</value>
+  </data>
+  <data name="openbracket_expected" xml:space="preserve">
+    <value>openbracket expected</value>
+  </data>
+  <data name="openparen_expected" xml:space="preserve">
+    <value>openparen expected</value>
+  </data>
+  <data name="oror_expected" xml:space="preserve">
+    <value>"||" expected</value>
+  </data>
+  <data name="period_expected" xml:space="preserve">
+    <value>period expected</value>
+  </data>
+  <data name="pipe_expected" xml:space="preserve">
+    <value>pipe expected</value>
+  </data>
+  <data name="postfixed_replicationguide_expected" xml:space="preserve">
+    <value>postfixed replicationguide expected</value>
+  </data>
+  <data name="power_expected" xml:space="preserve">
+    <value>"^" expected</value>
+  </data>
+  <data name="private_expected" xml:space="preserve">
+    <value>"private" expected</value>
+  </data>
+  <data name="protected_expected" xml:space="preserve">
+    <value>"protected" expected</value>
+  </data>
+  <data name="public_expected" xml:space="preserve">
+    <value>"public" expected</value>
+  </data>
+  <data name="question_expected" xml:space="preserve">
+    <value>"?" expected</value>
+  </data>
+  <data name="rangeop_expected" xml:space="preserve">
+    <value>rangeop expected</value>
+  </data>
+  <data name="reminder_expected" xml:space="preserve">
+    <value>"%" expected</value>
+  </data>
+  <data name="replicationguide_postfix_expected" xml:space="preserve">
+    <value>replicationguide_postfix expected</value>
+  </data>
+  <data name="textstring_expected" xml:space="preserve">
+    <value>textstring expected</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Associative_FunctionalStatement" xml:space="preserve">
+    <value>this symbol not expected in Associative_FunctionalStatement</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Associative_FunctionCallStatement" xml:space="preserve">
+    <value>this symbol not expected in Associative_FunctionCallStatement</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Associative_Statement" xml:space="preserve">
+    <value>this symbol not expected in Associative_Statement</value>
+  </data>
+  <data name="this_symbol_not_expected_in_Import_Statement" xml:space="preserve">
+    <value>this symbol not expected in Import_Statement</value>
+  </data>
+  <data name="this_symbol_no_expected_in_Associative_FunctionalStatement" xml:space="preserve">
+    <value>this symbol not expected in Associative_FunctionalStatement</value>
+  </data>
+  <data name="this_symbo_no_expected_in_Associative_NonAssignmentStatement" xml:space="preserve">
+    <value>this symbol not expected in Associative_NonAssignmentStatement</value>
+  </data>
+  <data name="throw_expected" xml:space="preserve">
+    <value>throw expected</value>
+  </data>
+  <data name="triquestionmark_expected" xml:space="preserve">
+    <value>??? expected</value>
+  </data>
+  <data name="try_expected" xml:space="preserve">
+    <value>"try" expected</value>
   </data>
 </root>

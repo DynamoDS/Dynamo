@@ -609,9 +609,9 @@ namespace Dynamo.Tests
             sumNode.X = 250;
             sumNode.Y = 0;
             sumNode.NickName = "TestNode";
-            sumNode.ArgumentLacing = LacingStrategy.CrossProduct;
-            sumNode.IsVisible = false;
-            sumNode.IsUpstreamVisible = false;
+            sumNode.UpdateValue(new UpdateValueParams("ArgumentLacing", "CrossProduct"));
+            sumNode.UpdateValue(new UpdateValueParams("IsVisible", "false"));
+            sumNode.UpdateValue(new UpdateValueParams("IsUpstreamVisible", "false"));
             sumNode.State = ElementState.Active;
 
             //Assert New Changes
@@ -859,7 +859,7 @@ namespace Dynamo.Tests
         public void TestFunctionNode()
         {
             var model = ViewModel.Model;
-            var examplePath = Path.Combine(GetTestDirectory(), @"core\custom_node_serialization\");
+            var examplePath = Path.Combine(TestDirectory, @"core\custom_node_serialization\");
             string openPath = Path.Combine(examplePath, "graph function.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
@@ -902,7 +902,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDummyNodeInternals00()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
+            var folder = Path.Combine(TestDirectory, @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -925,7 +925,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDummyNodeInternals01()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
+            var folder = Path.Combine(TestDirectory, @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "DummyNodeSample.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -951,7 +951,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestDummyNodeSerialization()
         {
-            var folder = Path.Combine(GetTestDirectory(), @"core\dummy_node\");
+            var folder = Path.Combine(TestDirectory, @"core\dummy_node\");
             ViewModel.OpenCommand.Execute(Path.Combine(folder, "dummyNode.dyn"));
 
             var workspace = ViewModel.Model.CurrentWorkspace;
@@ -963,6 +963,22 @@ namespace Dynamo.Tests
 
             // Dummy node should be serialized to its original node
             Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
+        }
+
+        [Test]
+        public void TestUndoRedoOnConnectedNodes()
+        {
+            ViewModel.OpenCommand.Execute(Path.Combine(TestDirectory, "core", "LacingTest.dyn"));
+            var workspace = ViewModel.CurrentSpaceViewModel;
+
+            Assert.IsFalse(workspace.SetArgumentLacingCommand.CanExecute(null));
+            workspace.SelectAllCommand.Execute(null);
+            Assert.IsTrue(workspace.SetArgumentLacingCommand.CanExecute(null));
+
+            Assert.DoesNotThrow(() =>
+            {
+                workspace.SetArgumentLacingCommand.Execute(LacingStrategy.Longest.ToString());
+            });
         }
     }
 }

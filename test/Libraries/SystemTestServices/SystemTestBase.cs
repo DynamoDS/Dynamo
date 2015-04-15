@@ -8,9 +8,13 @@ using System.Threading;
 
 using Dynamo;
 using Dynamo.Controls;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Tests;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
+
 using DynamoShapeManager;
 using DynamoUtilities;
 
@@ -28,8 +32,10 @@ namespace SystemTestServices
     /// </summary>
     public abstract class SystemTestBase
     {
+        protected IPathResolver pathResolver;
         protected string workingDirectory;
         private Preloader preloader;
+        private AssemblyResolver assemblyResolver;
 
         #region protected properties
 
@@ -38,6 +44,8 @@ namespace SystemTestServices
         protected DynamoView View { get; set; }
 
         protected DynamoModel Model { get; set; }
+
+        protected IUpdateManager UpdateManager { get; set; }
 
         protected string ExecutingDirectory
         {
@@ -53,7 +61,13 @@ namespace SystemTestServices
         [SetUp]
         public virtual void Setup()
         {
-            AssemblyResolver.Setup();
+            var testConfig = GetTestSessionConfiguration();
+
+            if (assemblyResolver == null)
+            {
+                assemblyResolver = new AssemblyResolver();
+                assemblyResolver.Setup(testConfig.DynamoCorePath);
+            }
 
             SetupCore();
 
@@ -67,7 +81,17 @@ namespace SystemTestServices
             // Setup Temp PreferenceSetting Location for testing
             PreferenceSettings.DynamoTestPath = Path.Combine(TempFolder, "UserPreferenceTest.xml");
 
-            StartDynamo();
+            StartDynamo(testConfig);
+        }
+
+        /// <summary>
+        /// Override this method in derived class to return a 
+        /// custom configuration.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual TestSessionConfiguration GetTestSessionConfiguration()
+        {
+            return new TestSessionConfiguration();
         }
 
         [TearDown]
@@ -91,8 +115,13 @@ namespace SystemTestServices
             View = null;
             Model = null;
             preloader = null;
+            pathResolver = null;
 
-            GC.Collect();
+            if (assemblyResolver != null)
+            {
+                assemblyResolver.TearDown();
+                assemblyResolver = null;
+            }
 
             try
             {
@@ -122,18 +151,42 @@ namespace SystemTestServices
         /// </summary>
         protected virtual void SetupCore(){}
 
-        protected virtual void StartDynamo()
+        protected virtual void GetLibrariesToPreload(List<string> libraries)
         {
-            var remoteConfig = new RemoteTestSessionConfig();
-            preloader = new Preloader(remoteConfig.DynamoCorePath, remoteConfig.RequestedLibraryVersion);
+            // Nothing here by design. If you find yourself having to add 
+            // anything here, something must be wrong. DynamoViewModelUnitTest
+            // is designed to contain no test cases, so it does not need any 
+            // preloaded library, all of which should only be specified in the
+            // derived class.
+        }
+
+        protected virtual void StartDynamo(TestSessionConfiguration testConfig)
+        {
+            preloader = new Preloader(testConfig.DynamoCorePath, testConfig.RequestedLibraryVersion);
             preloader.Preload();
 
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                if (pathResolver == null)
+                    pathResolver = new TestPathResolver();
+
+                var pr = pathResolver as TestPathResolver;
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pr.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
             Model = DynamoModel.Start(
-                new DynamoModel.StartConfiguration()
+                new DynamoModel.DefaultStartConfiguration()
                 {
                     StartInTestMode = true,
+                    PathResolver = pathResolver,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    DynamoCorePath = DynamoPathManager.Instance.MainExecPath
+                    UpdateManager = this.UpdateManager
                 });
 
             ViewModel = DynamoViewModel.Start(
@@ -207,6 +260,11 @@ namespace SystemTestServices
         protected static bool IsFuzzyEqual(double d0, double d1, double tol)
         {
             return System.Math.Abs(d0 - d1) < tol;
+        }
+
+        protected void AssertEvaluationCount(HomeWorkspaceModel homeWorkspace, int expected)
+        {
+            Assert.AreEqual(homeWorkspace.EvaluationCount, expected);
         }
 
         #endregion

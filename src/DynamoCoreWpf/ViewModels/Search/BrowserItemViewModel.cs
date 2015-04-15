@@ -34,15 +34,6 @@ namespace Dynamo.Wpf.ViewModels
             Model.Items.CollectionChanged += ItemsOnCollectionChanged;
         }
 
-        /// <summary>
-        /// Sort this items children and then tell its children and recurse on children
-        /// </summary>
-        public void RecursivelySort()
-        {
-            Items = new ObservableCollection<BrowserItemViewModel>(Items.OrderBy(x => x.Model.Name));
-            Items.ToList().ForEach(x => x.RecursivelySort());
-        }
-
         private void ItemsOnCollectionChanged(object sender,
             NotifyCollectionChangedEventArgs e)
         {
@@ -108,8 +99,8 @@ namespace Dynamo.Wpf.ViewModels
         private string fullCategoryName;
         private string assembly;
         private ObservableCollection<ISearchEntryViewModel> items;
-        private ObservableCollection<NodeSearchElementViewModel> entries;
-        private ObservableCollection<NodeCategoryViewModel> subCategories;
+        private readonly ObservableCollection<NodeSearchElementViewModel> entries;
+        private readonly ObservableCollection<NodeCategoryViewModel> subCategories;
         private bool visibility;
         private bool isExpanded;
         private bool isSelected;
@@ -164,34 +155,16 @@ namespace Dynamo.Wpf.ViewModels
         public ObservableCollection<ISearchEntryViewModel> Items
         {
             get { return items; }
-            set
-            {
-                if (Equals(value, items)) return;
-                items = value;
-                RaisePropertyChanged("Items");
-            }
         }
 
         public ObservableCollection<NodeSearchElementViewModel> Entries
         {
             get { return entries; }
-            set
-            {
-                if (Equals(value, entries)) return;
-                entries = value;
-                RaisePropertyChanged("Entries");
-            }
         }
 
         public ObservableCollection<NodeCategoryViewModel> SubCategories
         {
             get { return subCategories; }
-            set
-            {
-                if (Equals(value, subCategories)) return;
-                subCategories = value;
-                RaisePropertyChanged("SubCategories");
-            }
         }
 
         public bool Visibility
@@ -235,6 +208,11 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        public bool IsClassButton
+        {
+            get { return SubCategories.Count == 0; }
+        }
+
         ///<summary>
         /// Small icon for class and method buttons.
         ///</summary>
@@ -263,8 +241,8 @@ namespace Dynamo.Wpf.ViewModels
             ClickedCommand = new DelegateCommand(Expand);
 
             Name = name;
-            Entries = new ObservableCollection<NodeSearchElementViewModel>(entries);
-            SubCategories = new ObservableCollection<NodeCategoryViewModel>(subs);
+            this.entries = new ObservableCollection<NodeSearchElementViewModel>(entries.OrderBy(x => x.Name));
+            subCategories = new ObservableCollection<NodeCategoryViewModel>(subs.OrderBy(x => x.Name));
 
             foreach (var category in SubCategories)
                 category.PropertyChanged += CategoryOnPropertyChanged;
@@ -273,9 +251,8 @@ namespace Dynamo.Wpf.ViewModels
             SubCategories.CollectionChanged += OnCollectionChanged;
             SubCategories.CollectionChanged += SubCategoriesOnCollectionChanged;
 
-            Items = new ObservableCollection<ISearchEntryViewModel>(
-                Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
-                    .OrderBy(x => x.Name));
+            items = new ObservableCollection<ISearchEntryViewModel>(
+                SubCategories.Cast<ISearchEntryViewModel>().Concat(Entries));
 
             Items.CollectionChanged += ItemsOnCollectionChanged;
 
@@ -430,7 +407,7 @@ namespace Dynamo.Wpf.ViewModels
             foreach (var item in items)
                 item.PropertyChanged -= ItemOnPropertyChanged;
 
-            Items = new ObservableCollection<ISearchEntryViewModel>(
+            items = new ObservableCollection<ISearchEntryViewModel>(
                 Entries.Cast<ISearchEntryViewModel>().Concat(SubCategories)
                     .OrderBy(x => x.Name));
 
@@ -450,22 +427,36 @@ namespace Dynamo.Wpf.ViewModels
         {
             foreach (var entry in newItems)
             {
-                var first = Items.Select((x, i) => new { x.Name, Idx = i })
-                    .FirstOrDefault(
-                        x =>
-                            string.Compare(
-                                x.Name,
-                                entry.Name,
-                                StringComparison.Ordinal)
-                                >= 0);
                 // Classes must be first in any case.
                 if (entry is ClassesNodeCategoryViewModel)
+                {
                     Items.Insert(0, entry);
-                else
-                    if (first != null)
-                        Items.Insert(first.Idx, entry);
+                    continue;
+                }
+
+                var list = Items.Where(cat => !(cat is ClassesNodeCategoryViewModel));
+                var nextLargerItemIndex = FindInsertionPointByName(list, entry.Name);
+
+                // Nodecategories(i.e. namespaces) should be before members.
+                if (entry is NodeSearchElementViewModel)
+                {
+                    if (nextLargerItemIndex >= 0)
+                        Items.Insert(nextLargerItemIndex + SubCategories.Count, entry);
                     else
                         Items.Add(entry);
+                }
+                else if (entry is NodeCategoryViewModel)
+                {
+                    if (nextLargerItemIndex >= 0)
+                    {
+                        bool hasClasses = Items.FirstOrDefault() is ClassesNodeCategoryViewModel;
+
+                        var offset = hasClasses ? 1 : 0;
+                        Items.Insert(nextLargerItemIndex + offset, entry);
+                    }
+                    else
+                        Items.Insert(Items.Count - Entries.Count, entry);
+                }
             }
         }
 
@@ -485,6 +476,35 @@ namespace Dynamo.Wpf.ViewModels
 
             return iconRequest.Icon;
         }
+
+        public void InsertSubCategory(NodeCategoryViewModel newSubCategory)
+        {
+            var list = SubCategories.Where(cat => !(cat is ClassesNodeCategoryViewModel));
+            var nextLargerItemIndex = FindInsertionPointByName(list, newSubCategory.Name);
+
+            if (nextLargerItemIndex >= 0)
+            {
+                bool hasClasses = SubCategories.FirstOrDefault() is ClassesNodeCategoryViewModel;
+                var offset = hasClasses ? 1 : 0;
+                SubCategories.Insert(nextLargerItemIndex + offset, newSubCategory);
+            }
+            else
+                SubCategories.Add(newSubCategory);
+        }
+
+        internal static int FindInsertionPointByName(IEnumerable<ISearchEntryViewModel> list, string name)
+        {
+            var nextLargerItemIndex = -1; ;
+            foreach (var item in list)
+            {
+                if (string.Compare(item.Name, name, StringComparison.Ordinal) >= 0)
+                {
+                    nextLargerItemIndex = list.ToList().IndexOf(item);
+                    break;
+                }
+            }
+            return nextLargerItemIndex;
+        }
     }
 
     public class RootNodeCategoryViewModel : NodeCategoryViewModel
@@ -494,7 +514,7 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                if (classDetails == null && SubCategories.Count == 0)
+                if (classDetails == null && IsClassButton)
                 {
                     classDetails = new ClassInformationViewModel();
                     classDetails.IsRootCategoryDetails = true;

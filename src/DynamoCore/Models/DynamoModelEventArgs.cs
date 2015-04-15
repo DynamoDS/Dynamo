@@ -248,4 +248,34 @@ namespace Dynamo.Models
         }
     }
 
+    public class DeltaComputeStateEventArgs : EventArgs
+    {
+        public List<Guid> NodeGuidList;
+        public bool GraphExecuted;
+      
+        public DeltaComputeStateEventArgs(List<Guid> nodeGuidList, bool graphExecuted)
+        {
+            this.NodeGuidList = nodeGuidList;
+            this.GraphExecuted = graphExecuted;
+        }
+    }
+
+    public class SettingsMigrationEventArgs : EventArgs
+    {
+        public enum EventStatusType
+        { 
+            Invalid = 0,
+            Begin,
+            End 
+        }
+
+        public EventStatusType EventStatus;
+
+        public SettingsMigrationEventArgs(EventStatusType eventStatus)
+        {
+            EventStatus = eventStatus;
+        }
+
+    }
+
 }

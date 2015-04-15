@@ -6,6 +6,8 @@ using Dynamo.PackageManager.UI;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 
+using Dynamo.Wpf;
+
 namespace Dynamo.PackageManager
 {
     /// <summary>
@@ -19,6 +21,9 @@ namespace Dynamo.PackageManager
             packageViewModel.PublishSuccess += PackageViewModelOnPublishSuccess;
 
             InitializeComponent();
+
+            Title = string.Format(Wpf.Properties.Resources.PublishPackageViewTitle,
+                packageViewModel.DynamoViewModel.BrandingResourceProvider.ProductName);
         }
 
         private void PackageViewModelOnPublishSuccess(PublishPackageViewModel sender)

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Dynamo.Models;
+using Dynamo.Utilities;
 
 namespace Dynamo.Core.Threading
 {
@@ -81,15 +82,19 @@ namespace Dynamo.Core.Threading
                 targetedNodeId = Guid.Empty;
 
                 // Duplicate a list of all nodes for consumption later.
-                duplicatedNodeReferences = workspaceModel.Nodes.ToList();
+                var nodes = workspaceModel.Nodes.Where(n => n.IsVisible);
+                duplicatedNodeReferences = nodes.ToList();
             }
             else
             {
                 targetedNodeId = nodeModel.GUID;
 
-                // Recursively gather all upstream nodes.
+                // Recursively gather all upstream nodes. Stop 
+                // gathering if this node does not display upstream.
                 var gathered = new List<NodeModel>();
-                GatherAllUpstreamNodes(nodeModel, gathered);
+                WorkspaceUtilities.GatherAllUpstreamNodes(nodeModel,
+                    gathered, model => model.IsUpstreamVisible);
+
                 duplicatedNodeReferences = gathered;
             }
 
@@ -145,31 +150,6 @@ namespace Dynamo.Core.Threading
                 return TaskMergeInstruction.KeepThis;
 
             return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
-        }
-
-        #endregion
-
-        #region Private Class Helper Methods
-
-        private static void GatherAllUpstreamNodes(NodeModel nodeModel, List<NodeModel> gathered)
-        {
-            if ((nodeModel == null) || gathered.Contains(nodeModel))
-                return; // Look no further, node is already in the list.
-
-            gathered.Add(nodeModel); // Add to list first, avoiding re-entrant.
-
-            // Stop gathering if this node does not display
-            // upstream.
-            if (!nodeModel.IsUpstreamVisible)
-                return;
-
-            foreach (var upstreamNode in nodeModel.Inputs)
-            {
-                if (upstreamNode.Value == null)
-                    continue;
-                // Add all the upstream nodes found into the list.
-                GatherAllUpstreamNodes(upstreamNode.Value.Item2, gathered);
-            }
         }
 
         #endregion

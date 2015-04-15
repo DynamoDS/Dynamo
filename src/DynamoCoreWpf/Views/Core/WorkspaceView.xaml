@@ -139,7 +139,6 @@
             <Canvas.ContextMenu>
                 <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}"
                              Name="WorkspaceContextMenu">
-
                     <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}"
                                Name="Align">
                         <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignXAverage}"
@@ -174,6 +173,9 @@
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
                                Command="{Binding NodeToCodeCommand}" />
                     -->
+                    <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"                                 
+                               Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
+                    
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                                Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                Command="{Binding FindNodesFromSelectionCommand}" />

@@ -173,12 +173,6 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     |      
         Associative_LanguageBlock<out node>
     |
-        (. #if ENABLE_EXCEPTION_HANDLING .)
-        Associative_ExceptionBlock<out node>
-    | 
-        (. #endif .)
-        Associative_ThrowStatement<out node>
-    |
         (
             kw_break 
                 (. 
@@ -215,26 +209,6 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             )      
         )
 )
-.
-
-Associative_ThrowStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
-=
-                                (. ProtoCore.AST.AssociativeAST.ThrowNode throwNode = new ProtoCore.AST.AssociativeAST.ThrowNode(); .)
-    "throw"
-                                (. ProtoCore.AST.AssociativeAST.AssociativeNode expression; .)
-    Associative_Expression<out expression>
-                                (. throwNode.expression = expression; .)
-                                (. 
-                                    if (la.val != ";")
-                                        SynErr(Resources.SemiColonExpected);  
-                                .)
-        
-                                (. 
-                                    if (la.val != ";")
-                                        SynErr(Resources.SemiColonExpected); 
-                                .)
-    endline
-                                (. node = throwNode; .)
 .
 
 Associative_StatementList<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodelist.> 
@@ -958,8 +932,33 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
 .
 */
 
+//-----------------------------------------------------------------------------------------------------
+TypedIdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
+=
+(
+		ident
+		(. node = new IdentifierNode(t.val); .)
+		
+			{
+				'.'
+				(. ProtoCore.AST.AssociativeAST.AssociativeNode rnode = null; .)
+				ident
+				(. 
+					rnode = new IdentifierNode(t.val);
+            
+					ProtoCore.AST.AssociativeAST.IdentifierListNode bnode = new ProtoCore.AST.AssociativeAST.IdentifierListNode();
+					bnode.LeftNode = node;
+					bnode.Optr = Operator.dot;
+					bnode.RightNode = rnode;
+					node = bnode;
+					NodeUtils.SetNodeLocation(bnode, bnode.LeftNode, bnode.RightNode); 
+				.)
+			}
+		
+ ) 
+ .   
 
-
+//-----------------------------------------------------------------------------------------------------
 Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 =                           (. node = null; .)
 (
@@ -1055,37 +1054,41 @@ Associative_DecoratedIdentifier<out ProtoCore.AST.AssociativeAST.AssociativeNode
                         .)
         ':'
 
-                        (. 
-                            string ident = string.Empty;
-							int type = ProtoCore.DSASM.Constants.kInvalidIndex;
-							if (la.kind == 1)
-							{
-								if (IsIdentList())
-								{
-									Associative_IdentifierList(out node);
-									ident = node.ToString();
-								}
-								else
-								{
-						.)
-		ident
-						(.
-									ident = t.val;
-								}
-							}
-							type = core.TypeSystem.GetType(ident);
-                            if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
-                            {
-                                var unknownType = new ProtoCore.Type();
-                                unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
-                                unknownType.Name = ident; 
-                                typedVar.datatype = unknownType;
-                            }
-                            else
-                            {
-                                typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
-                            }
-                        .)
+
+            (. 
+                string strIdent = string.Empty;
+				int type = ProtoCore.DSASM.Constants.kInvalidIndex;
+			.)
+				
+				(IF (IsIdentList())
+				(
+					TypedIdentifierList<out node>
+										(.	strIdent = node.ToString(); .)
+				)
+				|
+				(
+					ident
+							(. strIdent = t.val; .)
+							
+				)
+				)
+				(.
+						type = core.TypeSystem.GetType(strIdent);
+						typedVar.TypeAlias = strIdent;
+						if (type == ProtoCore.DSASM.Constants.kInvalidIndex)
+						{
+							var unknownType = new ProtoCore.Type();
+							unknownType.UID = ProtoCore.DSASM.Constants.kInvalidIndex;
+							unknownType.Name = strIdent; 
+							typedVar.datatype = unknownType;
+						}
+						else
+						{
+							typedVar.datatype = core.TypeSystem.BuildTypeObject(type, 0);
+						}
+				.)		
+				
+	
 
         [                               
                         (. var datatype = typedVar.datatype; .)
@@ -1645,96 +1648,6 @@ Associative_RangeExpr<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 
                                         (. node = rnode; .)
     ]
-.
-//------------------------------------------------------------------------
-/*
-Associative_ForLoop<out ProtoCore.AST.AssociativeAST.AssociativeNode forLoop>
-=                                   (. 
-                                        ProtoCore.AST.AssociativeAST.AssociativeNode node;
-                                        ProtoCore.AST.AssociativeAST.ForLoopNode loop = new ProtoCore.AST.AssociativeAST.ForLoopNode(); 
-                                        List<ProtoCore.AST.AssociativeAST.AssociativeNode> forBody = null; 
-                                    .)
-    "for"                           (. NodeUtils.SetNodeStartLocation(loop, t); .)
-    '('
-        Associative_IdentifierList<out node>        (. loop.loopVar = node; .)
-    "in"
-        Associative_Expression<out node>            (. loop.expression = node; .)
-    ')'
-    '{'
-        Associative_StatementList<out forBody>  (. loop.body = forBody; .)
-    '}'                 
-                                    (.
-                                        NodeUtils.SetNodeEndLocation(loop, t);
-                                        forLoop = loop;
-                                    .)
-.
-*/
-
-Associative_TryBlock<out ProtoCore.AST.AssociativeAST.TryBlockNode tryBlockNode>
-=    
-                                    (. tryBlockNode = new ProtoCore.AST.AssociativeAST.TryBlockNode(); .)
-    "try"
-    '{'
-                                    (. List<ProtoCore.AST.AssociativeAST.AssociativeNode> tryBlockBody = null; .)
-        Associative_StatementList<out tryBlockBody>
-                                    (. tryBlockNode.body = tryBlockBody; .)
-    '}'
-.
-
-Associative_CatchFilter<out ProtoCore.AST.AssociativeAST.CatchFilterNode catchFilterNode>
-=
-                                    (. catchFilterNode = new ProtoCore.AST.AssociativeAST.CatchFilterNode(); .)
-
-    ident                       
-                                    (. 
-                                        if (IsKeyWord(t.val, true))
-                                        {
-                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
-                                        }
-
-                                        catchFilterNode.var =  ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
-                                    .)  
-    ':'
-    ident                           (. 
-                                        ProtoCore.Type exceptionType = new ProtoCore.Type()
-                                        {
-                                            Name = t.val, 
-                                            rank = 0, 
-                                        };
-                                        catchFilterNode.type = exceptionType;
-                                    .)
-.
-
-Associative_CatchBlock<out ProtoCore.AST.AssociativeAST.CatchBlockNode catchBlockNode>
-=    
-    "catch"                         (. catchBlockNode = new ProtoCore.AST.AssociativeAST.CatchBlockNode(); .)
-    "("
-                                    (. ProtoCore.AST.AssociativeAST.CatchFilterNode catchFilterNode = null; .)
-        Associative_CatchFilter<out catchFilterNode>
-                                    (. catchBlockNode.catchFilter = catchFilterNode; .)  
-    ")"
-    '{'
-                                    (. List<ProtoCore.AST.AssociativeAST.AssociativeNode> catchBlockBody = null; .)
-        Associative_StatementList<out catchBlockBody>
-                                    (. catchBlockNode.body = catchBlockBody; .)
-    '}'
-.
-
-Associative_ExceptionBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
-=
-                                    (. ProtoCore.AST.AssociativeAST.ExceptionHandlingNode exceptionNode = new ProtoCore.AST.AssociativeAST.ExceptionHandlingNode(); .)
-                                    (. ProtoCore.AST.AssociativeAST.TryBlockNode tryBlockNode; .)
-    Associative_TryBlock<out tryBlockNode>
-                                    (. exceptionNode.tryBlock = tryBlockNode; .)
-                                    (. ProtoCore.AST.AssociativeAST.CatchBlockNode catchBlockNode; .)
-    Associative_CatchBlock<out catchBlockNode>
-                                    (. exceptionNode.catchBlocks.Add(catchBlockNode); .)
-    {
-        Associative_CatchBlock<out catchBlockNode>
-                                    (. exceptionNode.catchBlocks.Add(catchBlockNode); .)
-    }
-    
-                                    (. node = exceptionNode; .)
 .
 
 //------------------------------------------------------------------------
@@ -2514,21 +2427,7 @@ Associative_IdentifierList<out ProtoCore.AST.AssociativeAST.AssociativeNode node
                                                 string rhsName = null;
                                                 ProtoCore.AST.AssociativeAST.ExprListNode dimList = null;
                                                 int dim = 0;
-                                                if (rnode is ProtoCore.AST.AssociativeAST.IdentifierNode)
-                                                {
-                                                    rhsName = rnode.Name;
-                                                    ProtoCore.AST.AssociativeAST.IdentifierNode rhsINode = rnode as ProtoCore.AST.AssociativeAST.IdentifierNode;
-                                                    if (rhsINode.ArrayDimensions != null)
-                                                    {
-                                                        dimList = ProtoCore.Utils.CoreUtils.BuildArrayExprList(rhsINode.ArrayDimensions);
-                                                        dim = dimList.list.Count;
-                                                    }
-                                                    else
-                                                    {
-                                                        dimList = new ProtoCore.AST.AssociativeAST.ExprListNode();
-                                                    }
-                                                }
-                                                else if (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
+                                                if (rnode is ProtoCore.AST.AssociativeAST.FunctionCallNode)
                                                 {
                                                     ProtoCore.AST.AssociativeAST.FunctionCallNode rhsFNode = rnode as ProtoCore.AST.AssociativeAST.FunctionCallNode;
                                                     node = ProtoCore.Utils.CoreUtils.GenerateCallDotNode(node, rhsFNode, core);

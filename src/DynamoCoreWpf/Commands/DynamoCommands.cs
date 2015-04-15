@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 using Dynamo.Models;
 
@@ -12,6 +13,7 @@ namespace Dynamo.ViewModels
     {
         // Automation related data members.
         private AutomationSettings automationSettings = null;
+        
 
         #region Automation Related Methods
 
@@ -90,7 +92,7 @@ namespace Dynamo.ViewModels
             {
                 case "OpenFileCommand":
                     this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
-                    this.VisualizationManager.UnPause();
+                    this.VisualizationManager.Start();
                     break;
 
                 case "MutateTestCommand":
@@ -114,7 +116,9 @@ namespace Dynamo.ViewModels
 
                 case "DeleteModelCommand":
                 case "CreateNodeCommand":
+                case "CreateProxyNodeCommand":
                 case "CreateNoteCommand":
+                case "CreateAnnotationCommand":
                 case "UndoRedoCommand":
                 case "ModelEventCommand":
                 case "UpdateModelValueCommand":
@@ -148,7 +152,7 @@ namespace Dynamo.ViewModels
             switch (name)
             {
                 case "OpenFileCommand":
-                    this.VisualizationManager.Pause();
+                    this.VisualizationManager.Stop();
                     break;
 
                 case "MakeConnectionCommand":
@@ -158,7 +162,9 @@ namespace Dynamo.ViewModels
                 case "RunCancelCommand":
                 case "ForceRunCancelCommand":
                 case "CreateNodeCommand":
+                case "CreateProxyNodeCommand":
                 case "CreateNoteCommand":
+                case "CreateAnnotationCommand":
                 case "SelectModelCommand":
                 case "SelectInRegionCommand":
                 case "DragSelectionCommand":

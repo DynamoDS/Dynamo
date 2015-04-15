@@ -61,6 +61,51 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;+&quot; expected.
+        /// </summary>
+        public static string add_expected {
+            get {
+                return ResourceManager.GetString("add_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;++&quot; expected.
+        /// </summary>
+        public static string addadd_expected {
+            get {
+                return ResourceManager.GetString("addadd_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;&amp;&quot; expected.
+        /// </summary>
+        public static string and_expected {
+            get {
+                return ResourceManager.GetString("and_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;&amp;&amp;&quot; expected.
+        /// </summary>
+        public static string andand_expected {
+            get {
+                return ResourceManager.GetString("andand_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;*&quot; expected.
+        /// </summary>
+        public static string asterisk_expected {
+            get {
+                return ResourceManager.GetString("asterisk_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An attribute argument must be a constant expression.
         /// </summary>
         public static string AttributeArgMustBeConstant {
@@ -70,11 +115,29 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The keyword &apos;base&apos; is expected here to call base constructor.
+        ///   Looks up a localized string similar to The keyword &apos;base&apos; is expected here to call the base class constructor.
         /// </summary>
         public static string BaseIsExpectedToCallBaseConstructor {
             get {
                 return ResourceManager.GetString("BaseIsExpectedToCallBaseConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;catch&quot; expected.
+        /// </summary>
+        public static string catch_expected {
+            get {
+                return ResourceManager.GetString("catch_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to char expected.
+        /// </summary>
+        public static string char_expected {
+            get {
+                return ResourceManager.GetString("char_expected", resourceCulture);
             }
         }
         
@@ -133,11 +196,47 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;}&quot; expected.
+        /// </summary>
+        public static string closebrace_expected {
+            get {
+                return ResourceManager.GetString("closebrace_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to closebracket expected.
+        /// </summary>
+        public static string closebracket_expected {
+            get {
+                return ResourceManager.GetString("closebracket_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;)&apos; expected - Imcomplete Closure.
         /// </summary>
         public static string CloseBracketExpected {
             get {
                 return ResourceManager.GetString("CloseBracketExpected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to closeparen expected.
+        /// </summary>
+        public static string closeparen_expected {
+            get {
+                return ResourceManager.GetString("closeparen_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;,&quot; expected.
+        /// </summary>
+        public static string comma_expected {
+            get {
+                return ResourceManager.GetString("comma_expected", resourceCulture);
             }
         }
         
@@ -151,11 +250,47 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;~\&quot; expected.
+        /// </summary>
+        public static string curvedash_expected {
+            get {
+                return ResourceManager.GetString("curvedash_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;--&quot; expected.
+        /// </summary>
+        public static string dashdash_expected {
+            get {
+                return ResourceManager.GetString("dashdash_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Determines whether two object instances are equal.
         /// </summary>
         public static string DeterminesObjectsAreEqual {
             get {
                 return ResourceManager.GetString("DeterminesObjectsAreEqual", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;/&quot; expected.
+        /// </summary>
+        public static string divider_expected {
+            get {
+                return ResourceManager.GetString("divider_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;:&quot; expected.
+        /// </summary>
+        public static string doublecolumn_expected {
+            get {
+                return ResourceManager.GetString("doublecolumn_expected", resourceCulture);
             }
         }
         
@@ -169,11 +304,74 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to endline expected.
+        /// </summary>
+        public static string endline_expected {
+            get {
+                return ResourceManager.GetString("endline_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EOF expected.
+        /// </summary>
+        public static string EOF_expected {
+            get {
+                return ResourceManager.GetString("EOF_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to equal expected.
+        /// </summary>
+        public static string equal_expected {
+            get {
+                return ResourceManager.GetString("equal_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;=&quot; expected.
+        /// </summary>
+        public static string equalmark_expected {
+            get {
+                return ResourceManager.GetString("equalmark_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;=&gt;&quot; expected.
+        /// </summary>
+        public static string equalright_expected {
+            get {
+                return ResourceManager.GetString("equalright_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to error.
+        /// </summary>
+        public static string error {
+            get {
+                return ResourceManager.GetString("error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to import {0}.
         /// </summary>
         public static string FailedToImport {
             get {
                 return ResourceManager.GetString("FailedToImport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to float expected.
+        /// </summary>
+        public static string float_expected {
+            get {
+                return ResourceManager.GetString("float_expected", resourceCulture);
             }
         }
         
@@ -187,7 +385,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A function call is not allowed to the left hand side of an assignment.
+        ///   Looks up a localized string similar to A function call is not allowed on the left hand side of an assignment.
         /// </summary>
         public static string FunctionCallCannotBeAtLeftSide {
             get {
@@ -223,6 +421,42 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to greaterequal expected.
+        /// </summary>
+        public static string greaterequal_expected {
+            get {
+                return ResourceManager.GetString("greaterequal_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to greaterthan expected.
+        /// </summary>
+        public static string greaterthan_expected {
+            get {
+                return ResourceManager.GetString("greaterthan_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;#&quot; expected.
+        /// </summary>
+        public static string hax_expected {
+            get {
+                return ResourceManager.GetString("hax_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ident expected.
+        /// </summary>
+        public static string ident_expected {
+            get {
+                return ResourceManager.GetString("ident_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Imports data from a text file containing comma separated values into two-dimensional list.
         /// </summary>
         public static string ImportFileByGivenFilePath {
@@ -241,11 +475,20 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Imports statements are not supported in CodeBlock Nodes.
+        ///   Looks up a localized string similar to Imports statements are not supported in CodeBlock Nodes, please use the Library UI instead.
         /// </summary>
         public static string ImportStatementNotSupported {
             get {
                 return ResourceManager.GetString("ImportStatementNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;in&quot; expected.
+        /// </summary>
+        public static string in_expected {
+            get {
+                return ResourceManager.GetString("in_expected", resourceCulture);
             }
         }
         
@@ -255,6 +498,366 @@ namespace ProtoCore.Properties {
         public static string InsertsAnElementIntoList {
             get {
                 return ResourceManager.GetString("InsertsAnElementIntoList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_AccessSpecifier.
+        /// </summary>
+        public static string invalid_Associative_AccessSpecifier {
+            get {
+                return ResourceManager.GetString("invalid_Associative_AccessSpecifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid_Associative_AddOp.
+        /// </summary>
+        public static string invalid_Associative_AddOp {
+            get {
+                return ResourceManager.GetString("invalid_Associative_AddOp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_BinaryOps.
+        /// </summary>
+        public static string invalid_Associative_BinaryOps {
+            get {
+                return ResourceManager.GetString("invalid_Associative_BinaryOps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_BitOp.
+        /// </summary>
+        public static string invalid_Associative_BitOp {
+            get {
+                return ResourceManager.GetString("invalid_Associative_BitOp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_classdecl.
+        /// </summary>
+        public static string invalid_Associative_classdecl {
+            get {
+                return ResourceManager.GetString("invalid_Associative_classdecl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_ComparisonOp.
+        /// </summary>
+        public static string invalid_Associative_ComparisonOp {
+            get {
+                return ResourceManager.GetString("invalid_Associative_ComparisonOp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_DecoratedIdentifier.
+        /// </summary>
+        public static string invalid_Associative_DecoratedIdentifier {
+            get {
+                return ResourceManager.GetString("invalid_Associative_DecoratedIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_Factor.
+        /// </summary>
+        public static string invalid_Associative_Factor {
+            get {
+                return ResourceManager.GetString("invalid_Associative_Factor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_FunctionalStatement.
+        /// </summary>
+        public static string invalid_Associative_FunctionalStatement {
+            get {
+                return ResourceManager.GetString("invalid_Associative_FunctionalStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_functiondecl.
+        /// </summary>
+        public static string invalid_Associative_functiondecl {
+            get {
+                return ResourceManager.GetString("invalid_Associative_functiondecl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_LanguageBlock.
+        /// </summary>
+        public static string invalid_Associative_LanguageBlock {
+            get {
+                return ResourceManager.GetString("invalid_Associative_LanguageBlock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_LogicalOp.
+        /// </summary>
+        public static string invalid_Associative_LogicalOp {
+            get {
+                return ResourceManager.GetString("invalid_Associative_LogicalOp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_MulOp.
+        /// </summary>
+        public static string invalid_Associative_MulOp {
+            get {
+                return ResourceManager.GetString("invalid_Associative_MulOp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_NameReference.
+        /// </summary>
+        public static string invalid_Associative_NameReference {
+            get {
+                return ResourceManager.GetString("invalid_Associative_NameReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_negop.
+        /// </summary>
+        public static string invalid_Associative_negop {
+            get {
+                return ResourceManager.GetString("invalid_Associative_negop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_Number.
+        /// </summary>
+        public static string invalid_Associative_Number {
+            get {
+                return ResourceManager.GetString("invalid_Associative_Number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_PostFixOp.
+        /// </summary>
+        public static string invalid_Associative_PostFixOp {
+            get {
+                return ResourceManager.GetString("invalid_Associative_PostFixOp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_Statement.
+        /// </summary>
+        public static string invalid_Associative_Statement {
+            get {
+                return ResourceManager.GetString("invalid_Associative_Statement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_UnaryExpression.
+        /// </summary>
+        public static string invalid_Associative_UnaryExpression {
+            get {
+                return ResourceManager.GetString("invalid_Associative_UnaryExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Associative_unaryop.
+        /// </summary>
+        public static string invalid_Associative_unaryop {
+            get {
+                return ResourceManager.GetString("invalid_Associative_unaryop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Hydrogen.
+        /// </summary>
+        public static string invalid_Hydrogen {
+            get {
+                return ResourceManager.GetString("invalid_Hydrogen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_addop.
+        /// </summary>
+        public static string invalid_Imperative_addop {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_addop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_assignstmt.
+        /// </summary>
+        public static string invalid_Imperative_assignstmt {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_assignstmt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_bitop.
+        /// </summary>
+        public static string invalid_Imperative_bitop {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_bitop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_decoratedIdentifier.
+        /// </summary>
+        public static string invalid_Imperative_decoratedIdentifier {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_decoratedIdentifier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_factor.
+        /// </summary>
+        public static string invalid_Imperative_factor {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_factor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_forloop.
+        /// </summary>
+        public static string invalid_Imperative_forloop {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_forloop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_functiondecl.
+        /// </summary>
+        public static string invalid_Imperative_functiondecl {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_functiondecl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_ifstmt.
+        /// </summary>
+        public static string invalid_Imperative_ifstmt {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_ifstmt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_languageblock.
+        /// </summary>
+        public static string invalid_Imperative_languageblock {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_languageblock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_logicalop.
+        /// </summary>
+        public static string invalid_Imperative_logicalop {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_logicalop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_mulop.
+        /// </summary>
+        public static string invalid_Imperative_mulop {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_mulop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_NameReference.
+        /// </summary>
+        public static string invalid_Imperative_NameReference {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_NameReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_num.
+        /// </summary>
+        public static string invalid_Imperative_num {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_num", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_PostFixOp.
+        /// </summary>
+        public static string invalid_Imperative_PostFixOp {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_PostFixOp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_relop.
+        /// </summary>
+        public static string invalid_Imperative_relop {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_relop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_stmt.
+        /// </summary>
+        public static string invalid_Imperative_stmt {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_stmt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_unaryexpr.
+        /// </summary>
+        public static string invalid_Imperative_unaryexpr {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_unaryexpr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Imperative_unaryop.
+        /// </summary>
+        public static string invalid_Imperative_unaryop {
+            get {
+                return ResourceManager.GetString("invalid_Imperative_unaryop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to invalid Import_Statement.
+        /// </summary>
+        public static string invalid_Import_Statement {
+            get {
+                return ResourceManager.GetString("invalid_Import_Statement", resourceCulture);
             }
         }
         
@@ -295,7 +898,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Candidate function could not be located on final replicated dispatch GUARD {FDD1F347-A9A6-43FB-A08E-A5E793EC3920}.
+        ///   Looks up a localized string similar to Internal error, please report: Function could not be found on final dispatch (e5235508).
         /// </summary>
         public static string kAmbigousMethodDispatch {
             get {
@@ -313,7 +916,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Variable is over indexed.
+        ///   Looks up a localized string similar to The index is outside the given range.
         /// </summary>
         public static string kArrayOverIndexed {
             get {
@@ -331,7 +934,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only character can be assigned to a position in a string.
+        ///   Looks up a localized string similar to A string must be made up of characters.
         /// </summary>
         public static string kAssignNonCharacterToString {
             get {
@@ -349,7 +952,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot call constructor &apos;{0}()&apos; in itself.
+        ///   Looks up a localized string similar to Cannot call the constructor &apos;{0}()&apos; inside itself.
         /// </summary>
         public static string kCallingConstructorInConstructor {
             get {
@@ -358,7 +961,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cannot call constructor &apos;{0}()&apos; on instance.
+        ///   Looks up a localized string similar to Cannot call the constructor &apos;{0}()&apos; on an existing object.
         /// </summary>
         public static string KCallingConstructorOnInstance {
             get {
@@ -403,7 +1006,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting double to int will cause possible information loss.
+        ///   Looks up a localized string similar to Converting a double to an int may lose information.
         /// </summary>
         public static string kConvertDoubleToInt {
             get {
@@ -421,7 +1024,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cyclic dependency detected at &apos;{0}&apos; and &apos;{1}&apos;.
+        ///   Looks up a localized string similar to A cyclic dependency exists between &apos;{0}&apos; and &apos;{1}&apos;.
         /// </summary>
         public static string kCyclicDependency {
             get {
@@ -430,7 +1033,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dereferencing a non-pointer.
+        ///   Looks up a localized string similar to Internal error, please report: Dereferencing a non-pointer. (3f47aacd).
         /// </summary>
         public static string kDeferencingNonPointer {
             get {
@@ -439,7 +1042,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exception type &apos;{0}&apos; is not defined.
+        ///   Looks up a localized string similar to The exception type &apos;{0}&apos; is not defined.
         /// </summary>
         public static string kExceptionTypeUndefined {
             get {
@@ -448,7 +1051,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to \&quot;{0}\&quot; is a keyword, can&apos;t be used as constructor name.
+        ///   Looks up a localized string similar to \&quot;{0}\&quot; is a keyword, it can&apos;t be used as constructor name.
         /// </summary>
         public static string keywordCannotBeUsedAsConstructorName {
             get {
@@ -457,7 +1060,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to \&quot;{0}\&quot; is a keyword, identifier expected.
+        ///   Looks up a localized string similar to \&quot;{0}\&quot; is a keyword, but an identifier was expected.
         /// </summary>
         public static string keywordCantBeUsedAsIdentifier {
             get {
@@ -466,7 +1069,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting other objects to a function pointer is not allowed.
+        ///   Looks up a localized string similar to Converting objects to a function pointer is not allowed.
         /// </summary>
         public static string kFailToConverToFunction {
             get {
@@ -484,7 +1087,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting other things to pointer is not allowed.
+        ///   Looks up a localized string similar to Cannot convert objects to function pointers.
         /// </summary>
         public static string kFailToConverToPointer {
             get {
@@ -538,7 +1141,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}()&apos; doesn&apos;t return at all code paths.
+        ///   Looks up a localized string similar to All paths through the method &apos;{0}()&apos; must return a value.
         /// </summary>
         public static string kFunctionNotReturnAtAllCodePaths {
             get {
@@ -574,7 +1177,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The value that used in range expression should be either integer or double.
+        ///   Looks up a localized string similar to The value used in a range expression must be a number.
         /// </summary>
         public static string kInvalidArgumentsInRangeExpression {
             get {
@@ -583,7 +1186,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Statement break causes function to abnormally return null.
+        ///   Looks up a localized string similar to Internal error, please report: Statement break causes function to abnormally return null. (6ced82a9).
         /// </summary>
         public static string kInvalidBreakForFunction {
             get {
@@ -592,7 +1195,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Statement continue cause function to abnormally return null.
+        ///   Looks up a localized string similar to Internal error, please report: Statement continue cause function to abnormally return null. (fd67aaee).
         /// </summary>
         public static string kInvalidContinueForFunction {
             get {
@@ -601,7 +1204,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cyclic dependency detected at &apos;{0}&apos; and &apos;{1}&apos;.
+        ///   Looks up a localized string similar to A cyclic dependency exists between &apos;{0}&apos; and &apos;{1}&apos;.
         /// </summary>
         public static string kInvalidStaticCyclicDependency {
             get {
@@ -610,7 +1213,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;this&apos; can only be used in member methods.
+        ///   Looks up a localized string similar to &apos;this&apos; can only be used in methods that are members of a class.
         /// </summary>
         public static string kInvalidThis {
             get {
@@ -619,7 +1222,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}()&apos; is invoked on invalid object.
+        ///   Looks up a localized string similar to Internal error, please report: Method &apos;{0}()&apos; is invoked on an invalid object. (fa006d2b).
         /// </summary>
         public static string kInvokeMethodOnInvalidObject {
             get {
@@ -646,7 +1249,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}()&apos; is inaccessible.
+        ///   Looks up a localized string similar to Method &apos;{0}()&apos; can&apos;t be reached from here.
         /// </summary>
         public static string kMethodIsInaccessible {
             get {
@@ -664,7 +1267,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method resolution failure on: {0}() - 0CD069F4-6C8A-42B6-86B1-B5C17072751B.
+        ///   Looks up a localized string similar to Internal error, please report: Method resolution failure on: {0}() - (8bc0db87).
         /// </summary>
         public static string kMethodResolutionFailure {
             get {
@@ -682,7 +1285,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One or more of the input types are not matching, please check that the right variable types are being passed to the inputs. Couldn&apos;t find a version of {0} that takes arguments of type {1}.
+        ///   Looks up a localized string similar to One or more of the input types are not matching. Couldn&apos;t find a version of {0} that takes arguments of type {1}.
         /// </summary>
         public static string kMethodResolutionFailureWithTypes {
             get {
@@ -691,7 +1294,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stack overflow caused by calling method &apos;{0}()&apos; recursively..
+        ///   Looks up a localized string similar to &apos;{0}()&apos; recursed until Dynamo ran out of memory, please add a base case..
         /// </summary>
         public static string kMethodStackOverflow {
             get {
@@ -763,7 +1366,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The amount operator cannot be used together with step operator.
+        ///   Looks up a localized string similar to An amount operator cannot be used together with a step operator.
         /// </summary>
         public static string kRangeExpressionConflictOperator {
             get {
@@ -907,6 +1510,222 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to kw_break expected.
+        /// </summary>
+        public static string kw_break_expected {
+            get {
+                return ResourceManager.GetString("kw_break_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_class expected.
+        /// </summary>
+        public static string kw_class_expected {
+            get {
+                return ResourceManager.GetString("kw_class_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_constructor expected.
+        /// </summary>
+        public static string kw_constructor_expected {
+            get {
+                return ResourceManager.GetString("kw_constructor_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_continue expected.
+        /// </summary>
+        public static string kw_continue_expected {
+            get {
+                return ResourceManager.GetString("kw_continue_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_def expected.
+        /// </summary>
+        public static string kw_def_expected {
+            get {
+                return ResourceManager.GetString("kw_def_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_else expected.
+        /// </summary>
+        public static string kw_else_expected {
+            get {
+                return ResourceManager.GetString("kw_else_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_elseif expected.
+        /// </summary>
+        public static string kw_elseif_expected {
+            get {
+                return ResourceManager.GetString("kw_elseif_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_extend expected.
+        /// </summary>
+        public static string kw_extend_expected {
+            get {
+                return ResourceManager.GetString("kw_extend_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_external expected.
+        /// </summary>
+        public static string kw_external_expected {
+            get {
+                return ResourceManager.GetString("kw_external_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_for expected.
+        /// </summary>
+        public static string kw_for_expected {
+            get {
+                return ResourceManager.GetString("kw_for_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_from expected.
+        /// </summary>
+        public static string kw_from_expected {
+            get {
+                return ResourceManager.GetString("kw_from_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_heap expected.
+        /// </summary>
+        public static string kw_heap_expected {
+            get {
+                return ResourceManager.GetString("kw_heap_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_if expected.
+        /// </summary>
+        public static string kw_if_expected {
+            get {
+                return ResourceManager.GetString("kw_if_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_import expected.
+        /// </summary>
+        public static string kw_import_expected {
+            get {
+                return ResourceManager.GetString("kw_import_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_local expected.
+        /// </summary>
+        public static string kw_local_expected {
+            get {
+                return ResourceManager.GetString("kw_local_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_native expected.
+        /// </summary>
+        public static string kw_native_expected {
+            get {
+                return ResourceManager.GetString("kw_native_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_prefix expected.
+        /// </summary>
+        public static string kw_prefix_expected {
+            get {
+                return ResourceManager.GetString("kw_prefix_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_static expected.
+        /// </summary>
+        public static string kw_static_expected {
+            get {
+                return ResourceManager.GetString("kw_static_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to kw_while expected.
+        /// </summary>
+        public static string kw_while_expected {
+            get {
+                return ResourceManager.GetString("kw_while_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to lessequal expected.
+        /// </summary>
+        public static string lessequal_expected {
+            get {
+                return ResourceManager.GetString("lessequal_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to lessthan expected.
+        /// </summary>
+        public static string lessthan_expected {
+            get {
+                return ResourceManager.GetString("lessthan_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to literal_false expected.
+        /// </summary>
+        public static string literal_false_expected {
+            get {
+                return ResourceManager.GetString("literal_false_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to literal_null expected.
+        /// </summary>
+        public static string literal_null_expected {
+            get {
+                return ResourceManager.GetString("literal_null_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to literal_true expected.
+        /// </summary>
+        public static string literal_true_expected {
+            get {
+                return ResourceManager.GetString("literal_true_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Maps a vlaue from one range to another range.
         /// </summary>
         public static string MapsValueFromOneRangeToAnotherRange {
@@ -943,6 +1762,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to neg expected.
+        /// </summary>
+        public static string neg_expected {
+            get {
+                return ResourceManager.GetString("neg_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No constructors for Attribute &apos;{0}&apos; takes {1} arguments.
         /// </summary>
         public static string NoConstructorForAttribute {
@@ -961,11 +1789,119 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to not expected.
+        /// </summary>
+        public static string not_expected {
+            get {
+                return ResourceManager.GetString("not_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to notequal expected.
+        /// </summary>
+        public static string notequal_expected {
+            get {
+                return ResourceManager.GetString("notequal_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to number expected.
+        /// </summary>
+        public static string number_expected {
+            get {
+                return ResourceManager.GetString("number_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Returns objects that are included in List1 but excluded in List2.
         /// </summary>
         public static string ObjectsContainsInList1NotInList2 {
             get {
                 return ResourceManager.GetString("ObjectsContainsInList1NotInList2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;{&quot; expected.
+        /// </summary>
+        public static string openbrace_expected {
+            get {
+                return ResourceManager.GetString("openbrace_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to openbracket expected.
+        /// </summary>
+        public static string openbracket_expected {
+            get {
+                return ResourceManager.GetString("openbracket_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to openparen expected.
+        /// </summary>
+        public static string openparen_expected {
+            get {
+                return ResourceManager.GetString("openparen_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;||&quot; expected.
+        /// </summary>
+        public static string oror_expected {
+            get {
+                return ResourceManager.GetString("oror_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to period expected.
+        /// </summary>
+        public static string period_expected {
+            get {
+                return ResourceManager.GetString("period_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pipe expected.
+        /// </summary>
+        public static string pipe_expected {
+            get {
+                return ResourceManager.GetString("pipe_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to postfixed replicationguide expected.
+        /// </summary>
+        public static string postfixed_replicationguide_expected {
+            get {
+                return ResourceManager.GetString("postfixed_replicationguide_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;^&quot; expected.
+        /// </summary>
+        public static string power_expected {
+            get {
+                return ResourceManager.GetString("power_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;private&quot; expected.
+        /// </summary>
+        public static string private_expected {
+            get {
+                return ResourceManager.GetString("private_expected", resourceCulture);
             }
         }
         
@@ -984,6 +1920,51 @@ namespace ProtoCore.Properties {
         public static string ProducesTheSetUnion {
             get {
                 return ResourceManager.GetString("ProducesTheSetUnion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;protected&quot; expected.
+        /// </summary>
+        public static string protected_expected {
+            get {
+                return ResourceManager.GetString("protected_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;public&quot; expected.
+        /// </summary>
+        public static string public_expected {
+            get {
+                return ResourceManager.GetString("public_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;?&quot; expected.
+        /// </summary>
+        public static string question_expected {
+            get {
+                return ResourceManager.GetString("question_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to rangeop expected.
+        /// </summary>
+        public static string rangeop_expected {
+            get {
+                return ResourceManager.GetString("rangeop_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;%&quot; expected.
+        /// </summary>
+        public static string reminder_expected {
+            get {
+                return ResourceManager.GetString("reminder_expected", resourceCulture);
             }
         }
         
@@ -1011,6 +1992,15 @@ namespace ProtoCore.Properties {
         public static string ReordersList {
             get {
                 return ResourceManager.GetString("ReordersList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to replicationguide_postfix expected.
+        /// </summary>
+        public static string replicationguide_postfix_expected {
+            get {
+                return ResourceManager.GetString("replicationguide_postfix_expected", resourceCulture);
             }
         }
         
@@ -1132,11 +2122,101 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to textstring expected.
+        /// </summary>
+        public static string textstring_expected {
+            get {
+                return ResourceManager.GetString("textstring_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to this symbol not expected in Associative_NonAssignmentStatement.
+        /// </summary>
+        public static string this_symbo_no_expected_in_Associative_NonAssignmentStatement {
+            get {
+                return ResourceManager.GetString("this_symbo_no_expected_in_Associative_NonAssignmentStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to this symbol not expected in Associative_FunctionalStatement.
+        /// </summary>
+        public static string this_symbol_no_expected_in_Associative_FunctionalStatement {
+            get {
+                return ResourceManager.GetString("this_symbol_no_expected_in_Associative_FunctionalStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to this symbol not expected in Associative_FunctionalStatement.
+        /// </summary>
+        public static string this_symbol_not_expected_in_Associative_FunctionalStatement {
+            get {
+                return ResourceManager.GetString("this_symbol_not_expected_in_Associative_FunctionalStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to this symbol not expected in Associative_FunctionCallStatement.
+        /// </summary>
+        public static string this_symbol_not_expected_in_Associative_FunctionCallStatement {
+            get {
+                return ResourceManager.GetString("this_symbol_not_expected_in_Associative_FunctionCallStatement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to this symbol not expected in Associative_Statement.
+        /// </summary>
+        public static string this_symbol_not_expected_in_Associative_Statement {
+            get {
+                return ResourceManager.GetString("this_symbol_not_expected_in_Associative_Statement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to this symbol not expected in Import_Statement.
+        /// </summary>
+        public static string this_symbol_not_expected_in_Import_Statement {
+            get {
+                return ResourceManager.GetString("this_symbol_not_expected_in_Import_Statement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to throw expected.
+        /// </summary>
+        public static string throw_expected {
+            get {
+                return ResourceManager.GetString("throw_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Too many characters in character literal.
         /// </summary>
         public static string TooManyCharacters {
             get {
                 return ResourceManager.GetString("TooManyCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ??? expected.
+        /// </summary>
+        public static string triquestionmark_expected {
+            get {
+                return ResourceManager.GetString("triquestionmark_expected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;try&quot; expected.
+        /// </summary>
+        public static string try_expected {
+            get {
+                return ResourceManager.GetString("try_expected", resourceCulture);
             }
         }
         

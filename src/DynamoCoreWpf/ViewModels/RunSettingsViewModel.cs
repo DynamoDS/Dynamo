@@ -43,7 +43,7 @@ namespace Dynamo.Wpf.ViewModels
 
         public string Name
         {
-            get { return RunType.ToString(); }
+            get { return Resources.ResourceManager.GetString(RunType.ToString()); }
         }
 
         public string ToolTipText
@@ -278,12 +278,14 @@ namespace Dynamo.Wpf.ViewModels
             workspaceViewModel.StopPeriodicTimerCommand.Execute(null);
             switch (Model.RunType)
             {
-                case RunType.Manual:
+                case RunType.Manual:                    
                     return;
                 case RunType.Automatic:
+                    dynamoViewModel.ShowRunPreview = false;
                     RunExpressionCommand.Execute(true);
                     return;
                 case RunType.Periodic:
+                    dynamoViewModel.ShowRunPreview = false;
                     workspaceViewModel.StartPeriodicTimerCommand.Execute(null);
                     return;
             }

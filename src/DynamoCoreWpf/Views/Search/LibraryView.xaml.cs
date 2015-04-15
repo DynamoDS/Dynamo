@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -135,8 +136,7 @@ namespace Dynamo.UI.Views
             var selectedElement = e.OriginalSource as FrameworkElement;
             var selectedClass = selectedElement.DataContext as NodeCategoryViewModel;
             // Continue work with real class: not null, not ClassInformationViewModel.
-            if (selectedClass == null || selectedClass is ClassInformationViewModel ||
-                selectedClass.SubCategories.Count > 0)
+            if (selectedClass == null || selectedClass is ClassInformationViewModel)
                 return;
 
             // Go through all available for current top category LibraryWrapPanel.
@@ -146,10 +146,89 @@ namespace Dynamo.UI.Views
             {
                 if (wrapPanel.MakeOrClearSelection(selectedClass))
                 {
-                    e.Handled = true;
+                    // If class button was clicked, then handle, otherwise leave it.
+                    e.Handled = selectedClass.IsClassButton;
                     selectedElement.BringIntoView();
                 }
             }
+
+            ExpandCategory(categoryButton.Items.OfType<NodeCategoryViewModel>(), selectedClass);
+
+            e.Handled = !(selectedClass is RootNodeCategoryViewModel);
+        }
+
+
+        private bool ExpandCategory(IEnumerable<NodeCategoryViewModel> categories, NodeCategoryViewModel selectedClass)
+        {
+            bool foundSelectedClass = false;
+
+            // Get all current expanded categories.
+            var allExpandedCategories = categories.Where(cat =>
+            {
+                return cat.IsExpanded && (!(cat is ClassesNodeCategoryViewModel));
+
+            }).ToList();
+            var categoryToBeExpanded = categories.FirstOrDefault(cat => cat == selectedClass);
+
+            // If categoryToBeExpanded is null, that means the clicked item does not
+            // represent a category button, but a class button. In the recursive call 
+            // the category in which this clicked class belong will be identified.
+            if (categoryToBeExpanded != null)
+            {
+                categoryToBeExpanded.IsExpanded = !categoryToBeExpanded.IsExpanded;
+                foundSelectedClass = true;
+            }
+
+            // Get expanded categories that should be collapsed.
+            allExpandedCategories.Remove(categoryToBeExpanded);
+
+            // Close all expanded categories except the one that contains the target
+            // class button. If the clicked NodeCategoryViewModel represents a category
+            // itself, then expand it and close out other sibling NodeCategoryViewModel.
+            foreach (var expandedCategory in allExpandedCategories)
+            {
+                var searchFurtherInNextLevel = true;
+
+                // If class button was clicked.
+                if (selectedClass.IsClassButton)
+                {
+                    var categoryClasses = expandedCategory.Items[0] as ClassesNodeCategoryViewModel;
+                    if (categoryClasses != null) // There are classes under this category...
+                    {
+                        if (expandedCategory.IsClassButton)
+                        {
+                            // If the category does not contain any sub category, 
+                            // then we won't look for the selected class within it.
+                            expandedCategory.IsExpanded = false;
+                            searchFurtherInNextLevel = false;
+                        }
+                        else if (categoryClasses.Items.Contains(selectedClass))
+                        {
+                            // If the category contains the selected class directly 
+                            // within, then keep it expanded instead of collapsing it.
+                            expandedCategory.IsExpanded = true;
+
+                            // Found the selected class! Collapse all other sub categories.
+                            foreach (var ele in expandedCategory.SubCategories)
+                                ele.IsExpanded = false;
+
+                            searchFurtherInNextLevel = false;
+                        }
+                    }
+                }
+
+                if (searchFurtherInNextLevel)
+                {
+                    var childCategories = expandedCategory.Items.OfType<NodeCategoryViewModel>();
+                    expandedCategory.IsExpanded = ExpandCategory(childCategories, selectedClass);
+                }
+
+                // If the category remains expanded after this, we can 
+                // be sure that the selected class was found within it.
+                foundSelectedClass = foundSelectedClass || expandedCategory.IsExpanded;
+            }
+
+            return foundSelectedClass;
         }
 
         private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
@@ -166,7 +245,7 @@ namespace Dynamo.UI.Views
         // here to ignore the immediate mouse-enter event.
         private void OnExpanderButtonMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if ((sender as Button).DataContext is NodeSearchElement)
+            if ((sender as Button).DataContext is NodeCategoryViewModel)
             {
                 libraryToolTipPopup.SetDataContext(null, true);
                 ignoreMouseEnter = true;

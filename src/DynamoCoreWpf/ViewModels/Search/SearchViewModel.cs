@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using Dynamo.Interfaces;
 using Dynamo.Nodes;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
@@ -54,7 +55,7 @@ namespace Dynamo.ViewModels
 
         #region Properties/Fields
 
-        private IconServices iconServices = new IconServices();
+        private readonly IconServices iconServices;
 
         /// <summary>
         ///     Maximum number of items to show in search.
@@ -136,15 +137,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool SearchAddonsVisibility
-        {
-            get
-            {
-                // TODO(Vladimir): uncomment when Addons are shown.
-                return false;//AddonRootCategories.Any(cat => cat.Visibility);
-            }
-        }
-
         public enum ViewMode { LibraryView, LibrarySearchView };
 
         /// <summary>
@@ -204,6 +196,12 @@ namespace Dynamo.ViewModels
         {
             Model = model;
             this.dynamoViewModel = dynamoViewModel;
+
+            IPathManager pathManager = null;
+            if (dynamoViewModel != null && (dynamoViewModel.Model != null))
+                pathManager = dynamoViewModel.Model.PathManager;
+
+            iconServices = new IconServices(pathManager);
 
             MaxNumSearchResults = 15;
 
@@ -280,7 +278,7 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in tree)
             {
-                var classes = item.SubCategories.Where(cat => cat.SubCategories.Count == 0).ToList();
+                var classes = item.SubCategories.Where(cat => cat.IsClassButton).ToList();
                 foreach (var item2 in classes)
                     item.SubCategories.Remove(item2);
 
@@ -476,7 +474,7 @@ namespace Dynamo.ViewModels
                     // New category should be added to existing ClassesNodeCategoryViewModel.
                     // Make notice: ClassesNodeCategoryViewModel is always first item in 
                     // all subcategories.
-                    if (nameStack.Count == 0 && target.SubCategories.Count > 0 &&
+                    if (nameStack.Count == 0 && !target.IsClassButton &&
                         target.SubCategories[0] is ClassesNodeCategoryViewModel)
                     {
                         target.SubCategories[0].SubCategories.Add(newTarget);
@@ -493,25 +491,26 @@ namespace Dynamo.ViewModels
                         if (targetClass.SubCategories.Remove(target))
                             targetClass.Parent.SubCategories.Add(target);
                         // Delete empty classes container.
-                        if (targetClass.SubCategories.Count == 0)
+                        if (targetClass.IsClassButton)
                             targetClass.Parent.SubCategories.RemoveAt(0);
 
                         targetClass.Dispose();
-
-                        // Situation when we need to add only one new category and item.
-                        // Before adding of it we need create new ClassesNodeCategoryViewModel
-                        // as soon as new category will be a class.
-                        if (nameStack.Count == 0)
-                        {
-                            targetClass = new ClassesNodeCategoryViewModel(target);
-
-                            target.SubCategories.Add(targetClass);
-                            target = targetClass;
-                        }
                     }
 
-                    target.SubCategories.Add(newTarget);
-                    target.SubCategories = new ObservableCollection<NodeCategoryViewModel>(target.SubCategories.OrderBy(x => x.Name));
+                    // Situation when we need to add only one new category and item.
+                    // Before adding of it we need create new ClassesNodeCategoryViewModel
+                    // as soon as new category will be a class.
+                    if (nameStack.Count == 0 && !targetIsRoot)
+                    {
+                        targetClass = new ClassesNodeCategoryViewModel(target);
+
+                        target.SubCategories.Insert(0,targetClass);
+                        target.SubCategories[0].SubCategories.Add(newTarget);
+                        AddEntryToExistingCategory(newTarget, entry);
+                        return;
+                    }
+
+                    target.InsertSubCategory(newTarget);
 
                     // Proceed to insert the new entry under 'newTarget' category with the remaining 
                     // name stack. In the first iteration this would have been 'MyNamespace.MyClass'.
@@ -765,7 +764,7 @@ namespace Dynamo.ViewModels
                 newTarget = target.SubCategories.FirstOrDefault(c => c.Name == currentCategory);
                 if (newTarget == null)
                 {
-                    if (!isCheckedForClassesCategory && target.SubCategories.Count > 0 &&
+                    if (!isCheckedForClassesCategory && !target.IsClassButton &&
                         target.SubCategories[0] is ClassesNodeCategoryViewModel)
                     {
                         isCheckedForClassesCategory = true;

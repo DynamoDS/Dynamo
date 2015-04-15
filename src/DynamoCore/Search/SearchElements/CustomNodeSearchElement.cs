@@ -97,7 +97,7 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        protected override List<Tuple<string, string>> GenerateInputParameters()
+        protected override IEnumerable<Tuple<string, string>> GenerateInputParameters()
         {
             TryLoadDocumentation();
 
@@ -107,7 +107,7 @@ namespace Dynamo.Search.SearchElements
             return inputParameters;
         }
 
-        protected override List<string> GenerateOutputParameters()
+        protected override IEnumerable<string> GenerateOutputParameters()
         {
             TryLoadDocumentation();
 

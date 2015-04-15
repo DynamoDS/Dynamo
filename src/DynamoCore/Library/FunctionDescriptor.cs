@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
+using Dynamo.Interfaces;
 using Dynamo.Library;
 
 using ProtoCore.DSASM;
@@ -21,6 +21,12 @@ namespace Dynamo.DSEngine
         ///     Name to be displayed for the function.
         /// </summary>
         string DisplayName { get; }
+
+        /// <summary>
+        ///     An unique name to identify a function. It is used to create 
+        ///     a corresponding node instance
+        /// </summary>
+        string MangledName { get; }
 
         /// <summary>
         ///     Return keys for multi-output functions.
@@ -57,7 +63,9 @@ namespace Dynamo.DSEngine
         public ProtoCore.Type ReturnType { get; set; }
         public FunctionType FunctionType { get; set; }
         public bool IsVisibleInLibrary { get; set; }
+        public bool CanUpdatePeriodically { get; set; }
         public IEnumerable<string> ReturnKeys { get; set; }
+        public IPathManager PathManager { get; set; }
         public bool IsVarArg { get; set; }
     }
 
@@ -71,9 +79,12 @@ namespace Dynamo.DSEngine
         /// </summary>
         private string summary;
 
+        private readonly IPathManager pathManager;
+
         public FunctionDescriptor(FunctionDescriptorParams funcDescParams)
         {
             summary = funcDescParams.Summary;
+            pathManager = funcDescParams.PathManager;
             Assembly = funcDescParams.Assembly;
             ClassName = funcDescParams.ClassName;
             FunctionName = funcDescParams.FunctionName;
@@ -81,9 +92,9 @@ namespace Dynamo.DSEngine
             Parameters = funcDescParams.Parameters.Select(
                 x =>
                 {
-                    x.Function = this;
+                    x.UpdateFunctionDescriptor(this);
                     return x;
-                });
+                }).ToList();
 
             var type = funcDescParams.FunctionType;
             var inputParameters = new List<Tuple<string, string>>();
@@ -109,6 +120,7 @@ namespace Dynamo.DSEngine
             IsVarArg = funcDescParams.IsVarArg;
             IsVisibleInLibrary = funcDescParams.IsVisibleInLibrary;
             ObsoleteMessage = funcDescParams.ObsoleteMsg;
+            CanUpdatePeriodically = funcDescParams.CanUpdatePeriodically;
         }
 
         public bool IsOverloaded { get; set; }
@@ -309,6 +321,11 @@ namespace Dynamo.DSEngine
         /// </summary>
         public bool IsVisibleInLibrary { get; private set; }
 
+        /// <summary>
+        /// This attribute sets whether the function enables periodic update of the workspace.
+        /// </summary>
+        public bool CanUpdatePeriodically { get; private set; }
+
         public string UnqualifedClassName
         {
             get
@@ -333,6 +350,8 @@ namespace Dynamo.DSEngine
             }
         }
 
+        public IPathManager PathManager { get { return pathManager; } }
+
         public override bool Equals(object obj)
         {
             if (null == obj || GetType() != obj.GetType())
@@ -355,7 +374,7 @@ namespace Dynamo.DSEngine
                     : LibraryServices.Categories.BuiltIns;
             }
 
-            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly);
+            LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly, pathManager);
 
             if (cust != null)
             {

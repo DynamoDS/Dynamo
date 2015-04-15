@@ -8,19 +8,24 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using ProtoCore.DSASM;
 using Dynamo.Models;
-using ProtoCore.Namespace;
 using DynCmd = Dynamo.Models.DynamoModel;
 using ProtoCore.Mirror;
-using Dynamo.DSEngine;
 using ProtoCore.Utils;
 using Dynamo.DSEngine.CodeCompletion;
 using Dynamo.UI;
-using System.Xml;
 
 namespace Dynamo.Tests
 {
     class CodeBlockNodeTests : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            
+            base.GetLibrariesToPreload(libraries);
+        }
+
 #if false
         [Test]
         public void TestVariableClass()
@@ -200,6 +205,39 @@ b = c[w][x][y][z];";
         protected double tolerance = 1e-4;
 
         [Test]
+        [Category("UnitTests")]
+        public void TestDefenitionLineIndexMap()
+        {
+            var codeBlockNodeOne = CreateCodeBlockNode();
+
+            var indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
+
+            Assert.IsNotNull(indexMap);
+            Assert.IsEmpty(indexMap);
+
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0;");
+
+            indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
+            Assert.AreEqual("a", indexMap.ElementAt(0).Key);
+            Assert.AreEqual(1, indexMap.ElementAt(0).Value);
+
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n a = 1;");
+
+            indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
+            Assert.AreEqual("a", indexMap.ElementAt(0).Key);
+            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+
+            UpdateCodeBlockNodeContent(codeBlockNodeOne, "a = 0; \n b = 1; \n a = 2;");
+
+            indexMap = CodeBlockUtils.GetDefinitionLineIndexMap(codeBlockNodeOne.CodeStatements);
+            Assert.AreEqual("b", indexMap.ElementAt(0).Key);
+            Assert.AreEqual(2, indexMap.ElementAt(0).Value);
+            Assert.AreEqual("a", indexMap.ElementAt(1).Key);
+            Assert.AreEqual(3, indexMap.ElementAt(1).Value);
+
+        }
+
+        [Test]
         [Category("RegressionTests")]
         public void Defect_MAGN_1045()
         {
@@ -301,7 +339,7 @@ b = c[w][x][y][z];";
         [Category("RegressionTests")]
         public void Defect_MAGN_784()
         {
-            string openPath = Path.Combine(GetTestDirectory(), @"core\dsevaluation\Defect_MAGN_784.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\dsevaluation\Defect_MAGN_784.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
             Assert.IsFalse(ViewModel.Model.CurrentWorkspace.CanUndo);
@@ -788,7 +826,7 @@ b = c[w][x][y][z];";
         [Test]
         public void TypedIdentifier_AssignedToDifferentType_ThrowsWarning2()
         {
-            string openPath = Path.Combine(GetTestDirectory(),
+            string openPath = Path.Combine(TestDirectory,
                 @"core\dsevaluation\typedIdentifier_warning.dyn");
 
             var dynamoModel = ViewModel.Model;
@@ -881,7 +919,7 @@ b = c[w][x][y][z];";
         {
             if (libraryServicesCore != null)
             {
-                libraryServicesCore.__TempCoreHostForRefactoring.Cleanup();
+                libraryServicesCore.Cleanup();
                 libraryServicesCore = null;
             }
         }
@@ -1157,8 +1195,9 @@ b = c[w][x][y][z];";
             // Expected 4 completion items
             Assert.AreEqual(4, completions.Count());
 
-            string[] expected = {"DummyPoint", "FFITarget.DesignScript.Point",
-                                    "FFITarget.Dynamo.Point", "UnknownPoint"};
+            string[] expectedValues = {"DummyPoint", "DesignScript.Point",
+                                    "Dynamo.Point", "UnknownPoint"};
+            var expected = expectedValues.OrderBy(x => x);
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);
@@ -1217,7 +1256,7 @@ b = c[w][x][y][z];";
             // Expected 1 completion items
             Assert.AreEqual(1, completions.Count());
 
-            string[] expected = { "FFITarget.FirstNamespace.AnotherClassWithNameConflict" };
+            string[] expected = { "AnotherClassWithNameConflict" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

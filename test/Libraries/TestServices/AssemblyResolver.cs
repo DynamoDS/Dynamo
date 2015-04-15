@@ -9,44 +9,38 @@ using DynamoUtilities;
 
 namespace TestServices
 {
-    public static class AssemblyResolver
+    public class AssemblyResolver
     {
-        private static bool resolverSetup;
+        private AssemblyHelper assemblyHelper;
 
         /// <summary>
         /// Setup the assembly resolver using the base path 
         /// specified in the config file.
         /// </summary>
-        public static void Setup()
+        public void Setup()
         {
-            if (resolverSetup) return;
-
-            var remoteConfig = new RemoteTestSessionConfig();
-            DynamoPathManager.Instance.InitializeCore(remoteConfig.DynamoCorePath);
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
-
-            resolverSetup = true;
+            Setup((new TestSessionConfiguration()).DynamoCorePath);
         }
 
         /// <summary>
         /// Setup the assembly resolver, specifying a core path.
         /// </summary>
         /// <param name="corePath"></param>
-        public static void Setup(string corePath)
+        public void Setup(string corePath)
         {
-            if (resolverSetup) return;
+            if (assemblyHelper != null) return;
 
-            DynamoPathManager.Instance.InitializeCore(corePath);
-            AppDomain.CurrentDomain.AssemblyResolve += AssemblyHelper.ResolveAssembly;
-
-            resolverSetup = true;
+            assemblyHelper = new AssemblyHelper(corePath, null);
+            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
-        public static string GetDynamoRootDirectory()
+        public void TearDown()
         {
-            var assemPath = Assembly.GetExecutingAssembly().Location;
-            var assemDir = new DirectoryInfo(Path.GetDirectoryName(assemPath));
-            return assemDir.Parent.FullName;
+            if (assemblyHelper == null)
+                return;
+
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
+            assemblyHelper = null;
         }
 
     }

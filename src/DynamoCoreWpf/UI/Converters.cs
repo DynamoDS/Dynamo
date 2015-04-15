@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
@@ -236,16 +237,12 @@ namespace Dynamo.Controls
     // (these properties are also to be bound in the exact order as stated here):
     // 
     //      SearchViewModel.SearchRootCategories.Count (int)
-    //      SearchViewModel.SearchAddonsVisibility (bool)
     //      SearchViewModel.SearchText (string)
-    //
-    // Rewrite converter when Addons treeview will be visible.
-    // Task: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6226.
     public class SearchResultsToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[2] as string))
+            if (values[0] is int && (int)values[0] == 0 && !string.IsNullOrEmpty(values[1] as string))
             {
                 return Visibility.Visible;
             }
@@ -296,13 +293,14 @@ namespace Dynamo.Controls
         }
     }
 
-    public class SnapRegionMarginConverter : IValueConverter
+    public class SnapRegionMarginConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
+        public object Convert(object[] values, Type targetType, object parameter,
           CultureInfo culture)
         {
             Thickness thickness = new Thickness(0, 0, 0, 0);
-            PortModel port = value as PortModel;
+            var actualWidth = (double)values[0];
+            PortModel port = values[1] as PortModel;
             if (port != null)
             {
                 PortType type = port.PortType;
@@ -313,33 +311,61 @@ namespace Dynamo.Controls
                 switch (type)
                 {
                     case PortType.Input:
-                        thickness = new Thickness(left - 25, top + 3, right + 0, bottom + 3);
+                        thickness = new Thickness(left - 25, top + 3, right + actualWidth, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom - 10);
+                            thickness = new Thickness(left - 25, top - 10, right + actualWidth, bottom - 10);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
-                            thickness = new Thickness(left - 25, top - 10, right + 0, bottom + 3);
+                            thickness = new Thickness(left - 25, top - 10, right + actualWidth, bottom + 3);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left - 25, top + 3, right + 0, bottom - 10);
+                            thickness = new Thickness(left - 25, top + 3, right + actualWidth, bottom - 10);
                         break;
 
                     case PortType.Output:
-                        thickness = new Thickness(left + 0, top + 3, right - 25, bottom + 3);
+                        thickness = new Thickness(left + actualWidth, top + 3, right - 25, bottom + 3);
                         if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top | SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left + 0, top - 10, right - 25, bottom - 10);
+                            thickness = new Thickness(left + actualWidth, top - 10, right - 25, bottom - 10);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Top))
-                            thickness = new Thickness(left + 0, top - 10, right - 25, bottom + 3);
+                            thickness = new Thickness(left + actualWidth, top - 10, right - 25, bottom + 3);
                         else if (port.extensionEdges.HasFlag(SnapExtensionEdges.Bottom))
-                            thickness = new Thickness(left + 0, top + 3, right - 25, bottom - 10);
+                            thickness = new Thickness(left + actualWidth, top + 3, right - 25, bottom - 10);
                         break;
                 }
             }
             return thickness;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter,
+        public object[] ConvertBack(object value, Type[] targetType, object parameter,
          CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null;
+        }
+    }
+
+    public class RunPreviewConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var runEnabled = (bool)value;
+            return runEnabled;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class RunPreviewToolTipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var dynamicRunEnabled = (bool)value;
+            return dynamicRunEnabled ? Resources.ShowRunPreviewDisableToolTip : Resources.ShowRunPreviewEnableToolTip;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
         }
     }
 
@@ -482,6 +508,86 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToBrushConverter : IValueConverter
+    {
+        public SolidColorBrush ExecutionPreviewBrush { get; set; }
+        public SolidColorBrush NoneBrush { get; set; }
+        public SolidColorBrush SelectionBrush { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return ExecutionPreviewBrush;
+                case PreviewState.None:
+                    return NoneBrush;
+                case PreviewState.Selection:
+                    return SelectionBrush;
+                default:
+                    return NoneBrush;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToColorConverter : IValueConverter
+    {
+        public Color ExecutionPreview { get; set; }
+        public Color None { get; set; }
+        public Color Selection { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return ExecutionPreview;
+                case PreviewState.None:
+                    return None;
+                case PreviewState.Selection:
+                    return Selection;
+                default:
+                    return None;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class ConnectionStateToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var state = (PreviewState)value;
+            switch (state)
+            {
+                case PreviewState.ExecutionPreview:
+                    return Visibility.Visible;
+                case PreviewState.None:
+                    return Visibility.Collapsed;
+                case PreviewState.Selection:
+                    return Visibility.Visible;
+                default:
+                    return Visibility.Collapsed;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
@@ -1473,13 +1579,13 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //source -> target
-            return value == null ? "" : HttpUtility.HtmlDecode(value.ToString());
+            return value == null ? "" : value.ToString(); 
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //target -> source
-            return HttpUtility.HtmlEncode(value.ToString());
+            return value.ToString();
         }
     }
 
@@ -1653,9 +1759,14 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value != true) return Resources.AboutWindowUpToDate;
+            var um = value as IUpdateManager;
+            if (um == null)
+                return Resources.AboutWindowCannotGetVersion;
 
-            var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
+            if (!um.IsUpdateAvailable) 
+                return Resources.AboutWindowUpToDate;
+            
+            var latest = um.AvailableVersion;
 
             return latest != null ? latest.ToString() : Resources.AboutWindowCannotGetVersion;
         }
@@ -1874,21 +1985,6 @@ namespace Dynamo.Controls
         }
     }
 
-    // Used in addons treeview. Element, that is just under root shouldn't have dotted line at the left side.
-    public class HasParentRootElement : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return (value is RootNodeCategoryViewModel);
-        }
-
-        public object ConvertBack(
-            object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class NullValueToCollapsedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2016,7 +2112,7 @@ namespace Dynamo.Controls
         }
     }
 
-    // This converter is used to show text label of Addon type in AddonsTreeView control.
+    // This converter is used to show text label of Addon type.
     public class ElementTypeToShorthandConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -2049,4 +2145,37 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public class MenuItemCheckConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var fontsize = System.Convert.ToDouble(value);
+            var param = System.Convert.ToDouble(parameter);
+
+            return fontsize == param;            
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class AnnotationTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value == null ? String.Empty:value.ToString();             
+            return text;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value.ToString();           
+            return text;
+        }
+    }
+
+    
 }

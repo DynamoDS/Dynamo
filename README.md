@@ -19,6 +19,51 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 
 ## Releases ##
 
+### 0.8.0 ###
+
+#### New Features
+User interface:  
+- More visually understandable and scannable node functionality with icons in the node library
+- Expanded tooltip information in the node browser
+- Improved keyword search capabilities
+
+Custom Nodes: 
+- Lacing for Custom Nodes
+- Default Values for Custom Nodes
+- Type input tooltips for Custom Nodes
+
+Localization:
+- Unicode (Special Character) handling in Code Block Nodes and Data exchanged with other applications (like getting and setting Revit parameters)
+
+Geometry
+- Fillet and Chamfer for Solids and Polysurfaces
+- New Mesh tools available on the Package Manager from MeshToolkit
+
+Units
+- Overhaul of the existing 0.7 Units handling for more legible interactions.  Details here:  http://dynamobim.com/units-in-dynamo-0-8-2/
+
+Run Auto
+- default state for new documents
+- Run state is now saved per file (rather that set per session)
+
+Development
+- Revit libraries have been seperated out and now live in their own repository: https://github.com/DynamoDS/DynamoRevit
+- Refactoring to provide a strong separation between what a Dynamo graph is and how it is displayed. This makes it easier for users to write powerful nodes, and for us to move the Dynamo platform forwards. https://github.com/DynamoDS/Dynamo/pull/3449 
+
+#### Fixes:
+Namespace Collisions:
+- Existing Code Block Nodes no longer affected by name collisions with functions that come from installed packages. For instance, Point.ByCoordinates in a Code Block Node was affected by a collision with a Point. operation in the popular Rhynamo package and would throw an error saying “Warning: Dereferencing a non-pointer. Dereferencing a non-pointer.” 
+
+Hardware Acceleration in Revit 2015
+- Hardware Acceleration was turned off when running in Revit 2015.  Graphic speed and clarity is greatly improved
+
+#### Notes:
+- 0.8 is in a new folder structure to enable side by side installs with 0.7.  There is a one time only copy/paste of existing Packages from the 0.7 folder to 0.8 for your convenience
+
+#### Known Issues
+- Current list of [known issues](https://github.com/DynamoDS/Dynamo/wiki/Known-Issues)
+
+
 ###0.7.5 ###
 
 #### New Features

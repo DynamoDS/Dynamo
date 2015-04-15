@@ -39,7 +39,13 @@ namespace Dynamo.DSEngine
 
         private readonly List<string> importedLibraries = new List<string>();
 
-        public readonly ProtoCore.Core LibraryManagementCore;
+        private readonly IPathManager pathManager;
+        public ProtoCore.Core LibraryManagementCore{get; private set;}
+        private ProtoCore.Core liveRunnerCore = null;
+        public void SetLiveCore(ProtoCore.Core core)
+        {
+            liveRunnerCore = core;
+        }
 
         private class UpgradeHint
         {
@@ -60,11 +66,26 @@ namespace Dynamo.DSEngine
         private readonly Dictionary<string, UpgradeHint> priorNameHints =
             new Dictionary<string, UpgradeHint>();
 
-        public LibraryServices(ProtoCore.Core libraryManagementCore)
+        /// <summary>
+        /// Copy properties from the liveCore
+        /// The properties to copy are only those used by the library core
+        /// </summary>
+        public void UpdateLibraryCoreData()
+        {
+            // If a liverunner core is provided, sync the library core data
+            if (liveRunnerCore != null)
+            {
+                LibraryManagementCore.ProcTable = new ProtoCore.DSASM.ProcedureTable(liveRunnerCore.ProcTable);
+                LibraryManagementCore.ClassTable = new ProtoCore.DSASM.ClassTable(liveRunnerCore.ClassTable);
+            }
+        }
+
+        public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
             LibraryManagementCore = libraryManagementCore;
+            this.pathManager = pathManager;
 
-            PreloadLibraries();
+            PreloadLibraries(pathManager.PreloadedLibraries);
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
@@ -106,9 +127,9 @@ namespace Dynamo.DSEngine
         public event EventHandler<LibraryLoadFailedEventArgs> LibraryLoadFailed;
         public event EventHandler<LibraryLoadedEventArgs> LibraryLoaded;
 
-        private void PreloadLibraries()
+        private void PreloadLibraries(IEnumerable<string> preloadLibraries)
         {
-            importedLibraries.AddRange(DynamoPathManager.Instance.PreloadLibraries);
+            importedLibraries.AddRange(preloadLibraries);
 
             foreach (var library in importedLibraries)
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
@@ -354,7 +375,7 @@ namespace Dynamo.DSEngine
                 return false;
             }
 
-            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref library))
+            if (!pathManager.ResolveLibraryPath(ref library))
             {
                 string errorMessage = string.Format(Properties.Resources.LibraryPathCannotBeFound, library);
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, errorMessage));
@@ -374,6 +395,7 @@ namespace Dynamo.DSEngine
                 int classNumber = classTable.ClassNodes.Count;
 
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
+
 
                 if (LibraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
@@ -408,7 +430,11 @@ namespace Dynamo.DSEngine
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
                 return false;
             }
+
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+
+            // After a library is loaded, update the library core data with the liveRunner core data
+            UpdateLibraryCoreData();
             return true;
         }
 
@@ -417,7 +443,7 @@ namespace Dynamo.DSEngine
         {
             string fullLibraryName = library;
 
-            if (!DynamoPathManager.Instance.ResolveLibraryPath(ref fullLibraryName))
+            if (!pathManager.ResolveLibraryPath(ref fullLibraryName))
                 return;
 
             string migrationsXMLFile = Path.Combine(Path.GetDirectoryName(fullLibraryName),
@@ -570,6 +596,11 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
+            if (LibraryManagementCore == null)
+                return;
+            if (LibraryManagementCore.CodeBlockList.Count <= 0)
+                return;
+
             var builtins = LibraryManagementCore.CodeBlockList[0]
                                                 .procedureTable
                                                 .procList
@@ -595,6 +626,7 @@ namespace Dynamo.DSEngine
                                                                 FunctionName = method.name,
                                                                 Summary = description,
                                                                 Parameters = arguments,
+                                                                PathManager = pathManager,
                                                                 ReturnType = method.returntype,
                                                                 FunctionType = FunctionType.GenericFunction,
                                                                 IsVisibleInLibrary = visibleInLibrary
@@ -605,13 +637,13 @@ namespace Dynamo.DSEngine
 
         private static IEnumerable<TypedParameter> GetBinaryFuncArgs()
         {
-            yield return new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
-            yield return new TypedParameter(null, "y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank));
+            yield return new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
+            yield return new TypedParameter("y", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar));
         }
 
         private static IEnumerable<TypedParameter> GetUnaryFuncArgs()
         {
-            return new List<TypedParameter> { new TypedParameter(null, "x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, Constants.kArbitraryRank)), };
+            return new List<TypedParameter> { new TypedParameter("x", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar)), };
         }
 
         /// <summary>
@@ -635,12 +667,14 @@ namespace Dynamo.DSEngine
                 {
                     FunctionName = op,
                     Parameters = args,
+                    PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction
                 }))
                 .Concat(new FunctionDescriptor(new FunctionDescriptorParams
                 {
                     FunctionName = Op.GetUnaryOpFunction(UnaryOperator.Not),
                     Parameters = GetUnaryFuncArgs(),
+                    PathManager = pathManager,
                     FunctionType = FunctionType.GenericFunction
                 }).AsSingleton());
 
@@ -671,6 +705,33 @@ namespace Dynamo.DSEngine
 
         }
 
+        /// <summary>
+        /// Try get default argument expression from DefaultArgumentAttribute, 
+        /// and parse into Associaitve AST node. 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="defaultArgumentNode"></param>
+        /// <returns></returns>
+        private bool TryGetDefaultArgumentFromAttribute(ArgumentInfo arg, out AssociativeNode defaultArgumentNode)
+        {
+            defaultArgumentNode = null;
+
+            if (arg.Attributes == null)
+                return false;
+
+            object o;
+            if (!arg.Attributes.TryGetAttribute("DefaultArgumentAttribute", out o))
+                return false;
+
+            var defaultExpression = o as string;
+            if (string.IsNullOrEmpty(defaultExpression))
+                return false;
+
+            defaultArgumentNode = ParserUtils.ParseRHSExpression(defaultExpression, LibraryManagementCore);
+           
+            return defaultArgumentNode != null;
+        }
+
         private void ImportProcedure(string library, ProcedureNode proc)
         {
             string procName = proc.name;
@@ -698,10 +759,12 @@ namespace Dynamo.DSEngine
 
             // MethodAttribute's HiddenInLibrary has higher priority than
             // ClassAttribute's HiddenInLibrary
-            bool isVisible = true;
+            var isVisible = true;
+            var canUpdatePeriodically = false;
             if (methodAttribute != null)
             {
                 isVisible = !methodAttribute.HiddenInLibrary;
+                canUpdatePeriodically = methodAttribute.CanUpdatePeriodically;
             }
             else
             {
@@ -738,30 +801,25 @@ namespace Dynamo.DSEngine
                 }
             }
 
-            IEnumerable<TypedParameter> arguments = proc.argInfoList.Zip(
+            List<TypedParameter> arguments = proc.argInfoList.Zip(
                 proc.argTypeList,
                 (arg, argType) =>
                 {
-                    object defaultValue = null;
-                    if (arg.IsDefault)
+                    AssociativeNode defaultArgumentNode;
+                    // Default argument specified by DefaultArgumentAttribute
+                    // takes higher priority
+                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) 
+                        && arg.IsDefault)
                     {
                         var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)
                         {
-                            AssociativeNode vnode = binaryExpr.RightNode;
-                            if (vnode is IntNode)
-                                defaultValue = (vnode as IntNode).Value;
-                            else if (vnode is DoubleNode)
-                                defaultValue = (vnode as DoubleNode).Value;
-                            else if (vnode is BooleanNode)
-                                defaultValue = (vnode as BooleanNode).Value;
-                            else if (vnode is StringNode)
-                                defaultValue = (vnode as StringNode).value;
+                            defaultArgumentNode = binaryExpr.RightNode;
                         }
                     }
 
-                    return new TypedParameter(arg.Name, argType, defaultValue);
-                });
+                    return new TypedParameter(arg.Name, argType, defaultArgumentNode);
+                }).ToList();
 
             IEnumerable<string> returnKeys = null;
             if (proc.MethodAttribute != null)
@@ -782,8 +840,10 @@ namespace Dynamo.DSEngine
                 FunctionType = type,
                 IsVisibleInLibrary = isVisible,
                 ReturnKeys = returnKeys,
+                PathManager = pathManager,
                 IsVarArg = proc.isVarArg,
-                ObsoleteMsg = obsoleteMessage
+                ObsoleteMsg = obsoleteMessage,
+                CanUpdatePeriodically = canUpdatePeriodically
             });
 
             AddImportedFunctions(library, new[] { function });

@@ -61,7 +61,7 @@ namespace ProtoFFI
             INotifyPropertyChanged ipcObject = ffiObject as INotifyPropertyChanged;
             if (ipcObject != null)
             {
-                GraphNode executingGraphNode = mHostCore.DSExecutable.RuntimeData.ExecutingGraphnode;
+                GraphNode executingGraphNode = mHostCore.DSExecutable.ExecutingGraphnode;
                 if (executingGraphNode != null)
                 {
                     mFFIObjectHostGraphNode.Add(ipcObject, executingGraphNode);

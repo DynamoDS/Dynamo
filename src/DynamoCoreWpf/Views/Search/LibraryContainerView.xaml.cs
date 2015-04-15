@@ -55,6 +55,7 @@ namespace Dynamo.Search
                     Keyboard.Focus(this.SearchTextBox);
                     var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
                     SearchTextBox.InputBindings.AddRange(view.InputBindings);
+                    SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
                 }
             };
 
@@ -305,12 +306,14 @@ namespace Dynamo.Search
         {
             SearchIcon.Source = searchIconBitmapHover;
             SearchTextBlock.Foreground = searchForegroundBrushHover;
+            SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
         }
 
         private void OnSearchTextBoxGridMouseLeave(object sender, MouseEventArgs e)
         {
             SearchIcon.Source = searchIconBitmapNormal;
             SearchTextBlock.Foreground = searchForegroundBrushNormal;
+            SearchTextBlock.Text = Properties.Resources.SearchTextBlockText;
         }
 
         private void OnSearchCancelButtonClick(object sender, RoutedEventArgs e)

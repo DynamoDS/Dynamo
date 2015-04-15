@@ -48,6 +48,13 @@ namespace ProtoScript.Runners
             executionsuspended = false;
         }
 
+        private ProtoCore.RuntimeCore CreateRuntimeCore(ProtoCore.Core core)
+        {
+            ProtoCore.RuntimeCore runtimeCore = new ProtoCore.RuntimeCore(core.Heap);
+            runtimeCore.SetupForExecution(core, core.GlobOffset);
+            return runtimeCore;
+        }
+
         /// <summary>
         /// Setup to run with customised launch options
         /// </summary>
@@ -65,8 +72,6 @@ namespace ProtoScript.Runners
 
             }
 
-            runtimeCore = core.__TempCoreHostForRefactoring;
-            runtimeCore.RuntimeStatus.MessageHandler = core.BuildStatus.MessageHandler;
 
             if (null != fileName)
             {
@@ -78,13 +83,7 @@ namespace ProtoScript.Runners
             if (Compile(out resumeBlockID))
             {
                 inited = true;
-
-                //int blockId = ProtoCore.DSASM.Constants.kInvalidIndex;
-                //core.runningBlock = blockId;
-
-                ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
-                runtimeCore.SetProperties(core.Options, core.DSExecutable, core.DebuggerProperties, context, core.ExprInterpreterExe);
-                runtimeCore.NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
+                runtimeCore = CreateRuntimeCore(core);
 
                 FirstExec();
                 diList = BuildReverseIndex();
@@ -447,7 +446,6 @@ namespace ProtoScript.Runners
 
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
                 core.GenerateExecutable();
-                runtimeCore.RuntimeMemory.PushFrameForGlobals(core.GlobOffset);
 
             }
             catch (Exception ex)
@@ -537,8 +535,6 @@ namespace ProtoScript.Runners
 
         private ExecutionMirror Execute(int programCounterToExecuteFrom, List<Instruction> breakpoints, bool fepRun = false)
         {
-
-            ProtoCore.Runtime.Context context = new ProtoCore.Runtime.Context();
             runtimeCore.Breakpoints = breakpoints;
             resumeBlockID = runtimeCore.RunningBlock;
 
@@ -560,7 +556,6 @@ namespace ProtoScript.Runners
             runtimeCore.CurrentExecutive.CurrentDSASMExec.Bounce(
                 resumeBlockID, 
                 programCounterToExecuteFrom,
-                context, 
                 runtimeCore.DebugProps.FirstStackFrame, 
                 locals, 
                 fepRun,

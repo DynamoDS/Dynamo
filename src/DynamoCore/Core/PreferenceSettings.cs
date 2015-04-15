@@ -20,7 +20,6 @@ namespace Dynamo
     public class PreferenceSettings : NotificationObject, IPreferences
     {
         public static string DynamoTestPath = null;
-        const string DYNAMO_SETTINGS_FILE = "DynamoSettings.xml";
         private string numberFormat;
         private string lastUpdateDownloadPath;
         
@@ -164,12 +163,21 @@ namespace Dynamo
         }
 
         /// <summary>
-        /// Save PreferenceSettings in a default directory when no path is specified
+        /// Save PreferenceSettings in a default directory when no path is 
+        /// specified.
         /// </summary>
+        /// <param name="preferenceFilePath">The file path to save preference
+        /// settings to. If this parameter is null or empty string, preference 
+        /// settings will be saved to the default path.</param>
         /// <returns>Whether file is saved or error occurred.</returns>
-        public bool Save()
+        public bool SaveInternal(string preferenceFilePath)
         {
-            return Save(DynamoTestPath ?? GetSettingsFilePath());
+            if (!string.IsNullOrEmpty(DynamoTestPath))
+            {
+                preferenceFilePath = DynamoTestPath;
+            }
+
+            return Save(preferenceFilePath);
         }
 
         /// <summary>
@@ -200,33 +208,6 @@ namespace Dynamo
             catch (Exception) { }
 
             return settings;
-        }
-
-        /// <summary>
-        /// Return PreferenceSettings from Default XML path
-        /// </summary>
-        /// <returns>
-        /// Stored PreferenceSettings from default xml file or
-        /// Default PreferenceSettings if default xml file is not found.
-        /// </returns>
-        public static PreferenceSettings Load()
-        {
-            return Load(DynamoTestPath ?? GetSettingsFilePath());
-        }
-
-        /// <summary>
-        /// Return PreferenceSettings Default XML File Path if possible
-        /// </summary>
-        public static string GetSettingsFilePath()
-        {
-            try
-            {
-                return (Path.Combine(DynamoPathManager.Instance.AppData, DYNAMO_SETTINGS_FILE));
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
         }
     }
 }

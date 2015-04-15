@@ -41,6 +41,11 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
+        /// The name that is used during node creation
+        /// </summary>
+        public virtual string CreationName { get { return this.Name; } }
+
+        /// <summary>
         ///     List of nested categories this search element is contained in.
         /// </summary>
         public ICollection<string> Categories
@@ -195,7 +200,7 @@ namespace Dynamo.Search.SearchElements
         }
 
         protected List<string> outputParameters;
-        public List<string> OutputParameters
+        public IEnumerable<string> OutputParameters
         {
             get
             {
@@ -253,13 +258,13 @@ namespace Dynamo.Search.SearchElements
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected virtual List<string> GenerateOutputParameters()
+        protected virtual IEnumerable<string> GenerateOutputParameters()
         {
             outputParameters.Add("none");
             return outputParameters;
         }
 
-        protected virtual List<Tuple<string, string>> GenerateInputParameters()
+        protected virtual IEnumerable<Tuple<string, string>> GenerateInputParameters()
         {
             inputParameters.Add(Tuple.Create("", "none"));
             return inputParameters;

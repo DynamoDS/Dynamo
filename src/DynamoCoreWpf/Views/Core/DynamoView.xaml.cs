@@ -58,8 +58,7 @@ namespace Dynamo.Controls
                 RenderMode.Default : RenderMode.SoftwareOnly;
             
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.UIDispatcher = Dispatcher;
-
+            this.dynamoViewModel.UIDispatcher = Dispatcher;            
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
@@ -71,6 +70,10 @@ namespace Dynamo.Controls
             _timer.Start();
 
             InitializeComponent();
+
+            ToggleIsUsageReportingApprovedCommand.ToolTip = string.Format(
+                Wpf.Properties.Resources.DynamoViewSettingMenuEnableDataReportingTooltip,
+                dynamoViewModel.BrandingResourceProvider.ProductName);
 
             Loaded += DynamoView_Loaded;
             Unloaded += DynamoView_Unloaded;
@@ -130,7 +133,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void LoaderOnAssemblyLoaded(DynamoLoader.AssemblyLoadedEventArgs args)
+        private void LoaderOnAssemblyLoaded(NodeModelAssemblyLoader.AssemblyLoadedEventArgs args)
         {
             nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(args.Assembly));
         }
@@ -187,7 +190,7 @@ namespace Dynamo.Controls
 
         void InitializeShortcutBar()
         {
-            ShortcutToolbar shortcutBar = new ShortcutToolbar();
+            ShortcutToolbar shortcutBar = new ShortcutToolbar(this.dynamoViewModel.Model.UpdateManager);
             shortcutBar.Name = "ShortcutToolbar";
 
             ShortcutBarItem newScriptButton = new ShortcutBarItem();
@@ -330,7 +333,7 @@ namespace Dynamo.Controls
 
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
-                                                                     _timer.Elapsed));
+                                                                     _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
             InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage();
@@ -391,6 +394,8 @@ namespace Dynamo.Controls
 
             // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
+
+            watchSettingsControl.DataContext = background_preview;
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -525,7 +530,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(args);
+            var prompt = new CrashPrompt(args,dynamoViewModel);
             prompt.ShowDialog();
         }
 
@@ -794,11 +799,12 @@ namespace Dynamo.Controls
         /// </summary>
         private void LoadSamplesMenu()
         {
-            if (Directory.Exists(DynamoPathManager.Instance.CommonSamples))
+            var samplesDirectory = dynamoViewModel.Model.PathManager.SamplesDirectory;
+            if (Directory.Exists(samplesDirectory))
             {
                 var sampleFiles = new System.Collections.Generic.List<string>();
-                string[] dirPaths = Directory.GetDirectories(DynamoPathManager.Instance.CommonSamples);
-                string[] filePaths = Directory.GetFiles(DynamoPathManager.Instance.CommonSamples, "*.dyn");
+                string[] dirPaths = Directory.GetDirectories(samplesDirectory);
+                string[] filePaths = Directory.GetFiles(samplesDirectory, "*.dyn");
 
                 // handle top-level files
                 if (filePaths.Any())

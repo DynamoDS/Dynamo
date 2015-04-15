@@ -416,8 +416,11 @@ namespace ProtoCore
 
             public static IEnumerable<ClassMirror> GetAllTypes(Core core)
             {
+                // TODO: Get rid of keyword "PointerReserved" and PrimitiveType.kTypePointer
+                // if not used in the language: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6752
                 return core.ClassTable.ClassNodes.
-                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)
+                    && x.name != DSDefinitions.Keyword.PointerReserved).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -524,12 +527,9 @@ namespace ProtoCore
             {
                 get
                 {
-                    if (alias == null)
-                    {
-                        alias = ClassName.Split('.').Last();
-                    }
-                    return alias;
+                    return alias ?? (alias = ClassName.Split('.').Last());
                 }
+                set { alias = value; }
             }
 
             private LibraryMirror libraryMirror = null;

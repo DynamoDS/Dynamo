@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml.Linq;
+using System.Xml;
+using Dynamo.Interfaces;
 using DynamoUtilities;
 
 namespace Dynamo.DSEngine
@@ -10,8 +11,8 @@ namespace Dynamo.DSEngine
     {
         private static Dictionary<string, bool> _triedPaths = new Dictionary<string, bool>();
 
-        private static Dictionary<string, XDocument> _cached =
-            new Dictionary<string, XDocument>(StringComparer.OrdinalIgnoreCase);
+        private static Dictionary<string, XmlReader> _cached =
+            new Dictionary<string, XmlReader>(StringComparer.OrdinalIgnoreCase);
 
         public static void DestroyCachedData()
         {
@@ -22,7 +23,7 @@ namespace Dynamo.DSEngine
                 _cached.Clear();
         }
 
-        public static XDocument GetForAssembly(string assemblyPath)
+        public static XmlReader GetForAssembly(string assemblyPath, IPathManager pathManager)
         {
             if (_triedPaths.ContainsKey(assemblyPath))
             {
@@ -30,23 +31,23 @@ namespace Dynamo.DSEngine
             }
 
             var documentationPath = "";
-            if (ResolveForAssembly(assemblyPath, ref documentationPath))
+            if (ResolveForAssembly(assemblyPath, pathManager, ref documentationPath))
             {
-                var c = XDocument.Load(documentationPath);
+                var c = XmlReader.Create(documentationPath);
                 _triedPaths.Add(assemblyPath, true);
                 _cached.Add(assemblyPath, c);
                 return c;
             }
-            else
-            {
-                _triedPaths.Add(assemblyPath, false);
-                return null;
-            }
+
+            _triedPaths.Add(assemblyPath, false);
+            return null;
         }
 
-        public static bool ResolveForAssembly(string assemblyLocation, ref string documentationPath)
+        private static bool ResolveForAssembly(string assemblyLocation,
+            IPathManager pathManager, ref string documentationPath)
         {
-            DynamoPathManager.Instance.ResolveLibraryPath(ref assemblyLocation);
+            if (pathManager != null)
+                pathManager.ResolveLibraryPath(ref assemblyLocation);
 
             if (!File.Exists(assemblyLocation))
             {
