@@ -403,6 +403,28 @@ r1 = __Filter(1..10, pred);
         }
 
         [Test]
+        public void TestFilter2()
+        {
+            string code =
+    @"
+import (""FunctionObject.ds"");
+def odd(x)
+{
+    return = x % 2 == 1;
+}
+
+pred = _SingleFunctionObject(odd, 1, { }, { }, true);
+r1 = __Filter({}, pred);
+
+r2 = r1[0];
+r3 = r1[1];
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("r2", new object[] { });
+            thisTest.Verify("r3", new object[] { });
+        }
+
+        [Test]
         public void TestReduce()
         {
             string code =

@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
-      <Link>AssemblySharedInfo.cs</Link>
+      <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AssemblyHelper.cs" />
     <Compile Include="DataMarshaler.cs" />

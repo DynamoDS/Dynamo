@@ -28,14 +28,13 @@ namespace DynamoCoreUITests
 {
     public delegate void CommandCallback(string commandTag);
 
-    [TestFixture]
-    public class RecordedTests : DSEvaluationViewModelUnitTest
+    public class RecordedUnitTestBase : DSEvaluationViewModelUnitTest
     {
         #region Generic Set-up Routines and Data Members
 
-        private System.Random randomizer = null;
-        private IEnumerable<string> customNodesToBeLoaded = null;
-        private CommandCallback commandCallback = null;
+        protected System.Random randomizer = null;
+        private IEnumerable<string> customNodesToBeLoaded;
+        private CommandCallback commandCallback;
 
         // Geometry preloading related members.
         protected bool preloadGeometry;
@@ -47,7 +46,6 @@ namespace DynamoCoreUITests
         protected double tolerance = 1e-6;
         protected double codeBlockPortHeight = Configurations.CodeBlockPortHeightInPixels;
 
-        [SetUp]
         public override void Setup()
         {
             // Fixed seed randomizer for predictability.
@@ -60,7 +58,12 @@ namespace DynamoCoreUITests
             // base.Init();
         }
 
-        [TearDown]
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            Exit();
+        }
+
         protected void Exit()
         {
             commandCallback = null;
@@ -81,12 +84,209 @@ namespace DynamoCoreUITests
             }
 
             preloader = null; // Invalid preloader object for the test.
-
-            GC.Collect();
         }
 
         #endregion
 
+        #region Private Helper Methods
+
+        protected ModelBase GetNode(string guid)
+        {
+            Guid id = Guid.Parse(guid);
+            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
+        }
+
+        /// <summary>
+        /// Call this method to load custom nodes from their file paths. This 
+        /// call, if made, must precede the call to RunCommandsFromFile. This 
+        /// call cannot be made more than once for a single test case. If more 
+        /// than one custom node files are needed for the test case, they must 
+        /// be specified in the same call.
+        /// </summary>
+        /// <param name="customNodeFilePaths">And array of custom node file paths.
+        /// This array cannot be null or empty.</param>
+        /// 
+        protected void LoadCustomNodes(string[] customNodeFilePaths)
+        {
+            if (customNodeFilePaths == null || (customNodeFilePaths.Length <= 0))
+            {
+                var message = "Argument must be one or more valid file paths";
+                throw new ArgumentException(message);
+            }
+
+            if (this.customNodesToBeLoaded != null)
+                throw new InvalidOperationException("LoadCustomNodes called twice");
+
+            if (this.ViewModel != null)
+            {
+                var message = "'LoadCustomNodes' should be called before 'RunCommandsFromFile'";
+                throw new InvalidOperationException(message);
+            }
+
+            var fileList = new List<string>();
+            foreach (var customNodeFilePath in customNodeFilePaths)
+            {
+                if (File.Exists(customNodeFilePath) != false)
+                {
+                    fileList.Add(customNodeFilePath);
+                    continue;
+                }
+
+                var message = "Custom node file not found";
+                throw new System.IO.FileNotFoundException(message, customNodeFilePath);
+            }
+
+            this.customNodesToBeLoaded = fileList;
+        }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        protected void RunCommandsFromFile(string commandFileName,
+            bool autoRun = false, CommandCallback commandCallback = null)
+        {
+            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
+            commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
+            commandFilePath = Path.Combine(commandFilePath, commandFileName);
+
+            if (this.ViewModel != null)
+            {
+                var message = "Multiple DynamoViewModel instances detected!";
+                throw new InvalidOperationException(message);
+            }
+
+            var geometryFactoryPath = string.Empty;
+            if (preloadGeometry && (preloader == null))
+            {
+                var assemblyPath = Assembly.GetExecutingAssembly().Location;
+                preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
+                preloader.Preload();
+
+                geometryFactoryPath = preloader.GeometryFactoryPath;
+                preloadGeometry = false;
+            }
+
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
+            var model = DynamoModel.Start(
+                new DynamoModel.DefaultStartConfiguration()
+                {
+                    StartInTestMode = true,
+                    PathResolver = pathResolver,
+                    GeometryFactoryPath = geometryFactoryPath
+                });
+
+            // Create the DynamoViewModel to control the view
+            this.ViewModel = DynamoViewModel.Start(
+                new DynamoViewModel.StartConfiguration()
+                {
+                    CommandFilePath = commandFilePath,
+                    DynamoModel = model
+                });
+
+            ViewModel.HomeSpace.RunSettings.RunType = autoRun ?
+                RunType.Automatic :
+                RunType.Manual;
+
+            // Load all custom nodes if there is any specified for this test.
+            if (this.customNodesToBeLoaded != null)
+            {
+                foreach (var customNode in this.customNodesToBeLoaded)
+                {
+                    CustomNodeInfo info;
+                    if (!ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(customNode, true, out info))
+                    {
+                        throw new System.IO.FileFormatException(string.Format(
+                            "Failed to load custom node: {0}", customNode));
+                    }
+                }
+            }
+
+            RegisterCommandCallback(commandCallback);
+
+            // Create the view.
+            dynamoView = new DynamoView(this.ViewModel);
+            dynamoView.ShowDialog();
+
+            Assert.IsNotNull(this.ViewModel);
+            Assert.IsNotNull(this.ViewModel.Model);
+            Assert.IsNotNull(this.ViewModel.Model.CurrentWorkspace);
+            workspace = this.ViewModel.Model.CurrentWorkspace;
+            workspaceViewModel = this.ViewModel.CurrentSpaceViewModel;
+        }
+
+        private void RegisterCommandCallback(CommandCallback commandCallback)
+        {
+            if (commandCallback == null)
+                return;
+
+            if (this.commandCallback != null)
+                throw new InvalidOperationException("RunCommandsFromFile called twice");
+
+            this.commandCallback = commandCallback;
+            var automation = this.ViewModel.Automation;
+            automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
+        }
+
+        private void OnAutomationPlaybackStateChanged(object sender, PlaybackStateChangedEventArgs e)
+        {
+            if (e.OldState == AutomationSettings.State.Paused)
+            {
+                if (e.NewState == AutomationSettings.State.Playing)
+                {
+                    // Call back to the delegate registered by the test case. We
+                    // only handle command transition from Paused to Playing. Note 
+                    // that "commandCallback" is not checked against "null" value 
+                    // because "OnAutomationPlaybackStateChanged" would not have 
+                    // been called if the "commandCallback" was not registered.
+                    // 
+                    this.commandCallback(e.NewTag);
+                }
+            }
+        }
+
+        protected CmdType DuplicateAndCompare<CmdType>(CmdType command)
+            where CmdType : DynamoModel.RecordableCommand
+        {
+            Assert.IsNotNull(command); // Ensure we have an input command.
+
+            // Serialize the command into an XmlElement.
+            XmlDocument xmlDocument = new XmlDocument();
+            XmlElement element = command.Serialize(xmlDocument);
+            Assert.IsNotNull(element);
+
+            // Deserialized the XmlElement into a new instance of the command.
+            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
+            Assert.IsNotNull(duplicate);
+            Assert.IsTrue(duplicate is CmdType);
+            return duplicate as CmdType;
+        }
+
+        #endregion
+    }
+
+    [TestFixture]
+    public class RecordedTests : RecordedUnitTestBase
+    {
         #region Recorded Test Cases for Command Framework
 
         [Test, RequiresSTA]
@@ -327,7 +527,7 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
         }
 
-        [Test, Category("Failure")]
+        
         public void TestCustomNode()
         {
             RunCommandsFromFile("TestCustomNode.xml");
@@ -352,8 +552,8 @@ namespace DynamoCoreUITests
             AssertPreviewValue("04f6dab5-0a0b-4563-9f20-d0e58fcae7a5", 1.0);
         }
 
-        [Test]
-        [Category("Failure")] //TODO(Steve): Recorded Commands have changed for custom nodes.
+        [Test, Category("Failure")]
+        
         public void TestCustomNodeUI()
         {
             RunCommandsFromFile("CustomNodeUI.xml", false, (commandTag) =>
@@ -448,15 +648,11 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(1, customWorkspace.Nodes.Count);
 
                     var node = GetNode("6cec1997-ed61-4277-a1a8-3f3e4eb4321d") as NodeModel;
-
-
                 }
                 else if (commandTag == "SecondRun")
                 {
-
                     Assert.IsNotNull(workspaces);
                     Assert.AreEqual(2, workspaces.Count());
-
 
                     Assert.AreEqual(2, workspace.Connectors.Count());
                     Assert.AreEqual(1, workspace.Nodes.Count);
@@ -464,13 +660,7 @@ namespace DynamoCoreUITests
                     Assert.IsNotNull(customWorkspace);
                     Assert.AreEqual(2, customWorkspace.Connectors.Count());
                     Assert.AreEqual(1, customWorkspace.Nodes.Count);
-
-
-
-
                 }
-
-
             });
         }
         [Test]
@@ -624,184 +814,19 @@ namespace DynamoCoreUITests
         }
 
         #endregion
-
-        #region Private Helper Methods
-
-        protected ModelBase GetNode(string guid)
-        {
-            Guid id = Guid.Parse(guid);
-            return ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
-        }
-
-        /// <summary>
-        /// Call this method to load custom nodes from their file paths. This 
-        /// call, if made, must precede the call to RunCommandsFromFile. This 
-        /// call cannot be made more than once for a single test case. If more 
-        /// than one custom node files are needed for the test case, they must 
-        /// be specified in the same call.
-        /// </summary>
-        /// <param name="customNodeFilePaths">And array of custom node file paths.
-        /// This array cannot be null or empty.</param>
-        /// 
-        protected void LoadCustomNodes(string[] customNodeFilePaths)
-        {
-            if (customNodeFilePaths == null || (customNodeFilePaths.Length <= 0))
-            {
-                var message = "Argument must be one or more valid file paths";
-                throw new ArgumentException(message);
-            }
-
-            if (this.customNodesToBeLoaded != null)
-                throw new InvalidOperationException("LoadCustomNodes called twice");
-
-            if (this.ViewModel != null)
-            {
-                var message = "'LoadCustomNodes' should be called before 'RunCommandsFromFile'";
-                throw new InvalidOperationException(message);
-            }
-
-            var fileList = new List<string>();
-            foreach (var customNodeFilePath in customNodeFilePaths)
-            {
-                if (File.Exists(customNodeFilePath) != false)
-                {
-                    fileList.Add(customNodeFilePath);
-                    continue;
-                }
-
-                var message = "Custom node file not found";
-                throw new System.IO.FileNotFoundException(message, customNodeFilePath);
-            }
-
-            this.customNodesToBeLoaded = fileList;
-        }
-
-        protected void RunCommandsFromFile(string commandFileName,
-            bool autoRun = false, CommandCallback commandCallback = null)
-        {
-            string commandFilePath = SystemTestBase.GetTestDirectory(ExecutingDirectory);
-            commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
-            commandFilePath = Path.Combine(commandFilePath, commandFileName);
-
-            if (this.ViewModel != null)
-            {
-                var message = "Multiple DynamoViewModel instances detected!";
-                throw new InvalidOperationException(message);
-            }
-
-            var geometryFactoryPath = string.Empty;
-            if (preloadGeometry && (preloader == null))
-            {
-                var assemblyPath = Assembly.GetExecutingAssembly().Location;
-                preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
-                preloader.Preload();
-
-                geometryFactoryPath = preloader.GeometryFactoryPath;
-                preloadGeometry = false;
-            }
-
-            var model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    StartInTestMode = true,
-                    PathResolver = pathResolver,
-                    GeometryFactoryPath = geometryFactoryPath
-                });
-
-            pathResolver = null; // Invalidate path resolver after specified.
-
-            // Create the DynamoViewModel to control the view
-            this.ViewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    CommandFilePath = commandFilePath,
-                    DynamoModel = model
-                });
-
-            ViewModel.HomeSpace.RunSettings.RunType = autoRun ? 
-                RunType.Automatic : 
-                RunType.Manual;
-
-            // Load all custom nodes if there is any specified for this test.
-            if (this.customNodesToBeLoaded != null)
-            {
-                foreach (var customNode in this.customNodesToBeLoaded)
-                {
-                    CustomNodeInfo info;
-                    if (!ViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(customNode, true, out info))
-                    {
-                        throw new System.IO.FileFormatException(string.Format(
-                            "Failed to load custom node: {0}", customNode));
-                    }
-                }
-            }
-
-            RegisterCommandCallback(commandCallback);
-
-            // Create the view.
-            dynamoView = new DynamoView(this.ViewModel);
-            dynamoView.ShowDialog();
-
-            Assert.IsNotNull(this.ViewModel);
-            Assert.IsNotNull(this.ViewModel.Model);
-            Assert.IsNotNull(this.ViewModel.Model.CurrentWorkspace);
-            workspace = this.ViewModel.Model.CurrentWorkspace;
-            workspaceViewModel = this.ViewModel.CurrentSpaceViewModel;
-        }
-
-        private void RegisterCommandCallback(CommandCallback commandCallback)
-        {
-            if (commandCallback == null)
-                return;
-
-            if (this.commandCallback != null)
-                throw new InvalidOperationException("RunCommandsFromFile called twice");
-
-            this.commandCallback = commandCallback;
-            var automation = this.ViewModel.Automation;
-            automation.PlaybackStateChanged += OnAutomationPlaybackStateChanged;
-        }
-
-        private void OnAutomationPlaybackStateChanged(object sender, PlaybackStateChangedEventArgs e)
-        {
-            if (e.OldState == AutomationSettings.State.Paused)
-            {
-                if (e.NewState == AutomationSettings.State.Playing)
-                {
-                    // Call back to the delegate registered by the test case. We
-                    // only handle command transition from Paused to Playing. Note 
-                    // that "commandCallback" is not checked against "null" value 
-                    // because "OnAutomationPlaybackStateChanged" would not have 
-                    // been called if the "commandCallback" was not registered.
-                    // 
-                    this.commandCallback(e.NewTag);
-                }
-            }
-        }
-
-        private CmdType DuplicateAndCompare<CmdType>(CmdType command)
-            where CmdType : DynamoModel.RecordableCommand
-        {
-            Assert.IsNotNull(command); // Ensure we have an input command.
-
-            // Serialize the command into an XmlElement.
-            XmlDocument xmlDocument = new XmlDocument();
-            XmlElement element = command.Serialize(xmlDocument);
-            Assert.IsNotNull(element);
-
-            // Deserialized the XmlElement into a new instance of the command.
-            var duplicate = DynamoModel.RecordableCommand.Deserialize(element);
-            Assert.IsNotNull(duplicate);
-            Assert.IsTrue(duplicate is CmdType);
-            return duplicate as CmdType;
-        }
-
-        #endregion
     }
 
-    
-    class RecordedTestsDSEngine : RecordedTests
+
+    class RecordedTestsDSEngine : RecordedUnitTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSIronPython.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         #region Basic CodeBlockNode Test Cases
 
         [Test, RequiresSTA, Category("Failure")]
@@ -1106,9 +1131,6 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void ReExecuteASTTest()
         {
-            pathResolver = new TestPathResolver();
-            pathResolver.AddPreloadLibraryPath("FFITarget.dll");
-
             RunCommandsFromFile("ReExecuteASTTest.xml", false, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -1995,14 +2017,14 @@ namespace DynamoCoreUITests
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2010,14 +2032,14 @@ namespace DynamoCoreUITests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -2093,14 +2115,14 @@ namespace DynamoCoreUITests
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2108,14 +2130,14 @@ namespace DynamoCoreUITests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -3009,12 +3031,12 @@ namespace DynamoCoreUITests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
                     Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
                     Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
@@ -3039,12 +3061,12 @@ namespace DynamoCoreUITests
                 if (commandTag == "BeforeRun")
                 {
                     AssertNullValues();
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
                     Assert.AreEqual(false, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterRun")
                 {
-                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerCore.__TempCoreHostForRefactoring.CancellationPending);
+                    Assert.AreEqual(false, ViewModel.Model.EngineController.LiveRunnerRuntimeCore.CancellationPending);
                     Assert.AreEqual(true, ViewModel.HomeSpace.RunSettings.RunEnabled);
                 }
                 else if (commandTag == "AfterCancel")
@@ -3505,7 +3527,7 @@ namespace DynamoCoreUITests
             AssertPreviewValue("cd759105-3c6b-4f8e-81e7-73266e92f357", false);
         }
 
-        [Test,Category("Failure")]
+        [Test]
         public void modifyCN_6191()
         {
 
@@ -3544,6 +3566,29 @@ namespace DynamoCoreUITests
             RunCommandsFromFile("workspace_5919.xml", true);
 
             AssertPreviewValue("3f42da77-4fb9-4af0-ade0-444e81614133", 0);
+        }
+        [Test]
+        public void DeleteInput_887()
+        {
+
+            
+            RunCommandsFromFile("DeleteInput_887.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "FirstRun")
+                {
+                    Assert.AreEqual(2, workspace.Nodes.Count); 
+                }
+                else if (commandTag == "SecondRun")
+                {
+
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
+                        ("c5f12fff-e9bb-4182-ae32-626177252aa0");
+
+                    Assert.AreNotEqual(ElementState.Warning, node.State);
+                }
+            });
         }
         [Test]
         public void EmptyCBN_Save_5454()

@@ -21,6 +21,11 @@ namespace ProtoCore
             public int CurrentBlockId { get; private set; }
             public ProtoCore.Runtime.RuntimeMemory MemoryState { get; private set; }
 
+            /// <summary>
+            /// When compiling expression interpreter code, the codegen needs a copy of certain runtime values
+            /// </summary>
+            public int WatchClassScope { get; set; }
+            public DebugProperties DebugProps { get; private set; }
 
             /// <summary>
             /// This flag controls whether we want a full codeblock to apply SSA Transform.
@@ -40,15 +45,21 @@ namespace ProtoCore
                 CurrentBlockId = Constants.kInvalidIndex;
             }
 
-            public void SetData(string source, Dictionary<string, Object> context, Dictionary<string, bool> flagList, int currentBlockID, ProtoCore.Runtime.RuntimeMemory memState)
+            public void SetData(string source, Dictionary<string, Object> context, Dictionary<string, bool> flagList)
             {
                 SourceCode = source;
                 GlobalVarList = context;
                 execFlagList = flagList;
                 exprExecutionFlags = new Dictionary<int, bool>();
                 applySSATransform = true;
+            }
+
+            public void SetExprInterpreterProperties(int currentBlockID, ProtoCore.Runtime.RuntimeMemory memState, int watchScope, DebugProperties debugProps)
+            {
                 CurrentBlockId = currentBlockID;
                 MemoryState = memState;
+                WatchClassScope = watchScope;
+                DebugProps = debugProps;
             }
 
             public Context(string source, Dictionary<string, Object> context = null, Dictionary<string, bool> flagList = null)

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+
 
 namespace DynamoShapeManager
 {
@@ -23,53 +25,46 @@ namespace DynamoShapeManager
         /// of preference. This argument cannot be null or empty.</param>
         /// <param name="location">The full path of the directory in which targeted
         /// ASM binaries are found. This argument cannot be null.</param>
-        /// <returns>Returns a zero based index into the versions list if any 
-        /// installed ASM is found, or -1 otherwise.</returns>
+        /// <param name="rootFolder">This method makes use of DynamoInstallDetective
+        /// to determine the installation location of various Autodesk products. This 
+        /// argument is not optional and must represent the full path to the folder 
+        /// which contains DynamoInstallDetective.dll. An exception is thrown if the 
+        /// assembly cannot be located.</param>
+        /// <returns>Returns LibraryVersion of ASM if any installed ASM is found, 
+        /// or None otherwise.</returns>
         /// 
-        public static int GetInstalledAsmVersion(IEnumerable<LibraryVersion> versions, ref string location)
+        public static LibraryVersion GetInstalledAsmVersion(List<LibraryVersion> versions, ref string location, string rootFolder)
         {
-            if ((versions == null) || !versions.Any())
+            if (string.IsNullOrEmpty(rootFolder))
+                throw new ArgumentNullException("rootFolder");
+            if (!Directory.Exists(rootFolder))
+                throw new DirectoryNotFoundException(rootFolder);
+            if ((versions == null) || versions.Count <= 0)
                 throw new ArgumentNullException("versions");
             if (location == null)
                 throw new ArgumentNullException("location");
 
             location = string.Empty;
 
-            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            var baseSearchDirectory = Path.Combine(programFiles, "Autodesk");
-
             try
             {
-                var root = new DirectoryInfo(baseSearchDirectory);
-                var subDirs = root.GetDirectories();
-                var directories = subDirs.Where(d => d.Name.Contains("Revit")
-                    || d.Name.Contains("Vasari")).ToList();
+                var installations = GetAsmInstallations(rootFolder);
 
-                if (!directories.Any())
-                    return -1;
-
-                int versionIndex = -1;
-                foreach (var version in versions)
+                foreach (KeyValuePair<string, Tuple<int,int,int,int>> install in installations)
                 {
-                    versionIndex++;
-                    var assemblyName = string.Format("ASMAHL{0}A.DLL", ((int) version));
-
-                    foreach (var directoryInfo in directories)
+                    if (versions.Exists(v => (int)v == install.Value.Item1))
                     {
-                        if (directoryInfo.GetFiles(assemblyName).Length <= 0)
-                            continue;
-
-                        location = directoryInfo.FullName;
-                        return versionIndex;
+                        location = install.Key;
+                        return (LibraryVersion)install.Value.Item1;
                     }
                 }
             }
             catch (Exception)
             {
-                return -1;
+                return LibraryVersion.None;
             }
 
-            return -1;
+            return LibraryVersion.None;
         }
 
         /// <summary>
@@ -156,6 +151,29 @@ namespace DynamoShapeManager
             }
 
             return assemblyPath;
+        }
+
+        private static IEnumerable GetAsmInstallations(string rootFolder)
+        {
+            var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
+            if (!File.Exists(assemblyPath))
+                throw new FileNotFoundException(assemblyPath);
+
+            var assembly = Assembly.LoadFrom(assemblyPath);
+
+            var type = assembly.GetType("DynamoInstallDetective.Utilities");
+
+            var installationsMethod = type.GetMethod(
+                "FindProductInstallations",
+                BindingFlags.Public | BindingFlags.Static);
+
+            if (installationsMethod == null)
+            {
+                throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
+            }
+
+            var methodParams = new object[] { "Autodesk", "ASMAHL*.dll" };
+            return installationsMethod.Invoke(null, methodParams) as IEnumerable;
         }
     }
 }

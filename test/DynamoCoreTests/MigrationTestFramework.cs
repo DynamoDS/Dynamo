@@ -8,6 +8,15 @@ namespace Dynamo.Tests
     [TestFixture]
     class MigrationTestFramework : Dynamo.Tests.DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSOffice.dll");
+            libraries.Add("FunctionObject.ds");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         /// <summary>
         /// Automated creation of regression test cases.
         /// </summary>

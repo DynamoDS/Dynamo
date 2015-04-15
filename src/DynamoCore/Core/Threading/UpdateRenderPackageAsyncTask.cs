@@ -1,3 +1,5 @@
+﻿using Autodesk.DesignScript.Geometry;
+
 ﻿using System;
 using System.Collections;
 using System.Linq;
@@ -152,6 +154,7 @@ namespace Dynamo.Core.Threading
                     return;
                 }
 
+
                 var package = new RenderPackage(isNodeSelected, displayLabels)
                 {
                     Tag = labelMap.Count > count ? labelMap[count] : "?",
@@ -159,17 +162,47 @@ namespace Dynamo.Core.Threading
 
                 try
                 {
-                    graphicItem.Tessellate(
-                        package,
-                        tol: -1.0,
-                        maxGridLines: maxTesselationDivisions);
+                    graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
+
+                    var surf = graphicItem as Surface;
+                    if (surf != null)
+                    {
+                        foreach (var curve in surf.PerimeterCurves())
+                        {
+                            curve.Tessellate(package, -1.0, maxTesselationDivisions);
+                            curve.Dispose();
+                        }
+                    }
+
+                    var solid = graphicItem as Solid;
+                    if (solid != null)
+                    {
+                        foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry)) {
+                            geom.Tessellate(package, -1.0, maxTesselationDivisions);
+                            geom.Dispose();
+                        }
+                    }
+
+                    // The default color coming from the geometry library for
+                    // curves is 255,255,255,255 (White). Because we want a default
+                    // color of 0,0,0,255 (Black), we adjust the color components here.
+                    var packageCurve = graphicItem as Curve;
+                    if (packageCurve != null)
+                    {
+                        for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
+                        {
+                            package.LineStripVertexColors[i] = 0;
+                            package.LineStripVertexColors[i + 1] = 0;
+                            package.LineStripVertexColors[i + 2] = 0;
+                        }
+                    }
                 }
                 catch (Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(
                         "PushGraphicItemIntoPackage: " + e);
                 }
-
+                    
                 package.ItemsCount++;
                 renderPackages.Add(package);
                 count++;

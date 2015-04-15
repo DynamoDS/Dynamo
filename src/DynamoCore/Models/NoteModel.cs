@@ -9,7 +9,7 @@ namespace Dynamo.Models
 {
     public class NoteModel : ModelBase
     {
-        private string text;
+        private string text;      
         public string Text
         {
             get { return text; }
@@ -40,8 +40,7 @@ namespace Dynamo.Models
             
             Text = value;
             return true;
-        }
-
+        }        
         #endregion
 
         #region Serialization/Deserialization Methods

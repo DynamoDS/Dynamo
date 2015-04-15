@@ -49,7 +49,7 @@
                 <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <MenuItem Header="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
                               IsCheckable="True"
-                              IsEnabled="{Binding Path=DefaultValueEnabled, Mode=TwoWay}"
+                              IsEnabled="{Binding Path=DefaultValueEnabled, Mode=OneWay}"
                               IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}" />
                 </ContextMenu>
             </Grid.ContextMenu>

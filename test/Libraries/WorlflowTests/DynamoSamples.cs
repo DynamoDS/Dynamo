@@ -1,20 +1,30 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
+using Autodesk.DesignScript.Geometry;
 using NUnit.Framework;
-using Dynamo.Utilities;
 using Dynamo.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Autodesk.DesignScript.Geometry;
 
 namespace Dynamo.Tests
 {
     class DynamoSamples : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");  // Required for Watch node.
+            libraries.Add("ProtoGeometry.dll"); // Required for Surface.
+            libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
+            libraries.Add("DSIronPython.dll");  // Required for Python tests.
+            libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
+            base.GetLibrariesToPreload(libraries);
+        }
+
         [Test, Category("SmokeTests")]
         public void Basics_Basic03()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Basics\Basics_Basic03.dyn");
+            OpenSampleModel(@"en-US\Basics\Basics_Basic03.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(10, model.CurrentWorkspace.Nodes.Count);
@@ -32,7 +42,7 @@ namespace Dynamo.Tests
         public void Core_AttractorPoint()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_AttractorPoint.dyn");
+            OpenSampleModel(@"en-US\Core\Core_AttractorPoint.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(13, model.CurrentWorkspace.Nodes.Count);
@@ -55,7 +65,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_01()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -81,7 +91,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_02()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -129,7 +139,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_03()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -163,7 +173,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_04()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -194,7 +204,7 @@ namespace Dynamo.Tests
         public void Core_CodeBlocks_05()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_CodeBlocks.dyn");
+            OpenSampleModel(@"en-US\Core\Core_CodeBlocks.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(89, model.CurrentWorkspace.Nodes.Count);
@@ -231,7 +241,7 @@ namespace Dynamo.Tests
         public void Core_ListLacing()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_ListLacing.dyn");
+            OpenSampleModel(@"en-US\Core\Core_ListLacing.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(19, model.CurrentWorkspace.Nodes.Count);
@@ -272,7 +282,7 @@ namespace Dynamo.Tests
         public void Core_Math_01()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Math.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
@@ -299,7 +309,7 @@ namespace Dynamo.Tests
         public void Core_Math_02()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Math.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
@@ -328,7 +338,7 @@ namespace Dynamo.Tests
         public void Core_Math_03()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Math.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
@@ -355,7 +365,7 @@ namespace Dynamo.Tests
         public void Core_Math_04()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Math.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(199, model.CurrentWorkspace.Nodes.Count);
@@ -400,7 +410,7 @@ namespace Dynamo.Tests
         public void Core_PassingFunctions()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_PassingFunctions.dyn");
+            OpenSampleModel(@"en-US\Core\Core_PassingFunctions.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(17, model.CurrentWorkspace.Nodes.Count);
@@ -421,7 +431,7 @@ namespace Dynamo.Tests
         public void Core_Python()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Python.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Python.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(15, model.CurrentWorkspace.Nodes.Count);
@@ -459,7 +469,7 @@ namespace Dynamo.Tests
         public void Core_RangeSyntax()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_RangeSyntax.dyn");
+            OpenSampleModel(@"en-US\Core\Core_RangeSyntax.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(35, model.CurrentWorkspace.Nodes.Count);
@@ -484,7 +494,7 @@ namespace Dynamo.Tests
         public void Core_Strings()
         {
             DynamoModel model = ViewModel.Model;
-            OpenSampleModel(@"Core\Core_Strings.dyn");
+            OpenSampleModel(@"en-US\Core\Core_Strings.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(32, model.CurrentWorkspace.Nodes.Count);
@@ -509,15 +519,15 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void ImportExport_CSV_to_Stuff()
         {
-            OpenSampleModel(@"ImportExport\ImportExport_CSV to Stuff.dyn");
+            OpenSampleModel(@"en-US\ImportExport\ImportExport_CSV to Stuff.dyn");
 
             var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
 
-            string resultPath = GetSampleDirectory() + "ImportExport\\helix.csv";
+            string resultPath = SampleDirectory + "Data\\helix.csv";
             // Although old path is a hard coded but that is not going to change 
             // because it is saved in DYN which we have added in Samples folder.
             filename.Value = filename.Value.Replace
-                ("C:\\ProgramData\\Dynamo\\0.7\\samples\\ImportExport\\helix.csv", resultPath);
+                ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\helix.csv", resultPath);
 
             RunCurrentModel();
 
@@ -530,6 +540,65 @@ namespace Dynamo.Tests
                 var point = GetPreviewValueAtIndex(lineNodeID, i) as Point;
                 Assert.IsNotNull(point);
             }
+        }
+
+        [Test, Category("SmokeTests")]
+        public void ImportExport_Data_To_Excel()
+        {
+            OpenSampleModel(@"en-US\ImportExport\ImportExport_Data To Excel.dyn");
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            string resultPath = Path.Combine(TempFolder, "icosohedron_points.csv");
+            // Although old path is a hard coded but that is not going to change 
+            // because it is saved in DYN which we have added in Samples folder.
+            filename.Value = filename.Value.Replace
+                ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\icosohedron_points.csv", resultPath);
+
+            RunCurrentModel();
+
+            const string lineNodeID = "48175079-300b-4b1d-9953-e23d570dce12";
+            AssertPreviewCount(lineNodeID, 65);
+
+            // Killing excel process if there is any after running the graph.
+            Process[] procs = Process.GetProcessesByName("excel");
+            foreach (Process proc in procs)
+                proc.Kill();
+
+        }
+
+        [Test]
+        [Category("Failure")]
+            //Todo Ritesh: Locally passing but failing on CI.
+            //After fixing issue with this test case add Smoke Test Category.
+        public void ImportExport_Excel_to_Dynamo()
+        {
+            OpenSampleModel(@"en-US\ImportExport\ImportExport_Excel to Dynamo.dyn");
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<DSCore.File.Filename>();
+
+            string resultPath = SampleDirectory + "Data\\helix.xlsx";
+            // Although old path is a hard coded but that is not going to change 
+            // because it is saved in DYN which we have added in Samples folder.
+            filename.Value = filename.Value.Replace
+                ("C:\\ProgramData\\Dynamo\\0.8\\samples\\Data\\helix.xlsx", resultPath);
+
+            //RunCurrentModel();
+
+            const string lineNodeID = "d538c147-b79f-4f11-9c00-1efd7f9b3c09";
+            AssertPreviewCount(lineNodeID, 201);
+
+            // There should be 201 Points.
+            for (int i = 0; i <= 200; i++)
+            {
+                var point = GetPreviewValueAtIndex(lineNodeID, i) as Point;
+                Assert.IsNotNull(point);
+            }
+
+            // Killing excel process if there is any after running the graph.
+            Process[] procs = Process.GetProcessesByName("excel");
+            foreach (Process proc in procs)
+                proc.Kill();
         }
     }
 }

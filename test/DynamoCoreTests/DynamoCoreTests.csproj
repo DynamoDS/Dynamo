@@ -11,7 +11,7 @@
     <ProjectGuid>{472084ED-1067-4B2C-8737-3839A6143EB2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo</RootNamespace>
+    <RootNamespace>Dynamo.Tests</RootNamespace>
     <AssemblyName>DynamoCoreTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -68,12 +68,16 @@
   <ItemGroup>
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="ConverterTests.cs" />
+    <Compile Include="CrashProtectionTests.cs" />
+    <Compile Include="DynamoModelTestBase.cs" />
+    <Compile Include="MessageLogTests.cs" />
+    <Compile Include="IconsTests.cs" />
     <Compile Include="NodeConstructionTests.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
+    <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
-    <Compile Include="CoreUnitTests.cs" />
     <Compile Include="CustomNodeWorkspaceOpening.cs" />
     <Compile Include="DSEvaluationViewModelTest.cs" />
     <Compile Include="DSFunctionNodeTest.cs" />
@@ -100,6 +104,7 @@
     <Compile Include="UnicodeTest.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
+    <Compile Include="UserDataMigrationTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
@@ -168,6 +173,7 @@
     <ProjectReference Include="..\..\src\Libraries\DynamoWatch3D\Watch3D.csproj">
       <Project>{b9e338ca-6677-4772-b01d-1fceabcdaaab}</Project>
       <Name>Watch3D</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\IronPython\IronPythonUI.csproj">
       <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>

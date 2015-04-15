@@ -7,6 +7,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.AST;
 using ProtoCore.Namespace;
 using Symbol = Dynamo.Nodes.Symbol;
 
@@ -172,7 +173,7 @@ namespace Dynamo.Core
                 }
             };
             InfoUpdated += infoUpdatedHandler;
-            node.Disposed += () =>
+            node.Disposed += (args) =>
             {
                 if (!disposed)
                     InfoUpdated -= infoUpdatedHandler;
@@ -195,7 +196,7 @@ namespace Dynamo.Core
                 node.Category = info.Category;
             };
             workspace.InfoChanged += infoChangedHandler;
-            node.Disposed += () =>
+            node.Disposed += (args) =>
             {
                 workspace.DefinitionUpdated -= defUpdatedHandler;
                 workspace.InfoChanged -= infoChangedHandler;
@@ -495,7 +496,9 @@ namespace Dynamo.Core
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
+                nodeGraph.Annotations,                               
                 workspaceInfo);
+
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -690,7 +693,7 @@ namespace Dynamo.Core
                             node =>
                                 Enumerable.Range(0, node.InPortData.Count)
                                 .Where(node.HasConnectedInput)
-                                .Select(data => Tuple.Create(node, data, node.Inputs[data]))
+                                .Select(data => Tuple.Create(node, data, node.InputNodes[data]))
                                 .Where(input => !selectedNodeSet.Contains(input.Item3.Item2))));
 
                 var outputs =
@@ -701,7 +704,7 @@ namespace Dynamo.Core
                                 .Where(node.HasOutput)
                                 .SelectMany(
                                     data =>
-                                        node.Outputs[data].Where(
+                                        node.OutputNodes[data].Where(
                                             output => !selectedNodeSet.Contains(output.Item2))
                                         .Select(output => Tuple.Create(node, data, output)))));
 
@@ -1036,6 +1039,7 @@ namespace Dynamo.Core
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
+                    Enumerable.Empty<AnnotationModel>(),                
                     new WorkspaceInfo()
                     {
                         X = 0,

@@ -40,7 +40,12 @@ namespace Dynamo.DSEngine
         private readonly List<string> importedLibraries = new List<string>();
 
         private readonly IPathManager pathManager;
-        public readonly ProtoCore.Core LibraryManagementCore;
+        public ProtoCore.Core LibraryManagementCore{get; private set;}
+        private ProtoCore.Core liveRunnerCore = null;
+        public void SetLiveCore(ProtoCore.Core core)
+        {
+            liveRunnerCore = core;
+        }
 
         private class UpgradeHint
         {
@@ -60,6 +65,20 @@ namespace Dynamo.DSEngine
 
         private readonly Dictionary<string, UpgradeHint> priorNameHints =
             new Dictionary<string, UpgradeHint>();
+
+        /// <summary>
+        /// Copy properties from the liveCore
+        /// The properties to copy are only those used by the library core
+        /// </summary>
+        public void UpdateLibraryCoreData()
+        {
+            // If a liverunner core is provided, sync the library core data
+            if (liveRunnerCore != null)
+            {
+                LibraryManagementCore.ProcTable = new ProtoCore.DSASM.ProcedureTable(liveRunnerCore.ProcTable);
+                LibraryManagementCore.ClassTable = new ProtoCore.DSASM.ClassTable(liveRunnerCore.ClassTable);
+            }
+        }
 
         public LibraryServices(ProtoCore.Core libraryManagementCore, IPathManager pathManager)
         {
@@ -377,6 +396,7 @@ namespace Dynamo.DSEngine
 
                 CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
 
+
                 if (LibraryManagementCore.BuildStatus.ErrorCount > 0)
                 {
                     string errorMessage = string.Format(Properties.Resources.LibraryBuildError, library);
@@ -410,7 +430,11 @@ namespace Dynamo.DSEngine
                 OnLibraryLoadFailed(new LibraryLoadFailedEventArgs(library, e.Message));
                 return false;
             }
+
             OnLibraryLoaded(new LibraryLoadedEventArgs(library));
+
+            // After a library is loaded, update the library core data with the liveRunner core data
+            UpdateLibraryCoreData();
             return true;
         }
 
@@ -572,6 +596,11 @@ namespace Dynamo.DSEngine
         /// </summary>
         private void PopulateBuiltIns()
         {
+            if (LibraryManagementCore == null)
+                return;
+            if (LibraryManagementCore.CodeBlockList.Count <= 0)
+                return;
+
             var builtins = LibraryManagementCore.CodeBlockList[0]
                                                 .procedureTable
                                                 .procList
@@ -698,23 +727,8 @@ namespace Dynamo.DSEngine
             if (string.IsNullOrEmpty(defaultExpression))
                 return false;
 
-            var currentParsingmode = LibraryManagementCore.ParsingMode;
-            var currentParsingFlag = LibraryManagementCore.IsParsingCodeBlockNode;
-
-            LibraryManagementCore.ParsingMode = ProtoCore.ParseMode.AllowNonAssignment;
-            LibraryManagementCore.IsParsingCodeBlockNode = true;
-
-            var astNode = ParserUtils.ParseWithCore(defaultExpression + ";", LibraryManagementCore);
-            if (astNode != null)
-            {
-                var cbn = astNode as CodeBlockNode;
-                if (cbn != null && cbn.Body.Any())
-                    defaultArgumentNode = (cbn.Body[0] as BinaryExpressionNode).RightNode;
-            }
-
-            LibraryManagementCore.ParsingMode = currentParsingmode;
-            LibraryManagementCore.IsParsingCodeBlockNode = currentParsingFlag;
-
+            defaultArgumentNode = ParserUtils.ParseRHSExpression(defaultExpression, LibraryManagementCore);
+           
             return defaultArgumentNode != null;
         }
 
@@ -745,10 +759,12 @@ namespace Dynamo.DSEngine
 
             // MethodAttribute's HiddenInLibrary has higher priority than
             // ClassAttribute's HiddenInLibrary
-            bool isVisible = true;
+            var isVisible = true;
+            var canUpdatePeriodically = false;
             if (methodAttribute != null)
             {
                 isVisible = !methodAttribute.HiddenInLibrary;
+                canUpdatePeriodically = methodAttribute.CanUpdatePeriodically;
             }
             else
             {
@@ -785,14 +801,15 @@ namespace Dynamo.DSEngine
                 }
             }
 
-            IEnumerable<TypedParameter> arguments = proc.argInfoList.Zip(
+            List<TypedParameter> arguments = proc.argInfoList.Zip(
                 proc.argTypeList,
                 (arg, argType) =>
                 {
                     AssociativeNode defaultArgumentNode;
                     // Default argument specified by DefaultArgumentAttribute
                     // takes higher priority
-                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) && arg.IsDefault)
+                    if (!TryGetDefaultArgumentFromAttribute(arg, out defaultArgumentNode) 
+                        && arg.IsDefault)
                     {
                         var binaryExpr = arg.DefaultExpression as BinaryExpressionNode;
                         if (binaryExpr != null)
@@ -802,7 +819,7 @@ namespace Dynamo.DSEngine
                     }
 
                     return new TypedParameter(arg.Name, argType, defaultArgumentNode);
-                });
+                }).ToList();
 
             IEnumerable<string> returnKeys = null;
             if (proc.MethodAttribute != null)
@@ -825,7 +842,8 @@ namespace Dynamo.DSEngine
                 ReturnKeys = returnKeys,
                 PathManager = pathManager,
                 IsVarArg = proc.isVarArg,
-                ObsoleteMsg = obsoleteMessage
+                ObsoleteMsg = obsoleteMessage,
+                CanUpdatePeriodically = canUpdatePeriodically
             });
 
             AddImportedFunctions(library, new[] { function });

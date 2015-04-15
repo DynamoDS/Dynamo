@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
@@ -1140,13 +1141,13 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             [JsonConstructor]
-            internal ModelEventCommand(string modelGuid, string eventName)
+            public ModelEventCommand(string modelGuid, string eventName)
                 : base(modelGuid)
             {
                 EventName = eventName;
             }
 
-            internal ModelEventCommand(Guid modelGuid, string eventName)
+            public ModelEventCommand(Guid modelGuid, string eventName)
                 : base(modelGuid)
             {
                 EventName = eventName;
@@ -1364,14 +1365,14 @@ namespace Dynamo.Models
             }
 
             [JsonConstructor]
-            internal CreateCustomNodeCommand(string nodeId, string name,
+            public CreateCustomNodeCommand(string nodeId, string name,
                 string category, string description, bool makeCurrent)
                 : base(nodeId)
             {
                 SetProperties(name, category, description, makeCurrent);
             }
 
-            internal CreateCustomNodeCommand(Guid nodeId, string name,
+            public CreateCustomNodeCommand(Guid nodeId, string name,
                 string category, string description, bool makeCurrent)
                 : base(nodeId)
             {
@@ -1469,13 +1470,75 @@ namespace Dynamo.Models
 
             #endregion
         }
+
+        public class CreateAnnotationCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public CreateAnnotationCommand(Guid nodeId, string annotationText,
+                double x, double y, bool defaultPosition)
+            {
+                if (string.IsNullOrEmpty(annotationText))
+                    annotationText = Resources.GroupDefaultText;
+
+                AnnotationId = nodeId;
+                AnnotationText = annotationText;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+            }
+
+            internal static CreateAnnotationCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Guid annotationId = helper.ReadGuid("AnnotationId");
+                string annotationText = helper.ReadString("AnnotationText");
+                double x = helper.ReadDouble("X");
+                double y = helper.ReadDouble("Y");
+
+                return new CreateAnnotationCommand(annotationId, annotationText, x, y,
+                    helper.ReadBoolean("DefaultPosition"));
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid AnnotationId { get; private set; }
+            internal string AnnotationText { get; private set; }
+            internal double X { get; private set; }
+            internal double Y { get; private set; }
+            internal bool DefaultPosition { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.CreateAnnotationImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("NodeId", AnnotationId);
+                helper.SetAttribute("NoteText", AnnotationText);
+                helper.SetAttribute("X", X);
+                helper.SetAttribute("Y", Y);
+                helper.SetAttribute("DefaultPosition", DefaultPosition);
+            }
+
+            #endregion
+        }
+
     }
 
     // public class XxxYyyCommand : RecordableCommand
     // {
     //     #region Public Class Methods
     // 
-    //     internal XxxYyyCommand()
+    //     public XxxYyyCommand()
     //     {
     //     }
     // 

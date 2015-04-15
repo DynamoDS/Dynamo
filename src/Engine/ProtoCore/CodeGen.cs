@@ -193,16 +193,16 @@ namespace ProtoCore
             // Cache this function call instance count 
             // This is the count of the number of times in which this callsite appears in the program
             int callInstance = 0;
-            if (!core.RuntimeData.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
+            if (!core.DSExecutable.CallsiteGuidMap.TryGetValue(graphNode.guid, out callInstance))
             {
                 // The guid doesnt exist yet
-                core.RuntimeData.CallsiteGuidMap.Add(graphNode.guid, 0);
+                core.DSExecutable.CallsiteGuidMap.Add(graphNode.guid, 0);
             }
             else
             {
                 // Increment the current count
-                core.RuntimeData.CallsiteGuidMap[graphNode.guid]++;
-                functionCallInstance = core.RuntimeData.CallsiteGuidMap[graphNode.guid];
+                core.DSExecutable.CallsiteGuidMap[graphNode.guid]++;
+                functionCallInstance = core.DSExecutable.CallsiteGuidMap[graphNode.guid];
             }
 
             // Build the unique ID for a callsite 
@@ -2033,20 +2033,6 @@ namespace ProtoCore
             instr.opCode = ProtoCore.DSASM.OpCode.MOV;
             instr.op1 = opDest;
             instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
-        protected void EmitThrow()
-        {
-            SetEntry();
-
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.THROW;
-            instr.op1 = StackValue.BuildBlockIndex(codeBlock.codeBlockId);
-            instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
-            instr.op3 = StackValue.BuildFunctionIndex(globalProcIndex);
 
             ++pc;
             AppendInstruction(instr);

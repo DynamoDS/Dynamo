@@ -29,9 +29,7 @@ namespace Dynamo.Wpf.NodeViewCustomizations
             };
             converterViewModel = converterControl.DataContext as ConverterViewModel;
             nodeView.inputGrid.Children.Add(converterControl);
-            converterControl.Loaded +=converterControl_Loaded;                    
-            converterControl.SelectConversionFrom.SelectionChanged += OnSelectConversionFromChanged;
-            converterControl.SelectConversionTo.SelectionChanged += OnSelectConversionToChanged;
+            converterControl.Loaded +=converterControl_Loaded;                                
             converterControl.SelectConversionMetric.PreviewMouseUp +=SelectConversionMetric_PreviewMouseUp;
             converterControl.SelectConversionFrom.PreviewMouseUp +=SelectConversionFrom_PreviewMouseUp;
             converterControl.SelectConversionTo.PreviewMouseUp += SelectConversionTo_MouseLeftButtonDown;
@@ -61,27 +59,9 @@ namespace Dynamo.Wpf.NodeViewCustomizations
         private void converterControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {           
         }
-
-        private void OnSelectConversionToChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-             /* Raise the call only when both the dropdown has the value */
-            if (converterViewModel.SelectedFromConversion != null
-               && converterViewModel.SelectedToConversion != null)
-                nodeModel.OnNodeModified(true);
-        }
-
-        void OnSelectConversionFromChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            /* Raise the call only when both the dropdown has the value */
-            if (converterViewModel.SelectedFromConversion != null
-                && converterViewModel.SelectedToConversion != null)
-                nodeModel.OnNodeModified(true);
-        }
-
+       
         public void Dispose()
-        {
-            converterControl.SelectConversionFrom.SelectionChanged -= OnSelectConversionFromChanged;
-            converterControl.SelectConversionTo.SelectionChanged -= OnSelectConversionToChanged;
+        {           
             converterControl.SelectConversionMetric.PreviewMouseUp -= SelectConversionMetric_PreviewMouseUp;
             converterControl.SelectConversionFrom.PreviewMouseUp -= SelectConversionFrom_PreviewMouseUp;
             converterControl.SelectConversionTo.PreviewMouseUp -= SelectConversionTo_MouseLeftButtonDown;
