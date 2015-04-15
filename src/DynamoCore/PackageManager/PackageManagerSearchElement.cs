@@ -95,10 +95,6 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        public PackageManagerSearchElement() : this(new PackageHeader())
-        {
-        }
-
         /// <summary>
         ///     The class constructor
         /// </summary>
