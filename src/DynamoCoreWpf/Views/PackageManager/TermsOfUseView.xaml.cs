@@ -23,13 +23,13 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class TermsOfUseView : Window
     {
-        public bool AcceptedTermsOfUse { get; set; }
+        public bool AcceptedTermsOfUse { get; private set; }
 
-        public TermsOfUseView(TermsOfUseViewModel viewModel)
+        public TermsOfUseView(string touFilePath)
         {
             InitializeComponent();
-            DataContext = viewModel;
             AcceptedTermsOfUse = false;
+            TermsOfUseContent.File = touFilePath;
         }
 
         private void AcceptTermsOfUseButton_OnClick(object sender, RoutedEventArgs e)

@@ -56,9 +56,9 @@ namespace Dynamo.Controls
             // by modifying the preferences xml.
             RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ? 
                 RenderMode.Default : RenderMode.SoftwareOnly;
-
+            
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.UIDispatcher = Dispatcher;
+            this.dynamoViewModel.UIDispatcher = Dispatcher;            
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
@@ -181,7 +181,7 @@ namespace Dynamo.Controls
 
         void InitializeLogin()
         {
-            if (dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
+            if ( dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
             {
                 var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
                 loginGrid.Children.Add(login);
@@ -410,23 +410,19 @@ namespace Dynamo.Controls
             if (prefSettings.PackageDownloadTouAccepted)
                 return true; // User accepts the terms of use.
 
-
-            TermsOfUseView termsOfUseView = new TermsOfUseView(new TermsOfUseViewModel())
+            string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
+            var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
+            TermsOfUseView termsOfUseView = new TermsOfUseView(touFilePath)
                 {
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
             termsOfUseView.ShowDialog();
 
-            bool termsOfUseAccepted = termsOfUseView.AcceptedTermsOfUse;
+            prefSettings.PackageDownloadTouAccepted = termsOfUseView.AcceptedTermsOfUse;
 
-            if (termsOfUseAccepted)
-            {
-                // Update preference settings for savings later.
-                prefSettings.PackageDownloadTouAccepted = true;
-            }
-
-            return termsOfUseAccepted; // User may or may not accept the terms.
+            return prefSettings.PackageDownloadTouAccepted; // User may or may not accept the terms.
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -465,9 +461,6 @@ namespace Dynamo.Controls
         private PackageManagerSearchViewModel _pkgSearchVM;
         void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
-            if (!DisplayTermsOfUseForAcceptance())
-                return; // Terms of use not accepted.
-
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -564,7 +557,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(args, dynamoViewModel);
+            var prompt = new CrashPrompt(args,dynamoViewModel);
             prompt.ShowDialog();
         }
 

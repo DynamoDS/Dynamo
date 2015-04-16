@@ -34,7 +34,7 @@
 
         <ScrollViewer Background="#363636"
                       Padding="25">
-            <views:RichTextFile File="{Binding TermsOfUseFile}"
+            <views:RichTextFile x:Name="TermsOfUseContent"
                                 IsReadOnly="True"
                                 IsEnabled="True"
                                 IsDocumentEnabled="True"
