@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using System.IO;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -30,14 +31,32 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        public string CustomizationAssembly
+        {
+            get
+            {
+                string customizationPath = System.IO.Path.GetDirectoryName(Path);
+                customizationPath = System.IO.Directory.GetParent(customizationPath).ToString();
+                customizationPath = customizationPath + Dynamo.UI.Configurations.DefaultPackageCustomizationAssembly;
+                return customizationPath;
+            }
+        }
+
+        public override string IconName
+        {
+            get
+            {
+                return ID.ToString();
+            }
+        }
+                    
+
         public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
             this.customNodeManager = customNodeManager;
             inputParameters = new List<Tuple<string, string>>();
             outputParameters = new List<string>();
             SyncWithCustomNodeInfo(info);
-
-            iconName = FullName;
         }
 
         /// <summary>

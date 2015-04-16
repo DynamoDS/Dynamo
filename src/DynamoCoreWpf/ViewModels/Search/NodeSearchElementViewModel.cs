@@ -187,7 +187,7 @@ namespace Dynamo.Wpf.ViewModels
             throw new InvalidOperationException("Unhandled resourceType");
         }
 
-        protected virtual ImageSource GetIcon(string fullNameOfIcon)
+        protected virtual ImageSource GetIcon(string fullNameOfIcon, bool useDefaultAssembly = false)
         {
             if (string.IsNullOrEmpty(Model.Assembly))
                 return null;
@@ -250,12 +250,25 @@ namespace Dynamo.Wpf.ViewModels
             string postfix = resourceType == ResourceType.SmallIcon ?
                 Configurations.SmallIconPostfix : Configurations.LargeIconPostfix;
 
-            return GetIcon(Configurations.DefaultCustomNodeIcon + postfix);
+            var fullIconName = Configurations.DefaultCustomNodeIcon + postfix;
+            
+            // Try to load default icon from package assembly.
+            var icon = GetIcon(fullIconName);
+
+            // If there is no default icon in package assembly,
+            // load default icon from dynamo assembly.
+            if (icon == null)
+                icon = GetIcon(fullIconName, true);
+
+            return icon;
         }
 
-        protected override ImageSource GetIcon(string fullNameOfIcon)
+        protected override ImageSource GetIcon(string fullNameOfIcon, bool useDefaultAssembly = false)
         {
-            var iconRequest = new IconRequestEventArgs(Model.Path, fullNameOfIcon);
+            string customizationAssemblyPath = useDefaultAssembly ?
+                Configurations.DefaultAssembly : Model.CustomizationAssembly;
+
+            var iconRequest = new IconRequestEventArgs(customizationAssemblyPath, fullNameOfIcon);
             OnRequestBitmapSource(iconRequest);
 
             return iconRequest.Icon;
