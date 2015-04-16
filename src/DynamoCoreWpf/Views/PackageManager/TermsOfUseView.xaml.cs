@@ -41,7 +41,6 @@ namespace Dynamo.PackageManager.UI
 
         private void DeclineTermsOfUseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            dynamoViewModel.PreferenceSettings.PackageDownloadTouAccepted = false;
             Close();
         }
     }
