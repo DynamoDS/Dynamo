@@ -127,7 +127,8 @@ namespace Dynamo.Models
                                 deserialzedNodes.Add(node);
                             }
                             else
-                            {
+                            {   //add the deserialized version anyway so we dont lose this node from all states.
+                                deserialzedNodes.Add(node);
                                 //TODO possibly hookup to dynamologger
                                 Console.WriteLine(nodename + nodeID.ToString() + " could not be found in the loaded dyn");
                             }

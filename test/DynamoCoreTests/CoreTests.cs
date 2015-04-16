@@ -848,11 +848,46 @@ namespace Dynamo.Tests
             Assert.AreEqual(ViewModel.CurrentSpace.PresetsCollection.DesignStates.First().Nodes.Count(), 2);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void CanDeletePresetState()
+        {
+            var model = ViewModel.Model;
+            //create some numbers
+            var numberNode1 = new DoubleInput();
+            numberNode1.Value = "1";
+            var numberNode2 = new DoubleInput();
+            numberNode2.Value = "2";
+
+            model.CurrentWorkspace.AddNode(numberNode1, false);
+            model.CurrentWorkspace.AddNode(numberNode2, false);
+
+            Assert.AreEqual(ViewModel.CurrentSpace.Nodes.Count, 2);
+
+            DynamoSelection.Instance.Selection.Add(numberNode1);
+            DynamoSelection.Instance.Selection.Add(numberNode2);
+            var IDS = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            //create the preset from 2 nodes
+            ViewModel.Model.CurrentWorkspace.CreatePresetStateFromSelection(
+                "state1",
+                "a state with 2 numbers", IDS);
+            //assert that the preset has been created
+            Assert.AreEqual(ViewModel.CurrentSpace.PresetsCollection.DesignStates.Count(), 1);
+            Assert.AreEqual(ViewModel.CurrentSpace.PresetsCollection.DesignStates.First().Nodes.Count(), 2);
+
+            //delete state
+           var state = ViewModel.CurrentSpace.PresetsCollection.DesignStates.First();
+           ViewModel.Model.CurrentWorkspace.PresetsCollection.RemoveState(state);
+
+           Assert.AreEqual(ViewModel.CurrentSpace.PresetsCollection.DesignStates.Count(), 0);
+
+        }
+
+
           [Test]
         [Category("UnitTests")]
         public void CanAddAndRestoreState()
-        {
-            
+        {    
             var model = ViewModel.Model;
             //create some numbers
             var numberNode1 = new DoubleInput();
@@ -900,9 +935,7 @@ namespace Dynamo.Tests
                x => x.Name == "state1").First());
 
            ViewModel.HomeSpace.Run();
-
            Thread.Sleep(250);
-
               //assert that the value of the add node is 3
            Assert.AreEqual(addNode.CachedValue.Data, 3);
 
@@ -911,9 +944,7 @@ namespace Dynamo.Tests
                x => x.Name == "state2").First());
 
            ViewModel.HomeSpace.Run();
-
            Thread.Sleep(250);
-
            //assert that the value of the add node is 5
            Assert.AreEqual(addNode.CachedValue.Data, 5);
 
