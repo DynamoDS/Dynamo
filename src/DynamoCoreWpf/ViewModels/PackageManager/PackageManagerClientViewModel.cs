@@ -230,8 +230,8 @@ namespace Dynamo.ViewModels
             {
                 var ele = new PackageManagerSearchElement(header);
 
-                ele.RequestUpvote += this.Model.Upvote;
-                ele.RequestDownvote += this.Model.Downvote;
+                ele.UpvoteRequested += this.Model.Upvote;
+                ele.DownvoteRequested += this.Model.Downvote;
 
                 CachedPackageList.Add( ele );
             }

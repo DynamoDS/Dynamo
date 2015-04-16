@@ -21,13 +21,13 @@ namespace Dynamo.PackageManager
         ///     An event that's invoked when the user has attempted to upvote this
         ///     package.
         /// </summary>
-        public event Func<string, bool> RequestUpvote;
+        public event Func<string, bool> UpvoteRequested;
 
         /// <summary>
         ///     An event that's invoked when the user has attempted to downvote this
         ///     package.
         /// </summary>
-        public event Func<string, bool> RequestDownvote;
+        public event Func<string, bool> DownvoteRequested;
 
         public string Maintainers { get { return String.Join(", ", this.Header.maintainers.Select(x => x.username)); } }
         private int _votes;
@@ -118,9 +118,9 @@ namespace Dynamo.PackageManager
 
         public void Upvote()
         {
-            if (RequestUpvote == null) return;
+            if (UpvoteRequested == null) return;
 
-            Task<bool>.Factory.StartNew(() => RequestUpvote(this.Id))
+            Task<bool>.Factory.StartNew(() => UpvoteRequested(this.Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
@@ -133,7 +133,7 @@ namespace Dynamo.PackageManager
 
         public void Downvote()
         {
-            Task<bool>.Factory.StartNew(() => RequestDownvote(this.Id))
+            Task<bool>.Factory.StartNew(() => DownvoteRequested(this.Id))
                 .ContinueWith((t) =>
                 {
                     if (t.Result)
