@@ -120,7 +120,22 @@ namespace Dynamo.ViewModels
 
         public void PublishNewPackage(object m)
         {
-            ShowNodePublishInfo();
+            Task<bool>.Factory.StartNew(() => 
+                Model.GetTermsOfUseAcceptanceStatus()).ContinueWith(t =>
+                {
+                    var termsOfUseAccepted = t.Result;
+                    if (termsOfUseAccepted)
+                    {
+                        // Terms of use accepted, proceed to publish.
+                        ShowNodePublishInfo();
+                    }
+                    else
+                    {
+                        // Prompt user to accept the terms of use.
+                        ShowTermsOfUseForPublishing();
+                    }
+
+                }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public bool CanPublishNewPackage(object m)
@@ -193,6 +208,24 @@ namespace Dynamo.ViewModels
         {
             var newPkgVm = new PublishPackageViewModel(DynamoViewModel);
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
+        }
+
+        private void ShowTermsOfUseForPublishing()
+        {
+            // TODO(Minh): Add your terms of use dialog here.
+
+            var termsOfUseAccepted = true;
+            if (!termsOfUseAccepted)
+                return;
+
+            // If user accepts the terms of use, then update the record on 
+            // the server, before proceeding to show the publishing dialog. 
+            // This method is invoked on the UI thread, so when the server call 
+            // returns, invoke the publish dialog on the UI thread's context.
+            // 
+            Task<bool>.Factory.StartNew(() => Model.SetTermsOfUseAcceptanceStatus()).
+                ContinueWith(t => ShowNodePublishInfo(),
+                TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void ShowNodePublishInfo(ICollection<Tuple<CustomNodeInfo, CustomNodeDefinition>> funcDefs)
