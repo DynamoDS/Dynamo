@@ -711,12 +711,6 @@ namespace ProtoCore
             ResetAll(options);
         }
 
-        //Constructor of Class Core
-        public Core()
-        {
-        }
-       
-
 
         public SymbolNode GetSymbolInFunction(string name, int classScope, int functionScope, CodeBlock codeBlock)
         {

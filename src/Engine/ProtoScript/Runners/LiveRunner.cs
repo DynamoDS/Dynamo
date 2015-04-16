@@ -1249,6 +1249,9 @@ namespace ProtoScript.Runners
 
         private void InitCore()
         {
+
+           
+
             coreOptions = new Options
             {
                 GenerateExprID = true,
@@ -1256,10 +1259,10 @@ namespace ProtoScript.Runners
                 BuildOptErrorAsWarning = true,
                 ExecutionMode = ExecutionMode.Serial
             };
-
-            runnerCore = new ProtoCore.Core(coreOptions);
-            runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
-            runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
+            runnerCore = ProtoScript.Utils.ProtoScriptUtils.CreateCore(coreOptions,runnerCore);
+           // runnerCore = new ProtoCore.Core(coreOptions);
+          //  runnerCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(runnerCore));
+           // runnerCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(runnerCore));
 
             runnerCore.Options.RootModulePathName = configuration.RootModulePathName;
             runnerCore.Options.IncludeDirectories = configuration.SearchDirectories.ToList();
