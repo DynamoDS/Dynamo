@@ -99,7 +99,7 @@ namespace ProtoCore.DSASM
         ALLOCA,
         ALLOCC,
         POPM,
-        CALLC,
+      
         POPLIST,
         PUSHLIST,
         RETC,
@@ -112,7 +112,7 @@ namespace ProtoCore.DSASM
         NEG,
         CAST,
         DEP,
-        DEPX,
+        
         PUSHB,
         POPB,
 
