@@ -384,8 +384,8 @@ namespace ProtoCore
             this.traceData = helper.TraceData;
 
             // Cache the historical trace data for comparison
-            // when graph update is complete.
-            historicalSerializables.Clear();
+            // when graph update is complete. This data will be cleared
+            // after the first reconciliation.
             historicalSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData()).ToList();
         }
 
@@ -566,10 +566,21 @@ namespace ProtoCore
         /// Get all serializables that were created historically, but
         /// were not re-created in the most recent graph update.
         /// </summary>
-        public IEnumerable<ISerializable> GetOrphanedSerializables()
+        public IList<ISerializable> GetOrphanedSerializables()
         {
+            var result = new List<ISerializable>();
+
+            if (!historicalSerializables.Any())
+                return result;
+
             var currentSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData());
-            return historicalSerializables.Where(hs=>!currentSerializables.Contains(hs));
+            result.AddRange(historicalSerializables.Where(hs=>!currentSerializables.Contains(hs)).ToList());
+            
+            // Clear the historical serializable to avoid 
+            // them being used again. 
+            historicalSerializables.Clear();
+
+            return result;
         }
 
         #endregion
@@ -2113,11 +2124,11 @@ namespace ProtoCore
         /// </summary>
         /// <param name="callSiteData">The serialized representation of a SingleRunTraceData object.</param>
         /// <returns>A flat collection of ISerializable objects.</returns>
-        public static IEnumerable<ISerializable> GetAllSerializablesFromSingleRunTraceData(
+        public static IList<ISerializable> GetAllSerializablesFromSingleRunTraceData(
             string callSiteData)
         {
             var helper = TraceSerialiserHelper.FromCallSiteData(callSiteData);
-            var serializables = helper.TraceData.SelectMany(std => std.RecursiveGetNestedData());
+            var serializables = helper.TraceData.SelectMany(std => std.RecursiveGetNestedData()).ToList();
             return serializables;
         }
 

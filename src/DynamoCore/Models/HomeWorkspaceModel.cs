@@ -503,7 +503,7 @@ namespace Dynamo.Models
        
         #endregion
 
-        public IEnumerable<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
+        public IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
         {
             var orphans = new List<ISerializable>();
 

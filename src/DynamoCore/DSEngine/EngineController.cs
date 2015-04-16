@@ -487,11 +487,13 @@ namespace Dynamo.DSEngine
 
         private void ReconcileTraceDataAndNotify()
         {
-            var orphanedSerializables =
-                liveRunnerServices.Core.DSExecutable.CallsiteCache.Values.SelectMany(
-                    cs => cs.GetOrphanedSerializables());
+            var orphans = new List<ISerializable>();
+            foreach (var cs in liveRunnerServices.Core.DSExecutable.CallsiteCache.Values)
+            {
+                orphans.AddRange(cs.GetOrphanedSerializables());
+            }
 
-            OnTraceReconciliationComplete(new TraceReconciliationEventArgs(orphanedSerializables));
+            OnTraceReconciliationComplete(new TraceReconciliationEventArgs(orphans));
         }
 
         private static void ClearWarnings(IEnumerable<NodeModel> nodes)
@@ -698,9 +700,9 @@ namespace Dynamo.DSEngine
 
     public class TraceReconciliationEventArgs : EventArgs
     {
-        public IEnumerable<ISerializable> OrphanedSerializables { get; private set; }
+        public IList<ISerializable> OrphanedSerializables { get; private set; }
 
-        public TraceReconciliationEventArgs(IEnumerable<ISerializable> orphanedSerializables)
+        public TraceReconciliationEventArgs(IList<ISerializable> orphanedSerializables)
         {
             OrphanedSerializables = orphanedSerializables;
         }

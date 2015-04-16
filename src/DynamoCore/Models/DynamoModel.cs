@@ -549,10 +549,11 @@ namespace Dynamo.Models
         {
             Debug.WriteLine("TRACE RECONCILIATION: {0} serializables were orphaned.", obj.OrphanedSerializables.Count());
 
-            var orphans =
-                Workspaces.Where(w => w is HomeWorkspaceModel).
-                Cast<HomeWorkspaceModel>().
-                SelectMany(w=>w.GetOrphanedSerializablesAndClearHistoricalTraceData()).ToList();
+            var orphans = new List<ISerializable>();
+            foreach (HomeWorkspaceModel ws in Workspaces.Where(w => w is HomeWorkspaceModel))
+            {
+                orphans.AddRange(ws.GetOrphanedSerializablesAndClearHistoricalTraceData());
+            }
 
             orphans.AddRange(obj.OrphanedSerializables);
 
