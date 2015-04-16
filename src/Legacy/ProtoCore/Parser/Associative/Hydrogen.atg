@@ -221,9 +221,9 @@ classdecl<out Node node>
         }
 	]
 	'{'
-		{										(. ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic; .)
+		{										(. ProtoCore.DSASM.AccessModifier access = ProtoCore.DSASM.AccessModifier.kPublic; .)
 			[
-				AccessSpecifier<out access>
+				AccessModifier<out access>
 			]
 			(			
 				(									
@@ -296,7 +296,7 @@ LanguageBlock<out Node node>
 										.)		
 .    	
 
-constructordecl<out Node constrNode, ProtoCore.DSASM.AccessSpecifier access>
+constructordecl<out Node constrNode, ProtoCore.DSASM.AccessModifier access>
 =                           (.
 								ConstructorDefinitionNode constr = null;									
 								string methodName;  
@@ -350,18 +350,18 @@ ExternalLibraryReference<out string libname>
 .
 
 //------------------------------------------------------------------------
-AccessSpecifier<out ProtoCore.DSASM.AccessSpecifier access>
-=					(. access = ProtoCore.DSASM.AccessSpecifier.kPublic; .)
+AccessModifier<out ProtoCore.DSASM.AccessModifier access>
+=					(. access = ProtoCore.DSASM.AccessModifier.kPublic; .)
 	(
 		"public"		
 		|
-		"private"		(. access = ProtoCore.DSASM.AccessSpecifier.kPrivate; .)
+		"private"		(. access = ProtoCore.DSASM.AccessModifier.kPrivate; .)
 		|
-		"protected"		(. access = ProtoCore.DSASM.AccessSpecifier.kProtected; .)
+		"protected"		(. access = ProtoCore.DSASM.AccessModifier.kProtected; .)
 	)
 .
 
-functiondecl<out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic>
+functiondecl<out Node node, ProtoCore.DSASM.AccessModifier access = ProtoCore.DSASM.AccessModifier.kPublic>
 =                           
                             (. 
                                 FunctionDefinitionNode f = new FunctionDefinitionNode(); 
@@ -450,7 +450,7 @@ ArgumentSignatureDefinition<out Node argumentSign>
 												(. argumentSign = argumentSignature; .)
 .
 
-vardecl<out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic>	
+vardecl<out Node node, ProtoCore.DSASM.AccessModifier access = ProtoCore.DSASM.AccessModifier.kPublic>	
 = 
 							        (.
                                         IdentifierNode tNode = null; 
@@ -518,7 +518,7 @@ vardecl<out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.
 
 .
 
-ArgDecl<out Node node, ProtoCore.DSASM.AccessSpecifier access = ProtoCore.DSASM.AccessSpecifier.kPublic>	
+ArgDecl<out Node node, ProtoCore.DSASM.AccessModifier access = ProtoCore.DSASM.AccessModifier.kPublic>	
 = 
 							        (.
                                         IdentifierNode tNode = null; 

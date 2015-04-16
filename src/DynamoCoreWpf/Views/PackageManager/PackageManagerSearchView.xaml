@@ -7,9 +7,8 @@
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
-        d:DataContext="{d:DesignData Source=./SampleData/PackageManagerSearchViewModelSampleData.xaml}"
         mc:Ignorable="d" 
-        Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="480" MinWidth="480" MaxWidth="480">
+        Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="490" MinWidth="490" MaxWidth="490">
     
     <Window.Resources>
         <ResourceDictionary>
@@ -160,7 +159,7 @@
                     <DataTemplate DataType="viewModels:PackageManagerSearchElementViewModel">
                         <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0" Background="#333">
 
-                            <StackPanel Width ="445" Name="SearchEle">
+                            <StackPanel Width ="455" Name="SearchEle">
 
                                 <TextBlock Text="{x:Static p:Resources.PackageSearchViewDeprecated}" 
                                            Padding="5" 
@@ -182,7 +181,7 @@
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <StackPanel Orientation="Horizontal" Margin="1" Width="440">
+                                <StackPanel Orientation="Horizontal" Margin="1" Width="450">
 
                                     <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#666">
                                         <Grid Width="40" Height="64">
@@ -203,23 +202,23 @@
 
                                             <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
 
-                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
-                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="✎   " Foreground="Gray" />
+                                                <StackPanel Orientation="Horizontal" Margin="5" Width="100">
+                                                    <TextBlock FontSize="10" FontFamily="Segoe UI Symbol" Text="&#xE13D;   " Foreground="Gray" />
                                                     <TextBlock FontSize="10" MaxWidth="100" Text="{Binding Path= Model.Maintainers}" TextTrimming="WordEllipsis" Foreground="Gray"  />
                                                 </StackPanel>
 
-                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
+                                                <StackPanel Orientation="Horizontal" Margin="5" Width="60">
                                                     <TextBlock FontSize="10" FontWeight="Bold" Text="⚑   " Foreground="Gray" />
                                                     <TextBlock FontSize="10" Text="{Binding Path= Model.LatestVersion}" Foreground="Gray"  />
                                                 </StackPanel>
 
-                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
-                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="▼   " Foreground="Gray" />
+                                                <StackPanel Orientation="Horizontal" Margin="5" Width="50">
+                                                    <TextBlock FontSize="10" FontFamily="Segoe UI Symbol" Text="&#xE118;   " Foreground="Gray" />
                                                     <TextBlock FontSize="10" Text="{Binding Path= Model.Downloads}" Foreground="Gray"  />
                                                 </StackPanel>
 
-                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
-                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="◷   " Foreground="Gray" />
+                                                <StackPanel Orientation="Horizontal" Margin="5" Width="80">
+                                                    <TextBlock FontSize="10" FontFamily="Segoe UI Symbol" Text="&#xE121;   " Foreground="Gray" />
                                                     <TextBlock FontSize="10" Text="{Binding Path= Model.LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" Foreground="Gray"  />
                                                 </StackPanel>
 
@@ -230,22 +229,26 @@
                                         </StackPanel>
                                     </Button>
 
-                                    <StackPanel Width="30"  Orientation="Vertical" Margin="10,0,0,0">
-                                        <Button Name="UpvoteButton" 
-                                                FontSize="10" 
+                                    <StackPanel Width="40"  Orientation="Vertical" Margin="6,0,0,0">
+                                        <StackPanel Orientation="Horizontal" Margin="0,25,0,0">
+                                            <Button Name="UpvoteButton" 
+                                                FontSize="11" 
                                                 ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
-                                                Content="▲" 
+                                                FontFamily="Segoe UI Symbol"
+                                                Content="&#xE19F;"
                                                 Foreground="Gray" 
                                                 Command="{Binding Path=UpvoteCommand}" 
                                                 Style="{StaticResource FlatButton}" />
-                                        <TextBlock FontSize="10"  HorizontalAlignment="Center" Padding="0,10" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
-                                        <Button Name="DownvoteButton" 
-                                                FontSize="10" 
+                                            <Button Name="DownvoteButton" 
+                                                FontSize="11" 
                                                 ToolTip="{x:Static p:Resources.PackageSearchViewDownvoteButtonTooltip}" 
                                                 Foreground="Gray" 
-                                                Content="▼" 
+                                                FontFamily="Segoe UI Symbol"
+                                                Content="&#xE19E;" 
                                                 Command="{Binding Path=DownvoteCommand}" 
                                                 Style="{StaticResource FlatButton}" />
+                                        </StackPanel>
+                                        <TextBlock FontSize="10" Width="40" TextAlignment="Center" Margin="0,0,0,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                     </StackPanel>
                                 </StackPanel>
 
