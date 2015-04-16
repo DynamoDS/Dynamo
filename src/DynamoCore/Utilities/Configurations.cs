@@ -190,7 +190,7 @@ namespace Dynamo.UI
         public const string DefaultIcon = "DefaultIcon";
         public const string DefaultCustomNodeIcon = "DefaultCustomNode";
         public const string DefaultAssembly = "DynamoCore";
-        public const string DefaultPackageCustomizationAssembly = "\\bin\\Package";
+        public const string PackageCustomizationAssemblyPostfix = "\\bin\\Package";
 
         #endregion
 

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Xml;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using System.IO;
 
 namespace Dynamo.Search.SearchElements
 {
@@ -37,7 +36,7 @@ namespace Dynamo.Search.SearchElements
             {
                 string customizationPath = System.IO.Path.GetDirectoryName(Path);
                 customizationPath = System.IO.Directory.GetParent(customizationPath).ToString();
-                customizationPath = customizationPath + Dynamo.UI.Configurations.DefaultPackageCustomizationAssembly;
+                customizationPath = customizationPath + Dynamo.UI.Configurations.PackageCustomizationAssemblyPostfix;
                 return customizationPath;
             }
         }
