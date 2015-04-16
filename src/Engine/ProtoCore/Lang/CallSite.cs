@@ -24,6 +24,8 @@ namespace ProtoCore
 {
     public class CallSite
     {
+        #region private classes
+
         /// <summary>
         /// Data structure used to carry trace data
         /// </summary>
@@ -277,25 +279,42 @@ namespace ProtoCore
             public List<SingleRunTraceData> TraceData { get; set; }
         }
 
+        #endregion
+
+        #region private members
+
         private int runID;
         private int classScope;
         private string methodName;
         private readonly FunctionTable globalFunctionTable;
         private readonly ExecutionMode executionMode;
+        private int invokeCount; //Number of times the callsite has been executed within this run
+        private List<ISerializable> historicalSerializables = new List<ISerializable>();
+
+        //TODO(Luke): This should be loaded from the attribute
+        private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
+
+        #endregion
+
+        #region public properties
 
         /// <summary>
         /// The method group name that is associated with this function
         /// </summary>
         public String MethodName { get { return methodName; } }
 
-        //TODO(Luke): This should be loaded from the attribute
-        private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
-
-        public List<SingleRunTraceData> TraceData { 
-            get { return traceData; } private set { traceData = value; } }
-
         private List<SingleRunTraceData> traceData = new List<SingleRunTraceData>();
-        private int invokeCount; //Number of times the callsite has been executed within this run
+        public List<SingleRunTraceData> TraceData 
+        {
+            get
+            {
+                return traceData;
+            }
+            private set
+            {
+                traceData = value;
+            } 
+        }
 
         private Guid callsiteID = Guid.Empty;
         public Guid CallSiteID
@@ -305,6 +324,10 @@ namespace ProtoCore
                 return callsiteID;
             }
         }
+
+        #endregion
+
+        #region constructors
 
         /// <summary>
         /// Constructs an instance of the CallSite object given its scope and 
@@ -347,6 +370,10 @@ namespace ProtoCore
             }
         }
 
+        #endregion
+
+        #region public methods
+
         /// <summary>
         /// Load the serialised data provided into this callsite's trace cache
         /// </summary>
@@ -355,6 +382,11 @@ namespace ProtoCore
         {
             var helper = TraceSerialiserHelper.FromCallSiteData(serializedTraceData);
             this.traceData = helper.TraceData;
+
+            // Cache the historical trace data for comparison
+            // when graph update is complete.
+            historicalSerializables.Clear();
+            historicalSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData()).ToList();
         }
 
         public void UpdateCallSite(int classScope, string methodName)
@@ -363,8 +395,186 @@ namespace ProtoCore
             this.methodName = methodName;
         }
 
-        #region Support Methods
+        /// <summary>
+        /// Conservative guess as to whether this call will replicate or not
+        /// This may give inaccurate answers if the node cluster doesn't actually exist
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="arguments"></param>
+        /// <param name="stackFrame"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        public bool WillCallReplicate(Context context, List<StackValue> arguments,
+                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
+                                      out List<List<ReplicationInstruction>> replicationTrials)
+        {
+            replicationTrials = new List<List<ReplicationInstruction>>();
 
+            if (partialReplicationGuides.Count > 0)
+            {
+                // Jun Comment: And at least one of them contains somthing
+                for (int n = 0; n < partialReplicationGuides.Count; ++n)
+                {
+                    if (partialReplicationGuides[n].Count > 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            #region Get Function Group
+
+            //@PERF: Possible optimisation point here, to deal with static dispatches that don't need replication analysis
+            //Handle resolution Pass 1: Name -> Method Group
+            FunctionGroup funcGroup;
+            try
+            {
+                funcGroup = globalFunctionTable.GlobalFuncTable[classScope + 1][methodName];
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+
+            #endregion
+
+            //Replication Control is an ordered list of the elements that we have to replicate over
+            //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
+            //Take the explicit replication guides and build the replication structure
+            //Turn the replication guides into a guide -> List args data structure
+            ReplicationControl replicationControl =
+                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
+
+            #region First Case: Replicate only according to the replication guides
+
+            {
+                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, replicationControl,
+                                                                stackFrame,
+                                                                runtimeCore, new StringBuilder());
+                if (fep != null)
+                {
+                    //found an exact match
+                    return false;
+                }
+            }
+
+            #endregion
+
+            #region Case 2: Replication with no type cast
+
+            {
+                //Build the possible ways in which we might replicate
+                replicationTrials =
+                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
+
+
+                foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
+                {
+                    ReplicationControl rc = new ReplicationControl() { Instructions = replicationOption };
+
+
+                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
+                                                                                              rc.
+                                                                                                  Instructions, runtimeCore);
+                    int resolutionFailures;
+
+                    Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
+                        context, reducedParams, stackFrame, runtimeCore,
+                        out resolutionFailures);
+
+
+                    if (resolutionFailures > 0)
+                        continue;
+
+                    return true; //Replicates against cluster
+                }
+            }
+
+            #endregion
+
+            #region Case 3: Match with type conversion, but no array promotion
+
+            {
+                Dictionary<FunctionEndPoint, int> candidatesWithDistances =
+                    funcGroup.GetConversionDistances(context, arguments, replicationControl.Instructions,
+                                                     runtimeCore.DSExecutable.classTable, runtimeCore);
+                Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
+                    funcGroup.GetCastDistances(context, arguments, replicationControl.Instructions, runtimeCore.DSExecutable.classTable,
+                                               runtimeCore);
+
+                List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
+                FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
+                                                                      replicationControl.Instructions, stackFrame, runtimeCore,
+                                                                      candidatesWithCastDistances, candidateFunctions,
+                                                                      candidatesWithDistances);
+
+                if (compliantTarget != null)
+                {
+                    return false; //Type conversion but no replication
+                }
+            }
+
+            #endregion
+
+            #region Case 5: Match with type conversion, replication and array promotion
+
+            {
+                //Build the possible ways in which we might replicate
+                replicationTrials =
+                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
+
+                //Add as a first attempt a no-replication, but allowing up-promoting
+                replicationTrials.Insert(0,
+                                         new List<ReplicationInstruction>()
+                    );
+            }
+
+            #endregion
+
+            return true; //It'll replicate if it suceeds
+        }
+
+        /// <summary>
+        /// Call this method to obtain the Base64 encoded string that 
+        /// represent this instance of CallSite;s trace data
+        /// </summary>
+        /// <returns>Returns the Base64 encoded string that represents the
+        /// trace data of this callsite
+        /// </returns>
+        /// 
+        public string GetTraceDataToSave()
+        {
+            //Test to see if there is any actual data in the trace cache
+            if (!this.traceData.Any(srtd => srtd.HasAnyNestedData))
+                return null;
+
+            TraceSerialiserHelper helper = new TraceSerialiserHelper();
+            helper.TraceData = this.traceData;
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+
+                IFormatter formatter = new SoapFormatter();
+                formatter.Serialize(memoryStream, helper);
+
+                return Convert.ToBase64String(memoryStream.ToArray());
+            }
+
+        }
+
+        /// <summary>
+        /// Get all serializables that were created historically, but
+        /// were not re-created in the most recent graph update.
+        /// </summary>
+        public IEnumerable<ISerializable> GetOrphanedSerializables()
+        {
+            var currentSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData());
+            return historicalSerializables.Where(hs=>!currentSerializables.Contains(hs));
+        }
+
+        #endregion
+
+        #region private methods
 
         /// <summary>
         /// Report that whole function group couldn't be found
@@ -377,7 +587,6 @@ namespace ProtoCore
             runtimeCore.RuntimeStatus.LogFunctionGroupNotFoundWarning(methodName);
             return StackValue.Null;
         }
-
 
         /// <summary>
         /// Internal support method for reporting a method that can't be located
@@ -412,8 +621,6 @@ namespace ProtoCore
             }
         }
 
-        #endregion
-
         /// <summary>
         ///  This function handles generating a unique callsite ID and serializing the data associated with this callsite
         /// </summary>
@@ -438,56 +645,10 @@ namespace ProtoCore
                 }
             }*/
         }
-        
-        #region Serialization supporting methods
-
-        /*
-        /// <summary>
-        ///  This function handles generating a unique callsite ID and serializing the data associated with this callsite
-        /// </summary>
-        /// <param name="data"></param>
-        private Object SimulateGetData()
-        {
-            // Get the data for this callite (Simulate unique data)
-            Object callsiteData = ProtoCore.TLSUtils.GetTLSData();
-            return callsiteData;
-        }
-        */
-
-        /// <summary>
-        /// Call this method to obtain the Base64 encoded string that 
-        /// represent this instance of CallSite;s trace data
-        /// </summary>
-        /// <returns>Returns the Base64 encoded string that represents the
-        /// trace data of this callsite
-        /// </returns>
-        /// 
-        public string GetTraceDataToSave()
-        {
-            //Test to see if there is any actual data in the trace cache
-            if (!this.traceData.Any(srtd => srtd.HasAnyNestedData))
-                return null;
-
-            TraceSerialiserHelper helper = new TraceSerialiserHelper();
-            helper.TraceData = this.traceData;
-
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-
-                IFormatter formatter = new SoapFormatter();
-                formatter.Serialize(memoryStream, helper);
-
-                return Convert.ToBase64String(memoryStream.ToArray());
-            }
-
-        }
 
         #endregion
 
         #region Target resolution
-
-
-
 
         private void ComputeFeps(StringBuilder log, Context context, List<StackValue> arguments, FunctionGroup funcGroup, ReplicationControl replicationControl,
                                       List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
@@ -1948,145 +2109,6 @@ namespace ProtoCore
         #endregion
 
         /// <summary>
-        /// Conservative guess as to whether this call will replicate or not
-        /// This may give inaccurate answers if the node cluster doesn't actually exist
-        /// </summary>
-        /// <param name="context"></param>
-        /// <param name="arguments"></param>
-        /// <param name="stackFrame"></param>
-        /// <param name="core"></param>
-        /// <returns></returns>
-        public bool WillCallReplicate(Context context, List<StackValue> arguments,
-                                      List<List<ReplicationGuide>> partialReplicationGuides, StackFrame stackFrame, RuntimeCore runtimeCore,
-                                      out List<List<ReplicationInstruction>> replicationTrials)
-        {
-            replicationTrials = new List<List<ReplicationInstruction>>();
-
-            if (partialReplicationGuides.Count > 0)
-            {
-                // Jun Comment: And at least one of them contains somthing
-                for (int n = 0; n < partialReplicationGuides.Count; ++n)
-                {
-                    if (partialReplicationGuides[n].Count > 0)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            #region Get Function Group
-
-            //@PERF: Possible optimisation point here, to deal with static dispatches that don't need replication analysis
-            //Handle resolution Pass 1: Name -> Method Group
-            FunctionGroup funcGroup;
-            try
-            {
-                funcGroup = globalFunctionTable.GlobalFuncTable[classScope + 1][methodName];
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
-
-            #endregion
-
-            //Replication Control is an ordered list of the elements that we have to replicate over
-            //Ordering implies containment, so element 0 is the outer most forloop, element 1 is nested within it etc.
-            //Take the explicit replication guides and build the replication structure
-            //Turn the replication guides into a guide -> List args data structure
-            ReplicationControl replicationControl =
-                Replicator.Old_ConvertGuidesToInstructions(partialReplicationGuides);
-
-            #region First Case: Replicate only according to the replication guides
-
-            {
-                FunctionEndPoint fep = Case1GetCompleteMatchFEP(context, arguments, funcGroup, replicationControl,
-                                                                stackFrame,
-                                                                runtimeCore, new StringBuilder());
-                if (fep != null)
-                {
-                    //found an exact match
-                    return false;
-                }
-            }
-
-            #endregion
-
-            #region Case 2: Replication with no type cast
-
-            {
-                //Build the possible ways in which we might replicate
-                replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
-
-                foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
-                {
-                    ReplicationControl rc = new ReplicationControl() {Instructions = replicationOption};
-
-
-                    List<List<StackValue>> reducedParams = Replicator.ComputeAllReducedParams(arguments,
-                                                                                              rc.
-                                                                                                  Instructions, runtimeCore);
-                    int resolutionFailures;
-
-                    Dictionary<FunctionEndPoint, int> lookups = funcGroup.GetExactMatchStatistics(
-                        context, reducedParams, stackFrame, runtimeCore,
-                        out resolutionFailures);
-
-
-                    if (resolutionFailures > 0)
-                        continue;
-
-                    return true; //Replicates against cluster
-                }
-            }
-
-            #endregion
-
-            #region Case 3: Match with type conversion, but no array promotion
-
-            {
-                Dictionary<FunctionEndPoint, int> candidatesWithDistances =
-                    funcGroup.GetConversionDistances(context, arguments, replicationControl.Instructions,
-                                                     runtimeCore.DSExecutable.classTable, runtimeCore);
-                Dictionary<FunctionEndPoint, int> candidatesWithCastDistances =
-                    funcGroup.GetCastDistances(context, arguments, replicationControl.Instructions, runtimeCore.DSExecutable.classTable,
-                                               runtimeCore);
-
-                List<FunctionEndPoint> candidateFunctions = GetCandidateFunctions(stackFrame, candidatesWithDistances);
-                FunctionEndPoint compliantTarget = GetCompliantTarget(context, arguments,
-                                                                      replicationControl.Instructions, stackFrame, runtimeCore,
-                                                                      candidatesWithCastDistances, candidateFunctions,
-                                                                      candidatesWithDistances);
-
-                if (compliantTarget != null)
-                {
-                    return false; //Type conversion but no replication
-                }
-            }
-
-            #endregion
-
-            #region Case 5: Match with type conversion, replication and array promotion
-
-            {
-                //Build the possible ways in which we might replicate
-                replicationTrials =
-                    Replicator.BuildReplicationCombinations(replicationControl.Instructions, arguments, runtimeCore);
-
-                //Add as a first attempt a no-replication, but allowing up-promoting
-                replicationTrials.Insert(0,
-                                         new List<ReplicationInstruction>()
-                    );
-            }
-
-            #endregion
-
-            return true; //It'll replicate if it suceeds
-        }
-
-        /// <summary>
         /// Get a flat collection of ISerializable objects from a serialized representation of a SingleRunTraceData object.
         /// </summary>
         /// <param name="callSiteData">The serialized representation of a SingleRunTraceData object.</param>
@@ -2103,6 +2125,18 @@ namespace ProtoCore
 
         // ======== UNUSED =======
 
+        /*
+        /// <summary>
+        ///  This function handles generating a unique callsite ID and serializing the data associated with this callsite
+        /// </summary>
+        /// <param name="data"></param>
+        private Object SimulateGetData()
+        {
+            // Get the data for this callite (Simulate unique data)
+            Object callsiteData = ProtoCore.TLSUtils.GetTLSData();
+            return callsiteData;
+        }
+        */
 
         /*
          * 
