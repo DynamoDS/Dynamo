@@ -680,18 +680,20 @@ namespace Dynamo.PackageManager
         {
             if (LastSync == null) return new List<PackageManagerSearchElementViewModel>();
 
+            var canLogin = PackageManagerClientViewModel.Model.HasAuthProvider;
+
             if (!String.IsNullOrEmpty(query))
             {
                 return
                     SearchDictionary.Search(query)
-                        .Select(x => new PackageManagerSearchElementViewModel(x))
+                        .Select(x => new PackageManagerSearchElementViewModel(x, canLogin))
                         .Take(MaxNumSearchResults);
             }
 
             // with null query, don't show deprecated packages
             var list =
                 LastSync.Where(x => !x.IsDeprecated)
-                    .Select(x => new PackageManagerSearchElementViewModel(x)).ToList();
+                    .Select(x => new PackageManagerSearchElementViewModel(x, canLogin)).ToList();
             Sort(list, this.SortingKey);
             return list;
 
