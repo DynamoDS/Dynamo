@@ -7075,22 +7075,7 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void DEPX_Handler()
-        {
-            runtimeVerify(Language.kAssociative == istream.language);
-
-            // The current function and class scope
-            int ci = Constants.kInvalidIndex;
-            int fi = Constants.kGlobalScope;
-            if (fepRun)
-            {
-                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-            }
-
-            // Set the next graph to be executed
-            SetupNextExecutableGraph(fi, ci);
-        }
+       
 
         private void SETEXPUID_Handler()
         {
