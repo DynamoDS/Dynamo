@@ -400,7 +400,7 @@ namespace ProtoImperative
                 false,
                 null,
                 globalClassIndex,
-                ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
+                ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 false,
                 codeBlock.codeBlockId);
 

@@ -38,8 +38,6 @@ namespace Dynamo.DSEngine
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
-        private readonly DynamoModel dynamoModel;
-        private readonly ProtoCore.Core libraryCore;
         private int shortVarCounter;
         public bool VerboseLogging;
         private readonly Object macroMutex = new Object();
