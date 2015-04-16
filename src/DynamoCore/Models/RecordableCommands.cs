@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
@@ -1477,7 +1478,7 @@ namespace Dynamo.Models
                 double x, double y, bool defaultPosition)
             {
                 if (string.IsNullOrEmpty(annotationText))
-                    annotationText = string.Empty;
+                    annotationText = Resources.GroupDefaultText;
 
                 AnnotationId = nodeId;
                 AnnotationText = annotationText;

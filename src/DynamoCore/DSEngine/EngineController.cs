@@ -38,8 +38,6 @@ namespace Dynamo.DSEngine
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
-        private readonly DynamoModel dynamoModel;
-        private readonly ProtoCore.Core libraryCore;
         public bool VerboseLogging;
         private readonly Object macroMutex = new Object();
 
@@ -54,6 +52,7 @@ namespace Dynamo.DSEngine
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
+            libraryServices.SetLiveCore(LiveRunnerCore);
 
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
 
@@ -525,6 +524,7 @@ namespace Dynamo.DSEngine
             // The LiveRunner core is newly instantiated whenever a new library is imported
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
+            libraryServices.SetLiveCore(LiveRunnerCore);
         }
 
         #region Implement IAstNodeContainer interface

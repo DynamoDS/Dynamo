@@ -551,7 +551,6 @@ namespace DSCore
         /// </summary>
         /// <param name="width">The width of the color map.</param>
         /// <param name="height">The height of the color map.</param>
-        /// for interpolation.</param>
         /// <returns>A two-dimensional array of colors.</returns>
         public Color[,] CreateColorMap(int width, int height)
         {

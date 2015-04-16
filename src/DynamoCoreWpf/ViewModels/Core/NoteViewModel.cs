@@ -92,8 +92,7 @@ namespace Dynamo.ViewModels
 
         public void UpdateSizeFromView(double w, double h)
         {
-            this._model.Width = w;
-            this._model.Height = h;
+            this._model.SetSize(w,h);     
         }
 
         private bool CanSelect(object parameter)

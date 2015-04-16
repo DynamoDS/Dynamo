@@ -1362,37 +1362,4 @@ namespace ProtoCore.AST.ImperativeAST
     public class DefaultArgNode : ImperativeNode
     {// not supposed to be used in parser 
     }
-
-    public class ThrowNode : ImperativeNode
-    {
-        public ImperativeNode expression { get; set; }
-    }
-
-    public class TryBlockNode : ImperativeNode
-    {
-        public List<ImperativeNode> body { get; set; }
-    }
-
-    public class CatchFilterNode : ImperativeNode
-    {
-        public IdentifierNode var { get; set; }
-        public ProtoCore.Type type { get; set; }
-    }
-
-    public class CatchBlockNode : ImperativeNode
-    {
-        public CatchFilterNode catchFilter { get; set; }
-        public List<ImperativeNode> body { get; set; }
-    }
-
-    public class ExceptionHandlingNode : ImperativeNode
-    {
-        public TryBlockNode tryBlock { get; set; }
-        public List<CatchBlockNode> catchBlocks { get; set; }
-
-        public ExceptionHandlingNode()
-        {
-            catchBlocks = new List<CatchBlockNode>();
-        }
-    }
 }

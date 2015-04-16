@@ -101,7 +101,7 @@ namespace DynamoCoreUITests
             Assert.Null(BackgroundPreview.Mesh);
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void VisualizationInSyncWithPreviewUpstream()
         {
             var model = ViewModel.Model;
@@ -137,6 +137,12 @@ namespace DynamoCoreUITests
             Assert.AreEqual(1, watchNodes.Count());
 
             var watch3DNodeView = watchNodes.First();
+            if (!watch3DNodeView.PresentationGrid.Children().Any())
+            {
+                // Watch3D views on nodes are disabled on CI without GPUs.
+                Assert.Inconclusive();
+            }
+
             var watchView = watch3DNodeView.PresentationGrid.Children().First(c => c is Watch3DView) as Watch3DView;
             Assert.Null(watchView.Points);
         }
@@ -409,6 +415,9 @@ namespace DynamoCoreUITests
                 @"core\visualization\Labels.dyn");
             Open(openPath);
 
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            ws.RunSettings.RunType = RunType.Automatic;
+
             // check all the nodes and connectors are loaded
             Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count);
 
@@ -423,10 +432,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(cbn);
 
             var elementResolver = model.CurrentWorkspace.ElementResolver;
-            cbn.SetCodeContent("Point.ByCoordinates(a<1>,a<1>,a<1>);", elementResolver);
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-            ws.RunSettings.RunType = RunType.Automatic;
+            cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<1>,a<1>);", elementResolver);
 
             // run the expression
             Assert.AreEqual(4, BackgroundPreview.Points.Positions.Count());
@@ -434,20 +440,16 @@ namespace DynamoCoreUITests
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
             cbn.DisplayLabels = true;
-            //Assert.AreEqual(BackgroundPreview.Text.Count(), 4);
+            Assert.AreEqual(BackgroundPreview.Text.TextInfo.Count(), 4);
 
-            cbn.SetCodeContent("Point.ByCoordinates(a<1>,a<2>,a<3>);", elementResolver);
-
-            //change the lacing to cross product 
-            //ensure that the labels update to match
-            //ptNode.ArgumentLacing = LacingStrategy.CrossProduct;
+            cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<2>,a<3>);", elementResolver);
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
             Assert.AreEqual(64, BackgroundPreview.Points.Positions.Count());
-            //Assert.AreEqual(64, BackgroundPreview.Text.Count());
+            Assert.AreEqual(64, BackgroundPreview.Text.TextInfo.Count());
 
             cbn.DisplayLabels = false;
-            //Assert.AreEqual(0, BackgroundPreview.Text.Count());
+            Assert.Null(BackgroundPreview.Text);
         }
 
         [Test]
@@ -481,7 +483,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
-            //Assert.AreEqual(6,BackgroundPreview.Text.Count());
+            Assert.AreEqual(6,BackgroundPreview.Text.TextInfo.Count());
         }
 
         [Test]
@@ -605,32 +607,6 @@ namespace DynamoCoreUITests
         {
             OpenDynamoDefinition(relativePath);
             DispatcherUtil.DoEvents();
-        }
-
-        private static class DispatcherUtil
-        {
-            /// <summary>
-            ///     Force the Dispatcher to empty it's queue
-            /// </summary>
-            [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-            public static void DoEvents()
-            {
-                var frame = new DispatcherFrame();
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
-                    new DispatcherOperationCallback(ExitFrame), frame);
-                Dispatcher.PushFrame(frame);
-            }
-
-            /// <summary>
-            ///     Helper method for DispatcherUtil
-            /// </summary>
-            /// <param name="frame"></param>
-            /// <returns></returns>
-            private static object ExitFrame(object frame)
-            {
-                ((DispatcherFrame)frame).Continue = false;
-                return null;
-            }
         }
     }
 
