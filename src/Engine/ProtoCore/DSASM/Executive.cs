@@ -6009,15 +6009,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void CALLC_Handler()
-        {
-            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-            {
-                runtimeCore.RuntimeMemory.PushConstructBlockId(-1);
-            }
-            throw new NotImplementedException();
-        }
-
+     
         protected virtual void CALLR_Handler(Instruction instruction)
         {
             bool isDynamicCall = instruction.op1.IsDynamic;
@@ -7083,22 +7075,7 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void DEPX_Handler()
-        {
-            runtimeVerify(Language.kAssociative == istream.language);
-
-            // The current function and class scope
-            int ci = Constants.kInvalidIndex;
-            int fi = Constants.kGlobalScope;
-            if (fepRun)
-            {
-                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-            }
-
-            // Set the next graph to be executed
-            SetupNextExecutableGraph(fi, ci);
-        }
+       
 
         private void SETEXPUID_Handler()
         {
@@ -7353,11 +7330,7 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.CALLC:
-                    {
-                        CALLC_Handler();
-                        return;
-                    }
+               
 
                 case OpCode.CALLR:
                     {
@@ -7478,11 +7451,7 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.DEPX:
-                    {
-                        DEPX_Handler();
-                        return;
-                    }
+               
 
                 case OpCode.SETEXPUID:
                     {
