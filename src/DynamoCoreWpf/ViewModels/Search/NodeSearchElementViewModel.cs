@@ -249,7 +249,7 @@ namespace Dynamo.Wpf.ViewModels
         {
             string postfix = resourceType == ResourceType.SmallIcon ?
                 Configurations.SmallIconPostfix : Configurations.LargeIconPostfix;
-            
+
             return GetIcon(Configurations.DefaultCustomNodeIcon + postfix);
         }
 
