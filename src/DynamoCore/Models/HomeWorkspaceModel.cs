@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Xml;
 
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
+
+using ProtoCore;
 
 namespace Dynamo.Models
 {
@@ -18,6 +21,7 @@ namespace Dynamo.Models
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
         private bool graphExecuted;
+        private IEnumerable<KeyValuePair<Guid, List<string>>> historicalTraceData;
 
         /// <summary>
         ///     Flag specifying if this workspace is operating in "test mode".
@@ -88,10 +92,17 @@ namespace Dynamo.Models
             RunSettings = new RunSettings(info.RunType, info.RunPeriod);
 
             PreloadedTraceData = traceData;
+
             this.scheduler = scheduler;
             this.verboseLogging = verboseLogging;
             IsTestMode = isTestMode;
             EngineController = engine;
+
+            // The first time the preloaded trace data is set, we cache
+            // the data as historical. This will be used after the initial
+            // run of this workspace, when the PreloadedTraceData has been
+            // nulled, to check for node deletions and reconcile the trace data.
+            historicalTraceData = traceData;
         }
 
         public override void Dispose()
@@ -147,7 +158,6 @@ namespace Dynamo.Models
             EngineController.NodeDeleted(node);
         }
 
-        
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
             // Mark all nodes as dirty so that AST for the whole graph will be
@@ -492,5 +502,35 @@ namespace Dynamo.Models
         }
        
         #endregion
+
+        public IEnumerable<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
+        {
+            var orphans = new List<ISerializable>();
+
+            if (historicalTraceData == null)
+                return orphans;
+
+            // If a Guid exists in the historical trace data
+            // and there is no corresponding node in the workspace
+            // then add the serializables for that guid to the list of
+            // orphans.
+
+            foreach (var nodeData in historicalTraceData)
+            {
+                var nodeGuid = nodeData.Key;
+
+                if (Nodes.All(n => n.GUID != nodeGuid))
+                {
+                    orphans.AddRange(nodeData.Value.SelectMany(CallSite.GetAllSerializablesFromSingleRunTraceData).ToList());
+                }
+            }
+
+            // When reconciliation is complete, wipe the historical data.
+            // This avoids this data being re-used after a future update.
+
+            historicalTraceData = null;
+
+            return orphans;
+        } 
     }
 }

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -53,10 +54,10 @@ namespace Dynamo.Models
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
+
         #endregion
 
         #region events
-
 
         public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
@@ -420,7 +421,6 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -545,6 +545,25 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
         }
 
+        private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
+        {
+            Debug.WriteLine("TRACE RECONCILIATION: {0} serializables were orphaned.", obj.OrphanedSerializables.Count());
+
+            var orphans =
+                Workspaces.Where(w => w is HomeWorkspaceModel).
+                Cast<HomeWorkspaceModel>().
+                SelectMany(w=>w.GetOrphanedSerializablesAndClearHistoricalTraceData()).ToList();
+
+            orphans.AddRange(obj.OrphanedSerializables);
+
+            PostTraceReconciliation(orphans);
+        }
+
+        protected virtual void PostTraceReconciliation(IEnumerable<ISerializable> orphanedSerializables)
+        {
+            // Override in derived classes to deal with orphaned serializables.
+        }
+
         void UpdateManager_Log(LogEventArgs args)
         {
             Logger.Log(args.Message, args.Level);
@@ -607,6 +626,8 @@ namespace Dynamo.Models
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
+            EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
+
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
             
@@ -941,6 +962,7 @@ namespace Dynamo.Models
         {
             if (EngineController != null)
             {
+                EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
                 EngineController.MessageLogged -= LogMessage;
                 EngineController.Dispose();
                 EngineController = null;
@@ -950,7 +972,9 @@ namespace Dynamo.Models
                 LibraryServices,
                 geometryFactoryPath,
                 DebugSettings.VerboseLogging);
+            
             EngineController.MessageLogged += LogMessage;
+            EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);

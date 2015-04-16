@@ -12,6 +12,7 @@ using ProtoScript.Runners;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
@@ -30,6 +31,15 @@ namespace Dynamo.DSEngine
     public class EngineController : LogSourceBase, IAstNodeContainer, IDisposable
     {
         public event AstBuiltEventHandler AstBuilt;
+
+        public event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
+        private void OnTraceReconciliationComplete(TraceReconciliationEventArgs e)
+        {
+            if (TraceReconcliationComplete != null)
+            {
+                TraceReconcliationComplete(e);
+            }
+        }
 
         private readonly LiveRunnerServices liveRunnerServices;
         private readonly LibraryServices libraryServices;
@@ -404,6 +414,8 @@ namespace Dynamo.DSEngine
             // DynamoScheduler.ProcessTaskInternal.
 
             liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging);
+            
+            ReconcileTraceDataAndNotify();
         }
 
         internal IDictionary<Guid, List<BuildWarning>> GetBuildWarnings()
@@ -471,6 +483,15 @@ namespace Dynamo.DSEngine
 
                 return updated;
             }
+        }
+
+        private void ReconcileTraceDataAndNotify()
+        {
+            var orphanedSerializables =
+                liveRunnerServices.Core.DSExecutable.CallsiteCache.Values.SelectMany(
+                    cs => cs.GetOrphanedSerializables());
+
+            OnTraceReconciliationComplete(new TraceReconciliationEventArgs(orphanedSerializables));
         }
 
         private static void ClearWarnings(IEnumerable<NodeModel> nodes)
@@ -672,6 +693,16 @@ namespace Dynamo.DSEngine
         public bool PreCompileCodeBlock(ref ParseParam parseParams)
         {
             return CompilerUtils.PreCompileCodeBlock(compilationCore, ref parseParams);
+        }
+    }
+
+    public class TraceReconciliationEventArgs : EventArgs
+    {
+        public IEnumerable<ISerializable> OrphanedSerializables { get; private set; }
+
+        public TraceReconciliationEventArgs(IEnumerable<ISerializable> orphanedSerializables)
+        {
+            OrphanedSerializables = orphanedSerializables;
         }
     }
 }
