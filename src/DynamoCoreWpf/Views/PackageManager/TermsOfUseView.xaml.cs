@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,10 +13,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using Dynamo.ViewModels;
-using Dynamo;
+
 
 namespace Dynamo.PackageManager.UI
 {
@@ -24,18 +23,18 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class TermsOfUseView : Window
     {
-        private DynamoViewModel dynamoViewModel;
+        public bool AcceptedTermsOfUse { get; set; }
 
-        public TermsOfUseView(DynamoViewModel dynamoViewModel)
+        public TermsOfUseView(TermsOfUseViewModel viewModel)
         {
             InitializeComponent();
-            this.dynamoViewModel = dynamoViewModel;
-            DataContext = dynamoViewModel;
+            DataContext = viewModel;
+            AcceptedTermsOfUse = false;
         }
 
         private void AcceptTermsOfUseButton_OnClick(object sender, RoutedEventArgs e)
         {
-            dynamoViewModel.PreferenceSettings.PackageDownloadTouAccepted = true;
+            AcceptedTermsOfUse = true;
             Close();
         }
 
@@ -43,5 +42,6 @@ namespace Dynamo.PackageManager.UI
         {
             Close();
         }
+
     }
 }

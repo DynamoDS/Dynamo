@@ -385,16 +385,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public string TermsOfUseFile
-        {
-            get
-            {
-                string executingAssemblyPathname = Assembly.GetExecutingAssembly().Location;
-                string rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathname);
-                return Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
-            }
-        }
-
         public int MaxTesselationDivisions
         {
             get { return model.MaxTesselationDivisions; }

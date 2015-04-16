@@ -12,16 +12,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+        xmlns:ui1="clr-namespace:Dynamo.PackageManager.UI"
         mc:Ignorable="d"
-        Title="{x:Static p:Resources.TermsOfUseViewTitle}"
-        d:DataContext="{d:DesignInstance ViewModels:DynamoViewModel, IsDesignTimeCreatable=False}">
+        Title="{x:Static p:Resources.TermsOfUseViewTitle}">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -34,8 +32,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer Grid.Column="0"
-                      Background="#363636"
+        <ScrollViewer Background="#363636"
                       Padding="25">
             <views:RichTextFile File="{Binding TermsOfUseFile}"
                                 IsReadOnly="True"
@@ -50,7 +47,7 @@
 
         <StackPanel Orientation="Horizontal"
                     FlowDirection="RightToLeft"
-                    Grid.Row="2"
+                    Grid.Row="1"
                     Background="#333">
             <Button Name="DeclineTermsOfUseButton"
                     Click="DeclineTermsOfUseButton_OnClick"
@@ -63,7 +60,6 @@
                     Content="{x:Static p:Resources.TermsOfUseAcceptButton}"
                     Style="{DynamicResource ResourceKey=SBadgeButton}" />
         </StackPanel>
-
     </Grid>
 
 </Window>

@@ -54,11 +54,11 @@ namespace Dynamo.Controls
             // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
             //This preference is not exposed in the UI and can be used to debug hardware issues only
             // by modifying the preferences xml.
-            RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ? 
+            RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ?
                 RenderMode.Default : RenderMode.SoftwareOnly;
-            
+
             this.dynamoViewModel = dynamoViewModel;
-            this.dynamoViewModel.UIDispatcher = Dispatcher;            
+            this.dynamoViewModel.UIDispatcher = Dispatcher;
             nodeViewCustomizationLibrary = new NodeViewCustomizationLibrary(this.dynamoViewModel.Model.Logger);
 
             DataContext = dynamoViewModel;
@@ -181,7 +181,7 @@ namespace Dynamo.Controls
 
         void InitializeLogin()
         {
-            if ( dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
+            if (dynamoViewModel.ShowLogin && dynamoViewModel.PackageManagerClientViewModel.HasAuthProvider)
             {
                 var login = new Login(dynamoViewModel.PackageManagerClientViewModel);
                 loginGrid.Children.Add(login);
@@ -410,10 +410,23 @@ namespace Dynamo.Controls
             if (prefSettings.PackageDownloadTouAccepted)
                 return true; // User accepts the terms of use.
 
-            var termsOfUseWindow = new TermsOfUseView(dynamoViewModel);
-            termsOfUseWindow.ShowDialog();
 
-            return prefSettings.PackageDownloadTouAccepted; // User may or may not accept the terms.
+            TermsOfUseView termsOfUseView = new TermsOfUseView(new TermsOfUseViewModel())
+                {
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+            termsOfUseView.ShowDialog();
+
+            bool termsOfUseAccepted = termsOfUseView.AcceptedTermsOfUse;
+
+            if (termsOfUseAccepted)
+            {
+                // Update preference settings for savings later.
+                prefSettings.PackageDownloadTouAccepted = true;
+            }
+
+            return termsOfUseAccepted; // User may or may not accept the terms.
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -551,7 +564,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(args,dynamoViewModel);
+            var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }
 
