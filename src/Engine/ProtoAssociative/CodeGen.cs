@@ -678,7 +678,8 @@ namespace ProtoAssociative
         private bool EmitCodeBlock(
             List<AssociativeNode> codeBlock, 
             ref ProtoCore.Type inferedType, 
-            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass
+            ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass,
+            bool isProcedureOwned
             )
         {
             bool hasReturnStatement = false;
@@ -700,7 +701,7 @@ namespace ProtoAssociative
                 }
                 else
                 {
-                    bnode.IsProcedureOwned = true;
+                    bnode.IsProcedureOwned = isProcedureOwned;
                     DfsTraverse(bnode, ref inferedType, false, null, subPass);
                 }
 
@@ -4060,37 +4061,37 @@ namespace ProtoAssociative
                     }
                 }
 
-                //inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
-                //hasReturnStatement = EmitCodeBlock(codeblock.Body, ref inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
+                inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+                hasReturnStatement = EmitCodeBlock(codeblock.Body, ref inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier, false);
 
-                foreach (AssociativeNode node in codeblock.Body)
-                {
-                    inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0); 
+                //foreach (AssociativeNode node in codeblock.Body)
+                //{
+                //    inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0); 
 
-                    //
-                    // TODO Jun:    Handle stand alone language blocks
-                    //              Integrate the subPass into a proper pass
-                    //              
-                    //              **Need to take care of EmitImportNode, in which I used the same code to handle imported language block nodes - Randy
-                    //
+                //    //
+                //    // TODO Jun:    Handle stand alone language blocks
+                //    //              Integrate the subPass into a proper pass
+                //    //              
+                //    //              **Need to take care of EmitImportNode, in which I used the same code to handle imported language block nodes - Randy
+                //    //
 
-                    if (node is LanguageBlockNode)
-                    {
-                        // Build a binaryn node with a temporary lhs for every stand-alone language block
-                        var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
-                        var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
+                //    if (node is LanguageBlockNode)
+                //    {
+                //        // Build a binaryn node with a temporary lhs for every stand-alone language block
+                //        var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
+                //        var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
 
-                        DfsTraverse(langBlockNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
-                    }
-                    else
-                    {
-                        DfsTraverse(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
-                        SetDeltaCompilePC(node);
-                    }
+                //        DfsTraverse(langBlockNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
+                //    }
+                //    else
+                //    {
+                //        DfsTraverse(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
+                //        SetDeltaCompilePC(node);
+                //    }
 
-                    if (NodeUtils.IsReturnExpressionNode(node))
-                        hasReturnStatement = true;
-                }
+                //    if (NodeUtils.IsReturnExpressionNode(node))
+                //        hasReturnStatement = true;
+                //}
 
                 if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope && !hasReturnStatement)
                 {
@@ -4109,8 +4110,11 @@ namespace ProtoAssociative
 
             ResolveFinalNodeRefs();
             ResolveSSADependencies();
+            //ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
+            //    codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kGlobalScope));
+
             ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
-                codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kGlobalScope));
+                codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(globalClassIndex, globalProcIndex));
 
             if (codeBlock.parent == null)  // top-most langauge block
             {
@@ -5732,7 +5736,7 @@ namespace ProtoAssociative
                     }
                     emitDebugInfo = true;
 
-                    EmitCodeBlock(funcDef.FunctionBody.Body, ref inferedType, subPass);
+                    EmitCodeBlock(funcDef.FunctionBody.Body, ref inferedType, subPass, true);
 
                     // All locals have been stack allocated, update the local count of this function
                     localProcedure.localCount = core.BaseOffset;
@@ -6074,7 +6078,7 @@ namespace ProtoAssociative
                     EmitCompileLogFunctionStart(GetFunctionSignatureString(funcDef.Name, funcDef.ReturnType, funcDef.Signature));
 
                     ProtoCore.Type itype = new ProtoCore.Type();
-                    hasReturnStatement = EmitCodeBlock(funcDef.FunctionBody.Body, ref itype, subPass);
+                    hasReturnStatement = EmitCodeBlock(funcDef.FunctionBody.Body, ref itype, subPass, true);
 
                     EmitCompileLogFunctionEnd();
 
