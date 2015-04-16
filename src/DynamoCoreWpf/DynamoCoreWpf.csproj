@@ -214,6 +214,9 @@
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
+      <DependentUpon>TermsOfUseView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
     </Compile>
@@ -968,6 +971,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\PackageManager\TermsOfUseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Preview\Watch3DSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

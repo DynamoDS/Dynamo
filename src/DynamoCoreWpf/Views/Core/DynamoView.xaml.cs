@@ -380,7 +380,6 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow += DynamoViewModelRequestUserSaveWorkflow;
-            dynamoViewModel.DisplayTermsOfUse += Controller_DisplayTermsOfUse;
 
             dynamoViewModel.Model.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
@@ -411,16 +410,10 @@ namespace Dynamo.Controls
             if (prefSettings.PackageDownloadTouAccepted)
                 return true; // User accepts the terms of use.
 
-            // TODO(Minh): Display dialog and get the result back.
-            const bool termsOfUseAccepted = false;
+            var termsOfUseWindow = new TermsOfUseView(dynamoViewModel);
+            termsOfUseWindow.ShowDialog();
 
-            if (termsOfUseAccepted)
-            {
-                // Update preference settings for savings later.
-                prefSettings.PackageDownloadTouAccepted = true;
-            }
-
-            return termsOfUseAccepted; // User may or may not accept the terms.
+            return prefSettings.PackageDownloadTouAccepted; // User may or may not accept the terms.
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -768,7 +761,6 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
-            dynamoViewModel.DisplayTermsOfUse += Controller_DisplayTermsOfUse;
 
             if (dynamoViewModel.Model != null)
             {
