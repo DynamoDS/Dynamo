@@ -489,8 +489,11 @@ namespace Dynamo.PackageManager
                     }
 
                     // If the user
-                    if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo, sb.ToString()),
-                        Resources.PackageUseNewerDynamoMessageBoxTitle,
+                    if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
+                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName, 
+                        sb.ToString()),
+                        string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle,
+                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                     {
@@ -529,7 +532,9 @@ namespace Dynamo.PackageManager
 
                 if (uninstallRequiringUserModifications.Any())
                 {
-                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue, JoinPackageNames(uninstallRequiringUserModifications)),
+                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue,
+                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName,
+                        JoinPackageNames(uninstallRequiringUserModifications)),
                         Resources.CannotDownloadPackageMessageBoxTitle, 
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -543,7 +548,9 @@ namespace Dynamo.PackageManager
                             x.MarkForUninstall(
                                 this.PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings));
 
-                    MessageBox.Show(String.Format(Resources.MessageUnintallToContinue2, JoinPackageNames(uninstallsRequiringRestart)), 
+                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue2,
+                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName, 
+                        JoinPackageNames(uninstallsRequiringRestart)), 
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -552,7 +559,9 @@ namespace Dynamo.PackageManager
                 if (immediateUninstalls.Any())
                 {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo, JoinPackageNames(immediateUninstalls)),
+                    if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo, 
+                        PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName,
+                        JoinPackageNames(immediateUninstalls)),
                         Resources.DownloadWarningMessageBoxTitle, 
                         MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                         return;

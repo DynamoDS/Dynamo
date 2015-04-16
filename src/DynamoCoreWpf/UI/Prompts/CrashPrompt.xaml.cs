@@ -20,22 +20,34 @@ namespace Dynamo.Nodes.Prompts
     {
         private string details; // Store here for clipboard copy
         private string folderPath;
+        private string productName;
 
-        public CrashPrompt(string details)
+        public CrashPrompt(string details, DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
             this.CrashDetailsContent.Text = details;
+
+            productName = dynamoViewModel.BrandingResourceProvider.ProductName;
+            Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle,productName);
+            txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
         
-        public CrashPrompt()
+        public CrashPrompt(DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
             this.CrashDetailsContent.Text = "Unknown error";
+            productName = dynamoViewModel.BrandingResourceProvider.ProductName;
+            Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
+            txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
 
-        public CrashPrompt(CrashPromptArgs args)
+        public CrashPrompt(CrashPromptArgs args, DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
+
+            productName = dynamoViewModel.BrandingResourceProvider.ProductName;
+            Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
+            txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
 
             InstrumentationLogger.LogAnonymousEvent("CrashPrompt", "Stability");
             StabilityTracking.GetInstance().NotifyCrash();
