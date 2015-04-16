@@ -54,7 +54,7 @@ namespace Dynamo.Controls
             // When the view is constructed, we enable or disable hardware acceleration based on that preference. 
             //This preference is not exposed in the UI and can be used to debug hardware issues only
             // by modifying the preferences xml.
-            RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ?
+            RenderOptions.ProcessRenderMode = dynamoViewModel.Model.PreferenceSettings.UseHardwareAcceleration ? 
                 RenderMode.Default : RenderMode.SoftwareOnly;
 
             this.dynamoViewModel = dynamoViewModel;
