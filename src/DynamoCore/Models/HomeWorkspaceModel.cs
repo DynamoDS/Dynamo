@@ -382,6 +382,8 @@ namespace Dynamo.Models
             EvaluationCount ++;
 
             OnEvaluationCompleted(e);
+
+            EngineController.ReconcileTraceDataAndNotify();
         }
 
         /// <summary>

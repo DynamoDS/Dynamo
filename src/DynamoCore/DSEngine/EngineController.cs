@@ -414,8 +414,6 @@ namespace Dynamo.DSEngine
             // DynamoScheduler.ProcessTaskInternal.
 
             liveRunnerServices.UpdateGraph(graphSyncData, VerboseLogging);
-            
-            ReconcileTraceDataAndNotify();
         }
 
         internal IDictionary<Guid, List<BuildWarning>> GetBuildWarnings()
@@ -485,7 +483,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void ReconcileTraceDataAndNotify()
+        internal void ReconcileTraceDataAndNotify()
         {
             var orphans = new List<ISerializable>();
             foreach (var cs in liveRunnerServices.Core.DSExecutable.CallsiteCache.Values)
