@@ -400,7 +400,7 @@
                     </StackPanel.Visibility>
                     <TextBlock Text="{Binding FullyQualifiedName}"
                                Margin="16,8,0,8"
-                               Foreground="#989898"
+                               Foreground="{StaticResource NestedMemberTextColor}"
                                FontSize="12" />
                     <ListBox x:Name="topResultListBox"
                              Background="Transparent"
@@ -431,7 +431,7 @@
                 <ListView Name="CategoryListView"
                           Grid.Row="1"
                           ScrollViewer.CanContentScroll="False"
-                          Background="#343434"
+                          Background="{StaticResource LibraryItemHostBackground}"
                           BorderThickness="0"
                           ItemsSource="{Binding SearchRootCategories}"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
@@ -557,7 +557,7 @@
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel MouseLeftButtonDown="OnMemberGroupNameMouseDown">
-                                                    <TextBlock Foreground="#989898"
+                                                    <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
                                                                FontSize="12"
                                                                Margin="16,8,0,8">
                                                             <Run Text="{Binding Prefix, Mode=OneWay}"
@@ -565,7 +565,7 @@
                                                                 <Run.Style>
                                                                    <Style TargetType="{x:Type Run}">
                                                                     <Setter Property="Foreground"
-                                                                            Value="#989898" />
+                                                                            Value="{StaticResource NestedMemberTextColor}" />
                                                                     <Style.Triggers>
                                                                         <Trigger Property="IsMouseOver"
                                                                                  Value="true">
