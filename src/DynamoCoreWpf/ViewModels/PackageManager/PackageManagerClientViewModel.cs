@@ -15,6 +15,7 @@ using Greg.AuthProviders;
 
 using Dynamo.Wpf.Properties;
 using Microsoft.Practices.Prism.Commands;
+using Dynamo.PackageManager.UI;
 
 namespace Dynamo.ViewModels
 {
@@ -212,9 +213,13 @@ namespace Dynamo.ViewModels
 
         private void ShowTermsOfUseForPublishing()
         {
-            // TODO(Minh): Add your terms of use dialog here.
+            string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
+            var touFilePath = System.IO.Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
+            TermsOfUseView termsOfUseView = new TermsOfUseView(touFilePath);
+            termsOfUseView.ShowDialog();
 
-            var termsOfUseAccepted = true;
+            var termsOfUseAccepted = termsOfUseView.AcceptedTermsOfUse;
             if (!termsOfUseAccepted)
                 return;
 
