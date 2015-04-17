@@ -73,6 +73,53 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestParitition4()
+        {
+            // Select some nodes, and return a group of nodes. Each group could
+            // be converted to code. circular
+            //
+            // 1 --> x --> 2
+            // ^           |
+            // +-----------+
+            OpenModel(@"core\node2code\partition4.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
+            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            Assert.IsTrue(groups.Count == 1);
+            var group = groups.First();
+            Assert.IsTrue(group.Find(n => n.NickName == "1") != null &&
+                          group.Find(n => n.NickName == "2") != null);
+        }
+
+        [Test]
+        public void TestParitition5()
+        {
+            // Select some nodes, and return a group of nodes. Each group could
+            // be converted to code. 
+            //
+            // 1             4
+            // 2 ----> x --> 5  
+            // 3
+            OpenModel(@"core\node2code\partition5.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.Where(n => n.NickName != "X");
+            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            Assert.IsTrue(groups.Count == 2);
+
+            var group1 = groups.Where(g => g.Count == 3).FirstOrDefault();
+            Assert.IsNotNull(group1);
+
+            var group2 = groups.Where(g => g.Count == 2).FirstOrDefault();
+            Assert.IsNotNull(group2);
+
+            var nickNames = group1.Select(n => Int32.Parse(n.NickName)).ToList();
+            nickNames.Sort();
+            Assert.IsTrue(nickNames.SequenceEqual(new[] { 1, 2, 3 }));
+
+            nickNames = group2.Select(n => Int32.Parse(n.NickName)).ToList();
+            nickNames.Sort();
+            Assert.IsTrue(nickNames.SequenceEqual(new[] { 4, 5 }));
+        }
+
+        [Test]
         public void TestVariableConfliction1()
         {
             // Test same name variables will be renamed in node to code

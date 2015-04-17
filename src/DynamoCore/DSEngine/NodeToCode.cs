@@ -223,56 +223,6 @@ namespace Dynamo.DSEngine
             path.RemoveAt(path.Count - 1);
         }
 
-        private static List<int> StrongConnectComponent(
-            int v, 
-            ref int index, 
-            Dictionary<int, int> lowlink, 
-            Dictionary<int, int> indexMap, 
-            Stack<int> S,
-            bool[,] connectivityMatrix)
-        {
-            indexMap[v] = index;
-            lowlink[v] = index;
-            index++;
-            S.Push(v);
-
-            int count = connectivityMatrix.GetLength(0);
-            for (int w = 0; w < count; w++)
-            {
-                if (!connectivityMatrix[v, w])
-                    continue;
-
-                if (indexMap[w] == -1)
-                {
-                    StrongConnectComponent(w, ref index, lowlink, indexMap, S, connectivityMatrix);
-                    lowlink[v] = Math.Min(lowlink[v], lowlink[w]);
-                }
-                else if (S.Contains(w))
-                {
-                    lowlink[v] = Math.Min(lowlink[v], indexMap[w]);
-                }
-            }
-
-            if (lowlink[v] == indexMap[v])
-            {
-                var dependencyList = new List<int>();
-                while (true)
-                {
-                    int w = S.Pop();
-                    dependencyList.Add(w);
-                    if (w == v)
-                    {
-                        break;
-                    }
-                }
-
-                return dependencyList;
-            }
-
-            return null;
-        }
-
-
         /// <summary>
         /// For a selection, output partitions that each group of node can be
         /// converted to code.
@@ -289,6 +239,8 @@ namespace Dynamo.DSEngine
             var nodeDict = convertibleNodes.Zip(Enumerable.Range(0, count), (n, i) => new { n, i})
                                            .ToDictionary(x => x.n, x => x.i);
 
+            // Connectivity matrix represents whether two nodes are allowed to
+            // be in the same code block or not. 
             bool[,] connectivityMatrx = new bool[count, count];
             for (int i = 0; i < count; i++)
             {
@@ -297,7 +249,22 @@ namespace Dynamo.DSEngine
                     connectivityMatrx[i, j] = true;
                 }
             }
-
+            
+            // For two convertible nodes if there is path from one to the other
+            // goes through some node that is unconvertible or not in the 
+            // selection set, these two nodes cannot be in the same coee block,
+            // otherwise there will be a circular reference. For example:
+            //
+            //     a -> x -> b
+            //
+            // And the final graph would be
+            //
+            //    a, b <--> x
+            // 
+            // So here for a node which is convertible and from selection set, 
+            // find all its upstream paths, and if any path contains node that 
+            // is not in the selection set or is not convertible, mark all 
+            // nodes after this node along path as not reachable. 
             foreach (var node in convertibleNodes)
             {
                 var path = new List<NodeModel>();
@@ -306,26 +273,33 @@ namespace Dynamo.DSEngine
                 MarkConnectivityForNode(selectionSet, connectivityMatrx, nodeDict, path);
             }
 
-            var indexMap = new Dictionary<int, int>();
-            var lowlinkMap = new Dictionary<int, int>();
-            var S = new Stack<int>();
-            int index = 0;
-            for (int i = 0; i < count; i++)
-            {
-                indexMap[i] = -1;
-            }
-
             var partitions = new List<List<NodeModel>>();
-            for (int i = 0; i < count; i++)
-            {
-                if (indexMap[i] == -1)
-                {
-                    var comp = StrongConnectComponent(i, ref index, lowlinkMap, indexMap, S, connectivityMatrx);
-                    var cliques = comp.Select(c => nodeDict.First(p => p.Value == c).Key);
-                    partitions.Add(cliques.ToList());
-                }
-            }
+            var visited = new HashSet<int>();
 
+            // Now find all maximum cliques, each clique is a group of nodes 
+            // that could be in the same code block
+            for (int v = 0; v < count; ++v)
+            {
+                if (visited.Contains(v))
+                    continue;
+
+                List<int> clique = new List<int>() { v };
+                visited.Add(v);
+
+                for (int w = 0; w < count; ++w)
+                {
+                    if (v == w || !connectivityMatrx[v, w] || visited.Contains(w))
+                        continue;
+
+                    if (clique.All(x => connectivityMatrx[x, w]))
+                    {
+                        clique.Add(w);
+                        visited.Add(w);
+                    }
+                }
+
+                partitions.Add(clique.Select(x => nodeDict.First(p => p.Value == x).Key).ToList());
+            }
             return partitions;
         }
 
