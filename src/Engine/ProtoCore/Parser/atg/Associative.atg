@@ -254,7 +254,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                 Associative_AttributeDeclaration<out attributes>
             ]
             
-                                               (. ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic; .)
+                                               (. ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; .)
             [
                 Associative_AccessSpecifier<out access>
             ]
@@ -397,7 +397,7 @@ Associative_LanguageBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             (. node = langblock; .)
 .       
 
-Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessSpecifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
+Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessModifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
 =                           (.
                                 ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(); ;                                 
                                 string methodName;  
@@ -463,18 +463,18 @@ Associative_ExternalLibraryReference<out string libname>
 .
 
 //------------------------------------------------------------------------
-Associative_AccessSpecifier<out ProtoCore.CompilerDefinitions.AccessSpecifier access>
-=                   (. access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic; .)
+Associative_AccessSpecifier<out ProtoCore.CompilerDefinitions.AccessModifier access>
+=                   (. access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; .)
     (
         "public"        
         |
-        "private"       (. access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPrivate; .)
+        "private"       (. access = ProtoCore.CompilerDefinitions.AccessModifier.kPrivate; .)
         |
-        "protected"     (. access = ProtoCore.CompilerDefinitions.AccessSpecifier.kProtected; .)
+        "protected"     (. access = ProtoCore.CompilerDefinitions.AccessModifier.kProtected; .)
     )
 .
 
-Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, bool isStatic = false.>
+Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false.>
 =                           
                             (. 
                                 ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(); 
@@ -606,7 +606,7 @@ Associative_ArgumentSignatureDefinition<out ProtoCore.AST.AssociativeAST.Associa
                                                 (. argumentSign = argumentSignature; .)
 .
 
-Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
+Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -692,7 +692,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
 
 .
 
-Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic>    
+Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -749,7 +749,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
 .
 
 
-Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic>	
+Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic>	
 =
     Associative_ArgDecl<out node>    (. ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = node as ProtoCore.AST.AssociativeAST.VarDeclNode; .)
     '=' 
