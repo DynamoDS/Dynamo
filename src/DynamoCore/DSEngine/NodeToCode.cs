@@ -5,6 +5,7 @@ using Dynamo.Nodes;
 using System;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using Dynamo.Utilities;
 
 namespace Dynamo.DSEngine
 {
@@ -178,6 +179,156 @@ namespace Dynamo.DSEngine
                 ns.BumpID();
                 return ns.NumberedVariable;
             }
+        }
+
+        private static void MarkConnectivityForNode(
+            HashSet<NodeModel> selection,
+            bool[,] connectivityMatrx,
+            Dictionary<NodeModel, int> nodeMap,
+            Queue<NodeModel> path,
+            HashSet<NodeModel> visited)
+        {
+            var leave = path.Last();
+            var children = leave.OutputNodes.Values.SelectMany(s => s).Select(t => t.Item2);
+            if (children.Any())
+            {
+                foreach (var child in children)
+                {
+                    if (visited.Contains(child))
+                        continue;
+
+                    visited.Add(child);
+                    path.Enqueue(child);
+                    MarkConnectivityForNode(selection, connectivityMatrx, nodeMap, path, visited);
+                    path.Dequeue();
+                }
+            }
+            else
+            {
+                var nodes = path.ToList();
+                var idx1 = nodeMap[path.First()];
+
+                int k = nodes.FindIndex(n => !n.IsConvertible || !selection.Contains(n));
+                if (k >= 0)
+                {
+                    for (int i = k + 1; i < nodes.Count; i++)
+                    {
+                        int idx2;
+                        if (!nodeMap.TryGetValue(nodes[i], out idx2))
+                            continue;
+
+                        connectivityMatrx[idx1, idx2] = false;
+                        connectivityMatrx[idx2, idx1] = false;
+                    }
+                }
+            }
+        }
+
+        private static List<int> StrongConnectComponent(
+            int v, 
+            ref int index, 
+            Dictionary<int, int> lowlink, 
+            Dictionary<int, int> indexMap, 
+            Stack<int> S,
+            bool[,] connectivityMatrix)
+        {
+            indexMap[v] = index;
+            lowlink[v] = index;
+            index++;
+            S.Push(v);
+
+            int count = connectivityMatrix.GetLength(0);
+            for (int w = 0; w < count; w++)
+            {
+                if (!connectivityMatrix[v, w])
+                    continue;
+
+                if (indexMap[w] == -1)
+                {
+                    StrongConnectComponent(w, ref index, lowlink, indexMap, S, connectivityMatrix);
+                    lowlink[v] = Math.Min(lowlink[v], lowlink[w]);
+                }
+                else if (S.Contains(w))
+                {
+                    lowlink[v] = Math.Min(lowlink[v], indexMap[w]);
+                }
+            }
+
+            if (lowlink[v] == indexMap[v])
+            {
+                var dependencyList = new List<int>();
+                while (true)
+                {
+                    int w = S.Pop();
+                    dependencyList.Add(w);
+                    if (w == v)
+                    {
+                        break;
+                    }
+                }
+
+                return dependencyList;
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// For a selection, output partitions that each group of node can be
+        /// converted to code.
+        /// </summary>
+        /// <param name="selection"></param>
+        /// <returns></returns>
+        public static List<List<NodeModel>> GraphPartition(
+            IEnumerable<NodeModel> selection)
+        {
+            var selectionSet = new HashSet<NodeModel>(selection);
+            var convertibleNodes = selection.Where(n => n.IsConvertible).ToList();
+            var count = convertibleNodes.Count;
+
+            var nodeDict = convertibleNodes.Zip(Enumerable.Range(0, count), (n, i) => new { n, i})
+                                           .ToDictionary(x => x.n, x => x.i);
+
+            bool[,] connectivityMatrx = new bool[count, count];
+            for (int i = 0; i < count; i++)
+            {
+                for (int j = 0; j < count; j++)
+                {
+                    connectivityMatrx[i, j] = true;
+                }
+            }
+
+            foreach (var node in convertibleNodes)
+            {
+                var path = new Queue<NodeModel>();
+                path.Enqueue(node);
+
+                var visited = new HashSet<NodeModel>() { node};
+                MarkConnectivityForNode(selectionSet, connectivityMatrx, nodeDict, path, visited);
+            }
+
+            var indexMap = new Dictionary<int, int>();
+            var lowlinkMap = new Dictionary<int, int>();
+            var S = new Stack<int>();
+            int index = 0;
+            for (int i = 0; i < count; i++)
+            {
+                indexMap[i] = -1;
+            }
+
+            var partitions = new List<List<NodeModel>>();
+            for (int i = 0; i < count; i++)
+            {
+                if (indexMap[i] == -1)
+                {
+                    var comp = StrongConnectComponent(i, ref index, lowlinkMap, indexMap, S, connectivityMatrx);
+                    var cliques = comp.Select(c => nodeDict.First(p => p.Value == c).Key);
+                    partitions.Add(cliques.ToList());
+                }
+            }
+
+            return partitions;
         }
 
         /// <summary>
