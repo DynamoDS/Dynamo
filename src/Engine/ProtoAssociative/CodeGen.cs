@@ -665,6 +665,12 @@ namespace ProtoAssociative
             }
             return symbolindex;
         }
+        
+        private bool IsLastCompilePass()
+        {
+            return compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalFuncBody;
+        }
+
 
         /// <summary>
         /// Emits a block of code for the following cases:
@@ -672,18 +678,18 @@ namespace ProtoAssociative
         ///     Function body
         ///     Constructor body
         /// </summary>
-        /// <param name="codeBlock"></param>
+        /// <param name="astList"></param>
         /// <param name="inferedType"></param>
         /// <param name="subPass"></param>
         private bool EmitCodeBlock(
-            List<AssociativeNode> codeBlock, 
+            List<AssociativeNode> astList, 
             ref ProtoCore.Type inferedType, 
             ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass,
             bool isProcedureOwned
             )
         {
             bool hasReturnStatement = false;
-            foreach (AssociativeNode bnode in codeBlock)
+            foreach (AssociativeNode bnode in astList)
             {
                 inferedType.UID = (int)PrimitiveType.kTypeVoid;
                 inferedType.rank = 0;
@@ -696,13 +702,16 @@ namespace ProtoAssociative
                     langBlockNode.LeftNode = iNode;
                     langBlockNode.Optr = ProtoCore.DSASM.Operator.assign;
                     langBlockNode.RightNode = bnode;
-                    langBlockNode.IsProcedureOwned = true;
+                    langBlockNode.IsProcedureOwned = isProcedureOwned;
                     DfsTraverse(langBlockNode, ref inferedType, false, null, subPass);
                 }
                 else
                 {
                     bnode.IsProcedureOwned = isProcedureOwned;
                     DfsTraverse(bnode, ref inferedType, false, null, subPass);
+                    
+                    // Can this be removed completely
+                    //SetDeltaCompilePC(node);
                 }
 
                 if (NodeUtils.IsReturnExpressionNode(bnode))
@@ -710,6 +719,14 @@ namespace ProtoAssociative
                     hasReturnStatement = true;
                 }
             }
+
+            // Build graphnodes only on the last pass
+            if (IsLastCompilePass())
+            {
+                ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
+                    codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(globalClassIndex, globalProcIndex));
+            }
+
             return hasReturnStatement;
         }
 
@@ -4064,35 +4081,6 @@ namespace ProtoAssociative
                 inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                 hasReturnStatement = EmitCodeBlock(codeblock.Body, ref inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier, false);
 
-                //foreach (AssociativeNode node in codeblock.Body)
-                //{
-                //    inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0); 
-
-                //    //
-                //    // TODO Jun:    Handle stand alone language blocks
-                //    //              Integrate the subPass into a proper pass
-                //    //              
-                //    //              **Need to take care of EmitImportNode, in which I used the same code to handle imported language block nodes - Randy
-                //    //
-
-                //    if (node is LanguageBlockNode)
-                //    {
-                //        // Build a binaryn node with a temporary lhs for every stand-alone language block
-                //        var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
-                //        var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
-
-                //        DfsTraverse(langBlockNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
-                //    }
-                //    else
-                //    {
-                //        DfsTraverse(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
-                //        SetDeltaCompilePC(node);
-                //    }
-
-                //    if (NodeUtils.IsReturnExpressionNode(node))
-                //        hasReturnStatement = true;
-                //}
-
                 if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope && !hasReturnStatement)
                 {
                     EmitReturnNull();  
@@ -4110,12 +4098,7 @@ namespace ProtoAssociative
 
             ResolveFinalNodeRefs();
             ResolveSSADependencies();
-            //ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
-            //    codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(ProtoCore.DSASM.Constants.kInvalidIndex, ProtoCore.DSASM.Constants.kGlobalScope));
-
-            ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
-                codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(globalClassIndex, globalProcIndex));
-
+            
             if (codeBlock.parent == null)  // top-most langauge block
             {
                 ResolveFunctionGroups();
