@@ -6,6 +6,8 @@ using System.Linq;
 
 using ProtoCore.Mirror;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Runtime.Serialization;
 
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -190,15 +192,15 @@ namespace Dynamo.Core.Threading
                     var plane = graphicItem as Plane;
                     if (plane != null)
                     {
-                        // Remove the curves from the render package.
-                        // Draw the plane with a 50% transparency.
+                        var s = 2.5;
 
                         var cs = CoordinateSystem.ByPlane(plane);
-                        var a = Point.ByCartesianCoordinates(cs, 1, 1, 0);
-                        var b = Point.ByCartesianCoordinates(cs, -1, 1, 0);
-                        var c = Point.ByCartesianCoordinates(cs, -1, -1, 0);
-                        var d = Point.ByCartesianCoordinates(cs, 1, -1, 0);
+                        var a = Point.ByCartesianCoordinates(cs, s, s, 0);
+                        var b = Point.ByCartesianCoordinates(cs, -s, s, 0);
+                        var c = Point.ByCartesianCoordinates(cs, -s, -s, 0);
+                        var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
 
+                        // Get rid of the original plane geometry.
                         package.LineStripVertices.Clear();
                         package.LineStripVertexColors.Clear();
                         package.LineStripVertexCounts.Clear();
@@ -210,6 +212,31 @@ namespace Dynamo.Core.Threading
                         package.PushTriangleVertex(c.X, c.Y, c.Z);
                         package.PushTriangleVertex(d.X, d.Y, d.Z);
                         package.PushTriangleVertex(a.X, a.Y, a.Z);
+
+                        // Draw plane edges
+                        package.PushLineStripVertex(a.X, a.Y, a.Z);
+                        package.PushLineStripVertex(b.X, b.Y, b.Z);
+                        package.PushLineStripVertex(b.X, b.Y, b.Z);
+                        package.PushLineStripVertex(c.X, c.Y, c.Z);
+                        package.PushLineStripVertex(c.X, c.Y, c.Z);
+                        package.PushLineStripVertex(d.X, d.Y, d.Z);
+                        package.PushLineStripVertex(d.X, d.Y, d.Z);
+                        package.PushLineStripVertex(a.X, a.Y, a.Z);
+
+                        // Draw normal
+                        package.PushLineStripVertex(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
+                        var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
+                        package.PushLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
+
+                        for (var i = 0; i < package.LineStripVertices.Count/3/2; i++)
+                        {
+                            package.PushLineStripVertexCount(2);
+                        }
+
+                        for (var i = 0; i < (package.LineStripVertices.Count/3)*4; i += 4)
+                        {
+                            package.PushLineStripVertexColor(180,180,180,255);
+                        }
 
                         for (var i = 0; i < 6; i++)
                         {
