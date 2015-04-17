@@ -17,53 +17,35 @@ using Greg.AuthProviders;
 using Dynamo.Wpf.Properties;
 using Microsoft.Practices.Prism.Commands;
 using Dynamo.PackageManager.UI;
+using System.Reflection;
+using System.IO;
 
 namespace Dynamo.ViewModels
 {
     /// <summary>
-    /// A helper class to check asynchronously whether the Terms of Use has been accepted.
+    /// A helper class to check asynchronously whether the Terms of Use has 
+    /// been accepted, and if so, continue to execute the provided Action.
     /// </summary>
     public class TermsOfUseHelper
     {
-        private PackageManagerClientViewModel viewModel;
-        private Action callbackAction;
+        private readonly Action callbackAction;
+        private readonly PackageManagerClient packageManagerClient;
 
-        public TermsOfUseHelper(PackageManagerClientViewModel vm, Action callback)
+        public TermsOfUseHelper(PackageManagerClient client, Action callback)
         {
-            viewModel = vm;
+            if (client == null)
+                throw new ArgumentNullException("client");
+            if (callback == null)
+                throw new ArgumentNullException("callback");
+
+            packageManagerClient = client;
             callbackAction = callback;
-        }
-
-        private void ShowTermsOfUseForPublishing()
-        {
-            string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
-            var touFilePath = System.IO.Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
-            TermsOfUseView termsOfUseView = new TermsOfUseView(touFilePath);
-            termsOfUseView.ShowDialog();
-
-            var termsOfUseAccepted = termsOfUseView.AcceptedTermsOfUse;
-            if (!termsOfUseAccepted)
-                return;
-
-            // If user accepts the terms of use, then update the record on 
-            // the server, before proceeding to show the publishing dialog. 
-            // This method is invoked on the UI thread, so when the server call 
-            // returns, invoke the publish dialog on the UI thread's context.
-            // 
-            Task<bool>.Factory.StartNew(() => viewModel.Model.SetTermsOfUseAcceptanceStatus()).
-                ContinueWith(t =>
-                {
-                    if (t.Result)
-                        callbackAction.Invoke();
-                },
-                TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         public void Execute()
         {
-            Task<bool>.Factory.StartNew(() =>
-                viewModel.Model.GetTermsOfUseAcceptanceStatus()).ContinueWith(t =>
+            Task<bool>.Factory.StartNew(() => packageManagerClient.GetTermsOfUseAcceptanceStatus()).
+                ContinueWith(t =>
                 {
                     var termsOfUseAccepted = t.Result;
                     if (termsOfUseAccepted)
@@ -76,7 +58,38 @@ namespace Dynamo.ViewModels
                         // Prompt user to accept the terms of use.
                         ShowTermsOfUseForPublishing();
                     }
+
                 }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        internal static bool ShowTermsOfUseDialog()
+        {
+            var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
+            var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
+            var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
+
+            var termsOfUseView = new TermsOfUseView(touFilePath);
+            termsOfUseView.ShowDialog();
+            return termsOfUseView.AcceptedTermsOfUse;
+        }
+
+        private void ShowTermsOfUseForPublishing()
+        {
+            if (!ShowTermsOfUseDialog())
+                return; // Terms of use not accepted.
+
+            // If user accepts the terms of use, then update the record on 
+            // the server, before proceeding to show the publishing dialog. 
+            // This method is invoked on the UI thread, so when the server call 
+            // returns, invoke the publish dialog on the UI thread's context.
+            // 
+            Task<bool>.Factory.StartNew(() => packageManagerClient.SetTermsOfUseAcceptanceStatus()).
+                ContinueWith(t =>
+                {
+                    if (t.Result)
+                        callbackAction.Invoke();
+                },
+                TaskScheduler.FromCurrentSynchronizationContext());
         }
     }
 
@@ -182,7 +195,7 @@ namespace Dynamo.ViewModels
 
         public void PublishNewPackage(object m)
         {
-            var termsOfUseCheck = new TermsOfUseHelper(this, () => { ShowNodePublishInfo();  } );
+            var termsOfUseCheck = new TermsOfUseHelper(Model, ShowNodePublishInfo );
             termsOfUseCheck.Execute();
         }
 
@@ -198,9 +211,9 @@ namespace Dynamo.ViewModels
                 m.Definition.FunctionId,
                 out currentFunInfo))
             {
-                var termsOfUseCheck = new TermsOfUseHelper(this, () =>
+                var termsOfUseCheck = new TermsOfUseHelper(Model, () =>
                 {
-                    ShowNodePublishInfo(new[] {Tuple.Create(currentFunInfo, m.Definition)});
+                    ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, m.Definition) });
                 });
                 termsOfUseCheck.Execute();
             }
@@ -247,10 +260,7 @@ namespace Dynamo.ViewModels
                     MessageBoxButton.OK, MessageBoxImage.Question);
             }
 
-            var termsOfUseCheck = new TermsOfUseHelper(this, () =>
-            {
-                ShowNodePublishInfo(defs);
-            });
+            var termsOfUseCheck = new TermsOfUseHelper(Model, () => ShowNodePublishInfo(defs));
             termsOfUseCheck.Execute();
         }
 

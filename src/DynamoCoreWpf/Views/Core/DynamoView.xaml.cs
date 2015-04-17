@@ -410,18 +410,8 @@ namespace Dynamo.Controls
             if (prefSettings.PackageDownloadTouAccepted)
                 return true; // User accepts the terms of use.
 
-            string executingAssemblyPathName = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string rootModuleDirectory = System.IO.Path.GetDirectoryName(executingAssemblyPathName);
-            var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
-            TermsOfUseView termsOfUseView = new TermsOfUseView(touFilePath)
-                {
-                    Owner = this,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-            termsOfUseView.ShowDialog();
-
-            prefSettings.PackageDownloadTouAccepted = termsOfUseView.AcceptedTermsOfUse;
-
+            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog();
+            prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
             return prefSettings.PackageDownloadTouAccepted; // User may or may not accept the terms.
         }
 
