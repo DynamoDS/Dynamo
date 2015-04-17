@@ -208,7 +208,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCustomNode(Dynamo.Nodes.Function m)
         {
-            return  HasAuthProvider && m != null;
+            return HasAuthProvider && m != null;
         }
 
         public void PublishSelectedNodes(object m)
