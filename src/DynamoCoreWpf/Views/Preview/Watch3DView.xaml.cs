@@ -429,12 +429,14 @@ namespace Dynamo.Controls
             ShowShadows = false;
             
             // setup lighting            
-            AmbientLightColor = new Color4(0.3f, 0.3f, 0.3f, 1.0f);
+            //AmbientLightColor = new Color4(0.3f, 0.3f, 0.3f, 1.0f);
+            AmbientLightColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
 
             DirectionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
             DirectionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
             
-            FillLightColor = new Color4(new Vector4(0.2f, 0.2f, 0.2f, 1.0f));
+            //FillLightColor = new Color4(new Vector4(0.2f, 0.2f, 0.2f, 1.0f));
+            FillLightColor = new Color4(new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
             FillLightDirection = new Vector3(0.5f, 1.0f, 0f);
 
             RenderTechnique = Techniques.RenderPhong;
@@ -478,6 +480,7 @@ namespace Dynamo.Controls
             Mesh = b1.ToMeshGeometry3D();
             NotifyPropertyChanged("Mesh");
         }
+        
         #endregion
 
         #region event handlers
@@ -489,14 +492,13 @@ namespace Dynamo.Controls
             vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
             vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
             vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
-
-#if DEBUG
             CompositionTarget.Rendering += CompositionTarget_Rendering;
-#endif
 
             MouseLeftButtonDown += view_MouseButtonIgnore;
             MouseLeftButtonUp += view_MouseButtonIgnore;
@@ -537,17 +539,21 @@ namespace Dynamo.Controls
             }
         }
 
-#if DEBUG
+
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
+#if DEBUG
             if (renderTimer.IsRunning)
             {
                 renderTimer.Stop();
                 Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
                 renderTimer.Reset();
             }
-        }
 #endif
+            var c = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z);
+            DirectionalLightDirection = c;
+        }
+
 
         /// <summary>
         /// Handler for the visualization manager's ResultsReadyToVisualize event.
