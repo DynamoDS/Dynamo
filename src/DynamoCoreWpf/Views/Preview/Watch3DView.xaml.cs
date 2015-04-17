@@ -747,18 +747,19 @@ namespace Dynamo.Controls
             var darkGridColor = new Color4(new Vector4(c1.ScR,c1.ScG ,c1.ScB, 1));
             var lightGridColor = new Color4(new Vector4(c2.ScR, c2.ScG, c2.ScB, 1));
 
-            var size = 10;
+            const int size = 10;
 
-            for (
-                int x = startX; x <= startX + size; x++)
+            for (var x = startX; x <= startX + size; x++)
             {
+                if (x == 0 && startY < 0) continue;
+
                 var v = new Vector3(x, -.001f, startY);
                 positions.Add(v);
                 indices.Add(positions.Count - 1);
                 positions.Add(new Vector3(x, -.001f, startY + size));
                 indices.Add(positions.Count - 1);
 
-                if (x%5 == 0)
+                if (x % 5 == 0)
                 {
                     colors.Add(darkGridColor);
                     colors.Add(darkGridColor);
@@ -770,14 +771,16 @@ namespace Dynamo.Controls
                 }
             }
 
-            for (int y = startY; y <= startY + size; y++)
+            for (var y = startY; y <= startY + size; y++)
             {
+                if (y == 0 && startX >= 0) continue;
+
                 positions.Add(new Vector3(startX, -.001f, y));
                 indices.Add(positions.Count - 1);
                 positions.Add(new Vector3(startX + size, -.001f, y));
                 indices.Add(positions.Count - 1);
 
-                if (y%5 == 0)
+                if (y % 5 == 0)
                 {
                     colors.Add(darkGridColor);
                     colors.Add(darkGridColor);
