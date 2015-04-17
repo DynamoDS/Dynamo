@@ -151,12 +151,6 @@
                     </ListView.ItemsPanel>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="{x:Type ListViewItem}">
-                            <Style.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                                 Color="#00000000" />
-                                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                                 Color="#00000000" />
-                            </Style.Resources>
 
                             <EventSetter Event="PreviewMouseLeftButtonDown"
                                          Handler="OnClassButtonCollapse" />
@@ -164,10 +158,7 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <Border Margin="0"
-                                                Background="{TemplateBinding Background}"
-                                                BorderBrush="Transparent"
-                                                BorderThickness="0">
+                                        <Border Background="{TemplateBinding Background}">
                                             <ContentPresenter />
                                         </Border>
                                     </ControlTemplate>
@@ -181,9 +172,7 @@
                                 <Trigger Property="IsSelected"
                                          Value="true">
                                     <Setter Property="Background"
-                                            Value="#272727" />
-                                    <Setter Property="BorderThickness"
-                                            Value="0" />
+                                            Value="{StaticResource ClassButtonClickedBackground}" />
                                 </Trigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
@@ -207,7 +196,7 @@
             <!-- Used for nested categories. E.g. nodes stucture for Revit root. -->
             <HierarchicalDataTemplate x:Key="NestedCategoryTemplate"
                                       ItemsSource="{Binding Path=Items}">
-                <TextBlock Foreground="#989898"
+                <TextBlock Foreground="{StaticResource NestedMemberTextColor}"
                            FontSize="13"
                            Text="{Binding Path=Name}"
                            VerticalAlignment="Center"
@@ -277,7 +266,7 @@
                                                       ContentSource="Content"
                                                       VerticalAlignment="Center"
                                                       TextBlock.FontSize="13"
-                                                      TextBlock.Foreground="#989898"
+                                                      TextBlock.Foreground="{StaticResource NestedMemberTextColor}"
                                                       Margin="8,0,0,0" />
                                 </Grid>
                             </Border>
@@ -367,7 +356,7 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
 
-                                        <Border BorderBrush="#353535">
+                                        <Border BorderBrush="{StaticResource LibraryItemHostBackground}">
                                             <Grid Background="Transparent">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
@@ -431,7 +420,7 @@
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
                                                                 <Setter Property="Background"
-                                                                        Value="#222222" />
+                                                                        Value="{StaticResource RootElementOnHover}" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
 
@@ -460,23 +449,14 @@
                                                             <Setter Property="BorderThickness"
                                                                     Value="0,0,0,1" />
                                                         </DataTrigger>
-
-                                                        <DataTrigger Value="True">
-                                                            <DataTrigger.Binding>
-                                                                <Binding RelativeSource="{RelativeSource Self}"
-                                                                         Path="DataContext"
-                                                                         Converter="{StaticResource NodeCategoryVMToBoolConverter}" />
-                                                            </DataTrigger.Binding>
-                                                            <Setter Property="Height"
-                                                                    Value="32" />
-                                                        </DataTrigger>
+                                                        
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
                                         </Border>
 
                                         <Border Grid.Row="1"
-                                                Background="#353535">
+                                                Background="{StaticResource LibraryItemHostBackground}">
                                             <ItemsPresenter x:Name="ItemsHost">
                                                 <ItemsPresenter.Visibility>
                                                     <Binding Converter="{StaticResource LibraryTreeItemsHostVisibilityConverter}" />
@@ -661,7 +641,7 @@
                                     <TextBlock x:Name="text"
                                                VerticalAlignment="Center"
                                                Margin="10, 0, 10, 0"
-                                               Foreground="#989898"
+                                               Foreground="{StaticResource NestedMemberTextColor}"
                                                FontSize="13"
                                                Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
 
@@ -688,7 +668,7 @@
                                              Value="True">
                                     <Setter TargetName="container"
                                             Property="Background"
-                                            Value="#222222" />
+                                            Value="{StaticResource RootElementOnHover}" />
                                 </DataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
