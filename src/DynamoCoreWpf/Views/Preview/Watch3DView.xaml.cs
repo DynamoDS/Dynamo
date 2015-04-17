@@ -439,16 +439,19 @@ namespace Dynamo.Controls
             FillLightColor = new Color4(new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
             FillLightDirection = new Vector3(0.5f, 1.0f, 0f);
 
+            var matColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#efede4");
             RenderTechnique = Techniques.RenderPhong;
             WhiteMaterial = new PhongMaterial
             {
                 Name = "White",
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                DiffuseColor = PhongMaterials.ToColor(0.992157, 0.992157, 0.992157, 1.0),
+                //DiffuseColor = PhongMaterials.ToColor(0.992157, 0.992157, 0.992157, 1.0),
+                DiffuseColor = PhongMaterials.ToColor(matColor.R, matColor.G, matColor.B, 1.0f),
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
             };
+
 
             Model1Transform = new TranslateTransform3D(0, -0, 0);
 
