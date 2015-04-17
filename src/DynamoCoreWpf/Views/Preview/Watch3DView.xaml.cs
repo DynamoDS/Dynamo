@@ -19,7 +19,7 @@ using Dynamo.DSEngine;
 
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
-using HelixToolkit.Wpf.SharpDX.Model.Geometry;
+//using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
 using SharpDX;
 
