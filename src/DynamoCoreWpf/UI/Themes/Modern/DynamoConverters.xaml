@@ -129,4 +129,13 @@
     <controls:RunPreviewToolTipConverter x:Key="RunPreviewToolTipConverter"/>
     <controls:MenuItemCheckConverter x:Key="MenuItemCheckConverter"/>
     <controls:AnnotationTextConverter x:Key="AnnotationTextConverter"/>
+    <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
+    <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
+    <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
+    <controls:RootElementVMToBoolConverter x:Key="RootElementToBoolConverter" />
+    <controls:NodeCategoryVMToBoolConverter x:Key="NodeCategoryVMToBoolConverter" />
+    <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
+    <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+    <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
+    <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
 </ResourceDictionary>

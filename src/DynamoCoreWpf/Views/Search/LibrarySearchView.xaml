@@ -14,6 +14,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
         <!-- Region Expander Templates -->
@@ -21,7 +23,7 @@
         <ControlTemplate x:Key="CategoryExpanderButtonTemplate"
                          TargetType="{x:Type ToggleButton}">
             <Border x:Name="ExpanderButtonBorder"
-                    Background="#282828"
+                    Background="{StaticResource RootElementBackground}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     Padding="8,0,0,0">
@@ -281,12 +283,12 @@
                 <Trigger Property="IsMouseOver"
                          Value="True">
                     <Setter Property="Background"
-                            Value="#404040" />
+                            Value="{StaticResource LibraryMemberOnHover}" />
                 </Trigger>
                 <Trigger Property="IsSelected"
                          Value="True">
                     <Setter Property="Background"
-                            Value="#404040" />
+                            Value="{StaticResource LibraryMemberOnHover}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -381,7 +383,7 @@
     <Grid>
         <ScrollViewer CanContentScroll="True"
                       PreviewMouseWheel="OnPreviewMouseWheel"
-                      Background="#333333"
+                      Background="{StaticResource LibraryCommonBackground}"
                       Name="ScrollLibraryViewer"
                       Template="{DynamicResource LibraryScrollViewerControlTemplate}"
                       Style="{DynamicResource LibraryScrollViewerStyle}">
@@ -414,7 +416,7 @@
                             <DataTemplate>
                                 <Border BorderThickness="2,0,0,0"
                                         BorderBrush="Yellow">
-                                    <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                                    <ContentControl Template="{StaticResource SearchMemberControlTemplate}" />
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -523,7 +525,7 @@
                                                         </MultiTrigger.Conditions>
                                                         <MultiTrigger.Setters>
                                                             <Setter Property="Background"
-                                                                    Value="#404040" />
+                                                                    Value="{StaticResource LibraryMemberOnHover}" />
                                                         </MultiTrigger.Setters>
                                                     </MultiTrigger>
                                                     <MultiTrigger>
@@ -535,7 +537,7 @@
                                                         </MultiTrigger.Conditions>
                                                         <MultiTrigger.Setters>
                                                             <Setter Property="Background"
-                                                                    Value="#404040" />
+                                                                    Value="{StaticResource LibraryMemberOnHover}" />
                                                         </MultiTrigger.Setters>
                                                     </MultiTrigger>
                                                 </Style.Triggers>
@@ -568,7 +570,7 @@
                                                                         <Trigger Property="IsMouseOver"
                                                                                  Value="true">
                                                                             <Setter Property="Foreground"
-                                                                                    Value="#aaaaaa" />
+                                                                                    Value="{StaticResource MemberButtonText}" />
                                                                         </Trigger>
                                                                     </Style.Triggers>
                                                                 </Style> 

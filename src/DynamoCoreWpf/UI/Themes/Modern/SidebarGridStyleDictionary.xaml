@@ -1,5 +1,14 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
+    <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
 
     <!-- Region Control Templates-->
 

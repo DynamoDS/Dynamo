@@ -62,4 +62,19 @@
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed"/>
     <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="Green"/>
 
+    <!--Sidebar-->
+    
+    <!-- Search text block-->
+    <SolidColorBrush x:Key="DeafultSearchTextBlockText" Color="#878787" />
+    <SolidColorBrush x:Key="CommonSidebarTextColor" Color="#CCCCCC" />
+    
+    <!-- Library background-->
+    <SolidColorBrush x:Key="LibraryCommonBackground" Color="#333333" />
+    <SolidColorBrush x:Key="LibraryMemberOnHover" Color="#404040" />
+    <SolidColorBrush x:Key="LibraryItemHostBackground" Color="#353535" />
+    <SolidColorBrush x:Key="RootElementBackground" Color="#282828" />
+    <SolidColorBrush x:Key="RootElementOnHover" Color="#2F2F2F" />
+
+    <!-- Library text colors-->
+    <SolidColorBrush x:Key="MemberButtonText" Color="#aaaaaa" />
 </ResourceDictionary>

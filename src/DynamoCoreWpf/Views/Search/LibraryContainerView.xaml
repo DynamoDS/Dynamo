@@ -64,7 +64,7 @@
                    FontWeight="Normal"
                    Margin="0"
                    Padding="16,0,0,0"
-                   Foreground="#AAAAAA"
+                   Foreground="{StaticResource MemberButtonText}"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Stretch"
                    Content="{x:Static p:Resources.LibraryViewTitle}" />
@@ -137,7 +137,7 @@
                     <TextBlock Name="SearchTextBlock"
                                FontSize="14"
                                IsHitTestVisible="False"
-                               Foreground="#AAAAAA"
+                               Foreground="{StaticResource DeafultSearchTextBlockText}"
                                VerticalAlignment="Center"
                                Visibility="{Binding Path=SearchText, 
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
@@ -150,7 +150,7 @@
 
                 <TextBox Name="SearchTextBox"
                          KeyboardNavigation.TabIndex="0"
-                         Foreground="#CCCCCC"
+                         Foreground="{StaticResource CommonSidebarTextColor}"
                          Background="Transparent"
                          BorderThickness="0"
                          FontSize="14"
@@ -161,7 +161,7 @@
                          VerticalAlignment="Center"
                          Text="{Binding Path=SearchText,Mode=TwoWay}"
                          MinWidth="280"
-                         CaretBrush="#CCCCCC"
+                         CaretBrush="{StaticResource CommonSidebarTextColor}"
                          Margin="26,0,0,-1"
                          Grid.ColumnSpan="3" />
 
