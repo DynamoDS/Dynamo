@@ -229,7 +229,7 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="selection"></param>
         /// <returns></returns>
-        public static List<List<NodeModel>> GraphPartition(
+        public static List<List<NodeModel>> GetCliques(
             IEnumerable<NodeModel> selection)
         {
             var selectionSet = new HashSet<NodeModel>(selection);

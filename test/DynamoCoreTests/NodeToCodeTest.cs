@@ -28,7 +28,7 @@ namespace Dynamo.Tests
             // 1 -> + -> 2
             OpenModel(@"core\node2code\partition1.dyn");
             var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
-            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 2);
         }
 
@@ -43,7 +43,7 @@ namespace Dynamo.Tests
             // +--------------+
             OpenModel(@"core\node2code\partition2.dyn");
             var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
-            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 2);
             foreach (var group in groups)
             {
@@ -66,7 +66,7 @@ namespace Dynamo.Tests
             // +--> 2----+
             OpenModel(@"core\node2code\partition3.dyn");
             var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
-            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 2);
             var group = groups.Where(g => g.Count == 2).First();
             Assert.IsTrue(group.Find(n => n.NickName == "2") != null);
@@ -83,7 +83,7 @@ namespace Dynamo.Tests
             // +-----------+
             OpenModel(@"core\node2code\partition4.dyn");
             var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
-            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 1);
             var group = groups.First();
             Assert.IsTrue(group.Find(n => n.NickName == "1") != null &&
@@ -101,7 +101,7 @@ namespace Dynamo.Tests
             // 3
             OpenModel(@"core\node2code\partition5.dyn");
             var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.Where(n => n.NickName != "X");
-            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            var groups = NodeToCodeUtils.GetCliques(nodes);
             Assert.IsTrue(groups.Count == 2);
 
             var group1 = groups.Where(g => g.Count == 3).FirstOrDefault();
