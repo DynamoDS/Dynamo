@@ -39,6 +39,7 @@ namespace Dynamo.Nodes
             ViewModel = this.DataContext as AnnotationViewModel;
             if (ViewModel != null)
             {
+                //Set the event when Annotation view is loaded.
                 ViewModel.WorkspaceViewModel.Model.SetGetModelsForGrouping(ViewModel.AnnotationModel);
                 //Set the height of Textblock based on the content.
                 if (!ViewModel.AnnotationModel.loadFromXML)

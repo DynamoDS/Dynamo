@@ -683,11 +683,22 @@ namespace Dynamo.Models
             return null;
         }
 
+        /// <summary>
+        /// Sets the event on Annotaiton model.
+        /// When a node is removed from a group, this event will be
+        /// used to include that node again in that group (UNDO operation)
+        /// </summary>
+        /// <param name="model">The model.</param>
         internal void SetGetModelsForGrouping(AnnotationModel model)
         {
             model.GetModelBaseEvent += annotationModel_GetModelBaseEvent;
         }
 
+        /// <summary>
+        /// Get the model from Workspace
+        /// </summary>
+        /// <param name="modelGuid">The model unique identifier.</param>
+        /// <returns></returns>
         private ModelBase annotationModel_GetModelBaseEvent(Guid modelGuid)
         {
             ModelBase model = null;
