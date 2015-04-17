@@ -23,6 +23,7 @@ namespace Dynamo.ViewModels
             AddNoteCommand = new DelegateCommand(AddNote, CanAddNote);
             AddAnnotationCommand = new DelegateCommand(AddAnnotation,CanAddAnnotation);
             UngroupAnnotationCommand = new DelegateCommand(UngroupAnnotation,CanUngroupAnnotation);
+            UngroupModelCommand = new DelegateCommand(UngroupModel,CanUngroupModel);
             AddToSelectionCommand = new DelegateCommand(model.AddToSelection, CanAddToSelection);
             ShowNewFunctionDialogCommand = new DelegateCommand(ShowNewFunctionDialogAndMakeFunction, CanShowNewFunctionDialogCommand);
             SaveRecordedCommand = new DelegateCommand(SaveRecordedCommands, CanSaveRecordedCommands);
@@ -83,6 +84,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand AddNoteCommand { get; set; }
         public DelegateCommand AddAnnotationCommand { get; set; }
         public DelegateCommand UngroupAnnotationCommand { get; set; }
+        public DelegateCommand UngroupModelCommand { get; set; }
         public DelegateCommand UndoCommand { get; set; }
         public DelegateCommand RedoCommand { get; set; }
         public DelegateCommand CopyCommand { get; set; }

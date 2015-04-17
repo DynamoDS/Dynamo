@@ -403,6 +403,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ungroup.
+        /// </summary>
+        public static string ContextUnGroupFromSelection {
+            get {
+                return ResourceManager.GetString("ContextUnGroupFromSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
         public static string ContinueButton {

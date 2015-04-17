@@ -16,9 +16,9 @@ namespace Dynamo.Models
     public class AnnotationModel : ModelBase
     {
         #region Properties
+        public event Func<Guid,ModelBase> GetModelBaseEvent;      
         public double InitialTop { get; set; } //required to calculate the TOP position in a group         
-        public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group 
-        private string modelGuids { get; set; }   
+        public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group          
         private const double doubleValue = 0.0;
         public List<ModelBase> DeletedModelBases { get; set; }
         public bool loadFromXML { get; set; }
@@ -121,7 +121,7 @@ namespace Dynamo.Models
             {
                 textBlockHeight = value;                
                 Y = InitialTop - textBlockHeight;
-                Height = InitialHeight + textBlockHeight;
+                Height = InitialHeight + textBlockHeight - 20;
             }
         }
 
@@ -197,6 +197,7 @@ namespace Dynamo.Models
         /// </summary>      
         internal void UpdateBoundaryFromSelection()
         {
+          
             var selectedModelsList = selectedModels.ToList();
           
             if (selectedModelsList.Any())
@@ -205,7 +206,7 @@ namespace Dynamo.Models
               
                 //Shifting x by 10 and y to the height of textblock
                 var regionX = groupModels.Min(x => x.X) - 10;
-                var regionY = groupModels.Min(y => y.Y) - TextBlockHeight;
+                var regionY = groupModels.Min(y => y.Y) - (TextBlockHeight == 0.0 ? 20.0 : TextBlockHeight);
               
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => x.X) - regionX;
@@ -291,7 +292,10 @@ namespace Dynamo.Models
                     break;
                 case "Background":
                     Background = value;
-                    break;                    
+                    break;  
+                case "TextBlockText":
+                    AnnotationText = value;
+                    break;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -327,7 +331,7 @@ namespace Dynamo.Models
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {            
+        {         
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);
             this.annotationText = helper.ReadString("annotationText", Resources.GroupDefaultText);
@@ -350,7 +354,13 @@ namespace Dynamo.Models
                      if (SelectedModels != null)
                      {
                          var result = mhelper.ReadGuid("ModelGuid", new Guid());
-                        var model = SelectedModels.FirstOrDefault(x => x.GUID == result);
+                         ModelBase model = null;
+                         if(GetModelBaseEvent != null)
+                              model = GetModelBaseEvent(result);
+                         else
+                         {
+                             model = SelectedModels.FirstOrDefault(x => x.GUID == result);
+                         }
                         listOfModels.Add(model);
                     }                  
                 }
@@ -359,7 +369,8 @@ namespace Dynamo.Models
 
             RaisePropertyChanged("Background");
             RaisePropertyChanged("FontSize");
-          
+            RaisePropertyChanged("AnnotationText");
+            RaisePropertyChanged("SelectedModels");
         }
 
         #endregion

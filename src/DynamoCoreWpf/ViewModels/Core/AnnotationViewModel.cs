@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Media;
 using Dynamo.Models;
 using System;
@@ -122,6 +124,11 @@ namespace Dynamo.ViewModels
                 annotationModel.FontSize = value;                
             }
         }
+
+        public IEnumerable<ModelBase> SelectedModels
+        {
+            get { return annotationModel.SelectedModels; }
+        }
        
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
         {             
@@ -178,6 +185,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "FontSize":
                     RaisePropertyChanged("FontSize");
+                    break;
+                case "SelectedModels":
+                    this.AnnotationModel.UpdateBoundaryFromSelection();
                     break;
             }
         }      

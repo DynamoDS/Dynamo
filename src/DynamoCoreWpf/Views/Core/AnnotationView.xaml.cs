@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -36,10 +37,14 @@ namespace Dynamo.Nodes
         private void AnnotationView_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel = this.DataContext as AnnotationViewModel;
-            //Set the height of Textblock based on the content.
-            if (ViewModel != null && !ViewModel.AnnotationModel.loadFromXML)
+            if (ViewModel != null)
             {
-                ViewModel.AnnotationModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
+                ViewModel.WorkspaceViewModel.Model.SetGetModelsForGrouping(ViewModel.AnnotationModel);
+                //Set the height of Textblock based on the content.
+                if (!ViewModel.AnnotationModel.loadFromXML)
+                {
+                    ViewModel.AnnotationModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
+                }
             }
         }
 
@@ -122,6 +127,14 @@ namespace Dynamo.Nodes
         {             
             if (ViewModel != null)
             {
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(
+                        System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
+                        GroupTextBox.Text));
+
+                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();  
+
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBox.ActualHeight;
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }           
@@ -170,6 +183,11 @@ namespace Dynamo.Nodes
         private void GroupTextBox_OnGotFocus(object sender, RoutedEventArgs e)
         {
             this.GroupTextBox.CaretIndex = Int32.MaxValue;
+        }
+
+        private void GroupTextBlock_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            
         }
     }
 }

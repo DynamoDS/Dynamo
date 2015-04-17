@@ -895,6 +895,16 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
         }
 
+        private void UngroupNode(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+        }
+
+        private bool CanUngroupNode(object parameters)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
+        }
+
 
         #region Private Helper Methods
         private Point GetTopLeft()

@@ -135,5 +135,15 @@ namespace Dynamo.ViewModels
         {
             return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
         }
+
+        private void UngroupNote(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+        }
+
+        private bool CanUngroupNote(object parameters)
+        {
+            return DynamoSelection.Instance.Selection.OfType<NoteModel>().Any();
+        }
     }
 }

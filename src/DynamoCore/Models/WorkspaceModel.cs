@@ -675,13 +675,29 @@ namespace Dynamo.Models
                 {
                     GUID = id,
                     AnnotationText = text
-                };
-             
+                };               
                 Annotations.Add(annotationModel);
                 HasUnsavedChanges = true;
                 return annotationModel;
             }
             return null;
+        }
+
+        internal void SetGetModelsForGrouping(AnnotationModel model)
+        {
+            model.GetModelBaseEvent += annotationModel_GetModelBaseEvent;
+        }
+
+        private ModelBase annotationModel_GetModelBaseEvent(Guid modelGuid)
+        {
+            ModelBase model = null;
+            model = this.Nodes.FirstOrDefault(x => x.GUID == modelGuid);
+            if (model == null) //Check if GUID is a Note instead.
+            {
+                model = this.Notes.FirstOrDefault(x => x.GUID == modelGuid);
+            }
+
+            return model;
         }
 
         /// <summary>
@@ -697,7 +713,7 @@ namespace Dynamo.Models
             foreach (var group in this.Annotations)
             {
                 var groupModels = group.SelectedModels;
-                nodesInSameGroup = groupModels.Except(selectedModels).ToList().Count <= 0;
+                nodesInSameGroup = selectedModels.Except(groupModels).ToList().Count <= 0;
                 if (nodesInSameGroup)
                     break;
             }
@@ -1236,6 +1252,14 @@ namespace Dynamo.Models
                 RequestRun();
 
             } // Conclude the deletion.
+        }
+
+        internal void RecordGroupModelBeforeUngroup(AnnotationModel annotation)
+        {
+            using (undoRecorder.BeginActionGroup()) // Start a new action group.
+            {
+                undoRecorder.RecordModificationForUndo(annotation);
+            }
         }
 
         private static bool ShouldProceedWithRecording(List<ModelBase> models)

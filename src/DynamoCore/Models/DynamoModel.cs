@@ -1075,6 +1075,27 @@ namespace Dynamo.Models
             OnDeletionComplete(this, EventArgs.Empty);
         }
 
+        internal void UngroupModel(List<ModelBase> modelsToUngroup)
+        {
+            var annotations = Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Annotations);
+            foreach (var model in modelsToUngroup)
+            {
+                foreach (var annotation in annotations)
+                {
+                    if (annotation.SelectedModels.Any(x => x.GUID == model.GUID))
+                    {
+                        CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
+                        var list = annotation.SelectedModels.ToList();
+                        if (list.Remove(model))
+                        {
+                            annotation.SelectedModels = list;
+                            annotation.UpdateBoundaryFromSelection();
+                        }                        
+                    }
+                }
+            }
+        }
+
         internal void DumpLibraryToXml(object parameter)
         {
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
