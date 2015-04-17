@@ -724,7 +724,7 @@ namespace Dynamo.Models
             foreach (var group in this.Annotations)
             {
                 var groupModels = group.SelectedModels;
-                nodesInSameGroup = selectedModels.Except(groupModels).ToList().Count <= 0;
+                nodesInSameGroup = !selectedModels.Except(groupModels).Any();
                 if (nodesInSameGroup)
                     break;
             }
@@ -1369,11 +1369,7 @@ namespace Dynamo.Models
                     //this note "was" in a group
                     if (annotation.DeletedModelBases.Any(m => m.GUID == noteModel.GUID))
                     {
-                        var list = annotation.SelectedModels.ToList();
-                        list.Add(noteModel);
-                        annotation.SelectedModels = list;
-                        annotation.loadFromXML = false;
-                        annotation.UpdateBoundaryFromSelection();
+                        annotation.AddToSelectedModels(noteModel);
                     }
                 }
             }
@@ -1394,11 +1390,7 @@ namespace Dynamo.Models
                     //this node "was" in a group
                     if (annotation.DeletedModelBases.Any(m=>m.GUID == nodeModel.GUID))
                     {
-                        var list = annotation.SelectedModels.ToList();
-                        list.Add(nodeModel);
-                        annotation.SelectedModels = list;
-                        annotation.loadFromXML = false;
-                        annotation.UpdateBoundaryFromSelection();
+                        annotation.AddToSelectedModels(nodeModel);
                     }
                 }
             }

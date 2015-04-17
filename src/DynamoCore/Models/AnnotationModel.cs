@@ -20,6 +20,8 @@ namespace Dynamo.Models
         public double InitialTop { get; set; } //required to calculate the TOP position in a group         
         public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group          
         private const double doubleValue = 0.0;
+        private const double minHeight = 20.0;
+        private const double extendSize = 10.0;
         public List<ModelBase> DeletedModelBases { get; set; }
         public bool loadFromXML { get; set; }
 
@@ -121,7 +123,7 @@ namespace Dynamo.Models
             {
                 textBlockHeight = value;                
                 Y = InitialTop - textBlockHeight;
-                Height = InitialHeight + textBlockHeight - 20;
+                Height = InitialHeight + textBlockHeight - minHeight;
             }
         }
 
@@ -196,8 +198,7 @@ namespace Dynamo.Models
         /// Updates the group boundary based on the nodes / notes selection.
         /// </summary>      
         internal void UpdateBoundaryFromSelection()
-        {
-          
+        {          
             var selectedModelsList = selectedModels.ToList();
           
             if (selectedModelsList.Any())
@@ -205,8 +206,8 @@ namespace Dynamo.Models
                 var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
               
                 //Shifting x by 10 and y to the height of textblock
-                var regionX = groupModels.Min(x => x.X) - 10;
-                var regionY = groupModels.Min(y => y.Y) - (TextBlockHeight == 0.0 ? 20.0 : TextBlockHeight);
+                var regionX = groupModels.Min(x => x.X) - extendSize;
+                var regionY = groupModels.Min(y => y.Y) - (TextBlockHeight == 0.0 ? minHeight : TextBlockHeight);
               
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => x.X) - regionX;
@@ -224,8 +225,8 @@ namespace Dynamo.Models
                 {
                     X = regionX,
                     Y = regionY,
-                    Width = xDistance + maxWidth + 10,
-                    Height = yDistance + maxHeight + 10
+                    Width = xDistance + maxWidth + extendSize,
+                    Height = yDistance + maxHeight + extendSize
                 };
              
                 this.X = region.X;              
@@ -245,7 +246,7 @@ namespace Dynamo.Models
                         {
                             if (overlap.Rect.Bottom - region.Bottom > 0)
                             {
-                                this.Height += overlap.Rect.Bottom - region.Bottom + 10;
+                                this.Height += overlap.Rect.Bottom - region.Bottom + extendSize;
                             }
                             region.Height = this.Height;
                         }
@@ -254,7 +255,7 @@ namespace Dynamo.Models
                         {
                             if (overlap.Rect.Right - region.Right > 0)
                             {
-                                this.Width += overlap.Rect.Right - region.Right + 10;
+                                this.Width += overlap.Rect.Right - region.Right + extendSize;
                             }
                             region.Width = this.Width;
                         }
@@ -339,7 +340,7 @@ namespace Dynamo.Models
             this.Y = helper.ReadDouble("top", doubleValue);
             this.width = helper.ReadDouble("width", doubleValue);
             this.height = helper.ReadDouble("height", doubleValue);
-            this.Background = helper.ReadString("backgrouund", "");
+            this.background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", doubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", doubleValue);
@@ -371,6 +372,20 @@ namespace Dynamo.Models
             RaisePropertyChanged("FontSize");
             RaisePropertyChanged("AnnotationText");
             RaisePropertyChanged("SelectedModels");
+        }
+
+        /// <summary>
+        /// This is called when a model is deleted from a group
+        /// and UNDO is clicked.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        internal void AddToSelectedModels(ModelBase model)
+        {           
+            var list = this.SelectedModels.ToList();
+            list.Add(model);
+            this.SelectedModels = list;
+            this.loadFromXML = false;
+            this.UpdateBoundaryFromSelection();
         }
 
         #endregion

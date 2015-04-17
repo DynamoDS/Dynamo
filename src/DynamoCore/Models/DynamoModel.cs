@@ -1049,15 +1049,13 @@ namespace Dynamo.Models
             var annotations = Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Annotations);
             foreach (var annotation in annotations)
             {
-                if (!annotation.SelectedModels.Except(modelsToDelete).ToList().Any())
+                if (!annotation.SelectedModels.Except(modelsToDelete).Any())
                 {
                     //Annotation Model has to be serialized first - before the nodes.
                     //so, store the Annotation model as first object. This will serialize the 
                     //annotation before the nodes are deleted. So, when Undo is pressed,
                     //annotation model is deserialized correctly.
-                    var models = new LinkedList<ModelBase>(modelsToDelete);
-                    models.AddFirst(annotation);
-                    modelsToDelete = models.ToList();
+                    modelsToDelete.Insert(0, annotation);                   
                 }
             }
 
