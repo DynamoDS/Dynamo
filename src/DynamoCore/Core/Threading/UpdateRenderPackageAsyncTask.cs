@@ -139,6 +139,10 @@ namespace Dynamo.Core.Threading
                 return;
             }
 
+            byte defR = 101;
+            byte defG = 86;
+            byte defB = 130;
+
             if (mirrorData.IsCollection)
             {
                 foreach (var el in mirrorData.GetElements())
@@ -183,16 +187,59 @@ namespace Dynamo.Core.Threading
                         }
                     }
 
+                    var plane = graphicItem as Plane;
+                    if (plane != null)
+                    {
+                        // Remove the curves from the render package.
+                        // Draw the plane with a 50% transparency.
+
+                        var cs = CoordinateSystem.ByPlane(plane);
+                        var a = Point.ByCartesianCoordinates(cs, 1, 1, 0);
+                        var b = Point.ByCartesianCoordinates(cs, -1, 1, 0);
+                        var c = Point.ByCartesianCoordinates(cs, -1, -1, 0);
+                        var d = Point.ByCartesianCoordinates(cs, 1, -1, 0);
+
+                        package.LineStripVertices.Clear();
+                        package.LineStripVertexColors.Clear();
+                        package.LineStripVertexCounts.Clear();
+
+                        package.PushTriangleVertex(a.X, a.Y, a.Z);
+                        package.PushTriangleVertex(b.X, b.Y, b.Z);
+                        package.PushTriangleVertex(c.X, c.Y, c.Z);
+
+                        package.PushTriangleVertex(c.X, c.Y, c.Z);
+                        package.PushTriangleVertex(d.X, d.Y, d.Z);
+                        package.PushTriangleVertex(a.X, a.Y, a.Z);
+
+                        for (var i = 0; i < 6; i++)
+                        {
+                            package.PushTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
+                        }
+
+                        for (var i = 0; i < 6; i++)
+                        {
+                            package.PushTriangleVertexColor(0, 0, 0, 10);
+                        }
+
+                    }
+
                     // The default color coming from the geometry library for
                     // curves is 255,255,255,255 (White). Because we want a default
                     // color of 0,0,0,255 (Black), we adjust the color components here.
-                    if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid)
+                    if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
                     {
                         for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
                         {
-                            package.LineStripVertexColors[i] = 0;
-                            package.LineStripVertexColors[i + 1] = 0;
-                            package.LineStripVertexColors[i + 2] = 0;
+                            package.LineStripVertexColors[i] = defR;
+                            package.LineStripVertexColors[i + 1] = defG;
+                            package.LineStripVertexColors[i + 2] = defB;
+                        }
+
+                        for (var i = 0; i < package.PointVertexColors.Count; i += 4)
+                        {
+                            package.LineStripVertexColors[i] = defR;
+                            package.LineStripVertexColors[i + 1] = defG;
+                            package.LineStripVertexColors[i + 2] = defB;
                         }
                     }
                 }
