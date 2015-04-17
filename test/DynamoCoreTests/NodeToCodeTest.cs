@@ -20,6 +20,59 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestParitition1()
+        {
+            // Select some nodes, and return a group of nodes. Each group could
+            // be converted to code.
+            //
+            // 1 -> + -> 2
+            OpenModel(@"core\node2code\partition1.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
+            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            Assert.IsTrue(groups.Count == 2);
+        }
+
+        [Test]
+        public void TestParitition2()
+        {
+            // Select some nodes, and return a group of nodes. Each group could
+            // be converted to code.
+            //
+            // 1 -> + -> 2 -> 3
+            // |              ^
+            // +--------------+
+            OpenModel(@"core\node2code\partition2.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
+            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            Assert.IsTrue(groups.Count == 2);
+            foreach (var group in groups)
+            {
+               if (group.Count == 2)
+               {
+                   Assert.IsTrue(group.Find(n => n.NickName == "2") != null &&
+                                 group.Find(n => n.NickName == "3") != null);
+               } 
+            }
+        }
+
+        [Test]
+        public void TestParitition3()
+        {
+            // Select some nodes, and return a group of nodes. Each group could
+            // be converted to code.
+            //
+            // 1 -> + -> 3
+            // |         ^
+            // +--> 2----+
+            OpenModel(@"core\node2code\partition3.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes.OfType<CodeBlockNodeModel>();
+            var groups = NodeToCodeUtils.GraphPartition(nodes);
+            Assert.IsTrue(groups.Count == 2);
+            var group = groups.Where(g => g.Count == 2).First();
+            Assert.IsTrue(group.Find(n => n.NickName == "2") != null);
+        }
+
+        [Test]
         public void TestVariableConfliction1()
         {
             // Test same name variables will be renamed in node to code

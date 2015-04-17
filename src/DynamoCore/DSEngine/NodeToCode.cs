@@ -185,8 +185,7 @@ namespace Dynamo.DSEngine
             HashSet<NodeModel> selection,
             bool[,] connectivityMatrx,
             Dictionary<NodeModel, int> nodeMap,
-            Queue<NodeModel> path,
-            HashSet<NodeModel> visited)
+            List<NodeModel> path)
         {
             var leave = path.Last();
             var children = leave.OutputNodes.Values.SelectMany(s => s).Select(t => t.Item2);
@@ -194,13 +193,11 @@ namespace Dynamo.DSEngine
             {
                 foreach (var child in children)
                 {
-                    if (visited.Contains(child))
+                    if (path.Contains(child))
                         continue;
 
-                    visited.Add(child);
-                    path.Enqueue(child);
-                    MarkConnectivityForNode(selection, connectivityMatrx, nodeMap, path, visited);
-                    path.Dequeue();
+                    path.Add(child);
+                    MarkConnectivityForNode(selection, connectivityMatrx, nodeMap, path);
                 }
             }
             else
@@ -222,6 +219,8 @@ namespace Dynamo.DSEngine
                     }
                 }
             }
+
+            path.RemoveAt(path.Count - 1);
         }
 
         private static List<int> StrongConnectComponent(
@@ -301,11 +300,10 @@ namespace Dynamo.DSEngine
 
             foreach (var node in convertibleNodes)
             {
-                var path = new Queue<NodeModel>();
-                path.Enqueue(node);
+                var path = new List<NodeModel>();
+                path.Add(node);
 
-                var visited = new HashSet<NodeModel>() { node};
-                MarkConnectivityForNode(selectionSet, connectivityMatrx, nodeDict, path, visited);
+                MarkConnectivityForNode(selectionSet, connectivityMatrx, nodeDict, path);
             }
 
             var indexMap = new Dictionary<int, int>();
