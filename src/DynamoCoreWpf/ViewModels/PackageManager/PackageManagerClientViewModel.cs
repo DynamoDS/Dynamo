@@ -47,6 +47,14 @@ namespace Dynamo.ViewModels
             Task<bool>.Factory.StartNew(() => packageManagerClient.GetTermsOfUseAcceptanceStatus()).
                 ContinueWith(t =>
                 {
+                    // The above GetTermsOfUseAcceptanceStatus call will get the
+                    // user to sign-in. If the user cancels that sign-in dialog 
+                    // without signing in, we won't show the terms of use dialog,
+                    // simply return from here.
+                    // 
+                    if (packageManagerClient.LoginState != LoginState.LoggedIn)
+                        return;
+
                     var termsOfUseAccepted = t.Result;
                     if (termsOfUseAccepted)
                     {
