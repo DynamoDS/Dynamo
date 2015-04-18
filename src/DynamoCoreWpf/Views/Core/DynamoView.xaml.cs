@@ -412,7 +412,9 @@ namespace Dynamo.Controls
 
             var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog();
             prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
-            return prefSettings.PackageDownloadTouAccepted; // User may or may not accept the terms.
+
+            // User may or may not accept the terms.
+            return prefSettings.PackageDownloadTouAccepted;
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -451,6 +453,9 @@ namespace Dynamo.Controls
         private PackageManagerSearchViewModel _pkgSearchVM;
         void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
+            if (!DisplayTermsOfUseForAcceptance())
+                return; // Terms of use not accepted.
+
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
