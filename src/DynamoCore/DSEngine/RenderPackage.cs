@@ -25,6 +25,8 @@ namespace Dynamo.DSEngine
 
         public string Tag { get; set; }
 
+        public bool IsSelected { get; set; }
+
         public List<double> LineStripVertices
         {
             get { return lineStripVertices;}
