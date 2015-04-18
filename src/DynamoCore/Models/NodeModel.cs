@@ -616,7 +616,7 @@ namespace Dynamo.Models
                         {
                             lock (RenderPackagesMutex)
                             {
-                                RenderPackages.ForEach(rp => ((RenderPackage) rp).Selected = IsSelected);
+                                RenderPackages.ForEach(rp => rp.IsSelected = IsSelected);
                             }
                         }
                         break;
