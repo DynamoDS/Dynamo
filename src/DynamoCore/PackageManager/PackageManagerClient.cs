@@ -213,10 +213,9 @@ namespace Dynamo.PackageManager
             this.authProvider.Logout();
         }
 
-        internal void Login()
+        internal bool Login()
         {
-            if (!HasAuthProvider) return;
-            this.authProvider.Login();
+            return HasAuthProvider && this.authProvider.Login();
         }
     }
 }

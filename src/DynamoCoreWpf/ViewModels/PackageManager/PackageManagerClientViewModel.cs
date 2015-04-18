@@ -90,6 +90,12 @@ namespace Dynamo.ViewModels
 
         public void PublishCurrentWorkspace(object m)
         {
+            if (LoginState == LoginState.LoggedOut)
+            {
+                if (!Model.Login())
+                    return;
+            }
+
             var ws = (CustomNodeWorkspaceModel)DynamoViewModel.CurrentSpace;
 
             CustomNodeDefinition currentFunDef;
@@ -120,6 +126,12 @@ namespace Dynamo.ViewModels
 
         public void PublishNewPackage(object m)
         {
+            if (LoginState == LoginState.LoggedOut)
+            {
+                if (!Model.Login())
+                    return;
+            }
+
             ShowNodePublishInfo();
         }
 
@@ -130,6 +142,12 @@ namespace Dynamo.ViewModels
 
         public void PublishCustomNode(Dynamo.Nodes.Function m)
         {
+            if (LoginState == LoginState.LoggedOut)
+            {
+                if (!Model.Login())
+                    return;
+            }
+
             CustomNodeInfo currentFunInfo;
             if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
                 m.Definition.FunctionId,
@@ -146,6 +164,12 @@ namespace Dynamo.ViewModels
 
         public void PublishSelectedNodes(object m)
         {
+            if (LoginState == LoginState.LoggedOut)
+            {
+                if (!Model.Login())
+                    return;
+            }
+
             var nodeList = DynamoSelection.Instance.Selection
                                 .Where(x => x is Function)
                                 .Cast<Function>()
