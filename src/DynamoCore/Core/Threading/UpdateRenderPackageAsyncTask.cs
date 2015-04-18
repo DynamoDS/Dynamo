@@ -161,11 +161,15 @@ namespace Dynamo.Core.Threading
                 }
 
 
-                var package = new RenderPackage(isNodeSelected, displayLabels)
-                {
-                    Tag = labelMap.Count > count ? labelMap[count] : "?",
-                };
+                //var package = new RenderPackage(isNodeSelected, displayLabels)
+                //{
+                //    Tag = labelMap.Count > count ? labelMap[count] : "?",
+                //};
 
+                var package = DynamoModel.RenderPackageFactory.CreateRenderPackage();
+                package.Tag = labelMap.Count > count ? labelMap[count] : "?";
+
+                
                 try
                 {
                     graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
@@ -276,7 +280,7 @@ namespace Dynamo.Core.Threading
                         "PushGraphicItemIntoPackage: " + e);
                 }
                     
-                package.ItemsCount++;
+                //package.ItemsCount++;
                 renderPackages.Add(package);
                 count++;
             }
