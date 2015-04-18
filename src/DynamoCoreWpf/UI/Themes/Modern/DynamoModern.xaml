@@ -1223,6 +1223,45 @@
         </Setter>
     </Style>
 
+    <Style x:Key="GalleryUIBullets"
+           TargetType="ListBox">
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
+                Value="Disabled" />
+        <Setter Property="ScrollViewer.CanContentScroll"
+                Value="False" />
+        <Setter Property="MaxHeight" Value="50"/>
+        <Setter Property="MaxWidth" Value="600"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="GalleryUIBullet"
+           TargetType="ListBoxItem">
+        <Setter Property="MaxHeight" Value="7"/>
+        <Setter Property="MinHeight" Value="7"/>
+        <Setter Property="MaxWidth" Value="7"/>
+        <Setter Property="MinWidth" Value="7"/>
+        <Setter Property="Margin" Value="10,0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                    <Ellipse Fill="{Binding Path=IsCurrent, 
+                                            Converter={StaticResource BooleanToBrushConverter}, 
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             Stroke="Black"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style x:Key="StartPageLabel"
            TargetType="Label">
         <Setter Property="Template">

@@ -199,6 +199,7 @@
     <Compile Include="ViewModels\Core\AnnotationViewModel.cs" />
     <Compile Include="Utilities\ResourceUtilities.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelBranding.cs" />
+    <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
@@ -213,6 +214,9 @@
     <Compile Include="ViewModels\Search\SearchMemberGroup.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Gallery\GalleryView.xaml.cs">
+      <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
@@ -968,6 +972,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Gallery\GalleryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Preview\Watch3DSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

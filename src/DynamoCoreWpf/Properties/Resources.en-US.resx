@@ -1638,4 +1638,7 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PublishPackage" xml:space="preserve">
     <value>Publish Package !</value>
   </data>
+  <data name="StartPageWhatsNew" xml:space="preserve">
+    <value>What's New</value>
+  </data>
 </root>

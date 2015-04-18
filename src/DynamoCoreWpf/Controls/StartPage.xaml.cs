@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Views.Gallery;
 
 namespace Dynamo.UI.Controls
 {
@@ -142,6 +143,12 @@ namespace Dynamo.UI.Controls
             #endregion
 
             #region Community Links
+
+            communityLinks.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-discussion.png")
+            {
+                ContextData = ButtonNames.ShowGalleryUI,
+                ClickAction = StartPageListItem.Action.RegularCommand
+            });
 
             communityLinks.Add(new StartPageListItem(Resources.StartPageDiscussionForum, "icon-discussion.png")
             {
@@ -355,6 +362,15 @@ namespace Dynamo.UI.Controls
                     dvm.ShowNewFunctionDialogCommand.Execute(null);
                     break;
 
+                case ButtonNames.ShowGalleryUI:
+                    var galleryView = new GalleryView(this.DynamoViewModel);
+
+                    if (galleryView.ViewModel.Contents != null && 
+                        galleryView.ViewModel.Contents.Count != 0)
+                    {
+                        galleryView.Show();
+                    }
+                    break;
                 default:
                     throw new ArgumentException(
                         string.Format("Invalid command: {0}", item.ContextData));
@@ -389,6 +405,7 @@ namespace Dynamo.UI.Controls
         public const string NewWorkspace = "NewWorkspace";
         public const string NewCustomNodeWorkspace = "NewCustomNodeWorkspace";
         public const string OpenWorkspace = "OpenWorkspace";
+        public const string ShowGalleryUI = "ShowGalleryUI";
     }
 
     public partial class StartPageView : UserControl
@@ -417,6 +434,21 @@ namespace Dynamo.UI.Controls
 
             var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
             StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
+
+            if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun)
+            {
+                dynamoViewModel.Model.PreferenceSettings.IsFirstRun = false;
+                var galleryView = new GalleryView(dynamoViewModel)
+                {
+                    Owner = Window.GetWindow(this)
+                };
+
+                if (galleryView.ViewModel.Contents != null && 
+                    galleryView.ViewModel.Contents.Count != 0)
+                {
+                    galleryView.Show();
+                }
+            }
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)

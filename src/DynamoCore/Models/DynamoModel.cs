@@ -53,6 +53,8 @@ namespace Dynamo.Models
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
+
+        private GalleryContents galleryContents;
         #endregion
 
         #region events
@@ -139,6 +141,8 @@ namespace Dynamo.Models
         #endregion
 
         #region public properties
+
+        public GalleryContents GalleryContents { get { return galleryContents; } }
 
         /// <summary>
         ///     DesignScript VM EngineController, used for this instance of Dynamo.
@@ -420,7 +424,6 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -460,6 +463,8 @@ namespace Dynamo.Models
 
             InitializePreferences(preferences);
             InitializeInstrumentationLogger();
+
+            galleryContents = LoadGalleryContents();
 
             if (!isTestMode && this.PreferenceSettings.IsFirstRun)
             {
@@ -841,6 +846,18 @@ namespace Dynamo.Models
 
             // Otherwise make a default preference settings object.
             return new PreferenceSettings();
+        }
+
+        private GalleryContents LoadGalleryContents()
+        {
+            var xmlFilePath = pathManager.GalleryFilePath;
+
+            if (File.Exists(xmlFilePath))
+            {
+                return GalleryContents.Load(xmlFilePath);
+            }
+
+            return null;
         }
 
         private static void InitializePreferences(IPreferences preferences)

@@ -46,6 +46,7 @@ namespace Dynamo.Core
         public const string NodesDirectoryName = "nodes";
         public const string DefinitionsDirectoryName = "definitions";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
+        public const string GalleryContentsFileName = "GalleryContents.xml";
 
         private readonly int majorFileVersion;
         private readonly int minorFileVersion;
@@ -59,6 +60,7 @@ namespace Dynamo.Core
         private readonly string packagesDirectory;
         private readonly string samplesDirectory;
         private readonly string preferenceFilePath;
+        private readonly string galleryFilePath;
 
         private readonly HashSet<string> nodeDirectories;
         private readonly HashSet<string> additionalResolutionPaths;
@@ -106,6 +108,11 @@ namespace Dynamo.Core
         public string PreferenceFilePath
         {
             get { return preferenceFilePath; }
+        }
+
+        public string GalleryFilePath
+        {
+            get { return galleryFilePath; }
         }
 
         public IEnumerable<string> NodeDirectories
@@ -217,6 +224,7 @@ namespace Dynamo.Core
             logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
             packagesDirectory = Path.Combine(userDataDir, PackagesDirectoryName);
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
+            galleryFilePath = Path.Combine(userDataDir, GalleryContentsFileName);
 
             // Common directories.
             commonDataDir = GetCommonDataFolder(pathResolver);
