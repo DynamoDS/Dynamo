@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -135,6 +136,12 @@ namespace Dynamo.Models
         /// node mapping information - which old node has been converted to which to new node(s) 
         /// </summary>
         public static bool EnableMigrationLogging { get; set; }
+
+        /// <summary>
+        /// An IRenderPackageFactory implementation which is used to generate
+        /// render packages.
+        /// </summary>
+        public static IRenderPackageFactory RenderPackageFactory { get; private set; }
 
         #endregion
 
@@ -543,6 +550,10 @@ namespace Dynamo.Models
             InitializeNodeLibrary(preferences);
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
+
+            var renderPackageFactoryAsm = config.PackageManagerAddress ??
+                      AssemblyConfiguration.Instance.GetAppSetting("renderPackageFactoryAssembly");
+            SetRenderPackageFactory(renderPackageFactoryAsm);
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -607,6 +618,8 @@ namespace Dynamo.Models
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
+            RenderPackageFactory = null;
+
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
             
@@ -1622,6 +1635,35 @@ namespace Dynamo.Models
         {
             if (args.PropertyName == "RunEnabled")
                 OnPropertyChanged("RunEnabled");
+        }
+
+        /// <summary>
+        /// Use the renderPackageFactoryAssembly tag in the DynamoCore.dll.cfg file to find an
+        /// IRenderPackageFactory implementation.
+        /// </summary>
+        private void SetRenderPackageFactory(string renderPackageFactoryAsm)
+        {
+            var asmPath =
+                Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    renderPackageFactoryAsm);
+
+            if (!File.Exists(asmPath))
+            {
+                throw new Exception("The specified render package factory assembly does not exist.");
+            }
+
+            var asm = Assembly.LoadFrom(asmPath);
+
+            var factoryType = asm.GetTypes().FirstOrDefault(t => t.IsAssignableFrom(typeof(IRenderPackageFactory)));
+            if (factoryType == null)
+            {
+                throw new Exception("An implementation of IRenderPackageFactory could not be found.");
+            }
+
+            // Construct the factory using the default constructor.
+            var factoryConstructor = factoryType.GetConstructor(null);
+            RenderPackageFactory = (IRenderPackageFactory)factoryConstructor.Invoke(null);
         }
 
         #endregion

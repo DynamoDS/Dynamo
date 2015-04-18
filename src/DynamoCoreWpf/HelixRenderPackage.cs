@@ -12,6 +12,8 @@ namespace Dynamo.Wpf
     /// </summary>
     internal class HelixRenderPackageFactory : IRenderPackageFactory
     {
+        public HelixRenderPackageFactory(){}
+
         public IRenderPackage CreateRenderPackage()
         {
             return new HelixRenderPackage();
