@@ -186,7 +186,11 @@ namespace Dynamo.ViewModels
                     ws.CustomNodeId,
                     out currentFunInfo))
                 {
-                    ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, currentFunDef) });
+                    var termsOfUseCheck = new TermsOfUseHelper(Model, () => 
+                    {
+                        ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, currentFunDef) });
+                    });
+                    termsOfUseCheck.Execute();
                     return;
                 }
             }
