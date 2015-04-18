@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -1655,14 +1656,14 @@ namespace Dynamo.Models
 
             var asm = Assembly.LoadFrom(asmPath);
 
-            var factoryType = asm.GetTypes().FirstOrDefault(t => t.IsAssignableFrom(typeof(IRenderPackageFactory)));
+            var factoryType = asm.GetTypes().FirstOrDefault(t =>typeof(IRenderPackageFactory).IsAssignableFrom(t));
             if (factoryType == null)
             {
                 throw new Exception("An implementation of IRenderPackageFactory could not be found.");
             }
 
             // Construct the factory using the default constructor.
-            var factoryConstructor = factoryType.GetConstructor(null);
+            var factoryConstructor = factoryType.GetConstructor(System.Type.EmptyTypes);
             RenderPackageFactory = (IRenderPackageFactory)factoryConstructor.Invoke(null);
         }
 
