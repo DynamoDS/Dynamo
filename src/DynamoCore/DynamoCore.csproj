@@ -117,6 +117,7 @@ limitations under the License.
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="Interfaces\IRenderPackageFactory.cs" />
     <Compile Include="Models\AnnotationModel.cs" />
     <Compile Include="Core\PathManager.cs" />
     <Compile Include="Library\MemberDocumentNode.cs" />
