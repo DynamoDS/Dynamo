@@ -16,6 +16,7 @@ using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.ViewModels;
 using Dynamo.DSEngine;
+using Dynamo.Wpf;
 
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
@@ -820,20 +821,26 @@ namespace Dynamo.Controls
             MeshCount = 0;
 
             var packages = e.Packages
-                .Where(rp=>rp.TriangleVertices.Count % 9 == 0);
+                .Where(rp=>rp.TriangleVertices.Count % 9 == 0).Cast<HelixRenderPackage>().ToList();
 
-            var points = InitPointGeometry();
-            var lines = InitLineGeometry();
-            var linesSelected = InitLineGeometry();
-            var text = InitText3D(); 
-            var mesh = InitMeshGeometry();
+            var points = AggregatePoints(packages);
+            var lines = AggregateLines(packages);
+            var linesSelected = AggregateLines(packages, true);
+            var mesh = AggregateMeshes(packages);
+            var text = AggregateText(packages);
 
-            foreach (RenderPackage package in packages)
-            {
-                ConvertPoints(package, points, text);
-                ConvertLines(package, package.Selected ? linesSelected : lines, text);
-                ConvertMeshes(package, mesh);
-            }
+            //var points = InitPointGeometry();
+            //var lines = InitLineGeometry();
+            //var linesSelected = InitLineGeometry();
+            //var text = InitText3D(); 
+            //var mesh = InitMeshGeometry();
+
+            //foreach (RenderPackage package in packages)
+            //{
+            //    ConvertPoints(package, points, text);
+            //    ConvertLines(package, package.Selected ? linesSelected : lines, text);
+            //    ConvertMeshes(package, mesh);
+            //}
 
             if (!points.Positions.Any())
                 points = null;
@@ -860,6 +867,48 @@ namespace Dynamo.Controls
             SendGraphicsToView(points, lines, linesSelected, mesh, text);
 
             //DrawTestMesh();
+        }
+
+        private PointGeometry3D AggregatePoints(IEnumerable<HelixRenderPackage> packages)
+        {
+            var points = HelixRenderPackage.InitPointGeometry();
+
+            points.Positions.AddRange(packages.SelectMany(p=>p.Points.Positions));
+            points.Colors.AddRange(packages.SelectMany(p=>p.Points.Colors));
+
+            var idxCount = 0;
+            foreach (var p in packages)
+            {
+                foreach (var idx in p.Points.Indices)
+                {
+                    points.Indices.Add(idx + idxCount);   
+                }
+
+                idxCount += p.Points.Indices.Count;
+            }
+
+            return points;
+        }
+
+        private LineGeometry3D AggregateLines(IEnumerable<HelixRenderPackage> packages, bool forSelection = false)
+        {
+            var lines = HelixRenderPackage.InitLineGeometry();
+
+            return lines;
+        }
+
+        private MeshGeometry3D AggregateMeshes(IEnumerable<HelixRenderPackage> packages)
+        {
+            var mesh = HelixRenderPackage.InitMeshGeometry();
+
+            return mesh;
+        }
+
+        private BillboardText3D AggregateText(IEnumerable<HelixRenderPackage> packages)
+        {
+            var text = HelixRenderPackage.InitText3D();
+
+            return text;
         }
 
         private static LineGeometry3D InitLineGeometry()

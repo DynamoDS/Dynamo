@@ -51,7 +51,7 @@ namespace Dynamo
         private bool drawToAlternateContext = true;
         private bool updatingPaused;
         protected readonly DynamoModel dynamoModel;
-        private readonly List<RenderPackage> currentTaggedPackages = new List<RenderPackage>();
+        private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
         private bool alternateDrawingContextAvailable;
         private List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
  
@@ -226,7 +226,7 @@ namespace Dynamo
         /// <param name="path"></param>
         public void TagRenderPackageForPath(string path)
         {
-            var packages = new List<RenderPackage>();
+            var packages = new List<IRenderPackage>();
 
             //This also isn't thread safe
             foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
@@ -248,21 +248,21 @@ namespace Dynamo
                 //package already and add the one we want
                 if (currentTaggedPackages.Any())
                 {
-                    currentTaggedPackages.ForEach(x => x.DisplayLabels = false);
+                    currentTaggedPackages.ForEach(x => x.IsDisplayingLabels = false);
                     currentTaggedPackages.Clear();
                 }
 
-                packages.ToList().ForEach(x => x.DisplayLabels = true);
+                packages.ToList().ForEach(x => x.IsDisplayingLabels = true);
                 currentTaggedPackages.AddRange(packages);
 
-                var allPackages = new List<RenderPackage>();
+                var allPackages = new List<IRenderPackage>();
 
                 foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
                 {
                     lock (node.RenderPackagesMutex)
                     {
                         allPackages.AddRange(
-                            node.RenderPackages.Where(x => ((RenderPackage)x).IsNotEmpty())
+                            node.RenderPackages.Where(x => x.HasData)
                                 .Cast<RenderPackage>());
                     }
                 }
@@ -504,9 +504,9 @@ namespace Dynamo
         private void OnRenderPackageAggregationCompleted(AsyncTask asyncTask)
         {
             var task = asyncTask as AggregateRenderPackageAsyncTask;
-            var rps = new List<RenderPackage>();
-            rps.AddRange(task.NormalRenderPackages.Cast<RenderPackage>());
-            rps.AddRange(task.SelectedRenderPackages.Cast<RenderPackage>());
+            var rps = new List<IRenderPackage>();
+            rps.AddRange(task.NormalRenderPackages);
+            rps.AddRange(task.SelectedRenderPackages);
 
             var e = new VisualizationEventArgs(rps, task.NodeId);
             OnResultsReadyToVisualize(e);
@@ -515,7 +515,7 @@ namespace Dynamo
         private void Clear()
         {
             // Send along an empty render set to clear all visualizations.
-            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<RenderPackage>{}, Guid.Empty));
+            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>{}, Guid.Empty));
         }
 
         private void ClearVisualizationsAndRestart(object sender, EventArgs e)

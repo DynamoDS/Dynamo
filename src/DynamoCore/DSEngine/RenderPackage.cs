@@ -27,6 +27,19 @@ namespace Dynamo.DSEngine
 
         public bool IsSelected { get; set; }
 
+        public bool HasData
+        {
+            get
+            {
+                var hasData = pointVertices.Count > 0 ||
+                    lineStripVertices.Count > 0 ||
+                    triangleVertices.Count > 0;
+                return hasData;
+            }
+        }
+
+        public bool IsDisplayingLabels { get; set; }
+
         public List<double> LineStripVertices
         {
             get { return lineStripVertices;}

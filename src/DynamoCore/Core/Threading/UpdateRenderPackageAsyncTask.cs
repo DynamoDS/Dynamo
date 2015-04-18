@@ -160,16 +160,9 @@ namespace Dynamo.Core.Threading
                     return;
                 }
 
-
-                //var package = new RenderPackage(isNodeSelected, displayLabels)
-                //{
-                //    Tag = labelMap.Count > count ? labelMap[count] : "?",
-                //};
-
                 var package = DynamoModel.RenderPackageFactory.CreateRenderPackage();
                 package.Tag = labelMap.Count > count ? labelMap[count] : "?";
 
-                
                 try
                 {
                     graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
@@ -205,9 +198,10 @@ namespace Dynamo.Core.Threading
                         var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
 
                         // Get rid of the original plane geometry.
-                        package.LineStripVertices.Clear();
-                        package.LineStripVertexColors.Clear();
-                        package.LineStripVertexCounts.Clear();
+                        //package.LineStripVertices.Clear();
+                        //package.LineStripVertexColors.Clear();
+                        //package.LineStripVertexCounts.Clear();
+                        package.Clear();
 
                         package.PushTriangleVertex(a.X, a.Y, a.Z);
                         package.PushTriangleVertex(b.X, b.Y, b.Z);
@@ -257,22 +251,22 @@ namespace Dynamo.Core.Threading
                     // The default color coming from the geometry library for
                     // curves is 255,255,255,255 (White). Because we want a default
                     // color of 0,0,0,255 (Black), we adjust the color components here.
-                    if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
-                    {
-                        for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
-                        {
-                            package.LineStripVertexColors[i] = defR;
-                            package.LineStripVertexColors[i + 1] = defG;
-                            package.LineStripVertexColors[i + 2] = defB;
-                        }
+                    //if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
+                    //{
+                    //    for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
+                    //    {
+                    //        package.LineStripVertexColors[i] = defR;
+                    //        package.LineStripVertexColors[i + 1] = defG;
+                    //        package.LineStripVertexColors[i + 2] = defB;
+                    //    }
 
-                        for (var i = 0; i < package.PointVertexColors.Count; i += 4)
-                        {
-                            package.LineStripVertexColors[i] = defR;
-                            package.LineStripVertexColors[i + 1] = defG;
-                            package.LineStripVertexColors[i + 2] = defB;
-                        }
-                    }
+                    //    for (var i = 0; i < package.PointVertexColors.Count; i += 4)
+                    //    {
+                    //        package.LineStripVertexColors[i] = defR;
+                    //        package.LineStripVertexColors[i + 1] = defG;
+                    //        package.LineStripVertexColors[i + 2] = defB;
+                    //    }
+                    //}
                 }
                 catch (Exception e)
                 {
