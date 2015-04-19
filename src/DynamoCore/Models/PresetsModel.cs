@@ -6,6 +6,7 @@ using Dynamo.Core;
 using Dynamo.Selection;
 using Dynamo.Nodes;
 using System.Xml;
+using Dynamo.Interfaces;
 
 namespace Dynamo.Models
 {
@@ -13,7 +14,7 @@ namespace Dynamo.Models
     /// a class that holds a set of preset design options states
     /// there is one instance of this class per workspacemodel
     /// </summary>
-    public class PresetsModel
+    public class PresetsModel:ILogSource
     {
         #region private members
         private readonly List<PresetState> designStates;
@@ -78,7 +79,7 @@ namespace Dynamo.Models
             }
         }
 
-        internal static PresetsModel LoadFromXml(XmlDocument xmlDoc, NodeGraph nodegraph)
+        internal static PresetsModel LoadFromXml(XmlDocument xmlDoc, NodeGraph nodegraph,ILogger logger)
         {
             var loadedStateSet = new PresetsModel();
 
@@ -97,7 +98,7 @@ namespace Dynamo.Models
                         Guid stateID;
                         if (!Guid.TryParse(stateguidString, out stateID))
                         {
-                            throw new Exception("unable to parse state GUID");
+                            logger.LogError("unable to parse the GUID for preset state: " +name+ ", will atttempt to load this state anyway");
                         }
 
                         var nodes = new List<NodeModel>();
@@ -109,17 +110,15 @@ namespace Dynamo.Models
                         //iterate each actual saved nodemodel in each state
                         foreach (XmlElement node in stateNode.ChildNodes)
                         {
+                            var nodename = stateNode.GetAttribute("nickname");
                             var guidString = node.GetAttribute("guid");
                             Guid nodeID;
                             if (!Guid.TryParse(guidString, out nodeID))
                             {
-                                throw new Exception("unable to parse GUID");
+                                logger.LogError("unable to parse GUID for node " +nodename );
+                                continue;
                             }
 
-                            var nodename = stateNode.GetAttribute("nickname");
-                            //NOTE this code removes orphaned states on load
-                            //if we implement a UI for reassociating old states with new nodes this
-                            //behavior will be incorrect
                             var nodebyGuid = nodegraph.Nodes.Where(x => x.GUID == nodeID).ToList();
                             if (nodebyGuid.Count > 0)
                             {
@@ -129,8 +128,7 @@ namespace Dynamo.Models
                             else
                             {   //add the deserialized version anyway so we dont lose this node from all states.
                                 deserialzedNodes.Add(node);
-                                //TODO possibly hookup to dynamologger
-                                Console.WriteLine(nodename + nodeID.ToString() + " could not be found in the loaded dyn");
+                                logger.Log(nodename + nodeID.ToString() + " could not be found in the loaded .dyn");
                             }
 
                         }
@@ -161,5 +159,33 @@ namespace Dynamo.Models
 
         #endregion
 
+        #region ILogSource implementation
+        public event Action<ILogMessage> MessageLogged;
+
+        protected void Log(ILogMessage obj)
+        {
+            var handler = MessageLogged;
+            if (handler != null) handler(obj);
+        }
+
+        protected void Log(string msg)
+        {
+            Log(LogMessage.Info(msg));
+        }
+
+        protected void Log(string msg, WarningLevel severity)
+        {
+            switch (severity)
+            {
+                case WarningLevel.Error:
+                    Log(LogMessage.Error(msg));
+                    break;
+                default:
+                    Log(LogMessage.Warning(msg, severity));
+                    break;
+            }
+        }
+
+        #endregion
     }
 }

@@ -46,7 +46,7 @@ namespace Dynamo.Models
         #region constructor
         public PresetState(string name, string description, IEnumerable<NodeModel> inputsToSave, Guid id)
         {
-            //if we have not supplied a guid at then create a new one
+            //if we have not supplied a guid at construction then create a new one
             if (id == Guid.Empty)
             {
                 guid = Guid.NewGuid();
@@ -84,7 +84,7 @@ namespace Dynamo.Models
                 serializedNodes.Add(node.Serialize(tempdoc, SaveContext.File));
             }
         }
-
+        //this overload is used for loading
         public PresetState(string name, string description, List<NodeModel> nodes, List<XmlElement> serializedNodes, Guid id)
         {
             //TODO null checks
@@ -92,7 +92,16 @@ namespace Dynamo.Models
             Description = description;
             this.nodes = nodes;
             this.serializedNodes = serializedNodes;
-            guid = id;
+            //if we have not supplied a guid at load then create a new one
+            if (id == Guid.Empty)
+            {
+                guid = Guid.NewGuid();
+            }
+            else
+            {
+                guid = id;
+            }
+            
         }
         #endregion
     }

@@ -131,7 +131,8 @@ namespace Dynamo.Tests
             Assert.DoesNotThrow(() => {ViewModel.OpenCommand.Execute(openPath);});
            
             Assert.AreEqual(5, ViewModel.CurrentSpace.Nodes.Count);
-            Assert.AreEqual(ViewModel.HomeSpace.PresetsCollection.DesignStates.Count(), 4);
+              //assert all the states are loadead even if the GUID and nodetypes are malformed
+            Assert.AreEqual(ViewModel.HomeSpace.PresetsCollection.DesignStates.Count(), 5);
 
         }
 

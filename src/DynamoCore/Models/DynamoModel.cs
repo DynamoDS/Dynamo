@@ -1022,7 +1022,7 @@ namespace Dynamo.Models
             XmlDocument xmlDoc, WorkspaceInfo workspaceInfo, out WorkspaceModel workspace)
         {
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
-            var designOptions = PresetsModel.LoadFromXml(xmlDoc,nodeGraph);
+            var designOptions = PresetsModel.LoadFromXml(xmlDoc,nodeGraph,this.Logger);
 
             var newWorkspace = new HomeWorkspaceModel(
                 EngineController,
@@ -1463,11 +1463,13 @@ namespace Dynamo.Models
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.WorkspaceSaved += savedHandler;
             workspace.MessageLogged += LogMessage;
+            workspace.PresetsCollection.MessageLogged += LogMessage;
             workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
             {
                 workspace.WorkspaceSaved -= savedHandler;
                 workspace.MessageLogged -= LogMessage;
+                workspace.PresetsCollection.MessageLogged -= LogMessage;
                 workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };
 

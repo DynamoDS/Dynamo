@@ -491,7 +491,8 @@ namespace Dynamo.Core
             SetPreloadFunctionDefinition(Guid.Parse(workspaceInfo.ID));
  
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, nodeFactory);
-            var designOptions = PresetsModel.LoadFromXml(xmlDoc, nodeGraph);
+            //use the nodeFactory's logger to log during load of presets
+            var designOptions = PresetsModel.LoadFromXml(xmlDoc, nodeGraph,nodeFactory.AsLogger());
 
             var newWorkspace = new CustomNodeWorkspaceModel(
                 nodeFactory,
