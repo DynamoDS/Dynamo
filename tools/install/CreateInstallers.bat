@@ -8,7 +8,7 @@ set OPT_Platform=AnyCPU
 IF /I "%2"=="x64" set OPT_Platform=x64
 IF /I "%2"=="x86" set OPT_Platform=x86
 
-robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin License.rtf README.txt
+robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.rtf README.txt
 robocopy %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION% %cwd%\temp\bin *.exe *.dll *.xml *.config *.cer -XF *Tests.dll
 
 IF EXIST %cwd%\..\..\bin\%OPT_Platform%\%OPT_CONFIGURATION%\Revit_2014 (

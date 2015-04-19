@@ -1,0 +1,65 @@
+﻿<Window x:Class="Dynamo.PackageManager.UI.TermsOfUseView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+        xmlns:views="clr-namespace:Dynamo.UI.Views"
+        Height="450"
+        Width="550"
+        Background="#555"
+        MinWidth="550"
+        MaxWidth="550"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+        xmlns:ui1="clr-namespace:Dynamo.PackageManager.UI"
+        mc:Ignorable="d"
+        Title="{x:Static p:Resources.TermsOfUseViewTitle}">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="Black"
+          Margin="0">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Background="#363636"
+                      Padding="25">
+            <views:RichTextFile x:Name="TermsOfUseContent"
+                                IsReadOnly="True"
+                                IsEnabled="True"
+                                IsDocumentEnabled="True"
+                                FontSize="10"
+                                Foreground="#888888"
+                                Background="Transparent"
+                                OpenLinksInBrowser="True"
+                                BorderThickness="0" />
+        </ScrollViewer>
+
+        <StackPanel Orientation="Horizontal"
+                    FlowDirection="RightToLeft"
+                    Grid.Row="1"
+                    Background="#333">
+            <Button Name="DeclineTermsOfUseButton"
+                    Click="DeclineTermsOfUseButton_OnClick"
+                    Margin="3"
+                    Content="{x:Static p:Resources.TermsOfUseDeclineButton}"
+                    Style="{DynamicResource ResourceKey=SBadgeButton}" />
+            <Button Name="AcceptTermsOfUseButton"
+                    Click="AcceptTermsOfUseButton_OnClick"
+                    Margin="3"
+                    Content="{x:Static p:Resources.TermsOfUseAcceptButton}"
+                    Style="{DynamicResource ResourceKey=SBadgeButton}" />
+        </StackPanel>
+    </Grid>
+
+</Window>
