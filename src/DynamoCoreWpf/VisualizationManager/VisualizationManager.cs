@@ -389,8 +389,8 @@ namespace Dynamo
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            //if (updatingPaused || e.Action == NotifyCollectionChangedAction.Reset)
-            //    return;
+            if (updatingPaused || e.Action == NotifyCollectionChangedAction.Reset)
+                return;
 
             Debug.WriteLine("Viz manager responding to selection changed.");
 

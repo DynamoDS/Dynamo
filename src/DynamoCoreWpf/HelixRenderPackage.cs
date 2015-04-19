@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 using Autodesk.DesignScript.Interfaces;
 
-using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 
 using HelixToolkit.Wpf.SharpDX;
@@ -104,7 +102,7 @@ namespace Dynamo.Wpf
 
         public void PushLineStripVertex(double x, double y, double z)
         {
-            lines.Indices.Add(lines.Indices.Count);
+            //lines.Indices.Add(lines.Indices.Count);
             lines.Positions.Add(Vector3ForYUp(x,y,z));
         }
 
@@ -168,7 +166,11 @@ namespace Dynamo.Wpf
             get { return points.Colors.ToBytes(); }
             set
             {
-                throw new NotImplementedException();
+                if (value == null)
+                    return;
+
+                points.Colors = null;
+                points.Colors = value.ToColor4Collection();
             }
         }
 
@@ -177,7 +179,11 @@ namespace Dynamo.Wpf
             get { return lines.Colors.ToBytes(); }
             set
             {
-                throw new NotImplementedException();
+                if (value == null)
+                    return;
+
+                lines.Colors = null;
+                lines.Colors = value.ToColor4Collection();
             }
         }
 
@@ -186,7 +192,11 @@ namespace Dynamo.Wpf
             get { return mesh.Colors.ToBytes(); }
             set
             {
-                throw new NotImplementedException();
+                if (value == null)
+                    return;
+
+                mesh.Colors = null;
+                mesh.Colors = value.ToColor4Collection();
             }
         }
 
@@ -338,6 +348,21 @@ namespace Dynamo.Wpf
                 bytes.Add((byte)(v.Alpha * 255));
             }
             return bytes;
+        }
+
+        public static Color4Collection ToColor4Collection(this List<byte> collection)
+        {
+            var colors = new Color4Collection();
+            for(var i = 0; i<collection.Count; i+=4)
+            {
+                var a = collection[i]/255;
+                var b = collection[i + 1]/255;
+                var c = collection[i + 2]/255;
+                var d = collection[i + 3]/255;
+                var newColor = new Color4(a, b, c, d);
+                colors.Add(newColor);
+            }
+            return colors;
         }
     }
 }

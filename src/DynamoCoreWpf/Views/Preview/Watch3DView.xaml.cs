@@ -904,18 +904,20 @@ namespace Dynamo.Controls
         {
             var points = HelixRenderPackage.InitPointGeometry();
 
-            points.Positions.AddRange(allPoints.SelectMany(p => p.Positions));
-            points.Colors.AddRange(allPoints.SelectMany(p => p.Colors));
-
-            var idxCount = 0;
             foreach (var p in allPoints)
             {
+                if (!p.Positions.Any())
+                    continue;
+
+                var idxCount = points.Indices.Count;
+
+                points.Positions.AddRange(p.Positions);
+                points.Colors.AddRange(p.Colors);
+
                 foreach (var idx in p.Indices)
                 {
-                    points.Indices.Add(idx + idxCount);   
+                    points.Indices.Add(idx + idxCount);
                 }
-
-                idxCount += p.Indices.Count;
             }
 
             return points;
@@ -925,18 +927,25 @@ namespace Dynamo.Controls
         {
             var lines = HelixRenderPackage.InitLineGeometry();
 
-            lines.Positions.AddRange(allLines.SelectMany(p => p.Positions));
-            lines.Colors.AddRange(allLines.SelectMany(p => p.Colors));
-
-            var idxCount = 0;
-            foreach (var p in allLines)
+            foreach (var l in allLines)
             {
-                foreach (var idx in p.Indices)
-                {
-                    lines.Indices.Add(idx + idxCount);
-                }
+                if (!l.Positions.Any())
+                    continue;
 
-                idxCount += p.Indices.Count;
+                var idx = lines.Positions.Count;
+
+                lines.Positions.AddRange(l.Positions);
+                lines.Colors.AddRange(l.Colors);
+
+                for (var i = 0; i < l.Positions.Count; i++)
+                {
+                    lines.Indices.Add(idx);
+                    if (i != 0 && i != l.Positions.Count -1)
+                    {
+                        lines.Indices.Add(idx);
+                    }
+                    idx++;
+                }
             }
 
             return lines;
@@ -946,20 +955,22 @@ namespace Dynamo.Controls
         {
             var mesh = HelixRenderPackage.InitMeshGeometry();
 
-            mesh.Positions.AddRange(allMeshes.SelectMany(p => p.Positions));
-            mesh.Colors.AddRange(allMeshes.SelectMany(p => p.Colors));
-            mesh.Normals.AddRange(allMeshes.SelectMany(p => p.Normals));
-            mesh.TextureCoordinates.AddRange(allMeshes.SelectMany(p => p.TextureCoordinates));
-
-            var idxCount = 0;
-            foreach (var p in allMeshes)
+            foreach (var m in allMeshes)
             {
-                foreach (var idx in p.Indices)
+                if (!m.Positions.Any())
+                    continue;
+                
+                var idxCount = mesh.Indices.Count;
+
+                mesh.Positions.AddRange(m.Positions);
+                mesh.Colors.AddRange(m.Colors);
+                mesh.Normals.AddRange(m.Normals);
+                mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
+
+                foreach (var idx in m.Indices)
                 {
                     mesh.Indices.Add(idx + idxCount);
                 }
-
-                idxCount += p.Indices.Count;
             }
 
             return mesh;

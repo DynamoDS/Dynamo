@@ -144,6 +144,7 @@ namespace Dynamo.Core.Threading
             byte defR = 101;
             byte defG = 86;
             byte defB = 130;
+            byte defA = 255;
 
             if (mirrorData.IsCollection)
             {
@@ -251,22 +252,30 @@ namespace Dynamo.Core.Threading
                     // The default color coming from the geometry library for
                     // curves is 255,255,255,255 (White). Because we want a default
                     // color of 0,0,0,255 (Black), we adjust the color components here.
-                    //if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
-                    //{
-                    //    for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
-                    //    {
-                    //        package.LineStripVertexColors[i] = defR;
-                    //        package.LineStripVertexColors[i + 1] = defG;
-                    //        package.LineStripVertexColors[i + 2] = defB;
-                    //    }
+                    if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
+                    {
+                        var newLineColors = new List<byte>();
+                        for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
+                        {
+                            newLineColors.Add(defR);
+                            newLineColors.Add(defG);
+                            newLineColors.Add(defB);
+                            newLineColors.Add(defA);
+                        }
+                        package.LineStripVertexColors = null;
+                        package.LineStripVertexColors = newLineColors;
 
-                    //    for (var i = 0; i < package.PointVertexColors.Count; i += 4)
-                    //    {
-                    //        package.LineStripVertexColors[i] = defR;
-                    //        package.LineStripVertexColors[i + 1] = defG;
-                    //        package.LineStripVertexColors[i + 2] = defB;
-                    //    }
-                    //}
+                        var newPointColors = new List<byte>(package.PointVertexColors.Count);
+                        for (var i = 0; i < package.PointVertexColors.Count; i += 4)
+                        {
+                            newPointColors.Add(defR);
+                            newPointColors.Add(defG);
+                            newPointColors.Add(defB);
+                            newPointColors.Add(defA);
+                        }
+                        package.PointVertexColors = null;
+                        package.PointVertexColors = newPointColors;
+                    }
                 }
                 catch (Exception e)
                 {
