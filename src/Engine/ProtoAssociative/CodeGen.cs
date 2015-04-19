@@ -691,7 +691,7 @@ namespace ProtoAssociative
             bool hasReturnStatement = false;
             foreach (AssociativeNode bnode in astList)
             {
-                inferedType.UID = (int)PrimitiveType.kTypeVoid;
+                inferedType.UID = (int)PrimitiveType.kTypeVar;
                 inferedType.rank = 0;
 
                 if (bnode is LanguageBlockNode)
@@ -719,6 +719,35 @@ namespace ProtoAssociative
                     hasReturnStatement = true;
                 }
             }
+
+            //foreach (AssociativeNode node in codeblock.Body)
+            //{
+            //    inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
+
+            //    //
+            //    // TODO Jun:    Handle stand alone language blocks
+            //    //              Integrate the subPass into a proper pass
+            //    //              
+            //    //              **Need to take care of EmitImportNode, in which I used the same code to handle imported language block nodes - Randy
+            //    //
+
+            //    if (node is LanguageBlockNode)
+            //    {
+            //        // Build a binaryn node with a temporary lhs for every stand-alone language block
+            //        var iNode = nodeBuilder.BuildIdentfier(core.GenerateTempLangageVar());
+            //        var langBlockNode = nodeBuilder.BuildBinaryExpression(iNode, node);
+
+            //        DfsTraverse(langBlockNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
+            //    }
+            //    else
+            //    {
+            //        DfsTraverse(node, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier);
+            //        SetDeltaCompilePC(node);
+            //    }
+
+            //    if (NodeUtils.IsReturnExpressionNode(node))
+            //        hasReturnStatement = true;
+            //}
 
             // Build graphnodes only on the last pass
             if (IsLastCompilePass())
