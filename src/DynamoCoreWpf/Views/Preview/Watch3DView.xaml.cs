@@ -869,7 +869,7 @@ namespace Dynamo.Controls
             //DrawTestMesh();
         }
 
-        private PointGeometry3D AggregatePoints(IEnumerable<HelixRenderPackage> packages)
+        private PointGeometry3D AggregatePoints(IList<HelixRenderPackage> packages)
         {
             var points = HelixRenderPackage.InitPointGeometry();
 
@@ -890,23 +890,59 @@ namespace Dynamo.Controls
             return points;
         }
 
-        private LineGeometry3D AggregateLines(IEnumerable<HelixRenderPackage> packages, bool forSelection = false)
+        private LineGeometry3D AggregateLines(IList<HelixRenderPackage> packages, bool forSelection = false)
         {
             var lines = HelixRenderPackage.InitLineGeometry();
+
+            var aggPackages = forSelection ? packages.Where(p => p.IsSelected).ToList() : packages;
+
+            lines.Positions.AddRange(aggPackages.SelectMany(p => p.Lines.Positions));
+            lines.Colors.AddRange(aggPackages.SelectMany(p => p.Lines.Colors));
+
+            var idxCount = 0;
+            foreach (var p in aggPackages)
+            {
+                foreach (var idx in p.Lines.Indices)
+                {
+                    lines.Indices.Add(idx + idxCount);
+                }
+
+                idxCount += p.Lines.Indices.Count;
+            }
 
             return lines;
         }
 
-        private MeshGeometry3D AggregateMeshes(IEnumerable<HelixRenderPackage> packages)
+        private MeshGeometry3D AggregateMeshes(IList<HelixRenderPackage> packages)
         {
             var mesh = HelixRenderPackage.InitMeshGeometry();
+
+            mesh.Positions.AddRange(packages.SelectMany(p=>p.Mesh.Positions));
+            mesh.Colors.AddRange(packages.SelectMany(p => p.Mesh.Colors));
+            mesh.Normals.AddRange(packages.SelectMany(p=>p.Mesh.Normals));
+            mesh.TextureCoordinates.AddRange(packages.SelectMany(p=>p.Mesh.TextureCoordinates));
+
+            var idxCount = 0;
+            foreach (var p in packages)
+            {
+                foreach (var idx in p.Mesh.Indices)
+                {
+                    mesh.Indices.Add(idx + idxCount);
+                }
+
+                idxCount += p.Mesh.Indices.Count;
+            }
 
             return mesh;
         }
 
-        private BillboardText3D AggregateText(IEnumerable<HelixRenderPackage> packages)
+        private BillboardText3D AggregateText(IList<HelixRenderPackage> packages)
         {
             var text = HelixRenderPackage.InitText3D();
+
+            text.Positions.AddRange(packages.SelectMany(p => p.Text.Positions));
+            text.Colors.AddRange(packages.SelectMany(p => p.Text.Colors));
+            text.TextInfo.AddRange(packages.SelectMany(p=>p.Text.TextInfo));
 
             return text;
         }

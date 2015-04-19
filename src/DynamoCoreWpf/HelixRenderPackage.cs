@@ -274,6 +274,7 @@ namespace Dynamo.Wpf
                 Indices = new IntCollection(),
                 Colors = new Color4Collection(),
                 Normals = new Vector3Collection(),
+                TextureCoordinates = new Vector2Collection()
             };
 
             return mesh;
