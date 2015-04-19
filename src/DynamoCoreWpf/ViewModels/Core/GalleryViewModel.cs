@@ -1,15 +1,66 @@
-﻿using Dynamo.UI.Commands;
+﻿using Dynamo.Core;
+using Dynamo.Interfaces;
+using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
+    public class GalleryContent : NotificationObject
+    {
+        private string header;
+        public string Header { get; set; }
+
+        private string body;
+        public string Body { get; set; }
+
+        private string image;
+        public string Image { get; set; }
+
+        private bool isCurrent;
+        public bool IsCurrent
+        {
+            get
+            {
+                return isCurrent;
+            }
+            set
+            {
+                isCurrent = value;
+                RaisePropertyChanged("IsCurrent");
+            }
+        }
+    }
+
+    public class GalleryContents
+    {
+        public List<GalleryContent> GalleryUIContents { get; set; }
+
+        public static GalleryContents Load(string filePath)
+        {
+            var galleryContents = new GalleryContents();
+
+            if (string.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
+                return galleryContents;
+
+            try
+            {
+                var serializer = new XmlSerializer(typeof(GalleryContents));
+                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    galleryContents = serializer.Deserialize(fs) as GalleryContents;
+                    fs.Close(); // Release file lock
+                }
+            }
+            catch (Exception) { }
+
+            return galleryContents;
+        }
+    }
+
     public class GalleryViewModel: ViewModelBase
     {
         #region public members
@@ -21,9 +72,15 @@ namespace Dynamo.Wpf.ViewModels.Core
         public DelegateCommand MovePrevCommand { get; set; }
         #endregion
 
-        public GalleryViewModel(DynamoViewModel dynamoViewModel) { 
-            
-            contents = dynamoViewModel.Model.GalleryContents.GalleryUIContents;
+        public GalleryViewModel(DynamoViewModel dynamoViewModel) 
+        {          
+            IPathManager pathManager = dynamoViewModel.Model.PathManager;
+            var galleryFilePath = pathManager.GalleryFilePath;
+
+            if (File.Exists(galleryFilePath))
+            {
+                contents = GalleryContents.Load(galleryFilePath).GalleryUIContents;
+            }
 
             currentContent = new GalleryContent();
             if (contents != null && contents[0] != null)
@@ -39,7 +96,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         public void MoveNext(object parameters)
         {
-            MoveIndex(1);
+            MoveIndex(true);
         }
 
         internal bool CanMoveNext(object parameters)
@@ -49,7 +106,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         public void MovePrev(object parameters)
         {
-            MoveIndex(-1);
+            MoveIndex(false);
         }
 
         internal bool CanMovePrev(object parameters)
@@ -57,16 +114,17 @@ namespace Dynamo.Wpf.ViewModels.Core
             return true;
         }
 
-        private void MoveIndex(int index)
+        /// <summary>
+        /// Move the currentIndex of the Gallery Bullets
+        /// </summary>
+        /// <param name="forward">
+        /// false for moving to the left
+        /// true for moving to the right
+        /// </param>
+        private void MoveIndex(bool forward)
         {
             contents[currentIndex].IsCurrent = false;
-
-            currentIndex = (currentIndex + index) % (contents.Count);
-            
-            while(currentIndex < 0)
-            {
-                currentIndex += contents.Count;
-            }
+            currentIndex = (currentIndex + (forward? 1:-1) + contents.Count) % (contents.Count);
 
             contents[currentIndex].IsCurrent = true;
             currentContent.Image = contents[currentIndex].Image;

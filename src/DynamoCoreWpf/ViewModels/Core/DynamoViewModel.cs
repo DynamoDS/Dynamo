@@ -28,6 +28,7 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
+using Dynamo.Wpf.Views.Gallery;
 
 namespace Dynamo.ViewModels
 {
@@ -1056,6 +1057,20 @@ namespace Dynamo.ViewModels
         private bool CanShowOpenDialogAndOpenResultCommand(object parameter)
         {
             return true;
+        }
+
+        private void ShowGalleryUI(object parameter)
+        {
+            var galleryView = parameter as GalleryView;
+            galleryView.Show();
+        }
+
+        private bool CanShowGalleryUI(object parameter)
+        {
+            var galleryViewModel = parameter as GalleryViewModel;
+
+            return (galleryViewModel.Contents != null &&
+                galleryViewModel.Contents.Count != 0);
         }
 
         private void OpenRecent(object path)

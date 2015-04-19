@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Views.Gallery;
+using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.UI.Controls
 {
@@ -144,12 +145,6 @@ namespace Dynamo.UI.Controls
 
             #region Community Links
 
-            communityLinks.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-discussion.png")
-            {
-                ContextData = ButtonNames.ShowGalleryUI,
-                ClickAction = StartPageListItem.Action.RegularCommand
-            });
-
             communityLinks.Add(new StartPageListItem(Resources.StartPageDiscussionForum, "icon-discussion.png")
             {
                 ContextData = Configurations.DynamoBimForum,
@@ -165,6 +160,12 @@ namespace Dynamo.UI.Controls
             #endregion
 
             #region Reference List
+
+            references.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-discussion.png")
+            {
+                ContextData = ButtonNames.ShowGalleryUI,
+                ClickAction = StartPageListItem.Action.RegularCommand
+            });
 
             references.Add(new StartPageListItem(Resources.StartPageAdvancedTutorials, "icon-reference.png")
             {
@@ -363,14 +364,12 @@ namespace Dynamo.UI.Controls
                     break;
 
                 case ButtonNames.ShowGalleryUI:
-                    var galleryView = new GalleryView(this.DynamoViewModel);
-
-                    if (galleryView.ViewModel.Contents != null && 
-                        galleryView.ViewModel.Contents.Count != 0)
-                    {
-                        galleryView.Show();
-                    }
+                    GalleryViewModel galleryViewModel = new GalleryViewModel(this.DynamoViewModel);
+                    GalleryView galleryView = new GalleryView(galleryViewModel);
+                    if (dvm.ShowGalleryUICommand.CanExecute(galleryViewModel))
+                        dvm.ShowGalleryUICommand.Execute(galleryView);
                     break;
+
                 default:
                     throw new ArgumentException(
                         string.Format("Invalid command: {0}", item.ContextData));
@@ -438,16 +437,10 @@ namespace Dynamo.UI.Controls
             if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun)
             {
                 dynamoViewModel.Model.PreferenceSettings.IsFirstRun = false;
-                var galleryView = new GalleryView(dynamoViewModel)
-                {
-                    Owner = Window.GetWindow(this)
-                };
-
-                if (galleryView.ViewModel.Contents != null && 
-                    galleryView.ViewModel.Contents.Count != 0)
-                {
-                    galleryView.Show();
-                }
+                GalleryViewModel galleryViewModel = new GalleryViewModel(dynamoViewModel);
+                GalleryView galleryView = new GalleryView(galleryViewModel);
+                if (dynamoViewModel.ShowGalleryUICommand.CanExecute(galleryViewModel))
+                    dynamoViewModel.ShowGalleryUICommand.Execute(galleryView);
             }
         }
 

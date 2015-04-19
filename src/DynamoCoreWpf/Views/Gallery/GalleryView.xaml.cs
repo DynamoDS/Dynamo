@@ -16,11 +16,11 @@ namespace Dynamo.Wpf.Views.Gallery
     {
         private GalleryViewModel viewModel = null;
         public GalleryViewModel ViewModel { get { return viewModel; } }
-        public GalleryView(DynamoViewModel dynamoViewModel)
+        public GalleryView(GalleryViewModel galleryViewModel)
         {
             InitializeComponent();
-            viewModel = new GalleryViewModel(dynamoViewModel);
-            this.DataContext = viewModel;       
+            DataContext = galleryViewModel;
+            viewModel = galleryViewModel;
         }
 
         private void CloseGallery(object sender, RoutedEventArgs e)
