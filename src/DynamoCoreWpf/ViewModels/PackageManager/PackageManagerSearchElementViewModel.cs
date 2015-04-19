@@ -20,22 +20,21 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
 
-        public new PackageManagerSearchElement Model { get; private set; }
+        public new PackageManagerSearchElement Model { get; internal set; }
 
-        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element) : base(element)
+        public PackageManagerSearchElementViewModel(PackageManagerSearchElement element, bool canLogin) : base(element)
         {
             this.Model = element;
 
             this.ToggleIsExpandedCommand = new DelegateCommand(() => this.Model.IsExpanded = !this.Model.IsExpanded );
             this.DownloadLatestCommand = new DelegateCommand(() => OnRequestDownload(Model.Header.versions.Last()));
-            this.UpvoteCommand = new DelegateCommand((Action)Model.Upvote, Model.CanUpvote);
-            this.DownvoteCommand = new DelegateCommand((Action)Model.Downvote, Model.CanDownvote);
+            this.UpvoteCommand = new DelegateCommand(Model.Upvote, () => canLogin);
+            this.DownvoteCommand = new DelegateCommand(Model.Downvote, () => canLogin);
             this.VisitSiteCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.SiteUrl)), () => !String.IsNullOrEmpty(Model.SiteUrl));
             this.VisitRepositoryCommand =
                 new DelegateCommand(() => GoToUrl(FormatUrl(Model.RepositoryUrl)), () => !String.IsNullOrEmpty(Model.RepositoryUrl));
         }
-
 
         private static string FormatUrl(string url)
         {
@@ -65,7 +64,7 @@ namespace Dynamo.PackageManager.ViewModels
             {
                 return
                     Model.Header.versions.Select(
-                        x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() => OnRequestDownload(x)))).ToList();
+                        x => new Tuple<PackageVersion, DelegateCommand>(x, new DelegateCommand(() => OnRequestDownload(x)))).Reverse().ToList();
             }
         }
 

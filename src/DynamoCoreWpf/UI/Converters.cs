@@ -1306,34 +1306,6 @@ namespace Dynamo.Controls
         }
     }
 
-    public class BackgroundPreviewGestureConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            // When "DynamoViewModel.CanNavigateBackground" is set to "true" 
-            // (i.e. background 3D navigation is turned on), and "IsOrbiting"
-            // is "true", then left mouse dragging will be orbiting the 3D view. 
-            // Otherwise left clicking will do nothing to the view (same is 
-            // applicable to "IsPanning" property).
-            // 
-            if ((parameter as string).Equals("IsPanning"))
-            {
-                bool isPanning = ((bool)value);
-                return new MouseGesture(isPanning ? MouseAction.LeftClick : MouseAction.MiddleClick);
-            }
-            else
-            {
-                bool isOrbiting = ((bool)value);
-                return new MouseGesture(isOrbiting ? MouseAction.LeftClick : MouseAction.None);
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class LacingToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

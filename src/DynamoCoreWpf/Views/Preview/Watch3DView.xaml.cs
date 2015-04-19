@@ -14,17 +14,18 @@ using System.Windows.Media.Media3D;
 
 using Autodesk.DesignScript.Interfaces;
 
-using Dynamo.DSEngine;
 using Dynamo.ViewModels;
+using Dynamo.DSEngine;
 
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
-using HelixToolkit.Wpf.SharpDX.Model.Geometry;
+//using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
 using SharpDX;
 
 using Camera = HelixToolkit.Wpf.SharpDX.Camera;
 using Color = SharpDX.Color;
+using ColorConverter = System.Windows.Media.ColorConverter;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using Point = System.Windows.Point;
@@ -32,7 +33,6 @@ using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
 
 namespace Dynamo.Controls
 {
-
     /// <summary>
     /// Interaction logic for WatchControl.xaml
     /// </summary>
@@ -74,6 +74,28 @@ namespace Dynamo.Controls
         #endregion
 
         #region public properties
+
+        /// <summary>
+        /// The LeftClickCommand is set according to the
+        /// ViewModel's IsPanning or IsOrbiting properties.
+        /// When those properties are changed, this command is
+        /// set to ViewportCommand.Pan or ViewportCommand.Rotate depending. 
+        /// If neither panning or rotating is set, this property is set to null 
+        /// and left clicking should have no effect.
+        /// </summary>
+        public RoutedCommand LeftClickCommand
+        {
+            get
+            {
+                var vm = DataContext as DynamoViewModel;
+                if (vm == null) return null;
+
+                if (vm.IsPanning) return ViewportCommands.Pan;
+                if (vm.IsOrbiting) return ViewportCommands.Rotate;
+
+                return null;
+            }
+        }
 
         public LineGeometry3D Grid
         {
@@ -407,23 +429,36 @@ namespace Dynamo.Controls
             ShowShadows = false;
             
             // setup lighting            
-            AmbientLightColor = new Color4(0.4f, 0.4f, 0.4f, 1.0f);
+            //AmbientLightColor = new Color4(0.3f, 0.3f, 0.3f, 1.0f);
+            AmbientLightColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
 
-            DirectionalLightColor = new Color4(0.45f, 0.4f, 0.4f, 1.0f);
-            DirectionalLightDirection = new Vector3(0.0f, -1.0f, 0.0f);
+            DirectionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
+            DirectionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
+            
+            //FillLightColor = new Color4(new Vector4(0.2f, 0.2f, 0.2f, 1.0f));
+            FillLightColor = new Color4(new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+            FillLightDirection = new Vector3(0.5f, 1.0f, 0f);
 
-            FillLightColor = new Color4(new Vector4(0.1f, 0.1f, 0.1f, 1.0f));
-            FillLightDirection = new Vector3(0.0f, 1.0f, 0.0f);
-
+            var matColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#efede4");
             RenderTechnique = Techniques.RenderPhong;
-            WhiteMaterial = PhongMaterials.PureWhite;
+            WhiteMaterial = new PhongMaterial
+            {
+                Name = "White",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                //DiffuseColor = PhongMaterials.ToColor(0.992157, 0.992157, 0.992157, 1.0),
+                DiffuseColor = PhongMaterials.ToColor(matColor.R, matColor.G, matColor.B, 1.0f),
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+            };
+
 
             Model1Transform = new TranslateTransform3D(0, -0, 0);
 
             // camera setup
             Camera = new PerspectiveCamera
             {
-                Position = new Point3D(10, 10, 10),
+                Position = new Point3D(10, 15, 10),
                 LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
             };
@@ -448,6 +483,7 @@ namespace Dynamo.Controls
             Mesh = b1.ToMeshGeometry3D();
             NotifyPropertyChanged("Mesh");
         }
+        
         #endregion
 
         #region event handlers
@@ -455,82 +491,72 @@ namespace Dynamo.Controls
         private void OnViewUnloaded(object sender, RoutedEventArgs e)
         {
             var vm = DataContext as IWatchViewModel;
-            if (vm != null)
-            {
-                vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
-                vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
-            }
+            if (vm == null) return;
+            vm.VisualizationManager.RenderComplete -= VisualizationManagerRenderComplete;
+            vm.VisualizationManager.ResultsReadyToVisualize -= VisualizationManager_ResultsReadyToVisualize;
+            vm.ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
         }
 
         private void OnViewLoaded(object sender, RoutedEventArgs e)
         {
-
-#if DEBUG
             CompositionTarget.Rendering += CompositionTarget_Rendering;
-#endif
 
             MouseLeftButtonDown += view_MouseButtonIgnore;
             MouseLeftButtonUp += view_MouseButtonIgnore;
             MouseRightButtonUp += view_MouseRightButtonUp;
             PreviewMouseRightButtonDown += view_PreviewMouseRightButtonDown;
 
-            watch_view.InputBindings.Add(new KeyBinding(ViewportCommands.ZoomExtents, Key.E, ModifierKeys.Control));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.ZoomExtents, new MouseGesture(MouseAction.LeftDoubleClick, ModifierKeys.Control)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(ViewportCommands.Rotate, new MouseGesture(MouseAction.RightClick, ModifierKeys.None)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(ViewportCommands.Zoom, new MouseGesture(MouseAction.RightClick, ModifierKeys.Control)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(ViewportCommands.Pan, new MouseGesture(MouseAction.MiddleClick)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.ChangeFieldOfView, new MouseGesture(MouseAction.RightClick, ModifierKeys.Alt)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.ZoomRectangle,
-                    new MouseGesture(MouseAction.RightClick, ModifierKeys.Control | ModifierKeys.Shift)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.SetTarget, new MouseGesture(MouseAction.RightDoubleClick, ModifierKeys.Control)));
-            watch_view.InputBindings.Add(
-                new MouseBinding(
-                    ViewportCommands.Reset, new MouseGesture(MouseAction.MiddleDoubleClick, ModifierKeys.Control)));
-
             var vm = DataContext as IWatchViewModel;
             
             //check this for null so the designer can load the preview
-            if (vm != null)
+            if (vm == null) return;
+
+            vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
+            vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
+
+            var renderingTier = (RenderCapability.Tier >> 16);
+            var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
+            var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
+            var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
+            var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
+
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
+            vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
+
+            vm.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
             {
-                vm.VisualizationManager.RenderComplete += VisualizationManagerRenderComplete;
-                vm.VisualizationManager.ResultsReadyToVisualize += VisualizationManager_ResultsReadyToVisualize;
-
-                var renderingTier = (RenderCapability.Tier >> 16);
-                var pixelShader3Supported = RenderCapability.IsPixelShaderVersionSupported(3, 0);
-                var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
-                var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
-                var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
-
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported), LogLevel.File);
-                vm.ViewModel.Model.Logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize), LogLevel.File);
+                case "IsPanning":
+                case "IsOrbiting":
+                    NotifyPropertyChanged("LeftClickCommand");
+                    break;
             }
         }
 
-#if DEBUG
+
         void CompositionTarget_Rendering(object sender, EventArgs e)
         {
+#if DEBUG
             if (renderTimer.IsRunning)
             {
                 renderTimer.Stop();
                 Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
                 renderTimer.Reset();
             }
-        }
 #endif
+            var c = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z);
+            DirectionalLightDirection = c;
+        }
+
 
         /// <summary>
         /// Handler for the visualization manager's ResultsReadyToVisualize event.
@@ -665,9 +691,9 @@ namespace Dynamo.Controls
             var indices = new IntCollection();
             var colors = new Color4Collection();
 
-            for(int i= 0; i < 10; i += 1)
+            for(var i= 0; i < 10; i += 1)
             {
-                for (int j = 0; j < 10; j += 1)
+                for (var j = 0; j < 10; j += 1)
                 {
                     DrawGridPatch(positions, indices, colors, -50 + i * 10, -50 + j * 10);
                 }
@@ -685,7 +711,7 @@ namespace Dynamo.Controls
             // Draw the coordinate axes
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(5, 0, 0));
+            axesPositions.Add(new Vector3(50, 0, 0));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Red);
             axesColors.Add(Color.Red);
@@ -699,7 +725,7 @@ namespace Dynamo.Controls
 
             axesPositions.Add(new Vector3());
             axesIndices.Add(axesPositions.Count - 1);
-            axesPositions.Add(new Vector3(0, 0, -5));
+            axesPositions.Add(new Vector3(0, 0, -50));
             axesIndices.Add(axesPositions.Count - 1);
             axesColors.Add(Color.Green);
             axesColors.Add(Color.Green);
@@ -707,31 +733,33 @@ namespace Dynamo.Controls
             Axes.Positions = axesPositions;
             Axes.Indices = axesIndices;
             Axes.Colors = axesColors;
+
         }
 
         private static void DrawGridPatch(
             Vector3Collection positions, IntCollection indices, Color4Collection colors, int startX, int startY)
         {
-            var c1 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#c5d1d8");
+            var c1 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#c5d1d8");
             c1.Clamp();
-            var c2 = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#ddeaf2");
+            var c2 = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#ddeaf2");
             c2.Clamp();
 
             var darkGridColor = new Color4(new Vector4(c1.ScR,c1.ScG ,c1.ScB, 1));
             var lightGridColor = new Color4(new Vector4(c2.ScR, c2.ScG, c2.ScB, 1));
 
-            var size = 10;
+            const int size = 10;
 
-            for (
-                int x = startX; x <= startX + size; x++)
+            for (var x = startX; x <= startX + size; x++)
             {
+                if (x == 0 && startY < 0) continue;
+
                 var v = new Vector3(x, -.001f, startY);
                 positions.Add(v);
                 indices.Add(positions.Count - 1);
                 positions.Add(new Vector3(x, -.001f, startY + size));
                 indices.Add(positions.Count - 1);
 
-                if (x%5 == 0)
+                if (x % 5 == 0)
                 {
                     colors.Add(darkGridColor);
                     colors.Add(darkGridColor);
@@ -743,14 +771,16 @@ namespace Dynamo.Controls
                 }
             }
 
-            for (int y = startY; y <= startY + size; y++)
+            for (var y = startY; y <= startY + size; y++)
             {
+                if (y == 0 && startX >= 0) continue;
+
                 positions.Add(new Vector3(startX, -.001f, y));
                 indices.Add(positions.Count - 1);
                 positions.Add(new Vector3(startX + size, -.001f, y));
                 indices.Add(positions.Count - 1);
 
-                if (y%5 == 0)
+                if (y % 5 == 0)
                 {
                     colors.Add(darkGridColor);
                     colors.Add(darkGridColor);
@@ -990,7 +1020,7 @@ namespace Dynamo.Controls
         }
 
         private void ConvertMeshes(IRenderPackage p, MeshGeometry3D mesh)
-        {
+        { 
             // DirectX has a different winding than we store in
             // render packages. Re-wind triangles here...
             var color_idx = 0;
@@ -1005,6 +1035,9 @@ namespace Dynamo.Controls
                 var an = GetVertex(p.TriangleNormals, i);
                 var bn = GetVertex(p.TriangleNormals, i + 3);
                 var cn = GetVertex(p.TriangleNormals, i + 6);
+                an.Normalize();
+                bn.Normalize();
+                cn.Normalize();
 
                 var ca = GetColor(p, color_idx);
                 var cb = GetColor(p, color_idx + 4);
