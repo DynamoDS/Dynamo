@@ -3728,6 +3728,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I Accept.
+        /// </summary>
+        public static string TermsOfUseAcceptButton {
+            get {
+                return ResourceManager.GetString("TermsOfUseAcceptButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I Decline.
+        /// </summary>
+        public static string TermsOfUseDeclineButton {
+            get {
+                return ResourceManager.GetString("TermsOfUseDeclineButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Manager Terms of Use.
+        /// </summary>
+        public static string TermsOfUseViewTitle {
+            get {
+                return ResourceManager.GetString("TermsOfUseViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} of {1}.
         /// </summary>
         public static string TooltipCurrentIndex {

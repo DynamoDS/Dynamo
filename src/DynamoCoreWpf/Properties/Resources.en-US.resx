@@ -1568,6 +1568,18 @@ Do you want to install the latest Dynamo update?</value>
   <data name="RunStartedMessage" xml:space="preserve">
     <value>Run started...</value>
   </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuBackground" xml:space="preserve">
+    <value>Select Background</value>
+  </data>
+  <data name="GroupContextMenuFont" xml:space="preserve">
+    <value>Font Size</value>
+  </data>
+  <data name="GroupContextMenuUngroup" xml:space="preserve">
+    <value>Ungroup</value>
+  </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>
   </data>
@@ -1619,18 +1631,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Show upstream geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
-  <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
-  </data>
-  <data name="GroupContextMenuBackground" xml:space="preserve">
-    <value>Select Background</value>
-  </data>
-  <data name="GroupContextMenuFont" xml:space="preserve">
-    <value>Font Size</value>
-  </data>
-  <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>Ungroup</value>
-  </data>
   <data name="MoreButton" xml:space="preserve">
     <value>More</value>
     <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
@@ -1640,5 +1640,14 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
     <value>What's New</value>
+  </data>
+  <data name="TermsOfUseAcceptButton" xml:space="preserve">
+    <value>I Accept</value>
+  </data>
+  <data name="TermsOfUseDeclineButton" xml:space="preserve">
+    <value>I Decline</value>
+  </data>
+  <data name="TermsOfUseViewTitle" xml:space="preserve">
+    <value>Package Manager Terms of Use</value>
   </data>
 </root>

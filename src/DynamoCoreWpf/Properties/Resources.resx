@@ -1641,4 +1641,13 @@ Do you want to install the latest Dynamo update?</value>
   <data name="StartPageWhatsNew" xml:space="preserve">
     <value>What's New</value>
   </data>
+  <data name="TermsOfUseAcceptButton" xml:space="preserve">
+    <value>I Accept</value>
+  </data>
+  <data name="TermsOfUseDeclineButton" xml:space="preserve">
+    <value>I Decline</value>
+  </data>
+  <data name="TermsOfUseViewTitle" xml:space="preserve">
+    <value>Package Manager Terms of Use</value>
+  </data>
 </root>

@@ -217,6 +217,9 @@
     </Compile>
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
+	</Compile>
+    <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
+      <DependentUpon>TermsOfUseView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
@@ -973,6 +976,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\Gallery\GalleryView.xaml">
+	  <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\TermsOfUseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
