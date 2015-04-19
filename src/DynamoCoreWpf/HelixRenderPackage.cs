@@ -36,7 +36,7 @@ namespace Dynamo.Wpf
     {
         private PointGeometry3D points;
         private LineGeometry3D lines;
-        private BillboardText3D text;
+        //private BillboardText3D text;
         private MeshGeometry3D mesh;
         private bool hasData;
 
@@ -44,7 +44,7 @@ namespace Dynamo.Wpf
         {
             points = InitPointGeometry();
             lines = InitLineGeometry();
-            text = InitText3D();
+            //text = InitText3D();
             mesh = InitMeshGeometry();
 
             LineStripVertexCounts = new List<int>();
@@ -57,9 +57,9 @@ namespace Dynamo.Wpf
         {
             points = null;
             lines = null;
-            text = null;
+            //text = null;
             mesh = null;
-
+            
             LineStripVertexCounts.Clear();
             IsSelected = false;
         }
@@ -237,10 +237,10 @@ namespace Dynamo.Wpf
             }
         }
 
-        public BillboardText3D Text
-        {
-            get { return text; }
-        }
+        //public BillboardText3D Text
+        //{
+        //    get { return text; }
+        //}
 
         internal static LineGeometry3D InitLineGeometry()
         {

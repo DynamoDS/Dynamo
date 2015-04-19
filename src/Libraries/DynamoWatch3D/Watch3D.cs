@@ -115,7 +115,7 @@ namespace Dynamo.Nodes
             if (View == null) return;
 
             View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(this.watch3dModel.VisualizationManager.CreateRenderPackageFromGraphicItem), watch3dModel.GUID));
+                new VisualizationEventArgs(UnpackRenderData(data).Select(this.watch3dModel.VisualizationManager.CreateRenderPackageFromGraphicItem), new List<IRenderPackage>(), watch3dModel.GUID));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)

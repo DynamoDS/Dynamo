@@ -1655,7 +1655,8 @@ namespace Dynamo.Models
         /// <param name="scheduler"></param>
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
-        protected virtual void RequestVisualUpdateAsyncCore(IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
+        protected virtual void 
+            RequestVisualUpdateAsyncCore(IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
         {
             var initParams = new UpdateRenderPackageParams()
             {

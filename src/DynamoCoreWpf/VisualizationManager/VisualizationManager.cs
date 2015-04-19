@@ -256,19 +256,21 @@ namespace Dynamo
                 currentTaggedPackages.AddRange(packages);
 
                 var allPackages = new List<IRenderPackage>();
+                var selPackages = new List<IRenderPackage>();
 
                 foreach (var node in dynamoModel.CurrentWorkspace.Nodes)
                 {
                     lock (node.RenderPackagesMutex)
                     {
                         allPackages.AddRange(
-                            node.RenderPackages.Where(x => x.HasData)
-                                .Cast<RenderPackage>());
+                            node.RenderPackages.Where(x => x.HasData && !x.IsSelected));
+                        selPackages.AddRange(
+                            node.RenderPackages.Where(x=>x.HasData && x.IsSelected));
                     }
                 }
 
                 OnResultsReadyToVisualize(
-                    new VisualizationEventArgs(allPackages, Guid.Empty));
+                    new VisualizationEventArgs(allPackages, selPackages, Guid.Empty));
             }
         }
 
@@ -356,7 +358,7 @@ namespace Dynamo
             foreach (var node in workspace.Nodes)
                 NodeRemovedFromHomeWorkspace(node);
 
-            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<RenderPackage> { }, Guid.Empty));
+            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>(), new List<IRenderPackage>(),  Guid.Empty));
         }
 
         private void NodeRemovedFromHomeWorkspace(NodeModel node)
@@ -387,8 +389,8 @@ namespace Dynamo
 
         private void SelectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (updatingPaused || e.Action == NotifyCollectionChangedAction.Reset)
-                return;
+            //if (updatingPaused || e.Action == NotifyCollectionChangedAction.Reset)
+            //    return;
 
             Debug.WriteLine("Viz manager responding to selection changed.");
 
@@ -504,18 +506,15 @@ namespace Dynamo
         private void OnRenderPackageAggregationCompleted(AsyncTask asyncTask)
         {
             var task = asyncTask as AggregateRenderPackageAsyncTask;
-            var rps = new List<IRenderPackage>();
-            rps.AddRange(task.NormalRenderPackages);
-            rps.AddRange(task.SelectedRenderPackages);
 
-            var e = new VisualizationEventArgs(rps, task.NodeId);
+            var e = new VisualizationEventArgs(task.NormalRenderPackages, task.SelectedRenderPackages, task.NodeId);
             OnResultsReadyToVisualize(e);
         }
 
         private void Clear()
         {
             // Send along an empty render set to clear all visualizations.
-            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>{}, Guid.Empty));
+            OnResultsReadyToVisualize(new VisualizationEventArgs(new List<IRenderPackage>{}, new List<IRenderPackage>{}, Guid.Empty));
         }
 
         private void ClearVisualizationsAndRestart(object sender, EventArgs e)
@@ -547,15 +546,17 @@ namespace Dynamo
         /// A list of render packages corresponding to a branch or a whole graph.
         /// </summary>
         public IEnumerable<IRenderPackage> Packages { get; private set; }
+        public IEnumerable<IRenderPackage> SelectedPackages { get; private set; }
 
         /// <summary>
         /// The id of the view for which the description belongs.
         /// </summary>
         public Guid Id { get; protected set; }
 
-        public VisualizationEventArgs(IEnumerable<IRenderPackage> description, Guid viewId)
+        public VisualizationEventArgs(IEnumerable<IRenderPackage> packages, IEnumerable<IRenderPackage> selectedPackages, Guid viewId)
         {
-            Packages = description;
+            Packages = packages;
+            SelectedPackages = selectedPackages;
             Id = viewId; 
         }
     }

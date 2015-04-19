@@ -126,6 +126,8 @@ namespace Dynamo.Controls
 
         public MeshGeometry3D Mesh { get; set; }
 
+        public MeshGeometry3D MeshSelected { get; set; }
+
         public BillboardText3D Text { get; set; }
 
         public Viewport3DX View
@@ -140,6 +142,8 @@ namespace Dynamo.Controls
         public int MeshCount { get; set; }
 
         public PhongMaterial WhiteMaterial { get; private set; }
+
+        public PhongMaterial SelectedMaterial { get; private set; }
 
         public Vector3 DirectionalLightDirection
         {
@@ -448,6 +452,16 @@ namespace Dynamo.Controls
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
                 //DiffuseColor = PhongMaterials.ToColor(0.992157, 0.992157, 0.992157, 1.0),
                 DiffuseColor = PhongMaterials.ToColor(matColor.R, matColor.G, matColor.B, 1.0f),
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+            };
+
+            SelectedMaterial = new PhongMaterial
+            {
+                Name = "White",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = PhongMaterials.ToColor(selectionColor.Red, selectionColor.Green, selectionColor.Blue, 1.0f),
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
@@ -817,17 +831,31 @@ namespace Dynamo.Controls
             Lines = null;
             LinesSelected = null;
             Mesh = null;
+            MeshSelected = null;
             Text = null;
             MeshCount = 0;
 
             var packages = e.Packages
-                .Where(rp=>rp.TriangleVertices.Count % 9 == 0).Cast<HelixRenderPackage>().ToList();
+                .Cast<HelixRenderPackage>().ToList();
 
-            var points = AggregatePoints(packages);
-            var lines = AggregateLines(packages);
-            var linesSelected = AggregateLines(packages, true);
-            var mesh = AggregateMeshes(packages);
-            var text = AggregateText(packages);
+            var selPackages = e.SelectedPackages
+                .Cast<HelixRenderPackage>().ToList();
+
+            var allPoints = packages.Select(p => p.Points).ToList();
+            var allLines = packages.Select(p => p.Lines).ToList();
+            //var allText = packages.Select(p => p.Text).ToList();
+            var allMeshes = packages.Select(p => p.Mesh).ToList();
+
+            var allLinesSel = selPackages.Select(p => p.Lines).ToList();
+            var allMeshSel = selPackages.Select(p => p.Mesh).ToList();
+
+            var points = AggregatePoints(allPoints);
+            var lines = AggregateLines(allLines);
+            var mesh = AggregateMeshes(allMeshes);
+            //var text = AggregateText(allText);
+
+            var linesSelected = AggregateLines(allLinesSel);
+            var meshSelected = AggregateMeshes(allMeshSel);
 
             //var points = InitPointGeometry();
             //var lines = InitLineGeometry();
@@ -851,11 +879,14 @@ namespace Dynamo.Controls
             if (!linesSelected.Positions.Any())
                 linesSelected = null;
 
-            if (!text.TextInfo.Any())
-                text = null;
+            //if (!text.TextInfo.Any())
+            //    text = null;
 
             if (!mesh.Positions.Any())
                 mesh = null;
+
+            if (!meshSelected.Positions.Any())
+                meshSelected = null;
 
 #if DEBUG
             renderTimer.Stop();
@@ -864,85 +895,83 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            SendGraphicsToView(points, lines, linesSelected, mesh, text);
+            SendGraphicsToView(points, lines, linesSelected, mesh, meshSelected, null);
 
             //DrawTestMesh();
         }
 
-        private PointGeometry3D AggregatePoints(IList<HelixRenderPackage> packages)
+        private PointGeometry3D AggregatePoints(IList<PointGeometry3D> allPoints)
         {
             var points = HelixRenderPackage.InitPointGeometry();
 
-            points.Positions.AddRange(packages.SelectMany(p=>p.Points.Positions));
-            points.Colors.AddRange(packages.SelectMany(p=>p.Points.Colors));
+            points.Positions.AddRange(allPoints.SelectMany(p => p.Positions));
+            points.Colors.AddRange(allPoints.SelectMany(p => p.Colors));
 
             var idxCount = 0;
-            foreach (var p in packages)
+            foreach (var p in allPoints)
             {
-                foreach (var idx in p.Points.Indices)
+                foreach (var idx in p.Indices)
                 {
                     points.Indices.Add(idx + idxCount);   
                 }
 
-                idxCount += p.Points.Indices.Count;
+                idxCount += p.Indices.Count;
             }
 
             return points;
         }
 
-        private LineGeometry3D AggregateLines(IList<HelixRenderPackage> packages, bool forSelection = false)
+        private LineGeometry3D AggregateLines(IList<LineGeometry3D> allLines)
         {
             var lines = HelixRenderPackage.InitLineGeometry();
 
-            var aggPackages = forSelection ? packages.Where(p => p.IsSelected).ToList() : packages;
-
-            lines.Positions.AddRange(aggPackages.SelectMany(p => p.Lines.Positions));
-            lines.Colors.AddRange(aggPackages.SelectMany(p => p.Lines.Colors));
+            lines.Positions.AddRange(allLines.SelectMany(p => p.Positions));
+            lines.Colors.AddRange(allLines.SelectMany(p => p.Colors));
 
             var idxCount = 0;
-            foreach (var p in aggPackages)
+            foreach (var p in allLines)
             {
-                foreach (var idx in p.Lines.Indices)
+                foreach (var idx in p.Indices)
                 {
                     lines.Indices.Add(idx + idxCount);
                 }
 
-                idxCount += p.Lines.Indices.Count;
+                idxCount += p.Indices.Count;
             }
 
             return lines;
         }
 
-        private MeshGeometry3D AggregateMeshes(IList<HelixRenderPackage> packages)
+        private MeshGeometry3D AggregateMeshes(IList<MeshGeometry3D> allMeshes)
         {
             var mesh = HelixRenderPackage.InitMeshGeometry();
 
-            mesh.Positions.AddRange(packages.SelectMany(p=>p.Mesh.Positions));
-            mesh.Colors.AddRange(packages.SelectMany(p => p.Mesh.Colors));
-            mesh.Normals.AddRange(packages.SelectMany(p=>p.Mesh.Normals));
-            mesh.TextureCoordinates.AddRange(packages.SelectMany(p=>p.Mesh.TextureCoordinates));
+            mesh.Positions.AddRange(allMeshes.SelectMany(p => p.Positions));
+            mesh.Colors.AddRange(allMeshes.SelectMany(p => p.Colors));
+            mesh.Normals.AddRange(allMeshes.SelectMany(p => p.Normals));
+            mesh.TextureCoordinates.AddRange(allMeshes.SelectMany(p => p.TextureCoordinates));
 
             var idxCount = 0;
-            foreach (var p in packages)
+            foreach (var p in allMeshes)
             {
-                foreach (var idx in p.Mesh.Indices)
+                foreach (var idx in p.Indices)
                 {
                     mesh.Indices.Add(idx + idxCount);
                 }
 
-                idxCount += p.Mesh.Indices.Count;
+                idxCount += p.Indices.Count;
             }
 
             return mesh;
         }
 
-        private BillboardText3D AggregateText(IList<HelixRenderPackage> packages)
+        private BillboardText3D AggregateText(IList<BillboardText3D> allText)
         {
             var text = HelixRenderPackage.InitText3D();
 
-            text.Positions.AddRange(packages.SelectMany(p => p.Text.Positions));
-            text.Colors.AddRange(packages.SelectMany(p => p.Text.Colors));
-            text.TextInfo.AddRange(packages.SelectMany(p=>p.Text.TextInfo));
+            text.Positions.AddRange(allText.SelectMany(p => p.Positions));
+            text.Colors.AddRange(allText.SelectMany(p => p.Colors));
+            text.TextInfo.AddRange(allText.SelectMany(p => p.TextInfo));
 
             return text;
         }
@@ -996,12 +1025,14 @@ namespace Dynamo.Controls
             LineGeometry3D lines,
             LineGeometry3D linesSelected,
             MeshGeometry3D mesh,
+            MeshGeometry3D meshSelected,
             BillboardText3D text)
         {
             Points = points;
             Lines = lines;
             LinesSelected = linesSelected;
             Mesh = mesh;
+            MeshSelected = meshSelected;
             Text = text;
             
             // Send property changed notifications for everything
