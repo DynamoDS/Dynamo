@@ -33,11 +33,11 @@ namespace Dynamo.Core.Threading
 
         internal UpdateGraphAsyncTask(IScheduler scheduler, bool verboseLogging1) : base(scheduler)
         {
-            verboseLogging = verboseLogging;
+            this.verboseLogging = verboseLogging1;
         }
 
         /// <summary>
-        /// This method is called by codes that intent to start a graph update.
+        /// This method is called by code that intends to start a graph update.
         /// This method is called on the main thread where node collection in a 
         /// WorkspaceModel can be safely accessed.
         /// </summary>
@@ -100,6 +100,22 @@ namespace Dynamo.Core.Threading
                 if (modifiedNode.State == ElementState.Warning)
                     modifiedNode.ClearRuntimeError();
             }
+        }
+
+        protected override AsyncTask.TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var theOtherTask = otherTask as UpdateGraphAsyncTask;
+            if (theOtherTask == null)
+                return base.CanMergeWithCore(otherTask);
+
+            // Comparing to another UpdateGraphAsyncTask, the one 
+            // that gets scheduled more recently stay, while the earlier one 
+            // gets dropped. If this task has a higher tick count, keep this.
+            // 
+            if (ScheduledTime.TickCount > theOtherTask.ScheduledTime.TickCount)
+                return TaskMergeInstruction.KeepThis;
+
+            return TaskMergeInstruction.KeepOther; // Otherwise, keep the other.
         }
 
         #endregion
