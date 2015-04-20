@@ -348,8 +348,7 @@
                                     </ControlTemplate>
                                 </Button.Template>
                                 <Border Name="Bd"
-                                        BorderThickness="0"
-                                        BorderBrush="Transparent">
+                                        BorderThickness="0">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -361,7 +360,6 @@
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto" />
                                                     <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
 
                                                 <Grid.RowDefinitions>
@@ -408,6 +406,8 @@
                                             <Border.Style>
                                                 <Style TargetType="{x:Type Border}">
                                                     <Style.Triggers>
+
+                                                        <!-- Root element & mouse over => dark grey + light border at the bottom. -->
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
@@ -419,11 +419,14 @@
                                                                            Value="True" />
                                                             </MultiDataTrigger.Conditions>
                                                             <MultiDataTrigger.Setters>
+                                                                <Setter Property="BorderThickness"
+                                                                        Value="0,0,0,1" />
                                                                 <Setter Property="Background"
                                                                         Value="{StaticResource RootElementOnHover}" />
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
 
+                                                        <!-- Usual element & mouse over => light grey. -->
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self},
@@ -440,16 +443,42 @@
                                                             </MultiDataTrigger.Setters>
                                                         </MultiDataTrigger>
 
-                                                        <DataTrigger Value="True">
-                                                            <DataTrigger.Binding>
-                                                                <Binding RelativeSource="{RelativeSource Self}"
-                                                                         Path="DataContext"
-                                                                         Converter="{StaticResource RootElementToBoolConverter}" />
-                                                            </DataTrigger.Binding>
-                                                            <Setter Property="BorderThickness"
-                                                                    Value="0,0,0,1" />
-                                                        </DataTrigger>
-                                                        
+                                                        <!-- Usual element & mouse not over => grey. -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=IsMouseOver}"
+                                                                           Value="False" />
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                           Value="False" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <MultiDataTrigger.Setters>
+                                                                <Setter Property="Background"
+                                                                        Value="{StaticResource LibraryItemHostBackground}" />
+                                                            </MultiDataTrigger.Setters>
+                                                        </MultiDataTrigger>
+
+                                                        <!-- Root element & mouse not over => dark dark grey + light border at the bottom. -->
+                                                        <MultiDataTrigger>
+                                                            <MultiDataTrigger.Conditions>
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=IsMouseOver}"
+                                                                           Value="False" />
+                                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self},
+                                                                                     Path=DataContext,
+                                                                                     Converter={StaticResource RootElementToBoolConverter}}"
+                                                                           Value="True" />
+                                                            </MultiDataTrigger.Conditions>
+                                                            <MultiDataTrigger.Setters>
+                                                                <Setter Property="BorderThickness"
+                                                                        Value="0,0,0,1" />
+                                                                <Setter Property="Background"
+                                                                        Value="{StaticResource RootElementBackground}" />
+                                                            </MultiDataTrigger.Setters>
+                                                        </MultiDataTrigger>
+
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
@@ -483,27 +512,6 @@
                                             </ItemsPresenter>
                                         </Border>
                                     </Grid>
-                                    <Border.Style>
-                                        <!--If item is RootElement Background will be dark grey.
-                                            If item is InternalElement Background will be light grey.-->
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="Background"
-                                                    Value="{StaticResource RootElementBackground}" />
-                                            <Style.Triggers>
-                                                <DataTrigger Value="False">
-                                                    <DataTrigger.Binding>
-                                                        <Binding RelativeSource="{RelativeSource Self}"
-                                                                 Path="DataContext"
-                                                                 Converter="{StaticResource RootElementToBoolConverter}" />
-                                                    </DataTrigger.Binding>
-                                                    <Setter Property="Background"
-                                                            Value="{StaticResource LibraryItemHostBackground}" />
-                                                    <Setter Property="Padding"
-                                                            Value="0,0,0,0" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Border.Style>
                                 </Border>
                             </Button>
 
