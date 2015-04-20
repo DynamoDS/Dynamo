@@ -44,15 +44,25 @@ namespace ProtoCore.AssociativeEngine
                     if (i != j)
                     {
                         AssociativeGraph.GraphNode gnode = graphNodes[j];
-                        // Jun: Write a function to check if a graph has no LHS and describe why there are such graphs
-                        bool doesContainLHS = currentNode.updateNodeRefList != null && currentNode.updateNodeRefList.Count > 0;
-                        if (doesContainLHS)
+
+                        // Update within an expression is not allowed
+                        // a = a + 1
+                        //
+                        //  [0] t0 = a
+                        //  [1] t1 = t0 + 1
+                        //  [2] a = t1  <- Modifying this should not re-execute [0] as they are part of the same expression
+                        if (currentNode.ssaExprID != gnode.ssaExprID)
                         {
-                            AssociativeGraph.GraphNode dependent = null;
-                            if (gnode.DependsOn(currentNode.updateNodeRefList[0], ref dependent))
+                            // Jun: Write a function to check if a graph has no LHS and describe why there are such graphs
+                            bool doesContainLHS = currentNode.updateNodeRefList != null && currentNode.updateNodeRefList.Count > 0;
+                            if (doesContainLHS)
                             {
-                                Validity.Assert(dependent != null);
-                                currentNode.whoDependsOnMeList.Add(gnode);
+                                AssociativeGraph.GraphNode dependent = null;
+                                if (gnode.DependsOn(currentNode.updateNodeRefList[0], ref dependent))
+                                {
+                                    Validity.Assert(dependent != null);
+                                    currentNode.whoDependsOnMeList.Add(gnode);
+                                }
                             }
                         }
                     }
