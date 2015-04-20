@@ -59,7 +59,7 @@ namespace Dynamo.Controls
         private LineGeometry3D worldGrid;
         private LineGeometry3D worldAxes;
         private RenderTechnique renderTechnique;
-        private Camera camera;
+        private PerspectiveCamera camera;
         private Color4 selectionColor = new Color4(0,158.0f/255.0f,1,1);
         private bool showShadows;
         private Vector3 directionalLightDirection;
@@ -210,7 +210,7 @@ namespace Dynamo.Controls
             }
         }
 
-        public Camera Camera
+        public PerspectiveCamera Camera
         {
             get
             {
@@ -476,6 +476,8 @@ namespace Dynamo.Controls
                 Position = new Point3D(10, 15, 10),
                 LookDirection = new Vector3D(-10, -10, -10),
                 UpDirection = new Vector3D(0, 1, 0),
+                NearPlaneDistance = 1,
+                FarPlaneDistance = 2000000,
             };
 
             DrawGrid();
