@@ -188,7 +188,7 @@ namespace Dynamo.DSEngine
                 var activeNodes = nodes.Where(n => !n.IsInErrorState);
 
                 if (activeNodes.Any())
-                    astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.ForDeltaExecution, verboseLogging);
+                    astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
 
                 return VerifyGraphSyncData(nodes);
             }
@@ -212,7 +212,7 @@ namespace Dynamo.DSEngine
             var activeNodes = updatedNodes.Where(n => !n.IsInErrorState);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.ForDeltaExecution, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
             }
 
             if (!VerifyGraphSyncData(nodes) || ((graphSyncDataQueue.Count <= 0)))
@@ -239,7 +239,7 @@ namespace Dynamo.DSEngine
             var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.ForDeltaExecution, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
             }
 
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();

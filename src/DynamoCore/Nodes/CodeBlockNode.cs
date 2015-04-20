@@ -302,7 +302,7 @@ namespace Dynamo.Nodes
                     (ident, rhs) =>
                     {
                         var identNode = AstFactory.BuildIdentifier(ident);
-                        if (context != AstBuilder.CompilationContext.ForNodeToCode)
+                        if (context != AstBuilder.CompilationContext.NodeToCode)
                             MapIdentifiers(identNode);
                         return AstFactory.BuildAssignment(identNode, rhs);
                     });
@@ -311,7 +311,7 @@ namespace Dynamo.Nodes
 
             foreach (var astNode in codeStatements.Select(stmnt => NodeUtils.Clone(stmnt.AstNode)))
             {
-                if (context != AstBuilder.CompilationContext.ForNodeToCode)
+                if (context != AstBuilder.CompilationContext.NodeToCode)
                     MapIdentifiers(astNode);
                 resultNodes.Add(astNode as AssociativeNode);
             }

@@ -579,7 +579,7 @@ namespace Dynamo.DSEngine
             var sortedGraph = AstBuilder.TopologicalSortForGraph(graph);
             var sortedNodes = sortedGraph.Where(nodes.Contains);
 
-            var allAstNodes = astBuilder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.ForNodeToCode, false);
+            var allAstNodes = astBuilder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
 
             #endregion
 
