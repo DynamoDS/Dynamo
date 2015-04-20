@@ -35,10 +35,10 @@ namespace ProtoCore.AssociativeEngine
                 AssociativeGraph.GraphNode currentNode = graphNodes[i];
 
                 // Get the graphnode to check if it depends on nodeToCheckAgainstList
-                //  [a = 10]
-                //  c = 1   -> this is checked if it depends on [a]. If it does, add it to the dependency list of  [a = 10] 
-                //  b = a   -> next
-                //  d = a   -> next
+                //  a = 10 (currentnode)
+                //  c = 1  (gnode) -> this is checked if it depends on [a]. If it does, add it to the dependency list of  a = 10 (currentnode)
+                //  b = a  (gnode) -> next
+                //  d = a  (gnode) -> next
                 for (int j = 0; j < graphNodes.Count; ++j)
                 {
                     if (i != j)

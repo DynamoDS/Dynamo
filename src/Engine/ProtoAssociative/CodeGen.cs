@@ -1,4 +1,5 @@
 //#define ENABLE_INC_DEC_FIX
+//#define __EMIT_DEPENDENCY_FOR_LHS_IDENTLIST
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -4112,7 +4113,7 @@ namespace ProtoAssociative
 
                 if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope && !hasReturnStatement)
                 {
-                    EmitReturnNull();  
+                    EmitReturnNull(); 
                 }
 
                 compilePass++;
@@ -7822,6 +7823,7 @@ namespace ProtoAssociative
 
             graphNode.allowDependents = true;
 
+#if __EMIT_DEPENDENCY_FOR_LHS_IDENTLIST
             // Dependency
             if (!isTempExpression)
             {
@@ -7909,6 +7911,7 @@ namespace ProtoAssociative
                 PushGraphNode(graphNode);
                 functionCallStack.Clear();
             }
+#endif
         }
 
         private bool EmitLHSThisDotProperyForBinaryExpr(AssociativeNode bnode, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, bool isTempExpression = false)
@@ -8139,8 +8142,11 @@ namespace ProtoAssociative
                         }
                     }
                 }
+
                 if (bnode.LeftNode is IdentifierListNode)
                 {
+                    // If the lhs is an identifierlist then emit the entire expression here
+                    // This block of code needs unification with the rest of EmitBinaryExpressionNode
                     EmitLHSIdentifierListForBinaryExpr(bnode, ref inferedType, isBooleanOp, graphNode, subPass);
                     if (isGraphInScope)
                     {
