@@ -136,7 +136,7 @@ namespace Dynamo.DSEngine
             /// <summary>
             /// Number suffix.
             /// </summary>
-            public int ID { get; set; }
+            public int ID { get; private set; }
 
             /// <summary>
             /// Indicate it is for ASTs in a new code block
@@ -183,7 +183,7 @@ namespace Dynamo.DSEngine
 
         private static void MarkConnectivityForNode(
             HashSet<NodeModel> selection,
-            bool[,] connectivityMatrx,
+            bool[,] connectivityMatrix,
             Dictionary<NodeModel, int> nodeMap,
             List<NodeModel> path)
         {
@@ -197,7 +197,7 @@ namespace Dynamo.DSEngine
                         continue;
 
                     path.Add(child);
-                    MarkConnectivityForNode(selection, connectivityMatrx, nodeMap, path);
+                    MarkConnectivityForNode(selection, connectivityMatrix, nodeMap, path);
                 }
             }
             else
@@ -214,8 +214,8 @@ namespace Dynamo.DSEngine
                         if (!nodeMap.TryGetValue(nodes[i], out idx2))
                             continue;
 
-                        connectivityMatrx[idx1, idx2] = false;
-                        connectivityMatrx[idx2, idx1] = false;
+                        connectivityMatrix[idx1, idx2] = false;
+                        connectivityMatrix[idx2, idx1] = false;
                     }
                 }
             }
