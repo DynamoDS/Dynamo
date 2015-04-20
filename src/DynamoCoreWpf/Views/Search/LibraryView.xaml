@@ -231,101 +231,6 @@
 
             <!-- Region CategoriesTreeView -->
 
-            <Style x:Key="LibraryExpandCollapseToggleStyle"
-                   TargetType="{x:Type ToggleButton}">
-                <Setter Property="Focusable"
-                        Value="False" />
-                <Setter Property="Width"
-                        Value="24" />
-                <Setter Property="Height"
-                        Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType=Grid}}" />
-                <Setter Property="Padding"
-                        Value="0" />
-                <Setter Property="Margin"
-                        Value="0" />
-                <Setter Property="VerticalAlignment"
-                        Value="Center" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ToggleButton}">
-                            <Border x:Name="ExpanderButtonBorder">
-                                <Grid MinHeight="24"
-                                      MinWidth="66">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <Image x:Name="ExpandCollapseStateIcon"
-                                           Source="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"
-                                           Width="16"
-                                           Height="32"
-                                           VerticalAlignment="Center" />
-                                    <ContentPresenter x:Name="HeaderContent"
-                                                      Grid.Column="1"
-                                                      ContentSource="Content"
-                                                      VerticalAlignment="Center"
-                                                      TextBlock.FontSize="13"
-                                                      TextBlock.Foreground="{StaticResource NestedMemberTextColor}"
-                                                      Margin="8,0,0,0" />
-                                </Grid>
-                            </Border>
-                            <ControlTemplate.Triggers>
-
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
-                                                   Value="True" />
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
-                                                   Value="False" />
-                                    </MultiDataTrigger.Conditions>
-                                    <MultiDataTrigger.Setters>
-                                        <Setter Property="Source"
-                                                TargetName="ExpandCollapseStateIcon"
-                                                Value="/DynamoCoreWpf;component/UI/Images/collapsestate_hover.png" />
-                                    </MultiDataTrigger.Setters>
-                                </MultiDataTrigger>
-
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                         Path=IsMouseOver}"
-                                                   Value="True" />
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                         Path=IsChecked}"
-                                                   Value="True" />
-                                    </MultiDataTrigger.Conditions>
-                                    <MultiDataTrigger.Setters>
-                                        <Setter Property="Source"
-                                                TargetName="ExpandCollapseStateIcon"
-                                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_hover.png" />
-                                    </MultiDataTrigger.Setters>
-                                </MultiDataTrigger>
-
-                                <MultiDataTrigger>
-                                    <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Grid}, 
-                                                                     Path=IsMouseOver}"
-                                                   Value="False" />
-                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, 
-                                                                     Path=IsChecked}"
-                                                   Value="True" />
-                                    </MultiDataTrigger.Conditions>
-                                    <MultiDataTrigger.Setters>
-                                        <Setter Property="Source"
-                                                TargetName="ExpandCollapseStateIcon"
-                                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_normal.png" />
-                                    </MultiDataTrigger.Setters>
-                                </MultiDataTrigger>
-
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <Style x:Key="LibraryTreeViewItem"
                    TargetType="{x:Type TreeViewItem}">
                 <Setter Property="IsExpanded"
@@ -529,20 +434,6 @@
                                             TargetName="Expander"
                                             Value="Collapsed" />
                                 </Trigger>
-
-                                <!--Highlight item just in case this item is root element, not selected and
-                                    ,mouse is over it.-->
-                                <DataTrigger Value="False">
-                                    <DataTrigger.Binding>
-                                        <Binding RelativeSource="{RelativeSource Self}"
-                                                 Path="DataContext"
-                                                 Converter="{StaticResource RootElementToBoolConverter}" />
-                                    </DataTrigger.Binding>
-                                    <Setter Property="Background"
-                                            Value="{StaticResource RootElementOnHover}" />
-                                    <Setter Property="Padding"
-                                            Value="0,0,0,3" />
-                                </DataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>

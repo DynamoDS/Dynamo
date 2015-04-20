@@ -138,4 +138,5 @@
     <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
     <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
     <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
+    <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
 </ResourceDictionary>

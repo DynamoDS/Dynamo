@@ -139,79 +139,7 @@
 
         <!--EndRegion-->
 
-        <!-- Region Converters -->
 
-        <!--Converter to Make class details not focusable-->
-        <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
-
-        <!--Converter that will be used, if number of found classes equals 0. 
-            Then classes will be collapsed.-->
-        <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
-        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
-        <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
-        <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
-        <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
-        <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
-
-        <!--EndRegion-->
-
-        <!-- Region DataTemplates -->
-        <!-- This data template is used to show one subcategory. -->
-        <DataTemplate x:Key="ClassObjectDataTemplate">
-            <DataTemplate.Resources>
-                <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
-            </DataTemplate.Resources>
-            <StackPanel Orientation="Vertical"
-                        Width="96"
-                        Height="96">
-                <Border Padding="4">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="50" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="90" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Source="{Binding Path=SmallIcon}"
-                               Width="32"
-                               Height="32"
-                               Margin="8"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Grid.Row="1"
-                               Grid.Column="1" />
-                        <TextBlock HorizontalAlignment="Center"
-                                   VerticalAlignment="Top"
-                                   TextAlignment="Center"
-                                   Foreground="#989898"
-                                   Grid.Row="2"
-                                   Grid.Column="1"
-                                   FontSize="13">
-                            <TextBlock.Text>
-                                <Binding Path="Name"
-                                         Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
-                                         ConverterParameter="ClassButton" />
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Grid>
-                </Border>
-            </StackPanel>
-        </DataTemplate>
-        <!-- This data template is used to show StandardPanel
-                 for some selected subcategory. -->
-        <DataTemplate x:Key="ClassDetailsDataTemplate">
-            <uicontrols:StandardPanel FocusItemOnSelection="True">
-                <uicontrols:StandardPanel.Width>
-                    <Binding Path="ActualWidth"
-                             RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
-                </uicontrols:StandardPanel.Width>
-            </uicontrols:StandardPanel>
-        </DataTemplate>
         <!-- This data template is used to show one member. -->
         <ControlTemplate x:Key="MemberControlTemplate">
             <Grid>
@@ -250,7 +178,6 @@
                            FontSize="13" />
             </Grid>
         </ControlTemplate>
-        <!--EndRegion-->
 
         <!-- Region ListBoxItem -->
 
@@ -264,7 +191,7 @@
             <Setter Property="Focusable"
                     Value="False" />
             <Setter Property="Visibility"
-                    Value="{Binding Path=Visibility, Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+                    Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -305,7 +232,7 @@
             <Setter Property="FocusVisualStyle"
                     Value="{x:Null}" />
             <Setter Property="Visibility"
-                    Value="{Binding Path=Visibility, Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+                        Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -370,12 +297,6 @@
             </Setter>
         </Style>
 
-        <!--EndRegion-->
-
-        <!-- Region Selectors -->
-        <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
-                                              ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
-                                              ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
         <!--EndRegion-->
 
         </ResourceDictionary>
@@ -447,103 +368,6 @@
                                       Collapsed="OnCategoryExpanderCollapsed">
                                 <StackPanel Orientation="Vertical"
                                             KeyDown="OnCategoryContentKeyDown">
-
-                                    <!--Found classes-->
-                                    <ListView Name="SubCategoryListView"
-                                              ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
-                                              Background="#333333"
-                                              BorderThickness="0"
-                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                              ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                              ScrollViewer.CanContentScroll="False"
-                                              ScrollViewer.IsDeferredScrollingEnabled="False"
-                                              ItemsSource="{Binding Path=Classes}"
-                                              Focusable="False"
-                                              SelectionMode="Single">
-                                        <ListView.Visibility>
-                                            Collapsed
-                                            <!-- Do not remove. Classes are hidden temporarily. -->
-                                            <!--<Binding Path="Classes.Count"
-                                                     Converter="{StaticResource IntToVisibilityConverter}" />-->
-                                        </ListView.Visibility>
-                                        <ListView.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <controls:LibraryWrapPanel Background="Transparent"
-                                                                           Margin="0,10,0,10">
-                                                    <controls:LibraryWrapPanel.Width>
-                                                        <Binding Path="ActualWidth"
-                                                                 ElementName="CategoryListView" />
-                                                    </controls:LibraryWrapPanel.Width>
-                                                </controls:LibraryWrapPanel>
-                                            </ItemsPanelTemplate>
-                                        </ListView.ItemsPanel>
-                                        <ListView.ItemContainerStyle>
-                                            <Style TargetType="{x:Type ListViewItem}">
-                                                <Setter Property="FocusVisualStyle"
-                                                        Value="{x:Null}" />
-
-                                                <EventSetter Event="PreviewMouseLeftButtonDown"
-                                                             Handler="OnClassButtonCollapse" />
-                                                <EventSetter Event="GotKeyboardFocus"
-                                                             Handler="OnClassButtonGotKeyboardFocus" />
-
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                                            <Border Background="{TemplateBinding Background}"
-                                                                    BorderBrush="Transparent"
-                                                                    BorderThickness="0">
-                                                                <ContentPresenter />
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-
-                                                <!--Make class details not focusable-->
-                                                <Setter Property="Focusable">
-                                                    <Setter.Value>
-                                                        <Binding RelativeSource="{RelativeSource Self}"
-                                                                 Path="DataContext"
-                                                                 Converter="{StaticResource ElementTypeToBoolConverter}" />
-                                                    </Setter.Value>
-                                                </Setter>
-
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsSelected"
-                                                             Value="true">
-                                                        <Setter Property="Background"
-                                                                Value="#272727" />
-                                                        <Setter Property="BorderThickness"
-                                                                Value="0" />
-                                                    </Trigger>
-                                                    <MultiTrigger>
-                                                        <MultiTrigger.Conditions>
-                                                            <Condition Property="IsSelected"
-                                                                       Value="False" />
-                                                            <Condition Property="IsMouseOver"
-                                                                       Value="True" />
-                                                        </MultiTrigger.Conditions>
-                                                        <MultiTrigger.Setters>
-                                                            <Setter Property="Background"
-                                                                    Value="{StaticResource LibraryMemberOnHover}" />
-                                                        </MultiTrigger.Setters>
-                                                    </MultiTrigger>
-                                                    <MultiTrigger>
-                                                        <MultiTrigger.Conditions>
-                                                            <Condition Property="IsSelected"
-                                                                       Value="False" />
-                                                            <Condition Property="IsFocused"
-                                                                       Value="True" />
-                                                        </MultiTrigger.Conditions>
-                                                        <MultiTrigger.Setters>
-                                                            <Setter Property="Background"
-                                                                    Value="{StaticResource LibraryMemberOnHover}" />
-                                                        </MultiTrigger.Setters>
-                                                    </MultiTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ListView.ItemContainerStyle>
-                                    </ListView>
 
                                     <!--Found member groups-->
                                     <ListBox Background="Transparent"
