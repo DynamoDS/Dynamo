@@ -91,7 +91,7 @@ namespace ProtoCore
             EmitBreakpoints = true;
 
             localDependsOnGlobalSet = false;
-            LHSGraphNodeUpdate = true;
+            LHSGraphNodeUpdate = false;
             TempReplicationGuideEmptyFlag = true;
             AssociativeToImperativePropagation = true;
             SuppressFunctionResolutionWarning = true;

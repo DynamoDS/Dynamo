@@ -80,7 +80,7 @@ a = 3 > 2 ? x : 10;
 x = 3;
 */
 
-/*class A{	z : var[];		constructor A()	{		z = { B.B(), B.B(), B.B() };	}}class B{	constructor B()	{	}}a = A.A();b = B.B();c = { B.B(), B.B() };a.z[0] = b;a.z = c;*/class A{	z : var[];		constructor A()	{		z = {B.B()};	}}class B{	constructor B()	{	}}a = A.A();c = {B.B()};a.z[0] = B.B();a.z = c;/*======================t0 = A.A();
+/*class A{	z : var[];		constructor A()	{		z = { B.B(), B.B(), B.B() };	}}class B{	constructor B()	{	}}a = A.A();b = B.B();c = { B.B(), B.B() };a.z[0] = b;a.z = c;*//*class A{	z : var[];		constructor A()	{		z = {B.B()};	}}class B{	constructor B()	{	}}a = A.A();c = {B.B()};a.z[0] = B.B();a.z = c;*//*======================t0 = A.A();
 a = t0;======================
 t1 = B.B();
 t2 = {t1};
@@ -99,4 +99,4 @@ a.z[0] = tSSA_5_ddf9cdaa18094f7780217fd477df2149;==============================
 
 
 tSSA_6_ddf9cdaa18094f7780217fd477df2149 = c;
-a.z = tSSA_6_ddf9cdaa18094f7780217fd477df2149;==================================================================*/
+a.z = tSSA_6_ddf9cdaa18094f7780217fd477df2149;==================================================================*/class vector2D{	mx : var;	my : var;			constructor vector2D(px : int, py : int)	{		mx = px; 		// Copy mx to my with px's value		my = mx; 	}}v1 = vector2D.vector2D(100,20);x = v1.mx;y = v1.my;
