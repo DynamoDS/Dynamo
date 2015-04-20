@@ -24,25 +24,25 @@ namespace Dynamo.PackageManager
     {
         public enum PackageSearchState
         {
-            SYNCING,
-            SEARCHING,
-            NORESULTS,
-            RESULTS
+            Syncing,
+            Searching,
+            NoResults,
+            Results
         };
 
         public enum PackageSortingKey
         {
-            NAME,
-            DOWNLOADS,
-            VOTES,
-            MAINTAINERS,
-            LAST_UPDATE
+            Name,
+            Downloads,
+            Votes,
+            Maintainers,
+            LastUpdate
         };
 
         public enum PackageSortingDirection
         {
-            ASCENDING,
-            DESCENDING
+            Ascending,
+            Descending
         };
 
         #region Properties & Fields
@@ -215,8 +215,8 @@ namespace Dynamo.PackageManager
             SetSortingDirectionCommand = new DelegateCommand<object>(SetSortingDirection, CanSetSortingDirection);
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             SearchText = "";
-            SortingKey = PackageSortingKey.LAST_UPDATE;
-            SortingDirection = PackageSortingDirection.ASCENDING;
+            SortingKey = PackageSortingKey.LastUpdate;
+            SortingDirection = PackageSortingDirection.Ascending;
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace Dynamo.PackageManager
             var list = this.SearchResults.AsEnumerable().ToList();
             Sort(list, this.SortingKey);
 
-            if (SortingDirection == PackageSortingDirection.DESCENDING)
+            if (SortingDirection == PackageSortingDirection.Descending)
             {
                 list.Reverse();
             }
@@ -276,11 +276,11 @@ namespace Dynamo.PackageManager
 
                 if (key == "ASCENDING")
                 {
-                    this.SortingDirection = PackageSortingDirection.ASCENDING;
+                    this.SortingDirection = PackageSortingDirection.Ascending;
                 }
                 else if (key == "DESCENDING")
                 {
-                    this.SortingDirection = PackageSortingDirection.DESCENDING;
+                    this.SortingDirection = PackageSortingDirection.Descending;
                 }
 
             }
@@ -313,23 +313,23 @@ namespace Dynamo.PackageManager
 
                 if (key == "NAME")
                 {
-                    this.SortingKey = PackageSortingKey.NAME;
+                    this.SortingKey = PackageSortingKey.Name;
                 } 
                 else if (key == "DOWNLOADS")
                 {
-                    this.SortingKey = PackageSortingKey.DOWNLOADS;
+                    this.SortingKey = PackageSortingKey.Downloads;
                 } 
                 else if (key == "MAINTAINERS")
                 {
-                    this.SortingKey = PackageSortingKey.MAINTAINERS;
+                    this.SortingKey = PackageSortingKey.Maintainers;
                 }
                 else if (key == "LAST_UPDATE")
                 {
-                    this.SortingKey = PackageSortingKey.LAST_UPDATE;
+                    this.SortingKey = PackageSortingKey.LastUpdate;
                 } 
                 else if (key == "VOTES")
                 {
-                    this.SortingKey = PackageSortingKey.VOTES;
+                    this.SortingKey = PackageSortingKey.Votes;
                 }
 
             } 
@@ -384,7 +384,7 @@ namespace Dynamo.PackageManager
         public void RefreshAndSearchAsync()
         {
             this.ClearSearchResults();
-            this.SearchState = PackageSearchState.SYNCING;
+            this.SearchState = PackageSearchState.Syncing;
 
             Task<IEnumerable<PackageManagerSearchElementViewModel>>.Factory.StartNew(RefreshAndSearch).ContinueWith((t) =>
             {
@@ -395,7 +395,7 @@ namespace Dynamo.PackageManager
                     {
                         this.AddToSearchResults(result);
                     }
-                    this.SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
+                    this.SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
                 }
             }
             , TaskScheduler.FromCurrentSynchronizationContext()); // run continuation in ui thread
@@ -635,7 +635,7 @@ namespace Dynamo.PackageManager
                 this.AddToSearchResults(result);
             }
 
-            SearchState = HasNoResults ? PackageSearchState.NORESULTS : PackageSearchState.RESULTS;
+            SearchState = HasNoResults ? PackageSearchState.NoResults : PackageSearchState.Results;
         }
 
         /// <summary>
@@ -706,19 +706,19 @@ namespace Dynamo.PackageManager
         {
             switch (key)
             {
-                case PackageSortingKey.NAME:
+                case PackageSortingKey.Name:
                     results.Sort((e1, e2) => e1.Model.Name.ToLower().CompareTo(e2.Model.Name.ToLower()));
                     break;
-                case PackageSortingKey.DOWNLOADS:
+                case PackageSortingKey.Downloads:
                     results.Sort((e1, e2) => e2.Model.Downloads.CompareTo(e1.Model.Downloads));
                     break;
-                case PackageSortingKey.LAST_UPDATE:
+                case PackageSortingKey.LastUpdate:
                     results.Sort((e1, e2) => e2.Versions.Last().Item1.created.CompareTo(e1.Versions.Last().Item1.created));
                     break;
-                case PackageSortingKey.VOTES:
+                case PackageSortingKey.Votes:
                     results.Sort((e1, e2) => e2.Model.Votes.CompareTo(e1.Model.Votes));
                     break;
-                case PackageSortingKey.MAINTAINERS:
+                case PackageSortingKey.Maintainers:
                     results.Sort((e1, e2) => e1.Model.Maintainers.ToLower().CompareTo(e2.Model.Maintainers.ToLower()));
                     break;
             }
