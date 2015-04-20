@@ -18,8 +18,6 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
-        <!-- Region Expander Templates -->
-
         <ControlTemplate x:Key="CategoryExpanderTemplate"
                          TargetType="{x:Type Expander}">
             <DockPanel>
@@ -52,9 +50,6 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-
-        <!--EndRegion-->
-
 
         <!-- This data template is used to show one member. -->
         <ControlTemplate x:Key="MemberControlTemplate">
@@ -97,45 +92,6 @@
 
         <!-- Region ListBoxItem -->
 
-        <!--Style for Top Result member-->
-        <Style x:Key="ListBoxTopResultStyle"
-               TargetType="{x:Type ListBoxItem}">
-            <Setter Property="BorderBrush"
-                    Value="Transparent" />
-            <Setter Property="Height"
-                    Value="40" />
-            <Setter Property="Focusable"
-                    Value="False" />
-            <Setter Property="Visibility"
-                    Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              Content="{TemplateBinding Content}" />
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <EventSetter Event="PreviewMouseLeftButtonDown"
-                         Handler="OnMouseLeftButtonDown" />
-
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver"
-                         Value="True">
-                    <Setter Property="Background"
-                            Value="{StaticResource LibraryMemberOnHover}" />
-                </Trigger>
-                <Trigger Property="IsSelected"
-                         Value="True">
-                    <Setter Property="Background"
-                            Value="{StaticResource LibraryMemberOnHover}" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
         <!--Style for every member in found MemberGroup-->
         <Style x:Key="ListBoxMembersStyle"
                TargetType="{x:Type ListBoxItem}">
@@ -144,7 +100,7 @@
             <Setter Property="Height"
                     Value="40" />
             <Setter Property="Background"
-                    Value="#333333" />
+                    Value="{StaticResource LibraryCommonBackground}" />
             <Setter Property="FocusVisualStyle"
                     Value="{x:Null}" />
             <Setter Property="Visibility"
@@ -161,12 +117,12 @@
                             <Trigger Property="IsMouseOver"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#404040" />
+                                        Value="{StaticResource LibraryMemberOnHover}" />
                             </Trigger>
                             <Trigger Property="IsSelected"
                                      Value="True">
                                 <Setter Property="Background"
-                                        Value="#404040" />
+                                        Value="{StaticResource LibraryMemberOnHover}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -188,7 +144,7 @@
             <Setter Property="BorderBrush"
                     Value="Transparent" />
             <Setter Property="Background"
-                    Value="#333333" />
+                    Value="{StaticResource LibraryCommonBackground}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListBoxItem}">
@@ -196,18 +152,6 @@
                             <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
                                               Content="{TemplateBinding Content}" />
                         </Border>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver"
-                                               Value="True" />
-                                    <Condition Property="IsSelected"
-                                               Value="False" />
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background"
-                                        Value="#333333" />
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -242,7 +186,7 @@
                     <ListBox x:Name="topResultListBox"
                              Background="Transparent"
                              BorderBrush="Transparent"
-                             ItemContainerStyle="{DynamicResource ListBoxTopResultStyle}"
+                             ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                              ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}"
                              KeyDown="OnMemberButtonKeyDown"
@@ -286,7 +230,7 @@
                                             KeyDown="OnCategoryContentKeyDown">
 
                                     <!--Found member groups-->
-                                    <ListBox Background="Transparent"
+                                    <ListBox Background="{StaticResource LibraryCommonBackground}"
                                              BorderBrush="Transparent"
                                              BorderThickness="0"
                                              ItemContainerStyle="{StaticResource ListBoxMemberGroupsStyle}"
@@ -345,8 +289,7 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <Border BorderThickness="0,0,0,0"
-                                                BorderBrush="#2F2F2F">
+                                        <Border BorderThickness="0">
                                             <ContentPresenter />
                                         </Border>
                                     </ControlTemplate>
