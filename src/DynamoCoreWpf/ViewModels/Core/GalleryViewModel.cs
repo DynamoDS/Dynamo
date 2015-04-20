@@ -6,19 +6,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using System.Linq;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
     public class GalleryContent : NotificationObject
     {
-        private string header;
         public string Header { get; set; }
-
-        private string body;
         public string Body { get; set; }
-
-        private string image;
-        public string Image { get; set; }
+        public string ImagePath { get; set; }
 
         private bool isCurrent;
         public bool IsCurrent
@@ -37,64 +33,98 @@ namespace Dynamo.Wpf.ViewModels.Core
 
     public class GalleryContents
     {
-        public List<GalleryContent> GalleryUIContents { get; set; }
+        public List<GalleryContent> GalleryUiContents { get; set; }
 
         public static GalleryContents Load(string filePath)
         {
-            var galleryContents = new GalleryContents();
-
-            if (string.IsNullOrEmpty(filePath) || (!File.Exists(filePath)))
-                return galleryContents;
-
             try
             {
+                var galleryContents = new GalleryContents();
                 var serializer = new XmlSerializer(typeof(GalleryContents));
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
                     galleryContents = serializer.Deserialize(fs) as GalleryContents;
                     fs.Close(); // Release file lock
                 }
+                return galleryContents;
             }
-            catch (Exception) { }
-
-            return galleryContents;
+            catch (Exception)
+            {
+                return new GalleryContents();
+            }
         }
     }
 
     public class GalleryViewModel: ViewModelBase
     {
         #region public members
-        public string CurrentImage { get { return currentContent.Image; } }
-        public string CurrentHeader { get { return currentContent.Header; } }
-        public string CurrentBody { get { return currentContent.Body; } }
-        public List<GalleryContent> Contents { get { return contents; } }
+        public string CurrentImagePath { get { return (currentContent == null) ? string.Empty : currentContent.ImagePath; } }
+        public string CurrentHeader { get { return (currentContent == null) ? string.Empty : currentContent.Header; } }
+        public string CurrentBody { get { return (currentContent == null) ? string.Empty : currentContent.Body; } }
+        public string DynamoVersion { get; private set; }
+        public IEnumerable<GalleryContent> Contents { get { return contents; } }
         public DelegateCommand MoveNextCommand { get; set; }
         public DelegateCommand MovePrevCommand { get; set; }
+        public DelegateCommand CloseGalleryCommand { get; set; }
         #endregion
 
         public GalleryViewModel(DynamoViewModel dynamoViewModel) 
-        {          
-            IPathManager pathManager = dynamoViewModel.Model.PathManager;
+        {
+            dvm = dynamoViewModel;
+            var pathManager = dynamoViewModel.Model.PathManager;
             var galleryFilePath = pathManager.GalleryFilePath;
+            var galleryDirectory = pathManager.GalleryDirectory;
 
-            if (File.Exists(galleryFilePath))
-            {
-                contents = GalleryContents.Load(galleryFilePath).GalleryUIContents;
-            }
+            DynamoVersion = string.Format(Properties.Resources.GalleryDynamoVersion,
+                            pathManager.MajorFileVersion,
+                            pathManager.MinorFileVersion);
 
-            currentContent = new GalleryContent();
-            if (contents != null && contents[0] != null)
+            contents = GalleryContents.Load(galleryFilePath).GalleryUiContents;
+
+            if (contents != null)
             {
-                currentContent.Image = contents[0].Image;
-                currentContent.Header = contents[0].Header;
-                currentContent.Body = contents[0].Body;
-                contents[0].IsCurrent = true;
+                //Set image path relative to gallery Directory
+                foreach (GalleryContent content in contents)
+                {
+                    content.ImagePath = Path.Combine(galleryDirectory, content.ImagePath);
+                }
+
+                currentContent = contents.FirstOrDefault();
+
+                if (currentContent != null) //if contents is not empty
+                {
+                    currentContent.IsCurrent = true;
+                    isAnyContent = true;
+                }
+
                 MoveNextCommand = new DelegateCommand(MoveNext, CanMoveNext);
                 MovePrevCommand = new DelegateCommand(MovePrev, CanMovePrev);
+                CloseGalleryCommand = new DelegateCommand(CloseGallery,CanCloseGallery);
             }
         }
 
-        public void MoveNext(object parameters)
+        #region event handlers
+        internal event RequestCloseGalleryHandler RequestCloseGallery;
+        internal virtual void OnRequestCloseGallery()
+        {
+            if (RequestCloseGallery != null)
+            {
+                RequestCloseGallery();
+            }
+        }
+
+        internal void CloseGallery(object parameters)
+        {
+            //forward CloseGallery to DynamoViewModel
+            dvm.CloseGalleryCommand.Execute(null);
+        }
+
+        internal bool CanCloseGallery(object parameters)
+        {
+            return true;
+        }
+
+        internal void MoveNext(object parameters)
         {
             MoveIndex(true);
         }
@@ -104,7 +134,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             return true;
         }
 
-        public void MovePrev(object parameters)
+        internal void MovePrev(object parameters)
         {
             MoveIndex(false);
         }
@@ -113,33 +143,35 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             return true;
         }
+        #endregion
 
         /// <summary>
         /// Move the currentIndex of the Gallery Bullets
         /// </summary>
         /// <param name="forward">
-        /// false for moving to the left
-        /// true for moving to the right
+        /// true for moving right
+        /// false for moving left
         /// </param>
         private void MoveIndex(bool forward)
         {
             contents[currentIndex].IsCurrent = false;
             currentIndex = (currentIndex + (forward? 1:-1) + contents.Count) % (contents.Count);
-
             contents[currentIndex].IsCurrent = true;
-            currentContent.Image = contents[currentIndex].Image;
-            currentContent.Header = contents[currentIndex].Header;
-            currentContent.Body = contents[currentIndex].Body;
+            currentContent = contents[currentIndex];
             
-            RaisePropertyChanged("CurrentImage");
+            RaisePropertyChanged("CurrentImagePath");
             RaisePropertyChanged("CurrentHeader");
             RaisePropertyChanged("CurrentBody");
         }
 
+        public static bool IsAnyContent { get {return isAnyContent;} }
+
         #region private fields
+        private DynamoViewModel dvm;
         private GalleryContent currentContent;
         private List<GalleryContent> contents;
         private int currentIndex = 0;
+        private static bool isAnyContent = false;
         #endregion
     }
 }

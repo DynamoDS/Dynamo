@@ -104,8 +104,13 @@ namespace Dynamo.Interfaces
         string PreferenceFilePath { get; }
 
         /// <summary>
+        /// Get gallery directory for the image contents of the Gallery UI.
+        /// </summary>
+        string GalleryDirectory { get; }
+
+        /// <summary>
         /// Full path to the GalleryContent xml file. The file is located in
-        /// the AppData/Dynamo/version/
+        /// the AppData/Dynamo/version/locale/
         /// </summary>
         string GalleryFilePath { get; }
 

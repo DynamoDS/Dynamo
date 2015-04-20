@@ -1223,7 +1223,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="GalleryUIBullets"
+    <Style x:Key="GalleryBullets"
            TargetType="ListBox">
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
                 Value="Disabled" />
@@ -1233,6 +1233,7 @@
                 Value="False" />
         <Setter Property="MaxHeight" Value="50"/>
         <Setter Property="MaxWidth" Value="600"/>
+        <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -1243,7 +1244,7 @@
         </Setter>
     </Style>
     
-    <Style x:Key="GalleryUIBullet"
+    <Style x:Key="GalleryBullet"
            TargetType="ListBoxItem">
         <Setter Property="MaxHeight" Value="7"/>
         <Setter Property="MinHeight" Value="7"/>

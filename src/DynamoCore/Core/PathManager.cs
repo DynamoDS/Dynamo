@@ -60,6 +60,7 @@ namespace Dynamo.Core
         private readonly string packagesDirectory;
         private readonly string samplesDirectory;
         private readonly string preferenceFilePath;
+        private readonly string galleryDirectory;
         private readonly string galleryFilePath;
 
         private readonly HashSet<string> nodeDirectories;
@@ -103,6 +104,11 @@ namespace Dynamo.Core
         public string SamplesDirectory
         {
             get { return samplesDirectory; }
+        }
+
+        public string GalleryDirectory
+        {
+            get { return galleryDirectory;  }
         }
 
         public string PreferenceFilePath
@@ -224,7 +230,9 @@ namespace Dynamo.Core
             logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
             packagesDirectory = Path.Combine(userDataDir, PackagesDirectoryName);
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
-            galleryFilePath = Path.Combine(userDataDir, GalleryContentsFileName);
+
+            galleryDirectory = GetGalleryDirectory(userDataDir);
+            galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
 
             // Common directories.
             commonDataDir = GetCommonDataFolder(pathResolver);
@@ -344,6 +352,28 @@ namespace Dynamo.Core
             }
 
             return sampleDirectory;
+        }
+
+        private static string GetGalleryDirectory(string userDataDir)
+        {
+            var uiCulture = CultureInfo.CurrentUICulture.ToString();
+            var galleryDirectory = Path.Combine(userDataDir, "gallery", uiCulture);
+
+            // If the localized samples directory does not exist then fall back 
+            // to using the en-US samples folder. Do an additional check to see 
+            // if the localized folder is available but is empty.
+            // 
+            var di = new DirectoryInfo(galleryDirectory);
+            if (!Directory.Exists(galleryDirectory) ||
+                !di.GetDirectories().Any() ||
+                !di.GetFiles().Any())
+            {
+                var neturalCommonSamples = Path.Combine(userDataDir, "gallery", "en-US");
+                if (Directory.Exists(neturalCommonSamples))
+                    galleryDirectory = neturalCommonSamples;
+            }
+
+            return galleryDirectory;
         }
 
         private IEnumerable<string> LibrarySearchPaths(string library)

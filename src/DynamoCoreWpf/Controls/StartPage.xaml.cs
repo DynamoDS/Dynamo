@@ -15,6 +15,8 @@ using Microsoft.Practices.Prism.ViewModel;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.ViewModels.Core;
+using System.Linq;
+using Dynamo.Services;
 
 namespace Dynamo.UI.Controls
 {
@@ -163,7 +165,7 @@ namespace Dynamo.UI.Controls
 
             references.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-discussion.png")
             {
-                ContextData = ButtonNames.ShowGalleryUI,
+                ContextData = ButtonNames.ShowGallery,
                 ClickAction = StartPageListItem.Action.RegularCommand
             });
 
@@ -363,11 +365,8 @@ namespace Dynamo.UI.Controls
                     dvm.ShowNewFunctionDialogCommand.Execute(null);
                     break;
 
-                case ButtonNames.ShowGalleryUI:
-                    GalleryViewModel galleryViewModel = new GalleryViewModel(this.DynamoViewModel);
-                    GalleryView galleryView = new GalleryView(galleryViewModel);
-                    if (dvm.ShowGalleryUICommand.CanExecute(galleryViewModel))
-                        dvm.ShowGalleryUICommand.Execute(galleryView);
+                case ButtonNames.ShowGallery:
+                    dvm.ShowGalleryCommand.Execute(null);
                     break;
 
                 default:
@@ -404,7 +403,7 @@ namespace Dynamo.UI.Controls
         public const string NewWorkspace = "NewWorkspace";
         public const string NewCustomNodeWorkspace = "NewCustomNodeWorkspace";
         public const string OpenWorkspace = "OpenWorkspace";
-        public const string ShowGalleryUI = "ShowGalleryUI";
+        public const string ShowGallery = "ShowGallery";
     }
 
     public partial class StartPageView : UserControl
@@ -434,14 +433,8 @@ namespace Dynamo.UI.Controls
             var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
             StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
 
-            if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun)
-            {
-                dynamoViewModel.Model.PreferenceSettings.IsFirstRun = false;
-                GalleryViewModel galleryViewModel = new GalleryViewModel(dynamoViewModel);
-                GalleryView galleryView = new GalleryView(galleryViewModel);
-                if (dynamoViewModel.ShowGalleryUICommand.CanExecute(galleryViewModel))
-                    dynamoViewModel.ShowGalleryUICommand.Execute(galleryView);
-            }
+            if(UsageReportingManager.IsShowGalleryAtStart)
+                dynamoViewModel.ShowGalleryCommand.Execute(null);
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)

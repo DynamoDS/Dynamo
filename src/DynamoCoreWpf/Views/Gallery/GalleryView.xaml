@@ -1,27 +1,38 @@
-﻿<Window x:Class="Dynamo.Wpf.Views.Gallery.GalleryView"
+﻿<UserControl x:Class="Dynamo.Wpf.Views.Gallery.GalleryView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:ui="clr-namespace:Dynamo.UI"
-        ShowInTaskbar="False"
-        ResizeMode="NoResize"
-        WindowStartupLocation="CenterOwner"
-        WindowStyle="SingleBorderWindow"
-        Height="600" Width="800">
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+        xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+        d:DesignHeight="600" 
+        d:DesignWidth="600"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Center"
+        Background="White"
+        MouseLeftButtonDown="GalleryView_MouseLeftButtonDown"
+        mc:Ignorable="d"
+        Focusable="True"
+        Padding="0,0,0,20">
     
-    <Window.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Window.Resources>
+    </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <KeyBinding Key="Escape"             
+                    Command="{Binding Path=CloseGalleryCommand}" />
+    </UserControl.InputBindings>
     
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="600"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="100"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -32,32 +43,37 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Button x:Name="CloseButton" 
-                HorizontalAlignment="Right" 
-                BorderThickness="0,0,0,0" 
-                Grid.Column="1"
-                Background="Black"
-                Grid.Row="0"
-                Width="32" 
-                Height="32" 
+        <TextBox x:Name="Version"
+                 Text="{Binding Path=DynamoVersion, Mode=OneWay}"
+                 Foreground="Gray" FontSize="14" BorderThickness="0"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Bottom"
+                 Margin="5,0,0,5"
+                 Grid.Column="1" Grid.Row="0"
+                 FontFamily="{StaticResource OpenSansRegular}"/>
+
+        <Button x:Name="CloseButton"
+                Content="{x:Static p:Resources.GalleryCloseButton}" FontSize="14" Foreground="Red"
+                FontFamily="{StaticResource OpenSansRegular}"
+                HorizontalAlignment="Right"
+                Margin="0,0,5,5"
+                Grid.Column="1" Grid.Row="0"
+                Background="Transparent"
+                BorderThickness="0"
+                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                 VerticalAlignment="Bottom" 
-                Click="CloseGallery">
-            <Button.Content>
-                <Image Source="CloseIcon.png" 
-                       VerticalAlignment="Center" 
-                       HorizontalAlignment="Center" />
-            </Button.Content>
+                Command="{Binding Path=CloseGalleryCommand}">
         </Button>
 
-        <Button x:Name="LeftButton" 
+        <Button x:Name="LeftButton" Focusable="False"
                 HorizontalAlignment="Center" 
-                BorderThickness="0,0,0,0" 
-                Grid.Column="0" 
-                Grid.Row="1"
-                Background="Black" 
                 VerticalAlignment="Center" 
-                Width="32" 
-                Height="32" 
+                Grid.Column="0" Grid.Row="1"
+                Background="Transparent" 
+                BorderThickness="0"
+                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                Width="100"
+                Height="300"
                 Command="{Binding Path=MovePrevCommand}" >
             <Image Source="LeftIcon.png" 
                    VerticalAlignment="Center" 
@@ -65,21 +81,23 @@
         </Button>
 
         <Image x:Name="currentImage" 
-               Source="{Binding Path=CurrentImage, UpdateSourceTrigger=PropertyChanged}" 
-               Width="600" Height="300" 
+               Source="{Binding Path=CurrentImagePath, UpdateSourceTrigger=PropertyChanged}"
+               Stretch="UniformToFill"
+               Width="400" Height="300" 
                HorizontalAlignment="Center" 
                Grid.Column="1" 
                Grid.Row="1"/>
 
-        <Button x:Name="RightButton" 
+        <Button x:Name="RightButton" Focusable="False"
                 HorizontalAlignment="Center" 
-                BorderThickness="0,0,0,0" 
                 Grid.Column="2" 
                 Grid.Row="1"
-                Background="Black" 
+                BorderThickness="0"
+                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                Background="Transparent" 
                 VerticalAlignment="Center" 
-                Width="32" 
-                Height="32" 
+                Width="100" 
+                Height="300" 
                 Command="{Binding Path=MoveNextCommand}">
             <Button.Content>
                 <Image Source="RightIcon.png" 
@@ -89,10 +107,11 @@
         </Button>
 
         <ListBox Name="GalleryBullets" 
-                 VerticalAlignment="Bottom" 
+                 Margin="0,10,0,0"
+                 VerticalAlignment="Top" 
                  HorizontalAlignment="Center" 
-                 Style="{StaticResource GalleryUIBullets}"
-                 ItemContainerStyle="{StaticResource GalleryUIBullet}"
+                 Style="{StaticResource GalleryBullets}"
+                 ItemContainerStyle="{StaticResource GalleryBullet}"
                  ItemsSource="{Binding Path=Contents}"
                  Grid.Column="1" 
                  Grid.Row="2">
@@ -113,4 +132,4 @@
         
     </Grid>
     
-</Window>
+</UserControl>

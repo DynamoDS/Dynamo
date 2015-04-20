@@ -31,6 +31,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Services;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
+using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views.Gallery;
 
 namespace Dynamo.Controls
 {
@@ -44,6 +46,7 @@ namespace Dynamo.Controls
         private Stopwatch _timer;
         private StartPageViewModel startPage;
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
+        private GalleryView galleryView;
 
         DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
@@ -386,6 +389,10 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow += DynamoViewModelRequestAboutWindow;
 
+            //SHOW GALLERY
+            dynamoViewModel.RequestShowGallery += DynamoViewModelRequestShowGallery;
+            dynamoViewModel.RequestCloseGallery += DynamoViewModelRequestCloseGallery;
+
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
 
@@ -428,6 +435,40 @@ namespace Dynamo.Controls
             aboutWindow.Owner = this;
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             aboutWindow.ShowDialog();
+        }
+
+        private void OutsideGalleryView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            dynamoViewModel.CloseGalleryCommand.Execute(null);
+            e.Handled = true;
+        }
+
+        void DynamoViewModelRequestShowGallery()
+        {
+            if (galleryView == null) //On-demand instantiation
+            {
+                galleryView = new GalleryView(new GalleryViewModel(dynamoViewModel));
+                Grid.SetColumnSpan(galleryUi, mainGrid.ColumnDefinitions.Count);
+                Grid.SetRowSpan(galleryUi, mainGrid.RowDefinitions.Count);
+                galleryUi.Visibility = Visibility.Hidden;
+                galleryUi.Background = new SolidColorBrush(Colors.Black)
+                {
+                    Opacity = 0.8
+                };
+            }
+
+            if (GalleryViewModel.IsAnyContent)
+            {
+                galleryUi.Children.Add(galleryView);
+                galleryUi.Visibility = Visibility.Visible;
+                galleryView.Focus(); //get keyboard focus (for ESC)
+            }
+        }
+
+        void DynamoViewModelRequestCloseGallery()
+        {
+            galleryUi.Children.Remove(galleryView);
+            galleryUi.Visibility = Visibility.Hidden;
         }
 
         private PublishPackageView _pubPkgView;
@@ -772,6 +813,10 @@ namespace Dynamo.Controls
 
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow -= DynamoViewModelRequestAboutWindow;
+
+            //SHOW GALLERY
+            dynamoViewModel.RequestShowGallery -= DynamoViewModelRequestShowGallery;
+            dynamoViewModel.RequestCloseGallery -= DynamoViewModelRequestCloseGallery;
         }
 
         // the key press event is being intercepted before it can get to

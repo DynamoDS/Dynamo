@@ -77,6 +77,24 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event RequestShowGalleryHandler RequestShowGallery;
+        public virtual void OnRequestShowGallery()
+        {
+            if (RequestShowGallery != null)
+            {
+                RequestShowGallery();
+            }
+        }
+
+        public event RequestCloseGalleryHandler RequestCloseGallery;
+        public virtual void OnRequestCloseGallery()
+        {
+            if(RequestCloseGallery != null)
+            {
+                RequestCloseGallery();
+            }
+        }
+
         public event RequestViewOperationHandler RequestViewOperation;
         public void OnRequestViewOperation(ViewOperationEventArgs e)
         {
