@@ -104,7 +104,7 @@
             <Setter Property="FocusVisualStyle"
                     Value="{x:Null}" />
             <Setter Property="Visibility"
-                        Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                    Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
             <Setter Property="Template">
                 <Setter.Value>
