@@ -117,7 +117,7 @@ namespace Dynamo
         /// <summary>
         /// This defines how long (in milliseconds) will the graph be automatically saved.
         /// </summary>
-        public long SaveInterval { get; set; }
+        public int BackupInterval { get; set; }
 
         /// <summary>
         /// This defines how many files will be backed up.
@@ -151,7 +151,7 @@ namespace Dynamo
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
 
-            SaveInterval = 60000; // 1 minute
+            BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
         }
 

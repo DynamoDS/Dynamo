@@ -224,7 +224,7 @@ namespace Dynamo.Core
             logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
             packagesDirectory = Path.Combine(userDataDir, PackagesDirectoryName);
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
-            backupDirectory = Path.Combine(userDataDir, BackupDirectoryName);
+            backupDirectory = Path.Combine(Directory.GetParent(userDataDir).FullName, BackupDirectoryName);
 
             // Common directories.
             commonDataDir = GetCommonDataFolder(pathResolver);

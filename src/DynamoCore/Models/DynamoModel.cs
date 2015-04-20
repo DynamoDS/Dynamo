@@ -53,6 +53,7 @@ namespace Dynamo.Models
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
+        private Timer backupFilesTimer;
         #endregion
 
         #region events
@@ -543,6 +544,8 @@ namespace Dynamo.Models
             InitializeNodeLibrary(preferences);
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
+
+            StartBackupFilesTimer();
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -615,6 +618,13 @@ namespace Dynamo.Models
 
             EngineController.Dispose();
             EngineController = null;
+
+            if (backupFilesTimer != null)
+            {
+                backupFilesTimer.Dispose();
+                backupFilesTimer = null;
+                Logger.Log("Backup files timer is disposed");
+            }
 
             if (PreferenceSettings != null)
             {
@@ -1047,6 +1057,52 @@ namespace Dynamo.Models
             {
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
             };
+        }
+
+        #endregion
+
+        #region backup/timer
+
+        /// <summary>
+        /// Backup all the files
+        /// </summary>
+        protected void SaveBackupFiles(object state)
+        {
+            foreach (var workspace in Workspaces)
+            {
+                if (!workspace.HasUnsavedChanges)
+                    continue;
+
+                string fileName;
+                if (string.IsNullOrEmpty(workspace.FileName))
+                {
+                    fileName = "recent_new_file_" + workspace.Guid;
+                    var ext = workspace is HomeWorkspaceModel ? ".DYN" : ".DYF";
+                    fileName += ext;
+                }
+                else
+                {
+                    fileName = Path.GetFileName(workspace.FileName);
+                }
+
+                var savePath = Path.Combine(pathManager.BackupDirectory, fileName);
+                workspace.SaveAs(savePath, null);
+                Logger.Log("Backup file is saved: " + savePath);
+            }
+        }
+
+        /// <summary>
+        /// Start the timer to backup files periodically
+        /// </summary>
+        public void StartBackupFilesTimer()
+        {
+            if (backupFilesTimer == null)
+            {
+                backupFilesTimer = new Timer(SaveBackupFiles);
+            }
+
+            backupFilesTimer.Change(PreferenceSettings.BackupInterval, PreferenceSettings.BackupInterval);
+            Logger.Log(String.Format("Backup files timer is started with an interval of {0} milliseconds", PreferenceSettings.BackupInterval));
         }
 
         #endregion
