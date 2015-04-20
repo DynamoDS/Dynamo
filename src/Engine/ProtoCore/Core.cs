@@ -233,7 +233,6 @@ namespace ProtoCore
     public class Core
     {
         public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
-        public bool isSingleAssocBlock { get; set; }
 
         public IDictionary<string, object> Configurations { get; set; }
         public List<System.Type> DllTypesToLoad { get; private set; }
@@ -602,9 +601,7 @@ namespace ProtoCore
             RuntimeTableIndex = 0;
             CodeBlockList = new List<CodeBlock>();
             CompleteCodeBlockList = new List<CodeBlock>();
-        //    DSExecutable = new Executable();//////////zora1992 delete it  and try to build DSExectable in GenerateExecutable() method only
-            CallsiteGuidMap = new Dictionary<Guid, int>();//zora1992
-            isSingleAssocBlock = true;//zora1992
+            CallsiteGuidMap = new Dictionary<Guid, int>();
             AssocNode = null;
 
             // TODO Jun/Luke type system refactoring
@@ -978,7 +975,7 @@ namespace ProtoCore
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
-            DSExecutable = new Executable();////zora1992
+            DSExecutable = new Executable();
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
             DSExecutable.CodeBlocks.AddRange(CodeBlockList);
