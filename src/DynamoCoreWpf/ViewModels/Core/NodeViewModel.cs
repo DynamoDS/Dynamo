@@ -902,7 +902,10 @@ namespace Dynamo.ViewModels
 
         private bool CanUngroupNode(object parameters)
         {
-            return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();
+            var groups = WorkspaceViewModel.Model.Annotations;
+            return (from model in groups 
+                    let nodeModel = DynamoSelection.Instance.Selection.OfType<NodeModel>().FirstOrDefault() 
+                    where model.SelectedModels.Any(x => x.GUID == nodeModel.GUID) select model).Any();
         }
 
 
