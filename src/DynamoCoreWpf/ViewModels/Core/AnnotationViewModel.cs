@@ -151,7 +151,7 @@ namespace Dynamo.ViewModels
             {
                 this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                     new DynamoModel.UpdateModelValueCommand(
-                    System.Guid.Empty, this.AnnotationModel.GUID, "FSize", parameter.ToString()));
+                    System.Guid.Empty, this.AnnotationModel.GUID, "FontSize", parameter.ToString()));
 
                 this.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
                 this.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();                              

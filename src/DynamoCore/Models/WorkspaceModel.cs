@@ -674,8 +674,9 @@ namespace Dynamo.Models
                 var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
                 {
                     GUID = id,
-                    AnnotationText = text
-                };               
+                    AnnotationText = text                   
+                };
+                annotationModel.GetModelBaseEvent += annotationModel_GetModelBaseEvent;
                 Annotations.Add(annotationModel);
                 HasUnsavedChanges = true;
                 return annotationModel;
@@ -689,9 +690,12 @@ namespace Dynamo.Models
         /// used to include that node again in that group (UNDO operation)
         /// </summary>
         /// <param name="model">The model.</param>
-        internal void SetGetModelsForGrouping(AnnotationModel model)
+        internal void SetModelEventOnAnnotation()
         {
-            model.GetModelBaseEvent += annotationModel_GetModelBaseEvent;
+            foreach (var model in this.Annotations)
+            {
+                model.GetModelBaseEvent += annotationModel_GetModelBaseEvent;
+            }
         }
 
         /// <summary>

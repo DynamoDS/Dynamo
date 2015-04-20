@@ -294,7 +294,7 @@ namespace Dynamo.Models
             DeleteModelInternal(modelsToDelete);
         }
 
-        void UngroupModelImpl(UngroupNodeCommand command)
+        void UngroupModelImpl(UngroupModelCommand command)
         {
             var modelsToUngroup = new List<ModelBase>();
             if (command.ModelGuid != Guid.Empty)

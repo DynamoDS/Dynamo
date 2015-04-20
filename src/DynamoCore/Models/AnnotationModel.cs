@@ -19,9 +19,11 @@ namespace Dynamo.Models
         public event Func<Guid,ModelBase> GetModelBaseEvent;      
         public double InitialTop { get; set; } //required to calculate the TOP position in a group         
         public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group          
-        private const double doubleValue = 0.0;
-        private const double minHeight = 20.0;
-        private const double extendSize = 10.0;
+        private const double DoubleValue = 0.0;
+        private const double MinTextHeight = 20.0;
+        private const double ExtendSize = 10.0;
+        //DeletedModelBases is used to keep track of deleted / ungrouped models. 
+        //During Undo operations this is used to get those models that are deleted from the group
         public List<ModelBase> DeletedModelBases { get; set; }
         public bool loadFromXML { get; set; }
 
@@ -123,7 +125,7 @@ namespace Dynamo.Models
             {
                 textBlockHeight = value;                
                 Y = InitialTop - textBlockHeight;
-                Height = InitialHeight + textBlockHeight - minHeight;
+                Height = InitialHeight + textBlockHeight - MinTextHeight;
             }
         }
 
@@ -206,8 +208,8 @@ namespace Dynamo.Models
                 var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
               
                 //Shifting x by 10 and y to the height of textblock
-                var regionX = groupModels.Min(x => x.X) - extendSize;
-                var regionY = groupModels.Min(y => y.Y) - (TextBlockHeight == 0.0 ? minHeight : TextBlockHeight);
+                var regionX = groupModels.Min(x => x.X) - ExtendSize;
+                var regionY = groupModels.Min(y => y.Y) - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
               
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => x.X) - regionX;
@@ -225,8 +227,8 @@ namespace Dynamo.Models
                 {
                     X = regionX,
                     Y = regionY,
-                    Width = xDistance + maxWidth + extendSize,
-                    Height = yDistance + maxHeight + extendSize
+                    Width = xDistance + maxWidth + ExtendSize,
+                    Height = yDistance + maxHeight + ExtendSize
                 };
              
                 this.X = region.X;              
@@ -246,7 +248,7 @@ namespace Dynamo.Models
                         {
                             if (overlap.Rect.Bottom - region.Bottom > 0)
                             {
-                                this.Height += overlap.Rect.Bottom - region.Bottom + extendSize;
+                                this.Height += overlap.Rect.Bottom - region.Bottom + ExtendSize;
                             }
                             region.Height = this.Height;
                         }
@@ -255,7 +257,7 @@ namespace Dynamo.Models
                         {
                             if (overlap.Rect.Right - region.Right > 0)
                             {
-                                this.Width += overlap.Rect.Right - region.Right + extendSize;
+                                this.Width += overlap.Rect.Right - region.Right + ExtendSize;
                             }
                             region.Width = this.Width;
                         }
@@ -288,7 +290,7 @@ namespace Dynamo.Models
 
             switch (name)
             {
-                case "FSize":
+                case "FontSize":
                     FontSize = Convert.ToDouble(value);
                     break;
                 case "Background":
@@ -336,15 +338,15 @@ namespace Dynamo.Models
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);
             this.annotationText = helper.ReadString("annotationText", Resources.GroupDefaultText);
-            this.X = helper.ReadDouble("left", doubleValue);
-            this.Y = helper.ReadDouble("top", doubleValue);
-            this.width = helper.ReadDouble("width", doubleValue);
-            this.height = helper.ReadDouble("height", doubleValue);
+            this.X = helper.ReadDouble("left", DoubleValue);
+            this.Y = helper.ReadDouble("top", DoubleValue);
+            this.width = helper.ReadDouble("width", DoubleValue);
+            this.height = helper.ReadDouble("height", DoubleValue);
             this.background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
-            this.textBlockHeight = helper.ReadDouble("TextblockHeight", doubleValue);
-            this.InitialTop = helper.ReadDouble("InitialTop", doubleValue);
-            this.InitialHeight = helper.ReadDouble("InitialHeight", doubleValue);
+            this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
+            this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
+            this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
             //Deserialize Selected models
             if (element.HasChildNodes) 
             {
@@ -368,6 +370,8 @@ namespace Dynamo.Models
                 selectedModels = listOfModels;        
             }
 
+            //On any Undo Operation, current values are restored to previous values.
+            //These properties should be Raised, so that they get the correct value on Undo.
             RaisePropertyChanged("Background");
             RaisePropertyChanged("FontSize");
             RaisePropertyChanged("AnnotationText");

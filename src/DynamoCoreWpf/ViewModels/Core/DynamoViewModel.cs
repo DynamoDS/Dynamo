@@ -928,7 +928,7 @@ namespace Dynamo.ViewModels
             {
                 if (!(modelb is AnnotationModel))
                 {
-                    var command = new DynamoModel.UngroupNodeCommand(modelb.GUID);
+                    var command = new DynamoModel.UngroupModelCommand(modelb.GUID);
                     this.ExecuteCommand(command);
                 }
             }  

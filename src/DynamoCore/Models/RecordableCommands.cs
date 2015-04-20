@@ -1533,20 +1533,20 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class UngroupNodeCommand : ModelSpecificRecordableCommand
+        public class UngroupModelCommand : ModelSpecificRecordableCommand
         {
             #region Public Class Methods
 
             [JsonConstructor]
-            public UngroupNodeCommand(string modelGuid) : base(modelGuid) { }
+            public UngroupModelCommand(string modelGuid) : base(modelGuid) { }
 
-            public UngroupNodeCommand(Guid modelGuid) : base(modelGuid) { }
+            public UngroupModelCommand(Guid modelGuid) : base(modelGuid) { }
 
-            internal static UngroupNodeCommand DeserializeCore(XmlElement element)
+            internal static UngroupModelCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
                 Guid modelGuid = helper.ReadGuid("ModelGuid");
-                return new UngroupNodeCommand(modelGuid);
+                return new UngroupModelCommand(modelGuid);
             }
 
             #endregion

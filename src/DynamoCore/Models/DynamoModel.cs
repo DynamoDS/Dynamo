@@ -1018,7 +1018,12 @@ namespace Dynamo.Models
             RegisterHomeWorkspace(newWorkspace);
            
             workspace = newWorkspace;
-
+            //this sets the event on Annotation. This event return the model from the workspace.
+            //When a model is ungrouped from a group, that model will be deleted from that group.
+            //So, when UNDO execution, cannot get that model from that group, it has to get from the workspace.
+            //The below method will set the event on every annotation model, that will return the specific model
+            //from workspace.
+            workspace.SetModelEventOnAnnotation();
             return true;
         }
 
@@ -1046,7 +1051,7 @@ namespace Dynamo.Models
                 return;
 
             //Check for empty group
-            var annotations = Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Annotations);
+            var annotations = Workspaces.SelectMany(ws => ws.Annotations);
             foreach (var annotation in annotations)
             {
                 if (!annotation.SelectedModels.Except(modelsToDelete).Any())
@@ -1075,7 +1080,7 @@ namespace Dynamo.Models
 
         internal void UngroupModel(List<ModelBase> modelsToUngroup)
         {
-            var annotations = Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Annotations);
+            var annotations = Workspaces.SelectMany(ws => ws.Annotations);
             foreach (var model in modelsToUngroup)
             {
                 foreach (var annotation in annotations)
