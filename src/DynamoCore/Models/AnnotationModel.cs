@@ -16,7 +16,7 @@ namespace Dynamo.Models
     public class AnnotationModel : ModelBase
     {
         #region Properties
-        public event Func<Guid,ModelBase> GetModelBaseEvent;      
+        public event Func<Guid, ModelBase> ModelBaseRequested;      
         public double InitialTop { get; set; } //required to calculate the TOP position in a group         
         public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group          
         private const double DoubleValue = 0.0;
@@ -358,12 +358,9 @@ namespace Dynamo.Models
                      {
                          var result = mhelper.ReadGuid("ModelGuid", new Guid());
                          ModelBase model = null;
-                         if(GetModelBaseEvent != null)
-                              model = GetModelBaseEvent(result);
-                         else
-                         {
-                             model = SelectedModels.FirstOrDefault(x => x.GUID == result);
-                         }
+                         model = ModelBaseRequested != null ? ModelBaseRequested(result) : 
+                             SelectedModels.FirstOrDefault(x => x.GUID == result);
+
                         listOfModels.Add(model);
                     }                  
                 }

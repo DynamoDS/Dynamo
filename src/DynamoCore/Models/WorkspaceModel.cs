@@ -676,7 +676,7 @@ namespace Dynamo.Models
                     GUID = id,
                     AnnotationText = text                   
                 };
-                annotationModel.GetModelBaseEvent += annotationModel_GetModelBaseEvent;
+                annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
                 Annotations.Add(annotationModel);
                 HasUnsavedChanges = true;
                 return annotationModel;
@@ -685,7 +685,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Sets the event on Annotaiton model.
+        /// Sets the event on Annotation model.
         /// When a node is removed from a group, this event will be
         /// used to include that node again in that group (UNDO operation)
         /// </summary>
@@ -694,7 +694,7 @@ namespace Dynamo.Models
         {
             foreach (var model in this.Annotations)
             {
-                model.GetModelBaseEvent += annotationModel_GetModelBaseEvent;
+                model.ModelBaseRequested += annotationModel_GetModelBase;
             }
         }
 
@@ -703,7 +703,7 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="modelGuid">The model unique identifier.</param>
         /// <returns></returns>
-        private ModelBase annotationModel_GetModelBaseEvent(Guid modelGuid)
+        private ModelBase annotationModel_GetModelBase(Guid modelGuid)
         {
             ModelBase model = null;
             model = this.Nodes.FirstOrDefault(x => x.GUID == modelGuid);
