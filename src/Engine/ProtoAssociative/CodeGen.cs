@@ -709,9 +709,12 @@ namespace ProtoAssociative
                 {
                     bnode.IsProcedureOwned = isProcedureOwned;
                     DfsTraverse(bnode, ref inferedType, false, null, subPass);
-                    
-                    // Can this be removed completely
-                    //SetDeltaCompilePC(node);
+
+                    //if (!isProcedureOwned)
+                    //{
+                    //    // Can this be removed completely
+                    //    SetDeltaCompilePC(node);
+                    //}
                 }
 
                 if (NodeUtils.IsReturnExpressionNode(bnode))

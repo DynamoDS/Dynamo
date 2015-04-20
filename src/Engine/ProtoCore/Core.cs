@@ -54,11 +54,15 @@ namespace ProtoCore
     {
         public Options()
         {
+            // Execute using new graphnode dependency
+            DirectDependencyExecution = true;
+            LHSGraphNodeUpdate = !DirectDependencyExecution;
+
             ApplyUpdate = false;
 
-            DumpByteCode = false;
-            Verbose = false;
-            DumpIL = false;
+            DumpByteCode = true;
+            Verbose = true;
+            DumpIL = true;
 
             GenerateSSA = true;
             ExecuteSSA = true;
@@ -91,7 +95,6 @@ namespace ProtoCore
             EmitBreakpoints = true;
 
             localDependsOnGlobalSet = false;
-            LHSGraphNodeUpdate = false;
             TempReplicationGuideEmptyFlag = true;
             AssociativeToImperativePropagation = true;
             SuppressFunctionResolutionWarning = true;
@@ -105,6 +108,7 @@ namespace ProtoCore
 
         }
 
+        public bool DirectDependencyExecution { get; set; }
         public bool ApplyUpdate { get; set; }
         public bool DumpByteCode { get; set; }
         public bool DumpIL { get; private set; }

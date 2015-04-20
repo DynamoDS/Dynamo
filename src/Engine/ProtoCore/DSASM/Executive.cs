@@ -1,5 +1,4 @@
 ﻿
-#define __EXECUTE_DATAFLOW_DIRECT_DEPENDENCY
 //#define __EXECUTE_DATAFLOW_DIRECT_JUMP
 
 using System;
@@ -1678,17 +1677,20 @@ namespace ProtoCore.DSASM
             }
 
             List<AssociativeGraph.GraphNode> reachableGraphNodes = null;
+            if (runtimeCore.Options.DirectDependencyExecution)
+            {
+                // Data flow execution prototype
+                // Dependency has already been resolved at compile time
+                // Get the reachable nodes directly from the executingGraphNode
+                reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.whoDependsOnMeList);
+            }
+            else
+            {
+                // Find reachable graphnodes
+                reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
+                    Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
+            }
 
-#if __EXECUTE_DATAFLOW_DIRECT_DEPENDENCY
-            // Data flow execution prototype
-            // Dependency has already been resolved at compile time
-            // Get the reachable nodes directly from the executingGraphNode
-            reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.whoDependsOnMeList);
-#else
-            // Find reachable graphnodes
-            reachableGraphNodes = AssociativeEngine.Utils.UpdateDependencyGraph(
-                Properties.executingGraphNode, this, exprUID, modBlkId, isSSAAssign, runtimeCore.Options.ExecuteSSA, executingBlock, false);
-#endif
             // Mark reachable nodes as dirty
             Validity.Assert(reachableGraphNodes != null);
             int nextPC = Constants.kInvalidPC;
