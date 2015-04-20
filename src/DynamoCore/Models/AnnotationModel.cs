@@ -383,7 +383,8 @@ namespace Dynamo.Models
         {           
             var list = this.SelectedModels.ToList();
             if (!list.Select(x => x.GUID != model.GUID).FirstOrDefault()) return;
-            if (!CheckModelIsInsideGroup(model, checkOverlap)) return;          
+            if (!CheckModelIsInsideGroup(model, checkOverlap)) return;
+            model.IsSelected = false;
             list.Add(model);
             this.SelectedModels = list;
             this.UpdateBoundaryFromSelection();

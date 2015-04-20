@@ -101,6 +101,8 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.SelectModelCommand(annotationGuid, Dynamo.Utilities.ModifierKeys.Shift));
 
+                ViewModel.AddToGroupCommand.Execute(null);
+
                 foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
                 {
                     ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
@@ -188,11 +190,6 @@ namespace Dynamo.Nodes
         private void GroupTextBlock_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             
-        }
-
-        private void AnnotationView_OnMouseMove(object sender, MouseEventArgs e)
-        {
-             ViewModel.AddToGroupCommand.Execute(null);
         }
     }
 }

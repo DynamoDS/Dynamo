@@ -136,12 +136,15 @@ namespace Dynamo.ViewModels
 
         private void AddToGroup(object obj)
         {
-            var selectedModels = DynamoSelection.Instance.Selection.OfType<ModelBase>();
-            foreach (var model in selectedModels)
+            if (annotationModel.IsSelected)
             {
-                if (!(model is AnnotationModel))
+                var selectedModels = DynamoSelection.Instance.Selection.OfType<ModelBase>();
+                foreach (var model in selectedModels)
                 {
-                    this.AnnotationModel.AddToSelectedModels(model,true);
+                    if (!(model is AnnotationModel))
+                    {
+                        this.AnnotationModel.AddToSelectedModels(model, true);
+                    }
                 }
             }
         }
