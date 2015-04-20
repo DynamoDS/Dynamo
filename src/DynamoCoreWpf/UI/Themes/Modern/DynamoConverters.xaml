@@ -139,4 +139,11 @@
     <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
     <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
     <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
+    <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
+    <controls:NodeTypeToColorConverter x:Key="NodeTypeToColorConverter"
+                                       TrueBrush="#cccccc"
+                                       FalseBrush="#777777" />
+    <controls:BooleanToBrushConverter x:Key="DescriptionToColorConverter"
+                                      TrueBrush="#cccccc"
+                                      FalseBrush="#666666" />
 </ResourceDictionary>

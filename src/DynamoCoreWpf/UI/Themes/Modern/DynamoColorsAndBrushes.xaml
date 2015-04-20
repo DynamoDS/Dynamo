@@ -77,5 +77,6 @@
     <SolidColorBrush x:Key="DeafultSearchTextBlockText" Color="#878787" />
     <SolidColorBrush x:Key="CommonSidebarTextColor" Color="#CCCCCC" />
     <SolidColorBrush x:Key="NestedMemberTextColor" Color="#989898" />
+    <SolidColorBrush x:Key="VariableTypeTextColor" Color="#777777" />
 
 </ResourceDictionary>
