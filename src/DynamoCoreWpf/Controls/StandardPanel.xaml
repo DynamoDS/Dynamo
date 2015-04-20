@@ -155,7 +155,7 @@
                                        Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
-                                       Foreground="#CCCCCC"
+                                       Foreground="{StaticResource CommonSidebarTextColor}"
                                        FontSize="13" />
                         </StackPanel>
                     </DataTemplate>
@@ -195,7 +195,7 @@
                                        Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
-                                       Foreground="#CCCCCC"
+                                       Foreground="{StaticResource CommonSidebarTextColor}"
                                        FontSize="13" />
                         </StackPanel>
                     </DataTemplate>
