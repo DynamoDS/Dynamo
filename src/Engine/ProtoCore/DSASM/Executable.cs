@@ -77,8 +77,8 @@ namespace ProtoCore.DSASM
         /// Execution within a visual programming host means 1 guid per node, where 1 node contains a set of DS code.
         /// Each of the callsite instances are mapped to a guid and an instance count.
         /// </summary>
-        public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
-        public List<AssociativeNode> CachedSSANodes { get; set; }
+      //  public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
+        //public List<AssociativeNode> CachedSSANodes { get; set; }
         public DynamicVariableTable DynamicVarTable { get; set; }
         public DynamicFunctionTable DynamicFuncTable { get; set; }
         public FunctionPointerTable FuncPointerTable { get; set; }
@@ -129,8 +129,8 @@ namespace ProtoCore.DSASM
             CallsiteCache = new Dictionary<string, CallSite>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
             ASTToCallSiteMap = new Dictionary<int, CallSite>();
-            CallsiteGuidMap = new Dictionary<Guid, int>();
-            CachedSSANodes = new List<AssociativeNode>();
+          //  CallsiteGuidMap = new Dictionary<Guid, int>();
+            //CachedSSANodes = new List<AssociativeNode>();
             ContextDataMngr = null;
             CodeToLocation = null;
             CurrentDSFileName = string.Empty;

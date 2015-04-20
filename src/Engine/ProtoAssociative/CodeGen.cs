@@ -4003,8 +4003,8 @@ namespace ProtoAssociative
                             this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus, graphNode);
                         }
                         codeblock.Body = BuildSSA(codeblock.Body, context);
-                        core.DSExecutable.CachedSSANodes.Clear();
-                        core.DSExecutable.CachedSSANodes.AddRange(codeblock.Body);
+                        //core.DSExecutable.CachedSSANodes.Clear();
+                        //core.DSExecutable.CachedSSANodes.AddRange(codeblock.Body);
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
                         {
@@ -4075,7 +4075,7 @@ namespace ProtoAssociative
             this.localCodeBlockNode = codeBlockNode;
 
             // Reset the callsite guids in preparation for the next compilation
-            core.DSExecutable.CallsiteGuidMap = new Dictionary<Guid, int>();
+            core.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
         }
@@ -5955,7 +5955,7 @@ namespace ProtoAssociative
                     if (null == codeBlock.parent && pc <= 0)
                     {
                         // The first node in the top level block is a function
-                        core.DSExecutable.isSingleAssocBlock = false;
+                        core.isSingleAssocBlock = false;
                     }
                 }
                 else

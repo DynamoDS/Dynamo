@@ -232,6 +232,9 @@ namespace ProtoCore
 
     public class Core
     {
+        public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
+        public bool isSingleAssocBlock { get; set; }
+
         public IDictionary<string, object> Configurations { get; set; }
         public List<System.Type> DllTypesToLoad { get; private set; }
 
@@ -249,7 +252,7 @@ namespace ProtoCore
 
         public LangVerify Langverify { get; private set; }
         public FunctionTable FunctionTable { get; private set; }
-
+       
         public RuntimeData RuntimeData { get; set; }
 
 #endregion
@@ -573,7 +576,7 @@ namespace ProtoCore
             //Rmem = new RuntimeMemory(Heap);
             Configurations = new Dictionary<string, object>();
             DllTypesToLoad = new List<System.Type>();
-
+           
             RuntimeData = new ProtoCore.RuntimeData();
 
             Validity.AssertExpiry();
@@ -599,8 +602,9 @@ namespace ProtoCore
             RuntimeTableIndex = 0;
             CodeBlockList = new List<CodeBlock>();
             CompleteCodeBlockList = new List<CodeBlock>();
-            DSExecutable = new Executable();
-
+        //    DSExecutable = new Executable();//////////zora1992 delete it  and try to build DSExectable in GenerateExecutable() method only
+            CallsiteGuidMap = new Dictionary<Guid, int>();//zora1992
+            isSingleAssocBlock = true;//zora1992
             AssocNode = null;
 
             // TODO Jun/Luke type system refactoring
@@ -974,7 +978,7 @@ namespace ProtoCore
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
-
+            DSExecutable = new Executable();////zora1992
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
             DSExecutable.CodeBlocks.AddRange(CodeBlockList);
@@ -1029,6 +1033,7 @@ namespace ProtoCore
             DSExecutable.CodeToLocation = codeToLocation;
             DSExecutable.CurrentDSFileName = CurrentDSFileName;
             DSExecutable.RuntimeData = GenerateRuntimeData();
+             
         }
 
 
