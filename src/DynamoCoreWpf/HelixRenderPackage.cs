@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 using Autodesk.DesignScript.Interfaces;
@@ -102,13 +103,25 @@ namespace Dynamo.Wpf
 
         public void PushLineStripVertex(double x, double y, double z)
         {
-            //lines.Indices.Add(lines.Indices.Count);
             lines.Positions.Add(Vector3ForYUp(x,y,z));
         }
 
         public void PushLineStripVertexCount(int n)
         {
             LineStripVertexCounts.Add(n);
+
+            var idxCount = lines.Indices.Any() ? lines.Indices.Last() + 1 : 0;
+
+            for (var i = 0; i < n; ++i)
+            {
+                if (i != 0 && i != n - 1)
+                {
+                    lines.Indices.Add(idxCount);
+                }
+
+                lines.Indices.Add(idxCount);
+                idxCount++;
+            }
         }
 
         public void PushLineStripVertexColor(byte red, byte green, byte blue, byte alpha)
@@ -121,7 +134,11 @@ namespace Dynamo.Wpf
             get { return lines.Positions.ToDoubles(); }
             set
             {
-                throw new NotImplementedException();
+                if (value == null)
+                    return;
+
+                lines.Positions = null;
+                lines.Positions = value.ToVector3Collection();
             }
         }
 
@@ -130,7 +147,11 @@ namespace Dynamo.Wpf
             get { return points.Positions.ToDoubles(); }
             set
             {
-                throw new NotImplementedException();
+                if (value == null)
+                    return;
+
+                points.Positions = null;
+                points.Positions = value.ToVector3Collection();
             }
         }
 
@@ -139,7 +160,11 @@ namespace Dynamo.Wpf
             get { return mesh.Positions.ToDoubles(); }
             set
             {
-                throw new NotImplementedException();
+                if (value == null)
+                    return;
+
+                mesh.Positions = null;
+                mesh.Positions = value.ToVector3Collection();
             }
         }
 
@@ -148,16 +173,24 @@ namespace Dynamo.Wpf
             get { return mesh.Normals.ToDoubles(); }
             set
             {
-                throw new NotImplementedException();
+                if (value == null)
+                    return;
+
+                mesh.Normals = null;
+                mesh.Normals = value.ToVector3Collection();
             }
         }
 
         public List<double> TriangleUVs
         {
-            get { return mesh.Normals.ToDoubles(); }
+            get { return mesh.TextureCoordinates.ToDoubles(); }
             set
             {
-                throw new NotImplementedException();
+                if (value == null)
+                    return;
+
+                mesh.TextureCoordinates = null;
+                mesh.TextureCoordinates = value.ToVector2Collection();
             }
         }
 
@@ -324,6 +357,18 @@ namespace Dynamo.Wpf
 
     public static class HelixRenderExtensions
     {
+        public static List<double> ToDoubles(this Vector2Collection collection)
+        {
+            var doubles = new List<double>();
+            foreach (var v in collection)
+            {
+                doubles.Add(v.X);
+                doubles.Add(v.Y);
+            }
+
+            return doubles;
+        }
+
         public static List<double> ToDoubles(this Vector3Collection collection)
         {
             var doubles = new List<double>();
@@ -363,6 +408,33 @@ namespace Dynamo.Wpf
                 colors.Add(newColor);
             }
             return colors;
+        }
+
+        public static Vector3Collection ToVector3Collection(this List<double> collection)
+        {
+            var vectors = new Vector3Collection();
+            for (var i = 0; i < collection.Count; i += 3)
+            {
+                var a = collection[i];
+                var b = collection[i + 1];
+                var c = collection[i + 2];
+                vectors.Add(new Vector3((float)a,(float)b,(float)c));
+            }
+
+            return vectors;
+        }
+
+        public static Vector2Collection ToVector2Collection(this List<double> collection)
+        {
+            var vectors = new Vector2Collection();
+            for (var i = 0; i < collection.Count; i += 2)
+            {
+                var a = collection[i];
+                var b = collection[i + 1];
+                vectors.Add(new Vector2((float)a, (float)b));
+            }
+
+            return vectors;
         }
     }
 }

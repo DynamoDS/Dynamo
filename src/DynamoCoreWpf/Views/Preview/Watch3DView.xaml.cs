@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -832,31 +833,18 @@ namespace Dynamo.Controls
             Lines = null;
             LinesSelected = null;
             Mesh = null;
-            MeshSelected = null;
             Text = null;
             MeshCount = 0;
 
-            var packages = e.Packages
-                .Cast<HelixRenderPackage>().ToList();
+            var packages = e.Packages.Concat(e.SelectedPackages)
+                .Cast<HelixRenderPackage>();
 
-            var selPackages = e.SelectedPackages
-                .Cast<HelixRenderPackage>().ToList();
-
-            var allPoints = packages.Select(p => p.Points).ToList();
-            var allLines = packages.Select(p => p.Lines).ToList();
-            //var allText = packages.Select(p => p.Text).ToList();
-            var allMeshes = packages.Select(p => p.Mesh).ToList();
-
-            var allLinesSel = selPackages.Select(p => p.Lines).ToList();
-            var allMeshSel = selPackages.Select(p => p.Mesh).ToList();
-
-            var points = AggregatePoints(allPoints);
-            var lines = AggregateLines(allLines);
-            var mesh = AggregateMeshes(allMeshes);
-            //var text = AggregateText(allText);
-
-            var linesSelected = AggregateLines(allLinesSel);
-            var meshSelected = AggregateMeshes(allMeshSel);
+            var points = HelixRenderPackage.InitPointGeometry();
+            var lines = HelixRenderPackage.InitLineGeometry();
+            var linesSel = HelixRenderPackage.InitLineGeometry();
+            var mesh = HelixRenderPackage.InitMeshGeometry();
+            
+            AggregateRenderPackages(packages, points, lines, linesSel, mesh);
 
             if (!points.Positions.Any())
                 points = null;
@@ -864,17 +852,14 @@ namespace Dynamo.Controls
             if (!lines.Positions.Any())
                 lines = null;
 
-            if (!linesSelected.Positions.Any())
-                linesSelected = null;
+            if (!linesSel.Positions.Any())
+                linesSel = null;
 
             //if (!text.TextInfo.Any())
             //    text = null;
 
             if (!mesh.Positions.Any())
                 mesh = null;
-
-            if (!meshSelected.Positions.Any())
-                meshSelected = null;
 
 #if DEBUG
             renderTimer.Stop();
@@ -883,140 +868,97 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            SendGraphicsToView(points, lines, linesSelected, mesh, meshSelected, null);
+            SendGraphicsToView(points, lines, linesSel, mesh, null);
 
             //DrawTestMesh();
         }
 
-        private PointGeometry3D AggregatePoints(IList<PointGeometry3D> allPoints)
+        private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages, 
+            PointGeometry3D points, LineGeometry3D lines, 
+            LineGeometry3D linesSel, MeshGeometry3D mesh)
         {
-            var points = HelixRenderPackage.InitPointGeometry();
-
-            foreach (var p in allPoints)
+            foreach (var rp in packages)
             {
-                if (!p.Positions.Any())
-                    continue;
-
-                var idxCount = points.Indices.Count;
-
-                points.Positions.AddRange(p.Positions);
-                points.Colors.AddRange(p.Colors);
-
-                foreach (var idx in p.Indices)
+                var p = rp.Points;
+                if (p.Positions.Any())
                 {
-                    points.Indices.Add(idx + idxCount);
-                }
-            }
+                    var startIdx = points.Positions.Count;
 
-            return points;
-        }
+                    points.Positions.AddRange(p.Positions);
+                    points.Colors.AddRange(p.Colors);
 
-        private LineGeometry3D AggregateLines(IList<LineGeometry3D> allLines)
-        {
-            var lines = HelixRenderPackage.InitLineGeometry();
+                    var endIdx = points.Positions.Count;
 
-            foreach (var l in allLines)
-            {
-                if (!l.Positions.Any())
-                    continue;
-
-                var idx = lines.Positions.Count;
-
-                lines.Positions.AddRange(l.Positions);
-                lines.Colors.AddRange(l.Colors);
-
-                for (var i = 0; i < l.Positions.Count; i++)
-                {
-                    lines.Indices.Add(idx);
-                    if (i != 0 && i != l.Positions.Count -1)
+                    for (var i = 0; i < points.Positions.Count; i++)
                     {
-                        lines.Indices.Add(idx);
+                        points.Indices.Add(i + startIdx);
                     }
-                    idx++;
+
+                    if (rp.IsSelected)
+                    {
+                        for (var i = startIdx; i < endIdx; i++)
+                        {
+                            points.Colors[i] = selectionColor;
+                        }
+                    }
                 }
-            }
 
-            return lines;
-        }
-
-        private MeshGeometry3D AggregateMeshes(IList<MeshGeometry3D> allMeshes)
-        {
-            var mesh = HelixRenderPackage.InitMeshGeometry();
-
-            foreach (var m in allMeshes)
-            {
-                if (!m.Positions.Any())
-                    continue;
-                
-                var idxCount = mesh.Indices.Count;
-
-                mesh.Positions.AddRange(m.Positions);
-                mesh.Colors.AddRange(m.Colors);
-                mesh.Normals.AddRange(m.Normals);
-                mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
-
-                foreach (var idx in m.Indices)
+                var l = rp.Lines;
+                if (l.Positions.Any())
                 {
-                    mesh.Indices.Add(idx + idxCount);
+                    if (!l.Positions.Any())
+                        continue;
+
+                    // Choose a collection to store the line data.
+                    var lineSet = rp.IsSelected ? linesSel : lines;
+
+                    var startIdx = lineSet.Positions.Count;
+
+                    lineSet.Positions.AddRange(l.Positions);
+                    lineSet.Colors.AddRange(l.Colors);
+                    
+                    var endIdx = lineSet.Positions.Count;
+
+                    for (var i = 0; i < l.Indices.Count; i++)
+                    {
+                        lineSet.Indices.Add(l.Indices[i] + startIdx);
+                    }
+
+                    if (rp.IsSelected)
+                    {
+                        for (var i = startIdx; i < endIdx; i++)
+                        {
+                            lineSet.Colors[i] = selectionColor;
+                        }
+                    }
+                }
+
+                var m = rp.Mesh;
+                if (m.Positions.Any())
+                {
+                    var idxCount = mesh.Positions.Count;
+                    
+                    mesh.Positions.AddRange(m.Positions);
+                    mesh.Colors.AddRange(m.Colors);
+                    mesh.Normals.AddRange(m.Normals);
+                    mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
+
+                    var endIdx = mesh.Positions.Count;
+
+                    for (var i = 0; i < mesh.Positions.Count; i++)
+                    {
+                        mesh.Indices.Add(i + idxCount);
+                    }
+
+                    if (rp.IsSelected)
+                    {
+                        for (var i = idxCount; i < endIdx; i++)
+                        {
+                            mesh.Colors[i] = selectionColor;
+                        }
+                    }
                 }
             }
-
-            return mesh;
-        }
-
-        private BillboardText3D AggregateText(IList<BillboardText3D> allText)
-        {
-            var text = HelixRenderPackage.InitText3D();
-
-            text.Positions.AddRange(allText.SelectMany(p => p.Positions));
-            text.Colors.AddRange(allText.SelectMany(p => p.Colors));
-            text.TextInfo.AddRange(allText.SelectMany(p => p.TextInfo));
-
-            return text;
-        }
-
-        private static LineGeometry3D InitLineGeometry()
-        {
-            var lines = new LineGeometry3D
-            {
-                Positions = new Vector3Collection(),
-                Indices = new IntCollection(),
-                Colors = new Color4Collection()
-            };
-
-            return lines;
-        }
-
-        private static PointGeometry3D InitPointGeometry()
-        {
-            var points = new PointGeometry3D()
-            {
-                Positions = new Vector3Collection(),
-                Indices = new IntCollection(),
-                Colors = new Color4Collection()
-            };
-
-            return points;
-        }
-
-        private static MeshGeometry3D InitMeshGeometry()
-        {
-            var mesh = new MeshGeometry3D()
-            {
-                Positions = new Vector3Collection(),
-                Indices = new IntCollection(),
-                Colors = new Color4Collection(),
-                Normals = new Vector3Collection(),
-            };
-
-            return mesh;
-        }
-
-        private static BillboardText3D InitText3D()
-        {
-            var text3D = new BillboardText3D();
-
-            return text3D;
         }
 
         private void SendGraphicsToView(
@@ -1024,213 +966,16 @@ namespace Dynamo.Controls
             LineGeometry3D lines,
             LineGeometry3D linesSelected,
             MeshGeometry3D mesh,
-            MeshGeometry3D meshSelected,
             BillboardText3D text)
         {
             Points = points;
             Lines = lines;
             LinesSelected = linesSelected;
             Mesh = mesh;
-            MeshSelected = meshSelected;
             Text = text;
             
             // Send property changed notifications for everything
             NotifyPropertyChanged(string.Empty);
-        }
-
-        private void ConvertPoints(IRenderPackage p, PointGeometry3D points, BillboardText3D text)
-        {
-            var color_idx = 0;
-
-            for (int i = 0; i < p.PointVertices.Count; i += 3)
-            {
-                var x = (float)p.PointVertices[i];
-                var y = (float)p.PointVertices[i + 1];
-                var z = (float)p.PointVertices[i + 2];
-
-                // DirectX convention - Y Up
-                var pt = new Vector3(x, z, -y);
-
-                if (i == 0 && ((RenderPackage)p).DisplayLabels)
-                {
-                    text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
-                }
-
-                // The default point color is black. If the point
-                // colors array is large enough, then we pull the 
-                // point color from that.
-                var ptColor = Color4.Black;
-                if (p.PointVertexColors.Count >= color_idx + 4)
-                {
-                    ptColor = new Color4(
-                                        (p.PointVertexColors[color_idx] / 255.0f),
-                                        (p.PointVertexColors[color_idx + 1] / 255.0f),
-                                        (p.PointVertexColors[color_idx + 2] / 255.0f), 1);
-                }
-
-                points.Positions.Add(pt);
-                points.Indices.Add(points.Positions.Count);
-
-                points.Colors.Add(((RenderPackage)p).Selected ? selectionColor : ptColor);
-
-                color_idx += 4;
-            }
-
-        }
-
-        private void ConvertLines(IRenderPackage p, LineGeometry3D geom, BillboardText3D text)
-        {
-            int color_idx = 0;
-            var idx = 0;
-            int outerCount = 0;
-
-            foreach (var count in p.LineStripVertexCounts)
-            {
-                for (int i = 0; i < count; ++i)
-                {
-                    var x1 = (float)p.LineStripVertices[idx];
-                    var y1 = (float)p.LineStripVertices[idx + 1];
-                    var z1 = (float)p.LineStripVertices[idx + 2];
-
-                    // DirectX convention - Y Up
-                    var pt = new Vector3(x1, z1, -y1);
-
-                    if (i == 0 && outerCount == 0 && ((RenderPackage)p).DisplayLabels)
-                    {
-                        text.TextInfo.Add(new TextInfo(CleanTag(p.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
-                    }
-
-                    Color4 startColor = Color.Black;
-
-                    if (p.LineStripVertexColors.Count >= color_idx + 2)
-                    {
-                        startColor = new Color4(
-                            (p.LineStripVertexColors[color_idx] / 255.0f),
-                            (p.LineStripVertexColors[color_idx + 1] / 255.0f),
-                            (p.LineStripVertexColors[color_idx + 2] / 255.0f),
-                            1);
-                    }
-
-                    // Line segments are represented as a 
-                    // start point and an end point. Except
-                    // where we are starting the curve or ending it,
-                    // we duplicate the point.
-                    if (i != 0 && i != count - 1)
-                    {
-                        geom.Indices.Add(geom.Indices.Count);
-                        geom.Positions.Add(pt);
-                        geom.Colors.Add(((RenderPackage)p).Selected ? selectionColor : startColor);
-                    }
-
-                    geom.Indices.Add(geom.Indices.Count);
-                    geom.Positions.Add(pt);
-                    geom.Colors.Add(((RenderPackage)p).Selected ? selectionColor : startColor);
-                    
-                    idx += 3;
-                    color_idx += 4;
-                }
-
-                outerCount++;
-            }
-        }
-
-        private void ConvertMeshes(IRenderPackage p, MeshGeometry3D mesh)
-        { 
-            // DirectX has a different winding than we store in
-            // render packages. Re-wind triangles here...
-            var color_idx = 0;
-            var pt_idx = mesh.Positions.Count;
-
-            for (int i = 0; i < p.TriangleVertices.Count; i += 9)
-            {
-                var a = GetVertex(p.TriangleVertices, i);
-                var b = GetVertex(p.TriangleVertices, i + 3);
-                var c = GetVertex(p.TriangleVertices, i + 6);
-
-                var an = GetVertex(p.TriangleNormals, i);
-                var bn = GetVertex(p.TriangleNormals, i + 3);
-                var cn = GetVertex(p.TriangleNormals, i + 6);
-                an.Normalize();
-                bn.Normalize();
-                cn.Normalize();
-
-                var ca = GetColor(p, color_idx);
-                var cb = GetColor(p, color_idx + 4);
-                var cc = GetColor(p, color_idx + 8);
-
-                mesh.Positions.Add(a);
-                mesh.Positions.Add(c);
-                mesh.Positions.Add(b);
-
-                mesh.Indices.Add(pt_idx);
-                mesh.Indices.Add(pt_idx + 1);
-                mesh.Indices.Add(pt_idx + 2);
-
-                mesh.Normals.Add(an);
-                mesh.Normals.Add(cn);
-                mesh.Normals.Add(bn);
-
-                if (((RenderPackage)p).Selected)
-                {
-                    mesh.Colors.Add(selectionColor);
-                    mesh.Colors.Add(selectionColor);
-                    mesh.Colors.Add(selectionColor);
-                }
-                else
-                {
-                    mesh.Colors.Add(ca);
-                    mesh.Colors.Add(cc);
-                    mesh.Colors.Add(cb); 
-                }
-
-                color_idx += 12;
-                pt_idx += 3;
-            }
-
-            if (mesh.Indices.Count > 0)
-            {
-                MeshCount++;
-            }
-        }
-
-        private static Color4 GetColor(IRenderPackage p, int color_idx)
-        {
-            var color = new Color4(1,1,1,1);
-
-            if (color_idx <= p.TriangleVertexColors.Count-3)
-            {
-                color = new Color4(
-                (float)(p.TriangleVertexColors[color_idx] / 255.0),
-                (float)(p.TriangleVertexColors[color_idx + 1] / 255.0),
-                (float)(p.TriangleVertexColors[color_idx + 2] / 255.0),
-                (float)(p.TriangleVertexColors[color_idx + 3] / 255.0));
-            }
-           
-            return color;
-        }
-
-        private static Vector3 GetVertex(List<double> p, int i)
-        {
-            var x = (float)p[i];
-            var y = (float)p[i + 1];
-            var z = (float)p[i + 2];
-
-            // DirectX convention - Y Up
-            var new_point = new Vector3(x, z, -y);
-            return new_point;
-        }
-
-        private string CleanTag(string tag)
-        {
-            var splits = tag.Split(':');
-            if (splits.Count() <= 1) return tag;
-
-            var sb = new StringBuilder();
-            for (int i = 1; i < splits.Count(); i++)
-            {
-                sb.AppendFormat("[{0}]", splits[i]);
-            }
-            return sb.ToString();
         }
 
         #endregion
