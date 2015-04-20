@@ -324,9 +324,7 @@ namespace Dynamo.Models
 
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
-            CurrentWorkspace.ConvertNodesToCodeInternal(
-                command.NodeId,
-                EngineController);
+            CurrentWorkspace.ConvertNodesToCodeInternal(EngineController);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }

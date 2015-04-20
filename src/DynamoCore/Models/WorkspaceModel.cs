@@ -996,7 +996,7 @@ namespace Dynamo.Models
             HasUnsavedChanges = true;
         }
 
-        internal void ConvertNodesToCodeInternal(Guid nodeId, EngineController engineController)
+        internal void ConvertNodesToCodeInternal(EngineController engineController)
         {
             var selectedNodes = DynamoSelection.Instance
                                                .Selection
@@ -1005,7 +1005,7 @@ namespace Dynamo.Models
             if (!selectedNodes.Any())
                 return;
 
-            var cliques = NodeToCodeUtils.GetCliques(selectedNodes).Where(c => c.Count > 1);
+            var cliques = NodeToCodeUtils.GetCliques(selectedNodes).Where(c => !(c.Count == 1 && c.First() is CodeBlockNodeModel));
             var codeBlockNodes = new List<CodeBlockNodeModel>();
 
             //UndoRedo Action Group----------------------------------------------
@@ -1079,7 +1079,7 @@ namespace Dynamo.Models
 
                     var codeBlockNode = new CodeBlockNodeModel(
                         code,
-                        nodeId,
+                        System.Guid.NewGuid(), 
                         totalX / nodeCount,
                         totalY / nodeCount, engineController.LibraryServices);
                     UndoRecorder.RecordCreationForUndo(codeBlockNode);

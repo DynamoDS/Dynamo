@@ -248,7 +248,7 @@ namespace Dynamo.ViewModels
                 return DynamoSelection.Instance.Selection.OfType<NodeModel>()
                     .GroupBy(node => node.ArgumentLacing)
                     .OrderByDescending(group => group.Count())
-                    .Select(group => group.Key).First();
+                    .Select(group => group.Key).FirstOrDefault();
             }
         }
 
