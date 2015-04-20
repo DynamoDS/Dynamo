@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Dynamo.Models;
 using System;
+using Dynamo.Selection;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Dynamo.Views;
@@ -110,6 +113,36 @@ namespace Dynamo.ViewModels
                         new DelegateCommand(UpdateFontSize, CanChangeFontSize);
 
                 return _changeFontSize;
+            }
+        }
+
+        private DelegateCommand _addToGroupCommand;
+        public DelegateCommand AddToGroupCommand
+        {
+             get
+            {
+                if (_addToGroupCommand == null)
+                    _addToGroupCommand =
+                        new DelegateCommand(AddToGroup, CanAddToGroup);
+
+                return _addToGroupCommand;
+            }
+        }
+
+        private bool CanAddToGroup(object obj)
+        {
+            return DynamoSelection.Instance.Selection.Count >= 0;
+        }
+
+        private void AddToGroup(object obj)
+        {
+            var selectedModels = DynamoSelection.Instance.Selection.OfType<ModelBase>();
+            foreach (var model in selectedModels)
+            {
+                if (!(model is AnnotationModel))
+                {
+                    this.AnnotationModel.AddToSelectedModels(model,true);
+                }
             }
         }
       

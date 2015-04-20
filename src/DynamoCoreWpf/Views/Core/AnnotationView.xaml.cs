@@ -10,6 +10,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
@@ -187,6 +188,11 @@ namespace Dynamo.Nodes
         private void GroupTextBlock_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             
+        }
+
+        private void AnnotationView_OnMouseMove(object sender, MouseEventArgs e)
+        {
+             ViewModel.AddToGroupCommand.Execute(null);
         }
     }
 }

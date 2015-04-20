@@ -148,15 +148,13 @@ namespace Dynamo.Models
         /// <param name="nodes">The nodes.</param>
         /// <param name="notes">The notes.</param>
         /// <param name="loadFromGraph">This is true when graph is loaded from XML</param>
-        public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes, bool loadFromGraph=false)
+        public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
         {                                 
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
             DeletedModelBases = new List<ModelBase>(); 
-            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();            
-            loadFromXML = loadFromGraph;
-            if (!loadFromGraph)
-                UpdateBoundaryFromSelection();
+            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();      
+            UpdateBoundaryFromSelection();
         }
 
 
@@ -170,8 +168,7 @@ namespace Dynamo.Models
                 case "Y":
                     UpdateBoundaryFromSelection();
                     break;
-                case "Position":
-                    if(!loadFromXML)
+                case "Position":                  
                         UpdateBoundaryFromSelection();
                     break;
                 case "Text":
@@ -380,13 +377,27 @@ namespace Dynamo.Models
         /// and UNDO is clicked.
         /// </summary>
         /// <param name="model">The model.</param>
-        internal void AddToSelectedModels(ModelBase model)
+        /// <param name="checkOverlap"> checkoverlap determines whether the selected model is 
+        /// completely inside that group</param>
+        internal void AddToSelectedModels(ModelBase model, bool checkOverlap = false)
         {           
             var list = this.SelectedModels.ToList();
+            if (!list.Select(x => x.GUID != model.GUID).FirstOrDefault()) return;
+            if (!CheckModelIsInsideGroup(model, checkOverlap)) return;          
             list.Add(model);
             this.SelectedModels = list;
-            this.loadFromXML = false;
             this.UpdateBoundaryFromSelection();
+        }
+
+        private bool CheckModelIsInsideGroup(ModelBase model, bool checkOverlap)
+        {
+            if (!checkOverlap) return true;
+            var modelRect = model.Rect;
+            if (this.Rect.Contains(modelRect))
+            {
+                return true;
+            }
+            return false;
         }
 
         #endregion
