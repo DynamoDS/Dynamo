@@ -328,7 +328,7 @@ namespace Dynamo.Core
             var di = new DirectoryInfo(sampleDirectory);
             if (!Directory.Exists(sampleDirectory) ||
                 !di.GetDirectories().Any() ||
-                !di.GetFiles().Any())
+                !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
                 var neturalCommonSamples = Path.Combine(dataRootDirectory, "samples", "en-US");
                 if (Directory.Exists(neturalCommonSamples))
