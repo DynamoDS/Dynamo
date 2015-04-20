@@ -76,19 +76,19 @@ namespace Dynamo.Controls
             {
                 var st = (PackageManagerSearchViewModel.PackageSearchState)value;
 
-                if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
+                if (st == PackageManagerSearchViewModel.PackageSearchState.NoResults)
                 {
                     return Resources.PackageSearchStateNoResult;
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Results)
                 {
                     return "";
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Searching)
                 {
                     return Resources.PackageSearchStateSearching;
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Syncing)
                 {
                     return Resources.PackageSearchStateSyncingWithServer;
                 }
