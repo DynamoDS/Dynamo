@@ -20,105 +20,21 @@
 
         <!-- Region Expander Templates -->
 
-        <ControlTemplate x:Key="CategoryExpanderButtonTemplate"
-                         TargetType="{x:Type ToggleButton}">
-            <Border x:Name="ExpanderButtonBorder"
-                    Background="{StaticResource RootElementBackground}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    Padding="8,0,0,0">
-                <Grid MinHeight="27"
-                      MinWidth="66"
-                      Margin="0,0,0,2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Image x:Name="ExpandCollapseStateIcon"
-                           Source="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"
-                           Width="16"
-                           Height="16"
-                           VerticalAlignment="Center" />
-                    <ContentPresenter x:Name="HeaderContent"
-                                      Grid.Column="1"
-                                      ContentSource="Content"
-                                      VerticalAlignment="Center"
-                                      TextBlock.FontSize="13"
-                                      TextBlock.Foreground="#989898"
-                                      Margin="8,0,0,0" />
-                </Grid>
-            </Border>
-            <ControlTemplate.Triggers>
-
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsMouseOver"
-                                   Value="True" />
-                        <Condition Property="IsChecked"
-                                   Value="False" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                        <Setter Property="Source"
-                                TargetName="ExpandCollapseStateIcon"
-                                Value="/DynamoCoreWpf;component/UI/Images/collapsestate_hover.png" />
-                    </MultiTrigger.Setters>
-                </MultiTrigger>
-
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsMouseOver"
-                                   Value="True" />
-                        <Condition Property="IsChecked"
-                                   Value="True" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                        <Setter Property="Source"
-                                TargetName="ExpandCollapseStateIcon"
-                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_hover.png" />
-                        <Setter Property="TextBlock.FontWeight"
-                                TargetName="HeaderContent"
-                                Value="Semibold" />
-                        <Setter Property="TextBlock.Foreground"
-                                TargetName="HeaderContent"
-                                Value="#bbbbbb" />
-                    </MultiTrigger.Setters>
-                </MultiTrigger>
-
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsMouseOver"
-                                   Value="False" />
-                        <Condition Property="IsChecked"
-                                   Value="True" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                        <Setter Property="Source"
-                                TargetName="ExpandCollapseStateIcon"
-                                Value="/DynamoCoreWpf;component/UI/Images/expandstate_normal.png" />
-                        <Setter Property="TextBlock.FontWeight"
-                                TargetName="HeaderContent"
-                                Value="Semibold" />
-                        <Setter Property="TextBlock.Foreground"
-                                TargetName="HeaderContent"
-                                Value="#bbbbbb" />
-                    </MultiTrigger.Setters>
-                </MultiTrigger>
-
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-
         <ControlTemplate x:Key="CategoryExpanderTemplate"
                          TargetType="{x:Type Expander}">
-            <DockPanel Background="#2F2F2F">
-                <ToggleButton x:Name="ExpanderButton"
-                              DockPanel.Dock="Top"
-                              Template="{StaticResource CategoryExpanderButtonTemplate}"
-                              Content="{TemplateBinding Header}"
-                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
-                              OverridesDefaultStyle="True"
-                              Height="27" />
-                <ContentPresenter x:Name="ExpanderContent"
+            <DockPanel>
+                    <Border DockPanel.Dock="Top"
+                            Height="27">
+                        <ToggleButton x:Name="ExpanderButton"
+                                      Template="{StaticResource LibraryToggleExpanderTemplate}"
+                                      Content="{TemplateBinding Header}"
+                                      IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                      OverridesDefaultStyle="True"
+                                      Background="{StaticResource RootElementBackground}"
+                                      Padding="8,0,0,0" />
+                    </Border>
+
+                    <ContentPresenter x:Name="ExpanderContent"
                                   Visibility="Collapsed"
                                   DockPanel.Dock="Bottom">
                     <ContentPresenter.Width>
