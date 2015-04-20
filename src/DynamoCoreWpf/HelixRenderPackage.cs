@@ -355,10 +355,10 @@ namespace Dynamo.Wpf
             var colors = new Color4Collection();
             for(var i = 0; i<collection.Count; i+=4)
             {
-                var a = collection[i]/255;
-                var b = collection[i + 1]/255;
-                var c = collection[i + 2]/255;
-                var d = collection[i + 3]/255;
+                var a = collection[i]/255.0f;
+                var b = collection[i + 1]/255.0f;
+                var c = collection[i + 2]/255.0f;
+                var d = collection[i + 3]/255.0f;
                 var newColor = new Color4(a, b, c, d);
                 colors.Add(newColor);
             }
