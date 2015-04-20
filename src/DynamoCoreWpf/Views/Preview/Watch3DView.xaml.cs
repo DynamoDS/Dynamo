@@ -826,7 +826,6 @@ namespace Dynamo.Controls
 #if DEBUG
             renderTimer.Start();
 #endif
-
             Points = null;
             Lines = null;
             LinesSelected = null;
@@ -856,19 +855,6 @@ namespace Dynamo.Controls
 
             var linesSelected = AggregateLines(allLinesSel);
             var meshSelected = AggregateMeshes(allMeshSel);
-
-            //var points = InitPointGeometry();
-            //var lines = InitLineGeometry();
-            //var linesSelected = InitLineGeometry();
-            //var text = InitText3D(); 
-            //var mesh = InitMeshGeometry();
-
-            //foreach (RenderPackage package in packages)
-            //{
-            //    ConvertPoints(package, points, text);
-            //    ConvertLines(package, package.Selected ? linesSelected : lines, text);
-            //    ConvertMeshes(package, mesh);
-            //}
 
             if (!points.Positions.Any())
                 points = null;
