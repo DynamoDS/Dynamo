@@ -923,7 +923,7 @@ namespace ProtoCore
             ExprInterpreterExe.classTable = DSExecutable.classTable;
             ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
             ExprInterpreterExe.runtimeSymbols = DSExecutable.runtimeSymbols;
-            ExprInterpreterExe.isSingleAssocBlock = DSExecutable.isSingleAssocBlock;
+            //ExprInterpreterExe.isSingleAssocBlock = DSExecutable.isSingleAssocBlock;
 
             ExprInterpreterExe.TypeSystem = TypeSystem;
             
@@ -1013,13 +1013,13 @@ namespace ProtoCore
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
             }
 
-            // Single associative block means the first instruction is an immediate bounce 
-            // This variable is only used by the mirror to determine if the GetValue()
-            // block parameter needs to be incremented or not in order to get the correct global variable
-            if (DSExecutable.isSingleAssocBlock)
-            {
-                DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
-            }
+            //// Single associative block means the first instruction is an immediate bounce 
+            //// This variable is only used by the mirror to determine if the GetValue()
+            //// block parameter needs to be incremented or not in order to get the correct global variable
+            //if (DSExecutable.isSingleAssocBlock)
+            //{
+            //    DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
+            //}
             GenerateExprExe();
             DSExecutable.FunctionTable = FunctionTable;
             DSExecutable.DynamicVarTable = DynamicVariableTable;

@@ -48,7 +48,7 @@ namespace ProtoCore.DSASM
         /// </summary>
         public RuntimeData RuntimeData { get; set; }
 
-        public bool isSingleAssocBlock { get; set; }
+        //public bool isSingleAssocBlock { get; set; }
         public ProtoCore.DSASM.ClassTable classTable { get; set; }
         public ProtoCore.DSASM.ProcedureTable[] procedureTable { get; set; }
         public ProtoCore.DSASM.SymbolTable[] runtimeSymbols { get; set; }
@@ -117,7 +117,7 @@ namespace ProtoCore.DSASM
 
         public void Reset()
         {
-            isSingleAssocBlock = true;
+            //isSingleAssocBlock = true;
             runtimeSymbols = null;
             procedureTable = null;
             classTable = null;
