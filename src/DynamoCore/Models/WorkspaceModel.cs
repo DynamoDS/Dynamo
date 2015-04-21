@@ -484,6 +484,8 @@ namespace Dynamo.Models
 
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
+
+            SetModelEventOnAnnotation();
         }
 
         /// <summary>
@@ -677,6 +679,7 @@ namespace Dynamo.Models
                     AnnotationText = text                   
                 };
                 annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+                annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
                 Annotations.Add(annotationModel);
                 HasUnsavedChanges = true;
                 return annotationModel;
@@ -685,16 +688,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Sets the event on Annotation model.
-        /// When a node is removed from a group, this event will be
-        /// used to include that node again in that group (UNDO operation)
+        //this sets the event on Annotation. This event return the model from the workspace.
+        //When a model is ungrouped from a group, that model will be deleted from that group.
+        //So, when UNDO execution, cannot get that model from that group, it has to get from the workspace.
+        //The below method will set the event on every annotation model, that will return the specific model
+        //from workspace.
         /// </summary>
         /// <param name="model">The model.</param>
-        internal void SetModelEventOnAnnotation()
-        {
+        private void SetModelEventOnAnnotation()
+        {           
             foreach (var model in this.Annotations)
             {
                 model.ModelBaseRequested += annotationModel_GetModelBase;
+                model.Disposed += (_) => model.ModelBaseRequested -= annotationModel_GetModelBase;
             }
         }
 
