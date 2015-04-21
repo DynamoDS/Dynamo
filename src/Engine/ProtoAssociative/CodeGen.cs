@@ -3640,6 +3640,7 @@ namespace ProtoAssociative
                                 BinaryExpressionNode ssaNode = aNode as BinaryExpressionNode;
                                 ssaNode.exprUID = ssaID;
                                 ssaNode.ssaExprID = ssaExprID;
+                                ssaNode.ssaExpressionUID = core.SSAExpressionUID;
                                 ssaNode.guid = bnode.guid;
                                 ssaNode.OriginalAstID = bnode.OriginalAstID;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
@@ -3649,6 +3650,7 @@ namespace ProtoAssociative
                             // (This is the node prior to ssa transformation)
                             bnode.exprUID = ssaID;
                             bnode.ssaExprID = ssaExprID;
+                            bnode.ssaExpressionUID = core.SSAExpressionUID;
                             newAstList.AddRange(newASTList);
                         }
                         else
@@ -3799,6 +3801,7 @@ namespace ProtoAssociative
                         newAstList.Add(node);
                     }
                     ssaExprID++;
+                    core.SSAExpressionUID++;
                 }
                 return newAstList;
             }
@@ -8065,6 +8068,7 @@ namespace ProtoAssociative
                     graphNode.OriginalAstID = bnode.OriginalAstID; 
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
+                    graphNode.ssaExpressionUID = bnode.ssaExpressionUID;
                     graphNode.guid = bnode.guid;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;

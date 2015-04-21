@@ -1637,6 +1637,7 @@ namespace ProtoCore.AST.AssociativeAST
 
     public class BinaryExpressionNode : AssociativeNode
     {
+        public int ssaExpressionUID { get; set; }
         public int exprUID { get; set; }
         public int ssaExprID { get; set; }
         public int modBlkUID { get; set; }

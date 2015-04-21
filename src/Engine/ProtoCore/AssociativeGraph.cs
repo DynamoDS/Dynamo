@@ -77,7 +77,7 @@ namespace ProtoCore.AssociativeEngine
                             AssociativeGraph.GraphNode dependent = null;
                             if (gnode.DependsOn(currentNode.updateNodeRefList[0], ref dependent))
                             {
-                                bool isWithinSSAExpression = currentNode.ssaExprID == gnode.ssaExprID;
+                                bool isWithinSSAExpression = currentNode.ssaExpressionUID == gnode.ssaExpressionUID;
                                 bool isDownstreamUpdate = isWithinSSAExpression && currentNode.UID < gnode.UID;
                                 if (!isWithinSSAExpression || isDownstreamUpdate)
                                 {
@@ -736,6 +736,7 @@ namespace ProtoCore.AssociativeGraph
 
     public class GraphNode
     {
+        public int ssaExpressionUID { get; set; }
         public int UID { get; set; }
         public Guid guid {get; set;}
         public int dependencyGraphListID { get; set; }

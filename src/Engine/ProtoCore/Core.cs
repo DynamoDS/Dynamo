@@ -60,9 +60,9 @@ namespace ProtoCore
 
             ApplyUpdate = false;
 
-            DumpByteCode = true;
-            Verbose = true;
-            DumpIL = true;
+            DumpByteCode = false;
+            Verbose = false;
+            DumpIL = false;
 
             GenerateSSA = true;
             ExecuteSSA = true;
@@ -639,8 +639,10 @@ namespace ProtoCore
                 BuildStatus = new BuildStatus(this, Options.BuildOptWarningAsError, null, Options.BuildOptErrorAsWarning);
             }
 
+            SSAExpressionUID = 0;
             SSASubscript = 0;
             SSASubscript_GUID = Guid.NewGuid();
+            SSAExprUID = 0;
             ExpressionUID = 0;
             ModifierBlockUID = 0;
             ModifierStateSubscript = 0;
@@ -677,6 +679,8 @@ namespace ProtoCore
         // TODO Jun: Organize these variables in core into proper enums/classes/struct
         public int SSASubscript { get; set; }
         public Guid SSASubscript_GUID { get; set; }
+        public int SSAExprUID { get; set; }
+        public int SSAExpressionUID { get; set; }
 
         /// <summary> 
         /// ExpressionUID is used as the unique id to identify an expression
