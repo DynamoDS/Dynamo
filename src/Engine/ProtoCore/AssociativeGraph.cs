@@ -33,7 +33,10 @@ namespace ProtoCore.AssociativeEngine
             for (int i = 0; i < graphNodes.Count; ++i)
             {
                 AssociativeGraph.GraphNode currentNode = graphNodes[i];
-
+                if (!currentNode.isActive)
+                {
+                    continue;
+                }
                 // Get the graphnode to check if it depends on nodeToCheckAgainstList
                 //  a = 10 (currentnode)
                 //  c = 1  (gnode) -> this is checked if it depends on [a]. If it does, add it to the dependency list of  a = 10 (currentnode)
@@ -44,6 +47,10 @@ namespace ProtoCore.AssociativeEngine
                     if (i != j)
                     {
                         AssociativeGraph.GraphNode gnode = graphNodes[j];
+                        if (!gnode.isActive)
+                        {
+                            continue;
+                        }
 
                         //
                         // Associative update within an expression only allows downstream update

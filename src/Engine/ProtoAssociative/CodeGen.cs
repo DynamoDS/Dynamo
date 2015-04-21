@@ -666,9 +666,11 @@ namespace ProtoAssociative
             return symbolindex;
         }
         
-        private bool IsLastCompilePass()
+        private bool IsCompilingCodeBody()
         {
-            return compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalFuncBody;
+            return //compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalFuncBody
+                 compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kClassMemFuncBody
+                || compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalFuncBody;
         }
 
 
@@ -753,7 +755,7 @@ namespace ProtoAssociative
             //}
 
             // Build graphnodes only on the last pass
-            if (IsLastCompilePass())
+            if (IsCompilingCodeBody())
             {
                 ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
                     codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(globalClassIndex, globalProcIndex));
