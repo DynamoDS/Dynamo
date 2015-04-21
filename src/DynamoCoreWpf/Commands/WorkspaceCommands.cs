@@ -246,6 +246,9 @@ namespace Dynamo.ViewModels
             // For now this returns the most common lacing strategy in the collection.
             get
             {
+                if(!DynamoSelection.Instance.Selection.Any())
+                    return LacingStrategy.First;
+
                 return DynamoSelection.Instance.Selection.OfType<NodeModel>()
                     .GroupBy(node => node.ArgumentLacing)
                     .OrderByDescending(group => group.Count())
