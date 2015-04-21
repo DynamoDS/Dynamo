@@ -878,6 +878,7 @@ namespace Dynamo.Controls
             PointGeometry3D points, LineGeometry3D lines, 
             LineGeometry3D linesSel, MeshGeometry3D mesh, BillboardText3D text)
         {
+            MeshCount = 0;
             foreach (var rp in packages)
             {
                 var p = rp.Points;
@@ -963,6 +964,8 @@ namespace Dynamo.Controls
                         var pt = mesh.Positions[idxCount];
                         text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
+
+                    MeshCount++;
                 }
             }
         }
