@@ -130,11 +130,11 @@ namespace Dynamo.Core.Threading
             foreach (var mirrorData in data)
             {
                 AddToLabelMap(mirrorData, labelMap, previewIdentifierName);
-                GetRenderPackagesFromMirrorData(mirrorData, ref labelMap,  ref count);
+                GetRenderPackagesFromMirrorData(mirrorData, displayLabels, isNodeSelected, ref labelMap,  ref count);
             }
         }
 
-        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, ref List<string> labelMap, ref int count)
+        private void GetRenderPackagesFromMirrorData(MirrorData mirrorData, bool displayLabels, bool isNodeSelected, ref List<string> labelMap, ref int count)
         {
             if (mirrorData.IsNull)
             {
@@ -150,7 +150,7 @@ namespace Dynamo.Core.Threading
             {
                 foreach (var el in mirrorData.GetElements())
                 {
-                    GetRenderPackagesFromMirrorData(el, ref labelMap, ref count);
+                    GetRenderPackagesFromMirrorData(el, displayLabels, isNodeSelected, ref labelMap, ref count);
                 }
             }
             else
@@ -282,8 +282,10 @@ namespace Dynamo.Core.Threading
                     System.Diagnostics.Debug.WriteLine(
                         "PushGraphicItemIntoPackage: " + e);
                 }
-                    
-                //package.ItemsCount++;
+
+                package.IsDisplayingLabels = displayLabels;
+                package.IsSelected = isNodeSelected;
+
                 renderPackages.Add(package);
                 count++;
             }

@@ -35,7 +35,6 @@ namespace Dynamo.Wpf
     {
         private PointGeometry3D points;
         private LineGeometry3D lines;
-        //private BillboardText3D text;
         private MeshGeometry3D mesh;
         private bool hasData;
 
@@ -43,7 +42,6 @@ namespace Dynamo.Wpf
         {
             points = InitPointGeometry();
             lines = InitLineGeometry();
-            //text = InitText3D();
             mesh = InitMeshGeometry();
 
             LineStripVertexCounts = new List<int>();
@@ -56,7 +54,6 @@ namespace Dynamo.Wpf
         {
             points = null;
             lines = null;
-            //text = null;
             mesh = null;
             
             LineStripVertexCounts.Clear();
@@ -65,11 +62,6 @@ namespace Dynamo.Wpf
 
         public void PushPointVertex(double x, double y, double z)
         {
-            //if (i == 0 && ((RenderPackage)p).DisplayLabels)
-            //{
-            //    text.TextInfo.Add(new TextInfo(CleanTag(Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
-            //}
-
             points.Indices.Add(points.Positions.Count);
             points.Positions.Add(Vector3ForYUp(x,y,z));
         }
@@ -280,11 +272,6 @@ namespace Dynamo.Wpf
             }
         }
 
-        //public BillboardText3D Text
-        //{
-        //    get { return text; }
-        //}
-
         internal static LineGeometry3D InitLineGeometry()
         {
             var lines = new LineGeometry3D
@@ -330,13 +317,13 @@ namespace Dynamo.Wpf
             return text3D;
         }
 
-        private string CleanTag(string tag)
+        internal static string CleanTag(string tag)
         {
             var splits = tag.Split(':');
-            if (splits.Count() <= 1) return tag;
+            if (splits.Count() <= 1) return "[0]";
 
             var sb = new StringBuilder();
-            for (int i = 1; i < splits.Count(); i++)
+            for (var i = 1; i < splits.Count(); i++)
             {
                 sb.AppendFormat("[{0}]", splits[i]);
             }

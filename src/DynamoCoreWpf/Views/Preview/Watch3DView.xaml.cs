@@ -843,8 +843,9 @@ namespace Dynamo.Controls
             var lines = HelixRenderPackage.InitLineGeometry();
             var linesSel = HelixRenderPackage.InitLineGeometry();
             var mesh = HelixRenderPackage.InitMeshGeometry();
-            
-            AggregateRenderPackages(packages, points, lines, linesSel, mesh);
+            var text = HelixRenderPackage.InitText3D();
+
+            AggregateRenderPackages(packages, points, lines, linesSel, mesh, text);
 
             if (!points.Positions.Any())
                 points = null;
@@ -855,8 +856,8 @@ namespace Dynamo.Controls
             if (!linesSel.Positions.Any())
                 linesSel = null;
 
-            //if (!text.TextInfo.Any())
-            //    text = null;
+            if (!text.TextInfo.Any())
+                text = null;
 
             if (!mesh.Positions.Any())
                 mesh = null;
@@ -868,14 +869,14 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            SendGraphicsToView(points, lines, linesSel, mesh, null);
+            SendGraphicsToView(points, lines, linesSel, mesh, text);
 
             //DrawTestMesh();
         }
 
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages, 
             PointGeometry3D points, LineGeometry3D lines, 
-            LineGeometry3D linesSel, MeshGeometry3D mesh)
+            LineGeometry3D linesSel, MeshGeometry3D mesh, BillboardText3D text)
         {
             foreach (var rp in packages)
             {
@@ -897,6 +898,13 @@ namespace Dynamo.Controls
                             points.Colors[i] = selectionColor;
                         }
                     }
+
+                    if (rp.IsDisplayingLabels)
+                    {
+                        var pt = p.Positions[0];
+                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                    }
+
                 }
 
                 var l = rp.Lines;
@@ -923,6 +931,12 @@ namespace Dynamo.Controls
                             lineSet.Colors[i] = selectionColor;
                         }
                     }
+
+                    if (rp.IsDisplayingLabels)
+                    {
+                        var pt = lineSet.Positions[0];
+                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                    }
                 }
 
                 var m = rp.Mesh;
@@ -944,6 +958,12 @@ namespace Dynamo.Controls
                         {
                             mesh.Colors[i] = selectionColor;
                         }
+                    }
+
+                    if (rp.IsDisplayingLabels)
+                    {
+                        var pt = mesh.Positions[0];
+                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
                 }
             }
