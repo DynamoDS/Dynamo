@@ -3221,7 +3221,7 @@ namespace DynamoCoreUITests
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
-                var cbn = GetNode("5eb125ad-c724-43bd-8815-c67e65d6269b") as Function;
+                var cbn = GetNode("66c0f6b3-e9a0-495e-b3e1-c02b4615c71c") as Function;
 
                 if (commandTag == "Run")
                 {
@@ -3231,7 +3231,7 @@ namespace DynamoCoreUITests
 
 
 
-                    AssertPreviewValue("5eb125ad-c724-43bd-8815-c67e65d6269b", 1);
+                    AssertPreviewValue("66c0f6b3-e9a0-495e-b3e1-c02b4615c71c", 12);
 
                 }
                
@@ -3253,8 +3253,10 @@ namespace DynamoCoreUITests
                
                 if (commandTag == "Run")
                 {
-
-                    AssertPreviewValue("4d7eed2c-6568-4dd8-b43d-5e3e67b1e720", 1);  
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
+                    AssertPreviewValue("fb5bf7c3-8312-42e8-85cb-e17fbee1fbae", 2);
+                    AssertPreviewValue("fb9c8be5-7fc2-4735-a33c-c1c9b2a97f18", 2);
                     
                 }
 
@@ -3276,7 +3278,9 @@ namespace DynamoCoreUITests
                 if (commandTag == "Run")
                 {
 
-                    AssertPreviewValue("dd5e11dc-972a-4b7a-adf8-cabffbe4464c", new object[] { 1, 2, 3 });
+                    AssertPreviewValue("9eb488ec-c232-4048-a30c-e610f10deeb5", 4);
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
 
                 }
 
@@ -3295,18 +3299,13 @@ namespace DynamoCoreUITests
                 var workspace = ViewModel.Model.CurrentWorkspace;
 
 
-                if (commandTag == "FirstRun")
+                if (commandTag == "Run")
                 {
 
-                    AssertPreviewValue("6e1ed2fc-864c-4b6e-90fa-6ab6c8345901", new object[] { 1, 2 });
+                    AssertPreviewValue("d48647e8-0129-4e16-9fa8-7c4d8f20c1be", 4);
 
                 }
-                else if (commandTag == "SecondRun")
-                {
-
-                    AssertPreviewValue("0834ea10-e0a6-4c90-a347-73f459a23a61", new object[] { 3, 4 });
-
-                }
+               
 
 
             });
@@ -3325,8 +3324,8 @@ namespace DynamoCoreUITests
 
                 if (commandTag == "Run")
                 {
-
-                    AssertPreviewValue("6309c92b-52b9-4d7f-9dba-c63355fda876", 1);
+                    AssertPreviewValue("2088ab88-dd22-4963-8fe9-2f393328aa56", 2);
+                    AssertPreviewValue("f89e3e11-aa50-408e-97a0-c48d11b64d4f", 2);
 
                 }
                

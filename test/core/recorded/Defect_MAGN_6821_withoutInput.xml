@@ -1,31 +1,26 @@
 <Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <CreateCustomNodeCommand NodeId="433c46a6-d786-45a9-aeeb-b1120f30bd57" Name="noinput" Category="test" Description="noinput1" MakeCurrent="true" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <SelectInRegionCommand X="211" Y="324" Width="0" Height="0" IsCrossSelection="false" />
-  <CreateNodeCommand X="211" Y="324" DefaultPosition="false" TransformCoordinates="true">
-    <Dynamo.Nodes.CodeBlockNodeModel guid="b0676ca0-df97-4416-9c16-fec72e5e7b9a" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  <SelectInRegionCommand X="228" Y="171" Width="0" Height="0" IsCrossSelection="false" />
+  <CreateNodeCommand X="228" Y="171" DefaultPosition="false" TransformCoordinates="true">
+    <Dynamo.Nodes.CodeBlockNodeModel guid="140582ee-55fb-477e-b111-5c950720707e" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="136" y="140" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="12;" ShouldFocus="false" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand Name="Code" Value="1" WorkspaceGuid="a86f77b3-615c-4d28-b0fd-d863fba34783">
-    <ModelGuid>11209e1e-6fb1-40e9-8a19-857287d36b03</ModelGuid>
+  <UpdateModelValueCommand Name="Code" Value="12" WorkspaceGuid="ec14000d-1774-41a8-8c00-bdf792c7f713">
+    <ModelGuid>140582ee-55fb-477e-b111-5c950720707e</ModelGuid>
   </UpdateModelValueCommand>
-  <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <SelectInRegionCommand X="72" Y="252" Width="211" Height="155" IsCrossSelection="false" />
-  <DeleteModelCommand ModelGuid="6c288919-6807-493f-810e-495c3faa9213" />
-  <PausePlaybackCommand Tag="Tag-a7abb285" PauseDurationInMs="20" />
+  <SwitchTabCommand TabIndex="0" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.Function guid="5eb125ad-c724-43bd-8815-c67e65d6269b" type="Dynamo.Nodes.Function" nickname="withoutInput" x="365" y="259" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
-      <ID value="57137548-2ea6-4bf7-bb6e-17bf72cf4398" />
-      <Name value="withoutInput" />
-      <Description value="withoutInputDescription" />
+    <Dynamo.Nodes.Function guid="66c0f6b3-e9a0-495e-b3e1-c02b4615c71c" type="Dynamo.Nodes.Function" nickname="noinput" x="207" y="150.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
+      <ID value="433c46a6-d786-45a9-aeeb-b1120f30bd57" />
+      <Name value="noinput" />
+      <Description value="noinput1" />
       <Inputs />
       <Outputs>
         <Output value="" />
       </Outputs>
     </Dynamo.Nodes.Function>
   </CreateNodeCommand>
-  <SelectModelCommand ModelGuid="5eb125ad-c724-43bd-8815-c67e65d6269b" Modifiers="0" />
-  <DragSelectionCommand X="432" Y="332" DragOperation="0" />
-  <DragSelectionCommand X="432" Y="332" DragOperation="1" />
   <RunCancelCommand ShowErrors="false" CancelRun="false" />
   <PausePlaybackCommand Tag="Run" PauseDurationInMs="20" />
 </Commands>
