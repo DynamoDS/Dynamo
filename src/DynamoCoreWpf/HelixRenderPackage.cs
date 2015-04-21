@@ -33,10 +33,16 @@ namespace Dynamo.Wpf
     /// </summary>
     public class HelixRenderPackage : IRenderPackage
     {
+        #region private members
+
         private PointGeometry3D points;
         private LineGeometry3D lines;
         private MeshGeometry3D mesh;
         private bool hasData;
+
+        #endregion
+
+        #region constructors
 
         public HelixRenderPackage()
         {
@@ -47,6 +53,8 @@ namespace Dynamo.Wpf
             LineStripVertexCounts = new List<int>();
             IsSelected = false;
         }
+
+        #endregion
 
         #region IRenderPackage implementation
 
@@ -60,46 +68,102 @@ namespace Dynamo.Wpf
             IsSelected = false;
         }
 
+        /// <summary>
+        /// Add a point vertex to the render package.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void PushPointVertex(double x, double y, double z)
         {
             points.Indices.Add(points.Positions.Count);
             points.Positions.Add(Vector3ForYUp(x,y,z));
         }
 
+        /// <summary>
+        /// Add a point color to the render package.
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
         public void PushPointVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             var ptColor = Color4FromBytes(red, green, blue, alpha);
             points.Colors.Add(ptColor);
         }
 
+        /// <summary>
+        /// Add a triangle vertex location to the render package.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void PushTriangleVertex(double x, double y, double z)
         {
             mesh.Indices.Add(mesh.Indices.Count);
             mesh.Positions.Add(Vector3ForYUp(x, y, z));
         }
 
+        /// <summary>
+        /// Add a triangle normal to the render package.
+        /// Triangle normals are per-vertex.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void PushTriangleVertexNormal(double x, double y, double z)
         {
             mesh.Normals.Add(Vector3ForYUp(x,y,z));
         }
 
+        /// <summary>
+        /// Add a triangle texture coordinate to the render package.
+        /// </summary>
+        /// <param name="u"></param>
+        /// <param name="v"></param>
         public void PushTriangleVertexUV(double u, double v)
         {
             mesh.TextureCoordinates.Add(new Vector2((float)u, (float)v));
         }
 
+        /// <summary>
+        /// Add a triangle vertex color to the render package.
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
         public void PushTriangleVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             mesh.Colors.Add(Color4FromBytes(red,green,blue,alpha));
         }
 
+        /// <summary>
+        /// Add a line vertex to the render package.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
         public void PushLineStripVertex(double x, double y, double z)
         {
             lines.Positions.Add(Vector3ForYUp(x,y,z));
         }
 
+        /// <summary>
+        /// Add a line strip vertex count to the render package.
+        /// </summary>
+        /// <param name="n"></param>
         public void PushLineStripVertexCount(int n)
         {
+            // The line strip vertex count is pushed after
+            // the tessellated geometry is added to the package.
+            // Here we add the indices to the line strip collection
+            // which correspond to line segments for the Helix viewer.
+            // Because lines are represented in Helix as a start and 
+            // an end point, we duplicate every point except the first
+            // and the last.
+
             LineStripVertexCounts.Add(n);
 
             var idxCount = lines.Indices.Any() ? lines.Indices.Last() + 1 : 0;
@@ -116,11 +180,24 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// Add a line strip vertex color to the render package.
+        /// </summary>
+        /// <param name="red"></param>
+        /// <param name="green"></param>
+        /// <param name="blue"></param>
+        /// <param name="alpha"></param>
         public void PushLineStripVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             lines.Colors.Add(Color4FromBytes(red,green,blue,alpha));
         }
 
+        /// <summary>
+        /// Get or set the line positions as a list of doubles.
+        /// Setting the positions in this way is expensive. It is recommded
+        /// that you do not attempt to set individual positions using the
+        /// setter, but that you set the entire collection at once.
+        /// </summary>
         public List<double> LineStripVertices
         {
             get { return lines.Positions.ToDoubles(); }
@@ -134,6 +211,12 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// Get or set the point positions as a list of doubles.
+        /// Setting the positions in this way is expensive. It is recommded
+        /// that you do not attempt to set individual positions using the
+        /// setter, but that you set the entire collection at once.
+        /// </summary>
         public List<double> PointVertices
         {
             get { return points.Positions.ToDoubles(); }
@@ -147,6 +230,12 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// Get or set the mesh positions as a list of doubles.
+        /// Setting the positions in this way is expensive. It is recommded
+        /// that you do not attempt to set individual positions using the
+        /// setter, but that you set the entire collection at once.
+        /// </summary>
         public List<double> TriangleVertices
         {
             get { return mesh.Positions.ToDoubles(); }
@@ -160,6 +249,12 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// Get or set the mesh normals as a list of doubles.
+        /// Setting the positions in this way is expensive. It is recommded
+        /// that you do not attempt to set individual positions using the
+        /// setter, but that you set the entire collection at once.
+        /// </summary>
         public List<double> TriangleNormals
         {
             get { return mesh.Normals.ToDoubles(); }
@@ -173,6 +268,12 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// Get or set the mesh texture coordinates as a list of doubles.
+        /// Setting the positions in this way is expensive. It is recommded
+        /// that you do not attempt to set individual positions using the
+        /// setter, but that you set the entire collection at once.
+        /// </summary>
         public List<double> TriangleUVs
         {
             get { return mesh.TextureCoordinates.ToDoubles(); }
@@ -186,6 +287,12 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// Get or set the point colors as a list of bytes.
+        /// Setting the positions in this way is expensive. It is recommded
+        /// that you do not attempt to set individual positions using the
+        /// setter, but that you set the entire collection at once.
+        /// </summary>
         public List<byte> PointVertexColors
         {
             get { return points.Colors.ToBytes(); }
@@ -199,6 +306,12 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// Get or set the line colors as a list of bytes.
+        /// Setting the positions in this way is expensive. It is recommded
+        /// that you do not attempt to set individual positions using the
+        /// setter, but that you set the entire collection at once.
+        /// </summary>
         public List<byte> LineStripVertexColors
         {
             get { return lines.Colors.ToBytes(); }
@@ -212,6 +325,12 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// Get or set the mesh colors as a list of bytes.
+        /// Setting the positions in this way is expensive. It is recommded
+        /// that you do not attempt to set individual positions using the
+        /// setter, but that you set the entire collection at once.
+        /// </summary>
         public List<byte> TriangleVertexColors
         {
             get { return mesh.Colors.ToBytes(); }
@@ -225,12 +344,24 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<int> LineStripVertexCounts { get; set; }
 
+        /// <summary>
+        /// A tag used to store information about the render package.
+        /// </summary>
         public string Tag { get; set; }
 
+        /// <summary>
+        /// A flag indicating whether the render package is selected.
+        /// </summary>
         public bool IsSelected { get; set; }
 
+        /// <summary>
+        /// A flag indicating whether the render package has data.
+        /// </summary>
         public bool HasData
         {
             get
@@ -242,6 +373,9 @@ namespace Dynamo.Wpf
             }
         }
 
+        /// <summary>
+        /// A flag indicating whether the render package is displaying labels
+        /// </summary>
         public bool IsDisplayingLabels { get; set; }
 
         public IntPtr NativeRenderPackage
@@ -335,7 +469,7 @@ namespace Dynamo.Wpf
         } 
     }
 
-    public static class HelixRenderExtensions
+    internal static class HelixRenderExtensions
     {
         public static List<double> ToDoubles(this Vector2Collection collection)
         {
