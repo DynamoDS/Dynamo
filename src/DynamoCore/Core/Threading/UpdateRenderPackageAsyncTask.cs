@@ -199,9 +199,6 @@ namespace Dynamo.Core.Threading
                         var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
 
                         // Get rid of the original plane geometry.
-                        //package.LineStripVertices.Clear();
-                        //package.LineStripVertexColors.Clear();
-                        //package.LineStripVertexCounts.Clear();
                         package.Clear();
 
                         package.PushTriangleVertex(a.X, a.Y, a.Z);
@@ -211,6 +208,13 @@ namespace Dynamo.Core.Threading
                         package.PushTriangleVertex(c.X, c.Y, c.Z);
                         package.PushTriangleVertex(d.X, d.Y, d.Z);
                         package.PushTriangleVertex(a.X, a.Y, a.Z);
+
+                        package.PushTriangleVertexUV(0,0);
+                        package.PushTriangleVertexUV(0, 0);
+                        package.PushTriangleVertexUV(0, 0);
+                        package.PushTriangleVertexUV(0, 0);
+                        package.PushTriangleVertexUV(0, 0);
+                        package.PushTriangleVertexUV(0, 0);
 
                         // Draw plane edges
                         package.PushLineStripVertex(a.X, a.Y, a.Z);
@@ -227,12 +231,13 @@ namespace Dynamo.Core.Threading
                         var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
                         package.PushLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
 
-                        for (var i = 0; i < package.LineStripVertices.Count/3/2; i++)
+                        var lineVertCounts = package.LineStripVertices.Count;
+                        for (var i = 0; i < lineVertCounts / 3 / 2; i++)
                         {
                             package.PushLineStripVertexCount(2);
                         }
 
-                        for (var i = 0; i < (package.LineStripVertices.Count/3)*4; i += 4)
+                        for (var i = 0; i < (lineVertCounts / 3) * 4; i += 4)
                         {
                             package.PushLineStripVertexColor(180,180,180,255);
                         }

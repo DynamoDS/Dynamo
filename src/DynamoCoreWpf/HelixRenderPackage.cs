@@ -60,12 +60,19 @@ namespace Dynamo.Wpf
 
         public void Clear()
         {
+
             points = null;
-            lines = null;
             mesh = null;
+            lines = null;
+
+            points = InitPointGeometry();
+            mesh = InitMeshGeometry();
+            lines = InitLineGeometry();
             
             LineStripVertexCounts.Clear();
+
             IsSelected = false;
+            IsDisplayingLabels = false;
         }
 
         /// <summary>

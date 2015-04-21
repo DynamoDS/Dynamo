@@ -468,7 +468,6 @@ namespace Dynamo.Controls
                 SpecularShininess = 12.8f,
             };
 
-
             Model1Transform = new TranslateTransform3D(0, -0, 0);
 
             // camera setup
