@@ -111,10 +111,13 @@ namespace Dynamo.ViewModels
 
         public ImageSource Icon { get; private set; }
 
-        public IconRequestEventArgs(string assembly, string fullPath)
+        public bool UseAdditionalResolutionPaths { get; private set; }
+
+        public IconRequestEventArgs(string assembly, string fullPath, bool useAdditionalPaths= true)
         {
             IconAssembly = assembly;
             IconFullPath = fullPath;
+            UseAdditionalResolutionPaths = useAdditionalPaths;
         }
 
         public void SetIcon(ImageSource icon)

@@ -257,7 +257,7 @@ namespace Dynamo.Wpf.ViewModels
         {
             string customizationAssemblyPath = Model.CustomizationAssembly;
 
-            var iconRequest = new IconRequestEventArgs(customizationAssemblyPath, fullNameOfIcon);
+            var iconRequest = new IconRequestEventArgs(customizationAssemblyPath, fullNameOfIcon, false);
             OnRequestBitmapSource(iconRequest);
 
             if (iconRequest.Icon != null)
