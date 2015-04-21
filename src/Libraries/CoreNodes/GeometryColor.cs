@@ -42,6 +42,8 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
+            package.RequiresPerVertexColoration = true;
+
             // As you add more data to the render package, you need
             // to keep track of the index where this coloration will 
             // start from.

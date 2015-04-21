@@ -127,6 +127,8 @@ namespace Dynamo.Controls
 
         public MeshGeometry3D Mesh { get; set; }
 
+        public MeshGeometry3D PerVertexMesh { get; set; }
+
         public MeshGeometry3D MeshSelected { get; set; }
 
         public BillboardText3D Text { get; set; }
@@ -451,7 +453,6 @@ namespace Dynamo.Controls
             {
                 Name = "White",
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                //DiffuseColor = PhongMaterials.ToColor(0.992157, 0.992157, 0.992157, 1.0),
                 DiffuseColor = PhongMaterials.ToColor(matColor.R, matColor.G, matColor.B, 1.0f),
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
@@ -483,22 +484,28 @@ namespace Dynamo.Controls
             DrawGrid();
         }
 
-        private void DrawTestMesh()
+        private static MeshGeometry3D DrawTestMesh()
         {
             var b1 = new MeshBuilder();
-            for (int x = 0; x < 20; x++)
+            for (var x = 0; x < 4; x++)
             {
-                for (int y = 0; y < 20; y++)
+                for (var y = 0; y < 4; y++)
                 {
-                    for (int z = 0; z < 20; z++)
+                    for (var z = 0; z < 4; z++)
                     {
                         b1.AddBox(new Vector3(x, y, z), 0.5, 0.5, 0.5, BoxFaces.All);
-                        //b1.AddSphere(new Vector3(x, y, z), 0.25);
                     }
                 }
             }
-            Mesh = b1.ToMeshGeometry3D();
-            NotifyPropertyChanged("Mesh");
+            var mesh = b1.ToMeshGeometry3D();
+            
+            mesh.Colors = new Color4Collection();
+            foreach (var v in mesh.Positions)
+            {
+                mesh.Colors.Add(new Color4(1f,0f,0f,1f));
+            }
+
+            return mesh;
         }
         
         #endregion
@@ -832,6 +839,8 @@ namespace Dynamo.Controls
             Lines = null;
             LinesSelected = null;
             Mesh = null;
+            PerVertexMesh = null;
+            MeshSelected = null;
             Text = null;
             MeshCount = 0;
 
@@ -842,9 +851,11 @@ namespace Dynamo.Controls
             var lines = HelixRenderPackage.InitLineGeometry();
             var linesSel = HelixRenderPackage.InitLineGeometry();
             var mesh = HelixRenderPackage.InitMeshGeometry();
+            var meshSel = HelixRenderPackage.InitMeshGeometry();
+            var perVertexMesh = HelixRenderPackage.InitMeshGeometry();
             var text = HelixRenderPackage.InitText3D();
 
-            AggregateRenderPackages(packages, points, lines, linesSel, mesh, text);
+            AggregateRenderPackages(packages, points, lines, linesSel, mesh, perVertexMesh, meshSel, text);
 
             if (!points.Positions.Any())
                 points = null;
@@ -861,6 +872,12 @@ namespace Dynamo.Controls
             if (!mesh.Positions.Any())
                 mesh = null;
 
+            if (!meshSel.Positions.Any())
+                meshSel = null;
+
+            if (!perVertexMesh.Positions.Any())
+                perVertexMesh = null;
+
 #if DEBUG
             renderTimer.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
@@ -868,14 +885,14 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            SendGraphicsToView(points, lines, linesSel, mesh, text);
+            SendGraphicsToView(points, lines, linesSel, mesh, meshSel, perVertexMesh, text);
 
             //DrawTestMesh();
         }
 
         private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages, 
             PointGeometry3D points, LineGeometry3D lines, 
-            LineGeometry3D linesSel, MeshGeometry3D mesh, BillboardText3D text)
+            LineGeometry3D linesSel, MeshGeometry3D mesh, MeshGeometry3D perVertexMesh, MeshGeometry3D meshSelected, BillboardText3D text)
         {
             MeshCount = 0;
             foreach (var rp in packages)
@@ -940,27 +957,27 @@ namespace Dynamo.Controls
                 var m = rp.Mesh;
                 if (m.Positions.Any())
                 {
-                    var idxCount = mesh.Positions.Count;
-                    
-                    mesh.Positions.AddRange(m.Positions);
-                    mesh.Colors.AddRange(m.Colors);
-                    mesh.Normals.AddRange(m.Normals);
-                    mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
-                    mesh.Indices.AddRange(m.Indices.Select(i=>i + idxCount));
+                    // Pick a mesh to use to store the data. Selected geometry
+                    // goes into the selected mesh. Geometry with
+                    // colors goes into the per vertex mesh. Everything else
+                    // goes into the plain mesh.
 
-                    var endIdx = mesh.Positions.Count;
+                    var meshSet = rp.IsSelected ? 
+                        meshSelected :
+                        rp.RequiresPerVertexColoration ? perVertexMesh : mesh;
 
-                    if (rp.IsSelected)
-                    {
-                        for (var i = idxCount; i < endIdx; i++)
-                        {
-                            mesh.Colors[i] = selectionColor;
-                        }
-                    }
+                    var idxCount = meshSet.Positions.Count;
+
+                    meshSet.Positions.AddRange(m.Positions);
+
+                    meshSet.Colors.AddRange(m.Colors);
+                    meshSet.Normals.AddRange(m.Normals);
+                    meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
+                    meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
 
                     if (rp.IsDisplayingLabels)
                     {
-                        var pt = mesh.Positions[idxCount];
+                        var pt = meshSet.Positions[idxCount];
                         text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
 
@@ -974,14 +991,18 @@ namespace Dynamo.Controls
             LineGeometry3D lines,
             LineGeometry3D linesSelected,
             MeshGeometry3D mesh,
+            MeshGeometry3D meshSelected,
+            MeshGeometry3D perVertexMesh,
             BillboardText3D text)
         {
             Points = points;
             Lines = lines;
             LinesSelected = linesSelected;
             Mesh = mesh;
+            MeshSelected = meshSelected;
+            PerVertexMesh = perVertexMesh;
             Text = text;
-            
+
             // Send property changed notifications for everything
             NotifyPropertyChanged(string.Empty);
         }

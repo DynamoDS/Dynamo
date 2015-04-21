@@ -209,7 +209,7 @@ namespace Dynamo.Core.Threading
                         package.PushTriangleVertex(d.X, d.Y, d.Z);
                         package.PushTriangleVertex(a.X, a.Y, a.Z);
 
-                        package.PushTriangleVertexUV(0,0);
+                        package.PushTriangleVertexUV(0, 0);
                         package.PushTriangleVertexUV(0, 0);
                         package.PushTriangleVertexUV(0, 0);
                         package.PushTriangleVertexUV(0, 0);

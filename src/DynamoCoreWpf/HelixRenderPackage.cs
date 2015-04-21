@@ -52,6 +52,7 @@ namespace Dynamo.Wpf
 
             LineStripVertexCounts = new List<int>();
             IsSelected = false;
+            RequiresPerVertexColoration = false;
         }
 
         #endregion
@@ -384,6 +385,8 @@ namespace Dynamo.Wpf
         /// A flag indicating whether the render package is displaying labels
         /// </summary>
         public bool IsDisplayingLabels { get; set; }
+
+        public bool RequiresPerVertexColoration { get; set; }
 
         public IntPtr NativeRenderPackage
         {
