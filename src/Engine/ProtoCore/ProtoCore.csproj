@@ -111,7 +111,7 @@
     <Compile Include="DebuggerProperties.cs" />
     <Compile Include="Diagnostics\RuntimeDiagnostics.cs" />
     <Compile Include="DSASM\FunctionCounter.cs" />
-    <Compile Include="DSASM\DSAsmDefs.cs" />
+    <Compile Include="DSASM\DSasmDefs.cs" />
     <Compile Include="DSASM\Interpreter.cs" />
     <Compile Include="DSASM\Executable.cs" />
     <Compile Include="DSASM\Executive.cs" />
@@ -236,6 +236,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(ProjectDir)ExtendedLibraries\*.ds" "$(OutputPath)"</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy /Y "$(ProjectDir)ExtendedLibraries\*.ds" "$(OutputPath)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

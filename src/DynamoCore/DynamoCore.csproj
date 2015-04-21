@@ -324,7 +324,7 @@ limitations under the License.
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\README.md" "$(OutputPath)README.txt"
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy /Y "$(SolutionDir)..\README.md" "$(OutputPath)README.txt"
 xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.xml" "$(OutputPath)\$(UICulture)"
