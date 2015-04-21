@@ -108,28 +108,28 @@
 
                         <ContextMenu>
                             
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="NAME" Margin="3" 
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="Name" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=NAME, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="LAST_UPDATE" Margin="3" 
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Name, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="LastUpdate" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortyByUpdate}"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=LAST_UPDATE, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="DOWNLOADS" Margin="3" 
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=LastUpdate, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="Downloads" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByDownloads}"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DOWNLOADS, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="VOTES" Margin="3" 
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Downloads, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="Votes" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByVotes}"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=VOTES, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="MAINTAINERS" Margin="3" 
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Votes, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="Maintainers" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByAuthor}" 
-                                      IsChecked="{Binding Path=SortingKey,Converter={StaticResource EnumToBoolConverter},ConverterParameter=MAINTAINERS, Mode=TwoWay}" />
+                                      IsChecked="{Binding Path=SortingKey,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Maintainers, Mode=TwoWay}" />
                             <Separator></Separator>
-                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="ASCENDING" Margin="3" 
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="Ascending" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderAscending}"
-                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=ASCENDING, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="DESCENDING" Margin="3" 
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Ascending, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="Descending" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderDescending}"
-                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DESCENDING, Mode=TwoWay}" />
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Descending, Mode=TwoWay}" />
                         </ContextMenu>
 
                     </Button.ContextMenu>
