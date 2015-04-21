@@ -143,7 +143,11 @@ namespace Dynamo.ViewModels
 
         private bool CanUngroupNote(object parameters)
         {
-            return DynamoSelection.Instance.Selection.OfType<NoteModel>().Any();
+            var groups = WorkspaceViewModel.Model.Annotations;
+            return (from model in groups
+                    let noteModel = DynamoSelection.Instance.Selection.OfType<NoteModel>().FirstOrDefault()
+                    where model.SelectedModels.Any(x => x.GUID == noteModel.GUID)
+                    select model).Any();
         }
     }
 }
