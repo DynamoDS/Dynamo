@@ -186,23 +186,29 @@ namespace Analysis
             var colorCount = 0;
             var uvCount = 0;
 
+            var uvs = package.TriangleUVs;
+            var colors = package.TriangleVertexColors;
+
             for (var i = 0; i < package.TriangleVertices.Count; i += 3)
             {
-                var uvu = package.TriangleUVs[uvCount];
-                var uvv = package.TriangleUVs[uvCount + 1];
+                var uvu = uvs[uvCount];
+                var uvv = uvs[uvCount + 1];
 
                 var uu = (int)(uvu * (COLOR_MAP_WIDTH - 1));
                 var vv = (int)(uvv * (COLOR_MAP_HEIGHT - 1));
                 var color = colorMap[uu,vv];
 
-                package.TriangleVertexColors[colorCount] = color.Red;
-                package.TriangleVertexColors[colorCount + 1] = color.Green;
-                package.TriangleVertexColors[colorCount + 2] = color.Blue;
-                package.TriangleVertexColors[colorCount + 3] = color.Alpha;
+                colors[colorCount] = color.Red;
+                colors[colorCount + 1] = color.Green;
+                colors[colorCount + 2] = color.Blue;
+                colors[colorCount + 3] = color.Alpha;
 
                 colorCount += 4;
                 uvCount += 2;
             }
+
+            package.TriangleVertexColors = null;
+            package.TriangleVertexColors = colors;
 
             DebugTime(sw, "Ellapsed for setting colors on mesh.");
             sw.Stop();
