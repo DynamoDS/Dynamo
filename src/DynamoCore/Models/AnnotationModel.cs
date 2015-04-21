@@ -123,8 +123,10 @@ namespace Dynamo.Models
             get { return textBlockHeight; }
             set
             {
-                textBlockHeight = value;                
-                Y = InitialTop - textBlockHeight;
+                textBlockHeight = value;
+                //Increase the Y value by 10. This provides the extra space between
+                // a model and textbox. Otherwise there will be some overlap
+                Y = InitialTop - ExtendSize - textBlockHeight;
                 Height = InitialHeight + textBlockHeight - MinTextHeight;
             }
         }
@@ -206,7 +208,9 @@ namespace Dynamo.Models
               
                 //Shifting x by 10 and y to the height of textblock
                 var regionX = groupModels.Min(x => x.X) - ExtendSize;
-                var regionY = groupModels.Min(y => y.Y) - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
+                //Increase the Y value by 10. This provides the extra space between
+                // a model and textbox. Otherwise there will be some overlap
+                var regionY = groupModels.Min(y => y.Y) - ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
               
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => x.X) - regionX;
@@ -262,7 +266,8 @@ namespace Dynamo.Models
                 }
                                
                 //Initial Height is to store the Actual height of the group.
-                this.InitialHeight = region.Height;
+                if (this.InitialHeight <= 0.0)
+                    this.InitialHeight = region.Height;
             }
         }
 
