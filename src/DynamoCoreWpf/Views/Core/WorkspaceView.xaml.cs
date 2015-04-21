@@ -148,6 +148,7 @@ namespace Dynamo.Views
             if (ViewModel == null) return;
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.AddAnnotationCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.UngroupAnnotationCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>

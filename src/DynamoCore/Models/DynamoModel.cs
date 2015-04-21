@@ -1035,8 +1035,7 @@ namespace Dynamo.Models
 
             RegisterHomeWorkspace(newWorkspace);
            
-            workspace = newWorkspace;
-
+            workspace = newWorkspace;            
             return true;
         }
 
@@ -1063,6 +1062,20 @@ namespace Dynamo.Models
             if (null == CurrentWorkspace)
                 return;
 
+            //Check for empty group
+            var annotations = Workspaces.SelectMany(ws => ws.Annotations);
+            foreach (var annotation in annotations)
+            {
+                if (!annotation.SelectedModels.Except(modelsToDelete).Any())
+                {
+                    //Annotation Model has to be serialized first - before the nodes.
+                    //so, store the Annotation model as first object. This will serialize the 
+                    //annotation before the nodes are deleted. So, when Undo is pressed,
+                    //annotation model is deserialized correctly.
+                    modelsToDelete.Insert(0, annotation);                   
+                }
+            }
+
             OnDeletionStarted();
 
             CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
@@ -1075,6 +1088,27 @@ namespace Dynamo.Models
             }
 
             OnDeletionComplete(this, EventArgs.Empty);
+        }
+
+        internal void UngroupModel(List<ModelBase> modelsToUngroup)
+        {
+            var annotations = Workspaces.SelectMany(ws => ws.Annotations);
+            foreach (var model in modelsToUngroup)
+            {
+                foreach (var annotation in annotations)
+                {
+                    if (annotation.SelectedModels.Any(x => x.GUID == model.GUID))
+                    {
+                        CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
+                        var list = annotation.SelectedModels.ToList();
+                        if (list.Remove(model))
+                        {
+                            annotation.SelectedModels = list;
+                            annotation.UpdateBoundaryFromSelection();
+                        }                        
+                    }
+                }
+            }
         }
 
         internal void DumpLibraryToXml(object parameter)
@@ -1357,8 +1391,8 @@ namespace Dynamo.Models
                 {
                     GUID = Guid.NewGuid(),
                     AnnotationText = annotation.AnnotationText,
-                    Background = annotation.Background
-
+                    Background = annotation.Background,
+                    FontSize = annotation.FontSize
                 };
                 newAnnotations.Add(annotationModel);
             }

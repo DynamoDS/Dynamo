@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
 
@@ -132,7 +133,21 @@ namespace Dynamo.ViewModels
 
         private bool CanCreateGroup(object parameters)
         {
-            return true;
+            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+        }
+
+        private void UngroupNote(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+        }
+
+        private bool CanUngroupNote(object parameters)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            return (from model in groups
+                    let noteModel = DynamoSelection.Instance.Selection.OfType<NoteModel>().FirstOrDefault()
+                    where model.SelectedModels.Any(x => x.GUID == noteModel.GUID)
+                    select model).Any();
         }
     }
 }
