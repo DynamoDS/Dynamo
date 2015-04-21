@@ -45,20 +45,34 @@ namespace ProtoCore.AssociativeEngine
                     {
                         AssociativeGraph.GraphNode gnode = graphNodes[j];
 
-                        // Update within an expression is not allowed
-                        // a = a + 1
                         //
-                        //  [0] t0 = a
-                        //  [1] t1 = t0 + 1
-                        //  [2] a = t1  <- Modifying this should not re-execute [0] as they are part of the same expression
-                        if (currentNode.ssaExprID != gnode.ssaExprID)
+                        // Associative update within an expression only allows downstream update
+                        //  Case 1
+                        //  a = a + 1
+                        //      [0] t0 = a
+                        //      [1] t1 = t0 + 1
+                        //      [2] a = t1  <- The final assignment to 'a' should not re-execute [0] as they are part of the same expression
+                        //
+                        //  Case 2
+                        //  a = b + c
+                        //  b = 2
+                        //      [0] t0 = b
+                        //      [1] t1 = c
+                        //      [2] t2 = t0 + t1
+                        //      [3] a = t2  
+                        //      [3] b = 2   <- Modifying 'b' should re-execute [0], [2] and [3]
+                        //
+
+                        // Jun: Write a function to check if a graph has no LHS and describe why there are such graphs
+                        bool doesContainLHS = currentNode.updateNodeRefList != null && currentNode.updateNodeRefList.Count > 0;
+                        if (doesContainLHS)
                         {
-                            // Jun: Write a function to check if a graph has no LHS and describe why there are such graphs
-                            bool doesContainLHS = currentNode.updateNodeRefList != null && currentNode.updateNodeRefList.Count > 0;
-                            if (doesContainLHS)
+                            AssociativeGraph.GraphNode dependent = null;
+                            if (gnode.DependsOn(currentNode.updateNodeRefList[0], ref dependent))
                             {
-                                AssociativeGraph.GraphNode dependent = null;
-                                if (gnode.DependsOn(currentNode.updateNodeRefList[0], ref dependent))
+                                bool isWithinSSAExpression = currentNode.ssaExprID == gnode.ssaExprID;
+                                bool isDownstreamUpdate = isWithinSSAExpression && currentNode.UID < gnode.UID;
+                                if (!isWithinSSAExpression || isDownstreamUpdate)
                                 {
                                     Validity.Assert(dependent != null);
                                     currentNode.whoDependsOnMeList.Add(gnode);

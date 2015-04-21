@@ -1699,9 +1699,24 @@ namespace ProtoCore.DSASM
                 // Get the next pc to jump to
                 nextPC = reachableGraphNodes[0].updateBlock.startpc;
                 LX = StackValue.BuildInt(nextPC);
-                foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes)
+                //foreach (AssociativeGraph.GraphNode gnode in reachableGraphNodes
+                for (int n = 0; n < reachableGraphNodes.Count; ++n)
                 {
+                    AssociativeGraph.GraphNode gnode = reachableGraphNodes[n];
                     gnode.isDirty = true;
+
+                    if (gnode.isCyclic)
+                    {
+                        // If the graphnode is cyclic, mark it as not dirst so it wont get executed 
+                        // Sets its cyclePoint graphnode to be not dirty so it also doesnt execute.
+                        // The cyclepoint is the other graphNode that the current node cycles with
+                        gnode.isDirty = false;
+                        if (null != gnode.cyclePoint)
+                        {
+                            gnode.cyclePoint.isDirty = false;
+                            gnode.cyclePoint.isCyclic = true;
+                        }
+                    }
                 }
             }
 
