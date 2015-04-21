@@ -190,6 +190,8 @@ namespace Dynamo.Core.Threading
                     var plane = graphicItem as Plane;
                     if (plane != null)
                     {
+                        package.RequiresPerVertexColoration = true;
+
                         var s = 2.5;
 
                         var cs = CoordinateSystem.ByPlane(plane);
