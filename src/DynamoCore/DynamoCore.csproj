@@ -273,7 +273,6 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
-    <Compile Include="DSEngine\RenderPackage.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

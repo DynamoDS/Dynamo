@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
-using Dynamo.DSEngine;
+
 using Dynamo.Models;
 
 namespace Dynamo
@@ -12,7 +12,6 @@ namespace Dynamo
             var packages = dynamoModel.CurrentWorkspace.Nodes
                 .Where(node => node.HasRenderPackages)
                 .SelectMany(rp=>rp.RenderPackages)
-                .Cast<RenderPackage>()
                 .Where(rp=>rp.TriangleVertices.Count % 9 == 0)
                 .ToList();
 

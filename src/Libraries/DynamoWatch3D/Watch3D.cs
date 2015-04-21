@@ -115,7 +115,19 @@ namespace Dynamo.Nodes
             if (View == null) return;
 
             View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(this.watch3dModel.VisualizationManager.CreateRenderPackageFromGraphicItem), new List<IRenderPackage>(), watch3dModel.GUID));
+                new VisualizationEventArgs(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem), new List<IRenderPackage>(), watch3dModel.GUID));
+        }
+
+        /// <summary>
+        /// Create an IRenderPackage object provided an IGraphicItem
+        /// </summary>
+        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
+        /// <returns>An IRenderPackage object.</returns>
+        private IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
+        {
+            var renderPackage = DynamoModel.RenderPackageFactory.CreateRenderPackage();
+            gItem.Tessellate(renderPackage, -1.0, DynamoModel.RenderPackageFactory.MaxTesselationDivisions);
+            return renderPackage;
         }
 
         void mi_Click(object sender, RoutedEventArgs e)

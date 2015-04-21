@@ -237,8 +237,7 @@ namespace Dynamo
                     //This is also a target for memory optimisation
 
                     packages.AddRange(
-                        node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":"))
-                            .Cast<RenderPackage>());
+                        node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":")));
                 }
             }
 
@@ -292,19 +291,6 @@ namespace Dynamo
             task.Initialize(dynamoModel.CurrentWorkspace, node);
             task.Completed += OnRenderPackageAggregationCompleted;
             scheduler.ScheduleForExecution(task);
-        }
-
-        /// <summary>
-        /// Create an IRenderPackage object provided an IGraphicItem
-        /// </summary>
-        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
-        /// <returns>An IRenderPackage object.</returns>
-        public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
-        {
-            var renderPackage = new RenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, dynamoModel.MaxTesselationDivisions);
-            renderPackage.ItemsCount++;
-            return renderPackage;
         }
 
         /// <summary>

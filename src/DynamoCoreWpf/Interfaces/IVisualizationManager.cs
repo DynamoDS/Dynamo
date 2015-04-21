@@ -1,7 +1,5 @@
 ﻿using System;
 
-using Autodesk.DesignScript.Interfaces;
-
 using Dynamo.Models;
 
 namespace Dynamo.Interfaces
@@ -56,12 +54,5 @@ namespace Dynamo.Interfaces
         /// Request updated visuals for a branch of the graph.
         /// </summary>
         void RequestBranchUpdate(NodeModel node);
-
-        /// <summary>
-        /// Create an IRenderPackage object provided an IGraphicItem
-        /// </summary>
-        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
-        /// <returns>An IRenderPackage object.</returns>
-        IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem);
     }
 }

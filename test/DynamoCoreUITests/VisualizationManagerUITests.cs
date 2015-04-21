@@ -16,6 +16,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Wpf;
 
 using DynamoCoreUITests.Utility;
 
@@ -598,9 +599,8 @@ namespace DynamoCoreUITests
         {
             return
                 ViewModel.Model.CurrentWorkspace.Nodes.SelectMany(x => x.RenderPackages)
-                    .Cast<RenderPackage>()
-                    .Where(x => x.IsNotEmpty())
-                    .Aggregate(0, (a, b) => a + b.ItemsCount);
+                    .Where(x => x.HasData).Cast<HelixRenderPackage>()
+                    .Aggregate(0, (a, b) => a + b.Points.Points.Count() + (b.Mesh.Positions.Any() ? 1 : 0) + (b.Lines.Positions.Any() ? 1 : 0));
         }
 
         private void Open(string relativePath)

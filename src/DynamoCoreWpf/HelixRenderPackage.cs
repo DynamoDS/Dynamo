@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 
 using Autodesk.DesignScript.Interfaces;
 
@@ -20,6 +18,8 @@ namespace Dynamo.Wpf
     /// </summary>
     public class HelixRenderPackageFactory : IRenderPackageFactory
     {
+        public int MaxTesselationDivisions { get; set; }
+
         public HelixRenderPackageFactory(){}
 
         public IRenderPackage CreateRenderPackage()

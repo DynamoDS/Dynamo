@@ -222,7 +222,18 @@ namespace Dynamo.Models
         /// <summary>
         ///     The maximum amount of tesselation divisions used for geometry visualization.
         /// </summary>
-        public int MaxTesselationDivisions { get; set; }
+        public int MaxTesselationDivisions
+        {
+            get { return maxTesselationDivisions; }
+            set
+            {
+                maxTesselationDivisions = value;
+                if (RenderPackageFactory != null)
+                {
+                    RenderPackageFactory.MaxTesselationDivisions = maxTesselationDivisions;
+                }
+            }
+        }
 
         /// <summary>
         ///     The Dynamo Node Library, complete with Search.
@@ -310,6 +321,8 @@ namespace Dynamo.Models
         ///     The private collection of visible workspaces in Dynamo
         /// </summary>
         private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
+
+        private int maxTesselationDivisions;
 
         public IEnumerable<WorkspaceModel> Workspaces 
         {
@@ -1665,6 +1678,7 @@ namespace Dynamo.Models
             // Construct the factory using the default constructor.
             var factoryConstructor = factoryType.GetConstructor(System.Type.EmptyTypes);
             RenderPackageFactory = (IRenderPackageFactory)factoryConstructor.Invoke(null);
+            RenderPackageFactory.MaxTesselationDivisions = MaxTesselationDivisions;
         }
 
         #endregion
