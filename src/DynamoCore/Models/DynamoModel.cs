@@ -39,12 +39,7 @@ using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
 
 namespace Dynamo.Models
 {
-    public interface IEngineControllerManager
-    {
-        EngineController EngineController { get; }
-    }
-
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager // : ModelBase
+    public partial class DynamoModel : INotifyPropertyChanged, IDisposable // : ModelBase
     {
         public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
 
@@ -143,7 +138,8 @@ namespace Dynamo.Models
         /// <summary>
         ///     DesignScript VM EngineController, used for this instance of Dynamo.
         /// </summary>
-        public EngineController EngineController { get; set; }
+        public EngineController EngineController { // MHWS
+            get { return Workspaces.OfType<HomeWorkspaceModel>().First().EngineController; } }
 
         /// <summary>
         ///     Manages all loaded ZeroTouch libraries.
@@ -520,7 +516,7 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            ResetEngineInternal();
+            ResetEngine();
 
             AddHomeWorkspace();
 
@@ -612,9 +608,6 @@ namespace Dynamo.Models
             
             UpdateManager.Log -= UpdateManager_Log;
             Logger.Dispose();
-
-            EngineController.Dispose();
-            EngineController = null;
 
             if (PreferenceSettings != null)
             {
@@ -871,8 +864,9 @@ namespace Dynamo.Models
         /// <param name="args"></param>
         private void LogWarningMessage(LogWarningMessageEventArgs args)
         {
-            Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
-            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, args.message);
+            //MHWS
+            //Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
+            //EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, args.message);
         }
 
         #endregion
@@ -894,13 +888,15 @@ namespace Dynamo.Models
         ///     Registers (or re-registers) a Custom Node definition with the DesignScript VM,
         ///     so that instances of the custom node can be evaluated.
         /// </summary>
-        /// <param name="definition"></param>
         private void RegisterCustomNodeDefinitionWithEngine(CustomNodeDefinition definition)
         {
-            EngineController.GenerateGraphSyncDataForCustomNode(
-                Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Nodes),
-                definition,
-                DebugSettings.VerboseLogging);
+            foreach (var ec in Workspaces.OfType<HomeWorkspaceModel>().Select(x => x.EngineController))
+            {
+                ec.GenerateGraphSyncDataForCustomNode(
+                    Workspaces.OfType<HomeWorkspaceModel>().SelectMany(ws => ws.Nodes),
+                    definition,
+                    DebugSettings.VerboseLogging);
+            }
         }
 
         /// <summary>
@@ -908,8 +904,6 @@ namespace Dynamo.Models
         /// specified function definition and mark them as modified so that 
         /// their values will be re-queryed.
         /// </summary>
-        /// <param name="functionId"></param>
-        /// <returns></returns>
         private void MarkAllDependenciesAsModified(CustomNodeDefinition def)
         {
             var homeWorkspace = Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
@@ -932,25 +926,10 @@ namespace Dynamo.Models
         ///     to true will have a negative performance impact.</param>
         public virtual void ResetEngine(bool markNodesAsDirty = false)
         {
-            ResetEngineInternal();
-            foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
-                workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
-        }
-
-        protected void ResetEngineInternal()
-        {
-            if (EngineController != null)
+            foreach (var ws in this.Workspaces.OfType<HomeWorkspaceModel>())
             {
-                EngineController.MessageLogged -= LogMessage;
-                EngineController.Dispose();
-                EngineController = null;
+                ws.ResetEngine(this.LibraryServices, this.geometryFactoryPath, DebugSettings.VerboseLogging);
             }
-
-            EngineController = new EngineController(
-                LibraryServices,
-                geometryFactoryPath,
-                DebugSettings.VerboseLogging);
-            EngineController.MessageLogged += LogMessage;
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
@@ -1021,7 +1000,7 @@ namespace Dynamo.Models
             var nodeGraph = NodeGraph.LoadGraphFromXml(xmlDoc, NodeFactory);
 
             var newWorkspace = new HomeWorkspaceModel(
-                EngineController,
+                new EngineController(LibraryServices, geometryFactoryPath, false), 
                 Scheduler,
                 NodeFactory,
                 Utils.LoadTraceDataFromXmlDocument(xmlDoc),
@@ -1136,7 +1115,7 @@ namespace Dynamo.Models
         public void AddHomeWorkspace()
         {
             var defaultWorkspace = new HomeWorkspaceModel(
-                EngineController,
+                new EngineController(this.LibraryServices, geometryFactoryPath, DebugSettings.VerboseLogging), 
                 Scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,

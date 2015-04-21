@@ -98,7 +98,8 @@ namespace Dynamo.ViewModels
             get { return Workspaces.FirstOrDefault(w => w.Model is HomeWorkspaceModel); }
         }
 
-        public EngineController EngineController { get { return Model.EngineController; } }
+        // MHWS
+        public EngineController EngineController { get { return Model.Workspaces.OfType<HomeWorkspaceModel>().First().EngineController; } }
 
         public WorkspaceModel CurrentSpace
         {
@@ -952,9 +953,7 @@ namespace Dynamo.ViewModels
             if (item is HomeWorkspaceModel)
             {
                 var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
-                Model.RemoveWorkspace(HomeSpace);
-                Model.ResetEngine();
-                workspaces.Insert(0, newVm);
+                workspaces.Add(newVm);
 
                 // The RunSettings control is a child of the DynamoView, 
                 // but has its DataContext set to the RunSettingsViewModel 
@@ -1453,8 +1452,8 @@ namespace Dynamo.ViewModels
 
         public void MakeNewHomeWorkspace(object parameter)
         {
-            if (ClearHomeWorkspaceInternal())
-                this.ShowStartPage = false; // Hide start page if there's one.
+            this.model.AddHomeWorkspace();
+            this.ShowStartPage = false;
         }
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
@@ -1492,13 +1491,14 @@ namespace Dynamo.ViewModels
         /// 
         private bool ClearHomeWorkspaceInternal()
         {
+
             // if the workspace is unsaved, prompt to save
             // otherwise overwrite the home workspace with new workspace
             if (!HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(HomeSpace))
             {
-                Model.CurrentWorkspace = HomeSpace;
+               // MHWS model.ClearCurrentWorkspace();
 
-                model.ClearCurrentWorkspace();
+                
 
                 return true;
             }

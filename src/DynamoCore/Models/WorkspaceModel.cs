@@ -914,7 +914,7 @@ namespace Dynamo.Models
         }
 
         // TODO(Ben): Documentation to come before pull request.
-        // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715
+        // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715  MHWS
         protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
         {
             if (document.DocumentElement == null)

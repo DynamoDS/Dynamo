@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -92,6 +93,7 @@ namespace Dynamo.Models
             this.verboseLogging = verboseLogging;
             IsTestMode = isTestMode;
             EngineController = engine;
+            this.EngineController.MessageLogged += Log;
         }
 
         public override void Dispose()
@@ -252,32 +254,28 @@ namespace Dynamo.Models
         }
 
         #region evaluation
-        /// <summary>
-        /// Call this method to reset the virtual machine, avoiding a race 
-        /// condition by using a thread join inside the vm executive.
-        /// TODO(Luke): Push this into a resync call with the engine controller
-        /// </summary>
-        /// <param name="controller"></param>
-        /// <param name="markNodesAsDirty">Set this parameter to true to force 
-        ///     reset of the execution substrait. Note that setting this parameter 
-        ///     to true will have a negative performance impact.</param>
-        public void ResetEngine(EngineController controller, bool markNodesAsDirty = false)
+
+        internal void ResetEngine(LibraryServices libraryServices, string geometryFactoryPath, bool markNodesAsDirty = false )
         {
             if (EngineController != null)
             {
                 EngineController.MessageLogged -= Log;
-                EngineController.LibraryServices.LibraryLoaded -= LibraryLoaded;
+                EngineController.Dispose();
+                EngineController = null;
             }
 
-            EngineController = controller;
-            controller.MessageLogged += Log;
-            controller.LibraryServices.LibraryLoaded += LibraryLoaded;
-            
+            EngineController = new EngineController(
+                libraryServices,
+                geometryFactoryPath,
+                this.verboseLogging);
+
+            EngineController.MessageLogged += Log;
+
             if (markNodesAsDirty)
             {
                 // Mark all nodes as dirty so that AST for the whole graph will be
                 // regenerated.
-                MarkNodesAsModifiedAndRequestRun(Nodes); 
+                MarkNodesAsModifiedAndRequestRun(Nodes);
             }
 
             if (RunSettings.RunType == RunType.Automatic)
@@ -492,5 +490,6 @@ namespace Dynamo.Models
         }
        
         #endregion
+
     }
 }

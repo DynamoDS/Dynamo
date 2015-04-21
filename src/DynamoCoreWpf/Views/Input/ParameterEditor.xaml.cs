@@ -1,4 +1,5 @@
-﻿using Dynamo.Nodes;
+﻿using Dynamo.Models;
+using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using ICSharpCode.AvalonEdit;

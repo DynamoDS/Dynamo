@@ -336,10 +336,11 @@ namespace Dynamo.Models
         [Obsolete("Node to Code not enabled, API subject to change.")]
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)
         {
-            CurrentWorkspace.ConvertNodesToCodeInternal(
-                command.NodeId,
-                EngineController,
-                DebugSettings.VerboseLogging);
+            // MHWS
+            //CurrentWorkspace.ConvertNodesToCodeInternal(
+            //    command.NodeId,
+            //    EngineController,
+            //    DebugSettings.VerboseLogging);
 
             CurrentWorkspace.HasUnsavedChanges = true;
         }
