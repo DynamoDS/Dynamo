@@ -909,6 +909,17 @@ namespace Dynamo.ViewModels
                     select model).Any();
         }
 
+        private void AddToGroup(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
+        }
+
+        private bool CanAddToGroup(object parameters)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            return groups.Any(x => x.IsSelected);
+        }
+
 
         #region Private Helper Methods
         private Point GetTopLeft()

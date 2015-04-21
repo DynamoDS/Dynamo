@@ -102,7 +102,7 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.SelectModelCommand(annotationGuid, Dynamo.Utilities.ModifierKeys.Shift));
 
-                ViewModel.WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
+                //ViewModel.WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
 
                 foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
                 {

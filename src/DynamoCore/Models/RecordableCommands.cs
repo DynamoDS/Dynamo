@@ -1578,11 +1578,11 @@ namespace Dynamo.Models
 
             public AddModelToGroupCommand(Guid modelGuid) : base(modelGuid) { }
 
-            internal static UngroupModelCommand DeserializeCore(XmlElement element)
+            internal static AddModelToGroupCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
                 Guid modelGuid = helper.ReadGuid("ModelGuid");
-                return new UngroupModelCommand(modelGuid);
+                return new AddModelToGroupCommand(modelGuid);
             }
 
             #endregion

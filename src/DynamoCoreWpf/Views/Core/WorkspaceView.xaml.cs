@@ -149,6 +149,7 @@ namespace Dynamo.Views
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.AddAnnotationCommand.RaiseCanExecuteChanged();
             ViewModel.DynamoViewModel.UngroupAnnotationCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>
