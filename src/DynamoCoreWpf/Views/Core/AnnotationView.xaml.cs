@@ -8,6 +8,7 @@ using System.Windows.Shapes;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using HelixToolkit.Wpf.SharpDX;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
@@ -101,10 +102,18 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.SelectModelCommand(annotationGuid, Dynamo.Utilities.ModifierKeys.Shift));
 
-                ViewModel.AddToGroupCommand.Execute(null);
+                ViewModel.WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
 
                 foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
                 {
+                    //when a node is added to group, that node will be in selected mode. 
+                    //so remove that node from selection. Select that node with other nodes
+                    //in that group. Otherwise, this node will be unselected while the other 
+                    //nodes will be in selected.
+                    if (models.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(models);
+                    }
                     ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                         new DynCmd.SelectModelCommand(models.GUID, Dynamo.Utilities.ModifierKeys.Shift));
                 }

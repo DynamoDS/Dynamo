@@ -939,6 +939,29 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
         }
 
+        internal bool CanAddModelsToGroup(object obj)
+        {
+            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+        }
+
+        internal void AddModelsToGroup(object parameters)
+        {
+            if (null != parameters)
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+            //Check for multiple groups - Delete the group and not the nodes.
+            foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>().ToList())
+            {
+                if (!(modelb is AnnotationModel))
+                {
+                    var command = new DynamoModel.AddModelToGroupCommand(modelb.GUID);
+                    this.ExecuteCommand(command);
+                }
+            }  
+        }
+
         private void WorkspaceAdded(WorkspaceModel item)
         {
             if (item is HomeWorkspaceModel)
