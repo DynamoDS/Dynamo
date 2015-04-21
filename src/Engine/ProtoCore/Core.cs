@@ -250,8 +250,7 @@ namespace ProtoCore
 #region COMPILER_GENERATED_TO_RUNTIME_DATA
 
         public LangVerify Langverify { get; private set; }
-        public FunctionTable FunctionTable { get; private set; }
-       
+        public FunctionTable FunctionTable { get; private set; }    
         public RuntimeData RuntimeData { get; set; }
 
 #endregion
@@ -574,8 +573,7 @@ namespace ProtoCore
             Heap = new Heap();
             //Rmem = new RuntimeMemory(Heap);
             Configurations = new Dictionary<string, object>();
-            DllTypesToLoad = new List<System.Type>();
-           
+            DllTypesToLoad = new List<System.Type>();           
             RuntimeData = new ProtoCore.RuntimeData();
 
             Validity.AssertExpiry();
@@ -923,8 +921,6 @@ namespace ProtoCore
             ExprInterpreterExe.classTable = DSExecutable.classTable;
             ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
             ExprInterpreterExe.runtimeSymbols = DSExecutable.runtimeSymbols;
-            //ExprInterpreterExe.isSingleAssocBlock = DSExecutable.isSingleAssocBlock;
-
             ExprInterpreterExe.TypeSystem = TypeSystem;
             
             // Copy all instruction streams
@@ -1013,13 +1009,7 @@ namespace ProtoCore
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
             }
 
-            //// Single associative block means the first instruction is an immediate bounce 
-            //// This variable is only used by the mirror to determine if the GetValue()
-            //// block parameter needs to be incremented or not in order to get the correct global variable
-            //if (DSExecutable.isSingleAssocBlock)
-            //{
-            //    DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
-            //}
+            
             GenerateExprExe();
             DSExecutable.FunctionTable = FunctionTable;
             DSExecutable.DynamicVarTable = DynamicVariableTable;
