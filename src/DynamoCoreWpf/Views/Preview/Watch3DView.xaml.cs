@@ -886,13 +886,9 @@ namespace Dynamo.Controls
 
                     points.Positions.AddRange(p.Positions);
                     points.Colors.AddRange(p.Colors);
+                    points.Indices.AddRange(p.Indices.Select(i=> i + startIdx));
 
                     var endIdx = points.Positions.Count;
-
-                    for (var i = 0; i < points.Positions.Count; i++)
-                    {
-                        points.Indices.Add(i + startIdx);
-                    }
 
                     if (rp.IsSelected)
                     {
@@ -916,13 +912,9 @@ namespace Dynamo.Controls
 
                     lineSet.Positions.AddRange(l.Positions);
                     lineSet.Colors.AddRange(l.Colors);
-                    
-                    var endIdx = lineSet.Positions.Count;
+                    lineSet.Indices.AddRange(l.Indices.Select(i=>i + startIdx));
 
-                    for (var i = 0; i < l.Indices.Count; i++)
-                    {
-                        lineSet.Indices.Add(l.Indices[i] + startIdx);
-                    }
+                    var endIdx = lineSet.Positions.Count;
 
                     if (rp.IsSelected)
                     {
@@ -942,13 +934,9 @@ namespace Dynamo.Controls
                     mesh.Colors.AddRange(m.Colors);
                     mesh.Normals.AddRange(m.Normals);
                     mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
+                    mesh.Indices.AddRange(m.Indices.Select(i=>i + idxCount));
 
                     var endIdx = mesh.Positions.Count;
-
-                    for (var i = 0; i < mesh.Positions.Count; i++)
-                    {
-                        mesh.Indices.Add(i + idxCount);
-                    }
 
                     if (rp.IsSelected)
                     {
