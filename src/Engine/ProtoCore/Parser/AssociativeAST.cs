@@ -119,78 +119,6 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    /// <summary>
-    /// This node will be used by the optimiser
-    /// </summary>
-    public class MergeNode : AssociativeNode
-    {
-        public List<AssociativeNode> MergedNodes
-        {
-            get;
-            private set;
-        }
-
-        public MergeNode()
-        {
-            MergedNodes = new List<AssociativeNode>();
-        }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as MergeNode;
-            return null != otherNode && MergedNodes.SequenceEqual(otherNode.MergedNodes);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-    }
-
-    /// <summary>
-    /// This class is only used in GraphCompiler
-    /// </summary>
-    public class ArrayIndexerNode : AssociativeNode 
-    {
-        public ArrayNode ArrayDimensions;
-        public AssociativeNode Array;
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as ArrayIndexerNode;
-            if (null == otherNode)
-                return false;
-
-            return EqualityComparer<ArrayNode>.Default.Equals(ArrayDimensions, otherNode.ArrayDimensions) &&
-                   EqualityComparer<AssociativeNode>.Default.Equals(Array, otherNode.Array);
-        }
-
-        public override int GetHashCode()
-        {
-            var ArrayDimensionsHashCode =
-                (ArrayDimensions == null ? base.GetHashCode() : ArrayDimensions.GetHashCode());
-            var ArrayHashCode =
-                (Array == null ? base.GetHashCode() : Array.GetHashCode());
-
-            return ArrayDimensionsHashCode ^ ArrayHashCode;
-        }
-
-        public override string ToString()
-        {
-            var buf = new StringBuilder();
-
-            buf.Append(Array);
-            buf.Append("[");
-            buf.Append(ArrayDimensions.Expr);
-            buf.Append("]");
-
-            if (ArrayDimensions.Type != null)
-                buf.Append(ArrayDimensions.Type);
-
-            return buf.ToString();
-        }
-    }
-
     public class ReplicationGuideNode : AssociativeNode
     {
         public bool IsLongest { get; set; }
@@ -2241,67 +2169,6 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class PostFixNode : AssociativeNode
-    {
-        public AssociativeNode Identifier { get; set; }
-        public UnaryOperator Operator { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as PostFixNode;
-            if (null == otherNode)
-                return false;
-
-            return Operator.Equals(otherNode.Operator) &&
-                   Identifier.Equals(otherNode.Identifier);
-        }
-
-        public override int GetHashCode()
-        {
-            var operatorHashCode = Operator.GetHashCode();
-            var identifierHashCode =
-                (Identifier == null ? base.GetHashCode() : Identifier.GetHashCode());
-
-            return operatorHashCode ^ identifierHashCode;
-        }
-    }
-
-    public class BreakNode : AssociativeNode
-    {
-        public override string ToString()
-        {
-            return Keyword.Break;
-        }
-
-        public override bool Equals(object other)
-        {
-            return other is BreakNode;
-        }
-
-        public override int GetHashCode()
-        {
-            return 10007;
-        }
-    }
-
-    public class ContinueNode : AssociativeNode
-    {
-        public override string ToString()
-        {
-            return Keyword.Continue;
-        }
-
-        public override bool Equals(object other)
-        {
-            return other is ContinueNode;
-        }
-
-        public override int GetHashCode()
-        {
-            return 10009;
-        }
-    }
-
     public class DefaultArgNode : AssociativeNode
     {// not supposed to be used in parser 
     }
@@ -3168,19 +3035,6 @@ namespace ProtoCore.AST.AssociativeAST
             if (aNode == null) return null;
 
             var result = new ImperativeAST.NullNode();
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.PostFixNode ToImperativeNode(this PostFixNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.PostFixNode
-            {
-                Identifier = aNode.Identifier.ToImperativeAST(),
-                Operator = aNode.Operator
-            };
             CopyProps(aNode, result);
             return result;
         }
