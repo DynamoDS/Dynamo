@@ -82,7 +82,7 @@ namespace ProtoCore.AssociativeEngine
                                 if (!isWithinSSAExpression || isDownstreamUpdate)
                                 {
                                     Validity.Assert(dependent != null);
-                                    currentNode.whoDependsOnMeList.Add(gnode);
+                                    currentNode.PushWhoDependsOnMe(gnode);
                                 }
                             }
                         }
@@ -853,6 +853,19 @@ namespace ProtoCore.AssociativeGraph
             IsLastNodeInSSA = false;
         }
 
+
+        public void PushWhoDependsOnMe(GraphNode dependent)
+        {
+            // Do not add if it already contains this dependent
+            foreach (GraphNode node in whoDependsOnMeList)
+            {
+                if (node.UID == dependent.UID)
+                {
+                    return;
+                }
+            }
+            whoDependsOnMeList.Add(dependent);
+        }
 
         public void PushDependent(GraphNode dependent)
         {
