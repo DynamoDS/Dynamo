@@ -17,8 +17,8 @@ namespace Tessellation
         /// <param name="points">A set of points.</param>
         public static IEnumerable<Curve> ByPoints(IEnumerable<Point> points)
         {
-            var verts = points.Select(Vertex3.FromPoint);
-            var triResult = ConvexHull<Vertex3, TriangleFace>.Create(verts);
+            var verts = points.Select(Vertex3.FromPoint).ToList();
+            var triResult = ConvexHull<Vertex3, TriangleFace>.Create(verts, new ConvexHullComputationConfig());
 
             // make edges
             foreach (var face in triResult.Faces)

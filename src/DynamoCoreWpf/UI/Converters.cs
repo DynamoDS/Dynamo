@@ -14,6 +14,7 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
+using Dynamo.UpdateManager;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
@@ -75,19 +76,19 @@ namespace Dynamo.Controls
             {
                 var st = (PackageManagerSearchViewModel.PackageSearchState)value;
 
-                if (st == PackageManagerSearchViewModel.PackageSearchState.NORESULTS)
+                if (st == PackageManagerSearchViewModel.PackageSearchState.NoResults)
                 {
                     return Resources.PackageSearchStateNoResult;
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.RESULTS)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Results)
                 {
                     return "";
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.SEARCHING)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Searching)
                 {
                     return Resources.PackageSearchStateSearching;
                 }
-                else if (st == PackageManagerSearchViewModel.PackageSearchState.SYNCING)
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Syncing)
                 {
                     return Resources.PackageSearchStateSyncingWithServer;
                 }
@@ -1305,34 +1306,6 @@ namespace Dynamo.Controls
         }
     }
 
-    public class BackgroundPreviewGestureConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            // When "DynamoViewModel.CanNavigateBackground" is set to "true" 
-            // (i.e. background 3D navigation is turned on), and "IsOrbiting"
-            // is "true", then left mouse dragging will be orbiting the 3D view. 
-            // Otherwise left clicking will do nothing to the view (same is 
-            // applicable to "IsPanning" property).
-            // 
-            if ((parameter as string).Equals("IsPanning"))
-            {
-                bool isPanning = ((bool)value);
-                return new MouseGesture(isPanning ? MouseAction.LeftClick : MouseAction.MiddleClick);
-            }
-            else
-            {
-                bool isOrbiting = ((bool)value);
-                return new MouseGesture(isOrbiting ? MouseAction.LeftClick : MouseAction.None);
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class LacingToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1758,9 +1731,14 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value != true) return Resources.AboutWindowUpToDate;
+            var um = value as IUpdateManager;
+            if (um == null)
+                return Resources.AboutWindowCannotGetVersion;
 
-            var latest = UpdateManager.UpdateManager.Instance.AvailableVersion;
+            if (!um.IsUpdateAvailable) 
+                return Resources.AboutWindowUpToDate;
+            
+            var latest = um.AvailableVersion;
 
             return latest != null ? latest.ToString() : Resources.AboutWindowCannotGetVersion;
         }
@@ -2139,4 +2117,37 @@ namespace Dynamo.Controls
             throw new NotImplementedException();
         }
     }
+
+    public class MenuItemCheckConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var fontsize = System.Convert.ToDouble(value);
+            var param = System.Convert.ToDouble(parameter);
+
+            return fontsize == param;            
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class AnnotationTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value == null ? String.Empty:value.ToString();             
+            return text;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value.ToString();           
+            return text;
+        }
+    }
+
+    
 }

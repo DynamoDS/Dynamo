@@ -138,7 +138,7 @@ namespace ProtoCore.DSASM
         public MemoryRegion     memregion;
         public int              symbolTableIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
         public int              runtimeTableIndex = ProtoCore.DSASM.Constants.kInvalidIndex;
-        public ProtoCore.CompilerDefinitions.AccessSpecifier  access;
+        public ProtoCore.CompilerDefinitions.AccessModifier  access;
         public bool isStatic;
         public List<AttributeEntry> Attributes { get; set; }
         public int codeBlockId = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -173,7 +173,7 @@ namespace ProtoCore.DSASM
             bool isArray = false, 
             List<int> arraySizeList = null, 
             int scope = -1,
-            ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
+            ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
             bool isStatic = false,
             int codeBlockId = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
@@ -213,7 +213,7 @@ namespace ProtoCore.DSASM
             bool isArray = false,
             List<int> arraySizeList = null,
             int scope = -1,
-            ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
+            ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
             bool isStatic = false,
             int codeBlockId = ProtoCore.DSASM.Constants.kInvalidIndex)
         {

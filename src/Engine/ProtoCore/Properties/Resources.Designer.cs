@@ -2212,15 +2212,6 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ??? expected.
-        /// </summary>
-        public static string triquestionmark_expected1 {
-            get {
-                return ResourceManager.GetString("triquestionmark_expected1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &quot;try&quot; expected.
         /// </summary>
         public static string try_expected {

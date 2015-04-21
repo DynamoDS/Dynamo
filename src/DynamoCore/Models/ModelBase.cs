@@ -43,13 +43,18 @@ namespace Dynamo.Models
 
     public abstract class ModelBase : NotificationObject, ISelectable, ILocatable, ILogSource
     {
+        /// <summary>
+        /// Fired when this Model is disposed.
+        /// </summary>
+        public event Action<ModelBase> Disposed;
+
         private Guid guid;
         private bool isSelected;
         private double x;
         private double y;
         private double height = 100;
         private double width = 100;
-        
+       
         public double CenterX
         {
             get { return X + Width / 2; }
@@ -130,7 +135,7 @@ namespace Dynamo.Models
             }
         }
 
-        public Rect2D Rect
+        public virtual Rect2D Rect
         {
             get{return new Rect2D(x,y,width,height);}
         }
@@ -200,6 +205,13 @@ namespace Dynamo.Models
             width = w;
             height = h;
             RaisePropertyChanged("Position");
+        }
+
+        public virtual void Dispose()
+        {
+            var handler = Disposed;
+            if (handler != null)
+                handler(this);
         }
 
         #region Command Framework Supporting Methods

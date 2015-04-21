@@ -118,6 +118,26 @@ namespace Dynamo.PackageManager
             }, new List<PackageHeader>());
         }
 
+        internal bool GetTermsOfUseAcceptanceStatus()
+        {
+            return ExecuteTermsOfUseCall(true);
+        }
+
+        internal bool SetTermsOfUseAcceptanceStatus()
+        {
+            return ExecuteTermsOfUseCall(false);
+        }
+
+        private bool ExecuteTermsOfUseCall(bool queryAcceptanceStatus)
+        {
+            return FailFunc.TryExecute(() =>
+            {
+                var request = new TermsOfUse(queryAcceptanceStatus);
+                var response = client.ExecuteAndDeserializeWithContent<TermsOfUseStatus>(request);
+                return response.content.accepted;
+            }, false);
+        }
+
         internal PackageUploadHandle Publish(Package package, List<string> files, bool isNewVersion, bool isTestMode)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(package));
