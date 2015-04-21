@@ -178,6 +178,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add To Group.
+        /// </summary>
+        public static string ContextAddGroupFromSelection {
+            get {
+                return ResourceManager.GetString("ContextAddGroupFromSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create Group.
         /// </summary>
         public static string ContextCreateGroupFromSelection {

@@ -858,6 +858,7 @@ namespace Dynamo.ViewModels
         private void AlignSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
+
         }
 
         private static bool CanCreateNodeFromSelection(object parameter)

@@ -51,7 +51,7 @@
                           Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
                           Command="{Binding Path=UngroupCommand}" />
                 <MenuItem Name="addtoGroup"
-                          Header="AddToGroup"
+                          Header="{x:Static p:Resources.ContextAddGroupFromSelection}"
                           Command="{Binding Path=AddToGroupCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">

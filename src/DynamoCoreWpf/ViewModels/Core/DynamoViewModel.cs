@@ -771,6 +771,8 @@ namespace Dynamo.ViewModels
             PublishSelectedNodesCommand.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
+            UngroupModelCommand.RaiseCanExecuteChanged();
+            AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
         }
 
         void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -936,12 +938,14 @@ namespace Dynamo.ViewModels
 
         internal bool CanUngroupModel(object parameter)
         {
+            var tt = DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
             return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
         }
 
         internal bool CanAddModelsToGroup(object obj)
         {
-            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+            var tt = DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
+            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
         }
 
         internal void AddModelsToGroup(object parameters)
