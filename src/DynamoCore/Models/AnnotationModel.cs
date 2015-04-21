@@ -266,6 +266,7 @@ namespace Dynamo.Models
                 }
                                
                 //Initial Height is to store the Actual height of the group.
+                //that is the height should be the initial height without the textblock height.
                 if (this.InitialHeight <= 0.0)
                     this.InitialHeight = region.Height;
             }
