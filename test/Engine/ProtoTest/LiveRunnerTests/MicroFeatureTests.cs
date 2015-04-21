@@ -3399,7 +3399,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             liveRunner.UpdateGraph(syncData);
 
             // Graph UI node -> ASTs
-            var astNodes = liveRunner.Core.DSExecutable.RuntimeData.CachedSSANodes;
+            var astNodes = liveRunner.Core.DSExecutable.CachedSSANodes;
             bool foundCallsite = false;
             Guid callsiteId = Guid.Empty;
 
@@ -3407,7 +3407,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
             foreach (var ast in astNodes)
             {
                 ProtoCore.CallSite callsite;
-                if (liveRunner.Core.DSExecutable.RuntimeData.ASTToCallSiteMap.TryGetValue(ast.ID, out callsite))
+                if (liveRunner.Core.DSExecutable.ASTToCallSiteMap.TryGetValue(ast.ID, out callsite))
                 {
                     callsiteId = callsite.CallSiteID;
                     foundCallsite = true;
@@ -3418,7 +3418,7 @@ OUT = 100"", {""IN""}, {{}}); x = x;"
 
             // CallSite -> Graph UI node
             Assert.IsTrue(foundCallsite);
-            Assert.AreEqual(guid2, liveRunner.Core.DSExecutable.RuntimeData.CallSiteToNodeMap[callsiteId]);
+            Assert.AreEqual(guid2, liveRunner.Core.DSExecutable.CallSiteToNodeMap[callsiteId]);
         }
 
         [Test]

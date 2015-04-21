@@ -846,9 +846,6 @@
   <data name="triquestionmark_expected" xml:space="preserve">
     <value>??? expected</value>
   </data>
-  <data name="triquestionmark_expected1" xml:space="preserve">
-    <value>??? expected</value>
-  </data>
   <data name="try_expected" xml:space="preserve">
     <value>"try" expected</value>
   </data>

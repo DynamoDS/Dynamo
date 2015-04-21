@@ -49,6 +49,12 @@ namespace DynamoCoreUITests
             Assert.IsTrue(window.Owner == (Window)View);
         }
 
+        public override void Setup()
+        {
+            base.Setup();
+            ViewModel.PreferenceSettings.PackageDownloadTouAccepted = true;
+        }
+
         #endregion
 
         #region PackageManagerPublishView

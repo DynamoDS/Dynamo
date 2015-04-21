@@ -484,6 +484,8 @@ namespace Dynamo.Models
 
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
+
+            SetModelEventOnAnnotation();
         }
 
         /// <summary>
@@ -677,6 +679,7 @@ namespace Dynamo.Models
                     AnnotationText = text                   
                 };
                 annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+                annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
                 Annotations.Add(annotationModel);
                 HasUnsavedChanges = true;
                 return annotationModel;
@@ -685,16 +688,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Sets the event on Annotation model.
-        /// When a node is removed from a group, this event will be
-        /// used to include that node again in that group (UNDO operation)
+        //this sets the event on Annotation. This event return the model from the workspace.
+        //When a model is ungrouped from a group, that model will be deleted from that group.
+        //So, when UNDO execution, cannot get that model from that group, it has to get from the workspace.
+        //The below method will set the event on every annotation model, that will return the specific model
+        //from workspace.
         /// </summary>
         /// <param name="model">The model.</param>
-        internal void SetModelEventOnAnnotation()
-        {
+        private void SetModelEventOnAnnotation()
+        {           
             foreach (var model in this.Annotations)
             {
                 model.ModelBaseRequested += annotationModel_GetModelBase;
+                model.Disposed += (_) => model.ModelBaseRequested -= annotationModel_GetModelBase;
             }
         }
 
@@ -989,16 +995,57 @@ namespace Dynamo.Models
             if (modelGuids == null || (!modelGuids.Any()))
                 throw new ArgumentNullException("modelGuids");
 
-            var retrievedModels = GetModelsInternal(modelGuids);
-            if (!retrievedModels.Any())
+            var modelsToUpdate = GetModelsInternal(modelGuids).ToList();
+            if (!modelsToUpdate.Any())
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
-            var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
-            using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, retrievedModels))
+            UpdateValueParams visibilityParams = null;
+            var nodesToShowOrHide = new List<NodeModel>();
+
+            var modelsToRecordForUndo = new List<ModelBase>();
+            if (propertyName.Equals("IsUpstreamVisible"))
             {
-                foreach (var retrievedModel in retrievedModels)
+                visibilityParams = new UpdateValueParams("IsVisible", value);
+
+                // If the update is meant to turn upstream preview on/off, then the number of nodes 
+                // involved in this update will presumably be higher than "modelsToUpdate". Here we 
+                // gather all the upstream nodes that are affected, record all those nodes for undo.
+                // 
+                var nodesToUpdate = modelsToUpdate.OfType<NodeModel>().ToList();
+                foreach (var nodeToUpdate in nodesToUpdate)
+                {
+                    // Unconditionally retrieve all upstream nodes.
+                    WorkspaceUtilities.GatherAllUpstreamNodes(
+                        nodeToUpdate, nodesToShowOrHide, model => true);
+                }
+
+                // Remove those nodes that are in "nodesToUpdate".
+                nodesToShowOrHide.RemoveAll(modelsToUpdate.Contains);
+
+                // Record those directly affected, then those indirectly affected.
+                modelsToRecordForUndo.AddRange(modelsToUpdate);
+                modelsToRecordForUndo.AddRange(nodesToShowOrHide.Distinct());
+            }
+            else
+            {
+                // The update does not affect other nodes.
+                modelsToRecordForUndo.AddRange(modelsToUpdate);
+            }
+
+            var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
+            using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, modelsToRecordForUndo))
+            {
+                foreach (var retrievedModel in modelsToUpdate)
                 {
                     retrievedModel.UpdateValue(updateValueParams);
+                }
+
+                if ((visibilityParams != null) && nodesToShowOrHide.Any())
+                {
+                    foreach (var nodeModel in nodesToShowOrHide)
+                    {
+                        nodeModel.UpdateValue(visibilityParams);
+                    }
                 }
             }
 

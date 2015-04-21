@@ -440,10 +440,6 @@
   <data name="ReplacePortDataResultToolTip" xml:space="preserve">
     <value>If condition(item) = True, then "replaceWith" is returned. Otherwise "item" is returned unaltered.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Resources_en_US" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources.en-US.resx;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="ScanPortDataReductorToolTip" xml:space="preserve">
     <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
   </data>

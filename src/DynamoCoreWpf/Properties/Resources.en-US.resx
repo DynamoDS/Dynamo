@@ -121,12 +121,12 @@
     <value>Could not get version.</value>
     <comment>To indicate not abe to get Dynamo version</comment>
   </data>
-  <data name="AboutWIndowDynamoWebsiteButton" xml:space="preserve">
-    <value>Dynamo Website</value>
+  <data name="AboutWindowDynamoWebsiteButton" xml:space="preserve">
+    <value>{0} Website</value>
     <comment>Click button to go to Dynamo website</comment>
   </data>
   <data name="AboutWindowTitle" xml:space="preserve">
-    <value>About Dynamo</value>
+    <value>About {0}</value>
     <comment>About window title</comment>
   </data>
   <data name="AboutWindowUpToDate" xml:space="preserve">
@@ -454,7 +454,7 @@
     <comment>Setting menu | Enable data reporting during usage</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
-    <value>Detailed reporting sends behaviour data that we use for improving Dynamo.&amp;#x0a;It includes the graph being created as well as errors and warnings</value>
+    <value>Detailed reporting sends behaviour data that we use for improving {0}.&amp;#x0a;It includes the graph being created as well as errors and warnings</value>
     <comment>Setting menu | Tooltip for enable data reporting during usage menu item</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReporting" xml:space="preserve">
@@ -830,9 +830,9 @@
     <value>Import Library</value>
   </data>
   <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
-    <value>Dynamo has already installed {0}.
+    <value>{0} has already installed {1}.
 
-Dynamo will attempt to uninstall this package before installing.</value>
+{0} will attempt to uninstall this package before installing.</value>
   </data>
   <data name="MessageConfirmToInstallPackage" xml:space="preserve">
     <value>Are you sure you want to install {0} {1} ?</value>
@@ -872,10 +872,10 @@ You can always redownload the package.</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageFailedToUninstall" xml:space="preserve">
-    <value>Dynamo failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
+    <value>{0} failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
   </data>
   <data name="MessageFailToUninstallPackage" xml:space="preserve">
-    <value>Dynamo failed to uninstall the package: {0}.  The package may need to be reinstalled manually.</value>
+    <value>{0} failed to uninstall the package: {1}.  The package may need to be reinstalled manually.</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageFileNotFound" xml:space="preserve">
@@ -887,15 +887,15 @@ You can always redownload the package.</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageNeedToRestart" xml:space="preserve">
-    <value>Dynamo and its host application must restart before uninstall takes effect.</value>
+    <value>{0} and its host application must restart before uninstall takes effect.</value>
   </data>
   <data name="MessagePackageContainPythonScript" xml:space="preserve">
     <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
   </data>
   <data name="MessagePackageNewerDynamo" xml:space="preserve">
-    <value>The following packages use a newer version of Dynamo than you are currently using:
+    <value>The following packages use a newer version of {0} than you are currently using:
 
-{0}
+{1}
 
 Do you want to continue?</value>
   </data>
@@ -908,7 +908,7 @@ Do you want to continue?</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageSubmitSameNamePackage" xml:space="preserve">
-    <value>The node is part of the dynamo package called "{0}" - do you want to submit a new version of this package?
+    <value>The node is part of the {0} package called "{1}" - do you want to submit a new version of this package?
 
 If not, this node will be moved to the new package you are creating."</value>
     <comment>Message box content</comment>
@@ -924,16 +924,16 @@ You can always undeprecate the package.</value>
 You can always re-deprecate the package.</value>
   </data>
   <data name="MessageUninstallToContinue" xml:space="preserve">
-    <value>Dynamo needs to uninstall {0} to continue, but cannot as one of its types appears to be in use.  Try restarting Dynamo.</value>
+    <value>{0} needs to uninstall {1} to continue, but cannot as one of its types appears to be in use.  Try restarting {0}.</value>
   </data>
-  <data name="MessageUnintallToContinue2" xml:space="preserve">
-    <value>Dynamo needs to uninstall {0} to continue but it contains binaries already loaded into Dynamo.  It's now marked for removal, but you'll need to first restart Dynamo.</value>
+  <data name="MessageUninstallToContinue2" xml:space="preserve">
+    <value>{0} needs to uninstall {1} to continue but it contains binaries already loaded into Dynamo.  It's now marked for removal, but you'll need to first restart {0}.</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
-    <value>Open Dynamo Definition...</value>
+    <value>Open {0} Definition...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Package Download Confirmation</value>
@@ -947,7 +947,7 @@ You can always re-deprecate the package.</value>
     <value>Package Download</value>
   </data>
   <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
-    <value>Package Uses Newer Version of Dynamo!</value>
+    <value>Package Uses Newer Version of {0}!</value>
   </data>
   <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
     <value>Package Warning</value>
@@ -984,7 +984,7 @@ You can always re-deprecate the package.</value>
     <comment>Copy crash details</comment>
   </data>
   <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
-    <value>Uh oh... something went wrong and dynamo has crashed, sorry about that.
+    <value>Uh oh... something went wrong and {0} has crashed, sorry about that.
 
 You will get a chance to save your work.</value>
   </data>
@@ -1001,12 +1001,12 @@ You will get a chance to save your work.</value>
     <comment>Submit a bug on github</comment>
   </data>
   <data name="CrashPromptDialogTitle" xml:space="preserve">
-    <value>Dynamo has crashed</value>
+    <value>{0} has crashed</value>
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Download Warning</value>
   </data>
-  <data name="DynamoUpdateAvailabeToolTip" xml:space="preserve">
+  <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>A Dynamo update is available. Click to install.</value>
   </data>
   <data name="EditNodeWindowTitle" xml:space="preserve">
@@ -1031,13 +1031,13 @@ You will get a chance to save your work.</value>
     <value>Generic Task Dialog</value>
   </data>
   <data name="UsageReportPromptDialogConsent" xml:space="preserve">
-    <value>I give my consent for Autodesk to collect information on how I use Dynamo.</value>
+    <value>I give my consent for Autodesk to collect information on how I use {0}.</value>
   </data>
   <data name="UsageReportPromptDialogFeatureUsage" xml:space="preserve">
-    <value>The features and commands you use in Dynamo</value>
+    <value>The features and commands you use in {0}</value>
   </data>
   <data name="UsageReportPromptDialogMessagePart1" xml:space="preserve">
-    <value>We would like to collect some information about how Dynamo is used.
+    <value>We would like to collect some information about how {0} is used.
 
 Autodesk will use the information for product improvement purposes, by improving the usability and stability of the product.  For example, we would like to detect if you have difficulty with a specific function call in the language.
 
@@ -1057,7 +1057,7 @@ Many thanks!</value>
 </value>
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>Agreement to collect usability data on your use of Dynamo</value>
+    <value>Agreement to collect usability data on your use of {0}</value>
   </data>
   <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
     <value>Clear</value>
@@ -1148,7 +1148,7 @@ Many thanks!</value>
     <value>For two lists {a,b,c}{1,2,3} returns {a1,a2,a3}{b1,b2,b3}{c1,c2,c3}.</value>
   </data>
   <data name="LacingDisabledToolTip" xml:space="preserve">
-    <value>Arugment lacing is disabled for this node.</value>
+    <value>Argument lacing is disabled for this node.</value>
   </data>
   <data name="LacingFirstToolTip" xml:space="preserve">
     <value>For two lists {a,b,c}{1,2,3} returns {a1}.</value>
@@ -1372,7 +1372,7 @@ Many thanks!</value>
     <comment>Github repository</comment>
   </data>
   <data name="PublishPackageViewTitle" xml:space="preserve">
-    <value>Publish a Dynamo Package</value>
+    <value>Publish a {0} Package</value>
   </data>
   <data name="ShowClassicNodeLibrary" xml:space="preserve">
     <value>Show Classic Node Library</value>
@@ -1397,7 +1397,7 @@ Many thanks!</value>
     <comment>ErrorString</comment>
   </data>
   <data name="CannotSubmitPackage" xml:space="preserve">
-    <value>You can't submit a package in this version of Dynamo.  You'll need a host application, like Revit, to submit a package.</value>
+    <value>You can't submit a package in this version of {0}.  You'll need a host application, like Revit, to submit a package.</value>
     <comment>ErrorString</comment>
   </data>
   <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
@@ -1478,13 +1478,13 @@ Do you want to install the latest Dynamo update?</value>
     <value>DesignScript Files ({0})|{0}</value>
   </data>
   <data name="FileDialogDynamoCustomNode" xml:space="preserve">
-    <value>Dynamo Custom Node ({0})|{0}</value>
+    <value>{0} Custom Node ({1})|{1}</value>
   </data>
   <data name="FileDialogDynamoDefinitions" xml:space="preserve">
-    <value>Dynamo Definitions ({0})|{0}</value>
+    <value>{0} Definitions ({1})|{1}</value>
   </data>
   <data name="FileDialogDynamoWorkspace" xml:space="preserve">
-    <value>Dynamo Workspace ({0})|{0}</value>
+    <value>{0} Workspace ({1})|{1}</value>
   </data>
   <data name="FileDialogLibraryFiles" xml:space="preserve">
     <value>Library Files ({0})|{0}</value>
@@ -1520,7 +1520,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Failed to save the Workspace as image.</value>
   </data>
   <data name="MessageLoadingTime" xml:space="preserve">
-    <value>{0} elapsed for loading Dynamo main window.</value>
+    <value>{0} elapsed for loading {1} main window.</value>
   </data>
   <data name="MessageNodeWithNullFunction" xml:space="preserve">
     <value>There is a null function definition for this node.</value>
@@ -1576,8 +1576,20 @@ Do you want to install the latest Dynamo update?</value>
   <data name="RunStartedMessage" xml:space="preserve">
     <value>Run started...</value>
   </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>&lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuBackground" xml:space="preserve">
+    <value>Select Background</value>
+  </data>
+  <data name="GroupContextMenuFont" xml:space="preserve">
+    <value>Font Size</value>
+  </data>
+  <data name="GroupContextMenuUngroup" xml:space="preserve">
+    <value>Ungroup</value>
+  </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
-    <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while Dynamo is not running and try again.</value>
+    <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Cannot update assembly</value>
@@ -1627,23 +1639,20 @@ Do you want to install the latest Dynamo update?</value>
     <value>Show upstream geometry preview</value>
     <comment>Context menu item - Specific to canvas</comment>
   </data>
-  <data name="GroupDefaultText" xml:space="preserve">
-    <value>&lt;Click here to edit the group title&gt;</value>
-  </data>
-  <data name="GroupContextMenuBackground" xml:space="preserve">
-    <value>Select Background</value>
-  </data>
-  <data name="GroupContextMenuFont" xml:space="preserve">
-    <value>Font Size</value>
-  </data>
-  <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>Ungroup</value>
-  </data>
   <data name="MoreButton" xml:space="preserve">
     <value>More</value>
     <comment>The "More" button on "Publish a Dynamo Package" dialog</comment>
   </data>
   <data name="PublishPackage" xml:space="preserve">
     <value>Publish Package !</value>
+  </data>
+  <data name="TermsOfUseAcceptButton" xml:space="preserve">
+    <value>I Accept</value>
+  </data>
+  <data name="TermsOfUseDeclineButton" xml:space="preserve">
+    <value>I Decline</value>
+  </data>
+  <data name="TermsOfUseViewTitle" xml:space="preserve">
+    <value>Package Manager Terms of Use</value>
   </data>
 </root>

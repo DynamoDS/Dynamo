@@ -867,10 +867,6 @@ namespace Dynamo.ViewModels
 
                 owningWorkspace.DynamoViewModel.ExecuteCommand(new DynCmd.CreateNodeCommand(node, cursor.X, cursor.Y, false, true));
 
-                // select node
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(node);
-
                 //correct node position
                 node.X = (int)mouseDownPos.X - 92;
                 node.Y = (int)mouseDownPos.Y - 31;

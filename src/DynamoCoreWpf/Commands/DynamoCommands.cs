@@ -179,7 +179,10 @@ namespace Dynamo.ViewModels
                 case "SwitchTabCommand":
                 case "MutateTestCommand":
                 case "UngroupModelCommand":
+<<<<<<< HEAD
                 case "AddModelToGroupCommand":
+=======
+>>>>>>> 1c3d0810f7f000c3ea0952f2cb09bb2dfc58086a
                     // for this commands there is no need
                     // to do anything before execution
                     break;

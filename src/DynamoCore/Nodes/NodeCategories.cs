@@ -430,28 +430,137 @@ namespace Dynamo.Nodes
         }
 
         /// <summary>
-        /// Add spaces to string before capital letters e.g. CoordinateSystem to Coordinate System.
+        /// Gets words from text, e.g. ImportFromCSV to ("Import","From","CSV")
         /// </summary>
-        /// <param name="original">incoming string</param>
-        internal static string InsertSpacesToString(string original)
+        /// <param name="text">incoming string</param>
+        /// <param name="maxCharacters">Max number of characters per row</param>
+        internal static IEnumerable<string> WrapText(string text, int maxCharacters)
         {
-            if (string.IsNullOrWhiteSpace(original))
-                return "";
-            StringBuilder newText = new StringBuilder(original.Length * 2);
-            newText.Append(original[0]);
-            for (int i = 1; i < original.Length; i++)
+            List<string> words = new List<string>();
+            if (string.IsNullOrWhiteSpace(text) || maxCharacters < 2)
+                return words;
+
+            StringBuilder currentWord = new StringBuilder(text[0].ToString());
+            for (int i = 1; i < text.Length; i++)
             {
-                // We also have to check was previous character capital letter, e.g. Import From CSV                
-                var curr = original[i];
-                var prev = original[i - 1];
-                if ((Char.IsUpper(curr) || curr.Equals('(')) &&
-                    ((prev != ' ') && (!Char.IsUpper(prev))))
+                var curr = text[i];
+                var prev = text[i - 1];
+
+                if (Char.IsUpper(curr) && !Char.IsUpper(prev))
                 {
-                    newText.Append(" ");
+                    words.Add(currentWord.ToString());
+                    currentWord.Clear();
                 }
-                newText.Append(original[i]);
+                currentWord.Append(curr);
             }
-            return newText.ToString();
+            // Add last word.
+            if (currentWord.Length != 0)
+                words.Add(currentWord.ToString());
+
+            // Try to merge words.
+            List<string> result_words = new List<string>();
+            currentWord.Clear();
+            currentWord.Append(words[0]);
+            foreach (var word in words)
+            {
+                // Case for first word, just pass it.
+                if (currentWord.ToString() == word)
+                    continue;
+
+                if ((currentWord.Length + word.Length + 1) <= maxCharacters)
+                {
+                    currentWord.Append(" ");
+                    currentWord.Append(word);
+                }
+                else
+                {
+                    result_words.Add(currentWord.ToString());
+                    currentWord.Clear();
+                    currentWord.Append(word);
+                }
+            }
+            // Add last word.
+            if (currentWord.Length != 0)
+                result_words.Add(currentWord.ToString());
+
+            return result_words;
+        }
+
+        /// <summary>
+        /// Reduces the number of rows, based on the entries inside rows parameter.
+        /// E.g. rows = { "Insert", "Day", "Of", "Week", "Here" }, maxRows == 3
+        /// Result { "Insert", "Day", "Of Week Here" }
+        /// </summary>
+        /// <param name="rows">Incoming rows</param>
+        /// <param name="maxRows">Max number of rows</param>
+        internal static IEnumerable<string> ReduceRowCount(List<string> rows, int maxRows)
+        {
+            if (rows == null || maxRows <= 0)
+                throw new ArgumentException();
+
+            var results = new List<string>();
+            foreach (var row in rows)
+            {
+                // There are still room in the results list.
+                if (results.Count < maxRows)
+                {
+                    results.Add(row);
+                    continue;
+                }
+
+                // Already full, keep appending to last row.
+                var lastRow = results.Last();
+                results.Remove(lastRow);
+                results.Add(lastRow + " " + row);
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        /// Truncate each entry in the given "rows" to a maximum of "maxCharacters".
+        /// For examples, given that "maxCharacters" equals to "8":
+        /// 
+        ///     { "Surface", "Analysis Data" } => { "Surface", "..s Data" }
+        ///     { "By", "Geometry", "Coordinate", "System" } => { "By", "Geometry", "Coordi..", "System" }
+        ///     { "By Geometry", "Coordinate System" } => { "By Geo..", "..System" }
+        /// </summary>
+        /// <param name="rows">Incomming rows</param>
+        /// <param name="maxCharacters">Max number characters per row</param>
+        internal static IEnumerable<string> TruncateRows(IEnumerable<string> rows, int maxCharacters)
+        {
+            if (rows == null || maxCharacters <= 2)
+                throw new ArgumentException();
+            if (rows.Count() == 0)
+                return rows;
+
+            int twoDotsLength = Configurations.TwoDots.Length;
+            var maxAfterTruncate = maxCharacters - twoDotsLength;
+            var results = new List<string>();
+            var lastRow = rows.Last();
+
+            foreach (var row in rows)
+            {
+                if (row.Length <= maxCharacters)
+                {
+                    results.Add(row);
+                    continue;
+                }
+
+                if (row != lastRow)
+                {
+                    // Rows other than the last get dots appended to the end.
+                    results.Add(row.Substring(0, maxAfterTruncate) + Configurations.TwoDots);
+                }
+                else
+                {
+                    // The final row gets the dots added to the front. 
+                    var offset = row.Length - maxAfterTruncate;
+                    results.Add(Configurations.TwoDots + row.Substring(offset));
+                }
+            }
+
+            return results;
         }
 
         internal static string NormalizeAsResourceName(string resource)

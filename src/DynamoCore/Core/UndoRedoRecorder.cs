@@ -492,7 +492,7 @@ namespace Dynamo.Core
                     var element = connectorModel.Serialize(
                         recorder.document, SaveContext.Undo);
 
-                    existingConnectors.Add(connectorModel.GUID, element);
+                    existingConnectors[connectorModel.GUID] = element;
                 }
             }
 
@@ -507,7 +507,7 @@ namespace Dynamo.Core
                     foreach (var connectorModel in nodeModel.AllConnectors)
                     {
                         // Connectors after node is modified.
-                        remainingConnectors.Add(connectorModel.GUID, connectorModel);
+                        remainingConnectors[connectorModel.GUID] = connectorModel;
                     }
                 }
 

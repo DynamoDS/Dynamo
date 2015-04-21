@@ -409,15 +409,16 @@ namespace Dynamo.Models
         #endregion
 
         public override void Dispose()
-        {
+        {           
             if (this.SelectedModels.Any())
             {
                 foreach (var model in this.SelectedModels)
                 {
                     model.PropertyChanged -= model_PropertyChanged;
-                    model.Disposed -= model_Disposed;
+                    model.Disposed -= model_Disposed;                    
                 }
             }
+            base.Dispose();
         }     
     }   
 }
