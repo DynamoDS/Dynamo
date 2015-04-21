@@ -2000,36 +2000,6 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class ForLoopNode : AssociativeNode
-    {
-        public AssociativeNode loopVar { get; set; }
-        public AssociativeNode expression { get; set; }
-        public List<AssociativeNode> body { get; set; }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as ForLoopNode;
-            if (null == otherNode)
-                return false;
-
-            return loopVar.Equals(otherNode.loopVar) &&
-                   expression.Equals(otherNode.expression) &&
-                   body.SequenceEqual(otherNode.body);
-        }
-
-        public override int GetHashCode()
-        {
-            var loopVarHashCode =
-                (loopVar == null ? base.GetHashCode() : loopVar.GetHashCode());
-            var expressionHashCode =
-                (expression == null ? base.GetHashCode() : expression.GetHashCode());
-            var bodyHashCode =
-                (body == null ? base.GetHashCode() : body.GetHashCode());
-
-            return loopVarHashCode ^ expressionHashCode ^ bodyHashCode;
-        }
-    }
-
     public class ArrayNode : AssociativeNode
     {
         public ArrayNode()
@@ -2905,20 +2875,6 @@ namespace ProtoCore.AST.AssociativeAST
             {
                 ArrayDimensions = aNode.ArrayDimensions.ToImperativeNode(),
                 list = aNode.list.Select(ToImperativeAST).ToList()
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.ForLoopNode ToImperativeNode(this ForLoopNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.ForLoopNode
-            {
-                body = aNode.body.Select(ToImperativeAST).ToList(),
-                expression = aNode.expression.ToImperativeAST(),
-                loopVar = aNode.loopVar.ToImperativeAST()
             };
             CopyProps(aNode, result);
             return result;
