@@ -229,21 +229,7 @@ namespace Dynamo.Core
                 Path.Combine(dynamoCoreDir, NodesDirectoryName)
             };
 
-            preloadedLibraries = new HashSet<string>
-            {
-                "VMDataBridge.dll",
-                "ProtoGeometry.dll",
-                "DSCoreNodes.dll",
-                "DSOffice.dll",
-                "DSIronPython.dll",
-                "FunctionObject.ds",
-                "Optimize.ds",
-                "DynamoConversions.dll",
-                "DynamoUnits.dll",
-                "Tessellation.dll",
-                "Analysis.dll"
-            };
-
+            preloadedLibraries = new HashSet<string>();
             additionalResolutionPaths = new HashSet<string>();
             LoadPathsFromResolver(pathResolver);
         }
@@ -342,7 +328,7 @@ namespace Dynamo.Core
             var di = new DirectoryInfo(sampleDirectory);
             if (!Directory.Exists(sampleDirectory) ||
                 !di.GetDirectories().Any() ||
-                !di.GetFiles().Any())
+                !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
                 var neturalCommonSamples = Path.Combine(dataRootDirectory, "samples", "en-US");
                 if (Directory.Exists(neturalCommonSamples))

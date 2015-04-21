@@ -226,11 +226,13 @@ namespace DynamoInstallDetective
 
         public virtual string GetCoreFilePathFromInstallation(string installPath)
         {
-            return Directory.GetFiles(installPath, fileLookup).First();
+            return Directory.GetFiles(installPath, fileLookup).FirstOrDefault();
         }
 
         public virtual Tuple<int, int, int, int> GetVersionInfoFromFile(string filePath)
         {
+            if (!File.Exists(filePath))
+                return Tuple.Create(0, 0, 0, 0);
             var version = FileVersionInfo.GetVersionInfo(filePath);
             return Tuple.Create(version.FileMajorPart, version.FileMinorPart, version.FileBuildPart, version.FilePrivatePart);
         }

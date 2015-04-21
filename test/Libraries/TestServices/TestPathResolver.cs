@@ -8,15 +8,27 @@ namespace TestServices
 {
     public class TestPathResolver : IPathResolver
     {
-        private readonly List<string> additionalResolutionPaths;
-        private readonly List<string> additionalNodeDirectories;
-        private readonly List<string> preloadedLibraryPaths;
+        private readonly HashSet<string> additionalResolutionPaths;
+        private readonly HashSet<string> additionalNodeDirectories;
+        private readonly HashSet<string> preloadedLibraryPaths;
 
         public TestPathResolver()
         {
-            additionalResolutionPaths = new List<string>();
-            additionalNodeDirectories = new List<string>();
-            preloadedLibraryPaths = new List<string>();
+            additionalResolutionPaths = new HashSet<string>();
+            additionalNodeDirectories = new HashSet<string>();
+            preloadedLibraryPaths = new HashSet<string>();
+        }
+
+        public void AddNodeDirectory(string nodeDirectory)
+        {
+            if (!additionalNodeDirectories.Contains(nodeDirectory))
+                additionalNodeDirectories.Add(nodeDirectory);
+        }
+
+        public void AddResolutionPath(string resolutionPath)
+        {
+            if (!additionalResolutionPaths.Contains(resolutionPath))
+                additionalResolutionPaths.Add(resolutionPath);
         }
 
         public void AddPreloadLibraryPath(string preloadLibraryPath)

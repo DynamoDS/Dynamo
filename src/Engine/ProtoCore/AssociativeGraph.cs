@@ -488,13 +488,17 @@ namespace ProtoCore.AssociativeEngine
             return nodesInScope[indexOfDirtyNode + 1];
         }
 
+       
+
+
         /// <summary>
         ///  Finds all graphnodes associated with each AST and marks them dirty. Returns the first dirty node
         /// </summary>
         /// <param name="core"></param>
         /// <param name="nodeList"></param>
         /// <returns></returns>
-        public static AssociativeGraph.GraphNode MarkGraphNodesDirty(Core core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
+        public static AssociativeGraph.GraphNode MarkGraphNodesDirtyAtGlobalScope
+(RuntimeCore core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
         {
             if (nodeList == null)
             {
@@ -510,23 +514,28 @@ namespace ProtoCore.AssociativeEngine
                     continue;
                 }
 
-                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope))
                 {
                     if (gnode.isActive && gnode.OriginalAstID == bNode.OriginalAstID)
                     {
+                        
+                        gnode.isDirty = true;
+                        gnode.isActive = true;
+                        if (gnode.updateBlock.updateRegisterStartPC != Constants.kInvalidIndex)
+                        {
+                            gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;
+                        }
                         if (firstDirtyNode == null)
                         {
                             firstDirtyNode = gnode;
                         }
-                        gnode.isDirty = true;
-                        gnode.isActive = true;
                     }
                 }
             }
             return firstDirtyNode;
         }
 
-        public static void MarkGraphNodesDirtyFromFunctionRedef(Core core, List<AST.AssociativeAST.AssociativeNode> fnodeList)
+        public static void MarkGraphNodesDirtyFromFunctionRedef(RuntimeCore runtimeCore, List<AST.AssociativeAST.AssociativeNode> fnodeList)
         {
             bool entrypointSet = false;
             foreach (var node in fnodeList)
@@ -538,7 +547,7 @@ namespace ProtoCore.AssociativeEngine
                 }
 
                 int exprId = Constants.kInvalidIndex;
-                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                foreach (var gnode in runtimeCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
                 {
                     if (gnode.isActive)
                     {
@@ -551,7 +560,7 @@ namespace ProtoCore.AssociativeEngine
                                     exprId = gnode.exprUID;
                                     if (!entrypointSet)
                                     {
-                                        core.SetNewEntryPoint(gnode.updateBlock.startpc);
+                                        runtimeCore.SetStartPC(gnode.updateBlock.startpc);
                                         entrypointSet = true;
                                     }
                                 }
@@ -582,11 +591,13 @@ namespace ProtoCore.AssociativeGraph
     {
         public int startpc { get; set; }
         public int endpc { get; set; }
+        public int updateRegisterStartPC { get; set; }
 
         public UpdateBlock()
         {
             startpc = Constants.kInvalidIndex;
             endpc = Constants.kInvalidIndex;
+            updateRegisterStartPC = Constants.kInvalidIndex;
         }
     }
 

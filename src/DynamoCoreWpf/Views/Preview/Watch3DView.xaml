@@ -3,10 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:controls="clr-namespace:Dynamo.Controls"
-             xmlns:HelixToolkit="clr-namespace:HelixToolkit.Wpf;assembly=HelixToolkit.Wpf"
+             xmlns:sdx="clr-namespace:SharpDX;assembly=SharpDX" 
+             xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
              Name="topControl" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -90,113 +92,47 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
-        <HelixToolkit:HelixViewport3D Name="watch_view" ZoomExtentsWhenLoaded="True" 
-                                      ShowViewCube="False" CameraRotationMode="Turntable"
-                                      IsHitTestVisible="True" MouseLeftButtonDown="Watch_view_OnMouseDown" 
-                                      ShowCoordinateSystem="{Binding ElementName=topControl, Path=DataContext.CanNavigateBackground}">
-            <HelixToolkit:HelixViewport3D.PanGesture2>
-                <Binding Path="DataContext.IsPanning"
-                         Mode="OneWay"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                         Converter="{StaticResource BackgroundPreviewGestureConverter}"
-                         ConverterParameter="IsPanning" />
-            </HelixToolkit:HelixViewport3D.PanGesture2>
-            <HelixToolkit:HelixViewport3D.RotateGesture2>
-                <Binding Path="DataContext.IsOrbiting"
-                         Mode="OneWay"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}"
-                         Converter="{StaticResource BackgroundPreviewGestureConverter}"
-                         ConverterParameter="IsOrbiting" />
-            </HelixToolkit:HelixViewport3D.RotateGesture2>
-            <HelixToolkit:HelixViewport3D.Camera>
-                <PerspectiveCamera FarPlaneDistance="5000000" UpDirection="0,0,1" Position="10,10,10" LookDirection="-1,-1,-1">
-                </PerspectiveCamera>
-            </HelixToolkit:HelixViewport3D.Camera>
-            <ModelVisual3D>
-                <HelixToolkit:LightVisual3D>
-                    <HelixToolkit:DefaultLights>
-                    </HelixToolkit:DefaultLights>
-                </HelixToolkit:LightVisual3D>
-                <HelixToolkit:PointsVisual3D Size="6" Color="{StaticResource pointColor}" Points="{Binding Path=Points, Mode=TwoWay}"/>
-                <HelixToolkit:LinesVisual3D Thickness="1" Color="{StaticResource lineColor}" Points="{Binding Path=Lines, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:PointsVisual3D Size="8" Color="#009eff" Points="{Binding Path=PointsSelected, Mode=TwoWay}"></HelixToolkit:PointsVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="3" Color="#009eff" Points="{Binding Path=LinesSelected, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <GeometryModel3D Geometry="{Binding Mesh}">
-                            <GeometryModel3D.Material>
-                                <MaterialGroup>
-                                    <DiffuseMaterial>
-                                        <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Color="#e8e6e2" Opacity="1"/>
-                                        </DiffuseMaterial.Brush>
-                                    </DiffuseMaterial>
-                                    <SpecularMaterial SpecularPower="85">
-                                        <SpecularMaterial.Brush>
-                                            <SolidColorBrush Color="#e8e6e2" Opacity="1"/>
-                                        </SpecularMaterial.Brush>
-                                    </SpecularMaterial>
-                                </MaterialGroup>
-                            </GeometryModel3D.Material>
-                            <GeometryModel3D.BackMaterial>
-                                <MaterialGroup>
-                                    <DiffuseMaterial>
-                                        <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Color="#e8e6e2" Opacity="1"/>
-                                        </DiffuseMaterial.Brush>
-                                    </DiffuseMaterial>
-                                    <SpecularMaterial SpecularPower="85">
-                                        <SpecularMaterial.Brush>
-                                            <SolidColorBrush Color="#e8e6e2" Opacity="1"/>
-                                        </SpecularMaterial.Brush>
-                                    </SpecularMaterial>
-                                </MaterialGroup>
-                            </GeometryModel3D.BackMaterial>
-                        </GeometryModel3D>
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-                <ModelVisual3D>
-                    <ModelVisual3D.Content>
-                        <GeometryModel3D Geometry="{Binding MeshSelected}">
-                            <GeometryModel3D.Material>
-                                <MaterialGroup>
-                                    <DiffuseMaterial>
-                                        <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Color="#009eff" Opacity="1"/>
-                                        </DiffuseMaterial.Brush>
-                                    </DiffuseMaterial>
-                                    <SpecularMaterial SpecularPower="85">
-                                        <SpecularMaterial.Brush>
-                                            <SolidColorBrush Color="#ffffff" Opacity="1"/>
-                                        </SpecularMaterial.Brush>
-                                    </SpecularMaterial>
-                                </MaterialGroup>
-                            </GeometryModel3D.Material>
-                            <GeometryModel3D.BackMaterial>
-                                <MaterialGroup>
-                                    <DiffuseMaterial>
-                                        <DiffuseMaterial.Brush>
-                                            <SolidColorBrush Color="#009eff" Opacity="1"/>
-                                        </DiffuseMaterial.Brush>
-                                    </DiffuseMaterial>
-                                    <SpecularMaterial SpecularPower="85">
-                                        <SpecularMaterial.Brush>
-                                            <SolidColorBrush Color="#ffffff" Opacity="1"/>
-                                        </SpecularMaterial.Brush>
-                                    </SpecularMaterial>
-                                </MaterialGroup>
-                            </GeometryModel3D.BackMaterial>
-                        </GeometryModel3D>
-                    </ModelVisual3D.Content>
-                </ModelVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="4" Color="Red" Points="{Binding Path=XAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="4" Color="Green" Points="{Binding Path=YAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="4" Color="Blue" Points="{Binding Path=ZAxes, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-                <HelixToolkit:LinesVisual3D Thickness="1" Color="LightGray" Points="{Binding Path=Grid, Mode=TwoWay}"></HelixToolkit:LinesVisual3D>
-            </ModelVisual3D>
-            <HelixToolkit:BillboardTextGroupVisual3D Foreground="DarkGray" Items="{Binding Text}" BorderThickness="1" FontSize="12" Padding="2" FontFamily="Arial" HeightFactor="1"/>
-        </HelixToolkit:HelixViewport3D>
-
+        <hx:Viewport3DX Focusable="True"
+            Name="watch_view"
+            ZoomExtentsWhenLoaded="False"
+            ShowViewCube="False" 
+            CameraRotationMode="Turntable"
+            IsHitTestVisible="True"
+            MouseLeftButtonDown="Watch_view_OnMouseDown" 
+            ShowCoordinateSystem="False"
+            RenderTechnique="{Binding RenderTechnique}"
+            Camera="{Binding Camera}" RotationSensitivity="1"
+            IsShadowMappingEnabled="{Binding ShowShadows}" 
+            UseDefaultGestures="False" 
+            IsInertiaEnabled="False" 
+            IsChangeFieldOfViewEnabled="False" 
+            SpinReleaseTime="0" 
+            ShowFieldOfView="False">
+            <hx:Viewport3DX.InputBindings>
+                <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+E"/>
+                <MouseBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+LeftDoubleClick"/>
+                <MouseBinding Command="hx:ViewportCommands.Rotate" MouseAction="RightClick"/>
+                <MouseBinding Command="hx:ViewportCommands.Pan" MouseAction="MiddleClick"/>
+                <MouseBinding Command="hx:ViewportCommands.Zoom" Gesture="Ctrl+RightClick"/>
+                <MouseBinding Command="hx:ViewportCommands.ChangeFieldOfView" Gesture="Alt+RightClick"/>
+                <MouseBinding Command="hx:ViewportCommands.ZoomRectangle" Gesture="Ctrl+Shift+RightClick"/>
+                <MouseBinding Command="hx:ViewportCommands.SetTarget" Gesture="Ctrl+RightDoubleClick"/>
+                <MouseBinding Command="hx:ViewportCommands.Reset" Gesture="Ctrl+MiddleDoubleClick"/>
+                <MouseBinding Command="{Binding LeftClickCommand}" Gesture="LeftClick"/>
+            </hx:Viewport3DX.InputBindings>
+            <hx:ShadowMap3D x:Name="shadowMap" Resolution="{Binding ShadowMapResolution}" />
+            <hx:AmbientLight3D Color="{Binding AmbientLightColor}"/>
+            <hx:DirectionalLight3D Name="key" Color="{Binding DirectionalLightColor}" Direction = "{Binding DirectionalLightDirection}"/>
+            <hx:DirectionalLight3D Name="fill" Color="{Binding FillLightColor}" Direction = "{Binding FillLightDirection}"/>
+            <hx:LineGeometryModel3D x:Name="lines"  Geometry="{Binding Lines}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.5" IsHitTestVisible="False" />
+            <hx:LineGeometryModel3D x:Name="linesSelected"  Geometry="{Binding LinesSelected}" Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="1.0" IsHitTestVisible="False" />
+            <hx:LineGeometryModel3D x:Name="grid" Geometry="{Binding Grid}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>
+            <hx:LineGeometryModel3D x:Name="axes" Geometry="{Binding Axes}"  Transform = "{Binding Model1Transform}" Color="{x:Static sdx:Color.White}" Thickness="0.3" IsHitTestVisible="False"/>
+            <hx:PointGeometryModel3D x:Name="points" Geometry="{Binding Points}" Transform="{Binding Model1Transform}" Color="{x:Static sdx:Color.White}"/>
+            <hx:MeshGeometryModel3D x:Name="mesh" Geometry="{Binding Mesh}" Transform = "{Binding Model1Transform}" Material="{Binding WhiteMaterial}" IsHitTestVisible="False" />
+            <hx:BillboardTextModel3D x:Name="text" Geometry="{Binding Text}" Transform="{Binding Model1Transform}"/>
+        </hx:Viewport3DX>
+        
         <Thumb Name ="resizeThumb" Width="10" Height="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5"
                DragDelta="ResizeThumb_OnDragDelta" DragStarted="ResizeThumb_OnDragStarted" DragCompleted="ResizeThumb_OnDragCompleted"
                Visibility="{Binding WatchIsResizable, Converter={StaticResource BooleanToVisibilityConverter}}"/>

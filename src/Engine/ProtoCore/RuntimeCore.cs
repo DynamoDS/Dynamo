@@ -95,6 +95,29 @@ namespace ProtoCore
             ExecutiveProvider = new ExecutiveProvider();
 
             RuntimeStatus = new ProtoCore.RuntimeStatus(this);
+            StartPC = Constants.kInvalidPC;
+        }
+
+        /// <summary>
+        /// Setup before execution
+        /// This function needs to be called before attempting to execute the RuntimeCore
+        /// It will initialize the runtime execution data and configuration
+        /// </summary>
+        /// <param name="compileCore"></param>
+        /// <param name="isCodeCompiled"></param>
+        /// <param name="context"></param>
+        public void SetupForExecution(ProtoCore.Core compileCore, int globalStackFrameSize)
+        {
+            if (globalStackFrameSize > 0)
+            {
+                RuntimeMemory.PushFrameForGlobals(globalStackFrameSize);
+            }
+            RunningBlock = 0;
+            RuntimeStatus.MessageHandler = compileCore.BuildStatus.MessageHandler;
+            WatchSymbolList = compileCore.watchSymbolList;
+            SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
+            RegisterDllTypes(compileCore.DllTypesToLoad);
+            NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.kExecutionBegin);
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
@@ -106,9 +129,23 @@ namespace ProtoCore
             this.ExprInterpreterExe = exprInterpreterExe;
         }
 
+        /// <summary>
+        /// Register imported dll types
+        /// These types are initialzed from Importing dlls
+        /// </summary>
+        /// <param name="dllTypes"></param>
+        public void RegisterDllTypes(List<System.Type> dllTypes)
+        {
+            foreach (System.Type type in dllTypes)
+            {
+                FFIExecutionManager.Instance.RegisterExtensionApplicationType(this, type);
+            }
+        }
+
         public IExecutiveProvider ExecutiveProvider { get; set; }
         public Executive ExecutionInstance { get; private set; }
         public Executive CurrentExecutive { get; private set; }
+        public int StartPC { get; private set; }
 
         // Execution properties
         public Executable DSExecutable { get; private set; }
@@ -183,6 +220,7 @@ namespace ProtoCore
         {
             RunningBlock = 0;
             ExecutionState = (int)ExecutionStateEventArgs.State.kInvalid;
+            StartPC = Constants.kInvalidPC;
         }
 
         protected void OnDispose()
@@ -283,5 +321,43 @@ namespace ProtoCore
             return ts;
         }
 
+        /// <summary>
+        /// Set the value of a variable at runtime
+        /// Returns the entry pc
+        /// </summary>
+        /// <param name="astID"></param>
+        /// <param name="sv"></param>
+        /// <returns></returns>
+        public int SetValue(List<AssociativeNode> modifiedNodes, StackValue sv)
+        {
+            ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
+            AssociativeGraph.GraphNode gnode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope
+(this, modifiedNodes);
+            Validity.Assert(gnode != null);
+            return gnode.updateBlock.startpc;
+        }
+
+        /// <summary>
+        /// This function determines what the starting pc should be for the next execution session
+        /// The StartPC takes precedence if set. Otherwise, the entry pc in the global codeblock is the entry point
+        /// StartPC is assumed to be reset to kInvalidPC after each execution session
+        /// </summary>
+        public void SetupStartPC()
+        {
+            if (StartPC == Constants.kInvalidPC && DSExecutable.CodeBlocks.Count > 0)
+            {
+                StartPC = DSExecutable.CodeBlocks[0].instrStream.entrypoint;
+            }
+        }
+
+        /// <summary>
+        /// Sets a new entry point pc
+        /// This can be overrided by another call to SetStartPC
+        /// </summary>
+        /// <param name="pc"></param>
+        public void SetStartPC(int pc)
+        {
+            StartPC = pc;
+        }
     }
 }

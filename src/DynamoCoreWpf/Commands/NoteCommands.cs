@@ -14,5 +14,18 @@ namespace Dynamo.ViewModels
                 return _selectCommand;
             }
         }
+
+        private DelegateCommand _createGroupCommand;
+        public DelegateCommand CreateGroupCommand
+        {
+            get
+            {
+                if (_createGroupCommand == null)
+                    _createGroupCommand =
+                        new DelegateCommand(CreateGroup, CanCreateGroup);
+
+                return _createGroupCommand;
+            }
+        }
     }
 }

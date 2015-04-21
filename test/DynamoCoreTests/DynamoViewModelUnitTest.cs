@@ -16,18 +16,22 @@ using TestServices;
 namespace Dynamo.Tests
 {
     /// <summary>
-    /// The DynamoViewModelUnitTests constructs the DynamoModel
-    /// and the DynamoViewModel, but does not construct the view.
-    /// You can use this class to create tests which ensure that the 
-    /// ViewModel and the Model are communicating properly.
+    /// 
+    ///     The DynamoViewModelUnitTests constructs the DynamoModel
+    ///     and the DynamoViewModel, but does not construct the view.
+    ///     You can use this class to create tests which ensure that the 
+    ///     ViewModel and the Model are communicating properly.
+    /// 
+    ///     WARNING! You should think twice about using this class!  It's
+    ///     often a better alternative to use DynamoModelTestBase or,
+    ///     better yet, use an even lighter weight class.  
+    ///
     /// </summary>
     public class DynamoViewModelUnitTest : UnitTestBase
     {
         protected DynamoViewModel ViewModel;
         protected Preloader preloader;
-        protected TestPathResolver pathResolver;
 
-        [SetUp]
         public override void Setup()
         {
             base.Setup();
@@ -90,11 +94,37 @@ namespace Dynamo.Tests
             }
         }
 
+        protected virtual void GetLibrariesToPreload(List<string> libraries)
+        {
+            // Nothing here by design. If you find yourself having to add 
+            // anything here, something must be wrong. DynamoViewModelUnitTest
+            // is designed to contain no test cases, so it does not need any 
+            // preloaded library, all of which should only be specified in the
+            // derived class.
+        }
+
         protected void StartDynamo()
         {
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
+
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
 
             var model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
@@ -157,7 +187,7 @@ namespace Dynamo.Tests
         protected IEnumerable<object> GetPreviewValues()
         {
             List<object> objects = new List<object>();
-            foreach(var node in ViewModel.Model.CurrentWorkspace.Nodes)
+            foreach (var node in ViewModel.Model.CurrentWorkspace.Nodes)
             {
                 objects.Add(GetPreviewValue(node.GUID));
             }
@@ -172,7 +202,7 @@ namespace Dynamo.Tests
                 var mirror = GetRuntimeMirror(varname);
                 Assert.IsNull(mirror);
             }
-            
+
         }
 
         protected object GetPreviewValue(System.Guid guid)
@@ -193,9 +223,9 @@ namespace Dynamo.Tests
             int outportCount = node.OutPorts.Count;
             Assert.IsTrue(outportCount > 0);
 
-            if(outportCount > 1) 
-                return node.AstIdentifierBase; 
-            else 
+            if (outportCount > 1)
+                return node.AstIdentifierBase;
+            else
                 return node.GetAstIdentifierForOutputIndex(0).Value;
 
         }
@@ -209,9 +239,9 @@ namespace Dynamo.Tests
             int outportCount = node.OutPorts.Count;
             Assert.IsTrue(outportCount > 0);
 
-            if (outportCount > 1) 
-                return node.AstIdentifierBase; 
-            else 
+            if (outportCount > 1)
+                return node.AstIdentifierBase;
+            else
                 return node.GetAstIdentifierForOutputIndex(0).Value;
 
         }

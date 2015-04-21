@@ -1,7 +1,5 @@
 ﻿using System.IO;
 using NUnit.Framework;
-using Dynamo.Utilities;
-using Dynamo.Models;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Geometry;
 
@@ -10,6 +8,13 @@ namespace Dynamo.Tests
     [TestFixture]
     class WorkflowTests : DSEvaluationViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         // Note: Only add test cases those are related to ASM Geometry.
         // Always create a region while creating tests for new Geometry type.
 
@@ -19,7 +24,7 @@ namespace Dynamo.Tests
         {
             // This will test user workflow which contains many nodes, final output is Solid using
             // sweep.
-            string openPath = Path.Combine(GetTestDirectory(), @"core\WorkflowTestFiles\RandomModel_V3.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\RandomModel_V3.dyn");
             
             RunModel(openPath);
 
@@ -41,7 +46,7 @@ namespace Dynamo.Tests
              // This will test user workflow which contains many nodes.
              // Crash with "Index was outside the bounds of the array"
  
-            string openPath = Path.Combine(GetTestDirectory(), @"core\WorkflowTestFiles\20140418_buildingSetback_standalone.dyn");
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\20140418_buildingSetback_standalone.dyn");
 
             
 

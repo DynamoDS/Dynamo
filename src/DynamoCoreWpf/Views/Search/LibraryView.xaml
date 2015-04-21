@@ -42,7 +42,7 @@
                             Orientation="Horizontal"
                             VerticalAlignment="Center">
                     <Image Margin="16,0,16,0"
-                           Height="32"
+                           Height="36"
                            Width="32"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center"
@@ -53,14 +53,12 @@
                                VerticalAlignment="Center"
                                Text="{Binding Name}"
                                Margin="5,0,0,0"
-                               Foreground="#989898"
+                               Foreground="#CCCCCC"
                                FontSize="13" />
                     <StackPanel.Style>
                         <Style TargetType="{x:Type StackPanel}">
                             <Setter Property="Background"
                                     Value="Transparent" />
-                            <Setter Property="Margin"
-                                    Value="3,0,0,0" />
                             <Setter Property="Width">
                                 <Setter.Value>
                                     <Binding Path="ActualWidth"
@@ -89,7 +87,7 @@
                 <StackPanel Orientation="Vertical"
                             Width="72"
                             Height="72">
-                    <Border Padding="0">
+                    <Border Padding="2, 7, 2, 7">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="32" />
@@ -108,11 +106,13 @@
                             <TextBlock HorizontalAlignment="Center"
                                        VerticalAlignment="Top"
                                        TextAlignment="Center"
-                                       Foreground="#989898"
+                                       Foreground="#AAAAAA"
                                        Grid.Row="1"
                                        Grid.Column="0"
                                        Grid.ColumnSpan="3"
-                                       FontSize="13">
+                                       FontSize="13"
+                                       LineStackingStrategy="BlockLineHeight"
+                                       LineHeight="14px">
                                 <TextBlock.Text>
                                     <Binding Path="Name"
                                              Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
@@ -147,7 +147,7 @@
             <DataTemplate x:Key="SubclassesTemplate">
                 <ListView Name="SubCategoryListView"
                           ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
-                          Background="#2F2F2F"
+                          Background="#353535"
                           BorderThickness="0"
                           ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                           ScrollViewer.VerticalScrollBarVisibility="Hidden"
@@ -286,7 +286,7 @@
                                     <Image x:Name="ExpandCollapseStateIcon"
                                            Source="/DynamoCoreWpf;component/UI/Images/collapsestate_normal.png"
                                            Width="16"
-                                           Height="16"
+                                           Height="32"
                                            VerticalAlignment="Center" />
                                     <ContentPresenter x:Name="HeaderContent"
                                                       Grid.Column="1"
@@ -492,7 +492,7 @@
                                         </Border>
 
                                         <Border Grid.Row="1"
-                                                Background="#2F2F2F">
+                                                Background="#353535">
                                             <ItemsPresenter x:Name="ItemsHost">
                                                 <ItemsPresenter.Visibility>
                                                     <Binding Converter="{StaticResource LibraryTreeItemsHostVisibilityConverter}" />
@@ -533,7 +533,7 @@
                                                                  Converter="{StaticResource RootElementToBoolConverter}" />
                                                     </DataTrigger.Binding>
                                                     <Setter Property="Background"
-                                                            Value="#2F2F2F" />
+                                                            Value="#353535" />
                                                     <Setter Property="Padding"
                                                             Value="0,0,0,0" />
                                                 </DataTrigger>
@@ -658,13 +658,6 @@
                         </ControlTemplate>
                     </TreeView.Template>
                 </TreeView>
-                <!-- Do not remove. Possibly Addons TreeView will be return later. -->
-                <!--<uicontrols:AddonsTreeView Grid.Row="1"
-                                           DataContext="{Binding}">
-                    <uicontrols:AddonsTreeView.Visibility>
-                        Collapsed
-                    </uicontrols:AddonsTreeView.Visibility>
-                </uicontrols:AddonsTreeView>-->
                 <Button Grid.Row="2"
                         Height="23"
                         HorizontalAlignment="Center"

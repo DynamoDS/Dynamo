@@ -11,6 +11,7 @@ namespace ProtoScript.Runners
     public class ProtoRunner
     {
         private ProtoCore.Core RunnerCore = null;
+        private ProtoCore.RuntimeCore runtimeCore = null;
         private ProtoCore.CompileTime.Context ExecutionContext = null;
 
         // TODO Jun: The implementation of ProtoScriptTestRunner needs to go in here
@@ -42,7 +43,7 @@ namespace ProtoScript.Runners
             // TODO Jun: Implement run and halt at the first instruction
             //ProtoCore.DSASM.Mirror.ExecutionMirror mirror = null; // runner.Execute(executionContext, RunnerCore);
 
-            return new ProtoVMState(RunnerCore);
+            return new ProtoVMState(RunnerCore, runtimeCore);
         }
 
         public ProtoVMState PreStart(String source, ProtoVMState state)
@@ -79,13 +80,11 @@ namespace ProtoScript.Runners
             Validity.Assert(null != ExecutionContext);
             Validity.Assert(null != Runner);
 
-            ProtoCore.Runtime.Context runtimeContext = new ProtoCore.Runtime.Context();
-
             // TODO Jun: Implement as DebugRunner, where breakpoints are inserted here.
             ProtoCore.RuntimeCore runtimeCore = null;
-            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = Runner.Execute(ExecutionContext, runtimeContext, RunnerCore, out runtimeCore);
+            ProtoCore.DSASM.Mirror.ExecutionMirror mirror = Runner.Execute(ExecutionContext, RunnerCore, out runtimeCore);
 
-            return new ProtoVMState(RunnerCore);
+            return new ProtoVMState(RunnerCore, runtimeCore);
         }
 
         #endregion
@@ -125,10 +124,10 @@ namespace ProtoScript.Runners
             private ProtoCore.Core core;
             private ProtoCore.RuntimeCore runtimeCore;
 
-            public ProtoVMState(ProtoCore.Core core)
+            public ProtoVMState(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore)
             {
                 this.core = core;
-                this.runtimeCore = this.core.__TempCoreHostForRefactoring;
+                this.runtimeCore = runtimeCore;
             }
 
             public ProtoCore.Mirror.RuntimeMirror LookupName(string name, int blockID)

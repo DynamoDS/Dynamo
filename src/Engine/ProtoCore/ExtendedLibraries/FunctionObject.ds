@@ -235,7 +235,7 @@ def __Filter(list: var[]..[], predicate: _FunctionObject)
         _count = Count(list);
         if (_count == 0)
         {
-            return = {};
+            return = {{}, {}};
         }
 
         _filteredList = {};

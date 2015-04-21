@@ -111,7 +111,6 @@
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
     <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
     <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />
-    <controls:BackgroundPreviewGestureConverter x:Key="BackgroundPreviewGestureConverter" />
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter" />
     <controls:ZoomToBooleanConverter x:Key="ZoomToBooleanConverter" />
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter" />
@@ -128,4 +127,6 @@
     <controls:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
     <controls:RunPreviewConverter x:Key="RunPreviewConverter"/>
     <controls:RunPreviewToolTipConverter x:Key="RunPreviewToolTipConverter"/>
+    <controls:MenuItemCheckConverter x:Key="MenuItemCheckConverter"/>
+    <controls:AnnotationTextConverter x:Key="AnnotationTextConverter"/>
 </ResourceDictionary>

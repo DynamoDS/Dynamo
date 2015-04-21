@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using Dynamo.Core;
 using Dynamo.Models;
@@ -15,9 +16,91 @@ using Greg.AuthProviders;
 
 using Dynamo.Wpf.Properties;
 using Microsoft.Practices.Prism.Commands;
+using Dynamo.PackageManager.UI;
+using System.Reflection;
+using System.IO;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// A helper class to check asynchronously whether the Terms of Use has 
+    /// been accepted, and if so, continue to execute the provided Action.
+    /// </summary>
+    public class TermsOfUseHelper
+    {
+        private readonly Action callbackAction;
+        private readonly PackageManagerClient packageManagerClient;
+
+        public TermsOfUseHelper(PackageManagerClient client, Action callback)
+        {
+            if (client == null)
+                throw new ArgumentNullException("client");
+            if (callback == null)
+                throw new ArgumentNullException("callback");
+
+            packageManagerClient = client;
+            callbackAction = callback;
+        }
+
+        public void Execute()
+        {
+            Task<bool>.Factory.StartNew(() => packageManagerClient.GetTermsOfUseAcceptanceStatus()).
+                ContinueWith(t =>
+                {
+                    // The above GetTermsOfUseAcceptanceStatus call will get the
+                    // user to sign-in. If the user cancels that sign-in dialog 
+                    // without signing in, we won't show the terms of use dialog,
+                    // simply return from here.
+                    // 
+                    if (packageManagerClient.LoginState != LoginState.LoggedIn)
+                        return;
+
+                    var termsOfUseAccepted = t.Result;
+                    if (termsOfUseAccepted)
+                    {
+                        // Terms of use accepted, proceed to publish.
+                        callbackAction.Invoke();
+                    }
+                    else
+                    {
+                        // Prompt user to accept the terms of use.
+                        ShowTermsOfUseForPublishing();
+                    }
+
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        internal static bool ShowTermsOfUseDialog()
+        {
+            var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
+            var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
+            var touFilePath = Path.Combine(rootModuleDirectory, "TermsOfUse.rtf");
+
+            var termsOfUseView = new TermsOfUseView(touFilePath);
+            termsOfUseView.ShowDialog();
+            return termsOfUseView.AcceptedTermsOfUse;
+        }
+
+        private void ShowTermsOfUseForPublishing()
+        {
+            if (!ShowTermsOfUseDialog())
+                return; // Terms of use not accepted.
+
+            // If user accepts the terms of use, then update the record on 
+            // the server, before proceeding to show the publishing dialog. 
+            // This method is invoked on the UI thread, so when the server call 
+            // returns, invoke the publish dialog on the UI thread's context.
+            // 
+            Task<bool>.Factory.StartNew(() => packageManagerClient.SetTermsOfUseAcceptanceStatus()).
+                ContinueWith(t =>
+                {
+                    if (t.Result)
+                        callbackAction.Invoke();
+                },
+                TaskScheduler.FromCurrentSynchronizationContext());
+        }
+    }
+
     /// <summary>
     ///     A thin wrapper on the Greg rest client for performing IO with
     ///     the Package Manager
@@ -103,7 +186,11 @@ namespace Dynamo.ViewModels
                     ws.CustomNodeId,
                     out currentFunInfo))
                 {
-                    ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, currentFunDef) });
+                    var termsOfUseCheck = new TermsOfUseHelper(Model, () => 
+                    {
+                        ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, currentFunDef) });
+                    });
+                    termsOfUseCheck.Execute();
                     return;
                 }
             }
@@ -120,12 +207,33 @@ namespace Dynamo.ViewModels
 
         public void PublishNewPackage(object m)
         {
-            ShowNodePublishInfo();
+            var termsOfUseCheck = new TermsOfUseHelper(Model, ShowNodePublishInfo );
+            termsOfUseCheck.Execute();
         }
 
         public bool CanPublishNewPackage(object m)
         {
             return HasAuthProvider;
+        }
+
+        public void PublishCustomNode(Dynamo.Nodes.Function m)
+        {
+            CustomNodeInfo currentFunInfo;
+            if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
+                m.Definition.FunctionId,
+                out currentFunInfo))
+            {
+                var termsOfUseCheck = new TermsOfUseHelper(Model, () =>
+                {
+                    ShowNodePublishInfo(new[] { Tuple.Create(currentFunInfo, m.Definition) });
+                });
+                termsOfUseCheck.Execute();
+            }
+        }
+
+        public bool CanPublishCustomNode(Dynamo.Nodes.Function m)
+        {
+            return HasAuthProvider && m != null;
         }
 
         public void PublishSelectedNodes(object m)
@@ -164,7 +272,8 @@ namespace Dynamo.ViewModels
                     MessageBoxButton.OK, MessageBoxImage.Question);
             }
 
-            ShowNodePublishInfo(defs);
+            var termsOfUseCheck = new TermsOfUseHelper(Model, () => ShowNodePublishInfo(defs));
+            termsOfUseCheck.Execute();
         }
 
         public bool CanPublishSelectedNodes(object m)
@@ -187,7 +296,8 @@ namespace Dynamo.ViewModels
 
                 if (DynamoViewModel.Model.PackageLoader.GetOwnerPackage(f.Item1) != null)
                 {
-                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, pkg.Name),
+                    var m = MessageBox.Show(String.Format(Resources.MessageSubmitSameNamePackage, 
+                            DynamoViewModel.BrandingResourceProvider.ProductName,pkg.Name),
                             Resources.PackageWarningMessageBoxTitle, 
                             MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -207,10 +317,17 @@ namespace Dynamo.ViewModels
 
         public List<PackageManagerSearchElement> ListAll()
         {
-            CachedPackageList =
-                    Model.ListAll()
-                               .Select((header) => new PackageManagerSearchElement(Model, header))
-                               .ToList();
+            CachedPackageList = new List<PackageManagerSearchElement>();
+
+            foreach (var header in Model.ListAll())
+            {
+                var ele = new PackageManagerSearchElement(header);
+
+                ele.UpvoteRequested += this.Model.Upvote;
+                ele.DownvoteRequested += this.Model.Downvote;
+
+                CachedPackageList.Add( ele );
+            }
 
             return CachedPackageList;
         }
@@ -253,7 +370,9 @@ namespace Dynamo.ViewModels
                                 }
                                 catch
                                 {
-                                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, packageDownloadHandle.Name),
+                                    MessageBox.Show(String.Format(Resources.MessageFailToUninstallPackage, 
+                                        DynamoViewModel.BrandingResourceProvider.ProductName,
+                                        packageDownloadHandle.Name),
                                         Resources.UninstallFailureMessageBoxTitle, 
                                         MessageBoxButton.OK, MessageBoxImage.Error);
                                 }
@@ -261,24 +380,9 @@ namespace Dynamo.ViewModels
 
                             if (packageDownloadHandle.Extract(DynamoViewModel.Model, out dynPkg))
                             {
-                                var downloadPkg = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
+                                var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
+                                DynamoViewModel.Model.PackageLoader.Load(p);
 
-                                var loader = DynamoViewModel.Model.Loader;
-                                var logger = DynamoViewModel.Model.Logger;
-                                var libraryServices = DynamoViewModel.EngineController.LibraryServices;
-
-                                var loadPackageParams = new LoadPackageParams
-                                {
-                                    Loader = loader,
-                                    LibraryServices = libraryServices,
-                                    Context = DynamoViewModel.Model.Context,
-                                    IsTestMode = DynamoModel.IsTestMode,
-                                    CustomNodeManager = DynamoViewModel.Model.CustomNodeManager
-                                };
-
-                                downloadPkg.LoadIntoDynamo(loadPackageParams, logger);
-
-                                DynamoViewModel.Model.PackageLoader.LocalPackages.Add(downloadPkg);
                                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                             }
                         }

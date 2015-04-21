@@ -658,7 +658,7 @@ namespace ProtoFFI
             func.Signature = new ProtoCore.AST.AssociativeAST.ArgumentSignatureNode();
             func.ReturnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
             func.FunctionBody = null;
-            func.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
+            func.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
             func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
@@ -711,7 +711,7 @@ namespace ProtoFFI
             }
             func.ReturnType = retype;
             func.FunctionBody = null;
-            func.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
+            func.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
             func.IsDNI = false;
             func.IsExternLib = true;
             func.ExternLibName = Module.Name;
@@ -793,7 +793,7 @@ namespace ProtoFFI
             constr.Signature = ParseArgumentSignature(method);
             constr.ReturnType = returnType;
             constr.FunctionBody = null;
-            constr.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
+            constr.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
             constr.IsExternLib = true;
             constr.ExternLibName = Module.Name;
 
@@ -841,7 +841,7 @@ namespace ProtoFFI
         {
             ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode();
             varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
-            varDeclNode.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
+            varDeclNode.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
 
             ProtoCore.AST.AssociativeAST.IdentifierNode identifierNode = 
                 new ProtoCore.AST.AssociativeAST.IdentifierNode
@@ -1352,6 +1352,18 @@ namespace ProtoFFI
             }
         }
 
+        public string PreferredShortName
+        {
+            get
+            {
+                object shortName  = null;
+                if (TryGetAttribute("PreferredShortNameAttribute", out shortName))
+                    return shortName as string;
+                else
+                    return null;
+            }
+        }
+
         public FFIParamAttributes(ParameterInfo parameter)
         {
             var attributes = parameter.GetCustomAttributes(false);
@@ -1365,6 +1377,11 @@ namespace ProtoFFI
                 else if (attr is ArbitraryDimensionArrayImportAttribute)
                 {
                     AddAttribute("ArbitraryDimensionArrayImportAttribute", true);
+                }
+                else if (attr is PreferredShortNameAttribute)
+                {
+                    string shortName = (attr as PreferredShortNameAttribute).PreferredShortName;
+                    AddAttribute("PreferredShortNameAttribute", shortName);
                 }
             }
         }

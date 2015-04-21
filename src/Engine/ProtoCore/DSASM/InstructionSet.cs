@@ -99,7 +99,7 @@ namespace ProtoCore.DSASM
         ALLOCA,
         ALLOCC,
         POPM,
-        CALLC,
+      
         POPLIST,
         PUSHLIST,
         RETC,
@@ -112,11 +112,10 @@ namespace ProtoCore.DSASM
         NEG,
         CAST,
         DEP,
-        DEPX,
+        
         PUSHB,
         POPB,
 
-        THROW,
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
         SETEXPUID

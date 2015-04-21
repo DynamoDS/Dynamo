@@ -53,6 +53,11 @@ namespace ProtoCore.DSASM
         public StackValue SX { get; set; }
         public StackValue TX { get; set; }
 
+        public void SetAssociativeUpdateRegister(StackValue sv)
+        {
+            LX = sv;
+        }
+
         //public ProtoCore.AssociativeGraph.GraphNode executingGraphNode { get; private set; }
         public InterpreterProperties Properties { get; set; }
 
@@ -122,7 +127,6 @@ namespace ProtoCore.DSASM
         private void SetupAndPushBounceStackFrame(
           int exeblock,
           int entry,
-          ProtoCore.Runtime.Context context,
           StackFrame stackFrame,
           int locals = 0,
           ProtoCore.DebugServices.EventSink sink = null)
@@ -163,7 +167,6 @@ namespace ProtoCore.DSASM
         public StackValue Bounce(
             int exeblock, 
             int entry, 
-            ProtoCore.Runtime.Context context, 
             StackFrame stackFrame, 
             int locals = 0,
             bool fepRun = false,
@@ -172,10 +175,41 @@ namespace ProtoCore.DSASM
         {
             if (stackFrame != null)
             {
-                SetupAndPushBounceStackFrame(exeblock, entry, context, stackFrame, locals);
+                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
                 runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
             }
-            return runtimeCore.ExecutionInstance.Execute(exeblock, entry, context, fepRun, breakpoints);
+            return runtimeCore.ExecutionInstance.Execute(exeblock, entry, fepRun, breakpoints);
+        }
+
+        /// <summary>
+        /// Bounce to an existing executive
+        /// </summary>
+        /// <param name="exeblock"></param>
+        /// <param name="entry"></param>
+        /// <param name="context"></param>
+        /// <param name="stackFrame"></param>
+        /// <param name="locals"></param>
+        /// <param name="fepRun"></param>
+        /// <param name="exec"></param>
+        /// <param name="breakpoints"></param>
+        /// <returns></returns>
+        public StackValue BounceUsingExecutive(
+           DSASM.Executive executive,
+           int exeblock,
+           int entry,
+           StackFrame stackFrame,
+           int locals = 0,
+           bool fepRun = false,
+           DSASM.Executive exec = null,
+           List<Instruction> breakpoints = null)
+        {
+            if (stackFrame != null)
+            {
+                SetupAndPushBounceStackFrame(exeblock, entry, stackFrame, locals);
+                runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
+            }
+            executive.Execute(exeblock, entry, breakpoints);
+            return executive.RX;
         }
 
         /// <summary>
@@ -801,12 +835,12 @@ namespace ProtoCore.DSASM
 
             if (null != Properties.executingGraphNode)
             {
-                exe.RuntimeData.ExecutingGraphnode = Properties.executingGraphNode;
+                exe.ExecutingGraphnode = Properties.executingGraphNode;
             }
 
             // Get the cached callsite, creates a new one for a first-time call
             CallSite callsite = exe.RuntimeData.GetCallSite(
-                exe.RuntimeData.ExecutingGraphnode, 
+                exe.ExecutingGraphnode, 
                 classIndex, 
                 fNode.name, 
                 exe,
@@ -852,12 +886,12 @@ namespace ProtoCore.DSASM
                     if (counter.times == 0)
                     {
                         counter.times++;
-                        exe.RuntimeData.calledInFunction = true;
+                        exe.calledInFunction = true;
                     }
 
                     else if (counter.times >= 1)
                     {
-                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && exe.RuntimeData.calledInFunction)
+                        if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_' && !fNode.name.Equals(Constants.kDotMethodName) && exe.calledInFunction)
                         {
                             counter.times++;
                         }
@@ -874,11 +908,11 @@ namespace ProtoCore.DSASM
                 else
                 {
                     FindRecursivePoints();
-                    string message = String.Format(Resources.kMethodStackOverflow, exe.RuntimeData.recursivePoint[0].name);
+                    string message = String.Format(Resources.kMethodStackOverflow, exe.recursivePoint[0].name);
                     runtimeCore.RuntimeStatus.LogWarning(WarningID.kInvalidRecursion, message);
 
-                    exe.RuntimeData.recursivePoint = new List<FunctionCounter>();
-                    exe.RuntimeData.funcCounterTable = new List<FunctionCounter>();
+                    exe.recursivePoint = new List<FunctionCounter>();
+                    exe.funcCounterTable = new List<FunctionCounter>();
                     sv = StackValue.Null;
                 }
             }
@@ -1024,7 +1058,7 @@ namespace ProtoCore.DSASM
 
                 if (fNode.name.ToCharArray()[0] != '%' && fNode.name.ToCharArray()[0] != '_')
                 {
-                    exe.RuntimeData.calledInFunction = false;
+                    exe.calledInFunction = false;
                 }
             }
             return sv;
@@ -1085,7 +1119,7 @@ namespace ProtoCore.DSASM
                                             registers,
                                             new List<bool>());
 
-            var callsite = exe.RuntimeData.GetCallSite(exe.RuntimeData.ExecutingGraphnode,
+            var callsite = exe.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
                                             classIndex,
                                             procNode.name,
                                             exe, runtimeCore.RunningBlock, runtimeCore.Options, runtimeCore.RuntimeStatus);
@@ -1136,20 +1170,20 @@ namespace ProtoCore.DSASM
 
         private void FindRecursivePoints()
         {
-            foreach (FunctionCounter c in exe.RuntimeData.funcCounterTable)
+            foreach (FunctionCounter c in exe.funcCounterTable)
             {
                 if (c.times == Constants.kRecursionTheshold || c.times == Constants.kRecursionTheshold - 1)
                 {
-                    exe.RuntimeData.recursivePoint.Add(c);
+                    exe.recursivePoint.Add(c);
                 }
-                exe.RuntimeData.recursivePoint.Add(c);
+                exe.recursivePoint.Add(c);
             }
         }
 
 
         private FunctionCounter FindCounter(int funcIndex, int classScope, string name)
         {
-            foreach (FunctionCounter c in exe.RuntimeData.funcCounterTable)
+            foreach (FunctionCounter c in exe.funcCounterTable)
             {
                 if (c.classScope == classScope && c.functionIndex == funcIndex)
                 {
@@ -1157,7 +1191,7 @@ namespace ProtoCore.DSASM
                 }
             }
             FunctionCounter newC = new FunctionCounter(funcIndex, classScope, 0, name, 1);
-            exe.RuntimeData.funcCounterTable.Add(newC);
+            exe.funcCounterTable.Add(newC);
             return newC;
         }
 
@@ -2691,13 +2725,18 @@ namespace ProtoCore.DSASM
         /// <param name="language"></param>
         public void Execute(int exeblock, int entry, List<Instruction> breakpoints, Language language = Language.kInvalid)
         {
-            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
+            terminate = true;
+            if (entry != Constants.kInvalidPC)
             {
-                ExecuteDebug(exeblock, entry, breakpoints, language);
-            }
-            else
-            {
-                Execute(exeblock, entry, language);
+                terminate = false;
+                if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
+                {
+                    ExecuteDebug(exeblock, entry, breakpoints, language);
+                }
+                else
+                {
+                    Execute(exeblock, entry, language);
+                }
             }
         }
 
@@ -2873,34 +2912,10 @@ namespace ProtoCore.DSASM
                 Exec(istream.instrList[pc]);
             }
 
-            // the exception won't handled at this level, so need to unwind
-#if ENABLE_EXCEPTION_HANDLING
-            if (!core.ExceptionHandlingManager.IsStackUnwinding)
-            {
-                // Comment Jun:
-                // X-lang dependency should be done for all languages 
-                // as they can potentially trigger parent block updates 
-
-                // Comment Jun: XLang dep is only done in RestoreFromBounce 
-                // Propagate only on lang block bounce (non fep)
-                //if (!fepRun)
-                //{
-                //    XLangUpdateDependencyGraph(exeblock);
-                //}
-
-
-
-                if (!fepRun || fepRun && debugRun)
-                {
-                    logVMMessage("End JIL Execution - " + engine);
-                }
-            }
-#else
             if (!fepRun || fepRun && debugRun)
             {
                 logVMMessage("End JIL Execution - " + engine);
             }
-#endif
         }
 
         protected SymbolNode GetSymbolNode(int blockId, int classIndex, int symbolIndex)
@@ -3055,7 +3070,7 @@ namespace ProtoCore.DSASM
                     SymbolNode symbol = GetSymbolNode(blockId, (int)op2.opdata, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(symbol);
                     rmem.SetSymbolValue(symbol, opVal);
-                    exe.RuntimeData.UpdatedSymbols.Add(symbol);
+                    exe.UpdatedSymbols.Add(symbol);
 
                     if (IsDebugRun())
                     {
@@ -3073,7 +3088,7 @@ namespace ProtoCore.DSASM
                     var staticMember = GetSymbolNode( blockId, Constants.kGlobalScope, (int)op1.opdata);
                     opPrev = rmem.GetSymbolValue(staticMember);
                     rmem.SetSymbolValue(staticMember, opVal);
-                    exe.RuntimeData.UpdatedSymbols.Add(staticMember);
+                    exe.UpdatedSymbols.Add(staticMember);
 
                     if (IsDebugRun())
                     {
@@ -3674,7 +3689,7 @@ namespace ProtoCore.DSASM
         private bool ProcessDynamicVariable(bool isArray, ref StackValue svPtr, int classIndex)
         {
             int variableDynamicIndex = (int)svPtr.opdata;
-            var dynamicVariableNode = exe.RuntimeData.DynamicVarTable.variableTable[variableDynamicIndex];
+            var dynamicVariableNode = exe.DynamicVarTable.variableTable[variableDynamicIndex];
 
             SymbolNode node = null;
             bool isStatic = false;
@@ -3736,7 +3751,7 @@ namespace ProtoCore.DSASM
                 functionDynamicIndex = (int)rmem.Pop().opdata;
             }
 
-            var dynamicFunction = exe.RuntimeData.DynamicFuncTable.GetFunctionAtIndex(functionDynamicIndex);
+            var dynamicFunction = exe.DynamicFuncTable.GetFunctionAtIndex(functionDynamicIndex);
 
             if (isDotMemFuncBody)
             {
@@ -3925,7 +3940,7 @@ namespace ProtoCore.DSASM
             if (isFunctionPointerCall)
             {
                 FunctionPointerNode fptrNode;
-                if (exe.RuntimeData.FuncPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
+                if (exe.FuncPointerTable.functionPointerDictionary.TryGetByFirst(fptr, out fptrNode))
                 {
                     int blockId = fptrNode.blockId;
                     int procId = fptrNode.procId;
@@ -5783,10 +5798,6 @@ namespace ProtoCore.DSASM
                 runtimeCore.RuntimeMemory.PushConstructBlockId(blockId);
             }
 
-#if ENABLE_EXCEPTION_HANDLING
-                core.stackActiveExceptionRegistration.Push(core.ExceptionHandlingManager.CurrentActiveRegistration);
-#endif
-
             int ci = Constants.kInvalidIndex;
             int fi = Constants.kInvalidIndex;
             if (rmem.Stack.Count >= StackFrame.kStackFrameSize)
@@ -5799,10 +5810,6 @@ namespace ProtoCore.DSASM
                     fi = (int)sfi.opdata;
                 }
             }
-
-#if ENABLE_EXCEPTION_HANDLING
-            core.ExceptionHandlingManager.SwitchContextTo(blockId, fi, ci, pc);
-#endif
 
             StackValue svThisPtr;
             if (rmem.CurrentStackFrame == null)
@@ -6002,15 +6009,7 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void CALLC_Handler()
-        {
-            if (runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
-            {
-                runtimeCore.RuntimeMemory.PushConstructBlockId(-1);
-            }
-            throw new NotImplementedException();
-        }
-
+     
         protected virtual void CALLR_Handler(Instruction instruction)
         {
             bool isDynamicCall = instruction.op1.IsDynamic;
@@ -6045,11 +6044,6 @@ namespace ProtoCore.DSASM
 
             runtimeVerify(instr.op3.IsInteger);
             int depth = (int)instr.op3.opdata;
-
-#if ENABLE_EXCEPTION_HANDLING
-            core.stackActiveExceptionRegistration.Push(core.ExceptionHandlingManager.CurrentActiveRegistration);
-            core.ExceptionHandlingManager.SwitchContextTo(blockId, functionIndex, classIndex, pc);
-#endif
 
             ++runtimeCore.FunctionCallDepth;
 
@@ -6093,49 +6087,7 @@ namespace ProtoCore.DSASM
 
             if (!explicitCall)
             {
-#if ENABLE_EXCEPTION_HANDLING
-                core.ExceptionHandlingManager.CurrentActiveRegistration = core.stackActiveExceptionRegistration.Pop();
-
-                if (core.ExceptionHandlingManager.IsStackUnwinding)
-                {
-                    int newpc = Constants.kInvalidIndex;
-                    if (core.ExceptionHandlingManager.CanHandleIt(ref newpc))
-                    {
-                        LX = RX;
-                        pc = newpc;
-                        core.ExceptionHandlingManager.SetHandled();
-                    }
-                    else
-                    {
-                        // Clean up stack
-                        isGlobScope = true;
-                        runtimeVerify(rmem.ValidateStackFrame());
-                        pc = (int)rmem.GetAtRelative(StackFrame.kFrameIndexReturnAddress).opdata;
-
-                        ReturnSiteGC(blockId, classIndex, functionIndex);
-
-                        rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
-                        int localCount, paramCount;
-                        GetLocalAndParamCount(blockId, classIndex, functionIndex, out localCount, out paramCount);
-                        rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount);
-
-                        if (fepRunStack.Count > 0)
-                        {
-                            terminate = fepRunStack.Pop();
-                        }
-                        else if (fepRun)
-                        {
-                            terminate = true;
-                        }
-                    }
-                }
-                else
-                {
-                    ++pc; setPC(pc);
-                }
-#else
                 ++pc;
-#endif
             }
         }
 
@@ -6256,38 +6208,6 @@ namespace ProtoCore.DSASM
                     RestoreRegistersFromStackFrame();
 
                     bounceType = (CallingConvention.BounceType)TX.opdata;
-
-#if ENABLE_EXCEPTION_HANDLING
-                    core.ExceptionHandlingManager.CurrentActiveRegistration = core.stackActiveExceptionRegistration.Pop();
-                    if (core.ExceptionHandlingManager.IsStackUnwinding)
-                    {
-                    #region __MERGE_WITH_STACKUNWIND
-                        // The excecution of last langage block is interrupted
-                        // abnormally because of stack unwinding, so we need to 
-                        // run GC to reclaim those allocated memory.
-                        GCCodeBlock(runtimeCore.RunningBlock);
-
-                        int newpc = Constants.kInvalidIndex;
-                        if (core.ExceptionHandlingManager.CanHandleIt(ref newpc))
-                        {
-                            LX = RX;
-                            pc = newpc;
-                            core.ExceptionHandlingManager.SetHandled();
-                        }
-                        // else cannot handle in this scope, so in the next
-                        // loop of Execute(), current executive will be ;
-                        // ended and returns to the last scope, continues
-                        // stack unwinding
-
-                        int origRunningBlock = executingBlock;
-                        runtimeCore.RunningBlock = origRunningBlock;
-                    #endregion
-                    }
-                    else
-                    {
-                        DecRefCounter(RX);
-                    }
-#endif
                 }
             }
 
@@ -7155,141 +7075,7 @@ namespace ProtoCore.DSASM
             ++pc;
         }
 
-        private void DEPX_Handler()
-        {
-            runtimeVerify(Language.kAssociative == istream.language);
-
-            // The current function and class scope
-            int ci = Constants.kInvalidIndex;
-            int fi = Constants.kGlobalScope;
-            if (fepRun)
-            {
-                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-            }
-
-            // Set the next graph to be executed
-            SetupNextExecutableGraph(fi, ci);
-        }
-
-        private void THROW_Handler()
-        {
-#if ENABLE_EXCEPTION_HANDLING
-            runtimeVerify(instruction.op1.IsBlockIndex);
-            int blockId = (int)instruction.op1.opdata;
-
-            runtimeVerify(instruction.op2.IsClassIndex);
-            int classScope = (int)instruction.op2.opdata;
-
-            runtimeVerify(instruction.op3.IsFunctionIndex);
-            int functionScope = (int)instruction.op3.opdata;
-
-            StackValue exceptionValue = LX;
-            ProtoCore.Exceptions.ExceptionContext context = new Exceptions.ExceptionContext();
-            context.pc = pc;
-            context.codeBlockId = blockId;
-            context.functionScope = functionScope;
-            context.classScope = classScope;
-            switch (exceptionValue.optype)
-            {
-                case AddressType.Int:
-                    context.typeUID = (int)ProtoCore.PrimitiveType.kTypeInt;
-                    break;
-                case AddressType.Double:
-                    context.typeUID = (int)ProtoCore.PrimitiveType.kTypeDouble;
-                    break;
-                case AddressType.Boolean:
-                    context.typeUID = (int)ProtoCore.PrimitiveType.kTypeBool;
-                    break;
-                case AddressType.Pointer:
-                    context.typeUID = (int)exceptionValue.metaData.type;
-                    break;
-                default:
-                    context.typeUID = (int)ProtoCore.PrimitiveType.kTypeVar;
-                    break;
-            }
-            // Walk through exception chain, a.k.a. 1st hand exception
-            // handling
-            core.ExceptionHandlingManager.HandleFirstHandException(context);
-
-            // The exception can be handled in current scope, so simply jmp to 
-            // the corresponding catch block
-            int newpc = Constants.kInvalidIndex;
-            if (core.ExceptionHandlingManager.CanHandleIt(ref newpc))
-            {
-                pc = newpc;
-                core.ExceptionHandlingManager.SetHandled();
-            }
-            else
-            {
-                RX = LX;
-            }
-
-            if (core.ExceptionHandlingManager.IsStackUnwinding)
-            {
-                while (core.stackActiveExceptionRegistration.Count > 1)
-                {
-                    StackValue svType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
-                    StackFrameType type = (StackFrameType)svType.opdata;
-                    if (StackFrameType.kTypeLanguage == type)
-                    {
-                        RestoreFromBounce();
-                        rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
-                        rmem.PopFrame(StackFrame.kStackFrameSize);
-
-
-                        // Restoring the registers require the current frame pointer of the stack frame 
-                        RestoreRegistersFromStackFrame();
-
-                        bounceType = (ProtoCore.DSASM.CallingConvention.BounceType)TX.opdata;
-
-                        core.ExceptionHandlingManager.CurrentActiveRegistration = core.stackActiveExceptionRegistration.Pop();
-
-            #region __MERGE_WITH_STACKUNWIND
-
-                        // The excecution of last langage block is interrupted
-                        // abnormally because of stack unwinding, so we need to 
-                        // run GC to reclaim those allocated memory.
-                        GCCodeBlock(runtimeCore.RunningBlock);
-
-                        newpc = Constants.kInvalidIndex;
-                        if (core.ExceptionHandlingManager.CanHandleIt(ref newpc))
-                        {
-                            LX = RX;
-                            pc = newpc;
-                            core.ExceptionHandlingManager.SetHandled();
-                            break;
-                        }
-                        // else cannot handle in this scope, so in the next
-                        // loop of Execute(), current executive will be ;
-                        // ended and returns to the last scope, continues
-                        // stack unwinding
-
-                        int origRunningBlock = executingBlock;
-                        runtimeCore.RunningBlock = origRunningBlock;
-#endregion
-                    }
-                    else
-                    {
-                        RestoreFromCall();
-
-                        int ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                        int fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
-
-                        int localCount = 0;
-                        int paramCount = 0;
-                        GetLocalAndParamCount(executingBlock, ci, fi, out localCount, out paramCount);
-
-                        rmem.FramePointer = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFramePointer).opdata;
-                        rmem.PopFrame(StackFrame.kStackFrameSize + localCount + paramCount);
-                    }
-                }
-            }
-            return;
-#else
-            throw new NotImplementedException();
-#endif
-        }
+       
 
         private void SETEXPUID_Handler()
         {
@@ -7544,11 +7330,7 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.CALLC:
-                    {
-                        CALLC_Handler();
-                        return;
-                    }
+               
 
                 case OpCode.CALLR:
                     {
@@ -7669,17 +7451,7 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.DEPX:
-                    {
-                        DEPX_Handler();
-                        return;
-                    }
-
-                case OpCode.THROW:
-                    {
-                        THROW_Handler();
-                        return;
-                    }
+               
 
                 case OpCode.SETEXPUID:
                     {

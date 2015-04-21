@@ -147,52 +147,88 @@ namespace Dynamo.UI.Views
                 if (wrapPanel.MakeOrClearSelection(selectedClass))
                 {
                     // If class button was clicked, then handle, otherwise leave it.
-                    e.Handled = selectedClass.SubCategories.Count == 0;
+                    e.Handled = selectedClass.IsClassButton;
                     selectedElement.BringIntoView();
                 }
             }
 
-            ExpandCategory(categoryButton, selectedClass);
+            ExpandCategory(categoryButton.Items.OfType<NodeCategoryViewModel>(), selectedClass);
+
             e.Handled = !(selectedClass is RootNodeCategoryViewModel);
         }
 
-        private void ExpandCategory(TreeViewItem sender, NodeCategoryViewModel selectedClass)
+
+        private bool ExpandCategory(IEnumerable<NodeCategoryViewModel> categories, NodeCategoryViewModel selectedClass)
         {
-            // Get all category items.
-            var categories = sender.Items.OfType<NodeCategoryViewModel>();
+            bool foundSelectedClass = false;
 
             // Get all current expanded categories.
-            List<NodeCategoryViewModel> allExpandedCategories = categories.
-                Where(cat => (!(cat is ClassesNodeCategoryViewModel) && cat.IsExpanded == true)).ToList();
+            var allExpandedCategories = categories.Where(cat =>
+            {
+                return cat.IsExpanded && (!(cat is ClassesNodeCategoryViewModel));
 
-            var categoryToBeExpanded = categories.Where(cat => cat == selectedClass).FirstOrDefault();
+            }).ToList();
+            var categoryToBeExpanded = categories.FirstOrDefault(cat => cat == selectedClass);
 
-            // If categoryToBeExpanded is null, that means not category button, but class button was clicked.
-            // During loop we will find out to which category this clicked class belongs.
+            // If categoryToBeExpanded is null, that means the clicked item does not
+            // represent a category button, but a class button. In the recursive call 
+            // the category in which this clicked class belong will be identified.
             if (categoryToBeExpanded != null)
+            {
                 categoryToBeExpanded.IsExpanded = !categoryToBeExpanded.IsExpanded;
+                foundSelectedClass = true;
+            }
 
             // Get expanded categories that should be collapsed.
-            var categoriesToBeCollapsed = allExpandedCategories.Remove(categoryToBeExpanded);
+            allExpandedCategories.Remove(categoryToBeExpanded);
 
-            // Close all open categories, except one, that contains class.
-            // Or if category was clicked, also expand it and close others.
-            foreach (var categoryToBeCollapsed in allExpandedCategories)
+            // Close all expanded categories except the one that contains the target
+            // class button. If the clicked NodeCategoryViewModel represents a category
+            // itself, then expand it and close out other sibling NodeCategoryViewModel.
+            foreach (var expandedCategory in allExpandedCategories)
             {
+                var searchFurtherInNextLevel = true;
+
                 // If class button was clicked.
-                if (categoryToBeExpanded == null)
+                if (selectedClass.IsClassButton)
                 {
-                    var categoryClasses = categoryToBeCollapsed.Items[0] as ClassesNodeCategoryViewModel;
-                    // Ensure, that this class is not part of current category.
-                    if (categoryClasses != null)
-                        categoryToBeCollapsed.IsExpanded = categoryClasses.Items.Contains(selectedClass);
+                    var categoryClasses = expandedCategory.Items[0] as ClassesNodeCategoryViewModel;
+                    if (categoryClasses != null) // There are classes under this category...
+                    {
+                        if (expandedCategory.IsClassButton)
+                        {
+                            // If the category does not contain any sub category, 
+                            // then we won't look for the selected class within it.
+                            expandedCategory.IsExpanded = false;
+                            searchFurtherInNextLevel = false;
+                        }
+                        else if (categoryClasses.Items.Contains(selectedClass))
+                        {
+                            // If the category contains the selected class directly 
+                            // within, then keep it expanded instead of collapsing it.
+                            expandedCategory.IsExpanded = true;
+
+                            // Found the selected class! Collapse all other sub categories.
+                            foreach (var ele in expandedCategory.SubCategories)
+                                ele.IsExpanded = false;
+
+                            searchFurtherInNextLevel = false;
+                        }
+                    }
                 }
-                // If category button was clicked.
-                else
+
+                if (searchFurtherInNextLevel)
                 {
-                    categoryToBeCollapsed.IsExpanded = false;
+                    var childCategories = expandedCategory.Items.OfType<NodeCategoryViewModel>();
+                    expandedCategory.IsExpanded = ExpandCategory(childCategories, selectedClass);
                 }
+
+                // If the category remains expanded after this, we can 
+                // be sure that the selected class was found within it.
+                foundSelectedClass = foundSelectedClass || expandedCategory.IsExpanded;
             }
+
+            return foundSelectedClass;
         }
 
         private void OnRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)

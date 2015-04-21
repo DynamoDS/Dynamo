@@ -416,8 +416,11 @@ namespace ProtoCore
 
             public static IEnumerable<ClassMirror> GetAllTypes(Core core)
             {
+                // TODO: Get rid of keyword "PointerReserved" and PrimitiveType.kTypePointer
+                // if not used in the language: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6752
                 return core.ClassTable.ClassNodes.
-                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)).
+                    Where(x => !CoreUtils.StartsWithSingleUnderscore(x.name)
+                    && x.name != DSDefinitions.Keyword.PointerReserved).
                     Select(x => new ClassMirror(core, x));
             }
 
@@ -524,12 +527,9 @@ namespace ProtoCore
             {
                 get
                 {
-                    if (alias == null)
-                    {
-                        alias = ClassName.Split('.').Last();
-                    }
-                    return alias;
+                    return alias ?? (alias = ClassName.Split('.').Last());
                 }
+                set { alias = value; }
             }
 
             private LibraryMirror libraryMirror = null;
@@ -956,16 +956,16 @@ namespace ProtoCore
                 StringBuilder sb = new StringBuilder();
                 // TODO: Dropping access specifier and static from function signature
                 // until it is required to be displayed to users later
-                //Func<Compiler.AccessSpecifier, string> func =
+                //Func<Compiler.AccessModifier, string> func =
                 //    (x) =>
                 //    {
                 //        switch (x)
                 //        {
-                //            case Compiler.AccessSpecifier.kPrivate:
+                //            case Compiler.AccessModifier.kPrivate:
                 //                return "private ";
-                //            case Compiler.AccessSpecifier.kProtected:
+                //            case Compiler.AccessModifier.kProtected:
                 //                return "protected ";
-                //            case Compiler.AccessSpecifier.kPublic:
+                //            case Compiler.AccessModifier.kPublic:
                 //                return "public ";
                 //            default:
                 //                return string.Empty;

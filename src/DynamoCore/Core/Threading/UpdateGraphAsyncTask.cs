@@ -18,7 +18,7 @@ namespace Dynamo.Core.Threading
 
         private GraphSyncData graphSyncData;
         private EngineController engineController;
-        private bool verboseLogging;
+        private readonly bool verboseLogging;
 
         internal override TaskPriority Priority
         {
@@ -31,9 +31,9 @@ namespace Dynamo.Core.Threading
 
         #region Public Class Operational Methods
 
-        internal UpdateGraphAsyncTask(IScheduler scheduler, bool verboseLogging1) : base(scheduler)
+        internal UpdateGraphAsyncTask(IScheduler scheduler, bool verboseLogging) : base(scheduler)
         {
-            verboseLogging = verboseLogging;
+            this.verboseLogging = verboseLogging;
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace Dynamo.Core.Threading
 
             gathered.Add(node);
 
-            var sets = node.Outputs.Values;
+            var sets = node.OutputNodes.Values;
             var outputNodes = sets.SelectMany(set => set.Select(t => t.Item2)).Distinct();
             foreach (var outputNode in outputNodes)
             {
