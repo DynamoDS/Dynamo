@@ -320,14 +320,7 @@ namespace Dynamo.Wpf
         internal static string CleanTag(string tag)
         {
             var splits = tag.Split(':');
-            if (splits.Count() <= 1) return "[0]";
-
-            var sb = new StringBuilder();
-            for (var i = 1; i < splits.Count(); i++)
-            {
-                sb.AppendFormat("[{0}]", splits[i]);
-            }
-            return sb.ToString();
+            return splits.Count() <= 1 ? "[0]" : string.Format("[{0}]",string.Join(",", splits.Skip(1)));
         }
 
         private static Color4 Color4FromBytes(byte red, byte green, byte blue, byte alpha)

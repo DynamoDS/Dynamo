@@ -910,8 +910,6 @@ namespace Dynamo.Controls
                 var l = rp.Lines;
                 if (l.Positions.Any())
                 {
-                    if (!l.Positions.Any())
-                        continue;
 
                     // Choose a collection to store the line data.
                     var lineSet = rp.IsSelected ? linesSel : lines;
@@ -934,7 +932,7 @@ namespace Dynamo.Controls
 
                     if (rp.IsDisplayingLabels)
                     {
-                        var pt = lineSet.Positions[0];
+                        var pt = lineSet.Positions[startIdx];
                         text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
                 }
@@ -962,7 +960,7 @@ namespace Dynamo.Controls
 
                     if (rp.IsDisplayingLabels)
                     {
-                        var pt = mesh.Positions[0];
+                        var pt = mesh.Positions[idxCount];
                         text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
                 }
