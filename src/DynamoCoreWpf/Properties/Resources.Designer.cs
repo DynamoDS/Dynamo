@@ -1944,7 +1944,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable background 3D preview navigation (Ctrl + G).
+        ///   Looks up a localized string similar to Enable background 3D preview navigation (Ctrl + B).
         /// </summary>
         public static string InCanvasGeomButtonToolTip {
             get {
@@ -1953,7 +1953,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable graph view navigation (Ctrl + G).
+        ///   Looks up a localized string similar to Enable graph view navigation (Ctrl + B).
         /// </summary>
         public static string InCanvasNodeButtonToolTip {
             get {

@@ -1437,11 +1437,11 @@ Do you want to install the latest Dynamo update?</value>
     <value>Install Dynamo</value>
   </data>
   <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
-    <value>Enable background 3D preview navigation (Ctrl + G)</value>
+    <value>Enable background 3D preview navigation (Ctrl + B)</value>
     <comment>Enable background 3D preview navigation</comment>
   </data>
   <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
-    <value>Enable graph view navigation (Ctrl + G)</value>
+    <value>Enable graph view navigation (Ctrl + B)</value>
     <comment>Enable graph view navigation</comment>
   </data>
   <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
