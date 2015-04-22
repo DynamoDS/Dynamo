@@ -331,7 +331,7 @@ limitations under the License.
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy /Y "$(SolutionDir)..\README.md" "$(OutputPath)README.txt"
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
+copy /Y "$(SolutionDir)..\extern\DesignScript\*" "$(OutputPath)"
 copy "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)\$(UICulture)\License.rtf"
 copy "$(SolutionDir)..\tools\install\extra\InstallASMForDynamo.exe" "$(OutputPath)\InstallASMForDynamo.exe"
 IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT /SUPPRESSMSGBOXES</PostBuildEvent>
@@ -339,7 +339,7 @@ IF NOT EXIST "$(OutputPath)\dll" "$(OutputPath)\InstallASMForDynamo.exe" /SILENT
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy /Y "$(SolutionDir)..\README.md" "$(OutputPath)README.txt"
+    <PostBuildEvent  Condition=" '$(OS)' != 'Unix' ">copy /Y "$(SolutionDir)..\README.md" "$(OutputPath)README.txt"
 xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
