@@ -3324,10 +3324,6 @@ namespace ProtoImperative
                 EmitPostFixNode(node, ref inferedType);
             }
 #endif
-            else if (node is ReturnNode)
-            {
-                EmitReturnNode(node);
-            }
             else if (node is LanguageBlockNode)
             {
                 EmitLanguageBlockNode(node, ref inferedType, graphNode);
