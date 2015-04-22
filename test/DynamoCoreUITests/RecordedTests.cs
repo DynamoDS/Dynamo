@@ -531,8 +531,13 @@ namespace DynamoCoreUITests
         public void Defect_MAGN_6821_withoutInput()
         {
             
-      //  Automatically testing custom node using recorded tests 
-      //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+      
+            //Custom Node without Input
+            //Scenario:
+            //1. Create CBN and convert that into CustomNode
+            //2. Place this custom node and execute
+            //3. Verify the results of custom node instance are correct
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
             RunCommandsFromFile("Defect_MAGN_6821_withoutInput.xml", true, (commandTag) =>
             {
@@ -560,7 +565,13 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void Defect_MAGN_6821_withInput()
         {
-            //  Automatically testing custom node using recorded tests 
+            
+            //Create one input node
+            //Scenario
+            //1. Create one input node
+            //2. Create one output node
+            //3. Connect the above with single node in between
+            //4. Place the custom node instance and connect with relavant inputs
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
 
@@ -586,7 +597,12 @@ namespace DynamoCoreUITests
 
         public void Defect_MAGN_6821_multipleInput()
         {
-            //  Automatically testing custom node using recorded tests 
+           
+            // Create Multiple Input nodes
+            //Scenario: 
+            //1. Create custom node with multiple input nodes
+            //2. Connect them to complete the graph
+            //3. Create instance of custom node and Execute.
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
 
@@ -611,7 +627,13 @@ namespace DynamoCoreUITests
         [Test, RequiresSTA]
         public void Defect_MAGN_6821_multipleInstance()
         {
-            //  Automatically testing custom node using recorded tests 
+            
+            //Create Multiple Instances nodes
+            //Scenario:
+            //1. Create custom node with multiple input nodes
+            //2. Connect them to complete the graph
+            //3. Create multiple instances of custom node and Execute.
+            //4. verify the results are correct
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
 
@@ -637,7 +659,9 @@ namespace DynamoCoreUITests
         public void Defect_MAGN_6821_nestedCustomNode()
         {
 
-            //  Automatically testing custom node using recorded tests 
+           
+            // Single Instance
+            //Scenario: Create a custom node inside another one
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
             RunCommandsFromFile("Defect_MAGN_6821_nestedCustomNode.xml", false, (commandTag) =>
