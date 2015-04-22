@@ -97,10 +97,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' != 'Unix' ">copy "$(SolutionDir)..\bin\AnyCPU\$(ConfigurationName)\ProtoGeometry.*" "$(TargetDir)\"
-copy "$(SolutionDir)..\bin\AnyCPU\$(ConfigurationName)\ProtoInterface.*" "$(TargetDir)\"</PreBuildEvent>
-  </PropertyGroup>
+  <ItemGroup>
+    <ProtoGeometryFiles Include="$(SolutionDir)..\bin\AnyCPU\$(ConfigurationName)\ProtoGeometry.*"/>
+    <ProtoInterfaceFiles Include="$(SolutionDir)..\bin\AnyCPU\$(ConfigurationName)\ProtoInterface.*" />
+  </ItemGroup>
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="$(ProtoGeometryFiles)" DestinationFolder="$(TargetDir)\" />
+    <Copy SourceFiles="$(ProtoInterfaceFiles)" DestinationFolder="$(TargetDir)\" />
+  </Target>
+
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
