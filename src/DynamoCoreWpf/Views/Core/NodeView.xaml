@@ -40,10 +40,16 @@
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
-                         x:FieldModifier="public">
+                         x:FieldModifier="public">               
                 <MenuItem Name="deleteElem_cm"
                           Header="{x:Static p:Resources.ContextMenuDelete}"
                           Command="{Binding Path=DeleteCommand}" />
+                <MenuItem Name="createGroup_cm"
+                          Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
+                          Command="{Binding Path=CreateGroupCommand}" />
+                <MenuItem Name="unGroup_cm"
+                          Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
+                          Command="{Binding Path=UngroupCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
                     <MenuItem IsCheckable="True"

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
+
 using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Nodes;
@@ -60,11 +59,17 @@ namespace DynamoCoreUITests
         [Test]
         public void Watch3DHasViewer()
         {
+            var renderingTier = (System.Windows.Media.RenderCapability.Tier >> 16);
+            if (renderingTier < 2)
+            {
+                Assert.Inconclusive("Hardware rendering is not available. Watch3D is not created.");
+            }
+
             Open(@"UI\CoreUINodes.dyn");
 
             var nodeView = NodeViewWithGuid("6869c998-b819-4686-8849-6f36162c4182"); // NodeViewOf<Watch3D>();
             var watchView = nodeView.ChildrenOfType<Watch3DView>().First();
-            Assert.AreEqual(0, watchView.Points.Count);
+            Assert.Null(watchView.Points);
         }
 
         [Test]
@@ -273,7 +278,7 @@ namespace DynamoCoreUITests
 
             var watch3DView = watch3ds.First();
 
-            Assert.AreEqual(1, watch3DView.Points.Count);
+            Assert.AreEqual(1, watch3DView.Points.Positions.Count);
         }
 
         [Test]
@@ -315,32 +320,6 @@ namespace DynamoCoreUITests
 
             inPortGrid = nodeView.inPortGrid;
             Assert.AreEqual(2, inPortGrid.ChildrenOfType<TextBlock>().Count());
-        }
-
-        private static class DispatcherUtil
-        {
-            /// <summary>
-            ///     Force the Dispatcher to empty it's queue
-            /// </summary>
-            [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-            public static void DoEvents()
-            {
-                var frame = new DispatcherFrame();
-                Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
-                    new DispatcherOperationCallback(ExitFrame), frame);
-                Dispatcher.PushFrame(frame);
-            }
-
-            /// <summary>
-            ///     Helper method for DispatcherUtil
-            /// </summary>
-            /// <param name="frame"></param>
-            /// <returns></returns>
-            private static object ExitFrame(object frame)
-            {
-                ((DispatcherFrame) frame).Continue = false;
-                return null;
-            }
         }
     }
 }

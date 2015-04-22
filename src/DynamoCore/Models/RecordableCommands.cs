@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+using Dynamo.Properties;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using System.Runtime.Serialization;
@@ -1469,6 +1470,103 @@ namespace Dynamo.Models
 
             #endregion
         }
+
+        public class CreateAnnotationCommand : RecordableCommand
+        {
+            #region Public Class Methods
+
+            public CreateAnnotationCommand(Guid nodeId, string annotationText,
+                double x, double y, bool defaultPosition)
+            {
+                if (string.IsNullOrEmpty(annotationText))
+                    annotationText = Resources.GroupDefaultText;
+
+                AnnotationId = nodeId;
+                AnnotationText = annotationText;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+            }
+
+            internal static CreateAnnotationCommand DeserializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                Guid annotationId = helper.ReadGuid("AnnotationId");
+                string annotationText = helper.ReadString("AnnotationText");
+                double x = helper.ReadDouble("X");
+                double y = helper.ReadDouble("Y");
+
+                return new CreateAnnotationCommand(annotationId, annotationText, x, y,
+                    helper.ReadBoolean("DefaultPosition"));
+            }
+
+            #endregion
+
+            #region Public Command Properties
+
+            internal Guid AnnotationId { get; private set; }
+            internal string AnnotationText { get; private set; }
+            internal double X { get; private set; }
+            internal double Y { get; private set; }
+            internal bool DefaultPosition { get; private set; }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.CreateAnnotationImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                XmlElementHelper helper = new XmlElementHelper(element);
+                helper.SetAttribute("NodeId", AnnotationId);
+                helper.SetAttribute("NoteText", AnnotationText);
+                helper.SetAttribute("X", X);
+                helper.SetAttribute("Y", Y);
+                helper.SetAttribute("DefaultPosition", DefaultPosition);
+            }
+
+            #endregion
+        }
+
+        [DataContract]
+        public class UngroupModelCommand : ModelSpecificRecordableCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public UngroupModelCommand(string modelGuid) : base(modelGuid) { }
+
+            public UngroupModelCommand(Guid modelGuid) : base(modelGuid) { }
+
+            internal static UngroupModelCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                return new UngroupModelCommand(modelGuid);
+            }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.UngroupModelImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", ModelGuid);
+            }
+
+            #endregion
+        }
+
     }
 
     // public class XxxYyyCommand : RecordableCommand

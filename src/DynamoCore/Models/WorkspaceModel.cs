@@ -15,7 +15,7 @@ using Dynamo.Nodes;
 using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
-
+using ProtoCore.AST;
 using ProtoCore.Namespace;
 
 using Utils = Dynamo.Nodes.Utilities;
@@ -61,6 +61,7 @@ namespace Dynamo.Models
         private bool hasUnsavedChanges;
         private readonly ObservableCollection<NodeModel> nodes;
         private readonly ObservableCollection<NoteModel> notes;
+        private readonly ObservableCollection<AnnotationModel> annotations;
         private readonly UndoRedoRecorder undoRecorder;
         private Guid guid;
 
@@ -284,6 +285,8 @@ namespace Dynamo.Models
         /// </summary>
         public ObservableCollection<NoteModel> Notes { get { return notes; } }
 
+        public ObservableCollection<AnnotationModel> Annotations { get { return annotations; } }
+
         /// <summary>
         ///     Path to the file this workspace is associated with. If null or empty, this workspace has never been saved.
         /// </summary>
@@ -440,6 +443,7 @@ namespace Dynamo.Models
         protected WorkspaceModel(
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n,
+            IEnumerable<AnnotationModel> a,
             WorkspaceInfo info, 
             NodeFactory factory)
         {
@@ -447,6 +451,8 @@ namespace Dynamo.Models
 
             nodes = new ObservableCollection<NodeModel>(e);
             notes = new ObservableCollection<NoteModel>(n);
+
+            annotations = new ObservableCollection<AnnotationModel>(a);         
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -478,6 +484,8 @@ namespace Dynamo.Models
 
             foreach (var connector in Connectors)
                 RegisterConnector(connector);
+
+            SetModelEventOnAnnotation();
         }
 
         /// <summary>
@@ -530,6 +538,7 @@ namespace Dynamo.Models
 
             Nodes.Clear();
             Notes.Clear();
+            Annotations.Clear();
 
             ClearUndoRecorder();
             ResetWorkspace();
@@ -650,6 +659,87 @@ namespace Dynamo.Models
 
             AddNote(noteModel, centerNote);
             return noteModel;
+        }
+
+        public void AddAnnotation(AnnotationModel annotationModel)
+        {
+            Annotations.Add(annotationModel);
+        }
+
+        public AnnotationModel AddAnnotation(string text, Guid id)
+        {
+            var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
+            var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
+           
+            if (!CheckIfModelExistsInSameGroup(selectedNodes, selectedNotes))
+            {
+                var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
+                {
+                    GUID = id,
+                    AnnotationText = text                   
+                };
+                annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+                annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
+                Annotations.Add(annotationModel);
+                HasUnsavedChanges = true;
+                return annotationModel;
+            }
+            return null;
+        }
+
+        /// <summary>
+        //this sets the event on Annotation. This event return the model from the workspace.
+        //When a model is ungrouped from a group, that model will be deleted from that group.
+        //So, when UNDO execution, cannot get that model from that group, it has to get from the workspace.
+        //The below method will set the event on every annotation model, that will return the specific model
+        //from workspace.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        private void SetModelEventOnAnnotation()
+        {           
+            foreach (var model in this.Annotations)
+            {
+                model.ModelBaseRequested += annotationModel_GetModelBase;
+                model.Disposed += (_) => model.ModelBaseRequested -= annotationModel_GetModelBase;
+            }
+        }
+
+        /// <summary>
+        /// Get the model from Workspace
+        /// </summary>
+        /// <param name="modelGuid">The model unique identifier.</param>
+        /// <returns></returns>
+        private ModelBase annotationModel_GetModelBase(Guid modelGuid)
+        {
+            ModelBase model = null;
+            model = this.Nodes.FirstOrDefault(x => x.GUID == modelGuid);
+            if (model == null) //Check if GUID is a Note instead.
+            {
+                model = this.Notes.FirstOrDefault(x => x.GUID == modelGuid);
+            }
+
+            return model;
+        }
+
+        /// <summary>
+        /// Checks if model exists in same group.
+        /// </summary>
+        /// <param name="selectNodes">The select nodes.</param>
+        /// <param name="selectNotes">The select notes.</param>
+        /// <returns>true if the models are already in the same group</returns>
+        private bool CheckIfModelExistsInSameGroup(IEnumerable<NodeModel> selectNodes, IEnumerable<NoteModel> selectNotes)
+        {
+            var selectedModels = selectNodes.Concat(selectNotes.Cast<ModelBase>()).ToList();
+            bool nodesInSameGroup = false;
+            foreach (var group in this.Annotations)
+            {
+                var groupModels = group.SelectedModels;
+                nodesInSameGroup = !selectedModels.Except(groupModels).Any();
+                if (nodesInSameGroup)
+                    break;
+            }
+
+            return nodesInSameGroup;
         }
 
         /// <summary>
@@ -800,11 +890,17 @@ namespace Dynamo.Models
                 root.AppendChild(noteList);
                 foreach (var n in Notes)
                 {
-                    var note = xmlDoc.CreateElement(n.GetType().ToString());
-                    noteList.AppendChild(note);
-                    note.SetAttribute("text", n.Text);
-                    note.SetAttribute("x", n.X.ToString(CultureInfo.InvariantCulture));
-                    note.SetAttribute("y", n.Y.ToString(CultureInfo.InvariantCulture));
+                    var note = n.Serialize(xmlDoc, SaveContext.File);
+                    noteList.AppendChild(note);                         
+                }
+
+                //save the annotation
+                var annotationList = xmlDoc.CreateElement("Annotations");
+                root.AppendChild(annotationList);
+                foreach (var n in annotations)
+                {
+                    var annotation = n.Serialize(xmlDoc, SaveContext.File);
+                    annotationList.AppendChild(annotation);                   
                 }
 
                 return true;
@@ -899,16 +995,57 @@ namespace Dynamo.Models
             if (modelGuids == null || (!modelGuids.Any()))
                 throw new ArgumentNullException("modelGuids");
 
-            var retrievedModels = GetModelsInternal(modelGuids);
-            if (!retrievedModels.Any())
+            var modelsToUpdate = GetModelsInternal(modelGuids).ToList();
+            if (!modelsToUpdate.Any())
                 throw new InvalidOperationException("UpdateModelValue: Model not found");
 
-            var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
-            using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, retrievedModels))
+            UpdateValueParams visibilityParams = null;
+            var nodesToShowOrHide = new List<NodeModel>();
+
+            var modelsToRecordForUndo = new List<ModelBase>();
+            if (propertyName.Equals("IsUpstreamVisible"))
             {
-                foreach (var retrievedModel in retrievedModels)
+                visibilityParams = new UpdateValueParams("IsVisible", value);
+
+                // If the update is meant to turn upstream preview on/off, then the number of nodes 
+                // involved in this update will presumably be higher than "modelsToUpdate". Here we 
+                // gather all the upstream nodes that are affected, record all those nodes for undo.
+                // 
+                var nodesToUpdate = modelsToUpdate.OfType<NodeModel>().ToList();
+                foreach (var nodeToUpdate in nodesToUpdate)
+                {
+                    // Unconditionally retrieve all upstream nodes.
+                    WorkspaceUtilities.GatherAllUpstreamNodes(
+                        nodeToUpdate, nodesToShowOrHide, model => true);
+                }
+
+                // Remove those nodes that are in "nodesToUpdate".
+                nodesToShowOrHide.RemoveAll(modelsToUpdate.Contains);
+
+                // Record those directly affected, then those indirectly affected.
+                modelsToRecordForUndo.AddRange(modelsToUpdate);
+                modelsToRecordForUndo.AddRange(nodesToShowOrHide.Distinct());
+            }
+            else
+            {
+                // The update does not affect other nodes.
+                modelsToRecordForUndo.AddRange(modelsToUpdate);
+            }
+
+            var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
+            using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, modelsToRecordForUndo))
+            {
+                foreach (var retrievedModel in modelsToUpdate)
                 {
                     retrievedModel.UpdateValue(updateValueParams);
+                }
+
+                if ((visibilityParams != null) && nodesToShowOrHide.Any())
+                {
+                    foreach (var nodeModel in nodesToShowOrHide)
+                    {
+                        nodeModel.UpdateValue(visibilityParams);
+                    }
                 }
             }
 
@@ -1133,6 +1270,11 @@ namespace Dynamo.Models
                         undoRecorder.RecordDeletionForUndo(model);
                         Notes.Remove(model as NoteModel);
                     }
+                    else if (model is AnnotationModel)
+                    {
+                        undoRecorder.RecordDeletionForUndo(model);
+                        Annotations.Remove(model as AnnotationModel);
+                    }
                     else if (model is NodeModel)
                     {
                         // Just to make sure we don't end up deleting nodes from 
@@ -1174,6 +1316,14 @@ namespace Dynamo.Models
             } // Conclude the deletion.
         }
 
+        internal void RecordGroupModelBeforeUngroup(AnnotationModel annotation)
+        {
+            using (undoRecorder.BeginActionGroup()) // Start a new action group.
+            {
+                undoRecorder.RecordModificationForUndo(annotation);
+            }
+        }
+
         private static bool ShouldProceedWithRecording(List<ModelBase> models)
         {
             if (null == models) 
@@ -1199,6 +1349,8 @@ namespace Dynamo.Models
 
             if (model is NoteModel)
                 Notes.Remove(model as NoteModel);
+            else if (model is AnnotationModel)
+                Annotations.Remove(model as AnnotationModel);
             else if (model is ConnectorModel)
             {
                 var connector = model as ConnectorModel;
@@ -1261,12 +1413,37 @@ namespace Dynamo.Models
             {
                 var noteModel = NodeGraph.LoadNoteFromXml(modelData);
                 Notes.Add(noteModel);
+
+                //check whether this note belongs to a group
+                foreach (var annotation in Annotations)
+                {
+                    //this note "was" in a group
+                    if (annotation.DeletedModelBases.Any(m => m.GUID == noteModel.GUID))
+                    {
+                        annotation.AddToSelectedModels(noteModel);
+                    }
+                }
+            }
+            else if (typeName.StartsWith("Dynamo.Models.AnnotationModel"))
+            {
+                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData, Nodes,Notes);
+                Annotations.Add(annotationModel);
             }
             else // Other node types.
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo);
                 Nodes.Add(nodeModel);
                 RegisterNode(nodeModel);
+                
+                //check whether this node belongs to a group
+                foreach (var annotation in Annotations)
+                {
+                    //this node "was" in a group
+                    if (annotation.DeletedModelBases.Any(m=>m.GUID == nodeModel.GUID))
+                    {
+                        annotation.AddToSelectedModels(nodeModel);
+                    }
+                }
             }
         }
 
@@ -1296,8 +1473,9 @@ namespace Dynamo.Models
         public ModelBase GetModelInternal(Guid modelGuid)
         {
             ModelBase foundModel = (Connectors.FirstOrDefault(c => c.GUID == modelGuid)
-                ?? (ModelBase)Nodes.FirstOrDefault(node => node.GUID == modelGuid))
-                ?? Notes.FirstOrDefault(note => note.GUID == modelGuid);
+                ??  Nodes.FirstOrDefault(node => node.GUID == modelGuid) as ModelBase)
+                ?? (Notes.FirstOrDefault(note => note.GUID == modelGuid) 
+                ??  Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid) as ModelBase) ;
 
             return foundModel;
         }
@@ -1451,6 +1629,6 @@ namespace Dynamo.Models
                     break;
             }
         }
-        #endregion
+        #endregion       
     }
 }

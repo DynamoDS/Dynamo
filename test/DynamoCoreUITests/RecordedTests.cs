@@ -626,7 +626,7 @@ namespace DynamoCoreUITests
             });
         }
 
-        [Test, RequiresSTA, Category("Failure")]
+        [Test, RequiresSTA]
         public void Defect_MAGN_1143_CN()
         {
             // modify the name of the input node
@@ -2017,14 +2017,14 @@ namespace DynamoCoreUITests
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2032,14 +2032,14 @@ namespace DynamoCoreUITests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -2115,14 +2115,14 @@ namespace DynamoCoreUITests
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2130,14 +2130,14 @@ namespace DynamoCoreUITests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.RuntimeData.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.RuntimeData.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -3781,6 +3781,44 @@ namespace DynamoCoreUITests
             });
 
         }
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void MAGN_CustomNode_automatic7073()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7073
+            // In Run automatic mode - Create a file with custom node    
+            // Open a graph with custom node instance in Run  Automatic mode   
+
+            RunCommandsFromFile("MAGN_7073.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                Assert.AreEqual(2, workspace.Nodes.Count);
+                Assert.AreEqual(1, workspace.Connectors.Count());
+                var point = GetNode("1677e207-e314-4460-827c-161f90062513") as DoubleInput;
+                Assert.IsNotNull(point);
+
+            });
+        }
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void MAGN_6856_namespace()
+        {
+            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6856
+            // 1. Create CBN with code  "Autodesk.Point.ByCoordinates(1,1,1);"   
+            // 2. Create a CBN with code  "Point.ByCoordinates(1,1,1);"    
+
+            RunCommandsFromFile("MAGN-6856_Namespace.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                var point = GetNode("1677e207-e314-4460-827c-161f90062513") as DoubleInput;
+                Assert.IsNotNull(point);
+                var pt = GetNode("3aaa6ce2-9134-4ec9-972f-c8ee2190ee8a") as DoubleInput;
+                Assert.IsNotNull(pt);
+                Assert.AreEqual(ElementState.Warning, pt.State);
+            });
+        }
+        
         #endregion
     }
 

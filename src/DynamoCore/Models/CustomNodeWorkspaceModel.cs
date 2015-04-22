@@ -38,15 +38,18 @@ namespace Dynamo.Models
                 factory,
                 Enumerable.Empty<NodeModel>(),
                 Enumerable.Empty<NoteModel>(),
+                Enumerable.Empty<AnnotationModel>(),
                 info) { }
 
         public CustomNodeWorkspaceModel( 
             NodeFactory factory, 
             IEnumerable<NodeModel> e, 
             IEnumerable<NoteModel> n, 
+            IEnumerable<AnnotationModel> a,
             WorkspaceInfo info,
             ElementResolver elementResolver = null) 
-            : base(e, n, info, factory)
+            : base(e, n,a,info, factory)
+
         {
             HasUnsavedChanges = false;
 

@@ -24,7 +24,8 @@ namespace Dynamo.UI.Views
             PreviewKeyDown += new KeyEventHandler(HandleEsc);
             DataContext = dynamoViewModel;
 
-            Title = Dynamo.Wpf.Properties.Resources.AboutWindowTitle;
+            Title = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowTitle,dynamoViewModel.BrandingResourceProvider.ProductName);
+            DynamoWebsiteButton.Content = string.Format(Dynamo.Wpf.Properties.Resources.AboutWindowDynamoWebsiteButton, dynamoViewModel.BrandingResourceProvider.ProductName);
         }
 
         public bool InstallNewUpdate { get; private set; }

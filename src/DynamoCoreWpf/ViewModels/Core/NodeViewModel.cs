@@ -11,7 +11,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 
 using System.Windows;
-
+using Dynamo.Selection;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -219,10 +219,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                lock (nodeLogic.RenderPackagesMutex)
-                {
-                    return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
-                }
+                //lock (nodeLogic.RenderPackagesMutex)
+                //{
+                //    return nodeLogic.RenderPackages.Any(y => ((RenderPackage)y).IsNotEmpty());
+                //}
+
+                return true;
             }
         }
 
@@ -882,6 +884,30 @@ namespace Dynamo.ViewModels
 
             return false;
         }
+
+        private void CreateGroup(object parameters)
+        {
+            DynamoViewModel.AddAnnotationCommand.Execute(null);
+        }
+
+        private bool CanCreateGroup(object parameters)
+        {
+            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+        }
+
+        private void UngroupNode(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+        }
+
+        private bool CanUngroupNode(object parameters)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            return (from model in groups 
+                    let nodeModel = DynamoSelection.Instance.Selection.OfType<NodeModel>().FirstOrDefault() 
+                    where model.SelectedModels.Any(x => x.GUID == nodeModel.GUID) select model).Any();
+        }
+
 
         #region Private Helper Methods
         private Point GetTopLeft()
