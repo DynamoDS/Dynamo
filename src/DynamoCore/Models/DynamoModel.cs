@@ -32,6 +32,7 @@ using ProtoCore;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
+using Dynamo.UI;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
 using Utils = Dynamo.Nodes.Utilities;
@@ -1076,7 +1077,7 @@ namespace Dynamo.Models
                 string fileName;
                 if (string.IsNullOrEmpty(workspace.FileName))
                 {
-                    fileName = "recent_new_file_" + workspace.Guid;
+                    fileName = Configurations.BackupFileNamePrefix + workspace.Guid;
                     var ext = workspace is HomeWorkspaceModel ? ".DYN" : ".DYF";
                     fileName += ext;
                 }
