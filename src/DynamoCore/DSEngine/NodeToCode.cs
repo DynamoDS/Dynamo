@@ -64,6 +64,32 @@ namespace Dynamo.DSEngine
             }
         }
 
+        private class IdentifierReplacer : AssociativeAstVisitor
+        {
+            private string oldVariable;
+            private string newVariable;
+
+            public IdentifierReplacer(string oldVar, string newVar)
+            {
+                oldVariable = oldVar;
+                newVariable = newVar;
+            }
+
+            public override void VisitIdentifierNode(IdentifierNode node)
+            {
+                if (node.Value.Equals(oldVariable))
+                    node.Value = newVariable;
+
+                if (node.ArrayDimensions != null)
+                    node.ArrayDimensions.Accept(this);
+            }
+
+            public override void VisitBinaryExpressionNode(BinaryExpressionNode node)
+            {
+                node.RightNode.Accept(this);
+            }
+        }
+
         /// <summary>
         /// The numbering state of a variable.
         /// </summary>
@@ -495,14 +521,23 @@ namespace Dynamo.DSEngine
             astNode.Accept(visitor);
         }
 
-        private static NodeToCodeResult PeepHoleOptimization(NodeToCodeResult result)
+        /// <summary>
+        /// Remove temporary assignment from the result. That is, removing 
+        /// assignment "t1 = x" where t1 is a temporary variable. This kind
+        /// of assginment can be safely removed, but now all nodes that 
+        /// connect to "t1" should re-connect to "x". For example, "a = t1" 
+        /// now should be updated to "a = x".
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private static NodeToCodeResult RemoveTemporaryAssignments(NodeToCodeResult result)
         {
             var tempVariables = result.OutputMap.Where(p => p.Key.StartsWith(Constants.kTempVarForNonAssignment))
                                                 .Select(p => p.Value);
             var tempVariableSet = new HashSet<string>(tempVariables);
             
-            // Optimize case "x = ...; t1 = x;" which is generated from cbn "x".
-            // Remove "t1 = x" and remap output from t1 to x.
+            // Check if the LHS of a binary expression is temorary variable 
+            // where the RHS isn't
             Func<AssociativeNode, bool> isTempAssignment = x =>
             {
                 var expr = x as BinaryExpressionNode;
@@ -511,7 +546,6 @@ namespace Dynamo.DSEngine
 
                 var lhs = expr.LeftNode as IdentifierNode;
                 var rhs = expr.RightNode as IdentifierNode;
-
                 if (lhs == null || rhs == null)
                     return false;
 
@@ -519,6 +553,7 @@ namespace Dynamo.DSEngine
                        !tempVariableSet.Contains(rhs.Value);
             };
 
+            // Get all temporary assignments. 
             var tmpExprs = result.AstNodes
                                  .Where(isTempAssignment)
                                  .Select(n => n as BinaryExpressionNode)
@@ -528,12 +563,20 @@ namespace Dynamo.DSEngine
 
             foreach (var pair in tmpExprs)
             {
+                // Update the map.
                 var keys = result.OutputMap.Keys.ToList();
                 for (int i = 0; i < keys.Count; ++i)
                 {
                     var value = result.OutputMap[keys[i]];
                     if (value.Equals(pair.lhs))
                         result.OutputMap[keys[i]] = pair.rhs;
+                }
+
+                // Update ASTs.
+                IdentifierReplacer replacer = new IdentifierReplacer(pair.lhs, pair.rhs);
+                foreach (var ast in newAsts)
+                {
+                    ast.Accept(replacer);
                 }
             }
 
@@ -684,7 +727,7 @@ namespace Dynamo.DSEngine
             #endregion
 
             var result = new NodeToCodeResult(allAstNodes.SelectMany(x => x.Item2), inputMap, outputMap);
-            result = PeepHoleOptimization(result);
+            result = RemoveTemporaryAssignments(result);
             return result;
         }
     }
