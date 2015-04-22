@@ -78,9 +78,6 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a point vertex to the render package.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
         public void PushPointVertex(double x, double y, double z)
         {
             points.Indices.Add(points.Positions.Count);
@@ -90,10 +87,6 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a point color to the render package.
         /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
         public void PushPointVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             var ptColor = Color4FromBytes(red, green, blue, alpha);
@@ -103,9 +96,6 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a triangle vertex location to the render package.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
         public void PushTriangleVertex(double x, double y, double z)
         {
             mesh.Indices.Add(mesh.Indices.Count);
@@ -116,9 +106,6 @@ namespace Dynamo.Wpf
         /// Add a triangle normal to the render package.
         /// Triangle normals are per-vertex.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
         public void PushTriangleVertexNormal(double x, double y, double z)
         {
             mesh.Normals.Add(Vector3ForYUp(x,y,z));
@@ -127,8 +114,6 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a triangle texture coordinate to the render package.
         /// </summary>
-        /// <param name="u"></param>
-        /// <param name="v"></param>
         public void PushTriangleVertexUV(double u, double v)
         {
             mesh.TextureCoordinates.Add(new Vector2((float)u, (float)v));
@@ -137,10 +122,6 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a triangle vertex color to the render package.
         /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
         public void PushTriangleVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             mesh.Colors.Add(Color4FromBytes(red,green,blue,alpha));
@@ -149,9 +130,6 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a line vertex to the render package.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <param name="z"></param>
         public void PushLineStripVertex(double x, double y, double z)
         {
             lines.Positions.Add(Vector3ForYUp(x,y,z));
@@ -190,10 +168,6 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a line strip vertex color to the render package.
         /// </summary>
-        /// <param name="red"></param>
-        /// <param name="green"></param>
-        /// <param name="blue"></param>
-        /// <param name="alpha"></param>
         public void PushLineStripVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             lines.Colors.Add(Color4FromBytes(red,green,blue,alpha));
@@ -352,7 +326,10 @@ namespace Dynamo.Wpf
         }
 
         /// <summary>
-        /// 
+        /// A list of line strip vertex counts.
+        /// A render package can contain information for more than one 
+        /// curve. This property is used to store, for each curve, the 
+        /// number of vertices for that curve.
         /// </summary>
         public List<int> LineStripVertexCounts { get; set; }
 
@@ -385,6 +362,10 @@ namespace Dynamo.Wpf
         /// </summary>
         public bool IsDisplayingLabels { get; set; }
 
+        /// <summary>
+        /// A flag indicating whether the render package requires 
+        /// per vertex coloration.
+        /// </summary>
         public bool RequiresPerVertexColoration { get; set; }
 
         #endregion
