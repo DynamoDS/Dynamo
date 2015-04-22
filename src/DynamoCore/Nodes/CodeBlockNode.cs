@@ -319,6 +319,16 @@ namespace Dynamo.Nodes
             return resultNodes;
         }
 
+        /// <summary>
+        /// For code block node, the identifer for its outupt is mapped. For 
+        /// example, the output identifier of expression "x = 1" is 
+        /// "x" + CBN's GUID. This mapping can ensure the uniqueness of variable
+        /// name. But in some case, we need to get its original name instead of
+        /// mapped one.
+        /// </summary>
+        /// <param name="portIndex">Output port index</param>
+        /// <param name="forRawName">Indicate to get original name</param>
+        /// <returns></returns>
         private IdentifierNode GetAstIdentifierForOutputIndexInternal(int portIndex, bool forRawName)
         {
             if (State == ElementState.Error)

@@ -200,8 +200,8 @@ namespace Dynamo.DSEngine
             Dictionary<NodeModel, int> nodeMap,
             List<NodeModel> path)
         {
-            var leave = path.Last();
-            var children = leave.OutputNodes.Values.SelectMany(s => s).Select(t => t.Item2);
+            var leaf = path.Last();
+            var children = leaf.OutputNodes.Values.SelectMany(s => s).Select(t => t.Item2);
             if (children.Any())
             {
                 foreach (var child in children)
@@ -218,9 +218,13 @@ namespace Dynamo.DSEngine
                 var nodes = path.ToList();
                 var idx1 = nodeMap[path.First()];
 
+                // Find the index of the first node that is either unconvertible
+                // or not in the selection.
                 int k = nodes.FindIndex(n => !n.IsConvertible || !selection.Contains(n));
                 if (k >= 0)
                 {
+                    // Then mark all nodes after this node as unreachable from 
+                    // root node.
                     for (int i = k + 1; i < nodes.Count; i++)
                     {
                         int idx2;
@@ -280,9 +284,7 @@ namespace Dynamo.DSEngine
             // nodes after this node along path as not reachable. 
             foreach (var node in convertibleNodes)
             {
-                var path = new List<NodeModel>();
-                path.Add(node);
-
+                var path = new List<NodeModel> { node };
                 MarkConnectivityForNode(selectionSet, connectivityMatrix, nodeDict, path);
             }
 
@@ -678,15 +680,31 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Compile a bunch of node to AST. 
+        /// Compile a set of nodes to ASTs. 
+        ///
+        /// Note: 
+        /// 1. Nodes should be a clique with regarding to convertibility and 
+        ///    selection state. That is, these nodes can be safely to be 
+        ///    converted into a single code block node. It shouldn't have 
+        ///    unconvertible or unselected node on any path (if there is) that 
+        ///    connects any two of these nodes, otherwise there will be 
+        ///    circular references between unconvertible/unselected node and
+        ///    code block node.
+        ///    
+        ///    To split arbitary node set into cliques, use 
+        ///    NodeToCodeUtils.GetCliques().
+        ///
+        /// 2. WorkspaceNodes are all nodes in current workspace. We need the
+        ///    whole graph so that each to-be-converted node will have correct
+        ///    order in the final code block node.
         /// </summary>
-        /// <param name="astBuilder"></param>
-        /// <param name="graph"></param>
-        /// <param name="nodes"></param>
+        /// <param name="astBuilder">Ast builder</param>
+        /// <param name="workspaceNodes">The whole workspace nodes</param>
+        /// <param name="nodes">Selected node that can be converted to a single code block node</param>
         /// <returns></returns>
         public static NodeToCodeResult NodeToCode(
             AstBuilder astBuilder, 
-            IEnumerable<NodeModel> graph,
+            IEnumerable<NodeModel> workspaceNodes,
             IEnumerable<NodeModel> nodes)
         {
             // The basic worflow is:
@@ -710,7 +728,7 @@ namespace Dynamo.DSEngine
             //   5. Do constant progation to optimize the generated code.
             #region Step 1 AST compilation
 
-            var sortedGraph = AstBuilder.TopologicalSortForGraph(graph);
+            var sortedGraph = AstBuilder.TopologicalSortForGraph(workspaceNodes);
             var sortedNodes = sortedGraph.Where(nodes.Contains);
 
             var allAstNodes = astBuilder.CompileToAstNodes(sortedNodes, AstBuilder.CompilationContext.NodeToCode, false);
@@ -742,8 +760,9 @@ namespace Dynamo.DSEngine
             // Collect all inputs/outputs/candidate renaming variables
             GetInputOutputMap(nodes, out inputMap, out outputMap, out renamingMap);
 
-            // Vairable numbering map. The Tuple value indicates its number
-            // sequence and if for the new UI node.
+            // Variable numbering map. Value field indicates current current
+            // numbering value of the variable. For example, there are variables
+            // t1, t2, ... tn and the ID of variable t's NumberingState is n.
             var numberingMap = new Dictionary<string, NumberingState>();
 
             var mappedVariables = new HashSet<string>();
