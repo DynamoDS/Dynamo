@@ -1069,27 +1069,30 @@ namespace Dynamo.Models
         /// </summary>
         protected void SaveBackupFiles(object state)
         {
-            foreach (var workspace in Workspaces)
+            DynamoModel.OnRequestDispatcherBeginInvoke(() =>
             {
-                if (!workspace.HasUnsavedChanges)
-                    continue;
-
-                string fileName;
-                if (string.IsNullOrEmpty(workspace.FileName))
+                foreach (var workspace in Workspaces)
                 {
-                    fileName = Configurations.BackupFileNamePrefix + workspace.Guid;
-                    var ext = workspace is HomeWorkspaceModel ? ".DYN" : ".DYF";
-                    fileName += ext;
-                }
-                else
-                {
-                    fileName = Path.GetFileName(workspace.FileName);
-                }
+                    if (!workspace.HasUnsavedChanges)
+                        continue;
 
-                var savePath = Path.Combine(pathManager.BackupDirectory, fileName);
-                workspace.SaveAs(savePath, null);
-                Logger.Log("Backup file is saved: " + savePath);
-            }
+                    string fileName;
+                    if (string.IsNullOrEmpty(workspace.FileName))
+                    {
+                        fileName = Configurations.BackupFileNamePrefix + workspace.Guid;
+                        var ext = workspace is HomeWorkspaceModel ? ".DYN" : ".DYF";
+                        fileName += ext;
+                    }
+                    else
+                    {
+                        fileName = Path.GetFileName(workspace.FileName);
+                    }
+
+                    var savePath = Path.Combine(pathManager.BackupDirectory, fileName);
+                    workspace.SaveAs(savePath, null);
+                    Logger.Log("Backup file is saved: " + savePath);
+                }
+            });
         }
 
         /// <summary>
