@@ -64,6 +64,9 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// Replace identfier's name with the other name.
+        /// </summary>
         private class IdentifierReplacer : AssociativeAstVisitor
         {
             private string oldVariable;
@@ -87,6 +90,41 @@ namespace Dynamo.DSEngine
             public override void VisitBinaryExpressionNode(BinaryExpressionNode node)
             {
                 node.RightNode.Accept(this);
+            }
+        }
+
+        private class ConstantIdentifierReplacer : AstReplacer 
+        {
+            private string variableName;
+            private AssociativeNode constantValue;
+
+            public ConstantIdentifierReplacer(string variable, AssociativeNode newValue)
+            {
+                variableName = variable;
+                constantValue = newValue;
+            }
+
+            public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
+            {
+                if (node.Value.Equals(variableName))
+                    return constantValue;
+                else
+                    return node;
+            }
+
+            public override AssociativeNode VisitBinaryExpressionNode(BinaryExpressionNode node)
+            {
+                var leftNode = node.LeftNode;
+                var newRightNode = node.RightNode.Accept(this);
+                if (newRightNode == node.RightNode)
+                {
+                    return node;
+                }
+                else
+                {
+                    var newNode = new BinaryExpressionNode(node.LeftNode, newRightNode, node.Optr);
+                    return newNode;
+                }
             }
         }
 
@@ -582,7 +620,63 @@ namespace Dynamo.DSEngine
 
             return new NodeToCodeResult(newAsts, result.InputMap, result.OutputMap);
         }
-        
+
+        /// <summary>
+        /// Temporary propagation for temporary assignment like "t1 = 1", 
+        /// propagate "1" to all expressions that use "t1" and the assignment
+        /// node will be removed from the final result.  
+        /// </summary>
+        /// <param name="result"></param>
+        /// <param name="outputVariables"></param>
+        /// <returns></returns>
+        public static NodeToCodeResult ConstantPropagationForTemp(NodeToCodeResult result, IEnumerable<string> outputVariables)
+        {
+            var tempVariables = result.OutputMap.Where(p => p.Key.StartsWith(Constants.kTempVarForNonAssignment))
+                                                .Select(p => p.Value);
+
+            // Check if the LHS of a binary expression is temorary variable 
+            // where the RHS is constant value
+            Func<AssociativeNode, bool> isConstantTempAssignment = x =>
+            {
+                var expr = x as BinaryExpressionNode;
+                if (expr == null)
+                    return false;
+
+                var lhs = expr.LeftNode as IdentifierNode;
+                return lhs != null 
+                       && tempVariables.Contains(lhs.Value) 
+                       && !outputVariables.Contains(lhs.Value)
+                       && expr.RightNode.IsLiteral ; 
+            };
+
+            // Get all temporary assignments. 
+            var tmpExprs = result.AstNodes
+                                 .Where(isConstantTempAssignment)
+                                 .Select(n => n as BinaryExpressionNode)
+                                 .Select(e => new
+                                 {
+                                     lhs = (e.LeftNode as IdentifierNode).Value,
+                                     rhs = e.RightNode
+                                 });
+            var nonTempExprs = result.AstNodes.Where(n => !isConstantTempAssignment(n));
+            var finalNodes = new List<AssociativeNode>();
+
+            var newAsts = new List<AssociativeNode>();
+            // Update ASTs.
+            foreach (var ast in nonTempExprs)
+            {
+                AssociativeNode astNode = ast;
+                foreach (var pair in tmpExprs)
+                {
+                    ConstantIdentifierReplacer replacer = new ConstantIdentifierReplacer(pair.lhs, pair.rhs);
+                    astNode = astNode.Accept(replacer);
+                }
+                newAsts.Add(astNode);
+            }
+
+            return new NodeToCodeResult(newAsts, result.InputMap, result.OutputMap);
+        }
+
         /// <summary>
         /// Compile a bunch of node to AST. 
         /// </summary>
