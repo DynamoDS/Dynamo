@@ -6,6 +6,7 @@ using System;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using Dynamo.Utilities;
+using ProtoCore.SyntaxAnalysis;
 
 namespace Dynamo.DSEngine
 {
@@ -47,72 +48,82 @@ namespace Dynamo.DSEngine
         /// Traverse all identifiers in depth-first order and for each 
         /// identifier apply a function to it.
         /// </summary>
-        private class IdentifierVisitor
+        private class IdentifierVisitor : AssociativeAstVisitor 
         {
-            public static void Visit(AssociativeNode astNode, Action<IdentifierNode> func)
+            private Action<IdentifierNode> identFunc;
+            public IdentifierVisitor(Action<IdentifierNode> func)
             {
-                if (astNode is IdentifierNode)
-                {
-                    var identNode = astNode as IdentifierNode;
-                    func(identNode);
-                    Visit(identNode.ArrayDimensions, func);
-                }
-                else if (astNode is IdentifierListNode)
-                {
-                    var node = astNode as IdentifierListNode;
-                    Visit(node.LeftNode, func);
-                    Visit(node.RightNode, func);
-                }
-                else if (astNode is FunctionCallNode)
-                {
-                    var node = astNode as FunctionCallNode;
-                    for (int i = 0; i < node.FormalArguments.Count; ++i)
-                    {
-                        Visit(node.FormalArguments[i], func);
-                    }
-                    Visit(node.ArrayDimensions, func);
-                }
-                else if (astNode is ArrayNode)
-                {
-                    var node = astNode as ArrayNode;
-                    Visit(node.Expr, func);
-                    Visit(node.Type, func);
-                }
-                else if (astNode is ExprListNode)
-                {
-                    var node = astNode as ExprListNode;
-                    for (int i = 0; i < node.list.Count; ++i)
-                    {
-                        Visit(node.list[i], func);
-                    }
-                    Visit(node.ArrayDimensions, func);
-                }
-                else if (astNode is FunctionDotCallNode)
-                {
-                    var node = astNode as FunctionDotCallNode;
-                }
-                else if (astNode is InlineConditionalNode)
-                {
-                    var node = astNode as InlineConditionalNode;
-                    Visit(node.ConditionExpression, func);
-                    Visit(node.TrueExpression, func);
-                    Visit(node.FalseExpression, func);
-                }
-                else if (astNode is RangeExprNode)
-                {
-                    var node = astNode as RangeExprNode;
-                    Visit(node.FromNode, func);
-                    Visit(node.ToNode, func);
-                    Visit(node.StepNode, func);
-                    Visit(node.ArrayDimensions, func);
-                }
-                else if (astNode is BinaryExpressionNode)
-                {
-                    var node = astNode as BinaryExpressionNode;
-                    Visit(node.LeftNode, func);
-                    Visit(node.RightNode, func);
-                }
+                identFunc = func;
             }
+
+            public override void VisitIdentifierNode(IdentifierNode node)
+            {
+                identFunc(node);
+                if (node.ArrayDimensions != null)
+                    node.ArrayDimensions.Accept(this);
+            }
+
+            public override void VisitIdentifierListNode(IdentifierListNode node)
+            {
+                node.LeftNode.Accept(this);
+                node.RightNode.Accept(this);
+            }
+
+            public override void VisitFunctionCallNode(FunctionCallNode node)
+            {
+                for (int i = 0; i < node.FormalArguments.Count; ++i)
+                {
+                    node.FormalArguments[i].Accept(this);
+                }
+
+                if (node.ArrayDimensions != null)
+                    node.ArrayDimensions.Accept(this);
+            }
+
+            public override void VisitArrayNode(ArrayNode node)
+            {
+                if (node.Expr != null)
+                    node.Expr.Accept(this);
+
+                if (node.Type != null)
+                    node.Type.Accept(this);
+            }
+
+            public override void VisitExprListNode(ExprListNode node)
+            {
+                for (int i = 0; i < node.list.Count; ++i)
+                {
+                    node.list[i].Accept(this);
+                }
+
+                if (node.ArrayDimensions != null)
+                    node.ArrayDimensions.Accept(this);
+            }
+
+            public override void VisitInlineConditionalNode(InlineConditionalNode node)
+            {
+                node.ConditionExpression.Accept(this);
+                node.TrueExpression.Accept(this);
+                node.FalseExpression.Accept(this);
+            }
+
+            public override void VisitRangeExprNode(RangeExprNode node)
+            {
+                node.FromNode.Accept(this);
+                node.ToNode.Accept(this);
+
+                if (node.StepNode != null)
+                    node.StepNode.Accept(this);
+
+                if (node.ArrayDimensions != null)
+                    node.ArrayDimensions.Accept(this);
+            }
+
+            public override void VisitBinaryExpressionNode(BinaryExpressionNode node)
+            {
+                node.LeftNode.Accept(this);
+                node.RightNode.Accept(this);
+            } 
         }
 
         /// <summary>
@@ -489,7 +500,8 @@ namespace Dynamo.DSEngine
                 mappedVariables.Add(ns.NumberedVariable);
             };
 
-            IdentifierVisitor.Visit(astNode, func);
+            IdentifierVisitor visitor = new IdentifierVisitor(func);
+            astNode.Accept(visitor);
         }
 
         /// <summary>
@@ -508,7 +520,8 @@ namespace Dynamo.DSEngine
                         n.Value = n.Name = newIdent;
                 };
 
-            IdentifierVisitor.Visit(astNode, func);
+            IdentifierVisitor visitor = new IdentifierVisitor(func);
+            astNode.Accept(visitor);
         }
 
         /// <summary>
@@ -540,7 +553,8 @@ namespace Dynamo.DSEngine
                 }
             };
 
-            IdentifierVisitor.Visit(astNode, func);
+            IdentifierVisitor visitor = new IdentifierVisitor(func);
+            astNode.Accept(visitor);
         }
 
         private static NodeToCodeResult PeepHoleOptimization(NodeToCodeResult result)
