@@ -414,4 +414,162 @@ namespace ProtoCore.SyntaxAnalysis
             return DefaultVisit(node);
         }
     }
+
+    public class AstReplacer : AssociativeAstVisitor<AssociativeNode>
+    {
+        public override AssociativeNode VisitGroupExpressionNode(GroupExpressionNode node)
+        {
+            var newExpression = node.Expression.Accept(this);
+            if (newExpression == node.Expression)
+            {
+                return node;
+            }
+            else
+            {
+                var newNode = new GroupExpressionNode(node);
+                newNode.Expression = newExpression;
+                return newNode;
+            }
+        }
+
+        public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
+        {
+            List<AssociativeNode> arguments = new List<AssociativeNode>();
+            for (int i = 0; i < node.FormalArguments.Count; ++i)
+            {
+                var newArgument = node.FormalArguments[i].Accept(this);
+                arguments.Add(newArgument);
+            }
+
+            if (arguments.SequenceEqual(node.FormalArguments))
+            {
+                return node;
+            }
+            else
+            {
+                var newNode = new FunctionCallNode(node);
+                newNode.FormalArguments = arguments;
+                return newNode;
+            }
+        }
+
+        public override AssociativeNode VisitInlineConditionalNode(InlineConditionalNode node)
+        {
+            var newCondition = node.ConditionExpression.Accept(this);
+            var newTrueExpr = node.TrueExpression.Accept(this);
+            var newFalseExpr = node.FalseExpression.Accept(this);
+
+            if (newCondition == node.ConditionExpression &&
+                newTrueExpr == node.TrueExpression &&
+                newFalseExpr == node.FalseExpression)
+            {
+                return node;
+            }
+            else
+            {
+                var newNode = new InlineConditionalNode(node);
+                node.ConditionExpression = newCondition;
+                node.TrueExpression = newTrueExpr;
+                node.FalseExpression = newFalseExpr;
+                return newNode;
+            }
+        }
+
+        public override AssociativeNode VisitBinaryExpressionNode(BinaryExpressionNode node)
+        {
+            var newLeftNode = node.LeftNode.Accept(this);
+            var newRightNode = node.RightNode.Accept(this);
+
+            if (newLeftNode == node.LeftNode && newRightNode == node.RightNode)
+            {
+                return node;
+            }
+            else
+            {
+                var newNode = new BinaryExpressionNode(newLeftNode, newRightNode, node.Optr);
+                return newNode;
+            }
+        }
+
+        public override AssociativeNode VisitUnaryExpressionNode(UnaryExpressionNode node)
+        {
+            var newExpression = node.Expression.Accept(this);
+            if (newExpression == node.Expression)
+            {
+                return node;
+            }
+            else
+            {
+                var newNode = new UnaryExpressionNode();
+                newNode.Expression = newExpression;
+                newNode.Operator = node.Operator;
+                return newNode;
+            }
+        }
+
+        public override AssociativeNode VisitRangeExprNode(RangeExprNode node)
+        {
+            var newFromNode = node.FromNode.Accept(this);
+            var newToNode = node.ToNode.Accept(this);
+            AssociativeNode newStepNode = null;
+            if (node.StepNode != null)
+                node.StepNode.Accept(this);
+
+            if (newFromNode == node.FromNode
+                && newToNode == node.ToNode
+                && newStepNode == node.StepNode)
+            {
+                return node;
+            }
+            else
+            {
+                var newNode = new RangeExprNode(node);
+                newNode.FromNode = newFromNode;
+                newNode.ToNode = newToNode;
+                newNode.StepNode = newStepNode;
+                return newNode;
+            }
+        }
+
+        public override AssociativeNode VisitExprListNode(ExprListNode node)
+        {
+            List<AssociativeNode> items = new List<AssociativeNode>();
+            for (int i = 0; i < node.list.Count; ++i)
+            {
+                var newItem = node.list[i].Accept(this);
+                items.Add(newItem);
+            }
+
+            if (items.SequenceEqual(node.list))
+            {
+                return node;
+            }
+            else
+            {
+                var newNode = new ExprListNode(node);
+                newNode.list = items;
+                return newNode;
+            }
+        }
+
+        public override AssociativeNode VisitArrayNode(ArrayNode node)
+        {
+            var newExpr = node.Expr.Accept(this);
+            AssociativeNode newType = null;
+            if (node.Type != null)
+                newType = node.Type.Accept(this);
+
+            if (newExpr == node.Expr && newType == node.Type)
+            {
+                return node;
+            }
+            else
+            {
+                var newNode = new ArrayNode(node);
+                newNode.Expr = newExpr;
+                newNode.Type = newType;
+                return newNode;
+            }
+        }
+    }
 }
