@@ -126,7 +126,7 @@ namespace Dynamo.Nodes
         private IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
         {
             var renderPackage = DynamoModel.RenderPackageFactory.CreateRenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, DynamoModel.RenderPackageFactory.MaxTesselationDivisions);
+            gItem.Tessellate(renderPackage, -1.0, DynamoModel.RenderPackageFactory.MaxTessellationDivisions);
             return renderPackage;
         }
 
@@ -356,7 +356,7 @@ namespace Dynamo.Nodes
         }
 
         protected override void RequestVisualUpdateAsyncCore(
-            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
+            IScheduler scheduler, EngineController engine, int maxTessellationDivisions)
         {
             // No visualization update is required for this node type.
         }

@@ -385,12 +385,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int MaxTesselationDivisions
+        public int MaxTessellationDivisions
         {
-            get { return model.MaxTesselationDivisions; }
+            get { return model.MaxTessellationDivisions; }
             set
             {
-                model.MaxTesselationDivisions = value;
+                model.MaxTessellationDivisions = value;
                 model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }

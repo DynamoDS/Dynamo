@@ -4,7 +4,7 @@ namespace Dynamo.Interfaces
 {
     public interface IRenderPackageFactory
     {
-        int MaxTesselationDivisions { get; set; }
+        int MaxTessellationDivisions { get; set; }
         IRenderPackage CreateRenderPackage();
     }
 }

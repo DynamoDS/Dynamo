@@ -18,7 +18,7 @@ namespace Dynamo.Wpf
     /// </summary>
     public class HelixRenderPackageFactory : IRenderPackageFactory
     {
-        public int MaxTesselationDivisions { get; set; }
+        public int MaxTessellationDivisions { get; set; }
 
         public HelixRenderPackageFactory(){}
 

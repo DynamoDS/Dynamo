@@ -447,7 +447,7 @@ namespace Dynamo
                 nodeModel.RequestVisualUpdateAsync(
                     dynamoModel.Scheduler,
                     dynamoModel.EngineController,
-                    dynamoModel.MaxTesselationDivisions);
+                    dynamoModel.MaxTessellationDivisions);
             }
             else
             {
@@ -457,7 +457,7 @@ namespace Dynamo
                     node.RequestVisualUpdateAsync(
                         dynamoModel.Scheduler,
                         dynamoModel.EngineController,
-                        dynamoModel.MaxTesselationDivisions);
+                        dynamoModel.MaxTessellationDivisions);
                 }
             }
 

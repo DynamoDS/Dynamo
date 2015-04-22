@@ -222,15 +222,15 @@ namespace Dynamo.Models
         /// <summary>
         ///     The maximum amount of tesselation divisions used for geometry visualization.
         /// </summary>
-        public int MaxTesselationDivisions
+        public int MaxTessellationDivisions
         {
-            get { return maxTesselationDivisions; }
+            get { return maxTessellationDivisions; }
             set
             {
-                maxTesselationDivisions = value;
+                maxTessellationDivisions = value;
                 if (RenderPackageFactory != null)
                 {
-                    RenderPackageFactory.MaxTesselationDivisions = maxTesselationDivisions;
+                    RenderPackageFactory.MaxTessellationDivisions = maxTessellationDivisions;
                 }
             }
         }
@@ -322,7 +322,7 @@ namespace Dynamo.Models
         /// </summary>
         private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
 
-        private int maxTesselationDivisions;
+        private int maxTessellationDivisions;
 
         public IEnumerable<WorkspaceModel> Workspaces 
         {
@@ -445,7 +445,7 @@ namespace Dynamo.Models
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
-            MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
+            MaxTessellationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
             pathManager = new PathManager(new PathManagerParams
             {
@@ -1678,7 +1678,7 @@ namespace Dynamo.Models
             // Construct the factory using the default constructor.
             var factoryConstructor = factoryType.GetConstructor(System.Type.EmptyTypes);
             RenderPackageFactory = (IRenderPackageFactory)factoryConstructor.Invoke(null);
-            RenderPackageFactory.MaxTesselationDivisions = MaxTesselationDivisions;
+            RenderPackageFactory.MaxTessellationDivisions = MaxTessellationDivisions;
         }
 
         #endregion

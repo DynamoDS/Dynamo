@@ -32,7 +32,7 @@ namespace Dynamo.Nodes
         }
 
         protected override void RequestVisualUpdateAsyncCore(
-            IScheduler scheduler, EngineController engine, int maxTesselationDivisions)
+            IScheduler scheduler, EngineController engine, int maxTessellationDivisions)
         {
             //Do nothing
         }

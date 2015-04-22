@@ -17,7 +17,7 @@ namespace Dynamo.Core.Threading
 {
     class UpdateRenderPackageParams
     {
-        internal int MaxTesselationDivisions { get; set; }
+        internal int MaxTessellationDivisions { get; set; }
         internal string PreviewIdentifierName { get; set; }
         internal NodeModel Node { get; set; }
         internal EngineController EngineController { get; set; }
@@ -39,7 +39,7 @@ namespace Dynamo.Core.Threading
 
         protected Guid nodeGuid;
 
-        private int maxTesselationDivisions;
+        private int maxTessellationDivisions;
         private bool displayLabels;
         private bool isNodeSelected;
         private string previewIdentifierName;
@@ -98,7 +98,7 @@ namespace Dynamo.Core.Threading
 
             displayLabels = nodeModel.DisplayLabels;
             isNodeSelected = nodeModel.IsSelected;
-            maxTesselationDivisions = initParams.MaxTesselationDivisions;
+            maxTessellationDivisions = initParams.MaxTessellationDivisions;
             engineController = initParams.EngineController;
             previewIdentifierName = initParams.PreviewIdentifierName;
 
@@ -166,14 +166,14 @@ namespace Dynamo.Core.Threading
 
                 try
                 {
-                    graphicItem.Tessellate(package, -1.0, maxTesselationDivisions);
+                    graphicItem.Tessellate(package, -1.0, maxTessellationDivisions);
 
                     var surf = graphicItem as Surface;
                     if (surf != null)
                     {
                         foreach (var curve in surf.PerimeterCurves())
                         {
-                            curve.Tessellate(package, -1.0, maxTesselationDivisions);
+                            curve.Tessellate(package, -1.0, maxTessellationDivisions);
                             curve.Dispose();
                         }
                     }
@@ -182,7 +182,7 @@ namespace Dynamo.Core.Threading
                     if (solid != null)
                     {
                         foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry)) {
-                            geom.Tessellate(package, -1.0, maxTesselationDivisions);
+                            geom.Tessellate(package, -1.0, maxTessellationDivisions);
                             geom.Dispose();
                         }
                     }
