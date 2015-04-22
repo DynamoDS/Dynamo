@@ -131,6 +131,17 @@ namespace Dynamo.ViewModels
             set { isCursorForced = value; RaisePropertyChanged("IsCursorForced"); }
         }
 
+        private bool incanvasSearchIsOpen = false;
+        public bool IncanvasSearchIsOpen
+        {
+            get { return incanvasSearchIsOpen; }
+            set
+            {
+                incanvasSearchIsOpen = value;
+                RaisePropertyChanged("IncanvasSearchIsOpen");
+            }
+        }
+
         private CompositeCollection _workspaceElements = new CompositeCollection();
         public CompositeCollection WorkspaceElements { get { return _workspaceElements; } }
 

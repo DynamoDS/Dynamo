@@ -1,0 +1,177 @@
+﻿<UserControl x:Class="Dynamo.UI.Controls.IncanvasLibrarySearchControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:views="clr-namespace:Dynamo.UI.Views"
+             xmlns:ui="clr-namespace:Dynamo.UI"
+             mc:Ignorable="d"
+             MaxHeight="350"
+             Width="250">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
+            <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+
+            <!--Style for every member in found MemberGroup-->
+            <Style x:Key="ListBoxIncanvasMembersStyle"
+                   TargetType="{x:Type ListBoxItem}"
+                   BasedOn="{StaticResource ListBoxMembersStyle}">
+                <EventSetter Event="PreviewMouseLeftButtonDown"
+                             Handler="OnMouseLeftButtonDown" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Name="SearchText"
+              Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border CornerRadius="5"
+                    Background="#333333"
+                    Padding="5"
+                    Grid.ColumnSpan="2">
+                <Grid>
+                    <StackPanel Name="SearchIconAndTextBlockGrid"
+                                Grid.ColumnSpan="2"
+                                Width="Auto"
+                                Orientation="Horizontal">
+                        <Image x:Name="SearchIcon"
+                               Width="25"
+                               Height="26"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Source"
+                                            Value="/DynamoCoreWpf;component/UI/Images/search_normal.png" />
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"
+                                                     Value="True">
+                                            <Setter Property="Source"
+                                                    Value="/DynamoCoreWpf;component/UI/Images/search_hover.png" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+
+                        <TextBlock Name="SearchTextBlock"
+                                   FontSize="14"
+                                   IsHitTestVisible="False"
+                                   Foreground="#878787"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding Path=SearchText, 
+                                                    Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
+                                   HorizontalAlignment="Center"
+                                   Height="18"
+                                   Margin="3,0,0,0">
+                        SEARCH LIBRARY
+                        </TextBlock>
+
+                    </StackPanel>
+
+                    <TextBox Name="SearchTextBox"
+                             Foreground="#CCCCCC"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             FontSize="14"
+                             IsEnabled="True"
+                             VerticalAlignment="Center"
+                             Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             MinWidth="200"
+                             CaretBrush="#CCCCCC"
+                             Margin="26,0,0,-1"
+                             TextChanged="OnSearchTextBoxTextChanged" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Opacity=".9"
+                Background="#333333"
+                Margin="1,2,1,0"
+                Grid.Row="1"
+                Name="FoundMembers">
+            <Border.Visibility>
+                <Binding Path="CurrentMode"
+                         Converter="{StaticResource ViewModeToVisibilityConverter}"
+                         ConverterParameter="LibrarySearchView" />
+            </Border.Visibility>
+            <ListView Name="CategoryListView"
+                      Grid.Row="1"
+                      ScrollViewer.CanContentScroll="False"
+                      Background="#343434"
+                      BorderThickness="0"
+                      ItemsSource="{Binding SearchRootCategories}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                      SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <!--Found member groups-->
+                        <ListBox Background="Transparent"
+                                 BorderBrush="Transparent"
+                                 BorderThickness="0"
+                                 ItemContainerStyle="{StaticResource ListBoxMemberGroupsStyle}"
+                                 ItemsSource="{Binding MemberGroups}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                 Name="MemberGroupsListBox">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock Foreground="#989898"
+                                                   FontSize="12"
+                                                   Margin="16,8,0,8">
+                                                            <Run Text="{Binding Prefix, Mode=OneWay}" />
+                                                            <Run Text="{Binding GroupName, Mode=OneWay}" />
+                                        </TextBlock>
+                                        <ListBox Background="Transparent"
+                                                 BorderBrush="Transparent"
+                                                 ItemContainerStyle="{StaticResource ListBoxIncanvasMembersStyle}"
+                                                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                                 ItemsSource="{Binding Members}"
+                                                 Name="MembersListBox">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <ContentControl Template="{StaticResource SearchMemberControlTemplate}" />
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background"
+                                Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border BorderThickness="0,0,0,0"
+                                            BorderBrush="#2F2F2F">
+                                        <ContentPresenter />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </Border>
+    </Grid>
+</UserControl>

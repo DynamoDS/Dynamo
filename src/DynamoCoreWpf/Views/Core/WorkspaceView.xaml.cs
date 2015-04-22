@@ -88,6 +88,11 @@ namespace Dynamo.Views
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
+
+            var searchViewModel = 
+                new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
+            searchViewModel.Visible = true;
+            WorkspaceContextMenu.DataContext = searchViewModel;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)

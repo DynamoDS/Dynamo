@@ -140,114 +140,11 @@
         <!-- Region Converters -->
 
         <!--Converter to Make class details not focusable-->
+            
         <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
-
-        <!--Converter that will be used, if number of found classes equals 0. 
-            Then classes will be collapsed.-->
-        <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
-        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
         <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
-        <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
         <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
-        <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
 
-        <!--EndRegion-->
-
-        <!-- Region DataTemplates -->
-        <!-- This data template is used to show one subcategory. -->
-        <DataTemplate x:Key="ClassObjectDataTemplate">
-            <DataTemplate.Resources>
-                <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
-            </DataTemplate.Resources>
-            <StackPanel Orientation="Vertical"
-                        Width="96"
-                        Height="96">
-                <Border Padding="4">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="50" />
-                            <RowDefinition Height="40" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="90" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image Source="{Binding Path=SmallIcon}"
-                               Width="32"
-                               Height="32"
-                               Margin="8"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Grid.Row="1"
-                               Grid.Column="1" />
-                        <TextBlock HorizontalAlignment="Center"
-                                   VerticalAlignment="Top"
-                                   TextAlignment="Center"
-                                   Foreground="#989898"
-                                   Grid.Row="2"
-                                   Grid.Column="1"
-                                   FontSize="13">
-                            <TextBlock.Text>
-                                <Binding Path="Name"
-                                         Converter="{StaticResource FullyQualifiedNameToDisplayConverter}"
-                                         ConverterParameter="ClassButton" />
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Grid>
-                </Border>
-            </StackPanel>
-        </DataTemplate>
-        <!-- This data template is used to show StandardPanel
-                 for some selected subcategory. -->
-        <DataTemplate x:Key="ClassDetailsDataTemplate">
-            <uicontrols:StandardPanel FocusItemOnSelection="True">
-                <uicontrols:StandardPanel.Width>
-                    <Binding Path="ActualWidth"
-                             RelativeSource="{RelativeSource FindAncestor, AncestorType=ListView}" />
-                </uicontrols:StandardPanel.Width>
-            </uicontrols:StandardPanel>
-        </DataTemplate>
-        <!-- This data template is used to show one member. -->
-        <ControlTemplate x:Key="MemberControlTemplate">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Image HorizontalAlignment="Left"
-                       Height="32"
-                       Margin="16,0,16,0"
-                       VerticalAlignment="Center"
-                       Width="32"
-                       Source="{Binding SmallIcon}" />
-                <Border Grid.Column="1"
-                        Margin="5,10,0,10">
-                    <Rectangle Fill="#3E464C"
-                               HorizontalAlignment="Stretch"
-                               VerticalAlignment="Stretch">
-                        <Rectangle.Margin>
-                            <MultiBinding Converter="{StaticResource SearchHighlightMarginConverter}">
-                                <Binding ElementName="memberName" />
-                                <Binding Path="DataContext"
-                                         RelativeSource="{RelativeSource Mode=FindAncestor, 
-                                                                     AncestorType={x:Type UserControl}}" />
-                            </MultiBinding>
-                        </Rectangle.Margin>
-                    </Rectangle>
-                </Border>
-                <TextBlock Grid.Column="1"
-                           Name="memberName"
-                           HorizontalAlignment="Left"
-                           Text="{Binding Name}"
-                           VerticalAlignment="Top"
-                           Margin="5,10,0,0"
-                           Foreground="#CCCCCC"
-                           FontSize="13" />
-            </Grid>
-        </ControlTemplate>
         <!--EndRegion-->
 
         <!-- Region ListBoxItem -->
@@ -292,41 +189,9 @@
         </Style>
 
         <!--Style for every member in found MemberGroup-->
-        <Style x:Key="ListBoxMembersStyle"
-               TargetType="{x:Type ListBoxItem}">
-            <Setter Property="BorderBrush"
-                    Value="Transparent" />
-            <Setter Property="Height"
-                    Value="40" />
-            <Setter Property="Background"
-                    Value="#333333" />
-            <Setter Property="FocusVisualStyle"
-                    Value="{x:Null}" />
-            <Setter Property="Visibility"
-                    Value="{Binding Path=Visibility, Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
-
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              Content="{TemplateBinding Content}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="#404040" />
-                            </Trigger>
-                            <Trigger Property="IsSelected"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="#404040" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+        <Style x:Key="ListBoxLibraryMembersStyle"
+               TargetType="{x:Type ListBoxItem}"
+               BasedOn="{StaticResource ListBoxMembersStyle}">
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
             <EventSetter Event="KeyDown"
@@ -337,43 +202,6 @@
                          Handler="OnPopupMouseLeave" />
         </Style>
 
-        <!--Style for found MemberGroup-->
-        <Style x:Key="ListBoxMemberGroupsStyle"
-               TargetType="{x:Type ListBoxItem}">
-            <Setter Property="BorderBrush"
-                    Value="Transparent" />
-            <Setter Property="Background"
-                    Value="#333333" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              Content="{TemplateBinding Content}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsMouseOver"
-                                               Value="True" />
-                                    <Condition Property="IsSelected"
-                                               Value="False" />
-                                </MultiTrigger.Conditions>
-                                <Setter Property="Background"
-                                        Value="#333333" />
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!--EndRegion-->
-
-        <!-- Region Selectors -->
-        <controls:ClassObjectTemplateSelector x:Key="ClassObjectTemplateSelector"
-                                              ClassObjectTemplate="{StaticResource ClassObjectDataTemplate}"
-                                              ClassDetailsTemplate="{StaticResource ClassDetailsDataTemplate}" />
         <!--EndRegion-->
 
         </ResourceDictionary>
@@ -414,7 +242,7 @@
                             <DataTemplate>
                                 <Border BorderThickness="2,0,0,0"
                                         BorderBrush="Yellow">
-                                    <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                                    <ContentControl Template="{StaticResource SearchMemberControlTemplate}" />
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -448,7 +276,6 @@
 
                                     <!--Found classes-->
                                     <ListView Name="SubCategoryListView"
-                                              ItemTemplateSelector="{StaticResource ClassObjectTemplateSelector}"
                                               Background="#333333"
                                               BorderThickness="0"
                                               ScrollViewer.HorizontalScrollBarVisibility="Hidden"
@@ -577,14 +404,14 @@
                                                     </TextBlock>
                                                     <ListBox Background="Transparent"
                                                              BorderBrush="Transparent"
-                                                             ItemContainerStyle="{StaticResource ListBoxMembersStyle}"
+                                                             ItemContainerStyle="{StaticResource ListBoxLibraryMembersStyle}"
                                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                                              ItemsSource="{Binding Members}"
                                                              Name="MembersListBox"
                                                              KeyDown="OnMembersListBoxKeyDown">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
-                                                                <ContentControl Template="{StaticResource MemberControlTemplate}" />
+                                                                <ContentControl Template="{StaticResource SearchMemberControlTemplate}" />
                                                             </DataTemplate>
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>

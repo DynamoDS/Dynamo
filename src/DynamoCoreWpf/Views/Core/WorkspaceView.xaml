@@ -16,6 +16,51 @@
              KeyDown="WorkspaceView_KeyDown"
              KeyUp="WorkspaceView_KeyUp"
              IsHitTestVisible="{Binding IsCurrentSpace}">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type ContextMenu}"
+               x:Key="WorkspaceContextMenuStyle">
+            <Setter Property="SnapsToDevicePixels"
+                    Value="True" />
+            <Setter Property="OverridesDefaultStyle"
+                    Value="True" />
+            <Setter Property="Grid.IsSharedSizeScope"
+                    Value="true" />
+            <Setter Property="HasDropShadow"
+                    Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContextMenu}">
+                        <StackPanel Margin="8,0,8,8">
+                            <ui:IncanvasLibrarySearchControl />
+                            <Border x:Name="Border"
+                                    Background="White"
+                                    BorderBrush="#bbbbbb">
+
+                                <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="20"
+                                                      ShadowDepth="0"
+                                                      Opacity="0.7" />
+                                </Border.Effect>
+                            </Border>
+                        </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasDropShadow"
+                                     Value="true">
+                                <Setter TargetName="Border"
+                                        Property="Padding"
+                                        Value="0,3,0,3" />
+                                <Setter TargetName="Border"
+                                        Property="CornerRadius"
+                                        Value="4" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
 
     <Grid HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch">
@@ -92,7 +137,8 @@
             </controls:ZoomBorder>
 
             <Canvas.ContextMenu>
-                <ContextMenu>
+                <ContextMenu Style="{StaticResource WorkspaceContextMenuStyle}"
+                             Name="WorkspaceContextMenu">
                     <MenuItem Name="WorkspaceLacingMenu"
                               Header="{x:Static p:Resources.ContextMenuLacing}">
                         <MenuItem IsCheckable="True"

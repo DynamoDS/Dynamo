@@ -341,7 +341,7 @@ namespace Dynamo.Controls
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
 #endif
-            #region Search initialization
+            #region Search and incanvas search initialization
 
             var search = new SearchView(
                 dynamoViewModel.SearchViewModel,
@@ -349,6 +349,9 @@ namespace Dynamo.Controls
             sidebarGrid.Children.Add(search);
             dynamoViewModel.SearchViewModel.Visible = true;
 
+            var incanvasSeachViewModel = new SearchViewModel(dynamoViewModel, dynamoViewModel.Model.SearchModel);
+            incanvasSeachViewModel.Visible = true;
+            IncanvasSearch.DataContext = incanvasSeachViewModel;
             #endregion
 
             #region Package manager

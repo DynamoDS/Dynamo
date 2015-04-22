@@ -72,6 +72,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\IncanvasLibrarySearchControl.xaml.cs">
+      <DependentUpon>IncanvasLibrarySearchControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
@@ -321,6 +324,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\IncanvasLibrarySearchControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

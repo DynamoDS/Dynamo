@@ -1862,6 +1862,16 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        internal void ShowIncanvasSearch(object parameter)
+        {
+            HomeSpaceViewModel.IncanvasSearchIsOpen = !HomeSpaceViewModel.IncanvasSearchIsOpen;
+        }
+
+        internal bool CanShowIncanvasSearch(object parameter)
+        {
+            return true;
+        }
+
         internal void ToggleOrbit(object parameter)
         {
             CurrentSpaceViewModel.RequestToggleOrbitMode();
