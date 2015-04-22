@@ -90,11 +90,6 @@ namespace ProtoCore.SyntaxAnalysis
             DefaultVisit(node);
         }
 
-        public virtual void VisitReturnNode(ReturnNode node)
-        {
-            DefaultVisit(node);
-        }
-
         public virtual void VisitFunctionCallNode(FunctionCallNode node)
         {
             DefaultVisit(node);
@@ -283,11 +278,6 @@ namespace ProtoCore.SyntaxAnalysis
         }
 
         public virtual TResult VisitNullNode(NullNode node)
-        {
-            return DefaultVisit(node);
-        }
-
-        public virtual TResult VisitReturnNode(ReturnNode node)
         {
             return DefaultVisit(node);
         }

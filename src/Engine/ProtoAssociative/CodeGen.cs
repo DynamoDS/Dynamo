@@ -9236,16 +9236,6 @@ namespace ProtoAssociative
             {
                 EmitNullNode(node, ref inferedType, isBooleanOp, subPass);
             }
-#if ENABLE_INC_DEC_FIX
-            else if (node is PostFixNode)
-            {
-                EmitPostFixNode(node, ref inferedType);
-            }
-#endif
-            else if (node is ReturnNode)
-            {
-                EmitReturnNode(node);
-            }
             else if (node is RangeExprNode)
             {
                 EmitRangeExprNode(node, ref inferedType, graphNode, subPass);

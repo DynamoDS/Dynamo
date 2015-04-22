@@ -795,51 +795,6 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-    public class ReturnNode : AssociativeNode
-    {
-        public AssociativeNode ReturnExpr
-        {
-            get;
-            set;
-        }
-
-        public override bool Equals(object other)
-        {
-            var otherNode = other as ReturnNode;
-            if (null == otherNode)
-                return false;
-
-            return null != ReturnExpr && ReturnExpr.Equals(otherNode.ReturnExpr);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            var buf = new StringBuilder();
-
-            buf.Append(Keyword.Return);
-            buf.Append(" = ");
-            buf.Append(null == ReturnExpr ? Keyword.Null : ReturnExpr.ToString());
-            buf.Append(Constants.termline);
-
-            return buf.ToString();
-        }
-
-        public override void Accept(AssociativeAstVisitor visitor)
-        {
-            visitor.VisitReturnNode(this);
-        }
-
-        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
-        {
-            return visitor.VisitReturnNode(this);
-        }
-    }
-
     public class FunctionCallNode : ArrayNameNode
     {
         public int DynamicTableIndex { get; set; }
@@ -3349,18 +3304,6 @@ namespace ProtoCore.AST.AssociativeAST
                 StepNode = aNode.StepNode.ToImperativeAST(),
                 ToNode = aNode.ToNode.ToImperativeAST(),
                 stepoperator = aNode.stepoperator
-            };
-            CopyProps(aNode, result);
-            return result;
-        }
-
-        public static ImperativeAST.ReturnNode ToImperativeNode(this ReturnNode aNode)
-        {
-            if (aNode == null) return null;
-
-            var result = new ImperativeAST.ReturnNode
-            {
-                ReturnExpr = aNode.ReturnExpr.ToImperativeAST()
             };
             CopyProps(aNode, result);
             return result;

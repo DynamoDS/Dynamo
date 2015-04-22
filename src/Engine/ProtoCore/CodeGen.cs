@@ -2472,11 +2472,6 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitReturnNode(Node node)
-        {
-            throw new NotImplementedException();
-        }
-
         protected int EmitReplicationGuides(List<ProtoCore.AST.AssociativeAST.AssociativeNode> replicationGuidesList, bool emitNumber = false)
         {
             int replicationGuides = 0;
