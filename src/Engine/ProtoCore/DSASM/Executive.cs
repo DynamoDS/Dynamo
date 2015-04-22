@@ -1682,7 +1682,7 @@ namespace ProtoCore.DSASM
                 // Data flow execution prototype
                 // Dependency has already been resolved at compile time
                 // Get the reachable nodes directly from the executingGraphNode
-                reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.whoDependsOnMeList);
+                reachableGraphNodes = new List<AssociativeGraph.GraphNode>(Properties.executingGraphNode.graphNodesToExecute);
             }
             else
             {

@@ -82,7 +82,7 @@ namespace ProtoCore.AssociativeEngine
                                 if (!isWithinSSAExpression || isDownstreamUpdate)
                                 {
                                     Validity.Assert(dependent != null);
-                                    currentNode.PushWhoDependsOnMe(gnode);
+                                    currentNode.PushGraphNodeToExecute(gnode);
                                 }
                             }
                         }
@@ -756,7 +756,7 @@ namespace ProtoCore.AssociativeGraph
         public bool ProcedureOwned { get; set; }       // This graphnode's immediate scope is within a function (as opposed to languageblock or construct)
         public UpdateBlock updateBlock { get; set; }
         public List<GraphNode> dependentList { get; set; }
-        public List<GraphNode> whoDependsOnMeList { get; set; }
+        public List<GraphNode> graphNodesToExecute { get; set; }
         public bool allowDependents { get; set; }
         public bool isIndexingLHS { get; set; }
         public bool isLHSNode { get; set; }
@@ -826,7 +826,7 @@ namespace ProtoCore.AssociativeGraph
             classIndex = Constants.kInvalidIndex;
             updateBlock = new UpdateBlock();
             dependentList = new List<GraphNode>();
-            whoDependsOnMeList = new List<GraphNode>();
+            graphNodesToExecute = new List<GraphNode>();
             allowDependents = true;
             isIndexingLHS = false;
             isLHSNode = false;
@@ -855,17 +855,17 @@ namespace ProtoCore.AssociativeGraph
         }
 
 
-        public void PushWhoDependsOnMe(GraphNode dependent)
+        public void PushGraphNodeToExecute(GraphNode dependent)
         {
             // Do not add if it already contains this dependent
-            foreach (GraphNode node in whoDependsOnMeList)
+            foreach (GraphNode node in graphNodesToExecute)
             {
                 if (node.UID == dependent.UID)
                 {
                     return;
                 }
             }
-            whoDependsOnMeList.Add(dependent);
+            graphNodesToExecute.Add(dependent);
         }
 
         public void PushDependent(GraphNode dependent)
