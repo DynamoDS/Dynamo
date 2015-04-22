@@ -952,20 +952,6 @@ public Node root { get; set; }
 			Associative_FunctionalStatement(out node);
 		} else if (la.kind == 8) {
 			Associative_LanguageBlock(out node);
-		} else if (la.kind == 38) {
-			Get();
-			if (la.val != ";")
-			   SynErr(Resources.SemiColonExpected);  
-			
-			Expect(21);
-			node = new ProtoCore.AST.AssociativeAST.BreakNode(); 
-		} else if (la.kind == 39) {
-			Get();
-			if (la.val != ";")
-			   SynErr(Resources.SemiColonExpected); 
-			
-			Expect(21);
-			node = new ProtoCore.AST.AssociativeAST.ContinueNode(); 
 		} else if (StartOf(3)) {
 			if (core.ParsingMode == ParseMode.AllowNonAssignment) {
 				if (StartOf(4)) {
@@ -995,7 +981,7 @@ public Node root { get; set; }
 		Expect(9);
 	}
 
-	void Associative_functiondecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, bool isStatic = false) {
+	void Associative_functiondecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false) {
 		ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(); 
 		string methodName;  
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature; 
@@ -1077,7 +1063,7 @@ public Node root { get; set; }
 			if (la.kind == 8) {
 				Associative_AttributeDeclaration(out attributes);
 			}
-			ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic; 
+			ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; 
 			if (la.kind == 51 || la.kind == 52 || la.kind == 53) {
 				Associative_AccessSpecifier(out access);
 			}
@@ -1211,8 +1197,6 @@ public Node root { get; set; }
 			}
 			
 		} else if (la.kind == 49) {
-			if(!(leftNode is ProtoCore.AST.AssociativeAST.PostFixNode)) {
-			
 			Get();
 			ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
 			bool isLeftMostNode = false; 
@@ -1396,7 +1380,6 @@ public Node root { get; set; }
 			   isLeftVarIdentList = false;                                  
 			}  
 			
-			} 
 		} else if (StartOf(13)) {
 			SynErr(Resources.SemiColonExpected); 
 		} else SynErr(84);
@@ -1506,20 +1489,20 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		
 	}
 
-	void Associative_AccessSpecifier(out ProtoCore.CompilerDefinitions.AccessSpecifier access) {
-		access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic; 
+	void Associative_AccessSpecifier(out ProtoCore.CompilerDefinitions.AccessModifier access) {
+		access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; 
 		if (la.kind == 51) {
 			Get();
 		} else if (la.kind == 52) {
 			Get();
-			access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPrivate; 
+			access = ProtoCore.CompilerDefinitions.AccessModifier.kPrivate; 
 		} else if (la.kind == 53) {
 			Get();
-			access = ProtoCore.CompilerDefinitions.AccessSpecifier.kProtected; 
+			access = ProtoCore.CompilerDefinitions.AccessModifier.kProtected; 
 		} else SynErr(89);
 	}
 
-	void Associative_constructordecl(out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessSpecifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
+	void Associative_constructordecl(out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessModifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
 		ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(); ;                                 
 		string methodName;  
 		ProtoCore.AST.AssociativeAST.AssociativeNode argumentSignature; 
@@ -1550,7 +1533,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		constrNode = constr; 
 	}
 
-	void Associative_vardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
+	void Associative_vardecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
 		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
@@ -1896,7 +1879,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		pattern = p; 
 	}
 
-	void Associative_ArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic) {
+	void Associative_ArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic) {
 		ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = new ProtoCore.AST.AssociativeAST.VarDeclNode(); 
 		varDeclNode.memregion = ProtoCore.DSASM.MemoryRegion.kMemStack;
@@ -1941,7 +1924,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		node = varDeclNode; 
 	}
 
-	void Associative_DefaultArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic) {
+	void Associative_DefaultArgDecl(out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic) {
 		Associative_ArgDecl(out node);
 		ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = node as ProtoCore.AST.AssociativeAST.VarDeclNode; 
 		Expect(49);
@@ -4323,9 +4306,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	}
 	
 	static readonly bool[,] set = {
-		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
-		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
-		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,T,T,T, T,T,x,x, x,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,T,T,T, T,T,x,x, x,x,T,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
@@ -4337,10 +4320,10 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		{x,T,T,T, T,T,x,x, x,x,T,x, T,T,x,T, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x,T,T, T,T,T,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,T, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x,T,T, x,x,x,x, x,x,x},
 		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, T,x,T,T, x,x,T,T, T,T,T,x, x,x,T,T, x,x,T,T, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
-		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,T,x, x,x,T,x, x,T,T,x, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,T,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},

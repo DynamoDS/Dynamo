@@ -468,7 +468,7 @@ namespace ProtoAssociative
             ProtoCore.Type datatype, 
             int datasize = ProtoCore.DSASM.Constants.kPrimitiveSize, 
             bool isStatic = false,
-            ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
+            ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
             ProtoCore.DSASM.MemoryRegion region = ProtoCore.DSASM.MemoryRegion.kMemStack,
             int line = -1,
             int col = -1,
@@ -1403,8 +1403,8 @@ namespace ProtoAssociative
                             return null;
                         }
 
-                        isAccessible = procCallNode.access == ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic
-                             || (procCallNode.access == ProtoCore.CompilerDefinitions.AccessSpecifier.kPrivate && procCallNode.classScope == globalClassIndex);
+                        isAccessible = procCallNode.access == ProtoCore.CompilerDefinitions.AccessModifier.kPublic
+                             || (procCallNode.access == ProtoCore.CompilerDefinitions.AccessModifier.kPrivate && procCallNode.classScope == globalClassIndex);
 
                         if (!isAccessible)
                         {
@@ -4106,7 +4106,7 @@ namespace ProtoAssociative
             codeblock.InsertRange(0, functionCalls);
         }
 
-        public int AllocateMemberVariable(int classIndex, int classScope, string name, int rank = 0, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, bool isStatic = false)
+        public int AllocateMemberVariable(int classIndex, int classScope, string name, int rank = 0, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false)
         {
             // TODO Jun: Create a class table for holding the primitive and custom data types
             int datasize = ProtoCore.DSASM.Constants.kPointerSize;
@@ -4353,7 +4353,7 @@ namespace ProtoAssociative
 
                         // TODO Jun: Refactor Allocate() to just return the symbol node itself
                         unboundVariable = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Value, varType, ProtoCore.DSASM.Constants.kPrimitiveSize,
-                            false, ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, t.line, t.col, graphNode);
+                            false, ProtoCore.CompilerDefinitions.AccessModifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, t.line, t.col, graphNode);
                         Validity.Assert(unboundVariable != null);
 
                         int symbolindex = unboundVariable.symbolTableIndex;
@@ -4774,11 +4774,6 @@ namespace ProtoAssociative
             }
         }
 
-        private void EmitForLoopNode(AssociativeNode node)
-        {
-            throw new NotImplementedException();
-        }
-
         private void EmitLanguageBlockNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
         {
             if (IsParsingGlobal() || IsParsingGlobalFunctionBody() || IsParsingMemberFunctionBody() )
@@ -4916,7 +4911,7 @@ namespace ProtoAssociative
             var argument = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
                 memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-                access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
+                access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode = nodeBuilder.BuildIdentfier(Constants.kTempArg),
                 ArgumentType = argType
             };
@@ -5162,7 +5157,7 @@ namespace ProtoAssociative
                     IsExternLib = false,
                     IsDNI = false,
                     ExternLibName = null,
-                    access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
+                    access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                     IsStatic = true
                 };
                 classDecl.funclist.Add(initFunc);
@@ -5374,7 +5369,7 @@ namespace ProtoAssociative
                         defaultConstructor.ReturnType = new ProtoCore.Type { Name = "var", UID = 0 };
                         defaultConstructor.FunctionBody = new CodeBlockNode();
                         defaultConstructor.baseConstr = null;
-                        defaultConstructor.access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
+                        defaultConstructor.access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
                         defaultConstructor.IsExternLib = false;
                         defaultConstructor.ExternLibName = null;
                         DfsTraverse(defaultConstructor, ref inferedType);
@@ -7348,7 +7343,7 @@ namespace ProtoAssociative
             VarDeclNode thisPtrArg = new ProtoCore.AST.AssociativeAST.VarDeclNode()
             {
                 memregion = ProtoCore.DSASM.MemoryRegion.kMemStack,
-                access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic,
+                access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic,
                 NameNode = ident,
                 ArgumentType = new ProtoCore.Type { Name = className, UID = procOverload.classIndex, rank = 0 }
             };
@@ -8342,30 +8337,23 @@ namespace ProtoAssociative
                 {
                     leftNodeGlobalRef = GetUpdatedNodeRef(bnode.LeftNode);
 
-                    // right node is statement which wont return any value, so push null to stack
-                    if ((bnode.RightNode is IfStatementNode) || (bnode.RightNode is ForLoopNode))
+                    // check whether the variable name is a function name
+                    bool isAccessibleFp;
+                    int realType;
+                    ProtoCore.DSASM.ProcedureNode procNode = null;
+                    if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
                     {
-                        EmitPushNull();
+                        procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
                     }
+                    if (procNode == null)
                     {
-                        // check whether the variable name is a function name
-                        bool isAccessibleFp;
-                        int realType;
-                        ProtoCore.DSASM.ProcedureNode procNode = null;
-                        if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
+                        procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                    }
+                    if (procNode != null)
+                    {
+                        if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
                         {
-                            procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
-                        }
-                        if (procNode == null)
-                        {
-                            procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
-                        }
-                        if (procNode != null)
-                        {
-                            if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
-                            {
-                                buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVariableError, t.Name), core.CurrentDSFileName, t.line, t.col);
-                            }
+                            buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVariableError, t.Name), core.CurrentDSFileName, t.line, t.col);
                         }
                     }
 
@@ -8455,7 +8443,7 @@ namespace ProtoAssociative
                             if (!isAllocated || !isAccessible)
                             {
                                 symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, ProtoCore.DSASM.Constants.kPrimitiveSize,
-                                    false, ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
+                                    false, ProtoCore.CompilerDefinitions.AccessModifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
 
                                 // Add the symbols during watching process to the watch symbol list.
                                 if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
@@ -8539,7 +8527,7 @@ namespace ProtoAssociative
                         if (!isAllocated)
                         {
                             symbolnode = Allocate(globalClassIndex, globalClassIndex, globalProcIndex, t.Name, inferedType, ProtoCore.DSASM.Constants.kPrimitiveSize,
-                                    false, ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
+                                    false, ProtoCore.CompilerDefinitions.AccessModifier.kPublic, ProtoCore.DSASM.MemoryRegion.kMemStack, bnode.line, bnode.col);
 
                             if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter)
                             {
@@ -9248,23 +9236,9 @@ namespace ProtoAssociative
             {
                 EmitNullNode(node, ref inferedType, isBooleanOp, subPass);
             }
-#if ENABLE_INC_DEC_FIX
-            else if (node is PostFixNode)
-            {
-                EmitPostFixNode(node, ref inferedType);
-            }
-#endif
-            else if (node is ReturnNode)
-            {
-                EmitReturnNode(node);
-            }
             else if (node is RangeExprNode)
             {
                 EmitRangeExprNode(node, ref inferedType, graphNode, subPass);
-            }
-            else if (node is ForLoopNode)
-            {
-                EmitForLoopNode(node);
             }
             else if (node is LanguageBlockNode)
             {

@@ -1,0 +1,23 @@
+<Workspace Version="0.8.1.902" X="-502.780825715093" Y="425.447272784414" zoom="0.878530757378054" Name="Home" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.Function guid="87857e7f-a34b-4202-ba31-43bedaa7e9a9" type="Dynamo.Nodes.Function" nickname="XyzFromListOfNumbers" x="827.863679367005" y="-231.85015028775" isVisible="true" isUpstreamVisible="true" lacing="Shortest">
+      <ID value="7612d743-21f9-4078-a5e2-bdcc4eaf4633" />
+      <Name value="XyzFromListOfNumbers" />
+      <Description value="This node represents an upgrade of the 0.6.3 XyzFromListOfNumbers node to 0.7.x" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="07eade47-2eae-435d-8450-7f5639d7d33a" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="634" y="-205" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..99;" ShouldFocus="false" />
+    <Dynamo.Nodes.Watch guid="30688898-ab52-44d5-b35e-b5726084df33" type="Dynamo.Nodes.Watch" nickname="Watch" x="1092.42361968244" y="-223.213981838808" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="87857e7f-a34b-4202-ba31-43bedaa7e9a9" start_index="0" end="30688898-ab52-44d5-b35e-b5726084df33" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="07eade47-2eae-435d-8450-7f5639d7d33a" start_index="0" end="87857e7f-a34b-4202-ba31-43bedaa7e9a9" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

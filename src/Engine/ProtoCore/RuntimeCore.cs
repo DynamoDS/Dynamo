@@ -328,10 +328,11 @@ namespace ProtoCore
         /// <param name="astID"></param>
         /// <param name="sv"></param>
         /// <returns></returns>
-        public int SetValue(int astID, StackValue sv)
+        public int SetValue(List<AssociativeNode> modifiedNodes, StackValue sv)
         {
             ExecutionInstance.CurrentDSASMExec.SetAssociativeUpdateRegister(sv);
-            AssociativeGraph.GraphNode gnode =  ProtoCore.AssociativeEngine.Utils.MarkGraphNodeDirty(this, astID);
+            AssociativeGraph.GraphNode gnode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope
+(this, modifiedNodes);
             Validity.Assert(gnode != null);
             return gnode.updateBlock.startpc;
         }
