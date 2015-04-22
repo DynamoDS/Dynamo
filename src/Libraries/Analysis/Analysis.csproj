@@ -95,7 +95,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy "$(ProjectDir)Analysis_DynamoCustomization.xml" "$(OutDir)Analysis_DynamoCustomization.xml"</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">mv $(ProjectDir)Analysis_DynamoCustomization.xml $(OutDir)Analysis_DynamoCustomization.xml</PostBuildEvent>
   </PropertyGroup>
+
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
