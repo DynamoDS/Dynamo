@@ -57,7 +57,8 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual void VisitIdentifierListNode(IdentifierListNode node)
         {
-            DefaultVisit(node); 
+            node.LeftNode.Accept(this);
+            node.RightNode.Accept(this);
         }
 
         public virtual void VisitIntNode(IntNode node)
@@ -92,7 +93,13 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual void VisitFunctionCallNode(FunctionCallNode node)
         {
-            DefaultVisit(node);
+            for (int i = 0; i < node.FormalArguments.Count; ++i)
+            {
+                node.FormalArguments[i].Accept(this);
+            }
+
+            if (node.ArrayDimensions != null)
+                node.ArrayDimensions.Accept(this);
         }
 
         public virtual void VisitFunctionDotCallNode(FunctionDotCallNode node)
@@ -137,12 +144,15 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual void VisitInlineConditionalNode(InlineConditionalNode node)
         {
-            DefaultVisit(node);
+            node.ConditionExpression.Accept(this);
+            node.TrueExpression.Accept(this);
+            node.FalseExpression.Accept(this);
         }
 
         public virtual void VisitBinaryExpressionNode(BinaryExpressionNode node)
         {
-            DefaultVisit(node);
+            node.LeftNode.Accept(this);
+            node.RightNode.Accept(this);
         }
 
         public virtual void VisitUnaryExpressionNode(UnaryExpressionNode node)
@@ -152,17 +162,34 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual void VisitRangeExprNode(RangeExprNode node)
         {
-            DefaultVisit(node);
+            node.FromNode.Accept(this);
+            node.ToNode.Accept(this);
+
+            if (node.StepNode != null)
+                node.StepNode.Accept(this);
+
+            if (node.ArrayDimensions != null)
+                node.ArrayDimensions.Accept(this);
         }
 
         public virtual void VisitExprListNode(ExprListNode node)
         {
-            DefaultVisit(node);
+            for (int i = 0; i < node.list.Count; ++i)
+            {
+                node.list[i].Accept(this);
+            }
+
+            if (node.ArrayDimensions != null)
+                node.ArrayDimensions.Accept(this);
         }
 
         public virtual void VisitArrayNode(ArrayNode node)
         {
-            DefaultVisit(node);
+            if (node.Expr != null)
+                node.Expr.Accept(this);
+
+            if (node.Type != null)
+                node.Type.Accept(this);
         }
 
         public virtual void VisitImportNode(ImportNode node)
@@ -239,7 +266,7 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual TResult VisitIdentifierNode(IdentifierNode node)
         {
-            return DefaultVisit(node);
+            return DefaultVisit(node); 
         }
 
         public virtual TResult VisitTypedIdentifierNode(TypedIdentifierNode node)
@@ -284,7 +311,7 @@ namespace ProtoCore.SyntaxAnalysis
 
         public virtual TResult VisitFunctionCallNode(FunctionCallNode node)
         {
-            return DefaultVisit(node);
+            return DefaultVisit(node);    
         }
 
         public virtual TResult VisitFunctionDotCallNode(FunctionDotCallNode node)

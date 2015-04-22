@@ -62,68 +62,6 @@ namespace Dynamo.DSEngine
                 if (node.ArrayDimensions != null)
                     node.ArrayDimensions.Accept(this);
             }
-
-            public override void VisitIdentifierListNode(IdentifierListNode node)
-            {
-                node.LeftNode.Accept(this);
-                node.RightNode.Accept(this);
-            }
-
-            public override void VisitFunctionCallNode(FunctionCallNode node)
-            {
-                for (int i = 0; i < node.FormalArguments.Count; ++i)
-                {
-                    node.FormalArguments[i].Accept(this);
-                }
-
-                if (node.ArrayDimensions != null)
-                    node.ArrayDimensions.Accept(this);
-            }
-
-            public override void VisitArrayNode(ArrayNode node)
-            {
-                if (node.Expr != null)
-                    node.Expr.Accept(this);
-
-                if (node.Type != null)
-                    node.Type.Accept(this);
-            }
-
-            public override void VisitExprListNode(ExprListNode node)
-            {
-                for (int i = 0; i < node.list.Count; ++i)
-                {
-                    node.list[i].Accept(this);
-                }
-
-                if (node.ArrayDimensions != null)
-                    node.ArrayDimensions.Accept(this);
-            }
-
-            public override void VisitInlineConditionalNode(InlineConditionalNode node)
-            {
-                node.ConditionExpression.Accept(this);
-                node.TrueExpression.Accept(this);
-                node.FalseExpression.Accept(this);
-            }
-
-            public override void VisitRangeExprNode(RangeExprNode node)
-            {
-                node.FromNode.Accept(this);
-                node.ToNode.Accept(this);
-
-                if (node.StepNode != null)
-                    node.StepNode.Accept(this);
-
-                if (node.ArrayDimensions != null)
-                    node.ArrayDimensions.Accept(this);
-            }
-
-            public override void VisitBinaryExpressionNode(BinaryExpressionNode node)
-            {
-                node.LeftNode.Accept(this);
-                node.RightNode.Accept(this);
-            } 
         }
 
         /// <summary>
