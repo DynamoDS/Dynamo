@@ -1531,6 +1531,41 @@ namespace Dynamo.Models
             #endregion
         }
 
+        [DataContract]
+        public class UngroupModelCommand : ModelSpecificRecordableCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public UngroupModelCommand(string modelGuid) : base(modelGuid) { }
+
+            public UngroupModelCommand(Guid modelGuid) : base(modelGuid) { }
+
+            internal static UngroupModelCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                return new UngroupModelCommand(modelGuid);
+            }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.UngroupModelImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", ModelGuid);
+            }
+
+            #endregion
+        }
+
     }
 
     // public class XxxYyyCommand : RecordableCommand

@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Text;
 using System.Xml;
 using Dynamo.Properties;
 using Dynamo.Utilities;
@@ -15,10 +16,15 @@ namespace Dynamo.Models
     public class AnnotationModel : ModelBase
     {
         #region Properties
+        public event Func<Guid, ModelBase> ModelBaseRequested;      
         public double InitialTop { get; set; } //required to calculate the TOP position in a group         
-        public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group 
-        private string modelGuids { get; set; }   
-        private const double doubleValue = 0.0;
+        public double InitialHeight { get; set; } //required to calculate the HEIGHT of a group          
+        private const double DoubleValue = 0.0;
+        private const double MinTextHeight = 20.0;
+        private const double ExtendSize = 10.0;
+        //DeletedModelBases is used to keep track of deleted / ungrouped models. 
+        //During Undo operations this is used to get those models that are deleted from the group
+        public List<ModelBase> DeletedModelBases { get; set; }
         public bool loadFromXML { get; set; }
 
         private double width;
@@ -98,8 +104,7 @@ namespace Dynamo.Models
                         model.Disposed+=model_Disposed;
                     }
                 }
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -120,7 +125,7 @@ namespace Dynamo.Models
             {
                 textBlockHeight = value;                
                 Y = InitialTop - textBlockHeight;
-                Height = InitialHeight + textBlockHeight;
+                Height = InitialHeight + textBlockHeight - MinTextHeight;
             }
         }
 
@@ -147,7 +152,7 @@ namespace Dynamo.Models
         {                                 
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
-
+            DeletedModelBases = new List<ModelBase>(); 
             this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();            
             loadFromXML = loadFromGraph;
             if (!loadFromGraph)
@@ -185,6 +190,7 @@ namespace Dynamo.Models
             bool remove = modelList.Remove(model);
             if (remove)
             {
+                DeletedModelBases.Add(model);
                 SelectedModels = modelList;
                 UpdateBoundaryFromSelection();
             }
@@ -193,8 +199,8 @@ namespace Dynamo.Models
         /// <summary>
         /// Updates the group boundary based on the nodes / notes selection.
         /// </summary>      
-        private void UpdateBoundaryFromSelection()
-        {
+        internal void UpdateBoundaryFromSelection()
+        {          
             var selectedModelsList = selectedModels.ToList();
           
             if (selectedModelsList.Any())
@@ -202,8 +208,8 @@ namespace Dynamo.Models
                 var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
               
                 //Shifting x by 10 and y to the height of textblock
-                var regionX = groupModels.Min(x => x.X) - 10;
-                var regionY = groupModels.Min(y => y.Y) - TextBlockHeight;
+                var regionX = groupModels.Min(x => x.X) - ExtendSize;
+                var regionY = groupModels.Min(y => y.Y) - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
               
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => x.X) - regionX;
@@ -221,8 +227,8 @@ namespace Dynamo.Models
                 {
                     X = regionX,
                     Y = regionY,
-                    Width = xDistance + maxWidth + 10,
-                    Height = yDistance + maxHeight + 10
+                    Width = xDistance + maxWidth + ExtendSize,
+                    Height = yDistance + maxHeight + ExtendSize
                 };
              
                 this.X = region.X;              
@@ -240,13 +246,19 @@ namespace Dynamo.Models
                         if (overlap.Rect.Top < this.X ||
                                     overlap.Rect.Bottom > region.Bottom) //Overlap in height - increase the region height
                         {
-                            this.Height += overlap.Rect.Bottom - region.Bottom + 10;
+                            if (overlap.Rect.Bottom - region.Bottom > 0)
+                            {
+                                this.Height += overlap.Rect.Bottom - region.Bottom + ExtendSize;
+                            }
                             region.Height = this.Height;
                         }
                         if (overlap.Rect.Left < this.Y ||
                                 overlap.Rect.Right > region.Right) //Overlap in width - increase the region width
                         {
-                            this.Width += overlap.Rect.Right - region.Right + 10;
+                            if (overlap.Rect.Right - region.Right > 0)
+                            {
+                                this.Width += overlap.Rect.Right - region.Right + ExtendSize;
+                            }
                             region.Width = this.Width;
                         }
                     }
@@ -271,7 +283,29 @@ namespace Dynamo.Models
               
         #region Serialization/Deserialization Methods
 
-        protected override void SerializeCore(XmlElement element, SaveContext context)
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
+            switch (name)
+            {
+                case "FontSize":
+                    FontSize = Convert.ToDouble(value);
+                    break;
+                case "Background":
+                    Background = value;
+                    break;  
+                case "TextBlockText":
+                    AnnotationText = value;
+                    break;
+            }
+
+            return base.UpdateValueCore(updateValueParams);
+        }
+
+        protected override
+             void SerializeCore(XmlElement element, SaveContext context)
         {            
             XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("guid", this.GUID);
@@ -300,19 +334,19 @@ namespace Dynamo.Models
         }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
-        {            
+        {         
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);
             this.annotationText = helper.ReadString("annotationText", Resources.GroupDefaultText);
-            this.X = helper.ReadDouble("left", doubleValue);
-            this.Y = helper.ReadDouble("top", doubleValue);
-            this.width = helper.ReadDouble("width", doubleValue);
-            this.height = helper.ReadDouble("height", doubleValue);
+            this.X = helper.ReadDouble("left", DoubleValue);
+            this.Y = helper.ReadDouble("top", DoubleValue);
+            this.width = helper.ReadDouble("width", DoubleValue);
+            this.height = helper.ReadDouble("height", DoubleValue);
             this.background = helper.ReadString("backgrouund", "");
             this.fontSize = helper.ReadDouble("fontSize", fontSize);
-            this.textBlockHeight = helper.ReadDouble("TextblockHeight", doubleValue);
-            this.InitialTop = helper.ReadDouble("InitialTop", doubleValue);
-            this.InitialHeight = helper.ReadDouble("InitialHeight", doubleValue);
+            this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
+            this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
+            this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
             //Deserialize Selected models
             if (element.HasChildNodes) 
             {
@@ -323,27 +357,51 @@ namespace Dynamo.Models
                      if (SelectedModels != null)
                      {
                          var result = mhelper.ReadGuid("ModelGuid", new Guid());
-                        var model = SelectedModels.FirstOrDefault(x => x.GUID == result);
+                         ModelBase model = null;
+                         model = ModelBaseRequested != null ? ModelBaseRequested(result) : 
+                             SelectedModels.FirstOrDefault(x => x.GUID == result);
+
                         listOfModels.Add(model);
                     }                  
                 }
                 selectedModels = listOfModels;        
             }
-          
+
+            //On any Undo Operation, current values are restored to previous values.
+            //These properties should be Raised, so that they get the correct value on Undo.
+            RaisePropertyChanged("Background");
+            RaisePropertyChanged("FontSize");
+            RaisePropertyChanged("AnnotationText");
+            RaisePropertyChanged("SelectedModels");
+        }
+
+        /// <summary>
+        /// This is called when a model is deleted from a group
+        /// and UNDO is clicked.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        internal void AddToSelectedModels(ModelBase model)
+        {           
+            var list = this.SelectedModels.ToList();
+            list.Add(model);
+            this.SelectedModels = list;
+            this.loadFromXML = false;
+            this.UpdateBoundaryFromSelection();
         }
 
         #endregion
 
         public override void Dispose()
-        {
+        {           
             if (this.SelectedModels.Any())
             {
                 foreach (var model in this.SelectedModels)
                 {
                     model.PropertyChanged -= model_PropertyChanged;
-                    model.Disposed -= model_Disposed;
+                    model.Disposed -= model_Disposed;                    
                 }
             }
-        }
+            base.Dispose();
+        }     
     }   
 }

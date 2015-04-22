@@ -99,13 +99,13 @@ namespace Dynamo.Tests
             name = "ClassLongName";
             parameter = "ClassButton";
             result = converter.Convert(name, null, parameter, null);
-            Assert.AreEqual("Class \nLong Name", result);
+            Assert.AreEqual("Class\nLong Name", result);
 
             // 6 case
             name = "ClassWithReallyLongName";
             parameter = "ClassButton";
             result = converter.Convert(name, null, parameter, null);
-            Assert.AreEqual("Class \nWith Really ..", result);
+            Assert.AreEqual("Class\n..ng Name", result);
 
             // 7 case
             name = "";

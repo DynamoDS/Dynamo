@@ -2472,11 +2472,6 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitReturnNode(Node node)
-        {
-            throw new NotImplementedException();
-        }
-
         protected int EmitReplicationGuides(List<ProtoCore.AST.AssociativeAST.AssociativeNode> replicationGuidesList, bool emitNumber = false)
         {
             int replicationGuides = 0;
@@ -2878,15 +2873,7 @@ namespace ProtoCore
             EmitPushType(UID, rank);
         }
 
-        protected void EmitDepX()
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.DEPX;
-            EmitInstrConsole(ProtoCore.DSASM.kw.depx);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
+      
 
         protected void EmitDynamicNode(ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
         {

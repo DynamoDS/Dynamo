@@ -6,6 +6,8 @@ using System.Linq;
 
 using ProtoCore.Mirror;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Runtime.Serialization;
 
 using Dynamo.DSEngine;
 using Dynamo.Models;
@@ -139,6 +141,10 @@ namespace Dynamo.Core.Threading
                 return;
             }
 
+            byte defR = 101;
+            byte defG = 86;
+            byte defB = 130;
+
             if (mirrorData.IsCollection)
             {
                 foreach (var el in mirrorData.GetElements())
@@ -183,17 +189,84 @@ namespace Dynamo.Core.Threading
                         }
                     }
 
+                    var plane = graphicItem as Plane;
+                    if (plane != null)
+                    {
+                        var s = 2.5;
+
+                        var cs = CoordinateSystem.ByPlane(plane);
+                        var a = Point.ByCartesianCoordinates(cs, s, s, 0);
+                        var b = Point.ByCartesianCoordinates(cs, -s, s, 0);
+                        var c = Point.ByCartesianCoordinates(cs, -s, -s, 0);
+                        var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
+
+                        // Get rid of the original plane geometry.
+                        package.LineStripVertices.Clear();
+                        package.LineStripVertexColors.Clear();
+                        package.LineStripVertexCounts.Clear();
+
+                        package.PushTriangleVertex(a.X, a.Y, a.Z);
+                        package.PushTriangleVertex(b.X, b.Y, b.Z);
+                        package.PushTriangleVertex(c.X, c.Y, c.Z);
+
+                        package.PushTriangleVertex(c.X, c.Y, c.Z);
+                        package.PushTriangleVertex(d.X, d.Y, d.Z);
+                        package.PushTriangleVertex(a.X, a.Y, a.Z);
+
+                        // Draw plane edges
+                        package.PushLineStripVertex(a.X, a.Y, a.Z);
+                        package.PushLineStripVertex(b.X, b.Y, b.Z);
+                        package.PushLineStripVertex(b.X, b.Y, b.Z);
+                        package.PushLineStripVertex(c.X, c.Y, c.Z);
+                        package.PushLineStripVertex(c.X, c.Y, c.Z);
+                        package.PushLineStripVertex(d.X, d.Y, d.Z);
+                        package.PushLineStripVertex(d.X, d.Y, d.Z);
+                        package.PushLineStripVertex(a.X, a.Y, a.Z);
+
+                        // Draw normal
+                        package.PushLineStripVertex(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
+                        var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
+                        package.PushLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
+
+                        for (var i = 0; i < package.LineStripVertices.Count/3/2; i++)
+                        {
+                            package.PushLineStripVertexCount(2);
+                        }
+
+                        for (var i = 0; i < (package.LineStripVertices.Count/3)*4; i += 4)
+                        {
+                            package.PushLineStripVertexColor(180,180,180,255);
+                        }
+
+                        for (var i = 0; i < 6; i++)
+                        {
+                            package.PushTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
+                        }
+
+                        for (var i = 0; i < 6; i++)
+                        {
+                            package.PushTriangleVertexColor(0, 0, 0, 10);
+                        }
+
+                    }
+
                     // The default color coming from the geometry library for
                     // curves is 255,255,255,255 (White). Because we want a default
                     // color of 0,0,0,255 (Black), we adjust the color components here.
-                    var packageCurve = graphicItem as Curve;
-                    if (packageCurve != null)
+                    if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
                     {
                         for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
                         {
-                            package.LineStripVertexColors[i] = 0;
-                            package.LineStripVertexColors[i + 1] = 0;
-                            package.LineStripVertexColors[i + 2] = 0;
+                            package.LineStripVertexColors[i] = defR;
+                            package.LineStripVertexColors[i + 1] = defG;
+                            package.LineStripVertexColors[i + 2] = defB;
+                        }
+
+                        for (var i = 0; i < package.PointVertexColors.Count; i += 4)
+                        {
+                            package.LineStripVertexColors[i] = defR;
+                            package.LineStripVertexColors[i + 1] = defG;
+                            package.LineStripVertexColors[i + 2] = defB;
                         }
                     }
                 }

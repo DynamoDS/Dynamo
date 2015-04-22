@@ -81,7 +81,6 @@ namespace ProtoCore.DSASM
         public const string mov = "mov";
         public const string call = "call";
         public const string callr = "callr";
-        public const string callc = "callc";
         public const string add = "add";
         public const string sub = "sub";
         public const string mul = "mul";
@@ -128,7 +127,6 @@ namespace ProtoCore.DSASM
         public const string not = "not";
         public const string negate = "negate";
         public const string dep = "dep";
-        public const string depx = "depx";
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
         public const string popb = "popb";
