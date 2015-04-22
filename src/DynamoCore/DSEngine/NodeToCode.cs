@@ -543,6 +543,51 @@ namespace Dynamo.DSEngine
             IdentifierVisitor.Visit(astNode, func);
         }
 
+        private static NodeToCodeResult PeepHoleOptimization(NodeToCodeResult result)
+        {
+            var tempVariables = result.OutputMap.Where(p => p.Key.StartsWith(Constants.kTempVarForNonAssignment))
+                                                .Select(p => p.Value);
+            var tempVariableSet = new HashSet<string>(tempVariables);
+            
+            // Optimize case "x = ...; t1 = x;" which is generated from cbn "x".
+            // Remove "t1 = x" and remap output from t1 to x.
+            Func<AssociativeNode, bool> isTempAssignment = x =>
+            {
+                var expr = x as BinaryExpressionNode;
+                if (expr == null)
+                    return false;
+
+                var lhs = expr.LeftNode as IdentifierNode;
+                var rhs = expr.RightNode as IdentifierNode;
+
+                if (lhs == null || rhs == null)
+                    return false;
+
+                return tempVariableSet.Contains(lhs.Value) &&
+                       !tempVariableSet.Contains(rhs.Value);
+            };
+
+            var tmpExprs = result.AstNodes
+                                 .Where(isTempAssignment)
+                                 .Select(n => n as BinaryExpressionNode)
+                                 .Select(e => new {lhs = (e.LeftNode as IdentifierNode).Value, 
+                                                   rhs = (e.RightNode as IdentifierNode).Value});
+            var newAsts = result.AstNodes.Where(n => !isTempAssignment(n));
+
+            foreach (var pair in tmpExprs)
+            {
+                var keys = result.OutputMap.Keys.ToList();
+                for (int i = 0; i < keys.Count; ++i)
+                {
+                    var value = result.OutputMap[keys[i]];
+                    if (value.Equals(pair.lhs))
+                        result.OutputMap[keys[i]] = pair.rhs;
+                }
+            }
+
+            return new NodeToCodeResult(newAsts, result.InputMap, result.OutputMap);
+        }
+        
         /// <summary>
         /// Compile a bunch of node to AST. 
         /// </summary>
@@ -686,7 +731,9 @@ namespace Dynamo.DSEngine
             }
             #endregion
 
-            return new NodeToCodeResult(allAstNodes.SelectMany(x => x.Item2), inputMap, outputMap);
+            var result = new NodeToCodeResult(allAstNodes.SelectMany(x => x.Item2), inputMap, outputMap);
+            result = PeepHoleOptimization(result);
+            return result;
         }
     }
 }
