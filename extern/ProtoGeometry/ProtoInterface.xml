@@ -3337,12 +3337,6 @@
             This interface caches render specific data.
             </summary>
         </member>
-        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.NativeRenderPackage">
-            <summary>
-            Returns pointer to abstract C++ class RenderPackage, which is 
-            actually the implementation class for this interface.
-            </summary>
-        </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IGraphicItem">
             <summary>
             Represents a graphics item object, that can provide tesselated data

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Autodesk.DesignScript.Interfaces;
@@ -387,14 +386,6 @@ namespace Dynamo.Wpf
         public bool IsDisplayingLabels { get; set; }
 
         public bool RequiresPerVertexColoration { get; set; }
-
-        public IntPtr NativeRenderPackage
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
 
         #endregion
 
