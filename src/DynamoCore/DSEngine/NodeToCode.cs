@@ -254,12 +254,12 @@ namespace Dynamo.DSEngine
 
             // Connectivity matrix represents whether two nodes are allowed to
             // be in the same code block or not. 
-            bool[,] connectivityMatrx = new bool[count, count];
+            bool[,] connectivityMatrix = new bool[count, count];
             for (int i = 0; i < count; i++)
             {
                 for (int j = 0; j < count; j++)
                 {
-                    connectivityMatrx[i, j] = true;
+                    connectivityMatrix[i, j] = true;
                 }
             }
             
@@ -283,7 +283,7 @@ namespace Dynamo.DSEngine
                 var path = new List<NodeModel>();
                 path.Add(node);
 
-                MarkConnectivityForNode(selectionSet, connectivityMatrx, nodeDict, path);
+                MarkConnectivityForNode(selectionSet, connectivityMatrix, nodeDict, path);
             }
 
             var partitions = new List<List<NodeModel>>();
@@ -301,10 +301,10 @@ namespace Dynamo.DSEngine
 
                 for (int w = 0; w < count; ++w)
                 {
-                    if (v == w || !connectivityMatrx[v, w] || visited.Contains(w))
+                    if (v == w || !connectivityMatrix[v, w] || visited.Contains(w))
                         continue;
 
-                    if (clique.All(x => connectivityMatrx[x, w]))
+                    if (clique.All(x => connectivityMatrix[x, w]))
                     {
                         clique.Add(w);
                         visited.Add(w);
@@ -400,7 +400,7 @@ namespace Dynamo.DSEngine
                 var thisCBN = node as CodeBlockNodeModel;
                 if (thisCBN != null)
                 {
-                    for (int i = 0; i < thisCBN.OutPorts.Count(); ++i)
+                    for (int i = 0; i < thisCBN.OutPorts.Count; ++i)
                     {
                         var inputVar = thisCBN.GetAstIdentifierForOutputIndex(i).Value;
                         var originalVar = thisCBN.GetRawAstIdentifierForOutputIndex(i).Value;
@@ -412,7 +412,7 @@ namespace Dynamo.DSEngine
                 }
                 else
                 {
-                    for (int i = 0; i < node.OutPorts.Count(); ++i)
+                    for (int i = 0; i < node.OutPorts.Count; ++i)
                     {
                         var inputVar = node.GetAstIdentifierForOutputIndex(i).Value;
                         outputMap[inputVar] = string.Empty;
