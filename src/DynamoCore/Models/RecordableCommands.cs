@@ -1315,20 +1315,17 @@ namespace Dynamo.Models
         }
 
         [DataContract]
-        public class ConvertNodesToCodeCommand : NodeSpecificRecordableCommand
+        public class ConvertNodesToCodeCommand : RecordableCommand
         {
             #region Public Class Methods
 
             [JsonConstructor]
-            internal ConvertNodesToCodeCommand(string nodeId) : base(nodeId) { }
-
-            internal ConvertNodesToCodeCommand(Guid nodeId) : base(nodeId) { }
+            internal ConvertNodesToCodeCommand() { }
 
             internal static ConvertNodesToCodeCommand DeserializeCore(XmlElement element)
             {
                 var helper = new XmlElementHelper(element);
-                Guid nodeId = helper.ReadGuid("NodeId");
-                return new ConvertNodesToCodeCommand(nodeId);
+                return new ConvertNodesToCodeCommand();
             }
 
             #endregion
@@ -1342,8 +1339,6 @@ namespace Dynamo.Models
 
             protected override void SerializeCore(XmlElement element)
             {
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("NodeId", NodeId);
             }
 
             #endregion
