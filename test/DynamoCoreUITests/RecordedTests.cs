@@ -527,7 +527,138 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
         }
 
-        
+        [Test, RequiresSTA]
+        public void Defect_MAGN_6821_withoutInput()
+        {
+            
+      //  Automatically testing custom node using recorded tests 
+      //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+            RunCommandsFromFile("Defect_MAGN_6821_withoutInput.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                var cbn = GetNode("66c0f6b3-e9a0-495e-b3e1-c02b4615c71c") as Function;
+
+                if (commandTag == "Run")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
+
+
+
+                    AssertPreviewValue("66c0f6b3-e9a0-495e-b3e1-c02b4615c71c", 12);
+
+                }
+
+
+            });
+
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_6821_withInput()
+        {
+            //  Automatically testing custom node using recorded tests 
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+
+            RunCommandsFromFile("Defect_MAGN_6821_withInput.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+
+                if (commandTag == "Run")
+                {
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
+                    AssertPreviewValue("fb5bf7c3-8312-42e8-85cb-e17fbee1fbae", 2);
+                    AssertPreviewValue("fb9c8be5-7fc2-4735-a33c-c1c9b2a97f18", 2);
+
+                }
+
+
+            });
+        }
+
+        [Test, RequiresSTA]
+
+        public void Defect_MAGN_6821_multipleInput()
+        {
+            //  Automatically testing custom node using recorded tests 
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+
+            RunCommandsFromFile("Defect_MAGN_6821_multipleInput.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+
+                if (commandTag == "Run")
+                {
+
+                    AssertPreviewValue("9eb488ec-c232-4048-a30c-e610f10deeb5", 4);
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+
+                }
+
+
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_6821_multipleInstance()
+        {
+            //  Automatically testing custom node using recorded tests 
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+
+            RunCommandsFromFile("Defect_MAGN_6821_multipleInstance.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+
+                if (commandTag == "Run")
+                {
+
+                    AssertPreviewValue("d48647e8-0129-4e16-9fa8-7c4d8f20c1be", 4);
+
+                }
+
+
+
+            });
+        }
+
+        [Test, RequiresSTA]
+
+        public void Defect_MAGN_6821_nestedCustomNode()
+        {
+
+            //  Automatically testing custom node using recorded tests 
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+            RunCommandsFromFile("Defect_MAGN_6821_nestedCustomNode.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+
+                if (commandTag == "Run")
+                {
+                    AssertPreviewValue("2088ab88-dd22-4963-8fe9-2f393328aa56", 2);
+                    AssertPreviewValue("f89e3e11-aa50-408e-97a0-c48d11b64d4f", 2);
+
+                }
+
+
+
+            });
+        }
+       
+
+        [Test]
         public void TestCustomNode()
         {
             RunCommandsFromFile("TestCustomNode.xml");
