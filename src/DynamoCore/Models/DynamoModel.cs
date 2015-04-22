@@ -1095,13 +1095,14 @@ namespace Dynamo.Models
         /// <summary>
         /// Start the timer to backup files periodically
         /// </summary>
-        public void StartBackupFilesTimer()
+        private void StartBackupFilesTimer()
         {
-            if (backupFilesTimer == null)
+            if (backupFilesTimer != null)
             {
-                backupFilesTimer = new Timer(SaveBackupFiles);
+                throw new Exception("The timer to backup files has already been started!");
             }
 
+            backupFilesTimer = new Timer(SaveBackupFiles);
             backupFilesTimer.Change(PreferenceSettings.BackupInterval, PreferenceSettings.BackupInterval);
             Logger.Log(String.Format("Backup files timer is started with an interval of {0} milliseconds", PreferenceSettings.BackupInterval));
         }
