@@ -21,19 +21,27 @@
                             <Setter Property="Text" Value="SIGN IN" />
 
                             <Style.Triggers>
-                                
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Foreground" Value="#FFF" />
+
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter Property="Foreground"
+                                            Value="#FFF" />
                                 </Trigger>
-                                
-                                <DataTrigger Binding="{Binding LoginState}" Value="LoggedIn">
-                                    <Setter Property="Text" Value="{Binding Model.Username}" />
+
+                                <DataTrigger Binding="{Binding LoginState}"
+                                             Value="LoggedIn">
+                                    <Setter Property="Text"
+                                            Value="{Binding Username}" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding LoginState}" Value="LoggingIn">
-                                    <Setter Property="Text" Value="SIGNING IN..." />
+                                <DataTrigger Binding="{Binding LoginState}"
+                                             Value="LoggingIn">
+                                    <Setter Property="Text"
+                                            Value="SIGNING IN..." />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding LoginState}" Value="RequestingUserData">
-                                    <Setter Property="Text" Value="UPDATING..." />
+                                <DataTrigger Binding="{Binding LoginState}"
+                                             Value="RequestingUserData">
+                                    <Setter Property="Text"
+                                            Value="UPDATING..." />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
