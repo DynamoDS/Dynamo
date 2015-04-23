@@ -190,7 +190,7 @@ namespace Dynamo.Nodes
 
         private void GroupTextBlock_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (ViewModel != null)
+            if (ViewModel != null && (bool) e.NewValue)
             {
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.UpdateModelValueCommand(
