@@ -99,23 +99,18 @@ namespace Dynamo.Nodes
             if (GroupTextBlock.IsVisible)
             {
                 var annotationGuid = this.ViewModel.AnnotationModel.GUID;
+                //Add the group to selection
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+                
+                //Add all the models to selection in that group. AddRange improves the perfomance if the group
+                //has manhy models
+                DynamoSelection.Instance.Selection.AddRange(ViewModel.AnnotationModel.SelectedModels);
 
-                //ViewModel.WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
-
+                //Select those models.
                 foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
                 {
-                    //when a node is added to group, that node will be in selected mode. 
-                    //so remove that node from selection. Select that node with other nodes
-                    //in that group. Otherwise, this node will be unselected while the other 
-                    //nodes will be in selected.
-                    if (models.IsSelected)
-                    {
-                        DynamoSelection.Instance.Selection.Remove(models);
-                    }
-                    ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                        new DynCmd.SelectModelCommand(models.GUID, Dynamo.Utilities.ModifierKeys.Shift));
+                    models.IsSelected = true;                   
                 }
             }
         }

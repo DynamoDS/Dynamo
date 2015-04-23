@@ -155,7 +155,11 @@ namespace Dynamo.Models
             var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();           
             var noteModels = notes as NoteModel[] ?? notes.ToArray();
             DeletedModelBases = new List<ModelBase>(); 
-            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();      
+            this.SelectedModels = nodeModels.Concat(noteModels.Cast<ModelBase>()).ToList();
+            //Constructing a new group with selected nodes.Re-initialize the initial top and initial height. 
+            //This helps in calculating the correct width and height.           
+            InitialTop = 0.0;
+            InitialHeight = 0.0;
             UpdateBoundaryFromSelection();
         }
 
@@ -165,10 +169,10 @@ namespace Dynamo.Models
             switch (e.PropertyName)
             {
                 case "X":
-                    UpdateBoundaryFromSelection();
+                   // UpdateBoundaryFromSelection();
                     break;
                 case "Y":
-                    UpdateBoundaryFromSelection();
+                   // UpdateBoundaryFromSelection();
                     break;
                 case "Position":                  
                         UpdateBoundaryFromSelection();
@@ -251,7 +255,8 @@ namespace Dynamo.Models
                             {
                                 this.Height += overlap.Rect.Bottom - region.Bottom + ExtendSize;
                             }
-                            region.Height = this.Height;
+                            if(this.height > region.Height)
+                                region.Height = this.Height;
                         }
                         if (overlap.Rect.Left < this.Y ||
                                 overlap.Rect.Right > region.Right) //Overlap in width - increase the region width
@@ -260,7 +265,8 @@ namespace Dynamo.Models
                             {
                                 this.Width += overlap.Rect.Right - region.Right + ExtendSize;
                             }
-                            region.Width = this.Width;
+                            if(this.width > region.Width)
+                                region.Width = this.Width;
                         }
                     }
                 }
@@ -387,8 +393,8 @@ namespace Dynamo.Models
         /// completely inside that group</param>
         internal void AddToSelectedModels(ModelBase model, bool checkOverlap = false)
         {           
-            var list = this.SelectedModels.ToList();
-            if (!list.Select(x => x.GUID != model.GUID).FirstOrDefault()) return;
+            var list = this.SelectedModels.ToList();          
+            if (list.Where(x => x.GUID == model.GUID).Any()) return;
             if (!CheckModelIsInsideGroup(model, checkOverlap)) return;           
             list.Add(model);
             this.SelectedModels = list;
