@@ -171,6 +171,8 @@ namespace Analysis
         [IsVisibleInDynamoLibrary(false)]
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
+            package.RequiresPerVertexColoration = true;
+
             if (!Values.Any() || Values == null)
             {
                 return;

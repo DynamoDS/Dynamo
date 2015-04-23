@@ -396,7 +396,7 @@ namespace Dynamo.Wpf
                 Indices = new IntCollection(),
                 Colors = new Color4Collection()
             };
-
+            
             return lines;
         }
 
