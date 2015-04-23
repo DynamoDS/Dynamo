@@ -5463,7 +5463,7 @@ namespace ProtoCore.DSASM
        
         private void NEG_Handler(Instruction instruction)
         {
-            StackValue opdata1 = GetOperandData(instruction.op1);
+            StackValue opdata1 = rmem.Pop();
             if (opdata1.IsInteger)
             {
                 opdata1 = StackValue.BuildInt(-opdata1.RawIntValue);
@@ -5477,7 +5477,7 @@ namespace ProtoCore.DSASM
                 opdata1 = StackValue.Null;
             }
 
-            SetOperandData(instruction.op1, opdata1);
+            rmem.Push(opdata1);
             ++pc;
         }
 
