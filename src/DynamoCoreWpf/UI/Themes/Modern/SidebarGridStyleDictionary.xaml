@@ -273,7 +273,7 @@
     </Style>
 
     <!--Style for every member in found MemberGroup-->
-    <Style x:Key="ListBoxMembersStyle"
+    <Style x:Key="MemberGroupMemberStyle"
            TargetType="{x:Type ListBoxItem}">
         <Setter Property="BorderBrush"
                 Value="Transparent" />

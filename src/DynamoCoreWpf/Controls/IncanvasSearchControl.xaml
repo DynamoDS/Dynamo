@@ -20,7 +20,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="SearchMemberStyle"
-                   BasedOn="{StaticResource ListBoxMembersStyle}"
+                   BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
                 <EventSetter Event="PreviewMouseLeftButtonDown"
                              Handler="OnMouseLeftButtonDown" />

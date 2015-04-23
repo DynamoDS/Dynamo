@@ -52,7 +52,7 @@
         </ControlTemplate>
 
         <Style x:Key="LibraryMemberStyle"
-               BasedOn="{StaticResource ListBoxMembersStyle}"
+               BasedOn="{StaticResource MemberGroupMemberStyle}"
                TargetType="{x:Type ListBoxItem}">
             <EventSetter Event="PreviewMouseLeftButtonDown"
                          Handler="OnMouseLeftButtonDown" />
@@ -92,7 +92,7 @@
                     <ListBox x:Name="topResultListBox"
                              Background="Transparent"
                              BorderBrush="Transparent"
-                             ItemContainerStyle="{DynamicResource ListBoxMembersStyle}"
+                             ItemContainerStyle="{DynamicResource LibraryMemberStyle}"
                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                              ItemsSource="{Binding Members,NotifyOnTargetUpdated=True}"
                              KeyDown="OnMemberButtonKeyDown"
