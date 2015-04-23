@@ -92,14 +92,12 @@ namespace Dynamo.Wpf.ViewModels.Core
 
                 if (currentContent != null) //if contents is not empty
                 {
-                    currentContent.IsCurrent = true;
-                    isAnyContent = true;
-                }
-
-                MoveNextCommand = new DelegateCommand(MoveNext, CanMoveNext);
-                MovePrevCommand = new DelegateCommand(MovePrev, CanMovePrev);
-                CloseGalleryCommand = new DelegateCommand(CloseGallery,CanCloseGallery);
+                    currentContent.IsCurrent = true;                }
             }
+
+            MoveNextCommand = new DelegateCommand(MoveNext, o => contents.Count > 1);
+            MovePrevCommand = new DelegateCommand(MovePrev, o => contents.Count > 1);
+            CloseGalleryCommand = new DelegateCommand(CloseGallery, o => true);
         }
 
         #region event handlers
@@ -118,19 +116,9 @@ namespace Dynamo.Wpf.ViewModels.Core
             dvm.CloseGalleryCommand.Execute(null);
         }
 
-        internal bool CanCloseGallery(object parameters)
-        {
-            return true;
-        }
-
         internal void MoveNext(object parameters)
         {
             MoveIndex(true);
-        }
-
-        internal bool CanMoveNext(object parameters)
-        {
-            return true;
         }
 
         internal void MovePrev(object parameters)
@@ -138,10 +126,6 @@ namespace Dynamo.Wpf.ViewModels.Core
             MoveIndex(false);
         }
 
-        internal bool CanMovePrev(object parameters)
-        {
-            return true;
-        }
         #endregion
 
         /// <summary>
@@ -163,14 +147,13 @@ namespace Dynamo.Wpf.ViewModels.Core
             RaisePropertyChanged("CurrentBody");
         }
 
-        public static bool IsAnyContent { get {return isAnyContent;} }
+        public static bool HasContents { get {return currentContent != null;} }
 
         #region private fields
         private DynamoViewModel dvm;
-        private GalleryContent currentContent;
+        private static GalleryContent currentContent;
         private List<GalleryContent> contents;
         private int currentIndex = 0;
-        private static bool isAnyContent = false;
         #endregion
     }
 }

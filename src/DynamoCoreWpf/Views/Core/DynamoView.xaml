@@ -1702,8 +1702,13 @@
                                             VerticalAlignment="Top" Margin="10,30" />
         </Grid>
 
-        <Grid Name="galleryUi" 
-              MouseLeftButtonDown="OutsideGalleryView_MouseLeftButtonDown"/>
+        <Grid Name="galleryBackground"
+              Visibility="Hidden"
+              MouseLeftButtonDown="OnGalleryBackgroundMouseClick">
+            <Grid.Background>
+                <SolidColorBrush Color="Black" Opacity="0.8"/>
+            </Grid.Background>
+        </Grid>
 
     </Grid>
 

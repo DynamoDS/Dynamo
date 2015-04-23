@@ -1845,15 +1845,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CLOSE X.
-        /// </summary>
-        public static string GalleryCloseButton {
-            get {
-                return ResourceManager.GetString("GalleryCloseButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Version {0}.{1}.
         /// </summary>
         public static string GalleryDynamoVersion {

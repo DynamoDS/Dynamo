@@ -1650,9 +1650,6 @@ Do you want to install the latest Dynamo update?</value>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
   </data>
-  <data name="GalleryCloseButton" xml:space="preserve">
-    <value>CLOSE X</value>
-  </data>
   <data name="GalleryDynamoVersion" xml:space="preserve">
     <value>Version {0}.{1}</value>
   </data>

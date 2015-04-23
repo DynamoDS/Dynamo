@@ -437,7 +437,7 @@ namespace Dynamo.Controls
             aboutWindow.ShowDialog();
         }
 
-        private void OutsideGalleryView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnGalleryBackgroundMouseClick(object sender, MouseButtonEventArgs e)
         {
             dynamoViewModel.CloseGalleryCommand.Execute(null);
             e.Handled = true;
@@ -448,27 +448,27 @@ namespace Dynamo.Controls
             if (galleryView == null) //On-demand instantiation
             {
                 galleryView = new GalleryView(new GalleryViewModel(dynamoViewModel));
-                Grid.SetColumnSpan(galleryUi, mainGrid.ColumnDefinitions.Count);
-                Grid.SetRowSpan(galleryUi, mainGrid.RowDefinitions.Count);
-                galleryUi.Visibility = Visibility.Hidden;
-                galleryUi.Background = new SolidColorBrush(Colors.Black)
-                {
-                    Opacity = 0.8
-                };
+                Grid.SetColumnSpan(galleryBackground, mainGrid.ColumnDefinitions.Count);
+                Grid.SetRowSpan(galleryBackground, mainGrid.RowDefinitions.Count);
             }
 
-            if (GalleryViewModel.IsAnyContent)
+            if (GalleryViewModel.HasContents)
             {
-                galleryUi.Children.Add(galleryView);
-                galleryUi.Visibility = Visibility.Visible;
+                galleryBackground.Children.Add(galleryView);
+                galleryBackground.Visibility = Visibility.Visible;
                 galleryView.Focus(); //get keyboard focus (for ESC)
             }
         }
 
         void DynamoViewModelRequestCloseGallery()
         {
-            galleryUi.Children.Remove(galleryView);
-            galleryUi.Visibility = Visibility.Hidden;
+            if (galleryBackground != null)
+            {
+                if (galleryView != null && galleryBackground.Children.Contains(galleryView))
+                    galleryBackground.Children.Remove(galleryView);
+
+                galleryBackground.Visibility = Visibility.Hidden;
+            }
         }
 
         private PublishPackageView _pubPkgView;
