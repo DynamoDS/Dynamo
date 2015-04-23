@@ -154,7 +154,7 @@
     <comment>Context menu item</comment>
   </data>
   <data name="ContextUnGroupFromSelection" xml:space="preserve">
-    <value>Ungroup</value>
+    <value>Remove from Group</value>
     <comment>Context menu item</comment>
   </data>
   <data name="ContextAddGroupFromSelection" xml:space="preserve">
