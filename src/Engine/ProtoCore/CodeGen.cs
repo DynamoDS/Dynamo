@@ -269,16 +269,6 @@ namespace ProtoCore
         protected void AllocateVar(ProtoCore.DSASM.SymbolNode symbol)
         {
             symbol.isArray = false;
-            if (ProtoCore.DSASM.MemoryRegion.kMemHeap == symbol.memregion)
-            {
-                SetHeapData(symbol);
-
-                StackValue opDX = StackValue.BuildRegister(Registers.DX);
-                StackValue opAllocSize = StackValue.BuildInt(symbol.size);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.mov, ProtoCore.DSASM.kw.regDX, opAllocSize.opdata.ToString());
-                EmitBinary(ProtoCore.DSASM.OpCode.MOV, opDX, opAllocSize);
-            }
             SetStackIndex(symbol);
         }
 
@@ -2069,17 +2059,16 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitBinary(ProtoCore.DSASM.OpCode opcode, StackValue op1, StackValue op2, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
+        protected void EmitBinary(
+            ProtoCore.DSASM.OpCode opcode, 
+            int line = ProtoCore.DSASM.Constants.kInvalidIndex, 
+            int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, 
+            int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = opcode;
-            instr.op1 = op1;
-            instr.op2 = op2;
-
-            // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(op1.IsVariableIndex || op1.IsRegister);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
@@ -2603,21 +2592,9 @@ namespace ProtoCore
 
         protected void EmitBinaryOperation(Type leftType, Type rightType, ProtoCore.DSASM.Operator optr)
         {
-            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
-            StackValue opBX = StackValue.BuildRegister(Registers.BX);
-            EmitPop(opBX, Constants.kGlobalScope);
-
-            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-            StackValue opAX = StackValue.BuildRegister(Registers.AX);
-            EmitPop(opAX, Constants.kGlobalScope);
-
             string op = Op.GetOpName(optr);
-            EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
-            EmitBinary(Op.GetOpCode(optr), opAX, opBX);
-
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-            StackValue opRes = StackValue.BuildRegister(Registers.AX);
-            EmitPush(opRes);
+            EmitInstrConsole(op, string.Empty, string.Empty);
+            EmitBinary(Op.GetOpCode(optr));
         }
 
 

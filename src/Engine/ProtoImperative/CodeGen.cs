@@ -209,20 +209,9 @@ namespace ProtoImperative
                 {
                     DfsEmitArraySize(array.Type);
 
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
-                    StackValue opBX = StackValue.BuildRegister(Registers.BX);
-                    EmitPop(opBX, Constants.kGlobalScope);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                    StackValue opAX = StackValue.BuildRegister(Registers.AX);
-                    EmitPop(opAX, Constants.kGlobalScope);
-
                     string op = Op.GetOpName(ProtoCore.DSASM.Operator.add);
-                    EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
-                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add), opAX, opBX);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                    EmitPush(opAX);
+                    EmitInstrConsole(op, string.Empty, string.Empty);
+                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add));
                 }
             }
             else
@@ -255,41 +244,17 @@ namespace ProtoImperative
                 EmitPush(opWidth);
 
                 string op = null;
-                StackValue opAX = StackValue.BuildRegister(Registers.AX);
-                StackValue opBX = StackValue.BuildRegister(Registers.BX);
-                StackValue opRes = StackValue.BuildRegister(Registers.AX);
-
-                // Multiplying the max array size by the number of elements
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
-                EmitPop(opBX, Constants.kGlobalScope);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                EmitPop(opAX, Constants.kGlobalScope);
-
                 op = Op.GetOpName(ProtoCore.DSASM.Operator.mul);
-                EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
-                EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.mul), opAX, opBX);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                EmitPush(opRes);
+                EmitInstrConsole(op, string.Empty, string.Empty);
+                EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.mul));
 
                 if (array.Type is ArrayNode)
                 {
                     DfsEmitArrayIndex(array.Type, symbolindex, index + 1);
 
-                    // Adding the previous arraysize to the current one
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
-                    EmitPop(opBX, Constants.kGlobalScope);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                    EmitPop(opAX, Constants.kGlobalScope);
-
                     op = Op.GetOpName(ProtoCore.DSASM.Operator.add);
-                    EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
-                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add), opAX, opBX);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                    EmitPush(opRes);
+                    EmitInstrConsole(op, string.Empty, string.Empty);
+                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add));
                 }
             }
             else
