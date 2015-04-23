@@ -100,7 +100,7 @@ namespace Dynamo.Nodes
             {
                 var annotationGuid = this.ViewModel.AnnotationModel.GUID;
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(annotationGuid, Dynamo.Utilities.ModifierKeys.Shift));
+                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
 
                 //ViewModel.WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
 
