@@ -210,7 +210,7 @@ namespace ProtoImperative
                     DfsEmitArraySize(array.Type);
 
                     string op = Op.GetOpName(ProtoCore.DSASM.Operator.add);
-                    EmitInstrConsole(op, string.Empty, string.Empty);
+                    EmitInstrConsole(op);
                     EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add));
                 }
             }
@@ -245,7 +245,7 @@ namespace ProtoImperative
 
                 string op = null;
                 op = Op.GetOpName(ProtoCore.DSASM.Operator.mul);
-                EmitInstrConsole(op, string.Empty, string.Empty);
+                EmitInstrConsole(op);
                 EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.mul));
 
                 if (array.Type is ArrayNode)
@@ -253,7 +253,7 @@ namespace ProtoImperative
                     DfsEmitArrayIndex(array.Type, symbolindex, index + 1);
 
                     op = Op.GetOpName(ProtoCore.DSASM.Operator.add);
-                    EmitInstrConsole(op, string.Empty, string.Empty);
+                    EmitInstrConsole(op);
                     EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add));
                 }
             }
@@ -2463,17 +2463,9 @@ namespace ProtoImperative
 
                 if (!isPrefixOperation)
                 {
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                    StackValue opAX = StackValue.BuildRegister(Registers.AX);
-                    EmitPop(opAX, Constants.kGlobalScope);
-
                     string op = Op.GetUnaryOpName(u.Operator);
-                    EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX);
-                    EmitUnary(Op.GetUnaryOpCode(u.Operator), opAX);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                    StackValue opRes = StackValue.BuildRegister(Registers.AX);
-                    EmitPush(opRes);
+                    EmitInstrConsole(op);
+                    EmitUnary(Op.GetUnaryOpCode(u.Operator));
                 }
             }
         }

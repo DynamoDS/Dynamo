@@ -5523,7 +5523,7 @@ namespace ProtoCore.DSASM
 
         private void NOT_Handler(Instruction instruction)
         {
-            StackValue opdata1 = GetOperandData(instruction.op1);
+            StackValue opdata1 = rmem.Pop();
 
             opdata1 = opdata1.ToBoolean(runtimeCore);
             if (!opdata1.IsNull)
@@ -5531,8 +5531,7 @@ namespace ProtoCore.DSASM
                 opdata1 = StackValue.BuildBoolean(opdata1.opdata == 0L);
             }
 
-            SetOperandData(instruction.op1, opdata1);
-
+            rmem.Push(opdata1);
             ++pc;
         }
 

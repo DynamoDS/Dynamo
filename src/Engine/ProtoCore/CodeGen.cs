@@ -2075,16 +2075,12 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitUnary(ProtoCore.DSASM.OpCode opcode, StackValue op1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+        protected void EmitUnary(ProtoCore.DSASM.OpCode opcode, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = opcode;
-            instr.op1 = op1;
-
-            // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(op1.IsVariableIndex || op1.IsRegister);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
@@ -2593,7 +2589,7 @@ namespace ProtoCore
         protected void EmitBinaryOperation(Type leftType, Type rightType, ProtoCore.DSASM.Operator optr)
         {
             string op = Op.GetOpName(optr);
-            EmitInstrConsole(op, string.Empty, string.Empty);
+            EmitInstrConsole(op);
             EmitBinary(Op.GetOpCode(optr));
         }
 

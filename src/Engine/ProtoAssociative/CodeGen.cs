@@ -6814,17 +6814,9 @@ namespace ProtoAssociative
 
             if (!isPrefixOperation && subPass != ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier)
             {
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                StackValue opAX = StackValue.BuildRegister(Registers.AX);
-                EmitPop(opAX, Constants.kGlobalScope);
-
                 string op = Op.GetUnaryOpName(u.Operator);
-                EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX);
-                EmitUnary(Op.GetUnaryOpCode(u.Operator), opAX);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                StackValue opRes = StackValue.BuildRegister(Registers.AX);
-                EmitPush(opRes);
+                EmitInstrConsole(op);
+                EmitUnary(Op.GetUnaryOpCode(u.Operator));
             }
         }
 
