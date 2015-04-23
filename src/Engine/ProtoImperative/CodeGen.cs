@@ -1545,10 +1545,6 @@ namespace ProtoImperative
                 IfStmtNode ifnode = node as IfStmtNode;
                 DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, parentNode);
 
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-                StackValue opCX = StackValue.BuildRegister(Registers.CX);
-                EmitPop(opCX, Constants.kGlobalScope);
-
                 L1 = pc + 1;
                 L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
                 bp = pc;
@@ -1636,10 +1632,6 @@ namespace ProtoImperative
                 foreach (ElseIfBlock elseifNode in ifnode.ElseIfList)
                 {
                     DfsTraverse(elseifNode.Expr, ref inferedType, false, graphNode);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-                    opCX = StackValue.BuildRegister(Registers.CX);
-                    EmitPop(opCX, Constants.kGlobalScope);
 
                     L1 = pc + 1;
                     L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -1806,10 +1798,6 @@ namespace ProtoImperative
 
                 WhileStmtNode whileNode = node as WhileStmtNode;
                 DfsTraverse(whileNode.Expr, ref inferedType);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-                StackValue opCX = StackValue.BuildRegister(Registers.CX);
-                EmitPop(opCX, Constants.kGlobalScope);
 
                 L1 = pc + 1;
                 L2 = ProtoCore.DSASM.Constants.kInvalidIndex;

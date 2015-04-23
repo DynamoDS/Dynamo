@@ -6517,32 +6517,32 @@ namespace ProtoCore.DSASM
 
         private void CJMP_Handler(Instruction instruction)
         {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-
+            StackValue opdata1 = rmem.Pop();
+            
             if (opdata1.IsDouble)
             {
                 if (opdata1.RawDoubleValue.Equals(0))
                 {
-                    pc = (int)GetOperandData(instruction.op3).opdata;
+                    pc = (int)GetOperandData(instruction.op2).opdata;
                 }
                 else
                 {
-                    pc = (int)GetOperandData(instruction.op2).opdata;
+                    pc = (int)GetOperandData(instruction.op1).opdata;
                 }
             }
             else
             {
                 if (opdata1.IsPointer)
                 {
-                    pc = (int)GetOperandData(instruction.op2).opdata;
+                    pc = (int)GetOperandData(instruction.op1).opdata;
                 }
                 else if (0 == opdata1.opdata)
                 {
-                    pc = (int)GetOperandData(instruction.op3).opdata;
+                    pc = (int)GetOperandData(instruction.op2).opdata;
                 }
                 else
                 {
-                    pc = (int)GetOperandData(instruction.op2).opdata;
+                    pc = (int)GetOperandData(instruction.op1).opdata;
                 }
             }
         }

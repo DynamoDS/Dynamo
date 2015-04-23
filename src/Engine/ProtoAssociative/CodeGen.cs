@@ -6499,10 +6499,6 @@ namespace ProtoAssociative
             IfStatementNode ifnode = node as IfStatementNode;
             DfsTraverse(ifnode.ifExprNode, ref inferedType, false, graphNode);
 
-            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-            StackValue opCX = StackValue.BuildRegister(Registers.CX);
-            EmitPop(opCX, Constants.kGlobalScope);
-
             L1 = pc + 1;
             L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
             bp = pc;

@@ -1467,10 +1467,10 @@ namespace ProtoCore
                 codeBlock.instrStream.instrList[bp].op1.opdata = pc;
             }
             else if (ProtoCore.DSASM.OpCode.CJMP == codeBlock.instrStream.instrList[bp].opCode
-                && codeBlock.instrStream.instrList[bp].op3.IsLabelIndex)
+                && codeBlock.instrStream.instrList[bp].op2.IsLabelIndex)
             {
-                Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op3.opdata);
-                codeBlock.instrStream.instrList[bp].op3.opdata = pc;
+                Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op2.opdata);
+                codeBlock.instrStream.instrList[bp].op2.opdata = pc;
             }
         }
 
@@ -1676,9 +1676,8 @@ namespace ProtoCore
 
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.CJMP;
-            instr.op1 = StackValue.BuildRegister(Registers.CX);
-            instr.op2 = StackValue.BuildLabelIndex(L1);
-            instr.op3 = StackValue.BuildLabelIndex(L2);
+            instr.op1 = StackValue.BuildLabelIndex(L1);
+            instr.op2 = StackValue.BuildLabelIndex(L2);
 
             ++pc;
             if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
