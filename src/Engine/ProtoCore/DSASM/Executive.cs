@@ -5538,8 +5538,8 @@ namespace ProtoCore.DSASM
 
         private void EQ_Handler(Instruction instruction)
         {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
+            StackValue opdata1 = rmem.Pop();
+            StackValue opdata2 = rmem.Pop();
 
             if (opdata1.IsBoolean || opdata2.IsBoolean)
             {
@@ -5581,15 +5581,14 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.BuildBoolean(false);
             }
 
-            SetOperandData(instruction.op1, opdata2);
-
+            rmem.Push(opdata2);
             ++pc;
         }
         
         private void NQ_Handler(Instruction instruction)
         {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
+            StackValue opdata1 = rmem.Pop();
+            StackValue opdata2 = rmem.Pop();
 
             if (opdata1.IsBoolean || opdata2.IsBoolean)
             {
@@ -5624,15 +5623,14 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.BuildBoolean(true);
             }
 
-            SetOperandData(instruction.op1, opdata2);
-
+            rmem.Push(opdata2);
             ++pc;
         }
         
         private void GT_Handler(Instruction instruction)
         {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
+            StackValue opdata1 = rmem.Pop();
+            StackValue opdata2 = rmem.Pop();
 
             if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
@@ -5645,14 +5643,14 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            SetOperandData(instruction.op1, opdata2);
+            rmem.Push(opdata2);
             ++pc;
         }
         
         private void LT_Handler(Instruction instruction)
         {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
+            StackValue opdata1 = rmem.Pop();
+            StackValue opdata2 = rmem.Pop();
 
             if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
@@ -5665,15 +5663,14 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            SetOperandData(instruction.op1, opdata2);
-
+            rmem.Push(opdata2);
             ++pc;
         }
         
         private void GE_Handler(Instruction instruction)
         {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
+            StackValue opdata1 = rmem.Pop();
+            StackValue opdata2 = rmem.Pop();
 
             if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
@@ -5693,15 +5690,14 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            SetOperandData(instruction.op1, opdata2);
-
+            rmem.Push(opdata2);
             ++pc;
         }
         
         private void LE_Handler(Instruction instruction)
         {
-            StackValue opdata1 = GetOperandData(instruction.op2);
-            StackValue opdata2 = GetOperandData(instruction.op1);
+            StackValue opdata1 = rmem.Pop();
+            StackValue opdata2 = rmem.Pop();
 
             if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
@@ -5721,8 +5717,7 @@ namespace ProtoCore.DSASM
                 opdata2 = StackValue.Null;
             }
 
-            SetOperandData(instruction.op1, opdata2);
-
+            rmem.Push(opdata2);
             ++pc;
         }
 
