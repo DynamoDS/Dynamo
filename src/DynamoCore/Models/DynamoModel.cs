@@ -34,6 +34,7 @@ using ProtoCore;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
+using Dynamo.UI;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
 using Utils = Dynamo.Nodes.Utilities;
@@ -55,6 +56,7 @@ namespace Dynamo.Models
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
+        private Timer backupFilesTimer;
         #endregion
 
         #region events
@@ -568,6 +570,9 @@ namespace Dynamo.Models
             var renderPackageFactoryAsm = config.PackageManagerAddress ??
                       AssemblyConfiguration.Instance.GetAppSetting("renderPackageFactoryAssembly");
             SetRenderPackageFactory(renderPackageFactoryAsm);
+
+            StartBackupFilesTimer();
+
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -642,6 +647,13 @@ namespace Dynamo.Models
 
             EngineController.Dispose();
             EngineController = null;
+
+            if (backupFilesTimer != null)
+            {
+                backupFilesTimer.Dispose();
+                backupFilesTimer = null;
+                Logger.Log("Backup files timer is disposed");
+            }
 
             if (PreferenceSettings != null)
             {
@@ -1062,8 +1074,7 @@ namespace Dynamo.Models
 
             RegisterHomeWorkspace(newWorkspace);
            
-            workspace = newWorkspace;
-
+            workspace = newWorkspace;            
             return true;
         }
 
@@ -1074,6 +1085,56 @@ namespace Dynamo.Models
             {
                 newWorkspace.EvaluationCompleted -= OnEvaluationCompleted;
             };
+        }
+
+        #endregion
+
+        #region backup/timer
+
+        /// <summary>
+        /// Backup all the files
+        /// </summary>
+        protected void SaveBackupFiles(object state)
+        {
+            DynamoModel.OnRequestDispatcherBeginInvoke(() =>
+            {
+                foreach (var workspace in Workspaces)
+                {
+                    if (!workspace.HasUnsavedChanges)
+                        continue;
+
+                    string fileName;
+                    if (string.IsNullOrEmpty(workspace.FileName))
+                    {
+                        fileName = Configurations.BackupFileNamePrefix + workspace.Guid;
+                        var ext = workspace is HomeWorkspaceModel ? ".DYN" : ".DYF";
+                        fileName += ext;
+                    }
+                    else
+                    {
+                        fileName = Path.GetFileName(workspace.FileName);
+                    }
+
+                    var savePath = Path.Combine(pathManager.BackupDirectory, fileName);
+                    workspace.SaveAs(savePath, null);
+                    Logger.Log("Backup file is saved: " + savePath);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Start the timer to backup files periodically
+        /// </summary>
+        private void StartBackupFilesTimer()
+        {
+            if (backupFilesTimer != null)
+            {
+                throw new Exception("The timer to backup files has already been started!");
+            }
+
+            backupFilesTimer = new Timer(SaveBackupFiles);
+            backupFilesTimer.Change(PreferenceSettings.BackupInterval, PreferenceSettings.BackupInterval);
+            Logger.Log(String.Format("Backup files timer is started with an interval of {0} milliseconds", PreferenceSettings.BackupInterval));
         }
 
         #endregion
@@ -1090,6 +1151,20 @@ namespace Dynamo.Models
             if (null == CurrentWorkspace)
                 return;
 
+            //Check for empty group
+            var annotations = Workspaces.SelectMany(ws => ws.Annotations);
+            foreach (var annotation in annotations)
+            {
+                if (!annotation.SelectedModels.Except(modelsToDelete).Any())
+                {
+                    //Annotation Model has to be serialized first - before the nodes.
+                    //so, store the Annotation model as first object. This will serialize the 
+                    //annotation before the nodes are deleted. So, when Undo is pressed,
+                    //annotation model is deserialized correctly.
+                    modelsToDelete.Insert(0, annotation);                   
+                }
+            }
+
             OnDeletionStarted();
 
             CurrentWorkspace.RecordAndDeleteModels(modelsToDelete);
@@ -1102,6 +1177,27 @@ namespace Dynamo.Models
             }
 
             OnDeletionComplete(this, EventArgs.Empty);
+        }
+
+        internal void UngroupModel(List<ModelBase> modelsToUngroup)
+        {
+            var annotations = Workspaces.SelectMany(ws => ws.Annotations);
+            foreach (var model in modelsToUngroup)
+            {
+                foreach (var annotation in annotations)
+                {
+                    if (annotation.SelectedModels.Any(x => x.GUID == model.GUID))
+                    {
+                        CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
+                        var list = annotation.SelectedModels.ToList();
+                        if (list.Remove(model))
+                        {
+                            annotation.SelectedModels = list;
+                            annotation.UpdateBoundaryFromSelection();
+                        }                        
+                    }
+                }
+            }
         }
 
         internal void DumpLibraryToXml(object parameter)
@@ -1384,8 +1480,8 @@ namespace Dynamo.Models
                 {
                     GUID = Guid.NewGuid(),
                     AnnotationText = annotation.AnnotationText,
-                    Background = annotation.Background
-
+                    Background = annotation.Background,
+                    FontSize = annotation.FontSize
                 };
                 newAnnotations.Add(annotationModel);
             }

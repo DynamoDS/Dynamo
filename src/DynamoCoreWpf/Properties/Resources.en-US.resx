@@ -153,6 +153,10 @@
     <value>Create Group</value>
     <comment>Context menu item</comment>
   </data>
+  <data name="ContextUnGroupFromSelection" xml:space="preserve">
+    <value>Ungroup</value>
+    <comment>Context menu item</comment>
+  </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
     <value>Nodes From _Selected Geometry</value>
     <comment>Context menu item</comment>
@@ -1646,5 +1650,11 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
+  </data>
+  <data name="Autodesk360SignInButtonContentToolTip" xml:space="preserve">
+    <value>Sign in to Autodesk A360 to access online services that integrate with your desktop software.</value>
+  </data>
+  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
+    <value>Autodesk A360</value>
   </data>
 </root>

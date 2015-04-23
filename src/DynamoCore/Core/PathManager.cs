@@ -45,6 +45,7 @@ namespace Dynamo.Core
         public const string LogsDirectoryName = "Logs";
         public const string NodesDirectoryName = "nodes";
         public const string DefinitionsDirectoryName = "definitions";
+        public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
 
         private readonly int majorFileVersion;
@@ -58,6 +59,7 @@ namespace Dynamo.Core
         private readonly string logDirectory;
         private readonly string packagesDirectory;
         private readonly string samplesDirectory;
+        private readonly string backupDirectory;
         private readonly string preferenceFilePath;
 
         private readonly HashSet<string> nodeDirectories;
@@ -101,6 +103,11 @@ namespace Dynamo.Core
         public string SamplesDirectory
         {
             get { return samplesDirectory; }
+        }
+
+        public string BackupDirectory
+        {
+            get { return backupDirectory; }
         }
 
         public string PreferenceFilePath
@@ -217,6 +224,7 @@ namespace Dynamo.Core
             logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
             packagesDirectory = Path.Combine(userDataDir, PackagesDirectoryName);
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
+            backupDirectory = Path.Combine(Directory.GetParent(userDataDir).FullName, BackupDirectoryName);
 
             // Common directories.
             commonDataDir = GetCommonDataFolder(pathResolver);
@@ -246,6 +254,7 @@ namespace Dynamo.Core
             CreateFolderIfNotExist(userDefinitions);
             CreateFolderIfNotExist(logDirectory);
             CreateFolderIfNotExist(packagesDirectory);
+            CreateFolderIfNotExist(backupDirectory);
 
             // Common data folders for all users.
             CreateFolderIfNotExist(commonDataDir);

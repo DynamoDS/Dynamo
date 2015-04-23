@@ -194,8 +194,8 @@ namespace Dynamo.UI
         #endregion
 
         #region Class button
-        public const int MaxLengthClassButtonTitle = 22;
-        public const int MaxLengthRowClassButtonTitle = 8; // How many characters can be in one row.
+        public const int MaxRowNumber = 2;
+        public const int MaxLengthRowClassButtonTitle = 9; // How many characters can be in one row.
         public const string TwoDots = "..";
         #endregion
 
@@ -225,6 +225,12 @@ namespace Dynamo.UI
         public static string HeaderCreate = Resources.HeaderCreate;
         public static string HeaderAction = Resources.HeaderAction;
         public static string HeaderQuery = Resources.HeaderQuery;
+
+        #endregion
+
+        #region Backup
+
+        public static string BackupFileNamePrefix = "recent_new_file_";
 
         #endregion
     }

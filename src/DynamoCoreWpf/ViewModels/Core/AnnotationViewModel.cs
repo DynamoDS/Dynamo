@@ -1,4 +1,7 @@
-﻿using System.Windows.Media;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Windows.Media;
 using Dynamo.Models;
 using System;
 using Dynamo.UI.Commands;
@@ -12,8 +15,7 @@ namespace Dynamo.ViewModels
     {
         private AnnotationModel annotationModel;
         public readonly WorkspaceViewModel WorkspaceViewModel;        
-        private double zIndex = 2;
-        
+      
         public AnnotationModel AnnotationModel
         {
             get { return annotationModel; }
@@ -55,12 +57,8 @@ namespace Dynamo.ViewModels
 
         public double ZIndex
         {
-            get { return zIndex; }
-            set
-            {
-                zIndex = value;
-                RaisePropertyChanged("ZIndex");
-            }
+            get { return 1; }
+            
         }
 
         public String AnnotationText
@@ -126,9 +124,14 @@ namespace Dynamo.ViewModels
                 annotationModel.FontSize = value;                
             }
         }
+
+        public IEnumerable<ModelBase> SelectedModels
+        {
+            get { return annotationModel.SelectedModels; }
+        }
        
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
-        {            
+        {             
             annotationModel = model;           
             this.WorkspaceViewModel = workspaceViewModel;                                     
             model.PropertyChanged += model_PropertyChanged;
@@ -146,7 +149,12 @@ namespace Dynamo.ViewModels
         {
             if (parameter != null)
             {
-                FontSize = Convert.ToDouble(parameter);
+                this.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynamoModel.UpdateModelValueCommand(
+                    System.Guid.Empty, this.AnnotationModel.GUID, "FontSize", parameter.ToString()));
+
+                this.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                this.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();                              
             }
         }
 
@@ -177,6 +185,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "FontSize":
                     RaisePropertyChanged("FontSize");
+                    break;
+                case "SelectedModels":
+                    this.AnnotationModel.UpdateBoundaryFromSelection();
                     break;
             }
         }      

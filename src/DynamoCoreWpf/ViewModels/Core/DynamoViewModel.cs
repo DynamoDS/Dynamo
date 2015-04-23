@@ -904,6 +904,49 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
         }
 
+        internal void UngroupAnnotation(object parameters)
+        {
+            if (null != parameters)
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+            //Check for multiple groups - Delete the group and not the nodes.
+            foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>().ToList())
+            {
+                var command = new DynamoModel.DeleteModelCommand(group.GUID);
+                this.ExecuteCommand(command);
+            }            
+        }
+
+        internal bool CanUngroupAnnotation(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
+        }
+
+        internal void UngroupModel(object parameters)
+        {
+            if (null != parameters)
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+            //Check for multiple groups - Delete the group and not the nodes.
+            foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>().ToList())
+            {
+                if (!(modelb is AnnotationModel))
+                {
+                    var command = new DynamoModel.UngroupModelCommand(modelb.GUID);
+                    this.ExecuteCommand(command);
+                }
+            }  
+        }
+
+        internal bool CanUngroupModel(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+        }
+
         private void WorkspaceAdded(WorkspaceModel item)
         {
             if (item is HomeWorkspaceModel)
