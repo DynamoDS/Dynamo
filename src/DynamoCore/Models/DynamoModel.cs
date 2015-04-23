@@ -465,8 +465,6 @@ namespace Dynamo.Models
             {
                 DynamoMigratorBase migrator = null;
 
-                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
