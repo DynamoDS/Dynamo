@@ -1,9 +1,11 @@
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
+using Autodesk.DesignScript.Runtime;
 using MIConvexHull;
 
 namespace Tessellation.Adapters
 {
+    [SupressImportIntoVM]
     public class Vertex2 : IVertex, IGraphicItem
     {
         public static Vertex2 FromUV(UV uv)
