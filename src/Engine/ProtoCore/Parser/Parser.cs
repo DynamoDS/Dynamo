@@ -952,20 +952,6 @@ public Node root { get; set; }
 			Associative_FunctionalStatement(out node);
 		} else if (la.kind == 8) {
 			Associative_LanguageBlock(out node);
-		} else if (la.kind == 38) {
-			Get();
-			if (la.val != ";")
-			   SynErr(Resources.SemiColonExpected);  
-			
-			Expect(21);
-			node = new ProtoCore.AST.AssociativeAST.BreakNode(); 
-		} else if (la.kind == 39) {
-			Get();
-			if (la.val != ";")
-			   SynErr(Resources.SemiColonExpected); 
-			
-			Expect(21);
-			node = new ProtoCore.AST.AssociativeAST.ContinueNode(); 
 		} else if (StartOf(3)) {
 			if (core.ParsingMode == ParseMode.AllowNonAssignment) {
 				if (StartOf(4)) {
@@ -1211,8 +1197,6 @@ public Node root { get; set; }
 			}
 			
 		} else if (la.kind == 49) {
-			if(!(leftNode is ProtoCore.AST.AssociativeAST.PostFixNode)) {
-			
 			Get();
 			ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
 			bool isLeftMostNode = false; 
@@ -1396,7 +1380,6 @@ public Node root { get; set; }
 			   isLeftVarIdentList = false;                                  
 			}  
 			
-			} 
 		} else if (StartOf(13)) {
 			SynErr(Resources.SemiColonExpected); 
 		} else SynErr(84);
@@ -4323,9 +4306,9 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 	}
 	
 	static readonly bool[,] set = {
-		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
-		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
-		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,T,T,T, T,T,x,x, x,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,T,T,T, T,T,x,x, x,x,T,x, T,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
@@ -4337,10 +4320,10 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 		{x,T,T,T, T,T,x,x, x,x,T,x, T,T,x,T, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x,T,T, T,T,T,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,T,x,T, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,T, x,x,T,T, x,x,x,x, x,x,x},
 		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, T,x,T,T, x,x,T,T, T,T,T,x, x,x,T,T, x,x,T,T, T,x,T,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
-		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,T,x, x,x,T,x, x,T,T,x, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
-		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,T,T, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
+		{T,T,T,T, T,T,x,x, T,x,T,x, T,T,x,x, x,x,x,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,T, x,x,x,x, x,x,T,T, T,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,T, T,T,T,T, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,T,x,x, x,x,x,x, x,x,T,x, x,T,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,T,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x},
 		{x,x,x,x, x,x,x,x, x,x,x,x, T,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, x,x,x,x, T,T,T,x, x,x,x},

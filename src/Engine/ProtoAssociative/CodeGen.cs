@@ -4850,11 +4850,6 @@ namespace ProtoAssociative
             }
         }
 
-        private void EmitForLoopNode(AssociativeNode node)
-        {
-            throw new NotImplementedException();
-        }
-
         private void EmitLanguageBlockNode(AssociativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone)
         {
             if (IsParsingGlobal() || IsParsingGlobalFunctionBody() || IsParsingMemberFunctionBody() )
@@ -8371,30 +8366,23 @@ namespace ProtoAssociative
                 {
                     leftNodeGlobalRef = GetUpdatedNodeRef(bnode.LeftNode);
 
-                    // right node is statement which wont return any value, so push null to stack
-                    if ((bnode.RightNode is IfStatementNode) || (bnode.RightNode is ForLoopNode))
+                    // check whether the variable name is a function name
+                    bool isAccessibleFp;
+                    int realType;
+                    ProtoCore.DSASM.ProcedureNode procNode = null;
+                    if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
                     {
-                        EmitPushNull();
+                        procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
                     }
+                    if (procNode == null)
                     {
-                        // check whether the variable name is a function name
-                        bool isAccessibleFp;
-                        int realType;
-                        ProtoCore.DSASM.ProcedureNode procNode = null;
-                        if (globalClassIndex != ProtoCore.DSASM.Constants.kGlobalScope)
+                        procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
+                    }
+                    if (procNode != null)
+                    {
+                        if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
                         {
-                            procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
-                        }
-                        if (procNode == null)
-                        {
-                            procNode = CoreUtils.GetFirstVisibleProcedure(t.Name, null, codeBlock);
-                        }
-                        if (procNode != null)
-                        {
-                            if (ProtoCore.DSASM.Constants.kInvalidIndex != procNode.procId && emitDebugInfo)
-                            {
-                                buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVariableError, t.Name), core.CurrentDSFileName, t.line, t.col);
-                            }
+                            buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVariableError, t.Name), core.CurrentDSFileName, t.line, t.col);
                         }
                     }
 
@@ -9277,23 +9265,9 @@ namespace ProtoAssociative
             {
                 EmitNullNode(node, ref inferedType, isBooleanOp, subPass);
             }
-#if ENABLE_INC_DEC_FIX
-            else if (node is PostFixNode)
-            {
-                EmitPostFixNode(node, ref inferedType);
-            }
-#endif
-            else if (node is ReturnNode)
-            {
-                EmitReturnNode(node);
-            }
             else if (node is RangeExprNode)
             {
                 EmitRangeExprNode(node, ref inferedType, graphNode, subPass);
-            }
-            else if (node is ForLoopNode)
-            {
-                EmitForLoopNode(node);
             }
             else if (node is LanguageBlockNode)
             {

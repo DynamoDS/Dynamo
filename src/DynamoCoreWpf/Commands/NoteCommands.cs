@@ -27,5 +27,18 @@ namespace Dynamo.ViewModels
                 return _createGroupCommand;
             }
         }
+
+        private DelegateCommand _ungroupCommand;
+        public DelegateCommand UngroupCommand
+        {
+            get
+            {
+                if (_ungroupCommand == null)
+                    _ungroupCommand =
+                        new DelegateCommand(UngroupNote, CanUngroupNote);
+
+                return _ungroupCommand;
+            }
+        }
     }
 }

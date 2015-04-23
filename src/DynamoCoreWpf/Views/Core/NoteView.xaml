@@ -21,6 +21,9 @@
                 <MenuItem Name="createGroup_cm"
                           Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
                           Command="{Binding Path=CreateGroupCommand}" />
+                <MenuItem Name="unGroup_cm"
+                          Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
+                          Command="{Binding Path=UngroupCommand}" />
             </ContextMenu>
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
