@@ -1,16 +1,10 @@
-language: c
+# See http://docs.travis-ci.com/user/languages/csharp/
 
-env:
- global:
-  - EnableNuGetPackageRestore=true 
-
-before_install:
-  # Make sure mono is installed,
-  # pipe stdout to dev/null because qq is still too chatty
-  - sudo apt-get update -qq > /dev/null
-  - sudo apt-get install -qq mono-devel > /dev/null
-  - mozroots --import --sync
-
+language: csharp
+solution: src/Dynamo.Mono.sln
+install:
+  - nuget restore src/Dynamo.Mono.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
- - xbuild src/Dynamo.Mono.sln
- - .ci/nunit.sh bin/AnyCPU/Debug/ProtoTest.dll
+  - xbuild /p:Configuration=Release src/Dynamo.Mono.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe bin/AnyCPU/Release/ProtoTest.dll
