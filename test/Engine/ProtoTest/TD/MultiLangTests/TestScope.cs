@@ -1042,7 +1042,7 @@ a = 10;
 // expected: sum = 21
 // result: sum = 11";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 11);
+            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 21);
 
         }
 
