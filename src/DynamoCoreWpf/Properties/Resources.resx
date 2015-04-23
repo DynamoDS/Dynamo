@@ -1575,4 +1575,10 @@ Do you want to install the latest Dynamo update?</value>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
   </data>
+  <data name="Autodesk360SignInButtonContentToolTip" xml:space="preserve">
+    <value>Sign in to Autodesk A360 to access online services that integrate with your desktop software.</value>
+  </data>
+  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
+    <value>Autodesk A360</value>
+  </data>
 </root>
