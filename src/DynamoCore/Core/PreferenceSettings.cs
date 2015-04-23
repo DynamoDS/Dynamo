@@ -115,6 +115,16 @@ namespace Dynamo
         public bool UseHardwareAcceleration { get; set; }
 
         /// <summary>
+        /// This defines how long (in milliseconds) will the graph be automatically saved.
+        /// </summary>
+        public int BackupInterval { get; set; }
+
+        /// <summary>
+        /// This defines how many files will be backed up.
+        /// </summary>
+        public int BackupFilesCount { get; set; }
+
+        /// <summary>
         /// Indicates if the user has accepted the terms of 
         /// use for downloading packages from package manager.
         /// </summary>
@@ -147,6 +157,8 @@ namespace Dynamo
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
             ShowGaleryAtStartUp = true;
+            BackupInterval = 60000; // 1 minute
+            BackupFilesCount = 1;
         }
 
         /// <summary>

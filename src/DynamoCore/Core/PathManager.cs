@@ -45,6 +45,7 @@ namespace Dynamo.Core
         public const string LogsDirectoryName = "Logs";
         public const string NodesDirectoryName = "nodes";
         public const string DefinitionsDirectoryName = "definitions";
+        public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
         public const string GalleryContentsFileName = "GalleryContents.xml";
 
@@ -59,6 +60,7 @@ namespace Dynamo.Core
         private readonly string logDirectory;
         private readonly string packagesDirectory;
         private readonly string samplesDirectory;
+        private readonly string backupDirectory;
         private readonly string preferenceFilePath;
         private readonly string galleryDirectory;
         private readonly string galleryFilePath;
@@ -108,7 +110,12 @@ namespace Dynamo.Core
 
         public string GalleryDirectory
         {
-            get { return galleryDirectory;  }
+            get { return galleryDirectory; }
+        }
+
+        public string BackupDirectory
+        {
+            get { return backupDirectory; }
         }
 
         public string PreferenceFilePath
@@ -230,6 +237,7 @@ namespace Dynamo.Core
             logDirectory = Path.Combine(userDataDir, LogsDirectoryName);
             packagesDirectory = Path.Combine(userDataDir, PackagesDirectoryName);
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
+            backupDirectory = Path.Combine(Directory.GetParent(userDataDir).FullName, BackupDirectoryName);
 
             galleryDirectory = GetGalleryDirectory(userDataDir);
             galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
@@ -262,6 +270,7 @@ namespace Dynamo.Core
             CreateFolderIfNotExist(userDefinitions);
             CreateFolderIfNotExist(logDirectory);
             CreateFolderIfNotExist(packagesDirectory);
+            CreateFolderIfNotExist(backupDirectory);
 
             // Common data folders for all users.
             CreateFolderIfNotExist(commonDataDir);
@@ -344,7 +353,7 @@ namespace Dynamo.Core
             var di = new DirectoryInfo(sampleDirectory);
             if (!Directory.Exists(sampleDirectory) ||
                 !di.GetDirectories().Any() ||
-                !di.GetFiles().Any())
+                !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
                 var neturalCommonSamples = Path.Combine(dataRootDirectory, "samples", "en-US");
                 if (Directory.Exists(neturalCommonSamples))

@@ -20,6 +20,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _setModelSizeCommand;
         private DelegateCommand _gotoWorkspaceCommand;
         private DelegateCommand _createGroupCommand;
+        private DelegateCommand _ungroupCommand;
 
         public DelegateCommand RenameCommand
         {
@@ -168,6 +169,18 @@ namespace Dynamo.ViewModels
                         new DelegateCommand(CreateGroup, CanCreateGroup);
 
                 return _createGroupCommand;
+            }
+        }
+       
+        public DelegateCommand UngroupCommand
+        {
+            get
+            {
+                if (_ungroupCommand == null)
+                    _ungroupCommand =
+                        new DelegateCommand(UngroupNode, CanUngroupNode);
+
+                return _ungroupCommand;
             }
         }
     }

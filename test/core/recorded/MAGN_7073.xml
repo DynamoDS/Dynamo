@@ -1,0 +1,3 @@
+<Commands ExitAfterPlayback="true" PauseAfterPlaybackInMs="10" CommandIntervalInMs="20">
+  <OpenFileCommand XmlFilePath=".\MAGN-7073.dyn" />
+</Commands>

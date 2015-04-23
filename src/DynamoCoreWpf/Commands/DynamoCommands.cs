@@ -123,6 +123,7 @@ namespace Dynamo.ViewModels
                 case "ModelEventCommand":
                 case "UpdateModelValueCommand":
                 case "ConvertNodesToCodeCommand":
+                case "UngroupModelCommand":
                     UndoCommand.RaiseCanExecuteChanged();
                     RedoCommand.RaiseCanExecuteChanged();
                     break;
@@ -176,6 +177,7 @@ namespace Dynamo.ViewModels
                 case "CreateCustomNodeCommand":
                 case "SwitchTabCommand":
                 case "MutateTestCommand":
+                case "UngroupModelCommand":
                     // for this commands there is no need
                     // to do anything before execution
                     break;

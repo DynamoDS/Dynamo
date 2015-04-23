@@ -98,6 +98,11 @@ namespace Dynamo.Interfaces
         string SamplesDirectory { get; }
 
         /// <summary>
+        /// The directory where the automatically saved files will be stored.
+        /// </summary>
+        string BackupDirectory { get; }
+
+        /// <summary>
         /// Full path to the preference xml file. This setting file is specific 
         /// to the current user.
         /// </summary>

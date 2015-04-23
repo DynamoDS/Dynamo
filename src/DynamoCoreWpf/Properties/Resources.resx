@@ -153,6 +153,10 @@
     <value>Create Group</value>
     <comment>Context menu item</comment>
   </data>
+  <data name="ContextUnGroupFromSelection" xml:space="preserve">
+    <value>Ungroup</value>
+    <comment>Context menu item</comment>
+  </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
     <value>Nodes From _Selected Geometry</value>
     <comment>Context menu item</comment>
