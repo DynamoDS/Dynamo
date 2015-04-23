@@ -1134,7 +1134,9 @@ namespace Dynamo.Tests
 
 		}
 
-		[Test]
+        // NOTE: This test itself increases the memory consumption by 2.1 GB.
+        // Temporary disabling it so that the build server can continue...
+        [Test, Category("Failure")]
         public void LaceLongest_ListWith10000Element()
 		{
 			var model = ViewModel.Model;
