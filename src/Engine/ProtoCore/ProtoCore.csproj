@@ -235,10 +235,11 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <ExtendedLibraries Include="$(ProjectDir)ExtendedLibraries\*.ds" />
-  </ItemGroup>
+
   <Target Name="AfterBuild">
-    <Copy SourceFiles="$(ExtendedLibraries)" DestinationFolder="$(OutputPath)" />
+    <ItemGroup>
+		<ExtendedLibraries Include="$(ProjectDir)ExtendedLibraries\*.ds" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ExtendedLibraries)" DestinationFolder="$(OutputPath)" />
   </Target>
 </Project>
