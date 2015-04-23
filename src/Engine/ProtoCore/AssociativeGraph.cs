@@ -18,21 +18,23 @@ namespace ProtoCore.AssociativeEngine
         /// <summary>
         /// Builds the dependencies within the list of graphNodes
         /// </summary>
-        /// <param name="graphNodes"></param>
-        public static void BuildGraphNodeDependencies(List<AssociativeGraph.GraphNode> graphNodes)
+        /// <param name="graphNodeScopeToCheck"></param>
+        public static void BuildGraphNodeDependencies(
+            List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
-            if (graphNodes == null)
+            if (graphNodesInScope == null)
             {
                 return;
             }
+
             // Get the current graphnode to check against the list
             //  [a = 10]  -> this one
             //  c = 1
             //  b = a
             //  d = a
-            for (int i = 0; i < graphNodes.Count; ++i)
+            for (int i = 0; i < graphNodesInScope.Count; ++i)
             {
-                AssociativeGraph.GraphNode currentNode = graphNodes[i];
+                AssociativeGraph.GraphNode currentNode = graphNodesInScope[i];
                 if (!currentNode.isActive)
                 {
                     continue;
@@ -42,11 +44,11 @@ namespace ProtoCore.AssociativeEngine
                 //  c = 1  (gnode) -> this is checked if it depends on [a]. If it does, add it to the dependency list of  a = 10 (currentnode)
                 //  b = a  (gnode) -> next
                 //  d = a  (gnode) -> next
-                for (int j = 0; j < graphNodes.Count; ++j)
+                for (int j = 0; j < graphNodesInScope.Count; ++j)
                 {
-                    if (i != j)
+                    AssociativeGraph.GraphNode gnode = graphNodesInScope[j];
+                    if (currentNode.UID != gnode.UID)
                     {
-                        AssociativeGraph.GraphNode gnode = graphNodes[j];
                         if (!gnode.isActive)
                         {
                             continue;
@@ -110,7 +112,16 @@ namespace ProtoCore.AssociativeEngine
             }
 
             AssociativeGraph.GraphNode dependent = null;
-            bool doesOtherNodeDependOnExecNode = otherNode.DependsOn(execNode.updateNodeRefList[0], ref dependent);
+            bool doesOtherNodeDependOnExecNode = false; 
+            foreach (AssociativeGraph.UpdateNodeRef nodeRef in execNode.updateNodeRefList)
+            {
+                if (otherNode.DependsOn(nodeRef, ref dependent))
+                {
+                    doesOtherNodeDependOnExecNode = true;
+                    break;
+                }
+            }
+
             if (!doesOtherNodeDependOnExecNode)
             {
                 return false;

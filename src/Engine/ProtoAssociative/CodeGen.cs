@@ -753,14 +753,6 @@ namespace ProtoAssociative
             //    if (NodeUtils.IsReturnExpressionNode(node))
             //        hasReturnStatement = true;
             //}
-
-            // Build graphnodes only on the last pass
-            if (IsCompilingCodeBody())
-            {
-                ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
-                    codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(globalClassIndex, globalProcIndex));
-            }
-
             return hasReturnStatement;
         }
 
@@ -4118,7 +4110,6 @@ namespace ProtoAssociative
 
                 inferedType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                 hasReturnStatement = EmitCodeBlock(codeblock.Body, ref inferedType, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kUnboundIdentifier, false);
-
                 if (compilePass == ProtoCore.CompilerDefinitions.Associative.CompilePass.kGlobalScope && !hasReturnStatement)
                 {
                     EmitReturnNull(); 
@@ -4136,6 +4127,9 @@ namespace ProtoAssociative
 
             ResolveFinalNodeRefs();
             ResolveSSADependencies();
+            
+            ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
+                codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope));
             
             if (codeBlock.parent == null)  // top-most langauge block
             {
@@ -5754,6 +5748,10 @@ namespace ProtoAssociative
 
                     EmitCodeBlock(funcDef.FunctionBody.Body, ref inferedType, subPass, true);
 
+                    // Build dependency within the function
+                    ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
+                        codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(globalClassIndex, globalProcIndex));
+
                     // All locals have been stack allocated, update the local count of this function
                     localProcedure.localCount = core.BaseOffset;
                     core.ClassTable.ClassNodes[globalClassIndex].vtable.procList[globalProcIndex].localCount = core.BaseOffset;
@@ -6094,7 +6092,13 @@ namespace ProtoAssociative
                     EmitCompileLogFunctionStart(GetFunctionSignatureString(funcDef.Name, funcDef.ReturnType, funcDef.Signature));
 
                     ProtoCore.Type itype = new ProtoCore.Type();
+
                     hasReturnStatement = EmitCodeBlock(funcDef.FunctionBody.Body, ref itype, subPass, true);
+
+                    // Build dependency within the function
+                    ProtoCore.AssociativeEngine.Utils.BuildGraphNodeDependencies(
+                        codeBlock.instrStream.dependencyGraph.GetGraphNodesAtScope(globalClassIndex, globalProcIndex));
+
 
                     EmitCompileLogFunctionEnd();
 
@@ -7499,6 +7503,11 @@ namespace ProtoAssociative
                                     {
                                         autogenRef.PushUpdateNodeRef(updateRef);
                                         graphNode.updateNodeRefList.Add(autogenRef);
+
+                                        if (graphNode.lastGraphNode != null)
+                                        {
+                                            graphNode.lastGraphNode.updateNodeRefList.Add(autogenRef);
+                                        }
                                     }
                                 }
                             }
