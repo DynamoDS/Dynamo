@@ -88,11 +88,13 @@ namespace Dynamo.Views
         void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
+            ViewModel.RequestShowIncanvasSearch += ShowIncanvasControl;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
         {
             DynamoSelection.Instance.Selection.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
+            ViewModel.RequestShowIncanvasSearch -= ShowIncanvasControl;
         }
 
         /// <summary>
@@ -698,6 +700,11 @@ namespace Dynamo.Views
             }
 
             return HitTestResultBehavior.Continue;
+        }
+
+        private void ShowIncanvasControl()
+        {
+            //throw new NotImplementedException();
         }
         
     }

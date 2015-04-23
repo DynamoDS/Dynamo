@@ -25,6 +25,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _unpauseVisualizationManagerUpdateCommand;
         private DelegateCommand _showHideAllGeometryPreviewCommand;
         private DelegateCommand _showHideAllUpstreamPreviewCommand;
+		private DelegateCommand _showIncanvasSearchCommand;
 
         #endregion
 
@@ -212,6 +213,17 @@ namespace Dynamo.ViewModels
                 return _showHideAllUpstreamPreviewCommand;
             }
         }
+		
+		public DelegateCommand ShowIncanvasSearchCommand
+		{
+			get
+            {
+                if (_showIncanvasSearchCommand == null)
+					_showIncanvasSearchCommand = new DelegateCommand(ShowIncanvasSearch, canExecute => true);
+					
+				return _showIncanvasSearchCommand;
+			}	
+		}
 
         #endregion
 

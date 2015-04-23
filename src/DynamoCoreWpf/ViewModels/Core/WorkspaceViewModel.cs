@@ -25,6 +25,7 @@ namespace Dynamo.ViewModels
     public delegate void SelectionEventHandler(object sender, SelectionBoxUpdateArgs e);
     public delegate void ViewModelAdditionEventHandler(object sender, ViewModelEventArgs e);
     public delegate void WorkspacePropertyEditHandler(WorkspaceModel workspace);
+    public delegate void ShowIncanvasSearchHandler();
     
     public partial class WorkspaceViewModel : ViewModelBase
     {
@@ -41,6 +42,7 @@ namespace Dynamo.ViewModels
 
         public event NodeEventHandler RequestCenterViewOnElement;
 
+        public event ShowIncanvasSearchHandler RequestShowIncanvasSearch;
         public event ViewEventHandler RequestAddViewToOuterCanvas;
         public event SelectionEventHandler RequestSelectionBoxUpdate;
         public event WorkspacePropertyEditHandler WorkspacePropertyEditRequested;
@@ -109,6 +111,12 @@ namespace Dynamo.ViewModels
             // extend this for all workspaces
             if (WorkspacePropertyEditRequested != null)
                 WorkspacePropertyEditRequested(Model);
+        }
+
+        public virtual void OnRequestShowIncanvasSearch()
+        {
+            if (RequestShowIncanvasSearch != null)
+                RequestShowIncanvasSearch();
         }
 
         /// <summary>
@@ -1130,6 +1138,11 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeUpstreamVisible");
             RaisePropertyChanged("SelectionArgumentLacing");
         }
+		
+		private void ShowIncanvasSearch(object param)
+		{
+			OnRequestShowIncanvasSearch();
+		}
     }
 
     public class ViewModelEventArgs : EventArgs
