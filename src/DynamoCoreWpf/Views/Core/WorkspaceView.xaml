@@ -327,10 +327,11 @@
         </StackPanel>
 
         <Popup Name="IncanvasSearch"
-                       StaysOpen="False"
-                       AllowsTransparency="True"
-                       IsOpen="False"
-                       Placement="MousePoint">
+               StaysOpen="False"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="MousePoint"
+               Closed="OnIncanvasSearchClosed">
             <ui:IncanvasSearchControl />
         </Popup>
 

@@ -714,6 +714,12 @@ namespace Dynamo.Views
 
             IncanvasSearch.IsOpen = true;
         }
+
+        private void OnIncanvasSearchClosed(object sender, EventArgs e)
+        {
+            var searchVM = (sender as FrameworkElement).DataContext as SearchViewModel;
+            searchVM.SearchText = String.Empty;
+        }
         
     }
 }
