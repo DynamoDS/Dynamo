@@ -1,17 +1,17 @@
-﻿using Autodesk.DesignScript.Geometry;
-
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
-using ProtoCore.Mirror;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Runtime.Serialization;
+using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.DSEngine;
 using Dynamo.Models;
-using Autodesk.DesignScript.Interfaces;
+using Dynamo.Properties;
+
+using ProtoCore.Mirror;
 
 namespace Dynamo.Core.Threading
 {
@@ -35,6 +35,11 @@ namespace Dynamo.Core.Threading
     /// 
     class UpdateRenderPackageAsyncTask : AsyncTask
     {
+        private const byte defR = 101;
+        private const byte defG = 86;
+        private const byte defB = 130;
+        private const byte defA = 255;
+
         #region Class Data Members and Properties
 
         protected Guid nodeGuid;
@@ -141,11 +146,8 @@ namespace Dynamo.Core.Threading
                 return;
             }
 
-            byte defR = 101;
-            byte defG = 86;
-            byte defB = 130;
-            byte defA = 255;
-
+            
+            
             if (mirrorData.IsCollection)
             {
                 foreach (var el in mirrorData.GetElements())
@@ -286,7 +288,7 @@ namespace Dynamo.Core.Threading
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(
+                    Debug.WriteLine(
                         "PushGraphicItemIntoPackage: " + e);
                 }
 

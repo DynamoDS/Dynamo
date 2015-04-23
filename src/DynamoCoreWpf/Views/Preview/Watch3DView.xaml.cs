@@ -17,11 +17,11 @@ using Autodesk.DesignScript.Interfaces;
 
 using Dynamo.ViewModels;
 using Dynamo.DSEngine;
+using Dynamo.UI;
 using Dynamo.Wpf;
 
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
-//using HelixToolkit.Wpf.SharpDX.Model.Geometry;
 
 using SharpDX;
 
@@ -61,7 +61,8 @@ namespace Dynamo.Controls
         private LineGeometry3D worldAxes;
         private RenderTechnique renderTechnique;
         private PerspectiveCamera camera;
-        private Color4 selectionColor = new Color4(0,158.0f/255.0f,1,1);
+        private Color4 selectionColor;
+        private Color4 materialColor;
         private bool showShadows;
         private Vector3 directionalLightDirection;
         private Color4 directionalLightColor;
@@ -437,33 +438,34 @@ namespace Dynamo.Controls
             ShowShadows = false;
             
             // setup lighting            
-            //AmbientLightColor = new Color4(0.3f, 0.3f, 0.3f, 1.0f);
             AmbientLightColor = new Color4(0.0f, 0.0f, 0.0f, 1.0f);
 
             DirectionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
             DirectionalLightDirection = new Vector3(-0.5f, -1.0f, 0.0f);
             
-            //FillLightColor = new Color4(new Vector4(0.2f, 0.2f, 0.2f, 1.0f));
             FillLightColor = new Color4(new Vector4(0.0f, 0.0f, 0.0f, 1.0f));
             FillLightDirection = new Vector3(0.5f, 1.0f, 0f);
 
-            var matColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#efede4");
+            var matColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MaterialColor"];
+            materialColor = new Color4(matColor.R/255.0f, matColor.G/255.0f, matColor.B/255.0f, matColor.A/255.0f);
             RenderTechnique = Techniques.RenderPhong;
             WhiteMaterial = new PhongMaterial
             {
                 Name = "White",
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                DiffuseColor = PhongMaterials.ToColor(matColor.R, matColor.G, matColor.B, 1.0f),
+                DiffuseColor = materialColor,
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
             };
 
+            var selColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["SelectionColor"];
+            selectionColor = new Color4(selColor.R/255.0f, selColor.G/255.0f, selColor.B/255.0f, selColor.A/255.0f);
             SelectedMaterial = new PhongMaterial
             {
                 Name = "White",
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                DiffuseColor = PhongMaterials.ToColor(selectionColor.Red, selectionColor.Green, selectionColor.Blue, 1.0f),
+                DiffuseColor = selectionColor,
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
