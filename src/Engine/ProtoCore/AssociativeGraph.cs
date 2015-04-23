@@ -70,31 +70,55 @@ namespace ProtoCore.AssociativeEngine
                         //      [3] b = 2   <- Modifying 'b' should re-execute [0], [2] and [3]
                         //
 
-                        // Jun: Write a function to check if a graph has no LHS and describe why there are such graphs
-                        bool doesContainLHS = currentNode.updateNodeRefList != null && currentNode.updateNodeRefList.Count > 0;
-                        if (doesContainLHS)
+                        bool isUpdatableNode = currentNode.updateNodeRefList != null && currentNode.updateNodeRefList.Count > 0;
+                        if (!isUpdatableNode)
                         {
-                            bool nodesAreSelfModifying = AreNodesSelfModifyingAndEqualLHS(currentNode, gnode);
-                            if (nodesAreSelfModifying)
-                            {
-                                continue;
-                            }
-
-                            AssociativeGraph.GraphNode dependent = null;
-                            if (gnode.DependsOn(currentNode.updateNodeRefList[0], ref dependent))
-                            {
-                                bool isWithinSSAExpression = currentNode.ssaExpressionUID == gnode.ssaExpressionUID;
-                                bool isDownstreamUpdate = isWithinSSAExpression && currentNode.UID < gnode.UID;
-                                if (!isWithinSSAExpression || isDownstreamUpdate)
-                                {
-                                    Validity.Assert(dependent != null);
-                                    currentNode.PushGraphNodeToExecute(gnode);
-                                }
-                            }
+                            continue;
                         }
+
+                        bool nodesAreSelfModifying = AreNodesSelfModifyingAndEqualLHS(currentNode, gnode);
+                        if (nodesAreSelfModifying)
+                        {
+                            continue;
+                        }
+
+                        bool canUpdate = DoesExecutingNodeAffectOtherNode(currentNode, gnode);
+                        if (!canUpdate)
+                        {
+                            continue;
+                        }
+
+                        currentNode.PushGraphNodeToExecute(gnode);
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Check if executing 'execNode' will cause re-execution 'otherNode'
+        /// </summary>
+        /// <param name="executingNode"></param>
+        /// <param name="otherNode"></param>
+        private static bool DoesExecutingNodeAffectOtherNode(AssociativeGraph.GraphNode execNode, AssociativeGraph.GraphNode otherNode)
+        {
+            bool isWithinSSAExpression = execNode.ssaExpressionUID == otherNode.ssaExpressionUID;
+            bool isDownstreamUpdate = isWithinSSAExpression && execNode.UID < otherNode.UID;
+            bool isUpdatable = !isWithinSSAExpression || isDownstreamUpdate;
+            if (!isUpdatable)
+            {
+                return false;
+            }
+
+            AssociativeGraph.GraphNode dependent = null;
+            bool doesOtherNodeDependOnExecNode = otherNode.DependsOn(execNode.updateNodeRefList[0], ref dependent);
+            if (!doesOtherNodeDependOnExecNode)
+            {
+                return false;
+            }
+
+            // Other conditions can go here
+
+            return true;
         }
 
 
