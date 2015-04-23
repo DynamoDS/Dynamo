@@ -433,8 +433,12 @@ namespace Dynamo.UI.Controls
             var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
             StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
 
-            if(UsageReportingManager.IsShowGalleryAtStart)
+            if (dynamoViewModel.Model.PreferenceSettings.ShowGaleryAtStartUp)
+            {
+                dynamoViewModel.Model.PreferenceSettings.ShowGaleryAtStartUp = false;
                 dynamoViewModel.ShowGalleryCommand.Execute(null);
+            }
+
         }
 
         private void OnItemSelectionChanged(object sender, SelectionChangedEventArgs e)

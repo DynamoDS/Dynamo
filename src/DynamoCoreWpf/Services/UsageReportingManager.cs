@@ -36,7 +36,6 @@ namespace Dynamo.Services
             instance = null;
         }
 
-        public static bool IsShowGalleryAtStart { get; private set; }
         #endregion
 
         #region Properties binded to PreferenceSettings
@@ -149,7 +148,6 @@ namespace Dynamo.Services
             // First run of Dynamo
             if (dynamoModel.PreferenceSettings.IsFirstRun)
             {
-                IsShowGalleryAtStart = true;
                 FirstRun = false;
 
                 //Analytics enable by defaultwa

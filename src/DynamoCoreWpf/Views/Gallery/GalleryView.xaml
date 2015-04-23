@@ -81,6 +81,7 @@
             Grid.Row="1"/>
 
         <dynui:ImageButton
+            Focusable="False"
             Width="20" Height="38"
             HorizontalAlignment="Center" 
             VerticalAlignment="Center" 
