@@ -89,6 +89,10 @@ namespace Dynamo.Views
         {
             DynamoSelection.Instance.Selection.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSelectionCollectionChanged);
             ViewModel.RequestShowIncanvasSearch += ShowIncanvasControl;
+
+            var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
+            searchViewModel.Visible = true;
+            IncanvasSearch.DataContext = searchViewModel;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -704,7 +708,11 @@ namespace Dynamo.Views
 
         private void ShowIncanvasControl()
         {
-            //throw new NotImplementedException();
+            // Show incanvas search just in case, when mouse is over workspace.
+            if (!this.IsMouseOver)
+                return;
+
+            IncanvasSearch.IsOpen = true;
         }
         
     }
