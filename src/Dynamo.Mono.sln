@@ -71,8 +71,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "System", "System", "{88A445
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Python", "Libraries\DynamoPython\Python.csproj", "{2B0F2800-6F62-4869-9074-088C5F6DCCA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoTestConsoleRunner", "..\test\Engine\ProtoTestConsoleRunner\ProtoTestConsoleRunner.csproj", "{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Units", "Libraries\DynamoUnits\Units.csproj", "{6E0A079E-85F1-45A1-AD5B-9855E4344809}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}

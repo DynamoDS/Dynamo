@@ -329,19 +329,18 @@ limitations under the License.
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ExternProtoGeometry Include="$(SolutionDir)..\extern\ProtoGeometry\*" />
-    <ExternProtoGeometryXml Include="$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.XML" />
-    <ExternProtoGeometryUICulture Include="$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" />
-    <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\*" />
-    <ExternLibG219 Include="$(SolutionDir)..\extern\LibG_219\*" />
-    <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220\*" />
-    <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221\*" />
-    <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
-    <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\*" />
-  </ItemGroup>
-  
   <Target Name="BeforeBuild">
+    <ItemGroup>
+      <ExternProtoGeometry Include="$(SolutionDir)..\extern\ProtoGeometry\*" />
+      <ExternProtoGeometryXml Include="$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.XML" />
+      <ExternProtoGeometryUICulture Include="$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" />
+      <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\*" />
+      <ExternLibG219 Include="$(SolutionDir)..\extern\LibG_219\*" />
+      <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220\*" />
+      <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221\*" />
+      <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
+      <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\*" />
+    </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" DestinationFolder="$(OutputPath)\$(UICulture)" />
