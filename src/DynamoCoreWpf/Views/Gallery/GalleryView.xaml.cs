@@ -1,11 +1,4 @@
-﻿using Dynamo.Models;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.ViewModels.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using Dynamo.Wpf.ViewModels.Core;
 using System.Windows.Controls;
 
 namespace Dynamo.Wpf.Views.Gallery

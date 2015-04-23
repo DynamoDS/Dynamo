@@ -4,17 +4,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:ui="clr-namespace:Dynamo.UI"
-        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-        xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
-        d:DesignHeight="600" 
-        d:DesignWidth="600"
+        xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
+        d:DesignHeight="640" 
+        d:DesignWidth="800"
         VerticalAlignment="Center"
         HorizontalAlignment="Center"
         Background="White"
         MouseLeftButtonDown="GalleryView_MouseLeftButtonDown"
         mc:Ignorable="d"
         Focusable="True"
-        Padding="0,0,0,20">
+        Padding="0,0,0,16">
     
     <UserControl.Resources>
         <ResourceDictionary>
@@ -32,103 +31,98 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="600"></ColumnDefinition>
             <ColumnDefinition Width="100"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="300"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="400"></RowDefinition>
+            <RowDefinition Height="32"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="Version"
-                 Text="{Binding Path=DynamoVersion, Mode=OneWay}"
-                 Foreground="Gray" FontSize="14" BorderThickness="0"
-                 HorizontalAlignment="Left"
-                 VerticalAlignment="Bottom"
-                 Margin="5,0,0,5"
-                 Grid.Column="1" Grid.Row="0"
-                 FontFamily="{StaticResource OpenSansRegular}"/>
+        <TextBlock 
+            x:Name="Version"
+            Text="{Binding Path=DynamoVersion}"
+            Foreground="#888888" FontSize="14"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Margin="16,0,0,0"
+            Grid.Column="1" Grid.Row="0"
+            FontFamily="{StaticResource OpenSansRegular}"/>
 
-        <Button x:Name="CloseButton"
-                Content="{x:Static p:Resources.GalleryCloseButton}" FontSize="14" Foreground="Red"
-                FontFamily="{StaticResource OpenSansRegular}"
-                HorizontalAlignment="Right"
-                Margin="0,0,5,5"
-                Grid.Column="1" Grid.Row="0"
-                Background="Transparent"
-                BorderThickness="0"
-                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                VerticalAlignment="Bottom" 
-                Command="{Binding Path=CloseGalleryCommand}">
-        </Button>
+        <dynui:ImageButton 
+            Width="86" Height="21"
+            Grid.Column="1" Grid.Row="0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,16,0"
+            Command="{Binding Path=CloseGalleryCommand}"
+            StateImage="/DynamoCoreWpf;component/UI/Images/Gallery/gallery-button-close-states.png"/>
 
-        <Button x:Name="LeftButton" Focusable="False"
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center" 
-                Grid.Column="0" Grid.Row="1"
-                Background="Transparent" 
-                BorderThickness="0"
-                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                Width="100"
-                Height="300"
-                Command="{Binding Path=MovePrevCommand}" >
-            <Image Source="LeftIcon.png" 
-                   VerticalAlignment="Center" 
-                   HorizontalAlignment="Center" />
-        </Button>
+        <dynui:ImageButton 
+            Focusable="False"
+            Width="20" Height="38"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center" 
+            Grid.Column="0" Grid.Row="1"
+            StateImage="/DynamoCoreWpf;component/UI/Images/Gallery/gallery-button-next-prev-states.png"
+            Command="{Binding Path=MovePrevCommand}"/>
 
-        <Image x:Name="currentImage" 
-               Source="{Binding Path=CurrentImagePath, UpdateSourceTrigger=PropertyChanged}"
-               Stretch="UniformToFill"
-               Width="400" Height="300" 
-               HorizontalAlignment="Center" 
-               Grid.Column="1" 
-               Grid.Row="1"/>
+        <Image 
+            x:Name="currentImage"
+            Source="{Binding Path=CurrentImagePath, UpdateSourceTrigger=PropertyChanged}"
+            Stretch="UniformToFill"
+            Width="600" Height="400"
+            Margin="16"
+            HorizontalAlignment="Center" 
+            Grid.Column="1" 
+            Grid.Row="1"/>
 
-        <Button x:Name="RightButton" Focusable="False"
-                HorizontalAlignment="Center" 
-                Grid.Column="2" 
-                Grid.Row="1"
-                BorderThickness="0"
-                Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                Background="Transparent" 
-                VerticalAlignment="Center" 
-                Width="100" 
-                Height="300" 
-                Command="{Binding Path=MoveNextCommand}">
-            <Button.Content>
-                <Image Source="RightIcon.png" 
-                       VerticalAlignment="Center" 
-                       HorizontalAlignment="Center"/>
-            </Button.Content>
-        </Button>
+        <dynui:ImageButton
+            Width="20" Height="38"
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center" 
+            Grid.Column="2" Grid.Row="1"
+            StateImage="/DynamoCoreWpf;component/UI/Images/Gallery/gallery-button-next-prev-states.png"
+            Command="{Binding Path=MoveNextCommand}">
+            <dynui:ImageButton.RenderTransform>
+                <ScaleTransform ScaleX="-1"/>
+            </dynui:ImageButton.RenderTransform>
+        </dynui:ImageButton>
 
-        <ListBox Name="GalleryBullets" 
-                 Margin="0,10,0,0"
-                 VerticalAlignment="Top" 
-                 HorizontalAlignment="Center" 
-                 Style="{StaticResource GalleryBullets}"
-                 ItemContainerStyle="{StaticResource GalleryBullet}"
-                 ItemsSource="{Binding Path=Contents}"
-                 Grid.Column="1" 
-                 Grid.Row="2">
+        <ListBox 
+            Name="GalleryBullets" 
+            VerticalAlignment="Top" 
+            HorizontalAlignment="Center" 
+            Style="{StaticResource GalleryBullets}"
+            ItemContainerStyle="{StaticResource GalleryBullet}"
+            ItemsSource="{Binding Path=Contents}"
+            Grid.Column="1" 
+            Grid.Row="2">
         </ListBox>
 
-        <TextBlock FontFamily="{StaticResource OpenSansRegular}"
-                   Text="{Binding Path=CurrentHeader, UpdateSourceTrigger=PropertyChanged}" 
-                   Grid.Row="3" 
-                   Grid.Column="1" 
-                   FontWeight="Bold" 
-                   VerticalAlignment="Center"/>
+        <TextBlock 
+            FontFamily="{StaticResource OpenSansRegular}"
+            Text="{Binding Path=CurrentHeader, UpdateSourceTrigger=PropertyChanged}"
+            FontSize="14"
+            Grid.Row="3" Grid.Column="1" 
+            HorizontalAlignment="Left"
+            FontWeight="SemiBold" Margin="16,0,0,0" 
+            VerticalAlignment="Center"/>
         
-        <TextBlock FontFamily="{StaticResource OpenSansRegular}"
-                   Text="{Binding Path=CurrentBody, UpdateSourceTrigger=PropertyChanged}" 
-                   Grid.Row="4" 
-                   Grid.Column="1" 
-                   TextWrapping="Wrap" />
+        <ScrollViewer 
+            Grid.Row="4" Grid.Column="1" 
+            HorizontalAlignment="Left"
+            Margin="16,0,0,0">
+            <TextBlock 
+                Text="{Binding Path=CurrentBody, UpdateSourceTrigger=PropertyChanged}"
+                TextWrapping="Wrap"
+                Foreground="#333333"
+                FontSize="14"
+                FontFamily="{StaticResource OpenSansRegular}"/>
+        </ScrollViewer>
         
     </Grid>
     
