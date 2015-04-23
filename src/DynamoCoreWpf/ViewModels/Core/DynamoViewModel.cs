@@ -951,8 +951,7 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanAddModelsToGroup(object obj)
-        {
-            var tt = DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
+        {          
             return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
         }
 
@@ -964,7 +963,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
             //Check for multiple groups - Delete the group and not the nodes.
-            foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>().ToList())
+            foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>())
             {
                 if (!(modelb is AnnotationModel))
                 {

@@ -101,9 +101,7 @@ namespace Dynamo.Nodes
                 var annotationGuid = this.ViewModel.AnnotationModel.GUID;
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
-
-                //ViewModel.WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
-
+                
                 foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
                 {
                     //when a node is added to group, that node will be in selected mode. 
