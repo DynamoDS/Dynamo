@@ -74,6 +74,12 @@ namespace ProtoCore.AssociativeEngine
                         bool doesContainLHS = currentNode.updateNodeRefList != null && currentNode.updateNodeRefList.Count > 0;
                         if (doesContainLHS)
                         {
+                            bool nodesAreSelfModifying = AreNodesSelfModifyingAndEqualLHS(currentNode, gnode);
+                            if (nodesAreSelfModifying)
+                            {
+                                continue;
+                            }
+
                             AssociativeGraph.GraphNode dependent = null;
                             if (gnode.DependsOn(currentNode.updateNodeRefList[0], ref dependent))
                             {
@@ -89,6 +95,62 @@ namespace ProtoCore.AssociativeEngine
                     }
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Check if both nodes are self modifying and have equal lhs
+        /// Example cases:
+        ///     x = x + 1 is equal to x = x + 1
+        ///     x = x + 1 is equal to x = a + x + 1
+        /// </summary>
+        /// <param name="varAssignNode"></param>
+        /// <param name="inspectNode"></param>
+        /// <returns></returns>
+        private static bool AreNodesSelfModifyingAndEqualLHS(AssociativeGraph.GraphNode varAssignNode, AssociativeGraph.GraphNode inspectNode)
+        {
+            // Check if self modifying
+            bool areNodesSelfModifying = varAssignNode.IsModifier && inspectNode.IsModifier;
+            if (!areNodesSelfModifying)
+            {
+                return false;
+            }
+
+            // Check if varAssignNode is indeed the final assignment node
+            //  x = x + 1
+            //      [0] t0 = x
+            //      [1] t1 = t0 + 1;
+            //      [2] x = t1  <- This is the varAssignNode
+            if (!varAssignNode.IsLastNodeInSSA)
+            {
+                return false; 
+            }
+
+            bool canInspectNodes =
+                varAssignNode != null && inspectNode != null
+                && varAssignNode.updateNodeRefList.Count > 0 && inspectNode.updateNodeRefList.Count > 0;
+            if (!canInspectNodes)
+            {
+                return false;
+            }
+
+            // Check if they are from different expressions
+            bool isWithinSSAExpression = varAssignNode.ssaExpressionUID == inspectNode.ssaExpressionUID;
+            if (isWithinSSAExpression)
+            {
+                return false;
+            }
+
+            // Check for equal LHS
+            AssociativeGraph.GraphNode assignNode = inspectNode.lastGraphNode;
+            bool isValidAssignNode = assignNode != null && assignNode.updateNodeRefList.Count > 0;
+            if (!isValidAssignNode)
+            {
+                return false;
+            }
+
+            bool areLHSEqual = varAssignNode.IsUpdateableBy(assignNode.updateNodeRefList[0]);  
+            return areLHSEqual;
         }
 
         /// <summary>
@@ -737,6 +799,7 @@ namespace ProtoCore.AssociativeGraph
     public class GraphNode
     {
         public int ssaExpressionUID { get; set; }
+        public bool IsModifier { get; set; }    // Flags if a graphnode is part of a statement that performs self assignment (the LHS appears on the RHS)
         public int UID { get; set; }
         public Guid guid {get; set;}
         public int dependencyGraphListID { get; set; }
@@ -813,6 +876,7 @@ namespace ProtoCore.AssociativeGraph
 
         public GraphNode()
         {
+            IsModifier = false;
             UID = Constants.kInvalidIndex;
             AstID = Constants.kInvalidIndex;
             dependencyGraphListID = Constants.kInvalidIndex;
@@ -934,7 +998,7 @@ namespace ProtoCore.AssociativeGraph
         {
             // Function to check if the current graphnode can be modified by the modified reference
             bool isUpdateable = false;
-            if (modifiedRef.nodeList.Count < updateNodeRefList[0].nodeList.Count)
+            if (modifiedRef.nodeList.Count <= updateNodeRefList[0].nodeList.Count)
             {
                 isUpdateable = true;
                 for (int n = 0; n < modifiedRef.nodeList.Count; ++n)

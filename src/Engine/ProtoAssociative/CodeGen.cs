@@ -3600,12 +3600,12 @@ namespace ProtoAssociative
                         BinaryExpressionNode bnode = (node as BinaryExpressionNode);
                         int generatedUID = ProtoCore.DSASM.Constants.kInvalidIndex;
 
-                        if (core.Options.GenerateSSA)
-                        {
-                            node.IsModifier = true;
-                        }
+                        //if (core.Options.GenerateSSA)
+                        //{
+                        //    node.IsModifier = true;
+                        //}
 
-                        if (context.applySSATransform && node.IsModifier)
+                        if (context.applySSATransform && core.Options.GenerateSSA)
                         {
                             int ssaID = ProtoCore.DSASM.Constants.kInvalidIndex;
                             string name = ProtoCore.Utils.CoreUtils.GenerateIdentListNameString(bnode.LeftNode);
@@ -3643,6 +3643,7 @@ namespace ProtoAssociative
                                 ssaNode.ssaExpressionUID = core.SSAExpressionUID;
                                 ssaNode.guid = bnode.guid;
                                 ssaNode.OriginalAstID = bnode.OriginalAstID;
+                                ssaNode.IsModifier = node.IsModifier;
                                 NodeUtils.SetNodeLocation(ssaNode, node, node);
                             }
 
@@ -8064,6 +8065,7 @@ namespace ProtoAssociative
                     graphNode.exprUID = bnode.exprUID;
                     graphNode.ssaExprID = bnode.ssaExprID;
                     graphNode.ssaExpressionUID = bnode.ssaExpressionUID;
+                    graphNode.IsModifier = bnode.IsModifier;
                     graphNode.guid = bnode.guid;
                     graphNode.modBlkUID = bnode.modBlkUID;
                     graphNode.procIndex = globalProcIndex;

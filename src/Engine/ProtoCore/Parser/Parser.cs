@@ -2245,7 +2245,7 @@ langblock.codeblock.language == ProtoCore.Language.kInvalid) {
 			}
 			
 		}
-		if (!core.Options.GenerateSSA)
+		//if (!core.Options.GenerateSSA)
 		{
 		   if (!isModifier && withinModifierCheckScope)
 		   {

@@ -684,7 +684,7 @@ namespace ProtoCore
 
         /// <summary> 
         /// ExpressionUID is used as the unique id to identify an expression
-        /// It is incremented by 1 after mapping tis current value to an expression
+        /// It is incremented by 1 after mapping its current value to an expression
         /// </summary>
         public int ExpressionUID { get; set; }
 
