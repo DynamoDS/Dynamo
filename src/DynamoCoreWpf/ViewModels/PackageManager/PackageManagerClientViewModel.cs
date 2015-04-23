@@ -129,9 +129,32 @@ namespace Dynamo.ViewModels
         public readonly DynamoViewModel DynamoViewModel;
         public PackageManagerClient Model { get; private set; }
 
+        private LoginState loginState;
         public LoginState LoginState
         {
-            get { return Model.LoginState; }
+            get
+            {
+                return loginState;
+            }
+            private set
+            {
+                loginState = value;
+                RaisePropertyChanged("LoginState");
+            }
+        }
+
+        private string username;
+        public string Username
+        {
+            get
+            {
+                return username;
+            }
+            private set
+            {
+                username = value;
+                RaisePropertyChanged("Username");
+            }
         }
 
         public bool HasAuthProvider
@@ -151,7 +174,12 @@ namespace Dynamo.ViewModels
 
             this.ToggleLoginStateCommand = new DelegateCommand(ToggleLoginState, CanToggleLoginState);
 
-            model.LoginStateChanged += b => RaisePropertyChanged("LoginState");
+            model.LoginStateChanged += (loginState) =>
+            {
+                Username = Model.Username;
+                LoginState = loginState;
+            };
+
         }
 
         private void ToggleLoginState()
