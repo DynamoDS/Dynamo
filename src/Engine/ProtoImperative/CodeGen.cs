@@ -431,31 +431,11 @@ namespace ProtoImperative
             int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
             if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
             {
-                
                 symbolindex = core.ClassTable.ClassNodes[globalClassIndex].symbols.Append(symbolnode);
             }
             else
             {
-                // Do not import global symbols from external libraries
-                //if (this.isEmittingImportNode && core.IsParsingPreloadedAssembly)
-                //{
-                //    bool importGlobalSymbolFromLib = !string.IsNullOrEmpty(symbolnode.ExternLib) &&
-                //        symbolnode.functionIndex == -1 && symbolnode.classScope == -1;
-
-                //    if (importGlobalSymbolFromLib)
-                //    {
-                //        return symbolnode;
-                //    }
-                //}
-
-                
                 symbolindex = codeBlock.symbolTable.Append(symbolnode);                
-            }
-
-            if (ProtoCore.DSASM.MemoryRegion.kMemHeap == symbolnode.memregion)
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.alloca, symbolindex.ToString());
-                EmitAlloc(symbolindex);
             }
 
             symbolnode.symbolTableIndex = symbolindex;

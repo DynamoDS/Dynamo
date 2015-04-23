@@ -4219,12 +4219,6 @@ namespace ProtoCore.DSASM
         }
 
         #region Opcode Handlers
-
-        private void ALLOC_Handler()
-        {
-            throw new NotImplementedException();
-        }
-
         private void ALLOCC_Handler(Instruction instruction)
         {
             fepRunStack.Push(fepRun);
@@ -6559,219 +6553,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-        private void JMP_EQ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-            StackValue opdata2 = GetOperandData(instruction.op2);
-
-            if (opdata1.IsDouble || opdata2.IsDouble)
-            {
-                double lhs = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-                double rhs = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-
-                if (Math.Equals(lhs, rhs))
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-            else
-            {
-                if (opdata1.opdata == opdata2.opdata)
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-        }
-
-        private void JMP_GT_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-            StackValue opdata2 = GetOperandData(instruction.op2);
-
-            bool isGT;
-            if (opdata1.IsDouble || opdata2.IsDouble)
-            {
-                double value1 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-                double value2 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                isGT = value1 > value2;
-            }
-            else
-            {
-                isGT = opdata1.opdata > opdata2.opdata;
-            }
-
-            if (isGT)
-            {
-                pc = (int)instruction.op3.opdata;
-            }
-            else
-            {
-                ++pc;
-            }
-        }
-
-        private void JMP_GTEQ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-            StackValue opdata2 = GetOperandData(instruction.op2);
-
-            if (opdata1.IsDouble || opdata2.IsDouble)
-            {
-                double value1 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-                double value2 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                if (MathUtils.IsGreaterThanOrEquals(value1, value2))
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-            else
-            {
-                if (opdata1.opdata >= opdata2.opdata)
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-        }
-
-        private void JMP_LT_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-            StackValue opdata2 = GetOperandData(instruction.op2);
-
-            if (opdata1.IsDouble || opdata2.IsDouble)
-            {
-                var value1 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-                var value2 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                if (value1 < value2)
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-            else
-            {
-                if (opdata1.opdata < opdata2.opdata)
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-        }
-
-        private void JMP_LTEQ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-            StackValue opdata2 = GetOperandData(instruction.op2);
-
-            if (opdata1.IsDouble || opdata2.IsDouble)
-            {
-                double value1 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-                double value2 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                if (MathUtils.IsLessThanOrEquals(value1, value2))
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-            else
-            {
-                if (opdata1.opdata <= opdata2.opdata)
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-        }
-
-        private void JMP_NEQ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-            StackValue opdata2 = GetOperandData(instruction.op2);
-
-            if (opdata1.IsDouble || opdata2.IsDouble)
-            {
-                var value1 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-                var value2 = opdata2.IsDouble ? opdata2.RawDoubleValue : opdata2.RawIntValue;
-                if (!MathUtils.Equals(value1, value2))
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-            else
-            {
-                if (opdata1.opdata != opdata2.opdata)
-                {
-                    pc = (int)instruction.op3.opdata;
-                }
-                else
-                {
-                    ++pc;
-                }
-            }
-        }
-
-        private void JLZ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-            var opvalue = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-
-            if (opvalue < 0)
-            {
-                pc = (int)instruction.op2.opdata;
-            }
-            else
-            {
-                ++pc;
-            }
-        }
-
-        private void JGZ_Handler(Instruction instruction)
-        {
-            StackValue opdata1 = GetOperandData(instruction.op1);
-            var value = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
-
-            if (value > 0)
-            {
-                pc = (int)instruction.op2.opdata;
-            }
-            else
-            {
-                ++pc;
-            }
-        }
-
         private void JZ_Handler(Instruction instruction)
         {
             StackValue opdata1 = GetOperandData(instruction.op1);
@@ -6785,11 +6566,6 @@ namespace ProtoCore.DSASM
             {
                 ++pc;
             }
-        }
-
-        private void CAST_Handler()
-        {
-            ++pc;
         }
 
         //instruction dep(block, symbol)
@@ -7102,12 +6878,6 @@ namespace ProtoCore.DSASM
         {
             switch (instruction.opCode)
             {
-                case OpCode.ALLOC:
-                    {
-                        ALLOC_Handler();
-                        return;
-                    }
-
                 case OpCode.ALLOCC:
                     {
                         ALLOCC_Handler(instruction);
@@ -7330,8 +7100,6 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-               
-
                 case OpCode.CALLR:
                     {
                         CALLR_Handler(instruction);
@@ -7374,53 +7142,6 @@ namespace ProtoCore.DSASM
                         return;
                     }
 
-                case OpCode.JMP_EQ:
-                    {
-                        JMP_EQ_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JMP_GT:
-                    {
-                        JMP_GT_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JMP_GTEQ:
-                    {
-                        JMP_GTEQ_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JMP_LT:
-                    {
-                        JMP_LT_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JMP_LTEQ:
-                    {
-                        JMP_LTEQ_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JMP_NEQ:
-                    {
-                        JMP_NEQ_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JLZ:
-                    {
-                        JLZ_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.JGZ:
-                    {
-                        JGZ_Handler(instruction);
-                        return;
-                    }
                 case OpCode.JZ:
                     {
                         JZ_Handler(instruction);
@@ -7430,12 +7151,6 @@ namespace ProtoCore.DSASM
                 case OpCode.JDEP:
                     {
                         JDEP_Handler(instruction);
-                        return;
-                    }
-
-                case OpCode.CAST:
-                    {
-                        CAST_Handler();
                         return;
                     }
 
@@ -7450,8 +7165,6 @@ namespace ProtoCore.DSASM
                         PUSHDEP_Handler(instruction);
                         return;
                     }
-
-               
 
                 case OpCode.SETEXPUID:
                     {
