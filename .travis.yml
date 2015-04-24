@@ -7,4 +7,4 @@ install:
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release src/Dynamo.Mono.sln
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe bin/AnyCPU/Release/ProtoTest.dll
+# - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe bin/AnyCPU/Release/ProtoTest.dll
