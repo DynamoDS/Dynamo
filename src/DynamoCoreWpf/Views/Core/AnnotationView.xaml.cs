@@ -101,19 +101,15 @@ namespace Dynamo.Nodes
                 var annotationGuid = this.ViewModel.AnnotationModel.GUID;
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                     new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
-                
+
+                //Select all the models inside the group - This avoids some performance bottleneck 
+                //with many nodes selected at the same time - which makes moving the group very slow
+                DynamoSelection.Instance.Selection.AddRange(ViewModel.AnnotationModel.SelectedModels);
+
                 foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
                 {
-                    //when a node is added to group, that node will be in selected mode. 
-                    //so remove that node from selection. Select that node with other nodes
-                    //in that group. Otherwise, this node will be unselected while the other 
-                    //nodes will be in selected.
-                    if (models.IsSelected)
-                    {
-                        DynamoSelection.Instance.Selection.Remove(models);
-                    }
-                    ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                        new DynCmd.SelectModelCommand(models.GUID, Dynamo.Utilities.ModifierKeys.Shift));
+                    //Make sure that models have the selection border inside a group when selected
+                    models.IsSelected = true;                    
                 }
             }
         }
@@ -150,7 +146,7 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="SizeChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (ViewModel != null && !ViewModel.AnnotationModel.loadFromXML)
+            if (ViewModel != null && e.HeightChanged)
             {
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.ActualHeight;                
             }  

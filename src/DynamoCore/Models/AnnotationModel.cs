@@ -128,6 +128,7 @@ namespace Dynamo.Models
                 // a model and textbox. Otherwise there will be some overlap
                 Y = InitialTop - ExtendSize - textBlockHeight;
                 Height = InitialHeight + textBlockHeight - MinTextHeight;
+                UpdateBoundaryFromSelection();
             }
         }
 
@@ -163,15 +164,9 @@ namespace Dynamo.Models
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
-            {
-                case "X":
-                    UpdateBoundaryFromSelection();
-                    break;
-                case "Y":
-                    UpdateBoundaryFromSelection();
-                    break;
+            {                
                 case "Position":                  
-                        UpdateBoundaryFromSelection();
+                     UpdateBoundaryFromSelection();
                     break;
                 case "Text":
                     UpdateBoundaryFromSelection();
@@ -388,7 +383,7 @@ namespace Dynamo.Models
         internal void AddToSelectedModels(ModelBase model, bool checkOverlap = false)
         {           
             var list = this.SelectedModels.ToList();
-            if (!list.Select(x => x.GUID != model.GUID).FirstOrDefault()) return;
+            if (list.Where(x => x.GUID == model.GUID).Any()) return;
             if (!CheckModelIsInsideGroup(model, checkOverlap)) return;           
             list.Add(model);
             this.SelectedModels = list;
