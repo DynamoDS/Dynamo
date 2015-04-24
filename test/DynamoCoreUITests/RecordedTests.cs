@@ -550,7 +550,6 @@ namespace DynamoCoreUITests
                     AssertPreviewValue("66c0f6b3-e9a0-495e-b3e1-c02b4615c71c", 12);
                 }
             });
-
         }
 
         [Test, RequiresSTA]
@@ -565,11 +564,9 @@ namespace DynamoCoreUITests
             //4. Place the custom node instance and connect with relavant inputs
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
-
             RunCommandsFromFile("Defect_MAGN_6821_withInput.xml", true, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
-
                 if (commandTag == "Run")
                 {
                     Assert.AreEqual(3, workspace.Nodes.Count);
@@ -577,12 +574,10 @@ namespace DynamoCoreUITests
                     AssertPreviewValue("fb5bf7c3-8312-42e8-85cb-e17fbee1fbae", 2);
                     AssertPreviewValue("fb9c8be5-7fc2-4735-a33c-c1c9b2a97f18", 2);
                 }
-
             });
         }
 
         [Test, RequiresSTA]
-
         public void Defect_MAGN_6821_multipleInput()
         {        
             // Create Multiple Input nodes
@@ -601,7 +596,6 @@ namespace DynamoCoreUITests
                     Assert.AreEqual(4, workspace.Nodes.Count);
                     Assert.AreEqual(3, workspace.Connectors.Count());
                 }
-
             });
         }
 
@@ -616,7 +610,6 @@ namespace DynamoCoreUITests
             //4. verify the results are correct
             //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
 
-
             RunCommandsFromFile("Defect_MAGN_6821_multipleInstance.xml", true, (commandTag) =>
             {
                 var workspace = ViewModel.Model.CurrentWorkspace;
@@ -625,7 +618,6 @@ namespace DynamoCoreUITests
                 {
                     AssertPreviewValue("d48647e8-0129-4e16-9fa8-7c4d8f20c1be", 4);
                 }
-
             });
         }
 
