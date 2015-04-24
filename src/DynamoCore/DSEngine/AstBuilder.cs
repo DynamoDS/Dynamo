@@ -97,13 +97,16 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// BFS and post-order traverse to ensure all inputs are visited in
-        /// order and before downstream node is visited.
+        /// Starts from the input node as root, do breadth-first and post-order
+        /// traversal of the graph (inputs nodes as children nodes). Breadth-first
+        /// traversal ensures all inputs nodes are visited in their input order 
+        /// and post-order traversal ensures all upstream nodes are visited 
+        /// firstly. 
         /// </summary>
         /// <param name="node">Root node</param>
-        /// <param name="nodeFlags">To indicate if a node has been visited or not</param>
-        /// <param name="sortedNodes">keep visited and sorted nodes</param>
-        private static void BFSTraverse(
+        /// <param name="nodeFlags">Dictionary to record if a node has been visited or not</param>
+        /// <param name="sortedNodes">Record all visited nodes</param>
+        private static void BfsTraverse(
             NodeModel node, 
             Dictionary<NodeModel, MarkFlag> nodeFlags, 
             Queue<NodeModel> sortedNodes)
@@ -126,7 +129,7 @@ namespace Dynamo.DSEngine
                 if (!node.TryGetInput(i, out t))
                     continue;
 
-                BFSTraverse(t.Item2, nodeFlags, sortedNodes);
+                BfsTraverse(t.Item2, nodeFlags, sortedNodes);
             }
 
             sortedNodes.Enqueue(node);
@@ -165,10 +168,10 @@ namespace Dynamo.DSEngine
             // Get roots of these nodes
             var roots = nodes.Where(n => !n.OutputNodes.Any());
             foreach (NodeModel candidate in roots)
-                BFSTraverse(candidate, nodeFlags, sortedNodes);
+                BfsTraverse(candidate, nodeFlags, sortedNodes);
 
             foreach (NodeModel candidate in GetUnvisitedNodes(nodeFlags))
-                BFSTraverse(candidate, nodeFlags, sortedNodes);
+                BfsTraverse(candidate, nodeFlags, sortedNodes);
 
             return sortedNodes;
         }
@@ -290,7 +293,7 @@ namespace Dynamo.DSEngine
             var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
 
             IEnumerable<NodeModel> sortedNodes = null;
-            // For node to code, node should already sorted!
+            // Node should already be sorted!
             if (context == CompilationContext.NodeToCode)
                 sortedNodes = topScopedNodes;
             else
