@@ -1,0 +1,48 @@
+<Workspace Version="0.6.2.29585" X="-32.1" Y="0.400000000000006" zoom="0.9" Description="Create a list of strings from a single comma-delimited string" Category="Core.Lists.Create" Name="List of Strings from Comma-Delimited String" ID="6adf14f3-05f4-47da-8c5e-c500b05e7eb5">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="776ce571-97d3-42de-bd32-57c3348c234c" nickname="Input" x="67" y="245" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Comma-delimited String" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="b180c2dc-4b6f-4db7-aab3-7e4d3a5784a0" nickname="Output" x="689" y="244" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="f40c5717-8f67-41f9-aa57-6dc02a68547d" nickname="Split String" x="311.222222222222" y="244" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SplitString>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="c95a2f38-d3ca-424b-8df5-ef657b6f6c6f" nickname="String" x="183.444444444444" y="332.888888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="," />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="fb69410c-114f-42b7-9944-4e4c3a3a846f" nickname="Python Script" x="496.777777777778" y="244" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+listOfStrings = IN
+
+for n in range( len(listOfStrings) ):
+	listOfStrings[n] = listOfStrings[n].strip()
+
+#Assign your output to the OUT variable
+OUT = listOfStrings</Script>
+    </Dynamo.Nodes.Python>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="776ce571-97d3-42de-bd32-57c3348c234c" start_index="0" end="f40c5717-8f67-41f9-aa57-6dc02a68547d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f40c5717-8f67-41f9-aa57-6dc02a68547d" start_index="0" end="fb69410c-114f-42b7-9944-4e4c3a3a846f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c95a2f38-d3ca-424b-8df5-ef657b6f6c6f" start_index="0" end="f40c5717-8f67-41f9-aa57-6dc02a68547d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb69410c-114f-42b7-9944-4e4c3a3a846f" start_index="0" end="b180c2dc-4b6f-4db7-aab3-7e4d3a5784a0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

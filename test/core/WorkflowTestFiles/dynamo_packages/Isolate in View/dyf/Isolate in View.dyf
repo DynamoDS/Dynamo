@@ -1,0 +1,79 @@
+<Workspace Version="0.6.3.5244" X="-35.9092476214753" Y="300.473199448425" zoom="0.937432296686001" Description="Temporarily isolates specified elements in a current view. " Category="Archi-lab.Visibility" Name="Isolate in View" ID="53dd50af-da45-4b33-a04d-948fdac25925">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="d42f4774-d962-471a-8654-2b78ad49011a" nickname="Python Script With Variable Number of Inputs" x="644.883491002185" y="24.6264171894214" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+from System.Collections.Generic import *
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN0
+view = IN0
+str_ids = IN1
+doc = __doc__
+
+#get all elements in an active view
+collector = FilteredElementCollector(doc, view.Id)
+
+#create an element set from input string ids
+element_set = ElementSet()
+for i in str_ids:
+	if isinstance(i, str):
+		int_id = int(i)
+		id = ElementId(int_id)
+		element = doc.GetElement(id)
+		element_set.Insert(element)
+	else:
+		element = doc.GetElement(i)
+		element_set.Insert(element)
+#create a set of element ids from element set
+excludes = List[ElementId]()
+elemIter = element_set.ForwardIterator()
+elemIter.Reset()
+while elemIter.MoveNext():
+	curElem = elemIter.Current
+	excludes.Add(curElem.Id)
+#create exclusion filter containing input ids
+filter = ExclusionFilter(excludes)
+#create a collector that will select all elements in a view except one matching input element ids
+new_collector = FilteredElementCollector(doc, view.Id).WhereElementIsNotElementType().WherePasses(filter).ToElementIds()
+#hide elements in a view
+view.HideElementsTemporary(new_collector)
+#get active view name
+view_name = view.ViewName
+#Assign your output to the OUT variable
+OUT = view_name</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="8426a7ee-e7fb-41ce-bd00-c374ea426d6d" nickname="Flatten Completely" x="495.585537407699" y="89.1367514776184" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="b47cdbe7-b849-4691-9b99-efa0874afb19" nickname="Add to List" x="365.011440697293" y="91.8893956329458" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="0dc68a27-c813-4370-8ec2-dee8252eed11" nickname="Empty List" x="234.248233940883" y="161.595107697378" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="aaaae938-f4aa-404f-9354-2abe24758f36" nickname="Input" x="61.5926150844319" y="95.5246503549562" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ID(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7c9a165b-ab87-41b9-8063-e3d1af5f1085" nickname="Output" x="1013.80176337075" y="23.5674164819939" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Current View Name" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="61a4cc8a-2d31-40a3-9026-0759efd071fd" nickname="Input" x="36.4909017315289" y="24.0747846417905" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Active View" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d42f4774-d962-471a-8654-2b78ad49011a" start_index="0" end="7c9a165b-ab87-41b9-8063-e3d1af5f1085" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8426a7ee-e7fb-41ce-bd00-c374ea426d6d" start_index="0" end="d42f4774-d962-471a-8654-2b78ad49011a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b47cdbe7-b849-4691-9b99-efa0874afb19" start_index="0" end="8426a7ee-e7fb-41ce-bd00-c374ea426d6d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0dc68a27-c813-4370-8ec2-dee8252eed11" start_index="0" end="b47cdbe7-b849-4691-9b99-efa0874afb19" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aaaae938-f4aa-404f-9354-2abe24758f36" start_index="0" end="b47cdbe7-b849-4691-9b99-efa0874afb19" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="61a4cc8a-2d31-40a3-9026-0759efd071fd" start_index="0" end="d42f4774-d962-471a-8654-2b78ad49011a" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

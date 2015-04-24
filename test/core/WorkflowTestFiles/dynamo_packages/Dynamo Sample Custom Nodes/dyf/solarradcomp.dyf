@@ -1,0 +1,45 @@
+<!--
+Copyright Autodesk, Inc. 2012. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<dynWorkspace X="10" Y="55" Name="solarradcomp" Category="Analyze.Solar" ID="b8e990e3-a480-4118-9f81-0e02af495e72">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="b744d305-0928-4af0-86d3-ce6034125e7b" nickname="Variable" x="0" y="0">
+      <Symbol value="old" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="989f4130-71ef-4bda-971a-b1b6d7b82e66" nickname="Variable" x="0" y="144.671052631579">
+      <Symbol value="data" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="c942d95b-b105-4aad-9898-bccd438a4fe9" nickname="Variable" x="0" y="206.986842105263">
+      <Symbol value="newAmt" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynFirst type="Dynamo.Nodes.dynFirst" guid="3bafd705-9f0c-4acc-8584-4d2e1a40a7b2" nickname="first" x="304.605263157895" y="0" />
+    <Dynamo.Nodes.dynGreaterThan type="Dynamo.Nodes.dynGreaterThan" guid="58b32a67-fcc5-46d3-9aac-39ef9066348f" nickname="&gt;" x="460.71052631579" y="0" />
+    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="a869308d-9162-47b6-bcfa-9e57fe87895e" nickname="if" x="589.447368421054" y="78.8684210526316" />
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="388d6681-5978-4fa7-b136-87487ce5bcdf" nickname="list" x="322.026315789474" y="167.184210526316">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.dynNewList>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="b744d305-0928-4af0-86d3-ce6034125e7b" start_index="0" end="3bafd705-9f0c-4acc-8584-4d2e1a40a7b2" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="b744d305-0928-4af0-86d3-ce6034125e7b" start_index="0" end="a869308d-9162-47b6-bcfa-9e57fe87895e" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="989f4130-71ef-4bda-971a-b1b6d7b82e66" start_index="0" end="58b32a67-fcc5-46d3-9aac-39ef9066348f" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="989f4130-71ef-4bda-971a-b1b6d7b82e66" start_index="0" end="388d6681-5978-4fa7-b136-87487ce5bcdf" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="c942d95b-b105-4aad-9898-bccd438a4fe9" start_index="0" end="388d6681-5978-4fa7-b136-87487ce5bcdf" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="3bafd705-9f0c-4acc-8584-4d2e1a40a7b2" start_index="0" end="58b32a67-fcc5-46d3-9aac-39ef9066348f" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="58b32a67-fcc5-46d3-9aac-39ef9066348f" start_index="0" end="a869308d-9162-47b6-bcfa-9e57fe87895e" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="388d6681-5978-4fa7-b136-87487ce5bcdf" start_index="0" end="a869308d-9162-47b6-bcfa-9e57fe87895e" end_index="2" portType="0" />
+  </dynConnectors>
+</dynWorkspace>

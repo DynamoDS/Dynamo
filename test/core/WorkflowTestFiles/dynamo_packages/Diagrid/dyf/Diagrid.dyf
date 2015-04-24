@@ -1,0 +1,317 @@
+<Workspace Version="0.6.2.29585" X="70.364057433541" Y="203.685786118876" zoom="0.362622880795794" Description="Creates a diagrid from a surface. Outputs UV, XYZ, facet points, and facets" Category="Geometry.Surface.Divide" Name="Diagrid" ID="4395d211-b8f1-481e-9a10-c6a005b82540">
+  <Elements>
+    <Dynamo.Nodes.Sublists type="Dynamo.Nodes.Sublists" guid="ec7908b8-f58d-42a6-b236-2ddbbba4f29c" nickname="Build Sublists" x="1749.06594156245" y="273.487789987793" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.String value="0..2" />
+    </Dynamo.Nodes.Sublists>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="c17d4d95-e9fb-4197-9bdd-fd6519dadf74" nickname="Python Script (3 Point)" x="1594.9651812117" y="223.967560217563" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+# The input to this node will be stored in the IN variable.
+vertexList = IN[0]
+faceList = IN[1]
+outputList = []
+numFaces = len(faceList)
+
+for i in range(0,numFaces,1):
+	currentFace = faceList[i]
+	v1 = vertexList[int(currentFace[0])]
+	v2 = vertexList[int(currentFace[1])]
+	v3 = vertexList[int(currentFace[2])]
+	outputList.append(v1)
+	outputList.append(v2)
+	outputList.append(v3)
+
+#Assign your output to the OUT variable
+OUT = outputList</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="538a95d4-ea6b-49b2-8ba8-4fed624f0e77" nickname="Number" x="1645.20454710895" y="321.392949886368" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="619d4bdd-6796-4c57-8b7b-44136fd647d9" nickname="List" x="1444.7652919197" y="300.82152131494" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.XyzEvaluate type="Dynamo.Nodes.XyzEvaluate" guid="3b22b865-c764-4ff6-a6ad-66a023936c07" nickname="Evaluate Surface" x="1284.81291096732" y="190.041759410179" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Uv type="Dynamo.Nodes.Uv" guid="56bb185f-9110-4963-a542-312ddcb3b349" nickname="UV" x="1166.7652919197" y="22.2322356006556" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Sublists type="Dynamo.Nodes.Sublists" guid="f6683479-1ce4-41c3-a85c-181027d471eb" nickname="Build Sublists" x="1125.24054473706" y="279.491758241761" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.String value="0..2" />
+    </Dynamo.Nodes.Sublists>
+    <Dynamo.Nodes.TakeEveryNth type="Dynamo.Nodes.TakeEveryNth" guid="042e79a6-b9f8-4a5a-8d13-af861018ca0a" nickname="Take Every Nth" x="991.35690060341" y="96.51794988637" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.TakeEveryNth>
+    <Dynamo.Nodes.RemoveEveryNth type="Dynamo.Nodes.RemoveEveryNth" guid="8ec2f6f2-d7ed-4b70-b069-6a4932b157ca" nickname="Drop Every Nth" x="991.35690060341" y="-36.6666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.RemoveEveryNth>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="beb82f3e-ce95-47f8-8d79-c5cb2f6e3ef5" nickname="Get from List" x="906.99182123833" y="280.277824149534" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="2ad48e60-bb3e-4705-8758-c1457632c31b" nickname="Number" x="1032.39502329942" y="428.250092743511" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="2975116d-f8a1-4640-ab76-e553d737e5aa" nickname="Number" x="837.051345047855" y="39.702473695892" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ac93b28c-3039-4501-b15a-9e5d542c928c" nickname="Number" x="837.051345047855" y="-33.8689548755364" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="ce70464d-536c-4486-87f7-054b67deda9d" nickname="Get from List" x="772.051345047855" y="103.611157482868" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="1ac37b83-bb68-4efa-b17b-3aacb62e24fb" nickname="Number" x="808.41608557049" y="230.238187981607" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="bc8c6274-4eb8-46c9-ad23-f9c8b4de2088" nickname="Number" x="651.880371284775" y="83.4881879816066" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="a4f5743a-1d8b-4f3f-bc4a-ac7f7b6d3563" nickname="List" x="330.884339538743" y="161.250092743512" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+      <Input name="index3" />
+      <Input name="index4" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.SurfaceDomain type="Dynamo.Nodes.SurfaceDomain" guid="4fbcaf34-11d4-4ce4-b555-a7fbddecf420" nickname="Get Surface Domain" x="268.52380952381" y="24.1774511578064" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f6866312-410a-4288-a8ed-87bfb6c45c5d" nickname="Input" x="170" y="103.333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="face" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d24aa12b-3718-4c80-8227-c6c5b0713fcb" nickname="Input" x="170" y="168.333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="U-Count" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c9fa12b2-7766-42c1-bc60-e4f457ca0c9b" nickname="Input" x="170" y="234.487179487179" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V-Count" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="66782453-42f2-4195-a81d-5869eed6daa2" nickname="Output" x="1964.52048701699" y="206.111111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="facet points" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0f452058-c151-409d-9bf8-92861849e31c" nickname="Output" x="1964.52048701699" y="136.99494949495" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="180800c2-717e-474b-8be0-871b847ac447" nickname="Output" x="1964.52048701699" y="68.939393939394" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="UV" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="93e9a4a5-a22d-4d1a-86e8-102ad963df83" nickname="Input" x="170" y="309.706959706959" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="rotate" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Sublists type="Dynamo.Nodes.Sublists" guid="34a8e28e-e6f9-44c4-a6cd-fcc3e0ddae04" nickname="Build Sublists" x="1770.97070346721" y="442.63064713065" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.String value="0..3" />
+    </Dynamo.Nodes.Sublists>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="905969a3-3d04-43b3-b653-40feaa8be669" nickname="Python Script (4 Point)" x="1608.53660978313" y="398.348512598516" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+# The input to this node will be stored in the IN variable.
+vertexList = IN[0]
+faceList = IN[1]
+outputList = []
+numFaces = len(faceList)
+
+for i in range(0,numFaces,1):
+	currentFace = faceList[i]
+	v1 = vertexList[int(currentFace[0])]
+	v2 = vertexList[int(currentFace[1])]
+	v3 = vertexList[int(currentFace[2])]
+	outputList.append(v1)
+	outputList.append(v2)
+	outputList.append(v3)
+	outputList.append(v1)
+
+#Assign your output to the OUT variable
+OUT = outputList</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="52724516-8752-4d95-ac84-7ae4cb8cb075" nickname="Number" x="1668.5854994899" y="479.265965759384" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="4" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="74d82e6b-3767-41a5-a119-ae51d1deef92" nickname="Output" x="1964.52048701699" y="274.111111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="line points" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="d0650714-6277-46e8-8025-b0387a5e3f0a" nickname="Python Script (Build Vertices and Faces)" x="499.261323665729" y="227.535807029226" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+import math
+#The input to this node will be stored in the IN variable.
+domain = IN[0]
+uCount = IN[1]
+vCount = IN[2]
+face = IN[3]
+rotated = IN[4]
+nr = int(uCount*2)
+nc = int(vCount)
+outputList = []
+vertexList = []
+faceList = []
+
+
+if uCount &gt; 0 and vCount &gt; 0:
+	uUnit = float(domain.USpan/float(nc))
+	vUnit = float(domain.VSpan/float(nr))
+
+	# Create Vertices
+	for aRow in range(0,int(nr + 1),1):
+		if aRow%2 == 0:
+			hoffset = 0.0
+			deduct = int(0)
+		else:
+			hoffset = 0.5
+			deduct = int(1)
+		for aColumn in range(int(nc - deduct) + 1):
+			aPoint = []
+			u = float(aRow)*vUnit
+			v = float(aColumn + hoffset)*uUnit
+			# aPoint.append(u)
+			# aPoint.append(v)
+			if (rotated):
+				vertexList.append(v)
+				vertexList.append(u)
+			else:
+				vertexList.append(u)
+				vertexList.append(v)
+
+	# Create first set of faces
+	for aRow in range(1,(nr + 1),2):
+		for aColumn in range(1,(nc + 1),1):
+			v1 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + aColumn
+			v2 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + aColumn + 1
+			v3 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + aColumn + (nc + 1)
+			faceList.append(v1 - 1)
+			faceList.append(v2 - 1)
+			faceList.append(v3 - 1)
+			
+			if (aColumn &lt; nc):
+				v1 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + aColumn + (nc + 1)
+				v2 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + aColumn + 1
+				v3 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + aColumn + (nc + 2)
+				faceList.append(v1 - 1)
+				faceList.append(v2 - 1)
+				faceList.append(v3 - 1)
+
+	# Create second set of faces
+	for aRow in range(3,(nr + 2),2):
+		for aColumn in range(1,(nc + 1),1):
+			v1 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + aColumn + 1
+			v2 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + aColumn
+			v3 = (aRow - 3)*(nc + 1) - ((aRow - 3)/2) + aColumn + (nc + 1)
+			faceList.append(v1 - 1)
+			faceList.append(v2 - 1)
+			faceList.append(v3 - 1)
+			
+			if (aColumn &lt; nc):
+				v1 = (aRow - 3)*(nc + 1) - ((aRow - 3)/2) + aColumn + (nc + 1)
+				v2 = (aRow - 3)*(nc + 1) - ((aRow - 3)/2) + aColumn + 1 + (nc + 1)
+				v3 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + aColumn + 1
+				faceList.append(v1 - 1)
+				faceList.append(v2 - 1)
+				faceList.append(v3 - 1)
+
+	# Create left and right triangular edges			
+	for aRow in range(1,(nr + 1),2):
+		v1 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + 1
+		v2 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + 1 + (nc + 1)
+		v3 = (aRow + 1)*(nc + 1) - ((aRow + 1)/2) + 1
+		faceList.append(v1 - 1)
+		faceList.append(v2 - 1)
+		faceList.append(v3 - 1)
+		
+		v1 = (aRow + 1)*(nc + 1) - ((aRow + 1)/2) + nc + 1
+		v2 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + nc + (nc + 1)
+		v3 = (aRow - 1)*(nc + 1) - ((aRow - 1)/2) + nc + 1
+		faceList.append(v1 - 1)
+		faceList.append(v2 - 1)
+		faceList.append(v3 - 1)
+	#Assign your output to the OUT variable
+	outputList.append(vertexList)
+	outputList.append(faceList)
+	OUT = outputList
+else:
+	OUT = []
+</Script>
+    </Dynamo.Nodes.Python>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ec7908b8-f58d-42a6-b236-2ddbbba4f29c" start_index="0" end="66782453-42f2-4195-a81d-5869eed6daa2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c17d4d95-e9fb-4197-9bdd-fd6519dadf74" start_index="0" end="ec7908b8-f58d-42a6-b236-2ddbbba4f29c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="538a95d4-ea6b-49b2-8ba8-4fed624f0e77" start_index="0" end="ec7908b8-f58d-42a6-b236-2ddbbba4f29c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="619d4bdd-6796-4c57-8b7b-44136fd647d9" start_index="0" end="c17d4d95-e9fb-4197-9bdd-fd6519dadf74" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="619d4bdd-6796-4c57-8b7b-44136fd647d9" start_index="0" end="905969a3-3d04-43b3-b653-40feaa8be669" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3b22b865-c764-4ff6-a6ad-66a023936c07" start_index="0" end="619d4bdd-6796-4c57-8b7b-44136fd647d9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3b22b865-c764-4ff6-a6ad-66a023936c07" start_index="0" end="0f452058-c151-409d-9bf8-92861849e31c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="56bb185f-9110-4963-a542-312ddcb3b349" start_index="0" end="3b22b865-c764-4ff6-a6ad-66a023936c07" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="56bb185f-9110-4963-a542-312ddcb3b349" start_index="0" end="180800c2-717e-474b-8be0-871b847ac447" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6683479-1ce4-41c3-a85c-181027d471eb" start_index="0" end="619d4bdd-6796-4c57-8b7b-44136fd647d9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="042e79a6-b9f8-4a5a-8d13-af861018ca0a" start_index="0" end="56bb185f-9110-4963-a542-312ddcb3b349" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8ec2f6f2-d7ed-4b70-b069-6a4932b157ca" start_index="0" end="56bb185f-9110-4963-a542-312ddcb3b349" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="beb82f3e-ce95-47f8-8d79-c5cb2f6e3ef5" start_index="0" end="f6683479-1ce4-41c3-a85c-181027d471eb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2ad48e60-bb3e-4705-8758-c1457632c31b" start_index="0" end="f6683479-1ce4-41c3-a85c-181027d471eb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2975116d-f8a1-4640-ab76-e553d737e5aa" start_index="0" end="042e79a6-b9f8-4a5a-8d13-af861018ca0a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2975116d-f8a1-4640-ab76-e553d737e5aa" start_index="0" end="8ec2f6f2-d7ed-4b70-b069-6a4932b157ca" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ac93b28c-3039-4501-b15a-9e5d542c928c" start_index="0" end="042e79a6-b9f8-4a5a-8d13-af861018ca0a" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ac93b28c-3039-4501-b15a-9e5d542c928c" start_index="0" end="8ec2f6f2-d7ed-4b70-b069-6a4932b157ca" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ce70464d-536c-4486-87f7-054b67deda9d" start_index="0" end="8ec2f6f2-d7ed-4b70-b069-6a4932b157ca" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ce70464d-536c-4486-87f7-054b67deda9d" start_index="0" end="042e79a6-b9f8-4a5a-8d13-af861018ca0a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1ac37b83-bb68-4efa-b17b-3aacb62e24fb" start_index="0" end="beb82f3e-ce95-47f8-8d79-c5cb2f6e3ef5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bc8c6274-4eb8-46c9-ad23-f9c8b4de2088" start_index="0" end="ce70464d-536c-4486-87f7-054b67deda9d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a4f5743a-1d8b-4f3f-bc4a-ac7f7b6d3563" start_index="0" end="d0650714-6277-46e8-8025-b0387a5e3f0a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4fbcaf34-11d4-4ce4-b555-a7fbddecf420" start_index="0" end="a4f5743a-1d8b-4f3f-bc4a-ac7f7b6d3563" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6866312-410a-4288-a8ed-87bfb6c45c5d" start_index="0" end="3b22b865-c764-4ff6-a6ad-66a023936c07" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6866312-410a-4288-a8ed-87bfb6c45c5d" start_index="0" end="a4f5743a-1d8b-4f3f-bc4a-ac7f7b6d3563" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6866312-410a-4288-a8ed-87bfb6c45c5d" start_index="0" end="4fbcaf34-11d4-4ce4-b555-a7fbddecf420" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d24aa12b-3718-4c80-8227-c6c5b0713fcb" start_index="0" end="a4f5743a-1d8b-4f3f-bc4a-ac7f7b6d3563" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c9fa12b2-7766-42c1-bc60-e4f457ca0c9b" start_index="0" end="a4f5743a-1d8b-4f3f-bc4a-ac7f7b6d3563" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="93e9a4a5-a22d-4d1a-86e8-102ad963df83" start_index="0" end="a4f5743a-1d8b-4f3f-bc4a-ac7f7b6d3563" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="34a8e28e-e6f9-44c4-a6cd-fcc3e0ddae04" start_index="0" end="74d82e6b-3767-41a5-a119-ae51d1deef92" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="905969a3-3d04-43b3-b653-40feaa8be669" start_index="0" end="34a8e28e-e6f9-44c4-a6cd-fcc3e0ddae04" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="52724516-8752-4d95-ac84-7ae4cb8cb075" start_index="0" end="34a8e28e-e6f9-44c4-a6cd-fcc3e0ddae04" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d0650714-6277-46e8-8025-b0387a5e3f0a" start_index="0" end="ce70464d-536c-4486-87f7-054b67deda9d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d0650714-6277-46e8-8025-b0387a5e3f0a" start_index="0" end="beb82f3e-ce95-47f8-8d79-c5cb2f6e3ef5" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="This python script is based on a 3ds Max (MAXSCRIPT) from my book &quot;Parametric Design for Architecture&quot;" x="476.70637695638" y="366.939976689977" />
+    <Dynamo.Models.NoteModel text="face: The selected face/surface" x="-134.722194472192" y="112.29711954712" />
+    <Dynamo.Models.NoteModel text="Integer: Number of U subdivisions" x="-134.722194472192" y="186.582833832834" />
+    <Dynamo.Models.NoteModel text="Integer: Number of V subdivisions" x="-134.722194472192" y="248.011405261405" />
+    <Dynamo.Models.NoteModel text="Boolean: To rotate the orientation of the diagrid" x="-134.722194472192" y="323.725690975691" />
+    <Dynamo.Models.NoteModel text="These two python scripts build a list of triangle vertices. 3 Points for facets and 4 points for triangle lines (1st and 4th are same point)." x="1516.70637695638" y="556.582833832834" />
+    <Dynamo.Models.NoteModel text="Diagrid&#xD;&#xA;By Wassim Jabi (wassim.jabi@gmail.com)&#xD;&#xA;(c) 2014. All rights reserved.&#xD;&#xA;This software is provided 'as is' without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of fitness for a purpose, or the warranty of non-infringement." x="-134.722194472192" y="-190.560023310023" />
+    <Dynamo.Models.NoteModel text="list: A list of the diagrid U and V coordinates" x="2098.05053280054" y="76.6607559107562" />
+    <Dynamo.Models.NoteModel text="list: A list of the diagrid XYZ coordinates" x="2098.05053280054" y="150.29711954712" />
+    <Dynamo.Models.NoteModel text="list: A list of the 3 points for each triangle. Use with facet" x="2099.86871461872" y="211.206210456211" />
+    <Dynamo.Models.NoteModel text="list: A list of the 4 points for each triangle. Use with line through points" x="2101.6868964369" y="281.206210456211" />
+    <Dynamo.Models.NoteModel text="Split the master UV list into a U and a V lists." x="925.277805527808" y="-84.4885947385945" />
+    <Dynamo.Models.NoteModel text="Get the first list of the output (UV)" x="553.849234099237" y="29.7971195471197" />
+    <Dynamo.Models.NoteModel text="Get the second list of the output (pointers to XYZ coordinates)" x="778.134948384951" y="371.225690975691" />
+    <Dynamo.Models.NoteModel text="Use the UV list to get the XYZ coordinates from the surface" x="1306.70637695638" y="125.511405261405" />
+    <Dynamo.Models.NoteModel text="Feed the two lists to the two python scripts to build list of triangle vertices (list of lists)" x="1279.56351981352" y="399.79711954712" />
+  </Notes>
+</Workspace>

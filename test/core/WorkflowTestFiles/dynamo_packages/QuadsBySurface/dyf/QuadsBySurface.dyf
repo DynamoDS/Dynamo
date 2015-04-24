@@ -1,0 +1,29 @@
+<Workspace Version="0.7.0.22156" X="-78.8287478539936" Y="-57.5506402997918" zoom="0.931811528498331" Description="Get group of 4 points following parametric network of points of the surface" Category="EPR" Name="QuadsBySurface" ID="133088b9-4379-4c72-a745-24861ea48646">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="45df9034-e056-4493-9ae6-3d3aaa27efa3" nickname="Code Block" x="567.26409495549" y="460.462908011869" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="def QuadAtPointIndices(NetPts: var[][],N1,N2)&#xA;{&#xA;Pt1=NetPts[N1][N2];&#xA;Pt2=NetPts[N1][N2+1];&#xA;Pt3=NetPts[N1+1][N2];&#xA;Pt4=NetPts[N1+1][N2+1];&#xA;&#xA;return={Pt1,Pt2,Pt3,Pt4};&#xA;}" ShouldFocus="false" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e9776f95-aa8d-4729-a0d0-1b6d57b57025" nickname="Input" x="122.78046481692" y="122.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Surf" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f88cb9d6-b258-4e78-8949-9d9f19799aa9" nickname="Input" x="125.373887240356" y="235.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="U" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="da664836-8bb4-4f04-9503-a4204ceb742c" nickname="Input" x="125.14635678872" y="341.98775123948" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="a9c89907-956a-4fa6-b0b6-9822fd2e8f59" nickname="Code Block" x="571" y="153" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Pts=Surf.PointAtParameter((0..1..#U1)&lt;1&gt;,(0..1..#U2)&lt;2&gt;);&#xA;QuadAtPointIndices(Pts,(0..(U1-2))&lt;1&gt;,(0..(U2-2))&lt;2&gt;);" ShouldFocus="false" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="73ea6ae7-bf92-41c3-8647-57a58e88ffaf" nickname="Output" x="1148.24925816024" y="123.388724035608" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="PointsNet" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9d7bf545-705f-4c6f-b503-62a009642415" nickname="Output" x="1149.43620178042" y="243.270029673591" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Quads" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e9776f95-aa8d-4729-a0d0-1b6d57b57025" start_index="0" end="a9c89907-956a-4fa6-b0b6-9822fd2e8f59" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f88cb9d6-b258-4e78-8949-9d9f19799aa9" start_index="0" end="a9c89907-956a-4fa6-b0b6-9822fd2e8f59" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="da664836-8bb4-4f04-9503-a4204ceb742c" start_index="0" end="a9c89907-956a-4fa6-b0b6-9822fd2e8f59" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a9c89907-956a-4fa6-b0b6-9822fd2e8f59" start_index="0" end="73ea6ae7-bf92-41c3-8647-57a58e88ffaf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a9c89907-956a-4fa6-b0b6-9822fd2e8f59" start_index="1" end="9d7bf545-705f-4c6f-b503-62a009642415" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

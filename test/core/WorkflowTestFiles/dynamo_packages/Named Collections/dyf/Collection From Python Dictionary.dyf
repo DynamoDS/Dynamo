@@ -1,0 +1,60 @@
+<Workspace Version="0.6.3.14437" X="0" Y="0" zoom="1" Description="Converts a python dictionary to a named collection" Category="Collections.NamedCollection" Name="Collection From Python Dictionary" ID="84cf7178-3a75-4013-9b55-09bd42899b8e">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="9d16e318-0b46-45e2-af12-8c700f63cd87" nickname="Python Script With Variable Number of Inputs" x="262.614889542946" y="84.393589617864" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+sys.path.append(r'C:\Program Files (x86)\IronPython 2.7\Lib')
+import copy
+#The input to this node will be stored in the IN0...INX variable(s).
+
+class collection():
+	def __init__(self,name,key,value):
+		self.name = name
+		self.dict = {}
+		self.dict[key] = value
+	def __str__(self):
+		x = str(self.name) + " collection"
+		for key,value in self.dict.iteritems():
+			x = x + '\n'+ '  %s= %s ' % (key, value)
+		return x		
+
+type= IN0
+key = None
+value = None
+dictold = IN1
+
+newcol = collection(type,key,value)
+newcol.dict = dictold
+
+#Assign your output to the OUT variable
+OUT = newcol</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4117ad1e-aa39-4f01-a93c-871abeb6ef4b" nickname="Output" x="589.930564230661" y="36.5197386266267" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="collection" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="781911ec-34f3-4d0f-b7d4-a478fd066aad" nickname="Input" x="91.756894052576" y="148.958635684544" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dictionary" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="553c26d9-048a-4da1-8549-4ae9f5c7a7e5" nickname="Input" x="81.24975804487" y="69.2844702628797" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Collection Name" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9d16e318-0b46-45e2-af12-8c700f63cd87" start_index="0" end="4117ad1e-aa39-4f01-a93c-871abeb6ef4b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="781911ec-34f3-4d0f-b7d4-a478fd066aad" start_index="0" end="9d16e318-0b46-45e2-af12-8c700f63cd87" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="553c26d9-048a-4da1-8549-4ae9f5c7a7e5" start_index="0" end="9d16e318-0b46-45e2-af12-8c700f63cd87" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

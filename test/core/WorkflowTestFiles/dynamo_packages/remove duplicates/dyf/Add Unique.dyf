@@ -1,0 +1,41 @@
+<Workspace Version="0.6.1.18684" X="15.0666666666665" Y="145.386666666667" zoom="0.7" Description="given a list and a item, adds the item to the list if it isn't in there already" Category="buildz" Name="Add Unique" ID="7da22fc0-ef7c-4065-bbe8-fd22b7c3caee">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="69feb7f3-61e2-45d7-b408-1bfd76c3df65" nickname="Exists" x="167" y="88.6000000000001" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="1466dc48-7736-4030-864a-f15309954f57" />
+      <Name value="Exists" />
+      <Description value="checks if a given item exists in a given list" />
+      <Inputs>
+        <Input value="Exists?" />
+        <Input value="Seq" />
+      </Inputs>
+      <Outputs>
+        <Output value="any?" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="394e878c-da4b-4007-a9b3-130d7cc2b57e" nickname="If" x="514.2" y="227.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="af85b492-433b-414a-91c5-fe416e59809a" nickname="Input" x="50.2" y="359" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="item" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="99b04b98-3f68-4569-b284-c4202821bce4" nickname="Add to List" x="317.8" y="377" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3c841e18-875e-4f88-8f2f-8c78cadb7ef9" nickname="Input" x="53.3999999999999" y="211.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="63532d24-621e-4e3d-8867-deaf67aca189" nickname="Output" x="713.971428571429" y="248.371428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="69feb7f3-61e2-45d7-b408-1bfd76c3df65" start_index="0" end="394e878c-da4b-4007-a9b3-130d7cc2b57e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="394e878c-da4b-4007-a9b3-130d7cc2b57e" start_index="0" end="63532d24-621e-4e3d-8867-deaf67aca189" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="af85b492-433b-414a-91c5-fe416e59809a" start_index="0" end="69feb7f3-61e2-45d7-b408-1bfd76c3df65" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="af85b492-433b-414a-91c5-fe416e59809a" start_index="0" end="99b04b98-3f68-4569-b284-c4202821bce4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="99b04b98-3f68-4569-b284-c4202821bce4" start_index="0" end="394e878c-da4b-4007-a9b3-130d7cc2b57e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3c841e18-875e-4f88-8f2f-8c78cadb7ef9" start_index="0" end="394e878c-da4b-4007-a9b3-130d7cc2b57e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3c841e18-875e-4f88-8f2f-8c78cadb7ef9" start_index="0" end="69feb7f3-61e2-45d7-b408-1bfd76c3df65" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3c841e18-875e-4f88-8f2f-8c78cadb7ef9" start_index="0" end="99b04b98-3f68-4569-b284-c4202821bce4" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

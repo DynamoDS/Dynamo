@@ -1,0 +1,167 @@
+<Workspace Version="0.6.3.7375" X="64.222038854092" Y="8.0607523909922" zoom="0.774047322176846" Description="Creates groups of points from a list of UVs or XYZs for the placement of triangular panels. The placement pattern can be reversed (boolean) and shifted (integer)." Category="CAAD_RWTH.Patterning" Name="Triangular Pattern (Flat, Diagonal) From Grid" ID="421a9b3c-0d0b-4033-8002-3de504542a37">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="501f402d-78ef-4af4-91e2-e94b37c70d18" nickname="+1" x="190.703658511727" y="255.076140272985" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="ba8cd7c7-346a-45c6-857e-e47800b80818" />
+      <Name value="+1" />
+      <Description value="Increments a value by 1" />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="ae95d373-fd25-4720-987f-61f0b645ddc9" nickname="+1" x="190.703658511727" y="340.803060907903" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="ba8cd7c7-346a-45c6-857e-e47800b80818" />
+      <Name value="+1" />
+      <Description value="Increments a value by 1" />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="70d2535b-7fd0-4bb8-b463-205145cb92db" nickname="Number" x="200.703658511727" y="91.896669133014" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="0b8aa01d-8a19-4e2c-9ac1-fd340b9aa15e" nickname="List" x="436.284322292391" y="92.1836236784702" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+      <Input name="index3" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.ShiftList type="Dynamo.Nodes.ShiftList" guid="41c68106-100b-4713-8a4b-23a732a85b94" nickname="Shift List Indeces" x="719.318651753402" y="67.4091534350016" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7c53ff49-175d-4623-b351-5aec2d4189f6" nickname="Input" x="30.5062447297777" y="423.065780471549" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="84071aa1-d160-428e-b56b-f298a12b1ebf" nickname="Input" x="30.5062447297777" y="343.065780471548" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="92b40122-0db4-4d1e-926e-72175173d2bc" nickname="Input" x="29.2143340528081" y="738.91400850955" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="reverse (triangle A)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="c5fcc024-8e09-4c6f-b441-9b0746997f1d" nickname="Output" x="1366.80179809895" y="334.182430898897" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list (triangle A)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="f5bac8d0-b8d5-4808-8a4f-fd4f5fc7a8f6" nickname="Formula" x="210.703658511727" y="156.621959897804" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7699fefa-399e-48ff-8934-56ce51279f79" nickname="Input" x="29.2143340528081" y="808.004917600459" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="reverse (triangle B)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e32c42cb-f2be-4083-bd55-62b0745d8348" nickname="Input" x="29.2143340528081" y="605.22444839646" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="shift placement (triangle A)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fe28af8a-240c-4eda-8d53-0fd13d3b6158" nickname="Input" x="29.2143340528081" y="670.938734110745" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="shift placement (triangle B)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f21230f6-ed7c-4372-8940-80afca6cb7e1" nickname="Output" x="1371.37322667038" y="544.658621375088" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list (triangle B)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6eb807b7-400b-49af-a720-df2b34201714" nickname="Input" x="29.2143340528081" y="888.005400777411" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="shift overall placement" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5e86df46-8981-41cc-a956-3a1d12266886" nickname="Triangular Subpattern" x="1161.68941048656" y="334.55188954482" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="00c389c5-9137-4005-98fc-3fc9f63eff60" />
+      <Name value="Triangular Subpattern" />
+      <Description value="Subcomponent of the Triangular Pattern From Grid node." />
+      <Inputs>
+        <Input value="list" />
+        <Input value="V" />
+        <Input value="Reverse Pattern" />
+        <Input value="Shift Pattern" />
+        <Input value="Point1" />
+        <Input value="Point2" />
+        <Input value="Point3" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e55d1445-9031-478c-8f13-28db94d11ad5" nickname="Triangular Subpattern" x="1158.64179143894" y="545.55188954482" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="00c389c5-9137-4005-98fc-3fc9f63eff60" />
+      <Name value="Triangular Subpattern" />
+      <Description value="Subcomponent of the Triangular Pattern From Grid node." />
+      <Inputs>
+        <Input value="list" />
+        <Input value="V" />
+        <Input value="Reverse Pattern" />
+        <Input value="Shift Pattern" />
+        <Input value="Point1" />
+        <Input value="Point2" />
+        <Input value="Point3" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="4e13c080-2411-4c4d-b2fd-95400babc544" nickname="Get First Four Indices" x="882.986686390279" y="64.830341594202" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="23ab4e2c-a521-4fa4-b0ee-02d7b977236b" />
+      <Name value="Get First Four Indices" />
+      <Description value="Gets the first four indices of a given list" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="0" />
+        <Output value="1" />
+        <Output value="2" />
+        <Output value="3" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0463902e-29f0-4e03-82db-a4eee2f0b20f" nickname="Input" x="23.7365706227787" y="501.305933466777" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="rotate grid by 90°" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="b072f82e-7fc9-4c28-b692-10091b82f869" nickname="If" x="395.806845590025" y="506.473576174656" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="27ac4084-9dd5-43f4-ab57-891c65fd0501" nickname="Swap UV" x="233.026100291855" y="423.791292848601" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="9ed7844d-3754-4153-b477-d7eefdd259c8" />
+      <Name value="Swap UV" />
+      <Description value="Swaps U and V coordinates" />
+      <Inputs>
+        <Input value="UV(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="UV(s)" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="501f402d-78ef-4af4-91e2-e94b37c70d18" start_index="0" end="0b8aa01d-8a19-4e2c-9ac1-fd340b9aa15e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ae95d373-fd25-4720-987f-61f0b645ddc9" start_index="0" end="501f402d-78ef-4af4-91e2-e94b37c70d18" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ae95d373-fd25-4720-987f-61f0b645ddc9" start_index="0" end="0b8aa01d-8a19-4e2c-9ac1-fd340b9aa15e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ae95d373-fd25-4720-987f-61f0b645ddc9" start_index="0" end="5e86df46-8981-41cc-a956-3a1d12266886" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ae95d373-fd25-4720-987f-61f0b645ddc9" start_index="0" end="e55d1445-9031-478c-8f13-28db94d11ad5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="70d2535b-7fd0-4bb8-b463-205145cb92db" start_index="0" end="0b8aa01d-8a19-4e2c-9ac1-fd340b9aa15e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b8aa01d-8a19-4e2c-9ac1-fd340b9aa15e" start_index="0" end="41c68106-100b-4713-8a4b-23a732a85b94" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="41c68106-100b-4713-8a4b-23a732a85b94" start_index="0" end="4e13c080-2411-4c4d-b2fd-95400babc544" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7c53ff49-175d-4623-b351-5aec2d4189f6" start_index="0" end="b072f82e-7fc9-4c28-b692-10091b82f869" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7c53ff49-175d-4623-b351-5aec2d4189f6" start_index="0" end="27ac4084-9dd5-43f4-ab57-891c65fd0501" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="84071aa1-d160-428e-b56b-f298a12b1ebf" start_index="0" end="ae95d373-fd25-4720-987f-61f0b645ddc9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="92b40122-0db4-4d1e-926e-72175173d2bc" start_index="0" end="5e86df46-8981-41cc-a956-3a1d12266886" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f5bac8d0-b8d5-4808-8a4f-fd4f5fc7a8f6" start_index="0" end="0b8aa01d-8a19-4e2c-9ac1-fd340b9aa15e" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7699fefa-399e-48ff-8934-56ce51279f79" start_index="0" end="e55d1445-9031-478c-8f13-28db94d11ad5" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e32c42cb-f2be-4083-bd55-62b0745d8348" start_index="0" end="5e86df46-8981-41cc-a956-3a1d12266886" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fe28af8a-240c-4eda-8d53-0fd13d3b6158" start_index="0" end="e55d1445-9031-478c-8f13-28db94d11ad5" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6eb807b7-400b-49af-a720-df2b34201714" start_index="0" end="41c68106-100b-4713-8a4b-23a732a85b94" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5e86df46-8981-41cc-a956-3a1d12266886" start_index="0" end="c5fcc024-8e09-4c6f-b441-9b0746997f1d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e55d1445-9031-478c-8f13-28db94d11ad5" start_index="0" end="f21230f6-ed7c-4372-8940-80afca6cb7e1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e13c080-2411-4c4d-b2fd-95400babc544" start_index="0" end="5e86df46-8981-41cc-a956-3a1d12266886" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e13c080-2411-4c4d-b2fd-95400babc544" start_index="0" end="e55d1445-9031-478c-8f13-28db94d11ad5" end_index="6" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e13c080-2411-4c4d-b2fd-95400babc544" start_index="1" end="5e86df46-8981-41cc-a956-3a1d12266886" end_index="5" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e13c080-2411-4c4d-b2fd-95400babc544" start_index="2" end="5e86df46-8981-41cc-a956-3a1d12266886" end_index="6" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e13c080-2411-4c4d-b2fd-95400babc544" start_index="2" end="e55d1445-9031-478c-8f13-28db94d11ad5" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e13c080-2411-4c4d-b2fd-95400babc544" start_index="3" end="e55d1445-9031-478c-8f13-28db94d11ad5" end_index="5" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0463902e-29f0-4e03-82db-a4eee2f0b20f" start_index="0" end="b072f82e-7fc9-4c28-b692-10091b82f869" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b072f82e-7fc9-4c28-b692-10091b82f869" start_index="0" end="5e86df46-8981-41cc-a956-3a1d12266886" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b072f82e-7fc9-4c28-b692-10091b82f869" start_index="0" end="e55d1445-9031-478c-8f13-28db94d11ad5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="27ac4084-9dd5-43f4-ab57-891c65fd0501" start_index="0" end="b072f82e-7fc9-4c28-b692-10091b82f869" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="For questions email me at dieckmann@caad.arch.rwth-aachen.de" x="17.5732600732582" y="22.8795371295396" />
+    <Dynamo.Models.NoteModel text="Shift overall placement pattern" x="671.44424898787" y="19.0001321924256" />
+  </Notes>
+</Workspace>

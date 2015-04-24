@@ -1,0 +1,68 @@
+<Workspace Version="0.6.2.26406" X="49.7523413962754" Y="241.705263017227" zoom="1" Description="Gets the domain from a list of numbers." Category="LunchBox.Math.Domain" Name="LunchBox Get Domain" ID="9d7440ad-0e4f-4c72-aa90-f944c225313b">
+  <Elements>
+    <Dynamo.Nodes.Domain type="Dynamo.Nodes.Domain" guid="f25c34c0-ad2d-4e3d-beb9-2c31a069b204" nickname="Domain" x="677.195378151261" y="87.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="52580a5c-c4c3-4843-9ab0-ad4d32a4c833" nickname="Get from List" x="485.528711484594" y="175" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="48461af8-8b26-4edb-8079-2390bcc4e08c" nickname="Get from List" x="493.028711484594" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="212d68c8-e471-49bf-a0ac-ec6c058ce139" nickname="Number" x="386.917600373483" y="5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="9c875a13-b1cc-4114-b2ae-d33d67d2fbd5" nickname="Number" x="379.417600373483" y="176.111111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="a200f10f-0573-460e-bc09-40136f3120e9" nickname="Python Script" x="250" y="87.4474789915968" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+import System
+
+
+#The input to this node will be stored in the IN variable.
+list = IN
+
+sort = []
+for i in range(0,len(list)):
+	sort.append(list[i])
+
+sort.sort()
+min = sort[0]
+max = sort[(len(sort)-1)]
+
+dom = []
+dom.append(min)
+dom.append(max)
+
+#Assign your output to the OUT variable
+OUT = dom</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b24c5b1d-54c5-44fb-810c-3aefa41544a6" nickname="Input" x="119.222222222222" y="88.4444444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Numbers" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1462ead0-fd3c-4c20-9899-45b3e3d31d53" nickname="Output" x="859.750933706816" y="88.8888888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Domain" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f25c34c0-ad2d-4e3d-beb9-2c31a069b204" start_index="0" end="1462ead0-fd3c-4c20-9899-45b3e3d31d53" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="52580a5c-c4c3-4843-9ab0-ad4d32a4c833" start_index="0" end="f25c34c0-ad2d-4e3d-beb9-2c31a069b204" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="48461af8-8b26-4edb-8079-2390bcc4e08c" start_index="0" end="f25c34c0-ad2d-4e3d-beb9-2c31a069b204" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="212d68c8-e471-49bf-a0ac-ec6c058ce139" start_index="0" end="48461af8-8b26-4edb-8079-2390bcc4e08c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9c875a13-b1cc-4114-b2ae-d33d67d2fbd5" start_index="0" end="52580a5c-c4c3-4843-9ab0-ad4d32a4c833" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a200f10f-0573-460e-bc09-40136f3120e9" start_index="0" end="48461af8-8b26-4edb-8079-2390bcc4e08c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a200f10f-0573-460e-bc09-40136f3120e9" start_index="0" end="52580a5c-c4c3-4843-9ab0-ad4d32a4c833" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b24c5b1d-54c5-44fb-810c-3aefa41544a6" start_index="0" end="a200f10f-0573-460e-bc09-40136f3120e9" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,66 @@
+<Workspace Version="0.6.3.7993" X="5" Y="110" zoom="1" Description="returns a list of elements that are not in both lists" Category="JBE" Name="Remove List Intersection" ID="c68c8c95-5f15-4b98-9b2b-b317f461789b">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="d8cbeb75-8e72-4b1f-8c7a-adad4aba36a8" nickname="Remove List Intersection" x="573.4585831384" y="-21.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+listA = IN0
+listB = IN1
+b=[]
+a=list(set(listA).symmetric_difference(set(listB)))
+b.append(a)
+OUT = a</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6bd61861-75b1-4ff3-90de-d9347563db61" nickname="Input" x="239" y="-21.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="listA" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="6f08e669-52c2-43a6-9873-0fb39a619446" nickname="Output" x="854.4585831384" y="-21.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1b1992f7-d64e-4ba9-9555-acb463185064" nickname="Input" x="242" y="75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="listB" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="9368a4e6-0e94-4b70-8043-387c4eb4f91d" nickname="Turn Into List" x="373" y="-21.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e7e4c7df-7a3e-4d28-8546-d33131c20d1a" nickname="Turn Into List" x="387" y="75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d8cbeb75-8e72-4b1f-8c7a-adad4aba36a8" start_index="0" end="6f08e669-52c2-43a6-9873-0fb39a619446" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6bd61861-75b1-4ff3-90de-d9347563db61" start_index="0" end="9368a4e6-0e94-4b70-8043-387c4eb4f91d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1b1992f7-d64e-4ba9-9555-acb463185064" start_index="0" end="e7e4c7df-7a3e-4d28-8546-d33131c20d1a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9368a4e6-0e94-4b70-8043-387c4eb4f91d" start_index="0" end="d8cbeb75-8e72-4b1f-8c7a-adad4aba36a8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e7e4c7df-7a3e-4d28-8546-d33131c20d1a" start_index="0" end="d8cbeb75-8e72-4b1f-8c7a-adad4aba36a8" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

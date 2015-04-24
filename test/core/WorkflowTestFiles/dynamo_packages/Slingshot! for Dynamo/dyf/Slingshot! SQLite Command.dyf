@@ -1,0 +1,94 @@
+<Workspace Version="0.6.2.29585" X="83.5999999999999" Y="161.109090909091" zoom="1.2" Description="Execute a SQLite command" Category="Input/Output.File" Name="Slingshot! SQLite Command" ID="87b09510-7b5c-4e1f-bfe1-bf5ff557e5bc">
+  <Elements>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="3c3e5e34-80f1-4b10-a81e-422b4a083362" nickname="List" x="221.666666666667" y="55.8333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="c00c943b-ebb9-47b9-b652-f4667bcbbf13" nickname="Python Script" x="398.666666666667" y="55.8333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Slingshot! for Dynamo
+#An Open Source project by Nathan Miller
+#http://TheProvingGround.org
+
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#Reference to System.Data.SQLite library
+clr.AddReference('System.Data.SQLite.dll')
+from System.Data.SQLite import *
+import System.Data.SQLite
+
+#The input to this node will be stored in the IN variable.
+connect = IN[0]
+filepath = IN[1]
+cmds = IN[2]
+
+status = []
+if connect == True:
+	if hasattr(cmds, "__iter__"):
+		for cmd in cmds:
+			#SQLite Connection
+			SQLConnect = System.Data.SQLite.SQLiteConnection()
+			SQLConnect.ConnectionString = 'Data Source=' + filepath
+			SQLConnect.Open()
+			status.append(SQLConnect.State.ToString())
+			#SQLite Command
+			SQLCommand = SQLConnect.CreateCommand()
+			SQLCommand.CommandText = cmd
+			status.append(SQLCommand.CommandText.ToString())
+			SQLCommand.ExecuteNonQuery()
+			SQLCommand.Dispose()
+			SQLConnect.Close()
+			status.append(SQLConnect.State.ToString())
+	else:
+		#SQLite Connection
+		SQLConnect = System.Data.SQLite.SQLiteConnection()
+		SQLConnect.ConnectionString = 'Data Source=' + filepath
+		SQLConnect.Open()
+		status.append(SQLConnect.State.ToString())
+		#SQLite Command
+		SQLCommand = SQLConnect.CreateCommand()
+		SQLCommand.CommandText = cmds
+		status.append(SQLCommand.CommandText.ToString())
+		SQLCommand.ExecuteNonQuery()
+		SQLCommand.Dispose()
+		SQLConnect.Close()
+		status.append(SQLConnect.State.ToString())
+
+#Assign your output to the OUT variable
+OUT = status</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="96260758-dd86-428d-9a07-b1b0b3533a10" nickname="Input" x="35.0000000000001" y="9.99999999999997" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Connect" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="55257633-8638-402b-8555-2a53597fc8e0" nickname="Input" x="38.3333333333334" y="78.3333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Path" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="542c7923-b4d5-4235-8e27-3d7f11a3bce1" nickname="Output" x="579.666666666667" y="55.8333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Messages" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5b6a5153-2aa4-4127-94eb-cf0f2bd02211" nickname="Input" x="32.5000000000001" y="150.833333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Command" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3c3e5e34-80f1-4b10-a81e-422b4a083362" start_index="0" end="c00c943b-ebb9-47b9-b652-f4667bcbbf13" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c00c943b-ebb9-47b9-b652-f4667bcbbf13" start_index="0" end="542c7923-b4d5-4235-8e27-3d7f11a3bce1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="96260758-dd86-428d-9a07-b1b0b3533a10" start_index="0" end="3c3e5e34-80f1-4b10-a81e-422b4a083362" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="55257633-8638-402b-8555-2a53597fc8e0" start_index="0" end="3c3e5e34-80f1-4b10-a81e-422b4a083362" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5b6a5153-2aa4-4127-94eb-cf0f2bd02211" start_index="0" end="3c3e5e34-80f1-4b10-a81e-422b4a083362" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,28 @@
+<Workspace Version="0.7.0.26170" X="0" Y="0" zoom="1" Description="Creates a rotation transform around the y-axis at (0,0,0)" Category="Modify Geometry.Transform" Name="Rotate Y Origin" ID="4d8d44d9-75b2-4b6d-a6ce-784d61477c03">
+  <Elements>
+    <Dynamo.Nodes.TransformRotation type="Dynamo.Nodes.TransformRotation" guid="5e06b7d0-75f3-4387-a088-2deefaba909c" nickname="Rotate Transform" x="533.253639261666" y="200.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="8fd5c3f4-a6d9-4910-b59d-00ee5a52394a" nickname="XYZ" x="266.5" y="123.75" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="9d092519-1061-4431-87df-ff2dca928b74" nickname="Number" x="172" y="123.25" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1.000" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="43556058-7af4-4721-8fe5-c470531a02f2" nickname="XYZ" x="266.5" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="af0a6723-ea22-4c12-b43f-efb16c57120e" nickname="Input" x="0" y="242" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dn" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8fd5c3f4-a6d9-4910-b59d-00ee5a52394a" start_index="0" end="5e06b7d0-75f3-4387-a088-2deefaba909c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9d092519-1061-4431-87df-ff2dca928b74" start_index="0" end="8fd5c3f4-a6d9-4910-b59d-00ee5a52394a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="43556058-7af4-4721-8fe5-c470531a02f2" start_index="0" end="5e06b7d0-75f3-4387-a088-2deefaba909c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="af0a6723-ea22-4c12-b43f-efb16c57120e" start_index="0" end="5e06b7d0-75f3-4387-a088-2deefaba909c" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

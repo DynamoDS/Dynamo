@@ -1,0 +1,14 @@
+<Workspace Version="0.6.3.5260" X="0" Y="0" zoom="1" Description="Returns a feasable computational tolerance to zero (1.0e-9 or a billionth of 1) for use in calculations. More background info: https://github.com/ikeough/Dynamo/issues/879" Category="CAAD_RWTH.Math" Name="Almost Zero" ID="7203b34a-da51-4672-8993-3591ebf9537d">
+  <Elements>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="f8844728-ecbb-40b1-bf63-fa0b2ccb9028" nickname="Formula" x="266.842712842713" y="133.699855699856" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1.0e-9</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f63b8696-909e-4cf6-8e74-35eb6d8e2a6d" nickname="Output" x="394" y="133" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="1.0e-9" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f8844728-ecbb-40b1-bf63-fa0b2ccb9028" start_index="0" end="f63b8696-909e-4cf6-8e74-35eb6d8e2a6d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

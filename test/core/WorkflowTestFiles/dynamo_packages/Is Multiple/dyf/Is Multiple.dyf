@@ -1,0 +1,24 @@
+<Workspace Version="0.6.2.26646" X="188.866666666666" Y="193.774920634921" zoom="1.1" Description="Checks if A is a multiple of B." Category="CAAD_RWTH.Math" Name="Is Multiple" ID="56eb8c1a-cba9-47c8-8229-4258486935e7">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5492582d-0a6f-4cd8-ad14-af96c75239a4" nickname="Input" x="21.2278580263269" y="16.9648990465333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="A" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="67e87a28-9698-4009-b9a3-66219b63106a" nickname="Input" x="22.766319564789" y="99.2725913542256" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="B" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Modulo type="Dynamo.Nodes.Modulo" guid="cf29a92c-8e81-4528-8965-fd1c3cbbe29a" nickname="Modulo" x="148.920165718635" y="41.4404235220578" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="b002ab64-261b-4ab2-9856-24023f2ed3fb" nickname="Formula" x="283.535550334019" y="41.4404235220578" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x=0</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9ed67a73-c329-40c1-90d2-a88dd18c0f73" nickname="Output" x="418.150934949404" y="41.4404235220578" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5492582d-0a6f-4cd8-ad14-af96c75239a4" start_index="0" end="cf29a92c-8e81-4528-8965-fd1c3cbbe29a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="67e87a28-9698-4009-b9a3-66219b63106a" start_index="0" end="cf29a92c-8e81-4528-8965-fd1c3cbbe29a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cf29a92c-8e81-4528-8965-fd1c3cbbe29a" start_index="0" end="b002ab64-261b-4ab2-9856-24023f2ed3fb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b002ab64-261b-4ab2-9856-24023f2ed3fb" start_index="0" end="9ed67a73-c329-40c1-90d2-a88dd18c0f73" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

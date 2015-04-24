@@ -1,0 +1,17 @@
+<Workspace Version="0.7.0.26170" X="193.567499999999" Y="97.6416176470612" zoom="1" Description="" Category="Turtle.Actions" Name="Load Turtle State" ID="192a38bd-99b4-4bf1-9307-41c69c15e5a5">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="015e0264-fed2-4ea7-9491-11c5c3e38feb" nickname="Input" x="81.5916666666676" y="173.509313725488" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="current-world" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="5c205f20-08f5-4c65-9452-83a9d47ea2dc" nickname="Split List" x="237.147222222223" y="173.509313725488" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="742aab06-8b6c-4a12-b805-476cb8b3491e" nickname="Rest of List" x="379.369444444445" y="173.509313725487" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="93e4bc40-4b19-40e8-87a7-cffce5db32ed" nickname="Add to List" x="522.702777777779" y="173.509313725488" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="015e0264-fed2-4ea7-9491-11c5c3e38feb" start_index="0" end="5c205f20-08f5-4c65-9452-83a9d47ea2dc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5c205f20-08f5-4c65-9452-83a9d47ea2dc" start_index="0" end="742aab06-8b6c-4a12-b805-476cb8b3491e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5c205f20-08f5-4c65-9452-83a9d47ea2dc" start_index="1" end="93e4bc40-4b19-40e8-87a7-cffce5db32ed" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="742aab06-8b6c-4a12-b805-476cb8b3491e" start_index="0" end="93e4bc40-4b19-40e8-87a7-cffce5db32ed" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

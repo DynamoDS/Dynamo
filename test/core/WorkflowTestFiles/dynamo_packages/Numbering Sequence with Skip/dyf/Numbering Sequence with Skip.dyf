@@ -1,0 +1,58 @@
+<Workspace Version="0.6.3.7993" X="168.976527720453" Y="82.3008793272139" zoom="1.703916824555" Description="Creates a numbering sequence of given length, starting at a given number and skipping a given number. If sequence starting at single digits it will force two leading zeros and convert number to string." Category="Archi-lab.Strings" Name="Numbering Sequence with Skip" ID="f077210b-2859-4de0-95a4-13b4f77a896e">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="a86b0e67-6247-4539-b641-ef8bed66dc94" nickname="Python Script With Variable Number of Inputs" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+dataEnteringNode = IN0
+lstLength = IN0
+skipNum = IN2
+
+import itertools
+lst = []
+count = int(IN1)
+while len(lst) &lt; lstLength:
+	count +=1
+	if count % 10 == skipNum:
+		continue
+	countFormat = str(count).zfill(3)
+	lst.append(countFormat)
+
+
+#define outputs
+OUT = lst</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1dcb91ee-4faa-428f-b65e-bf05567591c9" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Length" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="cb462cc7-8e63-4255-a404-17e2561af426" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Start" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="181c8b9d-b3f7-4989-b8c4-3c92d41eff8d" nickname="Input" x="0" y="300" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Skip" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="ca6799b2-c2ab-4eea-89ea-260e1fba6e5e" nickname="Output" x="591" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Sequence" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a86b0e67-6247-4539-b641-ef8bed66dc94" start_index="0" end="ca6799b2-c2ab-4eea-89ea-260e1fba6e5e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1dcb91ee-4faa-428f-b65e-bf05567591c9" start_index="0" end="a86b0e67-6247-4539-b641-ef8bed66dc94" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cb462cc7-8e63-4255-a404-17e2561af426" start_index="0" end="a86b0e67-6247-4539-b641-ef8bed66dc94" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="181c8b9d-b3f7-4989-b8c4-3c92d41eff8d" start_index="0" end="a86b0e67-6247-4539-b641-ef8bed66dc94" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

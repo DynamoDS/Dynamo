@@ -1,0 +1,34 @@
+<Workspace Version="0.6.3.7375" X="284" Y="195" zoom="1" Description="Shifts (integer) and reverses (bool) a given list" Category="CAAD_RWTH.Patterning.Helpers" Name="Shift Placement And Reverse" ID="cc531309-3f12-40f4-aba8-e2d8bc3b183d">
+  <Elements>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="0f2f6425-ab5f-4b98-bdb9-0a92f54db0d1" nickname="If" x="266.517215231412" y="106.375756465758" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.ShiftList type="Dynamo.Nodes.ShiftList" guid="87e661b2-e735-42c6-8425-04a9326030fd" nickname="Shift List Indeces" x="432.687850152054" y="48.970994561" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Round type="Dynamo.Nodes.Round" guid="18f44934-fbca-410e-89f0-06a6e9dd5189" nickname="Round" x="284.640591854785" y="21" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="c8cfc328-db03-4f83-8c59-c26a46196fb0" nickname="Reverse" x="119" y="202.487688118732" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="538b5769-e60f-47e7-b262-0b8054255a24" nickname="Output" x="575.687850152054" y="48" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="76099b69-c3ca-4f13-a9af-f2b795b83045" nickname="Input" x="-4" y="147" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3de106b6-962a-4143-9c4b-1f9885a38748" nickname="Input" x="168" y="23" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="shift" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4112496b-bd28-4bc4-b4fd-a0d9e1ce5a65" nickname="Input" x="106" y="105" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="reverse" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0f2f6425-ab5f-4b98-bdb9-0a92f54db0d1" start_index="0" end="87e661b2-e735-42c6-8425-04a9326030fd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="87e661b2-e735-42c6-8425-04a9326030fd" start_index="0" end="538b5769-e60f-47e7-b262-0b8054255a24" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="18f44934-fbca-410e-89f0-06a6e9dd5189" start_index="0" end="87e661b2-e735-42c6-8425-04a9326030fd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c8cfc328-db03-4f83-8c59-c26a46196fb0" start_index="0" end="0f2f6425-ab5f-4b98-bdb9-0a92f54db0d1" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="76099b69-c3ca-4f13-a9af-f2b795b83045" start_index="0" end="0f2f6425-ab5f-4b98-bdb9-0a92f54db0d1" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="76099b69-c3ca-4f13-a9af-f2b795b83045" start_index="0" end="c8cfc328-db03-4f83-8c59-c26a46196fb0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3de106b6-962a-4143-9c4b-1f9885a38748" start_index="0" end="18f44934-fbca-410e-89f0-06a6e9dd5189" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4112496b-bd28-4bc4-b4fd-a0d9e1ce5a65" start_index="0" end="0f2f6425-ab5f-4b98-bdb9-0a92f54db0d1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

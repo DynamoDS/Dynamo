@@ -1,0 +1,37 @@
+<Workspace Version="0.6.3.31051" X="-33.6595687499999" Y="161.6772875" zoom="1.33823125" Description="Creates a list of the first N letters of the alphabet  (where 1 = A, 2 = B, ... , 27 = AA, 28 = AB etc.)." Category="CAAD_RWTH.Strings" Name="Alphabetical Sequence" ID="c0d7ce38-395d-4655-90bc-3cbf9fdba03c">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6aab6231-acdd-4b63-a094-4f8639886af1" nickname="Input" x="181.889378237132" y="130.967060065291" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="n" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="b0e74ce8-4898-4bdd-9e65-fccb8463b553" nickname="Output" x="701.529498095116" y="61" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="letters" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a13f12e0-869e-40d6-b472-e2b173cadda0" nickname="Input" x="162" y="37" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="uppercase?" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="3f0008d7-50d3-4617-9574-1ea77fd6baf7" nickname="Map" x="534.726377478553" y="61.2981516061662" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="fe97e25e-f355-4810-a96e-2120bf2cfbd4" nickname="Number To Character" x="322.26786931528" y="16.1750178186713" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="e425042f-327a-4b27-b829-adb90c2e1789" />
+      <Name value="Number To Character" />
+      <Description value="Converts a number into a character (where 1 = A, 2 = B, ... , 27 = AA, 28 = AB etc.)." />
+      <Inputs>
+        <Input value="n" />
+        <Input value="upper?" />
+      </Inputs>
+      <Outputs>
+        <Output value="combined" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b8bd62a8-2177-4f52-91fa-2866a5e1d019" nickname="Number" x="404.142739717071" y="127.033042682272" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="1..n" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6aab6231-acdd-4b63-a094-4f8639886af1" start_index="0" end="b8bd62a8-2177-4f52-91fa-2866a5e1d019" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a13f12e0-869e-40d6-b472-e2b173cadda0" start_index="0" end="fe97e25e-f355-4810-a96e-2120bf2cfbd4" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3f0008d7-50d3-4617-9574-1ea77fd6baf7" start_index="0" end="b0e74ce8-4898-4bdd-9e65-fccb8463b553" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fe97e25e-f355-4810-a96e-2120bf2cfbd4" start_index="0" end="3f0008d7-50d3-4617-9574-1ea77fd6baf7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8bd62a8-2177-4f52-91fa-2866a5e1d019" start_index="0" end="3f0008d7-50d3-4617-9574-1ea77fd6baf7" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,90 @@
+<Workspace Version="0.6.2.29585" X="135" Y="132" zoom="1" Description="Send a command to a MySQL Database Server" Category="Input/Output.File" Name="Slingshot! MySQL Command" ID="e4462bba-be4e-457c-aba8-2d384675e677">
+  <Elements>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="0e472a02-0e9b-4e06-8d93-0e132e5715cb" nickname="List" x="250" y="1.54851684263446" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="c9452023-84c6-4cf5-8397-66cbcbee43c8" nickname="Python Script" x="415.52036199095" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Slingshot! for Dynamo
+#An Open Source project by Nathan Miller
+#http://TheProvingGround.org
+
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#Reference to System.Data.SQLite library
+clr.AddReference('MySQL.Data.dll')
+from MySql import *
+import MySql
+
+#The input to this node will be stored in the IN variable.
+cs = IN[0]
+connect = IN[1]
+cmds = IN[2]
+
+status = []
+if connect == True:
+	if hasattr(cmds, "__iter__"):
+		for cmd in cmds:
+			#SQLite Connection
+			MySQLConnect = MySql.Data.MySqlClient.MySqlConnection(cs)
+			MySQLData = MySql.Data.MySqlClient.MySqlDataAdapter()
+			MySQLConnect.Open()
+			status.append(MySQLConnect.State.ToString())
+			#SQLite Command
+			MySQLData.InsertCommand = MySql.Data.MySqlClient.MySqlCommand(cmd, MySQLConnect)
+			MySQLData.InsertCommand.ExecuteNonQuery()
+			status.append(cmd)
+			MySQLConnect.Close()
+			status.append(MySQLConnect.State.ToString())
+	else:
+		#SQLite Connection
+		MySQLConnect = MySql.Data.MySqlClient.MySqlConnection(cs)
+		MySQLData = MySql.Data.MySqlClient.MySqlDataAdapter()
+		MySQLConnect.Open()
+		status.append(MySQLConnect.State.ToString())
+		#SQLite Command
+		MySQLData.InsertCommand = MySql.Data.MySqlClient.MySqlCommand(cmds, MySQLConnect)
+		MySQLData.InsertCommand.ExecuteNonQuery()
+		status.append(cmds)
+		MySQLConnect.Close()
+		status.append(MySQLConnect.State.ToString())
+
+#Assign your output to the OUT variable
+OUT = status</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ebd219b5-2411-4d3d-81e1-65f75310f957" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ConnectionString" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="874c6b2b-fbe1-49ed-9afd-8011b6da5e4e" nickname="Input" x="49" y="87" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Connect" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5c9d5935-6e98-4b6f-b29d-eecd2f8348f4" nickname="Input" x="38" y="167" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Command" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5d97ad42-d04b-4e1a-8eb0-fd28fc98b6dc" nickname="Output" x="567.52036199095" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Messages" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0e472a02-0e9b-4e06-8d93-0e132e5715cb" start_index="0" end="c9452023-84c6-4cf5-8397-66cbcbee43c8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c9452023-84c6-4cf5-8397-66cbcbee43c8" start_index="0" end="5d97ad42-d04b-4e1a-8eb0-fd28fc98b6dc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ebd219b5-2411-4d3d-81e1-65f75310f957" start_index="0" end="0e472a02-0e9b-4e06-8d93-0e132e5715cb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="874c6b2b-fbe1-49ed-9afd-8011b6da5e4e" start_index="0" end="0e472a02-0e9b-4e06-8d93-0e132e5715cb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5c9d5935-6e98-4b6f-b29d-eecd2f8348f4" start_index="0" end="0e472a02-0e9b-4e06-8d93-0e132e5715cb" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

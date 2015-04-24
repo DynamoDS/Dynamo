@@ -1,0 +1,25 @@
+<Workspace Version="0.6.3.31052" X="76" Y="131" zoom="1" Description="Counts the occurences of True and False in a list of booleans" Category="CAAD_RWTH.Lists" Name="Count True And False" ID="804c43e3-16e9-44bb-8525-0be2d07fc1b9">
+  <Elements>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="36484183-6d9c-4199-bb3e-dfcfd580b486" nickname="List Length" x="322.77777777777" y="30" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c390a7dd-6d72-41ea-a9bc-108fd11be93d" nickname="Input" x="-2" y="62" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="booleans" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5556e51a-ae01-47dc-9936-032069ff787d" nickname="Output" x="475.77777777777" y="28" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="true" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="47330279-0294-45d9-87aa-67a5658800fb" nickname="Output" x="474.77777777777" y="107" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="false" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="b8ea9b5b-4a1c-49d2-a7d7-f19cfc2e9c8b" nickname="Filter by Boolean Mask" x="142" y="51.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="432cfb5e-5cfe-4f78-a015-dba1331fdd92" nickname="List Length" x="324.77777777777" y="107" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="36484183-6d9c-4199-bb3e-dfcfd580b486" start_index="0" end="5556e51a-ae01-47dc-9936-032069ff787d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c390a7dd-6d72-41ea-a9bc-108fd11be93d" start_index="0" end="b8ea9b5b-4a1c-49d2-a7d7-f19cfc2e9c8b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c390a7dd-6d72-41ea-a9bc-108fd11be93d" start_index="0" end="b8ea9b5b-4a1c-49d2-a7d7-f19cfc2e9c8b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8ea9b5b-4a1c-49d2-a7d7-f19cfc2e9c8b" start_index="0" end="36484183-6d9c-4199-bb3e-dfcfd580b486" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8ea9b5b-4a1c-49d2-a7d7-f19cfc2e9c8b" start_index="1" end="432cfb5e-5cfe-4f78-a015-dba1331fdd92" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="432cfb5e-5cfe-4f78-a015-dba1331fdd92" start_index="0" end="47330279-0294-45d9-87aa-67a5658800fb" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

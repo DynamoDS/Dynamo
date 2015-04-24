@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.5260" X="204.426958809925" Y="180.077370629367" zoom="0.9" Description="Gets the lengths of all sublists in a given list of lists." Category="CAAD_RWTH.Lists.Sublists" Name="Get Sublist Lengths" ID="94acdb87-65e9-4dbe-8430-aced99f668d5">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="16e19d5e-6aed-4bd8-87e0-f7f706ccf72f" nickname="Input" x="23.5892105692201" y="101.259270729275" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="5fe1015f-89f7-4bcc-9f65-a1b08403ac82" nickname="Map" x="201.742432045763" y="49.9362548562593" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="30333c2c-8b67-49cd-bf2d-ba508f5865a9" nickname="List Length" x="28.4090987124299" y="24.3806993007038" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="146cea06-cbbd-4be2-9f12-66e746487c2e" nickname="Output" x="382.853543156874" y="49.9362548562594" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="lengths" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="16e19d5e-6aed-4bd8-87e0-f7f706ccf72f" start_index="0" end="5fe1015f-89f7-4bcc-9f65-a1b08403ac82" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5fe1015f-89f7-4bcc-9f65-a1b08403ac82" start_index="0" end="146cea06-cbbd-4be2-9f12-66e746487c2e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="30333c2c-8b67-49cd-bf2d-ba508f5865a9" start_index="0" end="5fe1015f-89f7-4bcc-9f65-a1b08403ac82" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

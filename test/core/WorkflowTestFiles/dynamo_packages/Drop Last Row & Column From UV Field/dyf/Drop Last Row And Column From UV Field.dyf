@@ -1,0 +1,30 @@
+<Workspace Version="0.6.2.279" X="76.5091269841278" Y="132.798444444444" zoom="0.8" Description="Drops the last row and column from a UV field" Category="CAAD_RWTH.Lists" Name="Drop Last Row And Column From UV Field" ID="e4d97a93-2ffa-4906-8cc1-28b927b9b085">
+  <Elements>
+    <Dynamo.Nodes.TakeList type="Dynamo.Nodes.TakeList" guid="765f2208-dc2f-4b75-9e79-37a5dd5e214e" nickname="Take From List" x="500.579505926964" y="134.719576719577" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="9a0c6a59-8c3b-4ebd-a228-e5c2d85882dd" nickname="Formula" x="335.904761904762" y="207.442769782517" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>All-V</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="efdc6126-7fbb-46ef-aeb6-691c637fba9b" nickname="Input" x="14.6944444444445" y="151.037037037037" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4a8649d1-553f-44d1-a959-d1efe295c754" nickname="Input" x="14.6944444444445" y="68.03483327458" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.RemoveEveryNth type="Dynamo.Nodes.RemoveEveryNth" guid="a0e34b8e-b2e3-4699-ab97-68d0e8522579" nickname="Drop Every Nth" x="692.884920634921" y="68.1428571428571" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b038a8dd-22e2-4ef8-b281-3ee82ba401ac" nickname="Number" x="561.405423280423" y="35.9517989417998" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="2146f0ca-ddfb-4ddd-88fc-23a4176f931e" nickname="List Length" x="153.481922398588" y="207.082363315697" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="765f2208-dc2f-4b75-9e79-37a5dd5e214e" start_index="0" end="a0e34b8e-b2e3-4699-ab97-68d0e8522579" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9a0c6a59-8c3b-4ebd-a228-e5c2d85882dd" start_index="0" end="765f2208-dc2f-4b75-9e79-37a5dd5e214e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="efdc6126-7fbb-46ef-aeb6-691c637fba9b" start_index="0" end="765f2208-dc2f-4b75-9e79-37a5dd5e214e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="efdc6126-7fbb-46ef-aeb6-691c637fba9b" start_index="0" end="2146f0ca-ddfb-4ddd-88fc-23a4176f931e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4a8649d1-553f-44d1-a959-d1efe295c754" start_index="0" end="9a0c6a59-8c3b-4ebd-a228-e5c2d85882dd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4a8649d1-553f-44d1-a959-d1efe295c754" start_index="0" end="a0e34b8e-b2e3-4699-ab97-68d0e8522579" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b038a8dd-22e2-4ef8-b281-3ee82ba401ac" start_index="0" end="a0e34b8e-b2e3-4699-ab97-68d0e8522579" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2146f0ca-ddfb-4ddd-88fc-23a4176f931e" start_index="0" end="9a0c6a59-8c3b-4ebd-a228-e5c2d85882dd" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

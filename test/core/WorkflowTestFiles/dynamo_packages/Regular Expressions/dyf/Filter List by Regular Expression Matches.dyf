@@ -1,0 +1,62 @@
+<Workspace Version="0.6.3.7375" X="327" Y="344" zoom="1" Description="Filters out all items from a list of strings that don't begin with the regular expression.  The syntax for regular expressions is explained at&#xD;&#xA;http://ironpython-test.readthedocs.org/en/latest/howto/regex.html" Category="CAAD_RWTH.Strings" Name="Filter List by Regular Expression Matches" ID="54ea3bf3-7523-4f77-a642-a9de1f08f8a0">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="61a09a62-75ad-4c1b-8190-3e7fc0ac82f5" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="regex" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e04c85c5-6bf5-4eb8-9eaa-c72e40774b4d" nickname="Input" x="-140" y="94" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="692d47e3-2608-4aa7-b372-f9e7969beaea" nickname="Output" x="687.166666666667" y="68" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="in" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="8f7a3b9b-63a2-4002-9f28-dd3cc4b271c5" nickname="Match Regular Expression" x="145" y="-0.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="8cc7fb35-db73-41f2-92d1-2b6505d4cf44" />
+      <Name value="Match Regular Expression" />
+      <Description value="Determines if a regular expression matches a string (or a list of strings) and returns a boolean value (or a list, depending on the input). The syntax for regular expressions is explained at&#xD;&#xA;http://ironpython-test.readthedocs.org/en/latest/howto/regex.html" />
+      <Inputs>
+        <Input value="regex" />
+        <Input value="string(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="bool" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="d17fb2d8-a74f-47d7-ae8f-4c9af89fcd06" nickname="Filter by Boolean Mask" x="497" y="91" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="3f0698c0-a84e-4311-af33-c18c28e1b82e" nickname="Output" x="685" y="153" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="out" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5957d94f-af2d-48e5-a2ee-5d77b09956d7" nickname="Turn Into List" x="-30" y="92.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e9f5867b-fbe5-4df5-a50a-376d759efad2" nickname="Turn Into List" x="343" y="0.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="61a09a62-75ad-4c1b-8190-3e7fc0ac82f5" start_index="0" end="8f7a3b9b-63a2-4002-9f28-dd3cc4b271c5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e04c85c5-6bf5-4eb8-9eaa-c72e40774b4d" start_index="0" end="5957d94f-af2d-48e5-a2ee-5d77b09956d7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8f7a3b9b-63a2-4002-9f28-dd3cc4b271c5" start_index="0" end="e9f5867b-fbe5-4df5-a50a-376d759efad2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d17fb2d8-a74f-47d7-ae8f-4c9af89fcd06" start_index="0" end="692d47e3-2608-4aa7-b372-f9e7969beaea" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d17fb2d8-a74f-47d7-ae8f-4c9af89fcd06" start_index="1" end="3f0698c0-a84e-4311-af33-c18c28e1b82e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5957d94f-af2d-48e5-a2ee-5d77b09956d7" start_index="0" end="8f7a3b9b-63a2-4002-9f28-dd3cc4b271c5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5957d94f-af2d-48e5-a2ee-5d77b09956d7" start_index="0" end="d17fb2d8-a74f-47d7-ae8f-4c9af89fcd06" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e9f5867b-fbe5-4df5-a50a-376d759efad2" start_index="0" end="d17fb2d8-a74f-47d7-ae8f-4c9af89fcd06" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

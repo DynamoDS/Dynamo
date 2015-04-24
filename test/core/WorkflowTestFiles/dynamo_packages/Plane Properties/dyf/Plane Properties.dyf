@@ -1,0 +1,138 @@
+<Workspace Version="0.6.3.7375" X="15.2075" Y="221.69" zoom="0.8425" Description="Returns the normal and origin of a given plane as well as its X and Y vectors." Category="CAAD_RWTH.XYZ" Name="Plane Properties" ID="a147a2af-efa2-406b-987f-ba6e023bab56">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="3f20acf6-39e2-4b9d-91cf-9d1d9f687c7d" nickname="Turn Into List" x="258" y="118.671892078897" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ac4bfcbe-b7df-47c6-b387-63a32bd4b544" nickname="Number" x="598.283970126448" y="20.1371625301412" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="943cc1c0-1262-47ff-84ae-0e4135b6607a" nickname="Number" x="600.707556666809" y="131.624783277614" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="1f91f717-190f-4807-9bac-0a4a22eec509" nickname="Python Script" x="404.151480892428" y="283.568548187579" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+planes = IN
+normallist = list()
+originlist = list()
+xlist = list()
+ylist = list()
+for plane in planes:
+	normallist.append(plane.Normal)
+	originlist.append(plane.Origin)
+	xlist.append(plane.XVec)
+	ylist.append(plane.YVec)
+OUT = (normallist,originlist,xlist,ylist)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c033fc51-1dea-4296-adc2-8cd28421c032" nickname="Number" x="603.426766928943" y="239.486790342242" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="64d563a4-75fd-4296-b492-d0fef435fb11" nickname="Get from List" x="715.840473927972" y="43.228618634012" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="62167e81-274f-4ebf-bf16-5ca36650b034" nickname="Get from List" x="718.264060468333" y="154.716239381485" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="b76a9589-5e50-4b61-8a8c-7fb7ee10ee13" nickname="Get from List" x="720.983270730467" y="262.578246446113" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="ace18604-1356-4f12-9f1c-673a1dd5a90e" nickname="Number" x="610.677994294632" y="343.723183724026" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="f6edcc8c-d400-4dcd-b941-24fda20a72f3" nickname="Get from List" x="728.234498096156" y="366.814639827896" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f7f6f7fc-edeb-4fdc-b0c7-cf829b10be4f" nickname="Return List Or Single Value" x="904.295609995341" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="873b7890-4c62-41a8-88dc-1fc6189bb08e" nickname="Return List Or Single Value" x="906.719196535702" y="111.487620747473" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="42a7512c-2b44-49c6-8c7f-d7e2527e8705" nickname="Return List Or Single Value" x="909.438406797835" y="219.349627812101" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="88144458-591a-4430-bc97-5a903057fca5" nickname="Return List Or Single Value" x="916.689634163524" y="323.586021193884" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="46f050b3-6f09-4610-9146-f6a8b716e8c9" nickname="Input" x="134" y="120" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Plane(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="901e2cd4-03a7-467a-8cef-07e1ad6743d7" nickname="Output" x="1112" y="-1.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Normal(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="a4039463-5c57-46b5-adf9-44678ef39690" nickname="Output" x="1112" y="110.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Origin(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="399f2700-e452-447b-963b-f9394634ddf9" nickname="Output" x="1111" y="217.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="X Vector(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="d12936b2-bb7e-42e8-abff-54a3731816ed" nickname="Output" x="1117" y="322.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Y Vector(s)" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3f20acf6-39e2-4b9d-91cf-9d1d9f687c7d" start_index="0" end="1f91f717-190f-4807-9bac-0a4a22eec509" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3f20acf6-39e2-4b9d-91cf-9d1d9f687c7d" start_index="0" end="f7f6f7fc-edeb-4fdc-b0c7-cf829b10be4f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3f20acf6-39e2-4b9d-91cf-9d1d9f687c7d" start_index="0" end="873b7890-4c62-41a8-88dc-1fc6189bb08e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3f20acf6-39e2-4b9d-91cf-9d1d9f687c7d" start_index="0" end="42a7512c-2b44-49c6-8c7f-d7e2527e8705" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3f20acf6-39e2-4b9d-91cf-9d1d9f687c7d" start_index="0" end="88144458-591a-4430-bc97-5a903057fca5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ac4bfcbe-b7df-47c6-b387-63a32bd4b544" start_index="0" end="64d563a4-75fd-4296-b492-d0fef435fb11" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="943cc1c0-1262-47ff-84ae-0e4135b6607a" start_index="0" end="62167e81-274f-4ebf-bf16-5ca36650b034" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f91f717-190f-4807-9bac-0a4a22eec509" start_index="0" end="64d563a4-75fd-4296-b492-d0fef435fb11" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f91f717-190f-4807-9bac-0a4a22eec509" start_index="0" end="62167e81-274f-4ebf-bf16-5ca36650b034" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f91f717-190f-4807-9bac-0a4a22eec509" start_index="0" end="b76a9589-5e50-4b61-8a8c-7fb7ee10ee13" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f91f717-190f-4807-9bac-0a4a22eec509" start_index="0" end="f6edcc8c-d400-4dcd-b941-24fda20a72f3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c033fc51-1dea-4296-adc2-8cd28421c032" start_index="0" end="b76a9589-5e50-4b61-8a8c-7fb7ee10ee13" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="64d563a4-75fd-4296-b492-d0fef435fb11" start_index="0" end="f7f6f7fc-edeb-4fdc-b0c7-cf829b10be4f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="62167e81-274f-4ebf-bf16-5ca36650b034" start_index="0" end="873b7890-4c62-41a8-88dc-1fc6189bb08e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b76a9589-5e50-4b61-8a8c-7fb7ee10ee13" start_index="0" end="42a7512c-2b44-49c6-8c7f-d7e2527e8705" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ace18604-1356-4f12-9f1c-673a1dd5a90e" start_index="0" end="f6edcc8c-d400-4dcd-b941-24fda20a72f3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6edcc8c-d400-4dcd-b941-24fda20a72f3" start_index="0" end="88144458-591a-4430-bc97-5a903057fca5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f7f6f7fc-edeb-4fdc-b0c7-cf829b10be4f" start_index="0" end="901e2cd4-03a7-467a-8cef-07e1ad6743d7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="873b7890-4c62-41a8-88dc-1fc6189bb08e" start_index="0" end="a4039463-5c57-46b5-adf9-44678ef39690" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="42a7512c-2b44-49c6-8c7f-d7e2527e8705" start_index="0" end="399f2700-e452-447b-963b-f9394634ddf9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="88144458-591a-4430-bc97-5a903057fca5" start_index="0" end="d12936b2-bb7e-42e8-abff-54a3731816ed" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="46f050b3-6f09-4610-9146-f6a8b716e8c9" start_index="0" end="3f20acf6-39e2-4b9d-91cf-9d1d9f687c7d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

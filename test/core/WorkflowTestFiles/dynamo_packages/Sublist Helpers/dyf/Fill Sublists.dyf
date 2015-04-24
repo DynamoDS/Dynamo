@@ -1,0 +1,22 @@
+<Workspace Version="0.6.3.5260" X="18.8375525959049" Y="57.3721417249392" zoom="0.8" Description="Repeats a list of items into sublists of given lengths" Category="CAAD_RWTH.Lists.Sublists" Name="Fill Sublists" ID="1784a5df-bdcc-4d94-a7b0-a8cab28ebce5">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6428c870-11a6-4419-861c-9e4b688a5c50" nickname="Input" x="24.2082581882677" y="159.259270729275" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="201e2e4f-8636-4fff-b915-4ea4579ad280" nickname="Input" x="23.0177819977916" y="245.449746919751" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="lengths" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Repeat type="Dynamo.Nodes.Repeat" guid="dcda5b3a-2db1-4ee2-ad98-02aacd3800dd" nickname="Repeat" x="26.1130200930296" y="23.4497469197512" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="885100ad-ee77-4798-9427-f3f6316735a9" nickname="Output" x="409.58921056922" y="139.354508824513" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="sublists" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Combine type="Dynamo.Nodes.Combine" guid="df5a6a36-f3fa-49b7-939f-5f8a59823f82" nickname="Combine" x="204.612447398454" y="138.648156177159" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6428c870-11a6-4419-861c-9e4b688a5c50" start_index="0" end="df5a6a36-f3fa-49b7-939f-5f8a59823f82" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="201e2e4f-8636-4fff-b915-4ea4579ad280" start_index="0" end="df5a6a36-f3fa-49b7-939f-5f8a59823f82" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dcda5b3a-2db1-4ee2-ad98-02aacd3800dd" start_index="0" end="df5a6a36-f3fa-49b7-939f-5f8a59823f82" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="df5a6a36-f3fa-49b7-939f-5f8a59823f82" start_index="0" end="885100ad-ee77-4798-9427-f3f6316735a9" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

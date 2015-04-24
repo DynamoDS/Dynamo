@@ -1,0 +1,80 @@
+<Workspace Version="0.6.2.26406" X="195" Y="231" zoom="1" Description="Returns the total value of a list of numbers." Category="LunchBox.Math.Operators" Name="LunchBox Mass Addition" ID="1ebd5240-5c26-4fc0-9e0c-3b87e1527259">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="03321f64-faab-45f9-87e2-beb83c5ae000" nickname="Python Script" x="255" y="104.545454545455" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+list = IN
+mass = 0
+masspart = []
+if hasattr(list, "__iter__"):
+    for i in range(0,len(list)):
+	mass = mass + list[i]
+	masspart.append(mass)
+else:
+    masspart.append(list)
+
+#Assign your output to the OUT variable
+OUT = masspart</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="72217574-6412-4a6e-81b7-0169b9d8f0cf" nickname="Python Script" x="252.727272727273" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+list = IN
+mass = 0
+if hasattr(list, "__iter__"):
+    for i in range(0,len(list)):
+	mass = mass + list[i]
+else:
+    mass = list
+
+#Assign your output to the OUT variable
+OUT = mass</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d2d7b5ee-363e-4590-88bf-e10c5eaaaaa2" nickname="Input" x="91" y="49" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Numbers" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="d4cdb549-d47c-469a-9f6a-018bb4550d57" nickname="Output" x="433.727272727273" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Result" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="68395fcc-15af-400c-bad8-e59a52bcc6de" nickname="Output" x="429.727272727273" y="106" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Partials" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="03321f64-faab-45f9-87e2-beb83c5ae000" start_index="0" end="68395fcc-15af-400c-bad8-e59a52bcc6de" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="72217574-6412-4a6e-81b7-0169b9d8f0cf" start_index="0" end="d4cdb549-d47c-469a-9f6a-018bb4550d57" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d2d7b5ee-363e-4590-88bf-e10c5eaaaaa2" start_index="0" end="03321f64-faab-45f9-87e2-beb83c5ae000" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d2d7b5ee-363e-4590-88bf-e10c5eaaaaa2" start_index="0" end="72217574-6412-4a6e-81b7-0169b9d8f0cf" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,59 @@
+<Workspace Version="0.6.3.5259" X="28" Y="252" zoom="1" Description="Replaces a specified part (substring) of a string by another string" Category="CAAD_RWTH.Strings" Name="Replace Substring" ID="03bc2e29-9993-4209-b04e-94f7449ceb9c">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="0c0b7a72-032c-42af-8ac9-99dffb021efd" nickname="Python Script With Variable Number of Inputs" x="376" y="58" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script>items = IN0
+searchstring = IN1
+replacestring = IN2
+elementlist = list()
+for item in items:
+	repitem = item.replace(searchstring,replacestring)
+	elementlist.append(repitem)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="9d7dbca9-d8f5-4254-a381-4d7fe7577099" nickname="Return List Or Single Value" x="689" y="-1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="8e67440e-a856-43a9-a06f-84c225d4a664" nickname="Turn Into List" x="221" y="-2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="230360cd-fbf4-4ace-a4b8-f6d5ed4097f6" nickname="Input" x="66" y="-3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="string(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="24c91004-1550-4131-9978-47b36d4c0844" nickname="Output" x="906" y="-2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="string(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="190e8c9e-79ff-4ddd-a35a-8ea956662aa4" nickname="Input" x="74" y="76.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="search" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7cd3210f-fe00-4143-8305-bf8cf61d62ec" nickname="Input" x="74" y="151.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="replace" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0c0b7a72-032c-42af-8ac9-99dffb021efd" start_index="0" end="9d7dbca9-d8f5-4254-a381-4d7fe7577099" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9d7dbca9-d8f5-4254-a381-4d7fe7577099" start_index="0" end="24c91004-1550-4131-9978-47b36d4c0844" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8e67440e-a856-43a9-a06f-84c225d4a664" start_index="0" end="0c0b7a72-032c-42af-8ac9-99dffb021efd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8e67440e-a856-43a9-a06f-84c225d4a664" start_index="0" end="9d7dbca9-d8f5-4254-a381-4d7fe7577099" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="230360cd-fbf4-4ace-a4b8-f6d5ed4097f6" start_index="0" end="8e67440e-a856-43a9-a06f-84c225d4a664" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="190e8c9e-79ff-4ddd-a35a-8ea956662aa4" start_index="0" end="0c0b7a72-032c-42af-8ac9-99dffb021efd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7cd3210f-fe00-4143-8305-bf8cf61d62ec" start_index="0" end="0c0b7a72-032c-42af-8ac9-99dffb021efd" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

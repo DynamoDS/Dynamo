@@ -1,0 +1,70 @@
+<Workspace Version="0.6.2.26406" X="5.32727272727271" Y="156.8" zoom="1.4" Description="Gets the Min and Max variables of a Domain." Category="LunchBox.Math.Domain" Name="LunchBox Domain Variables" ID="a88ef189-07a0-4559-bd1c-62ac95b14e84">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="a158362a-7576-4d4e-908b-163ba11e9e73" nickname="Python Script" x="250" y="66.923076923077" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable
+
+domain = IN
+min = domain.Min
+
+#Assign your output to the OUT variable
+OUT = min</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="aaaa46c2-f1ed-4ad5-990a-8b72eecbd994" nickname="Python Script" x="250.769230769231" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable
+
+domain = IN
+max = domain.Max
+
+#Assign your output to the OUT variable
+OUT = max</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e71144fa-1235-4373-b1c1-d4239e0da32b" nickname="Input" x="71.5714285714286" y="35.8571428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Domain" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f78a08fb-7a10-4f24-ae2a-e8600a05dd8c" nickname="Output" x="429.626373626374" y="-1.42857142857142" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Min" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5a659f62-cae8-4b70-83db-30004754c958" nickname="Output" x="433.197802197802" y="71.4285714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Max" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a158362a-7576-4d4e-908b-163ba11e9e73" start_index="0" end="f78a08fb-7a10-4f24-ae2a-e8600a05dd8c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aaaa46c2-f1ed-4ad5-990a-8b72eecbd994" start_index="0" end="5a659f62-cae8-4b70-83db-30004754c958" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e71144fa-1235-4373-b1c1-d4239e0da32b" start_index="0" end="a158362a-7576-4d4e-908b-163ba11e9e73" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e71144fa-1235-4373-b1c1-d4239e0da32b" start_index="0" end="aaaa46c2-f1ed-4ad5-990a-8b72eecbd994" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

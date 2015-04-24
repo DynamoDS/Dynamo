@@ -1,0 +1,68 @@
+<Workspace Version="0.6.2.26406" X="60.6483266639888" Y="304.135594083675" zoom="1" Description="Remaps a list of numbers to a new domain." Category="LunchBox.Math.Domain" Name="LunchBox Remap Numbers" ID="4f7086ab-e3da-451a-9c60-30985c4eb011">
+  <Elements>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="a0e91b52-9d3b-4b6d-ae38-9a1a3dedd89b" nickname="List" x="201" y="20.2875816993464" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="6d1f1ab3-bbad-472f-88e0-bfc4e3a921c3" nickname="Python Script" x="385.056309703369" y="16" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+list = IN[0]
+dom = IN[1]
+
+dmin = dom.Min
+dmax = dom.Max
+drange = dmax-dmin
+
+l = []
+for i in range(0,len(list)):
+	l.append(list[i])
+
+l.sort()
+listMin = l[0]
+listMax = l[(len(list)-1)]
+listRange = listMax-listMin
+
+mapped = []
+for i in range(0,len(list)):
+	scaled = dmin + (((list[i] - listMin) / listRange) * drange)
+	mapped.append(scaled)
+
+
+#Assign your output to the OUT variable
+OUT = mapped</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c24e935f-2b6f-41ec-a050-4ec4770cce43" nickname="Input" x="2.72727272727275" y="-10.9090909090909" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Numbers" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="31a79255-4c77-4ebc-b0e2-d7f235fdd66c" nickname="Input" x="4.5454545454545" y="80" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Domain" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="11e342db-afa4-4684-9378-615aa8f3e794" nickname="Output" x="550.056309703369" y="18" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Remapped" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a0e91b52-9d3b-4b6d-ae38-9a1a3dedd89b" start_index="0" end="6d1f1ab3-bbad-472f-88e0-bfc4e3a921c3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6d1f1ab3-bbad-472f-88e0-bfc4e3a921c3" start_index="0" end="11e342db-afa4-4684-9378-615aa8f3e794" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c24e935f-2b6f-41ec-a050-4ec4770cce43" start_index="0" end="a0e91b52-9d3b-4b6d-ae38-9a1a3dedd89b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="31a79255-4c77-4ebc-b0e2-d7f235fdd66c" start_index="0" end="a0e91b52-9d3b-4b6d-ae38-9a1a3dedd89b" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,69 @@
+<Workspace Version="0.6.3.31052" X="-38.3375000000001" Y="250.905" zoom="0.8425" Description="Resizes the bounding box of a given Revit element by the specified amount in X, Y and Z direction. May need to be used in conjunction with a Transaction node." Category="CAAD_RWTH.Revit.Views" Name="Resize View Crop Box" ID="64a4fe31-b2f1-452a-8b9d-69dd81bc588d">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="7b9e5a34-a6cb-4019-8e83-842cbb3cba9e" nickname="Python Script With Variable Number of Inputs" x="413.96428571428" y="39.07142857143" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+views = IN0
+margin = IN1
+elementlist = list()
+failedlist = list()
+for item in views:
+	try:
+		newmax = item.CropBox.Max.Add(XYZ(margin,margin,margin))
+		newmin = item.CropBox.Min.Subtract(XYZ(margin,margin,margin))
+		newbox = BoundingBoxXYZ()
+		newbox.Max = newmax
+		newbox.Min = newmin
+		item.CropBox = newbox
+		elementlist.append(item)
+	except:
+		do_nothing = 1
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="cf916ebd-8d18-458a-bb06-d05e6ebc74bf" nickname="Turn Into List" x="246" y="-19.42857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="edaf9b72-508f-4e35-a8cd-acefe7bc2c1e" nickname="Input" x="292" y="75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="amt" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="585a7471-478d-4484-973f-b2689064144b" nickname="Input" x="102" y="-18" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="View(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="73bac2d8-b319-4f94-b962-745484a0821c" nickname="Output" x="923.456867316654" y="-20.6913946587537" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="View(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="57d53136-1890-49ce-bbf8-a3597d569f51" nickname="Return List Or Single Value" x="719.391691394659" y="-19.7685459940653" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7b9e5a34-a6cb-4019-8e83-842cbb3cba9e" start_index="0" end="57d53136-1890-49ce-bbf8-a3597d569f51" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cf916ebd-8d18-458a-bb06-d05e6ebc74bf" start_index="0" end="7b9e5a34-a6cb-4019-8e83-842cbb3cba9e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cf916ebd-8d18-458a-bb06-d05e6ebc74bf" start_index="0" end="57d53136-1890-49ce-bbf8-a3597d569f51" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="edaf9b72-508f-4e35-a8cd-acefe7bc2c1e" start_index="0" end="7b9e5a34-a6cb-4019-8e83-842cbb3cba9e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="585a7471-478d-4484-973f-b2689064144b" start_index="0" end="cf916ebd-8d18-458a-bb06-d05e6ebc74bf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="57d53136-1890-49ce-bbf8-a3597d569f51" start_index="0" end="73bac2d8-b319-4f94-b962-745484a0821c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

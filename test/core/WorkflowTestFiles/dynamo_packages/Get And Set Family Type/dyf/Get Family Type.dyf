@@ -1,0 +1,57 @@
+<Workspace Version="0.6.3.5244" X="62.4" Y="124.1" zoom="0.7" Description="Returns the familyt type of a given family instance" Category="CAAD_RWTH.Revit.Properties" Name="Get Family Type" ID="b9e5999a-6a50-431e-a97b-2c3bbc1d5b55">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="90ca9469-1e0d-4005-8acc-65f993500161" nickname="Python Script" x="259" y="58.5714285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+items = IN
+elementlist = list()
+for item in items:
+	try:
+		elementlist.append(item.Symbol)
+	except:
+		emptylist = list()
+OUT = elementlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="29a85d74-279c-482e-ae26-11df685b5adf" nickname="Return List Or Single Value" x="401" y="-1.42857142857144" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5e81bfab-6ed0-4b27-b374-99a3c1255e08" nickname="Turn Into List" x="110" y="-1.42857142857144" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="962c2bff-4c7a-4944-8e67-519a8944af81" nickname="Input" x="-71.4285714285713" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Family Instance(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="897c863b-98b7-4ce2-9318-9fd5212c375c" nickname="Output" x="604.142857142857" y="-2.85714285714283" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Family Type(s)" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="90ca9469-1e0d-4005-8acc-65f993500161" start_index="0" end="29a85d74-279c-482e-ae26-11df685b5adf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="29a85d74-279c-482e-ae26-11df685b5adf" start_index="0" end="897c863b-98b7-4ce2-9318-9fd5212c375c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5e81bfab-6ed0-4b27-b374-99a3c1255e08" start_index="0" end="29a85d74-279c-482e-ae26-11df685b5adf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5e81bfab-6ed0-4b27-b374-99a3c1255e08" start_index="0" end="90ca9469-1e0d-4005-8acc-65f993500161" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="962c2bff-4c7a-4944-8e67-519a8944af81" start_index="0" end="5e81bfab-6ed0-4b27-b374-99a3c1255e08" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

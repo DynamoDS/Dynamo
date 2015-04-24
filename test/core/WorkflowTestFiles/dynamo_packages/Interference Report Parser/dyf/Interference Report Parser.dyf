@@ -1,0 +1,81 @@
+<Workspace Version="0.6.3.7993" X="116.975875362653" Y="229.751774603125" zoom="0.888789228297156" Description="Parses an HTML report from Interference check. It outputs a list of IDs of elements that created clashes. Uses BeautifulSoup and re (regular expression) to parse the html file so please verify that those modules are installed and proper paths are appended." Category="Archi-lab.Warnings" Name="Interference Report Parser" ID="66e5346d-8a32-4857-bab0-13a84060050f">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="ec8d70b3-a2f3-493f-bf90-17f9b2236318" nickname="Get from List" x="693.860352547062" y="116.692828466892" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="68caffd5-a568-4c3b-b38d-29d76b2e7d11" nickname="Get from List" x="694.534047008538" y="11.648010762746" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="f47c605a-64b0-4e3c-83be-e51ad1f76b42" nickname="Number" x="579.497342394047" y="109.571202262267" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="42936ad9-517e-4ea7-b6c3-76d60bc44fa0" nickname="Number" x="577.153447150109" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="0b1630c5-b0d2-4034-8c54-307fc00f25f2" nickname="Python Script With Variable Number of Inputs" x="250" y="32.827713325369" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="1">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+lib_path = r'C:\Program Files (x86)\IronPython 2.7\Lib\BeautifulSoup-3.2.1'
+pyt_path = r'C:\Program Files (x86)\IronPython 2.7\Lib'
+sys.path.append(path)
+sys.path.append(exec_path)
+sys.path.append(lib_path)
+sys.path.append(pyt_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+from BeautifulSoup import BeautifulSoup
+import re
+
+#The input to this node will be stored in the IN0...INX variable(s).
+dataEnteringNode = IN0
+#open html file and get contents
+url = str(IN0)
+with open(url, 'r') as f:
+    data = f.read()
+    
+txt = []
+#crate a beautifulsoup object
+soup = BeautifulSoup(data)
+tag = soup.findAll('tr')
+#convert beautifulsoup object into string
+for i in tag:
+	txt.append(str(i.text))
+#remove first item from list
+txt.remove("AB")
+#get total number of warnings
+total_warnings = len(txt)
+#parse the properties cell for element IDs	
+pattern = re.compile(r"\bid\s*?(\d+)")
+ids = ["; ".join(pattern.findall(item)) for item in txt]
+#create a list of individual ids
+final_ids = list(ids)
+str_ids = ' ;'.join(str(elem) for elem in final_ids)
+list_ids = set(str_ids.replace(" ", "").split(";"))
+#define outputs
+OUT = list_ids, total_warnings</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="12680705-2b7e-4002-8bf1-778205e9c82a" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="File Path" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2241a1d3-70bb-4aed-88eb-3c407152b6b8" nickname="Output" x="915.539033524422" y="116.144608960642" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Total Number of Clashes" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="db8e2a74-fd62-4a9a-891c-fe8a629b8057" nickname="Output" x="913.136041614892" y="13.8304584599367" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ID(s)" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ec8d70b3-a2f3-493f-bf90-17f9b2236318" start_index="0" end="2241a1d3-70bb-4aed-88eb-3c407152b6b8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="68caffd5-a568-4c3b-b38d-29d76b2e7d11" start_index="0" end="db8e2a74-fd62-4a9a-891c-fe8a629b8057" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f47c605a-64b0-4e3c-83be-e51ad1f76b42" start_index="0" end="ec8d70b3-a2f3-493f-bf90-17f9b2236318" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="42936ad9-517e-4ea7-b6c3-76d60bc44fa0" start_index="0" end="68caffd5-a568-4c3b-b38d-29d76b2e7d11" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b1630c5-b0d2-4034-8c54-307fc00f25f2" start_index="0" end="68caffd5-a568-4c3b-b38d-29d76b2e7d11" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b1630c5-b0d2-4034-8c54-307fc00f25f2" start_index="0" end="ec8d70b3-a2f3-493f-bf90-17f9b2236318" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="12680705-2b7e-4002-8bf1-778205e9c82a" start_index="0" end="0b1630c5-b0d2-4034-8c54-307fc00f25f2" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

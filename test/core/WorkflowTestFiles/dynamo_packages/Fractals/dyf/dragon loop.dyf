@@ -1,0 +1,166 @@
+<dynWorkspace X="0" Y="0" zoom="1" Description="" Category="Fractals.Internal" Name="dragon loop" ID="378a2d85-b426-45e8-b164-92b990cadd90">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="b01e2bbd-8064-4b3f-8205-fc9b9c452fcf" nickname="Input" x="16.9951476511123" y="15.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="order" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="3b3d8cc7-9f13-4b04-836c-f6f433599801" nickname="Input" x="0" y="205.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="result" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="d39086b0-f514-48a1-ae47-de2515283673" nickname="Input" x="0.995147651112347" y="329.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="transform" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="ec1664dd-e6ea-454e-b288-183bb3985d9b" nickname="Input" x="0" y="399.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="translation" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="a9b16684-1838-4fd0-8cf8-fd74ee39f1b4" nickname="Input" x="0" y="706.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="direction" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="47a7b42a-e3fd-4b8a-b597-cbb9d4e2ec61" nickname="Output" x="1940.84236987333" y="89.4505555555559" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="pts" />
+    </Dynamo.Nodes.dynOutput>
+    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="8064c3a0-cf9b-4155-aa27-b0a831ae015c" nickname="If" x="1791.74636073834" y="89.3216666666669" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.dynConditional>
+    <Dynamo.Nodes.dynEqual type="Dynamo.Nodes.dynEqual" guid="24711d47-25ec-49e8-b547-c49f4a57de1d" nickname="Equal" x="1484.52413851611" y="19.321666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="48be8fad-6b98-4f5a-a52c-bae69c0c9a2e" nickname="Number" x="1394.663027405" y="63.0716666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.0" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynList type="Dynamo.Nodes.dynList" guid="07f98576-8489-4334-b5e5-8d97efa5b942" nickname="Add to List" x="1508.81513124543" y="109.138333333334" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Multiplytransform type="Dynamo.Nodes.Multiplytransform" guid="56db7c79-3bc8-4b9a-a95b-e62104bf14c4" nickname="Multiply Transform" x="1227.59290902321" y="330.249444444445" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="ba061f5e-f199-40ed-bc44-3cfac2561c77" nickname="Output" x="1945.4817979121" y="310.827222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="transform" />
+    </Dynamo.Nodes.dynOutput>
+    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="e1c18d55-79a9-4d2f-b7ce-132b40990bfb" nickname="If" x="1796.07969407167" y="310.543888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.dynConditional>
+    <Dynamo.Nodes.dynTransformPoint type="Dynamo.Nodes.dynTransformPoint" guid="ab14e4e9-b9fc-4e5e-b2c2-dcc3b3ed45db" nickname="Transform Point" x="1388.14846457877" y="188.749444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynXYZ type="Dynamo.Nodes.dynXYZ" guid="3bbfc6b1-8f36-4b92-b8b2-5668c863c430" nickname="XYZ" x="1242.59290902321" y="208.749444444445" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.dynXYZ>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="a0d37687-8cd8-4b0e-975e-13f504ab702f" nickname="dragon loop" x="1403.99514765111" y="496.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="378a2d85-b426-45e8-b164-92b990cadd90" />
+      <Name value="dragon loop" />
+      <Description value="" />
+      <Inputs>
+        <Input value="order" />
+        <Input value="result" />
+        <Input value="transform" />
+        <Input value="translation" />
+        <Input value="direction" />
+      </Inputs>
+      <Outputs>
+        <Output value="pts" />
+        <Output value="transform" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="5d763b2a-f413-43fc-9225-9a7972dc683e" nickname="Number" x="234.592909023212" y="122.938333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1.000" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynSubtraction type="Dynamo.Nodes.dynSubtraction" guid="2d6bc4a2-add4-4ab8-addb-d355443d6752" nickname="Subtract" x="336.259575689878" y="70.305" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="e91c313e-4d89-48e4-a09c-aa9d37dc2e51" nickname="dragon loop" x="819.995147651112" y="661.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="378a2d85-b426-45e8-b164-92b990cadd90" />
+      <Name value="dragon loop" />
+      <Description value="" />
+      <Inputs>
+        <Input value="order" />
+        <Input value="result" />
+        <Input value="transform" />
+        <Input value="translation" />
+        <Input value="direction" />
+      </Inputs>
+      <Outputs>
+        <Output value="pts" />
+        <Output value="transform" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="de2b8944-a7f0-4e5c-bba3-7225adda362c" nickname="Rotate Z Origin" x="303.495147651112" y="603.56" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="71909492-20d1-47b4-8e53-1944751221a7" />
+      <Name value="Rotate Z Origin" />
+      <Description value="Creates a rotation transform around the z-axis at (0,0,0)" />
+      <Inputs>
+        <Input value="dn" />
+      </Inputs>
+      <Outputs>
+        <Output value="t" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="dd82975a-263d-4fcd-aa15-578c1872f075" nickname="Formula" x="153.495147651112" y="603.56" isVisible="true" isUpstreamVisible="true" lacing="Disabled" formula="dir * pi/4" />
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="886b97e6-9672-454c-b49f-752ad0c0f3c4" nickname="Rotate Z Origin" x="304.495147651112" y="808.56" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="71909492-20d1-47b4-8e53-1944751221a7" />
+      <Name value="Rotate Z Origin" />
+      <Description value="Creates a rotation transform around the z-axis at (0,0,0)" />
+      <Inputs>
+        <Input value="dn" />
+      </Inputs>
+      <Outputs>
+        <Output value="t" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="5a723cf9-55b9-4a56-ae55-bffb4210e508" nickname="Formula" x="154.495147651112" y="808.56" isVisible="true" isUpstreamVisible="true" lacing="Disabled" formula="-dir * pi/2" />
+    <Dynamo.Nodes.Multiplytransform type="Dynamo.Nodes.Multiplytransform" guid="831c2cde-50d0-411b-8fac-584c99b99108" nickname="Multiply Transform" x="1642.49514765111" y="586.56" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Multiplytransform type="Dynamo.Nodes.Multiplytransform" guid="bebfcf0c-9820-4f5c-bf38-7175a3b60954" nickname="Multiply Transform" x="1051.49514765111" y="790.56" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Multiplytransform type="Dynamo.Nodes.Multiplytransform" guid="c3ba6f32-a18a-4322-ba7c-61ed987db153" nickname="Multiply Transform" x="434.495147651112" y="700.56" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="dff4b351-6f52-46bb-9a07-e6661aa84350" nickname="Number" x="712.495147651112" y="775.56" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1.000" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="ed718662-ebd9-4e85-8393-d3b0db01277f" nickname="Number" x="1304.49514765111" y="670.56" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="-1.000" />
+    </Dynamo.Nodes.dynDoubleInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="b01e2bbd-8064-4b3f-8205-fc9b9c452fcf" start_index="0" end="24711d47-25ec-49e8-b547-c49f4a57de1d" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b01e2bbd-8064-4b3f-8205-fc9b9c452fcf" start_index="0" end="2d6bc4a2-add4-4ab8-addb-d355443d6752" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="3b3d8cc7-9f13-4b04-836c-f6f433599801" start_index="0" end="e91c313e-4d89-48e4-a09c-aa9d37dc2e51" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="3b3d8cc7-9f13-4b04-836c-f6f433599801" start_index="0" end="07f98576-8489-4334-b5e5-8d97efa5b942" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="d39086b0-f514-48a1-ae47-de2515283673" start_index="0" end="56db7c79-3bc8-4b9a-a95b-e62104bf14c4" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="d39086b0-f514-48a1-ae47-de2515283673" start_index="0" end="c3ba6f32-a18a-4322-ba7c-61ed987db153" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ec1664dd-e6ea-454e-b288-183bb3985d9b" start_index="0" end="56db7c79-3bc8-4b9a-a95b-e62104bf14c4" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ec1664dd-e6ea-454e-b288-183bb3985d9b" start_index="0" end="e91c313e-4d89-48e4-a09c-aa9d37dc2e51" end_index="3" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ec1664dd-e6ea-454e-b288-183bb3985d9b" start_index="0" end="a0d37687-8cd8-4b0e-975e-13f504ab702f" end_index="3" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="a9b16684-1838-4fd0-8cf8-fd74ee39f1b4" start_index="0" end="dd82975a-263d-4fcd-aa15-578c1872f075" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="a9b16684-1838-4fd0-8cf8-fd74ee39f1b4" start_index="0" end="5a723cf9-55b9-4a56-ae55-bffb4210e508" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="8064c3a0-cf9b-4155-aa27-b0a831ae015c" start_index="0" end="47a7b42a-e3fd-4b8a-b597-cbb9d4e2ec61" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="24711d47-25ec-49e8-b547-c49f4a57de1d" start_index="0" end="8064c3a0-cf9b-4155-aa27-b0a831ae015c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="24711d47-25ec-49e8-b547-c49f4a57de1d" start_index="0" end="e1c18d55-79a9-4d2f-b7ce-132b40990bfb" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="48be8fad-6b98-4f5a-a52c-bae69c0c9a2e" start_index="0" end="24711d47-25ec-49e8-b547-c49f4a57de1d" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="07f98576-8489-4334-b5e5-8d97efa5b942" start_index="0" end="8064c3a0-cf9b-4155-aa27-b0a831ae015c" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="56db7c79-3bc8-4b9a-a95b-e62104bf14c4" start_index="0" end="e1c18d55-79a9-4d2f-b7ce-132b40990bfb" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="56db7c79-3bc8-4b9a-a95b-e62104bf14c4" start_index="0" end="ab14e4e9-b9fc-4e5e-b2c2-dcc3b3ed45db" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e1c18d55-79a9-4d2f-b7ce-132b40990bfb" start_index="0" end="ba061f5e-f199-40ed-bc44-3cfac2561c77" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ab14e4e9-b9fc-4e5e-b2c2-dcc3b3ed45db" start_index="0" end="07f98576-8489-4334-b5e5-8d97efa5b942" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="3bbfc6b1-8f36-4b92-b8b2-5668c863c430" start_index="0" end="ab14e4e9-b9fc-4e5e-b2c2-dcc3b3ed45db" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="a0d37687-8cd8-4b0e-975e-13f504ab702f" start_index="0" end="8064c3a0-cf9b-4155-aa27-b0a831ae015c" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="a0d37687-8cd8-4b0e-975e-13f504ab702f" start_index="1" end="831c2cde-50d0-411b-8fac-584c99b99108" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="5d763b2a-f413-43fc-9225-9a7972dc683e" start_index="0" end="2d6bc4a2-add4-4ab8-addb-d355443d6752" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="2d6bc4a2-add4-4ab8-addb-d355443d6752" start_index="0" end="a0d37687-8cd8-4b0e-975e-13f504ab702f" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="2d6bc4a2-add4-4ab8-addb-d355443d6752" start_index="0" end="e91c313e-4d89-48e4-a09c-aa9d37dc2e51" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e91c313e-4d89-48e4-a09c-aa9d37dc2e51" start_index="0" end="a0d37687-8cd8-4b0e-975e-13f504ab702f" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e91c313e-4d89-48e4-a09c-aa9d37dc2e51" start_index="1" end="bebfcf0c-9820-4f5c-bf38-7175a3b60954" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="de2b8944-a7f0-4e5c-bba3-7225adda362c" start_index="0" end="c3ba6f32-a18a-4322-ba7c-61ed987db153" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="de2b8944-a7f0-4e5c-bba3-7225adda362c" start_index="0" end="831c2cde-50d0-411b-8fac-584c99b99108" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="dd82975a-263d-4fcd-aa15-578c1872f075" start_index="0" end="de2b8944-a7f0-4e5c-bba3-7225adda362c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="886b97e6-9672-454c-b49f-752ad0c0f3c4" start_index="0" end="bebfcf0c-9820-4f5c-bf38-7175a3b60954" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="5a723cf9-55b9-4a56-ae55-bffb4210e508" start_index="0" end="886b97e6-9672-454c-b49f-752ad0c0f3c4" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="831c2cde-50d0-411b-8fac-584c99b99108" start_index="0" end="e1c18d55-79a9-4d2f-b7ce-132b40990bfb" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="bebfcf0c-9820-4f5c-bf38-7175a3b60954" start_index="0" end="a0d37687-8cd8-4b0e-975e-13f504ab702f" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="c3ba6f32-a18a-4322-ba7c-61ed987db153" start_index="0" end="e91c313e-4d89-48e4-a09c-aa9d37dc2e51" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="dff4b351-6f52-46bb-9a07-e6661aa84350" start_index="0" end="e91c313e-4d89-48e4-a09c-aa9d37dc2e51" end_index="4" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="ed718662-ebd9-4e85-8393-d3b0db01277f" start_index="0" end="a0d37687-8cd8-4b0e-975e-13f504ab702f" end_index="4" portType="0" />
+  </dynConnectors>
+  <dynNotes>
+    <Dynamo.Nodes.dynNoteModel text="If the order is 0, apply the transform to (0, 0, 0) and place the result in the accumulator." x="936.03735346766" y="216.193888888889" />
+    <Dynamo.Nodes.dynNoteModel text="If the order is 0, update the transformation by applying the pre-calculated translation." x="1367.59290902321" y="379.749444444444" />
+    <Dynamo.Nodes.dynNoteModel text="Order is decremented for recursive calls." x="443.37068680099" y="73.4161111111114" />
+    <Dynamo.Nodes.dynNoteModel text="Second sub-section" x="1433.99514765111" y="651.52" />
+    <Dynamo.Nodes.dynNoteModel text="First sub-section" x="831.995147651112" y="807.52" />
+    <Dynamo.Nodes.dynNoteModel text="Rotate 45 degrees in current direction" x="164.995147651112" y="688.52" />
+    <Dynamo.Nodes.dynNoteModel text="Rotate 90 degrees in opposite direction." x="164.995147651112" y="895.52" />
+    <Dynamo.Nodes.dynNoteModel text="Rotate before first section." x="438.995147651112" y="801.52" />
+    <Dynamo.Nodes.dynNoteModel text="Rotate between sections" x="1045.99514765111" y="894.52" />
+    <Dynamo.Nodes.dynNoteModel text="Rotate after second section" x="1649.99514765111" y="690.52" />
+  </dynNotes>
+</dynWorkspace>

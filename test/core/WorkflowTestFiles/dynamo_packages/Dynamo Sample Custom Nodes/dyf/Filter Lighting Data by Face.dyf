@@ -1,0 +1,70 @@
+<Workspace Version="0.6.3.26148" X="-36.5217938303559" Y="-12.6529451276435" zoom="0.803321593462598" Description="" Category="Misc" Name="Filter Lighting Data by Face" ID="61a03352-168c-476f-b3cd-ae5108d0463b">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="8814fa79-c16d-4503-8358-eb4607377cee" nickname="Get from List" x="484.900985461621" y="459.649888253084" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="cfa88133-9ef6-4a38-8755-9c792c48ae23" nickname="Map" x="492.446948642682" y="556.234807276001" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="cff52003-f0fa-45f8-bb19-492d15deed13" nickname="Number" x="334.44205810743" y="393.008848367021" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="2c7b8a9a-6026-4890-bc5e-c3f7fdd92645" nickname="Map" x="484.193300897893" y="323.462572702042" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="3fb24d9a-03c5-4294-b475-6efde609da1a" nickname="Python Script With Variable Number of Inputs" x="150" y="163.980905700932" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+face = IN0
+points = IN1
+illum = IN2
+outpairs = []
+
+zippeddata =  zip(illum,points)
+
+for pair in zippeddata:
+	intersec = face.Project(pair[1])
+	if intersec is not None:
+		outpairs.append([intersec.UVPoint,pair[0]])
+#Assign your output to the OUT variable
+OUT = outpairs</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="42c01890-c59f-462a-b8ba-597ee2563aed" nickname="Get from List" x="484.193300897893" y="192.920819364352" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e4468b0f-f688-47e8-b0c6-2c896f35afc0" nickname="Input" x="-100" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz sample points" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="41f2449e-7769-4fdc-a855-354ab17c6c47" nickname="Number" x="387.586757931833" y="69.703174176522" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f0f1e08c-a1a1-4a29-a45d-d644f79543c9" nickname="Input" x="-100" y="300" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="data" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a47e7737-5ecf-4ced-b359-6a24a78398c7" nickname="Input" x="-100" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="face" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="28536a7e-e480-48af-95a1-2439420140e9" nickname="Output" x="729.707304340486" y="289.822640989699" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="filtered illum data" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8814fa79-c16d-4503-8358-eb4607377cee" start_index="0" end="cfa88133-9ef6-4a38-8755-9c792c48ae23" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cfa88133-9ef6-4a38-8755-9c792c48ae23" start_index="0" end="28536a7e-e480-48af-95a1-2439420140e9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cff52003-f0fa-45f8-bb19-492d15deed13" start_index="0" end="8814fa79-c16d-4503-8358-eb4607377cee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3fb24d9a-03c5-4294-b475-6efde609da1a" start_index="0" end="cfa88133-9ef6-4a38-8755-9c792c48ae23" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3fb24d9a-03c5-4294-b475-6efde609da1a" start_index="0" end="2c7b8a9a-6026-4890-bc5e-c3f7fdd92645" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="42c01890-c59f-462a-b8ba-597ee2563aed" start_index="0" end="2c7b8a9a-6026-4890-bc5e-c3f7fdd92645" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4468b0f-f688-47e8-b0c6-2c896f35afc0" start_index="0" end="3fb24d9a-03c5-4294-b475-6efde609da1a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="41f2449e-7769-4fdc-a855-354ab17c6c47" start_index="0" end="42c01890-c59f-462a-b8ba-597ee2563aed" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f0f1e08c-a1a1-4a29-a45d-d644f79543c9" start_index="0" end="3fb24d9a-03c5-4294-b475-6efde609da1a" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a47e7737-5ecf-4ced-b359-6a24a78398c7" start_index="0" end="3fb24d9a-03c5-4294-b475-6efde609da1a" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

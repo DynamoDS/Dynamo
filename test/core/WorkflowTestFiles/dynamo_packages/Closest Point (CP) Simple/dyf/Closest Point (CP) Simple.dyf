@@ -1,0 +1,33 @@
+<Workspace Version="0.6.2.22517" X="212" Y="229" zoom="1" Description="Find closest point in a point collection.&#xD;&#xA;Output only points (no indexes or distances)" Category="Geometry.Point.Query" Name="Closest Point (CP) Simple" ID="a7c10682-2d70-429b-b006-05595607a6a0">
+  <Elements>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="ba2542db-9d26-43e9-8459-07a8a930fe44" nickname="Map" x="402.409188034184" y="46.5705128205131" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5bf5a483-e6dd-4921-afaf-07332304788f" nickname="Min Distance Function" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="ceb5e6b8-5d65-4aaa-820c-302d4e4b0902" />
+      <Name value="Min Distance Function" />
+      <Description value="Use with Map to get Closest Point between collections XYZ" />
+      <Inputs>
+        <Input value="list" />
+        <Input value="a" />
+      </Inputs>
+      <Outputs>
+        <Output value="min" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="6a39a230-2a6f-4d67-af53-032971a07cfe" nickname="Output" x="569.409188034184" y="47" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="point list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e9e29c28-20ad-45bb-a8b6-016c1616c31f" nickname="Input" x="116" y="84" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="C" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c78b1486-f60a-4ac2-a7be-9adad540e981" nickname="Input" x="113" y="13" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="P" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ba2542db-9d26-43e9-8459-07a8a930fe44" start_index="0" end="6a39a230-2a6f-4d67-af53-032971a07cfe" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5bf5a483-e6dd-4921-afaf-07332304788f" start_index="0" end="ba2542db-9d26-43e9-8459-07a8a930fe44" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e9e29c28-20ad-45bb-a8b6-016c1616c31f" start_index="0" end="ba2542db-9d26-43e9-8459-07a8a930fe44" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c78b1486-f60a-4ac2-a7be-9adad540e981" start_index="0" end="5bf5a483-e6dd-4921-afaf-07332304788f" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

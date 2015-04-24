@@ -1,0 +1,134 @@
+<Workspace Version="0.6.3.7375" X="-8.46704040374911" Y="-21.0695527693548" zoom="0.776185314091619" Description="Creates groups of points from a list of UVs or XYZs for the placement of quadrilateral panels. The placement pattern can be reversed (boolean) and shifted (integer)." Category="CAAD_RWTH.Patterning" Name="Quadrilateral Pattern From Grid" ID="bb451a28-77b5-4e67-b562-0ad960c6abd8">
+  <Elements>
+    <Dynamo.Nodes.Sublists type="Dynamo.Nodes.Sublists" guid="a5d4ff18-5acd-4ac1-9e1d-872b64092ebb" nickname="Build Sublists" x="1181.27300769631" y="495.029059116337" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.String value="a,b,c,d" />
+    </Dynamo.Nodes.Sublists>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="657fa1fd-15d3-4faf-b0e2-36f951346b39" nickname="+1" x="246.21443001443" y="443.18974603175" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="ba8cd7c7-346a-45c6-857e-e47800b80818" />
+      <Name value="+1" />
+      <Description value="Increments a value by 1" />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="04fb6751-4de0-4157-8e44-2953a3f1c274" nickname="+1" x="122.428571428571" y="393.035714285715" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="ba8cd7c7-346a-45c6-857e-e47800b80818" />
+      <Name value="+1" />
+      <Description value="Increments a value by 1" />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="b11c987e-17d6-4588-8266-53a980b82551" nickname="Drop Last Row &amp; Column From UV Field" x="1387.87558523956" y="235.414494402493" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="e4d97a93-2ffa-4906-8cc1-28b927b9b085" />
+      <Name value="Drop Last Row &amp; Column From UV Field" />
+      <Description value="Drops the last row and column from a UV field" />
+      <Inputs>
+        <Input value="list" />
+        <Input value="V" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="f51abe0b-1f52-4617-85cd-ea2384cd5f30" nickname="Number" x="254.71443001443" y="352.358219784211" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="9b0900c4-0c17-4022-8920-39eb6fc7fb3c" nickname="List" x="423.676046176046" y="375.53532467533" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+      <Input name="index3" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1f590904-1b7c-4bef-ad93-cc69a09a1378" nickname="Input" x="1041.5419019205" y="575.933741536749" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ddb8d220-e430-4d09-ac68-549165b75df5" nickname="Input" x="24" y="258" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="93b1dc95-08fa-452a-a2b4-51b58fa3a53a" nickname="Input" x="631.780068992233" y="420.451534885837" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="reverse?" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0f11ec8d-007c-4a3d-97df-c99e3f8d7933" nickname="Input" x="593.696110451849" y="334.07780262006" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="shift placement" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f0f25933-70e0-43bc-9c55-18a764a90033" nickname="Output" x="1670.54225190623" y="235.188381626382" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="2a34a365-e67d-4bf2-b6c7-d801a3ac8388" nickname="Formula" x="267.960903508904" y="520.477187400189" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="ea1a25ea-caf4-46fc-93ca-ca4ab32b4070" nickname="+1" x="246.96101297244" y="256.493939393942" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="ba8cd7c7-346a-45c6-857e-e47800b80818" />
+      <Name value="+1" />
+      <Description value="Increments a value by 1" />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="9f98ef33-f766-4d00-b4dc-74437d8d338e" nickname="Shift Placement And Reverse" x="762.33577945131" y="374.015355271055" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cc531309-3f12-40f4-aba8-e2d8bc3b183d" />
+      <Name value="Shift Placement And Reverse" />
+      <Description value="" />
+      <Inputs>
+        <Input value="list" />
+        <Input value="shift" />
+        <Input value="reverse" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="2f4219a3-1a46-4183-9376-e34b5f619f00" nickname="Get First Four Indices" x="975.979286469846" y="371.932851809136" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="23ab4e2c-a521-4fa4-b0ee-02d7b977236b" />
+      <Name value="Get First Four Indices" />
+      <Description value="" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="0" />
+        <Output value="1" />
+        <Output value="2" />
+        <Output value="3" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a5d4ff18-5acd-4ac1-9e1d-872b64092ebb" start_index="0" end="b11c987e-17d6-4588-8266-53a980b82551" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="657fa1fd-15d3-4faf-b0e2-36f951346b39" start_index="0" end="9b0900c4-0c17-4022-8920-39eb6fc7fb3c" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="04fb6751-4de0-4157-8e44-2953a3f1c274" start_index="0" end="657fa1fd-15d3-4faf-b0e2-36f951346b39" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="04fb6751-4de0-4157-8e44-2953a3f1c274" start_index="0" end="9b0900c4-0c17-4022-8920-39eb6fc7fb3c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b11c987e-17d6-4588-8266-53a980b82551" start_index="0" end="f0f25933-70e0-43bc-9c55-18a764a90033" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f51abe0b-1f52-4617-85cd-ea2384cd5f30" start_index="0" end="9b0900c4-0c17-4022-8920-39eb6fc7fb3c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9b0900c4-0c17-4022-8920-39eb6fc7fb3c" start_index="0" end="9f98ef33-f766-4d00-b4dc-74437d8d338e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f590904-1b7c-4bef-ad93-cc69a09a1378" start_index="0" end="a5d4ff18-5acd-4ac1-9e1d-872b64092ebb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ddb8d220-e430-4d09-ac68-549165b75df5" start_index="0" end="04fb6751-4de0-4157-8e44-2953a3f1c274" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ddb8d220-e430-4d09-ac68-549165b75df5" start_index="0" end="ea1a25ea-caf4-46fc-93ca-ca4ab32b4070" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="93b1dc95-08fa-452a-a2b4-51b58fa3a53a" start_index="0" end="9f98ef33-f766-4d00-b4dc-74437d8d338e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0f11ec8d-007c-4a3d-97df-c99e3f8d7933" start_index="0" end="9f98ef33-f766-4d00-b4dc-74437d8d338e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2a34a365-e67d-4bf2-b6c7-d801a3ac8388" start_index="0" end="9b0900c4-0c17-4022-8920-39eb6fc7fb3c" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2a34a365-e67d-4bf2-b6c7-d801a3ac8388" start_index="0" end="a5d4ff18-5acd-4ac1-9e1d-872b64092ebb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ea1a25ea-caf4-46fc-93ca-ca4ab32b4070" start_index="0" end="b11c987e-17d6-4588-8266-53a980b82551" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9f98ef33-f766-4d00-b4dc-74437d8d338e" start_index="0" end="2f4219a3-1a46-4183-9376-e34b5f619f00" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f4219a3-1a46-4183-9376-e34b5f619f00" start_index="0" end="a5d4ff18-5acd-4ac1-9e1d-872b64092ebb" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f4219a3-1a46-4183-9376-e34b5f619f00" start_index="1" end="a5d4ff18-5acd-4ac1-9e1d-872b64092ebb" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f4219a3-1a46-4183-9376-e34b5f619f00" start_index="2" end="a5d4ff18-5acd-4ac1-9e1d-872b64092ebb" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f4219a3-1a46-4183-9376-e34b5f619f00" start_index="3" end="a5d4ff18-5acd-4ac1-9e1d-872b64092ebb" end_index="5" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Create default placement pattern (counter-clockwise)" x="381" y="305.366666666666" />
+    <Dynamo.Models.NoteModel text="Create sublists using placement pattern" x="1181.23478212477" y="441.901257845293" />
+    <Dynamo.Models.NoteModel text="Unclutter" x="1391.40330751728" y="192.938381626382" />
+    <Dynamo.Models.NoteModel text="For questions email me at dieckmann@caad.arch.rwth-aachen.de" x="161.017704517703" y="112.990648240651" />
+  </Notes>
+</Workspace>

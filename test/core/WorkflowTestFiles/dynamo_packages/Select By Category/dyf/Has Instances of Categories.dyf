@@ -1,0 +1,76 @@
+<Workspace Version="0.6.3.5244" X="-8.80000000000007" Y="132.3" zoom="0.9" Description="Checks if family instances of specified categories are present in the model." Category="CAAD_RWTH.Revit.Categories" Name="Has Instances of Categories" ID="136c1b88-f144-40f7-bf67-b16fe86a67dd">
+  <Elements>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="050262a9-71b5-4fee-974e-4ffa1a07b679" nickname="Map" x="504.13839912902" y="101.782185026801" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="d5d3a6bb-30fd-4a65-8d92-3bc9037565e2" nickname="Get Family Instances By Category" x="242" y="174.54443370405" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="9eb0e045-7f8f-4d3c-8742-986216eacc1e" />
+      <Name value="Get Family Instances By Category" />
+      <Description value="Gets all family instances in the model for a given list of categories" />
+      <Inputs>
+        <Input value="BuiltInCategories" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c0e92c0b-6fa8-492d-9a84-5005367b60ea" nickname="List Not Empty" x="328.981749019286" y="61.0320092170267" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cbc06bc3-4c8d-4b6a-bd05-e0f5b70427da" />
+      <Name value="List Not Empty" />
+      <Description value="Just the inversion of the built-in Is Empty List node." />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="bool" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="cfde451b-1834-49bf-9de3-21c87e9acb71" nickname="Input" x="47" y="176" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="BuiltInCategories" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5369fb98-948e-47d0-8ed2-71ce37ef9b52" nickname="Output" x="873.58931786154" y="17" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="any?" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="b83548a6-a390-4bb4-90dd-1b47ababfb5b" nickname="Output" x="874.58931786154" y="255" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="all?" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="a984a903-b065-480c-b25f-f63af7781670" nickname="Output" x="874" y="101.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="per category" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="51d58512-526c-4ec7-a11c-cc7e59971a0a" nickname="Output" x="873.333333333333" y="175.722222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="instances" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="8b13ceba-ff94-4738-8ce7-ba07601bcf03" nickname="True For Any (Boolean)" x="680.833333333333" y="17.7222222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="605e21d1-67ee-4465-8543-67f7781dd84d" />
+      <Name value="True For Any (Boolean)" />
+      <Description value="Returns true if any item in a list of booleans is true." />
+      <Inputs>
+        <Input value="seq" />
+      </Inputs>
+      <Outputs>
+        <Output value="any?" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="830717b8-b5ac-4034-8f42-e756310cce9e" nickname="True For All (Boolean)" x="681.833333333333" y="255.722222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="470f3f48-132d-44f4-8481-1596a4c5c81a" />
+      <Name value="True For All (Boolean)" />
+      <Description value="Returns true if all items in a list of booleans are true." />
+      <Inputs>
+        <Input value="seq" />
+      </Inputs>
+      <Outputs>
+        <Output value="all?" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="050262a9-71b5-4fee-974e-4ffa1a07b679" start_index="0" end="a984a903-b065-480c-b25f-f63af7781670" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="050262a9-71b5-4fee-974e-4ffa1a07b679" start_index="0" end="8b13ceba-ff94-4738-8ce7-ba07601bcf03" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="050262a9-71b5-4fee-974e-4ffa1a07b679" start_index="0" end="830717b8-b5ac-4034-8f42-e756310cce9e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d5d3a6bb-30fd-4a65-8d92-3bc9037565e2" start_index="0" end="050262a9-71b5-4fee-974e-4ffa1a07b679" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d5d3a6bb-30fd-4a65-8d92-3bc9037565e2" start_index="0" end="51d58512-526c-4ec7-a11c-cc7e59971a0a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0e92c0b-6fa8-492d-9a84-5005367b60ea" start_index="0" end="050262a9-71b5-4fee-974e-4ffa1a07b679" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cfde451b-1834-49bf-9de3-21c87e9acb71" start_index="0" end="d5d3a6bb-30fd-4a65-8d92-3bc9037565e2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8b13ceba-ff94-4738-8ce7-ba07601bcf03" start_index="0" end="5369fb98-948e-47d0-8ed2-71ce37ef9b52" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="830717b8-b5ac-4034-8f42-e756310cce9e" start_index="0" end="b83548a6-a390-4bb4-90dd-1b47ababfb5b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

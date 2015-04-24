@@ -1,0 +1,54 @@
+<Workspace Version="0.6.3.7375" X="-146.2182789976" Y="274.137204173976" zoom="1.30764135636719" Description="Triangulates a given face into a mesh" Category="CAAD_RWTH.Revit.Meshes" Name="Mesh From Face" ID="d88b55ef-318a-44ad-8dee-9fcefe136834">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="55bd0638-8ea5-4021-b520-18f9b2246e2a" nickname="Return List Or Single Value" x="527.163983624839" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="69aa6c0a-7ea5-49b5-96da-4439de79ffe3" nickname="Python Script" x="393.023722319228" y="55.0774582844234" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+faces = IN
+elementlist = list()
+for face in faces:
+	elementlist.append(face.Triangulate())
+OUT = elementlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5c28ec34-602f-42f3-9d93-9c81a3ec2175" nickname="Turn Into List" x="250" y="0.888346101361776" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8f54d2a1-aaaa-44c1-a9c5-f140f9ba6be8" nickname="Input" x="135" y="2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Face(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="daf373c2-921a-4689-a0db-772342bcce43" nickname="Output" x="728.163983624839" y="-2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Mesh(es)" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="55bd0638-8ea5-4021-b520-18f9b2246e2a" start_index="0" end="daf373c2-921a-4689-a0db-772342bcce43" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="69aa6c0a-7ea5-49b5-96da-4439de79ffe3" start_index="0" end="55bd0638-8ea5-4021-b520-18f9b2246e2a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5c28ec34-602f-42f3-9d93-9c81a3ec2175" start_index="0" end="69aa6c0a-7ea5-49b5-96da-4439de79ffe3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5c28ec34-602f-42f3-9d93-9c81a3ec2175" start_index="0" end="55bd0638-8ea5-4021-b520-18f9b2246e2a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8f54d2a1-aaaa-44c1-a9c5-f140f9ba6be8" start_index="0" end="5c28ec34-602f-42f3-9d93-9c81a3ec2175" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

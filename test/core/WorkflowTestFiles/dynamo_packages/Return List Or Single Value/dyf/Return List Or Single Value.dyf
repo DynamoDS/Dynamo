@@ -1,0 +1,42 @@
+<Workspace Version="0.6.2.29585" X="-15.3111111111111" Y="179.4" zoom="0.8" Description="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." Category="CAAD_RWTH.Lists" Name="Return List Or Single Value" ID="44ac4888-4aa4-49a9-9344-23b729c11df9">
+  <Elements>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="ec1d63a3-c73d-4ff5-be95-4fb3b48fae8b" nickname="If" x="701.866765076479" y="69.5147263935703" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="2c9b825b-2da0-4967-ae74-bafd03c9048f" nickname="First of List" x="220.293906783972" y="311.436949813169" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="66697ad9-46a9-4fd3-9a41-98caa437eb7e" nickname="Formula" x="353" y="-5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>n&gt;1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="04da30f2-e240-4c77-a943-c69a0b528eac" nickname="List Length" x="182" y="-3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="84536553-5cc9-42a1-b5bb-9baa162fc4b8" nickname="Input" x="52" y="-3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list #1" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4dd8b486-1ab5-401a-8bd0-c433b2fa98f1" nickname="Output" x="873.866765076479" y="68.25" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fbb63b55-58f8-47e2-995d-04a270db761e" nickname="Input" x="50.5" y="91.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list #2" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="8f46bb1d-fa4f-4716-8a82-820be4f731e0" nickname="If" x="369.138888888889" y="208.875" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="58696683-dd46-4a47-8de0-0f726637dfff" nickname="Is Empty List?" x="202.888888888889" y="146.375" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="a906f7b1-f382-4c8b-bf7b-34a74b6bde2f" nickname="Empty List" x="219.138888888889" y="228.875" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ec1d63a3-c73d-4ff5-be95-4fb3b48fae8b" start_index="0" end="4dd8b486-1ab5-401a-8bd0-c433b2fa98f1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2c9b825b-2da0-4967-ae74-bafd03c9048f" start_index="0" end="8f46bb1d-fa4f-4716-8a82-820be4f731e0" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="66697ad9-46a9-4fd3-9a41-98caa437eb7e" start_index="0" end="ec1d63a3-c73d-4ff5-be95-4fb3b48fae8b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="04da30f2-e240-4c77-a943-c69a0b528eac" start_index="0" end="66697ad9-46a9-4fd3-9a41-98caa437eb7e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="84536553-5cc9-42a1-b5bb-9baa162fc4b8" start_index="0" end="04da30f2-e240-4c77-a943-c69a0b528eac" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fbb63b55-58f8-47e2-995d-04a270db761e" start_index="0" end="2c9b825b-2da0-4967-ae74-bafd03c9048f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fbb63b55-58f8-47e2-995d-04a270db761e" start_index="0" end="ec1d63a3-c73d-4ff5-be95-4fb3b48fae8b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fbb63b55-58f8-47e2-995d-04a270db761e" start_index="0" end="58696683-dd46-4a47-8de0-0f726637dfff" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8f46bb1d-fa4f-4716-8a82-820be4f731e0" start_index="0" end="ec1d63a3-c73d-4ff5-be95-4fb3b48fae8b" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="58696683-dd46-4a47-8de0-0f726637dfff" start_index="0" end="8f46bb1d-fa4f-4716-8a82-820be4f731e0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a906f7b1-f382-4c8b-bf7b-34a74b6bde2f" start_index="0" end="8f46bb1d-fa4f-4716-8a82-820be4f731e0" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

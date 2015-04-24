@@ -1,0 +1,66 @@
+<Workspace Version="0.6.3.7375" X="-124.97146150905" Y="125.652018938579" zoom="1.11798788304238" Description="Extracts the mesh of a toposurface" Category="CAAD_RWTH.Revit.Topo" Name="Topo To Mesh" ID="70ec025d-39d4-4689-9adc-7aff30ad042b">
+  <Elements>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="3384a82d-fc78-4004-af3f-b42e7aaad5d9" nickname="Map" x="646.252087864533" y="128.128100145334" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="fe9bf542-58c9-438a-b3c0-866b5333fec8" nickname="Filter by Boolean Mask" x="826.584057333543" y="74.8737827114195" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="1bf2e4a7-8508-4d54-b2c0-37dec728171b" nickname="Map" x="465.050245143172" y="151.466952211735" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Equal type="Dynamo.Nodes.Equal" guid="19b90d85-8ca7-4e18-8d04-3561a55534f0" nickname="Equal" x="489.50535634396" y="19.8016025621771" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="2a9a4e24-0ab8-4ef3-9170-7c2b7db26b33" nickname="String" x="254.766939953609" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Autodesk.Revit.DB.Mesh" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="8deffcb8-6635-4464-afa0-bc71d97cfddd" nickname="Type Name" x="323.896996760946" y="152.464646040702" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="5928461e-6012-4f3d-9817-8168990adcc6" />
+      <Name value="Type Name" />
+      <Description value="Gets the type of the given data as a string." />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1fcf0f7c-6d1f-405e-a859-b7a13f6d1b64" nickname="Input" x="189.912074834428" y="81.3605384850064" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Topo" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7f0476a2-bb99-42df-85c6-768e978634be" nickname="Output" x="1194.58405733354" y="64" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Mesh" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="a2ed2193-79f5-495e-91c5-a1fa7784d2cd" nickname="Return List Or Single Value" x="1001" y="65.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="3d26fe66-18c0-4eb0-89ec-a979a6fccec9" nickname="Python Script" x="310.371779647536" y="81.1245417855872" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+topo = IN
+OUT = topo.Geometry[Autodesk.Revit.DB.Options()]</Script>
+    </Dynamo.Nodes.Python>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3384a82d-fc78-4004-af3f-b42e7aaad5d9" start_index="0" end="fe9bf542-58c9-438a-b3c0-866b5333fec8" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fe9bf542-58c9-438a-b3c0-866b5333fec8" start_index="0" end="a2ed2193-79f5-495e-91c5-a1fa7784d2cd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fe9bf542-58c9-438a-b3c0-866b5333fec8" start_index="0" end="a2ed2193-79f5-495e-91c5-a1fa7784d2cd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1bf2e4a7-8508-4d54-b2c0-37dec728171b" start_index="0" end="3384a82d-fc78-4004-af3f-b42e7aaad5d9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="19b90d85-8ca7-4e18-8d04-3561a55534f0" start_index="0" end="3384a82d-fc78-4004-af3f-b42e7aaad5d9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2a9a4e24-0ab8-4ef3-9170-7c2b7db26b33" start_index="0" end="19b90d85-8ca7-4e18-8d04-3561a55534f0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8deffcb8-6635-4464-afa0-bc71d97cfddd" start_index="0" end="1bf2e4a7-8508-4d54-b2c0-37dec728171b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1fcf0f7c-6d1f-405e-a859-b7a13f6d1b64" start_index="0" end="3d26fe66-18c0-4eb0-89ec-a979a6fccec9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a2ed2193-79f5-495e-91c5-a1fa7784d2cd" start_index="0" end="7f0476a2-bb99-42df-85c6-768e978634be" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3d26fe66-18c0-4eb0-89ec-a979a6fccec9" start_index="0" end="1bf2e4a7-8508-4d54-b2c0-37dec728171b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3d26fe66-18c0-4eb0-89ec-a979a6fccec9" start_index="0" end="fe9bf542-58c9-438a-b3c0-866b5333fec8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="For the sake of compatibility with Dynamo 0.7.x I am using a Python script here - in 0.6.3 the Geometry Objects node would suffice..." x="197.831011015015" y="-77.7743735524202" />
+  </Notes>
+</Workspace>

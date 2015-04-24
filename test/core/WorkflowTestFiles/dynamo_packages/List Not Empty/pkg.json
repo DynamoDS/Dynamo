@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"List Not Empty","version":"0.1.2","description":"Just the inversion of the built-in Is Empty List node.","group":"CAAD_RWTH","keywords":["list","not","empty"],"dependencies":[],"license":"MIT","contents":"List Not Empty - Just the inversion of the built-in Is Empty List node.","engine_version":"0.6.3.22045","engine_metadata":"","engine":"dynamo"}

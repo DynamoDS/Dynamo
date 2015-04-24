@@ -1,0 +1,56 @@
+<Workspace Version="0.6.3.5259" X="-59.4703419084851" Y="154.065535595833" zoom="1.01824263349002" Description="Filters a list of roofs by their kind (basic or glazed)." Category="CAAD_RWTH.Revit.Roof &amp; Floor" Name="Filter Roofs By Kind" ID="f11b258f-daad-4d2a-9fa2-5fec54cb2e34">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" nickname="Turn Into List" x="440" y="204.00854031026" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="33c18a20-cc98-4a66-a5f0-cfacba84305c" nickname="Python Script" x="592.66083916084" y="203.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+items = IN
+normallist = list()
+glazedlist = list()
+for item in items:
+	if item.CurtainGrids:
+		glazedlist.append(item)
+	else:
+		normallist.append(item)
+OUT = (normallist,glazedlist)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4d7090a5-55aa-4d07-aa91-3d027092bbd0" nickname="Input" x="260" y="203.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Roof Instance(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="22fdd3f6-eaf7-4196-b178-b02e960eb254" nickname="Get from List" x="871.425213675213" y="255.549145299145" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="7a85dbf5-b9c7-436f-81d5-96c2da5191f2" nickname="Formula" x="739.615440643674" y="300.712763639361" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2724754f-5a11-4d34-922f-0d3f831e9f6d" nickname="Output" x="1043.36111111111" y="156.513888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Basic" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="75f9ef1d-ac97-4082-81fc-2cb50812582e" nickname="Output" x="1043.36111111111" y="257.763888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Glazed" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="78c3c24b-511c-463f-9a70-e349aeb35d29" nickname="First of List" x="762.111111111111" y="158.031746031746" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" start_index="0" end="33c18a20-cc98-4a66-a5f0-cfacba84305c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="33c18a20-cc98-4a66-a5f0-cfacba84305c" start_index="0" end="22fdd3f6-eaf7-4196-b178-b02e960eb254" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="33c18a20-cc98-4a66-a5f0-cfacba84305c" start_index="0" end="78c3c24b-511c-463f-9a70-e349aeb35d29" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4d7090a5-55aa-4d07-aa91-3d027092bbd0" start_index="0" end="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22fdd3f6-eaf7-4196-b178-b02e960eb254" start_index="0" end="75f9ef1d-ac97-4082-81fc-2cb50812582e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7a85dbf5-b9c7-436f-81d5-96c2da5191f2" start_index="0" end="22fdd3f6-eaf7-4196-b178-b02e960eb254" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="78c3c24b-511c-463f-9a70-e349aeb35d29" start_index="0" end="2724754f-5a11-4d34-922f-0d3f831e9f6d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

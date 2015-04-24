@@ -1,0 +1,89 @@
+<Workspace Version="0.7.2.40823" X="206.182741116751" Y="30" zoom="0.887055837563452" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSModelElementsSelection type="Dynamo.Nodes.DSModelElementsSelection" guid="708e8212-038f-493c-8e08-954cdd9b1d65" nickname="Select Model Elements" x="0" y="434.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="2019501c-6446-4035-9b74-114e7849be60-0002be50" />
+      <instance id="65fae335-6b2b-45e2-bfd0-dcad8ea086be-0002c022" />
+    </Dynamo.Nodes.DSModelElementsSelection>
+    <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="4caa3a16-50d9-4416-ae45-b5ad06d74c94" nickname="Python Script" x="534" y="184" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="5">
+      <Script>import clr
+
+clr.AddReference('RevitAPI')
+from Autodesk.Revit.DB import *
+
+clr.AddReference("RevitServices")
+import RevitServices
+from RevitServices.Persistence import DocumentManager
+
+doc = DocumentManager.Instance.CurrentDBDocument
+items = UnwrapElement(IN[0])
+incopenings = IN[1]
+incshadows = IN[2]
+incwalls = IN[3]
+incshared = IN[4]
+elementlist = list()
+
+for item in items:
+	itemlist = list()
+	for insert in item.FindInserts(incopenings,incshadows,incwalls,incshared):
+		itemlist.append(doc.GetElement(insert))
+	elementlist.append(itemlist)
+OUT = elementlist</Script>
+    </DSIronPythonNode.PythonNode>
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="0d024395-6c1e-4d2c-aa8d-49b1c875f3e7" nickname="Include Openings" x="0" y="101" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <Dynamo.Nodes.DSModelElementsSelection type="Dynamo.Nodes.DSModelElementsSelection" guid="a1ceb583-5878-4b9a-b7b2-85045eeb64b3" nickname="Select Model Elements" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="65fae335-6b2b-45e2-bfd0-dcad8ea086be-0002c03c" />
+      <instance id="8ab6190a-b186-4789-8798-68970f528cd0-0002c09a" />
+    </Dynamo.Nodes.DSModelElementsSelection>
+    <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="fe96aff2-7e02-4e72-b11c-cc20582a48ea" nickname="Python Script" x="534" y="39" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+from Autodesk.Revit.DB import *
+
+faminsts = UnwrapElement(IN[0])
+elementlist = list()
+for item in faminsts:
+	try:
+		elementlist.append(item.Host)
+	except:
+		elementlist.append(list())
+OUT = elementlist</Script>
+    </DSIronPythonNode.PythonNode>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="62197f39-9337-46d3-b25b-adf965340aa4" nickname="Watch" x="758" y="184" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="c19b28ba-30a5-43c7-af47-4420e37bbb85" nickname="Watch" x="758" y="39" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="a877f9ba-c0c8-4a06-a379-76500d8d9316" nickname="Include Shadows" x="0" y="185" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="0d893b43-c644-47f3-bfd0-d4a51f594339" nickname="Include Embedded Walls" x="0" y="268" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <DSCoreNodesUI.BoolSelector type="DSCoreNodesUI.BoolSelector" guid="0db9887b-1d26-4e2f-a460-3cb7a8c93b1a" nickname="Include Shared Embedded Inserts" x="0" y="351" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean>True</System.Boolean>
+    </DSCoreNodesUI.BoolSelector>
+    <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="5a3b301c-632b-4ec1-9fcb-c2623f04c53c" nickname="Python Script" x="534" y="425" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="1">
+      <Script>import clr
+
+OUT = (dir(IN[0]),dir(UnwrapElement(IN[0])))</Script>
+    </DSIronPythonNode.PythonNode>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="464ab590-c303-4d69-8432-a05945afc718" nickname="List.FirstItem" x="339" y="425" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.FirstItem@var[]..[]" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="9cf8555c-0ac8-4873-a1a2-cbe1532953f8" nickname="Watch" x="758" y="425" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="708e8212-038f-493c-8e08-954cdd9b1d65" start_index="0" end="4caa3a16-50d9-4416-ae45-b5ad06d74c94" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="708e8212-038f-493c-8e08-954cdd9b1d65" start_index="0" end="464ab590-c303-4d69-8432-a05945afc718" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4caa3a16-50d9-4416-ae45-b5ad06d74c94" start_index="0" end="62197f39-9337-46d3-b25b-adf965340aa4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0d024395-6c1e-4d2c-aa8d-49b1c875f3e7" start_index="0" end="4caa3a16-50d9-4416-ae45-b5ad06d74c94" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a1ceb583-5878-4b9a-b7b2-85045eeb64b3" start_index="0" end="fe96aff2-7e02-4e72-b11c-cc20582a48ea" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fe96aff2-7e02-4e72-b11c-cc20582a48ea" start_index="0" end="c19b28ba-30a5-43c7-af47-4420e37bbb85" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a877f9ba-c0c8-4a06-a379-76500d8d9316" start_index="0" end="4caa3a16-50d9-4416-ae45-b5ad06d74c94" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0d893b43-c644-47f3-bfd0-d4a51f594339" start_index="0" end="4caa3a16-50d9-4416-ae45-b5ad06d74c94" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0db9887b-1d26-4e2f-a460-3cb7a8c93b1a" start_index="0" end="4caa3a16-50d9-4416-ae45-b5ad06d74c94" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5a3b301c-632b-4ec1-9fcb-c2623f04c53c" start_index="0" end="9cf8555c-0ac8-4873-a1a2-cbe1532953f8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="464ab590-c303-4d69-8432-a05945afc718" start_index="0" end="5a3b301c-632b-4ec1-9fcb-c2623f04c53c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Get Inserts" x="569.868037525093" y="121.163800719978" />
+    <Dynamo.Models.NoteModel text="Get Host" x="525.256587190793" y="-78.6806520095867" />
+  </Notes>
+</Workspace>

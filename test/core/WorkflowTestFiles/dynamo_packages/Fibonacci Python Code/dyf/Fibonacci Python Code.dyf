@@ -1,0 +1,60 @@
+<Workspace Version="0.6.1.18684" X="0" Y="0" zoom="1" Description="Python to make fibonacci sequence" Category="Scripting.Python" Name="Fibonacci Python Code" ID="84bacd46-2859-4ed6-b176-889c93cdf3c7">
+  <Elements>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="2241f069-a87f-40a6-9be2-be377da77e62" nickname="Watch" x="406.25" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="23770b77-199e-4228-a343-c6b0bc2228be" nickname="Fibonacci Sequence" x="250" y="77.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+
+
+lst = []
+
+def recursiveFib(v1,v2,count,lst):
+	if count &lt; 1:
+		return lst
+	
+	nextValue = v1 + v2
+	lst.append(nextValue)
+
+	return recursiveFib(v2, nextValue, count -1, lst)
+
+def interativeFib(v1,v2, count):
+	lst = []
+	lst.append(v1)
+	lst.append(v2)
+	
+	for i in range(0, count):
+		nextValue = lst[-1] + lst[-2]
+		
+		lst.append(nextValue)
+	return lst
+
+#Assign your output to the OUT variable
+#OUT = recursiveFib(0,1,dataEnteringNode, [0,1])
+
+OUT = interativeFib(0,1,10)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a2beb5c6-9dc7-4eb2-81ce-e26abb73b525" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="IN" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="23770b77-199e-4228-a343-c6b0bc2228be" start_index="0" end="2241f069-a87f-40a6-9be2-be377da77e62" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a2beb5c6-9dc7-4eb2-81ce-e26abb73b525" start_index="0" end="23770b77-199e-4228-a343-c6b0bc2228be" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

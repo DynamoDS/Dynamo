@@ -1,0 +1,54 @@
+<Workspace Version="0.6.3.7375" X="-4420.35506985934" Y="-302.05100061531" zoom="1.25641740788654" Description="This node recursively applies the boolean difference node to a solid for each item in a given list of solids." Category="CAAD_RWTH.Modeling" Name="Recursive Boolean Difference" ID="09ad7c21-2337-4c64-a1bf-1e30f657a1f8">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="16519037-1183-404b-bcd3-e8996dfbd452" nickname="Input" x="3793.51748950692" y="382.242375726499" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="First Solid" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5c128adc-4121-4eaa-8bf3-b6cf65e08eea" nickname="Input" x="3616.74289443044" y="480.454058189167" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List of Solids" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="31bac023-fa54-4b79-ad09-0288be007a10" nickname="Output" x="4281.97152912841" y="457.44304671557" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Processed Solid" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="b3a35ead-d3ad-4aa8-9981-2aae41952c29" nickname="Python Script With Variable Number of Inputs" x="3965.34666497162" y="457.44304671557" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script># Default imports
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+solid = IN0
+diff_solids = IN1
+diff_function = IN2
+elementlist = list()
+
+for item in diff_solids:
+	solid = diff_function(solid,item)
+
+OUT = solid</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.SolidDifference type="Dynamo.Nodes.SolidDifference" guid="80427df9-c4f4-4ebc-aff4-687812b9a948" nickname="Boolean Difference" x="3546.51748950692" y="564.622814542122" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e30eaae6-0852-4455-828d-af44eff7e2d7" nickname="Turn Into List" x="3787.52578498213" y="479.067908521856" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="16519037-1183-404b-bcd3-e8996dfbd452" start_index="0" end="b3a35ead-d3ad-4aa8-9981-2aae41952c29" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5c128adc-4121-4eaa-8bf3-b6cf65e08eea" start_index="0" end="e30eaae6-0852-4455-828d-af44eff7e2d7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b3a35ead-d3ad-4aa8-9981-2aae41952c29" start_index="0" end="31bac023-fa54-4b79-ad09-0288be007a10" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="80427df9-c4f4-4ebc-aff4-687812b9a948" start_index="0" end="b3a35ead-d3ad-4aa8-9981-2aae41952c29" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e30eaae6-0852-4455-828d-af44eff7e2d7" start_index="0" end="b3a35ead-d3ad-4aa8-9981-2aae41952c29" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

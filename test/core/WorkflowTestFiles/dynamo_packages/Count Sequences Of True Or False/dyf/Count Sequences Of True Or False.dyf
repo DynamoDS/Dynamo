@@ -1,0 +1,84 @@
+<Workspace Version="0.6.3.7375" X="-432.658558883531" Y="297.367741747033" zoom="0.97676875" Description="Retrieves the lengths of uninterrupted sequences of booleans (true or false) in a given list." Category="CAAD_RWTH.Lists" Name="Count Sequences Of True Or False" ID="5be6b4b4-4eb9-45d2-be81-9b8d66b79217">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="41f95c75-9802-4e0b-845c-6cc3f1da2c47" nickname="Turn Into List" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="9a36afa4-fc90-482e-8b2c-ff547d2a8603" nickname="Python Script" x="787.150202592494" y="-22.0883349784217" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+booleans = IN
+elementlist = list()
+elementlist.append(0)
+counter = 0
+
+for item in booleans:
+	if item == 1:
+		elementlist[counter] += 1
+	elif item == 0:
+		counter += 1
+		elementlist.append(0)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5c50f912-eccd-4801-b0df-0402617a43fb" nickname="Output" x="1091.69398534558" y="-85.4270266119795" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="lengths" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="9c890eaa-3cb5-4926-aabd-b8942495a3bc" nickname="Input" x="109.391691394659" y="1.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="booleans" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="927ca20b-e153-4547-823a-0187c51f7549" nickname="If" x="614" y="-20.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="b7ec012b-3285-48ff-b89e-d1c0d9549f01" nickname="Invert Normalized Value" x="417" y="49.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="18062fc4-d89d-4ac0-8103-b26c93473852" />
+      <Name value="Invert Normalized Value" />
+      <Description value="Inverts a value between 0 and 1 or a boolean to its opposite (1-x)" />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="957f64db-45af-4c1f-a45d-af571620c003" nickname="Input" x="460" y="-37.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="True/False" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="bd98aeda-6a84-45bd-b6ea-fa5ecc89b12e" nickname="Formula" x="803.65151309717" y="-113.173785245518" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>n&gt;0</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.FilterInAndOut type="Dynamo.Nodes.FilterInAndOut" guid="14eb8d36-e0a9-44d8-9244-e82d7ba8d800" nickname="Filter" x="935.719620312926" y="-84.5078394932605" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="41f95c75-9802-4e0b-845c-6cc3f1da2c47" start_index="0" end="927ca20b-e153-4547-823a-0187c51f7549" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="41f95c75-9802-4e0b-845c-6cc3f1da2c47" start_index="0" end="b7ec012b-3285-48ff-b89e-d1c0d9549f01" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9a36afa4-fc90-482e-8b2c-ff547d2a8603" start_index="0" end="14eb8d36-e0a9-44d8-9244-e82d7ba8d800" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9c890eaa-3cb5-4926-aabd-b8942495a3bc" start_index="0" end="41f95c75-9802-4e0b-845c-6cc3f1da2c47" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="927ca20b-e153-4547-823a-0187c51f7549" start_index="0" end="9a36afa4-fc90-482e-8b2c-ff547d2a8603" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b7ec012b-3285-48ff-b89e-d1c0d9549f01" start_index="0" end="927ca20b-e153-4547-823a-0187c51f7549" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="957f64db-45af-4c1f-a45d-af571620c003" start_index="0" end="927ca20b-e153-4547-823a-0187c51f7549" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bd98aeda-6a84-45bd-b6ea-fa5ecc89b12e" start_index="0" end="14eb8d36-e0a9-44d8-9244-e82d7ba8d800" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="14eb8d36-e0a9-44d8-9244-e82d7ba8d800" start_index="0" end="5c50f912-eccd-4801-b0df-0402617a43fb" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

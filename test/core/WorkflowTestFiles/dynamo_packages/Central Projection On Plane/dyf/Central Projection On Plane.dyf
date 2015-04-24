@@ -1,0 +1,46 @@
+<Workspace Version="0.6.3.7375" X="83.0735896733413" Y="208.628954382969" zoom="1.09218965916194" Description="Projects a list of points onto a given plane" Category="CAAD_RWTH.XYZ" Name="Central Projection On Plane" ID="daf47583-cecf-48ec-accb-07285910c21b">
+  <Elements>
+    <Dynamo.Nodes.XyzStartEndVector type="Dynamo.Nodes.XyzStartEndVector" guid="68f4ffda-d234-4c66-9e0e-6b101beb0667" nickname="Direction to XYZ" x="228.887025689501" y="45.5776146491548" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3c51ee44-319c-4f03-859b-abd268f74301" nickname="Input" x="-2.33411671944918" y="-70.4251390524547" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Central Projection Point" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="85fe3f07-f1cb-4dbb-8ee7-6a45e8d35955" nickname="Input" x="5.75665499271872" y="66.7225615297213" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Points to be projected" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1d46fa4c-3056-42a4-a70c-9c2bf7252720" nickname="Output" x="702.297465844791" y="23.3660467202178" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZs" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0cddc04a-4bb8-4b5a-846c-28863604741b" nickname="Input" x="67.2517028394532" y="162.29791932643" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Plane Origin" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="759b5d51-57cb-402c-bd38-ad961ce53889" nickname="Input" x="57.9905875503056" y="240.718339929982" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Plane Normal" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="74174bba-f0eb-4f57-8e8b-df9f5cd075c1" nickname="Plane-Vector Intersection" x="405.940377193429" y="24.5892238820861" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="3c082b0b-3bf7-434c-8101-abdb981b5992" />
+      <Name value="Plane-Vector Intersection" />
+      <Description value="Finds the intersection point between a plane and a vector" />
+      <Inputs>
+        <Input value="Vector Basepoint" />
+        <Input value="Vector (Normalized)" />
+        <Input value="Plane Origin" />
+        <Input value="Plane Normal" />
+      </Inputs>
+      <Outputs>
+        <Output value="XYZ" />
+        <Output value="Vector In Plane" />
+        <Output value="Vector Is Parallel" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="68f4ffda-d234-4c66-9e0e-6b101beb0667" start_index="0" end="74174bba-f0eb-4f57-8e8b-df9f5cd075c1" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3c51ee44-319c-4f03-859b-abd268f74301" start_index="0" end="68f4ffda-d234-4c66-9e0e-6b101beb0667" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3c51ee44-319c-4f03-859b-abd268f74301" start_index="0" end="74174bba-f0eb-4f57-8e8b-df9f5cd075c1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="85fe3f07-f1cb-4dbb-8ee7-6a45e8d35955" start_index="0" end="68f4ffda-d234-4c66-9e0e-6b101beb0667" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0cddc04a-4bb8-4b5a-846c-28863604741b" start_index="0" end="74174bba-f0eb-4f57-8e8b-df9f5cd075c1" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="759b5d51-57cb-402c-bd38-ad961ce53889" start_index="0" end="74174bba-f0eb-4f57-8e8b-df9f5cd075c1" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="74174bba-f0eb-4f57-8e8b-df9f5cd075c1" start_index="0" end="1d46fa4c-3056-42a4-a70c-9c2bf7252720" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

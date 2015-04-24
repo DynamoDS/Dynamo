@@ -1,0 +1,54 @@
+<Workspace Version="0.6.3.25815" X="-70" Y="30" zoom="1" Description="Gets an item from a collection at key" Category="Collections.NamedCollection" Name="Get Item From Collection At Key" ID="079b63ac-cab2-496d-b038-29cdcd1c3b6b">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="392e4678-72ef-4f65-a236-a2b9ee66bb01" nickname="Python Script With Variable Number of Inputs" x="250" y="64.6527149265379" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+dict = {}
+
+
+
+collection = IN0
+key = IN1
+
+if key in collection.dict:
+	data = collection.dict[key]
+else:
+	data = "Key Not Found"
+
+
+
+
+
+#Assign your output to the OUT variable
+OUT = data</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="77c27073-0791-48d3-bfdb-70f49dee6877" nickname="Input" x="36" y="86" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Key" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="14661edb-2a8d-4fde-8cc3-fdeb3ca55162" nickname="Input" x="38" y="18" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Collection" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8d6c1e02-3cb3-44a7-abee-95138b63c168" nickname="Output" x="502" y="263.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Value" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="392e4678-72ef-4f65-a236-a2b9ee66bb01" start_index="0" end="8d6c1e02-3cb3-44a7-abee-95138b63c168" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="77c27073-0791-48d3-bfdb-70f49dee6877" start_index="0" end="392e4678-72ef-4f65-a236-a2b9ee66bb01" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="14661edb-2a8d-4fde-8cc3-fdeb3ca55162" start_index="0" end="392e4678-72ef-4f65-a236-a2b9ee66bb01" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

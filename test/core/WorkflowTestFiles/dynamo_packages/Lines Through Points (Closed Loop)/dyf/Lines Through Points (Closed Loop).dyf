@@ -1,0 +1,21 @@
+<Workspace Version="0.6.3.7375" X="-20.6283597754589" Y="258.736230634576" zoom="1.20614971670383" Description="Works just like the built-in node Lines Through Points (creates a series of lines through a list of points) - except that it creates a *closed* loop of lines." Category="CAAD_RWTH.Revit" Name="Lines Through Points (Closed Loop)" ID="f6e78b23-8ee4-47e7-8d92-0d3a9be81458">
+  <Elements>
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="6d75d73c-c199-498c-b251-e7990d2e815b" nickname="Add to List" x="414.520017680394" y="2.26957497318827" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.CurvesThroughPoints type="Dynamo.Nodes.CurvesThroughPoints" guid="71d75bed-ea87-4821-91c9-a95f36578c1f" nickname="Lines Through Points" x="558.332546450602" y="1.91865614141028" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ce17390f-1522-4ac4-b6e6-9152d83e7a97" nickname="Input" x="165.620815950799" y="22.3889512028519" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0199b100-662e-48cb-ab5c-f6a4ed55d5cf" nickname="Output" x="719.16278326887" y="0.959328070705112" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="lines" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Last type="Dynamo.Nodes.Last" guid="5d0604ab-80b8-45c5-b754-90989091c466" nickname="Last of List" x="272.198120363174" y="-17.5203300638864" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6d75d73c-c199-498c-b251-e7990d2e815b" start_index="0" end="71d75bed-ea87-4821-91c9-a95f36578c1f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="71d75bed-ea87-4821-91c9-a95f36578c1f" start_index="0" end="0199b100-662e-48cb-ab5c-f6a4ed55d5cf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ce17390f-1522-4ac4-b6e6-9152d83e7a97" start_index="0" end="5d0604ab-80b8-45c5-b754-90989091c466" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ce17390f-1522-4ac4-b6e6-9152d83e7a97" start_index="0" end="6d75d73c-c199-498c-b251-e7990d2e815b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5d0604ab-80b8-45c5-b754-90989091c466" start_index="0" end="6d75d73c-c199-498c-b251-e7990d2e815b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

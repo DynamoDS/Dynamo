@@ -1,0 +1,83 @@
+<Workspace Version="0.6.2.26406" X="265.701048951049" Y="165.621309246309" zoom="1" Description="Generates a list of Random numbers using a domain, amount, and seed." Category="LunchBox.Math.Random" Name="LunchBox Random Numbers" ID="43cb454f-75d9-480a-bd07-64e779b11744">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="9335263a-a18b-45cc-b06f-7d290cb3d341" nickname="Python Script" x="440.325757575758" y="120" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+import System
+
+
+dom = IN[0]
+num = IN[1]
+seed = IN[2]
+
+dmin = dom.Min
+dmax = dom.Max
+drange = dmax - dmin
+
+random = System.Random(seed)
+
+# Generate some random floats
+list = []
+for i in range(0,int(num)):
+	rand = random.NextDouble()
+	list.append(rand)
+
+# Remap numbers
+l = []
+for i in range(0,len(list)):
+	l.append(list[i])
+
+l.sort()
+listMin = l[0]
+listMax = l[(len(list)-1)]
+listRange = listMax-listMin
+
+mapped = []
+for i in range(0,len(list)):
+	scaled = dmin + (((list[i] - listMin) / listRange) * drange)
+	mapped.append(scaled)
+
+#Assign your output to the OUT variable
+OUT = mapped</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="beb62795-1180-40ad-8b07-ab6f44d9fb41" nickname="List" x="246" y="121.189393939394" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e93745d8-8004-4780-b758-63a0dae56cfb" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Domain" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d527160f-a7db-4a90-a199-39c9ef8408b4" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Amount" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6743399f-c471-4167-9925-524d305ce8ca" nickname="Input" x="0" y="300" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Seed" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="6a7e3e4c-ae52-4236-ba41-18620e19eea1" nickname="Output" x="621.325757575758" y="120" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Random" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9335263a-a18b-45cc-b06f-7d290cb3d341" start_index="0" end="6a7e3e4c-ae52-4236-ba41-18620e19eea1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="beb62795-1180-40ad-8b07-ab6f44d9fb41" start_index="0" end="9335263a-a18b-45cc-b06f-7d290cb3d341" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e93745d8-8004-4780-b758-63a0dae56cfb" start_index="0" end="beb62795-1180-40ad-8b07-ab6f44d9fb41" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d527160f-a7db-4a90-a199-39c9ef8408b4" start_index="0" end="beb62795-1180-40ad-8b07-ab6f44d9fb41" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6743399f-c471-4167-9925-524d305ce8ca" start_index="0" end="beb62795-1180-40ad-8b07-ab6f44d9fb41" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

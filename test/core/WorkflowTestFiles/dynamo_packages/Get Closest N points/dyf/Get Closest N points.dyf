@@ -1,0 +1,49 @@
+<Workspace Version="0.6.3.5258" X="360.96" Y="227.04" zoom="1.1" Description="Find the closes set of points in 2 lists" Category="buildz" Name="Get Closest N points" ID="e19288ec-b37e-4b4d-b2e8-e653e89794f6">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c5e75322-e1e1-40f3-8f87-10945686ba4b" nickname="Sort Nearest XYZ" x="250" y="47.771575268957" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="54bc01b1-05f2-4775-8921-8143f94c432e" />
+      <Name value="Sort Nearest XYZ" />
+      <Description value="Sort XYZ by proximity to another point" />
+      <Inputs>
+        <Input value="start list" />
+        <Input value="target list" />
+      </Inputs>
+      <Outputs>
+        <Output value="sorted" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="20be3e98-9655-4938-99c6-bf5529b64df0" nickname="Number" x="350.982742890671" y="-115.151515151515" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="0..x" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="24cdb046-c76a-44a0-b82c-c045d53f689f" nickname="Map" x="497.241728524899" y="87.4028719013005" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="d5ee57bd-e5f0-42ab-87c4-998187ff92dc" nickname="Get from List" x="640.273185781113" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="831f07d5-b0e7-4056-9c66-acab97183501" nickname="Map" x="800.29813878131" y="63.0131283115573" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="09edf596-1c77-4634-bb6a-3041eb6824e8" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Target List" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0fd9cb10-d2b6-4f7f-b99b-e911bbfd8abc" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Start List" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9a50eaf6-06de-4ae1-87de-838872f29143" nickname="Output" x="1008.09813878131" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="mapped" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c98548a0-6f45-4486-bb11-ef83f52756f7" nickname="Input" x="-5.96363636363662" y="-94.7636363636364" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Number of Points" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="e8dc9783-6377-49ca-ba06-bad2cb614358" nickname="Formula" x="227.490909090909" y="-68.5818181818182" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x-1</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c5e75322-e1e1-40f3-8f87-10945686ba4b" start_index="0" end="24cdb046-c76a-44a0-b82c-c045d53f689f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="20be3e98-9655-4938-99c6-bf5529b64df0" start_index="0" end="d5ee57bd-e5f0-42ab-87c4-998187ff92dc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="24cdb046-c76a-44a0-b82c-c045d53f689f" start_index="0" end="831f07d5-b0e7-4056-9c66-acab97183501" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d5ee57bd-e5f0-42ab-87c4-998187ff92dc" start_index="0" end="831f07d5-b0e7-4056-9c66-acab97183501" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="831f07d5-b0e7-4056-9c66-acab97183501" start_index="0" end="9a50eaf6-06de-4ae1-87de-838872f29143" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="09edf596-1c77-4634-bb6a-3041eb6824e8" start_index="0" end="c5e75322-e1e1-40f3-8f87-10945686ba4b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0fd9cb10-d2b6-4f7f-b99b-e911bbfd8abc" start_index="0" end="24cdb046-c76a-44a0-b82c-c045d53f689f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c98548a0-6f45-4486-bb11-ef83f52756f7" start_index="0" end="e8dc9783-6377-49ca-ba06-bad2cb614358" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e8dc9783-6377-49ca-ba06-bad2cb614358" start_index="0" end="20be3e98-9655-4938-99c6-bf5529b64df0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,83 @@
+<Workspace Version="0.6.3.31052" X="78.3379135230468" Y="290.872024175664" zoom="0.716982951558227" Description="Gets all family instances in the model for a given list of categories and a specified name. Use '*' as a wildcard." Category="CAAD_RWTH.Revit.Categories" Name="Get Family Instances By Category And Name" ID="86725496-8c8a-4e0b-9cc7-d50b3a437836">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="493599db-6655-4ed5-84d8-798bde0f683e" nickname="Replace Substring" x="499.7109747963" y="131.526357794016" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="03bc2e29-9993-4209-b04e-94f7449ceb9c" />
+      <Name value="Replace Substring" />
+      <Description value="Replaces a specified part (substring) of a string by another string" />
+      <Inputs>
+        <Input value="string(s)" />
+        <Input value="search" />
+        <Input value="replace" />
+      </Inputs>
+      <Outputs>
+        <Output value="string(s)" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="7f02c35c-06f4-4e45-b9e2-d8c7ab5cb64a" nickname="Match Regular Expression" x="694.7109747963" y="71.5263577940158" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="8cc7fb35-db73-41f2-92d1-2b6505d4cf44" />
+      <Name value="Match Regular Expression" />
+      <Description value="Determines if a regular expression matches a string (or a list of strings) and returns a boolean value (or a list, depending on the input). The syntax for regular expressions is explained at&#xD;&#xA;http://ironpython-test.readthedocs.org/en/latest/howto/regex.html" />
+      <Inputs>
+        <Input value="regex" />
+        <Input value="string(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="bool" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="4ea499af-9cb4-4f9a-9428-7f4c42875139" nickname="Get Name" x="484.7109747963" y="55.5263577940158" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="515c0f74-a450-497a-9a4c-937a07e2e2fd" />
+      <Name value="Get Name" />
+      <Description value="Gets the name of a given Revit element (if possible)" />
+      <Inputs>
+        <Input value="element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="name(s)" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="38607181-561b-4bad-9a68-5e81c25eb723" nickname="Get Family Instances By Category" x="250" y="2.0214726952795" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="9eb0e045-7f8f-4d3c-8742-986216eacc1e" />
+      <Name value="Get Family Instances By Category" />
+      <Description value="Gets all family instances in the model for a given list of categories" />
+      <Inputs>
+        <Input value="BuiltInCategories" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+      <InnerNode id="24028384-e05f-4424-adc4-3a305321377d">
+        <Run />
+      </InnerNode>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="6be6da9c-c807-41e7-ab2c-348525e78084" nickname="String" x="378.7109747963" y="182.526357794016" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="*" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="36931504-0ad8-4f69-896a-a06387368a7b" nickname="String" x="380.7109747963" y="245.526357794016" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="\w*" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e05dbc04-6e13-4009-b95b-304599d5e945" nickname="Input" x="58" y="5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="BuiltInCategories" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="493671ad-e0ac-4d43-b557-a607ca382d99" nickname="Output" x="1102.68902868607" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="25d94de1-ecab-493f-b17d-250fa44baf2a" nickname="Input" x="364" y="115" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Name" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="7923c086-948f-4196-953b-27c4dafc765b" nickname="Filter by Boolean Mask" x="910.201178793526" y="1.66994108664824" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="493599db-6655-4ed5-84d8-798bde0f683e" start_index="0" end="7f02c35c-06f4-4e45-b9e2-d8c7ab5cb64a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7f02c35c-06f4-4e45-b9e2-d8c7ab5cb64a" start_index="0" end="7923c086-948f-4196-953b-27c4dafc765b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4ea499af-9cb4-4f9a-9428-7f4c42875139" start_index="0" end="7f02c35c-06f4-4e45-b9e2-d8c7ab5cb64a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="38607181-561b-4bad-9a68-5e81c25eb723" start_index="0" end="4ea499af-9cb4-4f9a-9428-7f4c42875139" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="38607181-561b-4bad-9a68-5e81c25eb723" start_index="0" end="7923c086-948f-4196-953b-27c4dafc765b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6be6da9c-c807-41e7-ab2c-348525e78084" start_index="0" end="493599db-6655-4ed5-84d8-798bde0f683e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="36931504-0ad8-4f69-896a-a06387368a7b" start_index="0" end="493599db-6655-4ed5-84d8-798bde0f683e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e05dbc04-6e13-4009-b95b-304599d5e945" start_index="0" end="38607181-561b-4bad-9a68-5e81c25eb723" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="25d94de1-ecab-493f-b17d-250fa44baf2a" start_index="0" end="493599db-6655-4ed5-84d8-798bde0f683e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7923c086-948f-4196-953b-27c4dafc765b" start_index="0" end="493671ad-e0ac-4d43-b557-a607ca382d99" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

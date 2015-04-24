@@ -1,0 +1,109 @@
+<Workspace Version="0.6.3.7375" X="47.2734284793005" Y="236.220839782103" zoom="0.803321593462598" Description="Determines if a point is inside the space enclosed by a polygon" Category="CAAD_RWTH.XYZ" Name="Is Point Inside Polygon" ID="f664b75c-959c-4468-8b62-af4aa4c79f2e">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="d3ea3fa7-7817-48d0-8e58-42c77d76c7f0" nickname="Python Script With Variable Number of Inputs" x="748.332160591467" y="33.4976844919134" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+# script found here:
+# http://www.ariel.com.au/a/python-point-int-poly.html
+# (with sight alterations for booleans)
+
+def point_inside_polygon(x,y,poly):
+    n = len(poly)
+    inside = 0
+    p1x,p1y = poly[0]
+    for i in range(n+1):
+        p2x,p2y = poly[i % n]
+        if y &gt; min(p1y,p2y):
+            if y &lt;= max(p1y,p2y):
+                if x &lt;= max(p1x,p2x):
+                    if p1y != p2y:
+                        xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
+                    if p1x == p2x or x &lt;= xinters:
+                        inside = 1 - inside
+        p1x,p1y = p2x,p2y
+    return inside
+    
+poly = IN0
+points = IN1
+elementlist = list()
+for point in points:
+	elementlist.append(point_inside_polygon(point[0],point[1],poly))
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="b6c4b06e-e9c9-49bf-8549-ae4c50d5b229" nickname="Transpose Lists" x="569.817340294457" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="6dec2ce6-e6e9-4b7c-afc6-91e69f092a58" nickname="Transpose Lists" x="576.970083888426" y="110.273697290881" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="87f5cfc4-3494-45ad-af6e-7419b318c4af" nickname="Return List Or Single Value" x="1064.1198487171" y="105.746616245495" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="2cc033dc-2c5b-49b4-a282-2263721ae08c" nickname="List" x="402.716060564572" y="0.686188832170274" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="ec809334-df31-4dec-a7ed-34671e3bbf93" nickname="List" x="412.475495604548" y="111.889826964778" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="a5b7b371-6429-4b19-8792-7975e35f3a4c" nickname="UV Components" x="259.759435039976" y="113.397434959119" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="de141032-8b29-443e-99a4-234c5ad60dfa" />
+      <Name value="UV Components" />
+      <Description value="Get the components of a UV" />
+      <Inputs>
+        <Input value="UV(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="U" />
+        <Output value="V" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="53e1c2f2-20d5-42e4-bdb6-085d194c4ca4" nickname="UV Components" x="250" y="2.19379682651214" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="de141032-8b29-443e-99a4-234c5ad60dfa" />
+      <Name value="UV Components" />
+      <Description value="Get the components of a UV" />
+      <Inputs>
+        <Input value="UV(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="U" />
+        <Output value="V" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="48a0ed52-7502-4007-8142-ecf02f196a9d" nickname="Input" x="92" y="116" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Point UV(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="da5d5fe9-f937-4434-9596-a0ac36489c86" nickname="Input" x="91" y="3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Polygon UVs" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1acff102-0fe1-4572-a15e-f32c8481bfc0" nickname="Output" x="1266" y="104.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d3ea3fa7-7817-48d0-8e58-42c77d76c7f0" start_index="0" end="87f5cfc4-3494-45ad-af6e-7419b318c4af" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b6c4b06e-e9c9-49bf-8549-ae4c50d5b229" start_index="0" end="d3ea3fa7-7817-48d0-8e58-42c77d76c7f0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6dec2ce6-e6e9-4b7c-afc6-91e69f092a58" start_index="0" end="d3ea3fa7-7817-48d0-8e58-42c77d76c7f0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6dec2ce6-e6e9-4b7c-afc6-91e69f092a58" start_index="0" end="87f5cfc4-3494-45ad-af6e-7419b318c4af" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="87f5cfc4-3494-45ad-af6e-7419b318c4af" start_index="0" end="1acff102-0fe1-4572-a15e-f32c8481bfc0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2cc033dc-2c5b-49b4-a282-2263721ae08c" start_index="0" end="b6c4b06e-e9c9-49bf-8549-ae4c50d5b229" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ec809334-df31-4dec-a7ed-34671e3bbf93" start_index="0" end="6dec2ce6-e6e9-4b7c-afc6-91e69f092a58" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a5b7b371-6429-4b19-8792-7975e35f3a4c" start_index="0" end="ec809334-df31-4dec-a7ed-34671e3bbf93" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a5b7b371-6429-4b19-8792-7975e35f3a4c" start_index="1" end="ec809334-df31-4dec-a7ed-34671e3bbf93" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="53e1c2f2-20d5-42e4-bdb6-085d194c4ca4" start_index="0" end="2cc033dc-2c5b-49b4-a282-2263721ae08c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="53e1c2f2-20d5-42e4-bdb6-085d194c4ca4" start_index="1" end="2cc033dc-2c5b-49b4-a282-2263721ae08c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="48a0ed52-7502-4007-8142-ecf02f196a9d" start_index="0" end="a5b7b371-6429-4b19-8792-7975e35f3a4c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="da5d5fe9-f937-4434-9596-a0ac36489c86" start_index="0" end="53e1c2f2-20d5-42e4-bdb6-085d194c4ca4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

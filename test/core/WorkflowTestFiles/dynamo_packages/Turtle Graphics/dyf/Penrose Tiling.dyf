@@ -1,0 +1,56 @@
+<Workspace Version="0.7.0.26798" X="-399" Y="33" zoom="1" Description="Penrose Tiling implemented with Turtle Graphics L-System" Category="Turtle.Examples" Name="Penrose Tiling" ID="ee7c01ca-6714-4adc-8441-a7123dd7d28e">
+  <Elements>
+    <Dynamo.Nodes.LineBound type="Dynamo.Nodes.LineBound" guid="45d46e43-c9cd-4274-9b0f-7c58c89b5ba9" nickname="Line" x="894.888888888889" y="368.8" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="eeab42c8-48eb-42e6-b83f-a2d4862cd139" nickname="Turtle Graphics" x="894.527777777778" y="190.127777777778" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="705d4ea5-ceef-48ae-b7eb-eb1e488fcd39" />
+      <Name value="Turtle Graphics" />
+      <Description value="A Turtle Graphics L-System interpreter. Takes in a starting string and a production rules string of the form: &#xD;&#xA;  {id1}-&gt;{product1}&#xD;&#xA;  {id2}-&gt;{product2}&#xD;&#xA;  ...&#xD;&#xA;  {idN}-&gt;{productN}&#xD;&#xA;&#xD;&#xA;Valid commands are:&#xD;&#xA;  F  :: Move forward and draw a line.&#xD;&#xA;  f  :: Move forward.&#xD;&#xA;  +  :: Turn left.&#xD;&#xA;  -  :: Turn right&#xD;&#xA;  ^  :: Pitch up&#xD;&#xA;  &amp;  :: Pitch down&#xD;&#xA;  \  :: Roll counter-clockwise&#xD;&#xA;  /  :: Roll clockwise&#xD;&#xA;  |  :: Turn around&#xD;&#xA;  [  :: Save current position and orientation.&#xD;&#xA;  ]  :: Restore last saved position and orientation." />
+      <Inputs>
+        <Input value="start" />
+        <Input value="rules" />
+        <Input value="iterations" />
+        <Input value="initial transform" />
+        <Input value="move length" />
+        <Input value="turn rotation" />
+        <Input value="line maker" />
+      </Inputs>
+      <Outputs>
+        <Output value="lines" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="37ae7492-2614-46f3-99c0-aba1c4220e6f" nickname="Formula" x="751.194444444445" y="349.016666666667" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>pi/180*36</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="f3825c9f-e762-4f9d-b657-1252fcdc6d67" nickname="String" x="619.194444444444" y="69.683333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="M-&gt;OF++PF----NF[-OF----MF]++&#xD;&#xA;N-&gt;+OF--PF[---MF--NF]+&#xD;&#xA;O-&gt;-MF++NF[+++OF++PF]-&#xD;&#xA;P-&gt;--OF++++MF[+PF++++NF]--NF&#xD;&#xA;F-&gt;" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="50455683-48c8-4be1-8636-edcb3dd0278a" nickname="Formula" x="201.995147651112" y="72.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>scale / Pow(2, order)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.TransformIdentity type="Dynamo.Nodes.TransformIdentity" guid="c45527a6-a432-4bcd-ae17-ccead3361a3f" nickname="Identity Transform" x="241.995147651112" y="253.52" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="0c923cf5-d787-44f3-97b6-632c2c3a0a69" nickname="String" x="653.083333333333" y="10.2388888888888" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="[N]++[N]++[N]++[N]++[N]" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="aa383dee-8d30-4cb9-ac6b-2d14a2e03d02" nickname="Input" x="0" y="71.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="scale" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b2fbd8cf-be05-4bed-8146-9dc476fa9210" nickname="Input" x="0" y="179.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="order" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="45d46e43-c9cd-4274-9b0f-7c58c89b5ba9" start_index="0" end="eeab42c8-48eb-42e6-b83f-a2d4862cd139" end_index="6" portType="0" />
+    <Dynamo.Models.ConnectorModel start="37ae7492-2614-46f3-99c0-aba1c4220e6f" start_index="0" end="eeab42c8-48eb-42e6-b83f-a2d4862cd139" end_index="5" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f3825c9f-e762-4f9d-b657-1252fcdc6d67" start_index="0" end="eeab42c8-48eb-42e6-b83f-a2d4862cd139" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="50455683-48c8-4be1-8636-edcb3dd0278a" start_index="0" end="eeab42c8-48eb-42e6-b83f-a2d4862cd139" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c45527a6-a432-4bcd-ae17-ccead3361a3f" start_index="0" end="eeab42c8-48eb-42e6-b83f-a2d4862cd139" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0c923cf5-d787-44f3-97b6-632c2c3a0a69" start_index="0" end="eeab42c8-48eb-42e6-b83f-a2d4862cd139" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aa383dee-8d30-4cb9-ac6b-2d14a2e03d02" start_index="0" end="50455683-48c8-4be1-8636-edcb3dd0278a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2fbd8cf-be05-4bed-8146-9dc476fa9210" start_index="0" end="50455683-48c8-4be1-8636-edcb3dd0278a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2fbd8cf-be05-4bed-8146-9dc476fa9210" start_index="0" end="eeab42c8-48eb-42e6-b83f-a2d4862cd139" end_index="2" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Starting Transform" x="366.6067979121" y="310.545555555555" />
+    <Dynamo.Models.NoteModel text="Length of line segments" x="240.384575689878" y="36.6566666666666" />
+  </Notes>
+</Workspace>

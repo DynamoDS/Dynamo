@@ -1,0 +1,65 @@
+<Workspace Version="0.6.2.29585" X="172.618181818182" Y="183.118181818182" zoom="1.3" Description="Connection string for MySQL server" Category="Input/Output.File" Name="Slingshot! MySQL Connection" ID="794053ef-ddad-4a2f-abc6-546580550f3b">
+  <Elements>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="89c10281-ebe0-49b7-88dd-6ae30f40ec0a" nickname="List" x="220.769230769231" y="196.919739221216" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+      <Input name="index3" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="0cb52845-99b4-452a-81bb-c6fe68a78356" nickname="Python Script" x="393.965300367702" y="196.153846153846" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Slingshot! for Dynamo
+#An Open Source project by Nathan Miller
+#http://TheProvingGround.org
+
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+server = IN[0]
+port = IN[1]
+user = IN[2]
+password = IN[3]
+
+cstring = 'Server=' + server + '; Port=' + port + '; Uid=' + user + '; Pwd=' + password
+
+#Assign your output to the OUT variable
+OUT = cstring</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0a8ed7cd-6fa3-4915-b5bf-7ae5a8b8cb61" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Server" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="bc3fee72-05cb-498e-a03a-a2a8172d9871" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Port" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="13e151b9-23a5-4da2-8c10-3945c6c872e7" nickname="Input" x="0" y="300" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Username" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4c0f45a0-bf30-442b-98a2-623f18b41cde" nickname="Input" x="0" y="450" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Password" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="3fa0bffe-b9a9-401f-932f-c583b710d922" nickname="Output" x="574.965300367702" y="196.153846153846" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="String" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="89c10281-ebe0-49b7-88dd-6ae30f40ec0a" start_index="0" end="0cb52845-99b4-452a-81bb-c6fe68a78356" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0cb52845-99b4-452a-81bb-c6fe68a78356" start_index="0" end="3fa0bffe-b9a9-401f-932f-c583b710d922" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0a8ed7cd-6fa3-4915-b5bf-7ae5a8b8cb61" start_index="0" end="89c10281-ebe0-49b7-88dd-6ae30f40ec0a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bc3fee72-05cb-498e-a03a-a2a8172d9871" start_index="0" end="89c10281-ebe0-49b7-88dd-6ae30f40ec0a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="13e151b9-23a5-4da2-8c10-3945c6c872e7" start_index="0" end="89c10281-ebe0-49b7-88dd-6ae30f40ec0a" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4c0f45a0-bf30-442b-98a2-623f18b41cde" start_index="0" end="89c10281-ebe0-49b7-88dd-6ae30f40ec0a" end_index="3" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

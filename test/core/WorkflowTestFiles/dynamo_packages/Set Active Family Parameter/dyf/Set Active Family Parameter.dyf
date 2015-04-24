@@ -1,0 +1,57 @@
+<Workspace Version="0.6.3.22045" X="0" Y="0" zoom="1" Description="Use a python script to Set Active Family Parameter" Category="Revit.Families" Name="Set Active Family Parameter" ID="1f391bc0-8e29-4537-9387-6961c160acc0">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="69342e1d-dea9-42d3-81d2-472693004030" nickname="Input" x="99" y="216" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="name" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="18ded850-2445-494b-8967-36a648d86fd6" nickname="Input" x="96" y="382" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="value" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="d5329d7a-1900-4891-b96f-798fefb310d9" nickname="Output" x="709" y="306" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="9b089f56-6af5-4989-924a-6be41b9e21e2" nickname="Python Script With Variable Number of Inputs" x="186" y="287" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+import Autodesk
+from Autodesk.Revit.DB import *
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+app = __revit__.Application
+doc = __revit__.ActiveUIDocument.Document
+ 
+
+paramName = str(IN0)
+paramValue = IN1
+
+
+def setParameter(paramName,paramValue):
+
+	#define parameter variable
+	parameter = [a for a in doc.FamilyManager.Parameters if a.Definition.Name==paramName ][0]
+	#set parameter	
+	doc.FamilyManager.Set(parameter, paramValue)
+	
+	
+setParameter(paramName,paramValue)
+
+OUT = paramValue</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="2ec7be20-6f2d-4e0e-acc1-7cda1831ec97" nickname="Transaction" x="506" y="299" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="69342e1d-dea9-42d3-81d2-472693004030" start_index="0" end="9b089f56-6af5-4989-924a-6be41b9e21e2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="18ded850-2445-494b-8967-36a648d86fd6" start_index="0" end="9b089f56-6af5-4989-924a-6be41b9e21e2" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9b089f56-6af5-4989-924a-6be41b9e21e2" start_index="0" end="2ec7be20-6f2d-4e0e-acc1-7cda1831ec97" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2ec7be20-6f2d-4e0e-acc1-7cda1831ec97" start_index="0" end="d5329d7a-1900-4891-b96f-798fefb310d9" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,39 @@
+<Workspace Version="0.6.2.29585" X="499.714285714286" Y="529.828571428571" zoom="1.1" Description="Creates a regular grid of points on a face in quad groups" Category="buildz" Name="Quad Points on Face" ID="a8aaf84b-fcc1-440c-9ad4-0bd081ab4985">
+  <Elements>
+    <Dynamo.Nodes.SurfaceDomain type="Dynamo.Nodes.SurfaceDomain" guid="24194128-9121-4c66-9508-eb1b3a3d38f0" nickname="Get Surface Domain" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.UvGrid type="Dynamo.Nodes.UvGrid" guid="dbdf180c-070d-4ada-adb9-ea38794562e7" nickname="UV Grid" x="429.555555555556" y="1.13686837721616E-13" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.XyzEvaluate type="Dynamo.Nodes.XyzEvaluate" guid="8992a3bc-1ae3-4cae-8ee1-59c3c7c0a109" nickname="Evaluate Surface" x="577.111111111112" y="158.222222222222" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5477cccf-11c3-4cdc-8f08-80de17008b62" nickname="Quads from Rectangular Grid" x="722.88888888889" y="236.444444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="c4f135db-6eb6-47a4-9136-50952d8aeb4f" />
+      <Name value="Quads from Rectangular Grid" />
+      <Description value="Given a grid of points (xyz or uv) create a list of quadrilaterals" />
+      <Inputs>
+        <Input value="Row Number" />
+        <Input value="Point List" />
+      </Inputs>
+      <Outputs>
+        <Output value="Quads" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a8a19fea-2be7-4998-85be-fbd897f2d585" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="face" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="49688a66-7431-41e5-b6ea-99204a92b1c1" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="U-count" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ee08f379-cd5f-41f0-866d-76b4c820831f" nickname="Input" x="-2.18181818181847" y="240.363636363636" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V-count" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="24194128-9121-4c66-9508-eb1b3a3d38f0" start_index="0" end="dbdf180c-070d-4ada-adb9-ea38794562e7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dbdf180c-070d-4ada-adb9-ea38794562e7" start_index="0" end="8992a3bc-1ae3-4cae-8ee1-59c3c7c0a109" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8992a3bc-1ae3-4cae-8ee1-59c3c7c0a109" start_index="0" end="5477cccf-11c3-4cdc-8f08-80de17008b62" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a8a19fea-2be7-4998-85be-fbd897f2d585" start_index="0" end="24194128-9121-4c66-9508-eb1b3a3d38f0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a8a19fea-2be7-4998-85be-fbd897f2d585" start_index="0" end="8992a3bc-1ae3-4cae-8ee1-59c3c7c0a109" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="49688a66-7431-41e5-b6ea-99204a92b1c1" start_index="0" end="dbdf180c-070d-4ada-adb9-ea38794562e7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ee08f379-cd5f-41f0-866d-76b4c820831f" start_index="0" end="dbdf180c-070d-4ada-adb9-ea38794562e7" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ee08f379-cd5f-41f0-866d-76b4c820831f" start_index="0" end="5477cccf-11c3-4cdc-8f08-80de17008b62" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

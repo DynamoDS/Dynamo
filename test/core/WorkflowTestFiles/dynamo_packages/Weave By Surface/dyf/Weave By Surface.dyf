@@ -1,0 +1,199 @@
+<Workspace Version="0.6.3.22045" X="-420.209323600831" Y="-65.9284413142184" zoom="0.708902773456254" Description="Creates a Weave from a surface" Category="Geometry.Surface.Divide" Name="Weave By Surface" ID="4ea833f0-5480-48e4-9bf3-1e2ea281ccbd">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="6da60404-eae4-48c6-9bd5-0d7ebd14657e" nickname="UV And XYZ Grid From Face" x="273.418974285941" y="200.641485537987" isVisible="false" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="2da1e687-e083-4273-9058-e3906ff985a4" />
+      <Name value="UV And XYZ Grid From Face" />
+      <Description value="Returns UV coordinates, XYZ coordinates and normals for a face with UV subdivision" />
+      <Inputs>
+        <Input value="face" />
+        <Input value="U" />
+        <Input value="V" />
+      </Inputs>
+      <Outputs>
+        <Output value="XYZs" />
+        <Output value="Normals" />
+        <Output value="UVs" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.XyzNormalize type="Dynamo.Nodes.XyzNormalize" guid="63cc5d99-a287-47a5-af7b-d7cd711782ed" nickname="Unitize XYZ" x="441.246561768391" y="527.444143608961" isVisible="false" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" nickname="List" x="608.607635650867" y="299.182000481391" isVisible="false" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+      <Input name="index3" />
+      <Input name="index4" />
+      <Input name="index5" />
+      <Input name="index6" />
+      <Input name="index7" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="76b8a6d8-027a-41f5-bc61-32cdf3c88abb" nickname="Number" x="835.201838366644" y="458.564593630661" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b6138e61-4e7f-49a4-a5fd-94701401d48e" nickname="Number" x="835.201838366644" y="284.545141552678" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="0e19c67c-193b-4389-a266-2d1beb62dd1f" nickname="Build Warp and Weft" x="785.201838366644" y="372.937790118108" isVisible="false" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+face = IN[0]
+u = int(IN[1] + 1)
+v = int(IN[2] + 1)
+amp = IN[3]
+xyzs = IN[4]
+normals = IN[5]
+uvs = IN[6]
+rotated = IN[7]
+outputList = []
+def addVector(xyz, v):
+	return XYZ(xyz[0]+v[0],xyz[1]+v[1],xyz[2]+v[2])
+
+def scaleVector(xyz, factor):
+	return XYZ(xyz[0]*factor,xyz[1]*factor,xyz[2]*factor)
+
+
+
+def buildWarp():
+	warps= []
+	xMultFac = -1
+	yMultFac = -1
+	for i in range(0,int(u),1):
+		vList = []
+		if i%2 == 0:
+			xMultFac = 1
+		else:
+			xMultFac = -1
+		for j in range(0,int(v),1):
+			if j%2 == 0:
+				yMultFac = 1
+			else:
+				yMultFac = -1
+			newamp = amp*xMultFac*yMultFac
+			newnormal = scaleVector(normals[int((i*v)+j)], newamp)
+			vList.append(addVector(xyzs[int((i*v)+j)], newnormal))
+		warps.append(vList)
+	return warps
+
+def buildWeft():
+	wefts= []
+	for i in range(0,v,1):
+		vList = []
+		for j in range(0,u,1):
+			vList.append(xyzs[int(j*v + i)])
+		wefts.append(vList)
+	return wefts
+
+def buildWarpRotated():
+	warps= []
+	xMultFac = -1
+	yMultFac = -1
+	for i in range(0,int(v),1):
+		vList = []
+		if i%2 == 0:
+			xMultFac = 1
+		else:
+			xMultFac = -1
+		for j in range(0,int(u),1):
+			if j%2 == 0:
+				yMultFac = 1
+			else:
+				yMultFac = -1
+			newamp = amp*xMultFac*yMultFac
+			newnormal = scaleVector(normals[int((j*v)+i)], newamp)
+			vList.append(addVector(xyzs[int((j*v)+i)], newnormal))
+		warps.append(vList)
+	return warps
+
+def buildWeftRotated():
+	wefts= []
+	for i in range(0,u,1):
+		vList = []
+		for j in range(0,v,1):
+			vList.append(xyzs[int(i*v + j)])
+		wefts.append(vList)
+	return wefts
+if rotated:
+	outputList.append(buildWarpRotated())
+	outputList.append(buildWeftRotated())
+else:
+	outputList.append(buildWarp())
+	outputList.append(buildWeft())
+
+#Assign your output to the OUT variable
+OUT = outputList</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="3204c527-0f68-4934-a813-931d049b8989" nickname="Weft" x="1010.08526026718" y="403.734681300301" isVisible="false" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="99919805-2b86-4ca2-8e86-afaed465928a" nickname="Warp" x="1006.84078391583" y="315.282545302975" isVisible="false" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Append type="Dynamo.Nodes.Append" guid="51203b8b-0496-452c-be46-2d0fefd37890" nickname="Join Lists" x="1181.76530642328" y="356.608640890017" isVisible="false" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="019a0a7a-bfa9-48e4-a5fe-ab476d0a44a6" nickname="Input" x="103.495838117792" y="270.781890181195" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="face" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8452274f-9624-44c1-ac19-7ab505fb0d2b" nickname="Input" x="103.495838117792" y="332.960736608916" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="U-Count" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="171b415f-67c1-4c35-a20e-22f9200afdd2" nickname="Input" x="103.495838117792" y="395.139583036636" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V-Count" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="156f1e20-537f-403e-87ff-d6fe6692a9ce" nickname="Input" x="103.495838117792" y="455.765435997405" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="amplitude" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f5f424d9-b78b-41b5-a2ce-6d17b5ba57f4" nickname="Input" x="103.495838117792" y="521.203848539239" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="isRotated" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="608ff074-48c9-4f2e-86e4-d9b39f3dc72d" nickname="Output" x="1331.94196423947" y="373.16093239159" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZs" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1de5e805-0700-46cf-a024-b68218b1d42a" nickname="Output" x="1333.50737305987" y="446.513727650768" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Weft" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9d3c1482-ae9a-4582-bbb6-44d29ed0a037" nickname="Output" x="1330.84088984609" y="517.045261553824" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Warp" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6da60404-eae4-48c6-9bd5-0d7ebd14657e" start_index="0" end="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6da60404-eae4-48c6-9bd5-0d7ebd14657e" start_index="1" end="63cc5d99-a287-47a5-af7b-d7cd711782ed" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6da60404-eae4-48c6-9bd5-0d7ebd14657e" start_index="2" end="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" end_index="6" portType="0" />
+    <Dynamo.Models.ConnectorModel start="63cc5d99-a287-47a5-af7b-d7cd711782ed" start_index="0" end="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" end_index="5" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" start_index="0" end="0e19c67c-193b-4389-a266-2d1beb62dd1f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="76b8a6d8-027a-41f5-bc61-32cdf3c88abb" start_index="0" end="3204c527-0f68-4934-a813-931d049b8989" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b6138e61-4e7f-49a4-a5fd-94701401d48e" start_index="0" end="99919805-2b86-4ca2-8e86-afaed465928a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0e19c67c-193b-4389-a266-2d1beb62dd1f" start_index="0" end="3204c527-0f68-4934-a813-931d049b8989" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0e19c67c-193b-4389-a266-2d1beb62dd1f" start_index="0" end="99919805-2b86-4ca2-8e86-afaed465928a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3204c527-0f68-4934-a813-931d049b8989" start_index="0" end="51203b8b-0496-452c-be46-2d0fefd37890" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3204c527-0f68-4934-a813-931d049b8989" start_index="0" end="1de5e805-0700-46cf-a024-b68218b1d42a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="99919805-2b86-4ca2-8e86-afaed465928a" start_index="0" end="51203b8b-0496-452c-be46-2d0fefd37890" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="99919805-2b86-4ca2-8e86-afaed465928a" start_index="0" end="9d3c1482-ae9a-4582-bbb6-44d29ed0a037" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="51203b8b-0496-452c-be46-2d0fefd37890" start_index="0" end="608ff074-48c9-4f2e-86e4-d9b39f3dc72d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="019a0a7a-bfa9-48e4-a5fe-ab476d0a44a6" start_index="0" end="6da60404-eae4-48c6-9bd5-0d7ebd14657e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="019a0a7a-bfa9-48e4-a5fe-ab476d0a44a6" start_index="0" end="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8452274f-9624-44c1-ac19-7ab505fb0d2b" start_index="0" end="6da60404-eae4-48c6-9bd5-0d7ebd14657e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8452274f-9624-44c1-ac19-7ab505fb0d2b" start_index="0" end="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="171b415f-67c1-4c35-a20e-22f9200afdd2" start_index="0" end="6da60404-eae4-48c6-9bd5-0d7ebd14657e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="171b415f-67c1-4c35-a20e-22f9200afdd2" start_index="0" end="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="156f1e20-537f-403e-87ff-d6fe6692a9ce" start_index="0" end="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f5f424d9-b78b-41b5-a2ce-6d17b5ba57f4" start_index="0" end="e3d98d06-bc27-4c57-88a0-2db2e4ec4154" end_index="7" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Weave&#xD;&#xA;By Wassim Jabi (wassim.jabi@gmail.com)&#xD;&#xA;(c) 2014. All rights reserved.&#xD;&#xA;This software is provided 'as is' without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of fitness for a purpose, or the warranty of non-infringement." x="-91.1067463604317" y="62.2711641873425" />
+    <Dynamo.Models.NoteModel text="face: The selected face/surface" x="-96.9121144855089" y="288.436944870458" />
+    <Dynamo.Models.NoteModel text="Integer: Number of U subdivisions" x="-116.912114485509" y="348.102426716118" />
+    <Dynamo.Models.NoteModel text="Integer: Number of V subdivisions" x="-115.912114485509" y="413.007075600513" />
+    <Dynamo.Models.NoteModel text="Boolean: To rotate the orientation of the diagrid" x="-189.912114485509" y="533.881139141045" />
+    <Dynamo.Models.NoteModel text="Float: Amplitude of the weave" x="-93.9121144855089" y="477.277536790019" />
+    <Dynamo.Models.NoteModel text="List: List of Wefts and Warps XYZs" x="1410.87490642107" y="379.170201503108" />
+  </Notes>
+</Workspace>

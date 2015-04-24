@@ -1,0 +1,56 @@
+<Workspace Version="0.6.3.5244" X="-129.320031647721" Y="123.785818188289" zoom="1.07925372895183" Description="Query an active project for all User Worksets and their ID's. " Category="Revit.Document" Name="GetWorksets" ID="ab619374-9ae5-467d-b6da-d69ecbcfe1fa">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="f58fa4a1-9f3b-4faa-a914-f5db96955959" nickname="All User Worksets Names and ID's" x="374.982942632664" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+doc = __doc__
+
+collector = FilteredWorksetCollector(doc)
+user_worksets = collector.OfKind(WorksetKind.UserWorkset)
+
+
+#Assign your output to the OUT variable
+OUT = [[i.Name for i in user_worksets], [i.Id for i in user_worksets]]</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="b46f7bbc-307a-4183-89af-a118c4b4d411" nickname="Empty List" x="250" y="1.56175159806133" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="eacfdd5b-6217-4803-bd8d-de2469f30cde" nickname="Output" x="860.168710434303" y="83.4150681598948" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Names" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="a6ce7c7b-46e9-4cfd-b2cd-cf5fe4be4e30" nickname="Get from List" x="644.607106989388" y="91.5776421409054" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="253794ab-15cb-4d85-b4e2-5b9a35d99df3" nickname="Number" x="469.170654113419" y="96.2118125942328" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="cdb8ad1c-a5e8-417d-8ea6-de5b27cbdffb" nickname="Output" x="868.740703912261" y="185.3668181331" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="IDs" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="e2ff60c9-b973-437d-9b72-b3e7349d6fe6" nickname="Get from List" x="653.179100467346" y="193.52939211411" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6206affe-c7bc-4102-ba4f-506be5939229" nickname="Number" x="477.742647591377" y="198.163562567438" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f58fa4a1-9f3b-4faa-a914-f5db96955959" start_index="0" end="a6ce7c7b-46e9-4cfd-b2cd-cf5fe4be4e30" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f58fa4a1-9f3b-4faa-a914-f5db96955959" start_index="0" end="e2ff60c9-b973-437d-9b72-b3e7349d6fe6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b46f7bbc-307a-4183-89af-a118c4b4d411" start_index="0" end="f58fa4a1-9f3b-4faa-a914-f5db96955959" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a6ce7c7b-46e9-4cfd-b2cd-cf5fe4be4e30" start_index="0" end="eacfdd5b-6217-4803-bd8d-de2469f30cde" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="253794ab-15cb-4d85-b4e2-5b9a35d99df3" start_index="0" end="a6ce7c7b-46e9-4cfd-b2cd-cf5fe4be4e30" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e2ff60c9-b973-437d-9b72-b3e7349d6fe6" start_index="0" end="cdb8ad1c-a5e8-417d-8ea6-de5b27cbdffb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6206affe-c7bc-4102-ba4f-506be5939229" start_index="0" end="e2ff60c9-b973-437d-9b72-b3e7349d6fe6" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,37 @@
+<Workspace Version="0.6.3.5291" X="0" Y="0" zoom="0.9" Description="Removes duplicate items from a given list. Will *not* work for Revit elements!" Category="CAAD_RWTH.Lists" Name="Remove Duplicates From List" ID="37c694fc-0d35-4332-9e25-3821184d5838">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="11a2ccbb-204a-471a-b89f-d6382c21e672" nickname="Input" x="9.49376131990795" y="21.0314952729831" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="342b6927-c943-4874-9a68-86dfb14e3262" nickname="Output" x="403.679653679654" y="24.387012987013" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="ac238f6f-40c1-4fd8-8953-6698ce5dd55c" nickname="Python Script" x="259.632241093326" y="25.115945225146" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+items = IN
+OUT = list(set(items))</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="8afd294e-83b2-4aab-ab73-2adb2f581728" nickname="Turn Into List" x="109.84126984127" y="23.1650793650795" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="11a2ccbb-204a-471a-b89f-d6382c21e672" start_index="0" end="8afd294e-83b2-4aab-ab73-2adb2f581728" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ac238f6f-40c1-4fd8-8953-6698ce5dd55c" start_index="0" end="342b6927-c943-4874-9a68-86dfb14e3262" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8afd294e-83b2-4aab-ab73-2adb2f581728" start_index="0" end="ac238f6f-40c1-4fd8-8953-6698ce5dd55c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,26 @@
+<Workspace Version="0.6.2.279" X="0" Y="0" zoom="1" Description="Gets the highest and lowest value from a given list" Category="CAAD_RWTH.Lists" Name="Get Highest And Lowest From List" ID="93a2ae60-1e9a-41e4-bb2f-3fdd60460c33">
+  <Elements>
+    <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="af95ae3c-9ec2-4d1f-8157-835a35362be6" nickname="Reverse" x="306.912159268819" y="13" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="cbba026a-f139-4a50-ac17-aed88f68d5fd" nickname="First of List" x="460.197873554533" y="13.571428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Sort type="Dynamo.Nodes.Sort" guid="ced0235b-f77e-4770-b5cf-d44dc25a0c58" nickname="Sort" x="135" y="57.7953968253975" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2e590d63-9a75-4340-810c-2e3171ce8edf" nickname="Input" x="9" y="59" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="14497f6f-86bd-490b-a191-261fc7c7e059" nickname="Output" x="619.197873554533" y="14" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="highest" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="3bd76f8c-2415-4c5c-9036-3bae596ba85f" nickname="First of List" x="465.197873554533" y="95.571428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="893d272a-34e7-4928-89c9-3ebdde114a4e" nickname="Output" x="624.197873554533" y="96" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="lowest" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="af95ae3c-9ec2-4d1f-8157-835a35362be6" start_index="0" end="cbba026a-f139-4a50-ac17-aed88f68d5fd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cbba026a-f139-4a50-ac17-aed88f68d5fd" start_index="0" end="14497f6f-86bd-490b-a191-261fc7c7e059" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ced0235b-f77e-4770-b5cf-d44dc25a0c58" start_index="0" end="af95ae3c-9ec2-4d1f-8157-835a35362be6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ced0235b-f77e-4770-b5cf-d44dc25a0c58" start_index="0" end="3bd76f8c-2415-4c5c-9036-3bae596ba85f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2e590d63-9a75-4340-810c-2e3171ce8edf" start_index="0" end="ced0235b-f77e-4770-b5cf-d44dc25a0c58" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3bd76f8c-2415-4c5c-9036-3bae596ba85f" start_index="0" end="893d272a-34e7-4928-89c9-3ebdde114a4e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

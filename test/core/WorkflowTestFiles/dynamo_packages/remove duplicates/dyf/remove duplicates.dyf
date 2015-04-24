@@ -1,0 +1,33 @@
+<Workspace Version="0.6.1.18684" X="36.4121212121212" Y="173.225757575758" zoom="1" Description="removes duplicate data from a list" Category="Core.Lists" Name="remove duplicates" ID="bd9bb4d6-3503-4519-ad78-bbb7141b523f">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="bc5c29a6-a28e-4015-a723-0fd289d8678d" nickname="Add Unique" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="7da22fc0-ef7c-4065-bbe8-fd22b7c3caee" />
+      <Name value="Add Unique" />
+      <Description value="given a list and a item, adds the item to the list if it isn't in there already" />
+      <Inputs>
+        <Input value="item" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="9a26e012-ca35-46df-9e34-b13beebff803" nickname="Empty List" x="278.8" y="105.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Fold type="Dynamo.Nodes.Fold" guid="bda8c21b-df99-46d6-aaeb-b82a5c5b9c6f" nickname="Reduce" x="414" y="78" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="1bbfeb21-70a8-4112-af74-c196965ea3f0" nickname="Reverse" x="549.316666666667" y="81.3166666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="94b053cf-f974-4830-93f7-3f9db651d34a" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="e5197f97-f10e-45d8-b37d-fa746c8f2bcb" nickname="Output" x="725.116666666667" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="bc5c29a6-a28e-4015-a723-0fd289d8678d" start_index="0" end="bda8c21b-df99-46d6-aaeb-b82a5c5b9c6f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9a26e012-ca35-46df-9e34-b13beebff803" start_index="0" end="bda8c21b-df99-46d6-aaeb-b82a5c5b9c6f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bda8c21b-df99-46d6-aaeb-b82a5c5b9c6f" start_index="0" end="1bbfeb21-70a8-4112-af74-c196965ea3f0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1bbfeb21-70a8-4112-af74-c196965ea3f0" start_index="0" end="e5197f97-f10e-45d8-b37d-fa746c8f2bcb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="94b053cf-f974-4830-93f7-3f9db651d34a" start_index="0" end="bda8c21b-df99-46d6-aaeb-b82a5c5b9c6f" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,34 @@
+<Workspace Version="0.6.3.5260" X="4.78408021977361" Y="117.248787362514" zoom="1.2" Description="Turns a list into a list of lists with sublists of varying lengths." Category="CAAD_RWTH.Lists.Sublists" Name="Build Irregular Sublists" ID="20b334a9-ef19-4952-8296-aca90de2d6c6">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d6028d87-b8ee-4e3a-bc15-22a774aa3f47" nickname="Input" x="3.10124871938" y="105.848909267943" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="lengths" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="40e1cf98-57b9-47a6-9ba9-65b9ee6b67a2" nickname="Input" x="5.9421578102891" y="14.5989092679428" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="3b823b4d-4440-4245-a635-b70a25ed0b53" nickname="Output" x="467.116845932091" y="63.0273941164277" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="95450a34-927b-40e4-a045-d60b6e26f6fb" nickname="Python Script With Variable Number of Inputs" x="133.096599816855" y="63.542677197905" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>inputlist = IN0
+listlengths = IN1
+rowcounter = 0
+elementlist = list()
+for item in listlengths:
+	itemcounter = 0
+	itemlist = list()
+	while itemcounter &lt; item:
+		itemlist.append(inputlist[rowcounter])
+		rowcounter += 1
+		itemcounter += 1
+	elementlist.append(itemlist)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d6028d87-b8ee-4e3a-bc15-22a774aa3f47" start_index="0" end="95450a34-927b-40e4-a045-d60b6e26f6fb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="40e1cf98-57b9-47a6-9ba9-65b9ee6b67a2" start_index="0" end="95450a34-927b-40e4-a045-d60b6e26f6fb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="95450a34-927b-40e4-a045-d60b6e26f6fb" start_index="0" end="3b823b4d-4440-4245-a635-b70a25ed0b53" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

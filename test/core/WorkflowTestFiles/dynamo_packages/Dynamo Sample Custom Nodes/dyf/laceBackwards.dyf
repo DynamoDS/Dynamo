@@ -1,0 +1,91 @@
+<!--
+Copyright 2012 Ian Keough
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<dynWorkspace X="-317" Y="55" Name="laceBackwards" Category="Core.Lists" ID="86a1e2be-1f4c-4216-af71-12a7bfc8ea0a">
+  <dynElements>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="270625cb-cd86-4c6a-a79c-81c5fe2e7940" nickname="Variable" x="347.25" y="210">
+      <Symbol value="lst" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynTakeList type="Dynamo.Elements.dynTakeList" guid="4b18554f-0a7c-42ce-916c-71586834e326" nickname="Take" x="580.5" y="187.25" />
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="e7c70833-45cd-416f-9faa-130a355f32f4" nickname="Number" x="443.5" y="135.5">
+      <System.Double value="2" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynGetFromList type="Dynamo.Elements.dynGetFromList" guid="a2371a59-7ac1-471d-bc8d-b8455be6f6d9" nickname="Get" x="718.75" y="134.75" />
+    <Dynamo.Elements.dynGetFromList type="Dynamo.Elements.dynGetFromList" guid="49ada0b3-9d80-4caa-8f02-85edc0fde5c6" nickname="Get" x="712.75" y="230" />
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="86c0809c-2423-484d-88fb-18adfe15e6dd" nickname="Number" x="479.25" y="48.75">
+      <System.Double value="0" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="d5ba486c-7ca0-402c-9688-93b27e5b1fe3" nickname="Number" x="551.25" y="322.25">
+      <System.Double value="1" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynDropList type="Dynamo.Elements.dynDropList" guid="f8c6fde7-08d8-4678-8da7-c252eae4f6b5" nickname="Drop" x="980.25" y="99.25" />
+    <Dynamo.Elements.dynCombine type="Dynamo.Elements.dynCombine" guid="9a39f828-6d56-47fb-82d5-28e22288dd5b" nickname="Combine" x="1233.75" y="152.771739130435" />
+    <Dynamo.Elements.dynNewList type="Dynamo.Elements.dynNewList" guid="f0c9dd0d-8f50-4247-8c3d-368765722dfe" nickname="List" x="865.75" y="10.5">
+      <Input name="item(s)" />
+    </Dynamo.Elements.dynNewList>
+    <Dynamo.Elements.dynCurveByPoints type="Dynamo.Elements.dynCurveByPoints" guid="1331a7ea-c255-49f3-bab4-ac6357f62f6a" nickname="Curve By Points" x="1258.5" y="322.25" />
+    <Dynamo.Elements.dynMap type="Dynamo.Elements.dynMap" guid="3225a8f5-4b82-4179-a287-9be276e46f56" nickname="Map" x="1480.5" y="232.25" />
+    <Dynamo.Elements.dynReverse type="Dynamo.Elements.dynReverse" guid="daa8a7cd-a091-4511-a21f-33e510611a7b" nickname="Reverse" x="836.5" y="297.5" />
+    <Dynamo.Elements.dynDropList type="Dynamo.Elements.dynDropList" guid="f4d18469-9f23-41b5-8ec8-4c90f66f7c6b" nickname="Drop" x="976.5" y="226.5" />
+    <Dynamo.Elements.dynReverse type="Dynamo.Elements.dynReverse" guid="cf321f8c-d893-4114-a6ff-b0ebb0a2c7bd" nickname="Reverse" x="1112.25" y="280.5" />
+    <Dynamo.Elements.dynLength type="Dynamo.Elements.dynLength" guid="98133e25-177a-46b3-a8b7-23a3682038f9" nickname="Count" x="883" y="419" />
+    <Dynamo.Elements.dynConditional type="Dynamo.Elements.dynConditional" guid="cee2c32e-ea37-4d7a-8855-b0eee0fd336c" nickname="If" x="1747.75" y="393.5" />
+    <Dynamo.Elements.dynLessThan type="Dynamo.Elements.dynLessThan" guid="80ca227f-288f-4a21-b20f-fbef25a818c5" nickname="&lt;" x="1310.5" y="406.75" />
+    <Dynamo.Elements.dynDoubleInput type="Dynamo.Elements.dynDoubleInput" guid="c02d02ff-6199-4886-9cf1-cbfc0c2add5d" nickname="Number" x="1142.5" y="485">
+      <System.Double value="2" />
+    </Dynamo.Elements.dynDoubleInput>
+    <Dynamo.Elements.dynEmpty type="Dynamo.Elements.dynEmpty" guid="c7fb3c08-b98c-43b5-978f-73b5cc1459d2" nickname="Empty" x="1322" y="480.5" />
+    <Dynamo.Elements.dynDropList type="Dynamo.Elements.dynDropList" guid="8e7e6d12-4d95-4911-88dd-22232a6a1222" nickname="Drop" x="992.5" y="537.5" />
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="91452c9c-6f58-400e-a263-cbb0f0275546" nickname="laceForward" x="1333.75" y="543.25">
+      <ID value="18b529a5-12ed-4e8e-8156-793d33a7ad7b" />
+      <Output value="out" />
+      <Inputs>
+        <Input value="lst" />
+      </Inputs>
+    </Dynamo.Elements.dynFunction>
+    <Dynamo.Elements.dynList type="Dynamo.Elements.dynList" guid="30b3ad8c-1591-41f1-98d0-848cee26205a" nickname="Cons" x="1601.25" y="291.75" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="270625cb-cd86-4c6a-a79c-81c5fe2e7940" start_index="0" end="4b18554f-0a7c-42ce-916c-71586834e326" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="270625cb-cd86-4c6a-a79c-81c5fe2e7940" start_index="0" end="98133e25-177a-46b3-a8b7-23a3682038f9" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="270625cb-cd86-4c6a-a79c-81c5fe2e7940" start_index="0" end="8e7e6d12-4d95-4911-88dd-22232a6a1222" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="4b18554f-0a7c-42ce-916c-71586834e326" start_index="0" end="a2371a59-7ac1-471d-bc8d-b8455be6f6d9" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="4b18554f-0a7c-42ce-916c-71586834e326" start_index="0" end="49ada0b3-9d80-4caa-8f02-85edc0fde5c6" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="e7c70833-45cd-416f-9faa-130a355f32f4" start_index="0" end="4b18554f-0a7c-42ce-916c-71586834e326" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="a2371a59-7ac1-471d-bc8d-b8455be6f6d9" start_index="0" end="f4d18469-9f23-41b5-8ec8-4c90f66f7c6b" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="49ada0b3-9d80-4caa-8f02-85edc0fde5c6" start_index="0" end="daa8a7cd-a091-4511-a21f-33e510611a7b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="86c0809c-2423-484d-88fb-18adfe15e6dd" start_index="0" end="a2371a59-7ac1-471d-bc8d-b8455be6f6d9" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d5ba486c-7ca0-402c-9688-93b27e5b1fe3" start_index="0" end="49ada0b3-9d80-4caa-8f02-85edc0fde5c6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d5ba486c-7ca0-402c-9688-93b27e5b1fe3" start_index="0" end="f8c6fde7-08d8-4678-8da7-c252eae4f6b5" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d5ba486c-7ca0-402c-9688-93b27e5b1fe3" start_index="0" end="f4d18469-9f23-41b5-8ec8-4c90f66f7c6b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d5ba486c-7ca0-402c-9688-93b27e5b1fe3" start_index="0" end="8e7e6d12-4d95-4911-88dd-22232a6a1222" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="f8c6fde7-08d8-4678-8da7-c252eae4f6b5" start_index="0" end="cf321f8c-d893-4114-a6ff-b0ebb0a2c7bd" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="9a39f828-6d56-47fb-82d5-28e22288dd5b" start_index="0" end="3225a8f5-4b82-4179-a287-9be276e46f56" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="f0c9dd0d-8f50-4247-8c3d-368765722dfe" start_index="0" end="9a39f828-6d56-47fb-82d5-28e22288dd5b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="1331a7ea-c255-49f3-bab4-ac6357f62f6a" start_index="0" end="3225a8f5-4b82-4179-a287-9be276e46f56" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="3225a8f5-4b82-4179-a287-9be276e46f56" start_index="0" end="30b3ad8c-1591-41f1-98d0-848cee26205a" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="daa8a7cd-a091-4511-a21f-33e510611a7b" start_index="0" end="f8c6fde7-08d8-4678-8da7-c252eae4f6b5" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="f4d18469-9f23-41b5-8ec8-4c90f66f7c6b" start_index="0" end="9a39f828-6d56-47fb-82d5-28e22288dd5b" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="cf321f8c-d893-4114-a6ff-b0ebb0a2c7bd" start_index="0" end="9a39f828-6d56-47fb-82d5-28e22288dd5b" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="98133e25-177a-46b3-a8b7-23a3682038f9" start_index="0" end="80ca227f-288f-4a21-b20f-fbef25a818c5" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="80ca227f-288f-4a21-b20f-fbef25a818c5" start_index="0" end="cee2c32e-ea37-4d7a-8855-b0eee0fd336c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="c02d02ff-6199-4886-9cf1-cbfc0c2add5d" start_index="0" end="80ca227f-288f-4a21-b20f-fbef25a818c5" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="c7fb3c08-b98c-43b5-978f-73b5cc1459d2" start_index="0" end="cee2c32e-ea37-4d7a-8855-b0eee0fd336c" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="8e7e6d12-4d95-4911-88dd-22232a6a1222" start_index="0" end="91452c9c-6f58-400e-a263-cbb0f0275546" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="91452c9c-6f58-400e-a263-cbb0f0275546" start_index="0" end="30b3ad8c-1591-41f1-98d0-848cee26205a" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="30b3ad8c-1591-41f1-98d0-848cee26205a" start_index="0" end="cee2c32e-ea37-4d7a-8855-b0eee0fd336c" end_index="2" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

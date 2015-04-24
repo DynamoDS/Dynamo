@@ -1,0 +1,45 @@
+<Workspace Version="0.6.3.38003" X="0" Y="0" zoom="1" Description="Gets all values from collection and returns as one list" Category="Collections.NamedCollection" Name="Get Values From Collection" ID="339ffa4e-0b3a-4f77-affe-78101be3c015">
+  <Elements>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="a942f80f-5773-4831-afc7-e1f1b93fdad6" nickname="Output" x="625.609573586598" y="166.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Keys" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="2e303914-1705-4d28-8d86-06018f5a039e" nickname="Python Script With Variable Number of Inputs" x="284.609573586598" y="67.4543749069471" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="1">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+
+
+#The input to this node will be stored in the IN0...INX variable(s).
+collection = IN0
+
+x=[]
+
+for key,value in collection.dict.iteritems():
+	x.append(value)
+
+
+#Assign your output to the OUT variable
+OUT = x</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="24c4653d-9142-4fe8-bfc3-55845b4284fd" nickname="Input" x="150" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Collection" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="2e303914-1705-4d28-8d86-06018f5a039e" start_index="0" end="a942f80f-5773-4831-afc7-e1f1b93fdad6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="24c4653d-9142-4fe8-bfc3-55845b4284fd" start_index="0" end="2e303914-1705-4d28-8d86-06018f5a039e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

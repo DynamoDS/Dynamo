@@ -1,0 +1,146 @@
+<Workspace Version="0.6.3.16460" X="-193.088976532216" Y="23.4646435512262" zoom="0.647174757064283" Description="" Category="Misc" Name="Produce New DayLight Child" ID="8397f30a-e762-4283-b9e4-f82c3ad1465b">
+  <Elements>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="60aa2ce4-b5f8-40f5-af15-fce7e09dee90" nickname="If" x="1423.24791125374" y="300.409797308941" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="007b02f3-089c-46e5-83ff-e50d25c0a37f" nickname="Add to List" x="1317.28430430773" y="71.8080528340034" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="a1e01445-0c99-423b-9a0c-5ee784589969" nickname="Empty List" x="1199.15514299747" y="482.264393442175" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GreaterThan type="Dynamo.Nodes.GreaterThan" guid="95e630b1-007b-4ad0-84a9-8dc28ec31db0" nickname="Greater Than" x="910.534301361631" y="397.112269772239" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="c856454f-1679-4b9b-8a65-43040f9449ef" nickname="Evaluate Daylighting Solution" x="393.504964646256" y="204.693650274674" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="da311742-57aa-46e8-a8fc-f7952aa285f3" />
+      <Name value="Evaluate Daylighting Solution" />
+      <Description value="" />
+      <Inputs>
+        <Input value="solution" />
+      </Inputs>
+      <Outputs>
+        <Output value="percentage of samples within range" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="e7f8f4da-ea03-4afb-908d-3db8a1a631d5" nickname="Number" x="774.545681604947" y="463.248815594563" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value=".76" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="3543bb3d-90d4-4e3b-afc8-c2f4c22899d8" nickname="Mutate Parent Daylight" x="2.84420278775042" y="120.089811429493" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="b0625e59-4644-4eba-b6ad-ee736dbcb9e0" />
+      <Name value="Mutate Parent Daylight" />
+      <Description value="" />
+      <Inputs>
+        <Input value="family instances" />
+        <Input value="parent" />
+        <Input value="mutation rate" />
+      </Inputs>
+      <Outputs>
+        <Output value="mutated parent" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="587c4110-fa3d-4552-a92c-75b8e0d7f2aa" nickname="Input" x="-245.178550834552" y="76.1102055802542" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="parent fit" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="755501bb-0a29-4332-a24a-f8dadf07e396" nickname="Input" x="-243.808595537044" y="217.870263640969" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="family instances" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b8ecc377-1015-401e-b3c8-70051cdb37d3" nickname="Input" x="-248.051928207462" y="143.870691211405" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="parent" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="325a66ed-8e9b-403e-9b9f-3473153531bd" nickname="Input" x="-249.288416727076" y="361.695359725065" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="mutation rate" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="0e56683d-4287-4ddb-837f-086383684311" nickname="Produce New DayLight Child" x="1081.72851971186" y="147.849087595961" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="8397f30a-e762-4283-b9e4-f82c3ad1465b" />
+      <Name value="Produce New DayLight Child" />
+      <Description value="" />
+      <Inputs>
+        <Input value="parent fit" />
+        <Input value="family instances" />
+        <Input value="parent" />
+        <Input value="mutation rate" />
+      </Inputs>
+      <Outputs>
+        <Output value="child" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="0c83a972-a6bf-44fe-a9de-f2c7987f64f1" nickname="DynamoLogger.Log()" x="1220.85980084135" y="-83.7781221502646" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="0f6367da-a34f-4965-a2b6-99a9af40e364" />
+      <Name value="DynamoLogger.Log()" />
+      <Description value="Uses the DynamoLogger and FSchemeInterop Utils class to print to the console" />
+      <Inputs>
+        <Input value="input" />
+      </Inputs>
+      <Outputs>
+        <Output value="object" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="e8e5dbaa-5d68-400e-bf66-23798564649c" nickname="Output" x="1609.80315580885" y="298.03501083347" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="child" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="d130da9b-8d31-4d6c-9382-877383bc077c" nickname="get family instance params" x="135.139412226752" y="489.986899093102" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="6e730ee1-086b-4a5b-b50c-6dcb46277cd7" />
+      <Name value="get family instance params" />
+      <Description value="" />
+      <Inputs>
+        <Input value="mutant" />
+      </Inputs>
+      <Outputs>
+        <Output value="previous family settings to revert back to" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" nickname="DecideNewParent_with_old_settings" x="821.6501899917" y="-110.171699231749" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="7f209f6d-31f9-4d2f-a8f3-40e794b3cc65" />
+      <Name value="DecideNewParent_with_old_settings" />
+      <Description value="" />
+      <Inputs>
+        <Input value="child fit" />
+        <Input value="parent fit" />
+        <Input value="child" />
+        <Input value="parent" />
+        <Input value="previous state" />
+      </Inputs>
+      <Outputs>
+        <Output value="new parent" />
+        <Output value="new fittess" />
+        <Output value="debug output" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="516de088-aa59-4ee0-9d66-6d72efd7836b" nickname="Watch" x="280.244453037166" y="21.1463421785031" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="2442eb3f-f0c1-4ded-8708-c699ef34779d" nickname="Transaction" x="551.943663274651" y="492.097394213535" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="7f885119-868e-4041-96c5-c8ff78c97514" nickname="Watch" x="520.710086523267" y="632.465502769387" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Begin type="Dynamo.Nodes.Begin" guid="044cfaa4-7069-48b6-810b-83661f5fef66" nickname="Perform All" x="786.737141045858" y="185.285810039055" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="expr1" />
+      <Input name="expr2" />
+    </Dynamo.Nodes.Begin>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="114ab1c9-056d-4cb0-93f2-1b109f93ff8c" nickname="Watch" x="-17.4138217487536" y="-81.0995166217115" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="60aa2ce4-b5f8-40f5-af15-fce7e09dee90" start_index="0" end="e8e5dbaa-5d68-400e-bf66-23798564649c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="007b02f3-089c-46e5-83ff-e50d25c0a37f" start_index="0" end="60aa2ce4-b5f8-40f5-af15-fce7e09dee90" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a1e01445-0c99-423b-9a0c-5ee784589969" start_index="0" end="60aa2ce4-b5f8-40f5-af15-fce7e09dee90" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="95e630b1-007b-4ad0-84a9-8dc28ec31db0" start_index="0" end="60aa2ce4-b5f8-40f5-af15-fce7e09dee90" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c856454f-1679-4b9b-8a65-43040f9449ef" start_index="0" end="044cfaa4-7069-48b6-810b-83661f5fef66" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e7f8f4da-ea03-4afb-908d-3db8a1a631d5" start_index="0" end="95e630b1-007b-4ad0-84a9-8dc28ec31db0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3543bb3d-90d4-4e3b-afc8-c2f4c22899d8" start_index="0" end="c856454f-1679-4b9b-8a65-43040f9449ef" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3543bb3d-90d4-4e3b-afc8-c2f4c22899d8" start_index="0" end="d130da9b-8d31-4d6c-9382-877383bc077c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3543bb3d-90d4-4e3b-afc8-c2f4c22899d8" start_index="0" end="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3543bb3d-90d4-4e3b-afc8-c2f4c22899d8" start_index="0" end="516de088-aa59-4ee0-9d66-6d72efd7836b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="587c4110-fa3d-4552-a92c-75b8e0d7f2aa" start_index="0" end="95e630b1-007b-4ad0-84a9-8dc28ec31db0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="587c4110-fa3d-4552-a92c-75b8e0d7f2aa" start_index="0" end="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="587c4110-fa3d-4552-a92c-75b8e0d7f2aa" start_index="0" end="114ab1c9-056d-4cb0-93f2-1b109f93ff8c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="755501bb-0a29-4332-a24a-f8dadf07e396" start_index="0" end="3543bb3d-90d4-4e3b-afc8-c2f4c22899d8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="755501bb-0a29-4332-a24a-f8dadf07e396" start_index="0" end="0e56683d-4287-4ddb-837f-086383684311" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8ecc377-1015-401e-b3c8-70051cdb37d3" start_index="0" end="3543bb3d-90d4-4e3b-afc8-c2f4c22899d8" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b8ecc377-1015-401e-b3c8-70051cdb37d3" start_index="0" end="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="325a66ed-8e9b-403e-9b9f-3473153531bd" start_index="0" end="3543bb3d-90d4-4e3b-afc8-c2f4c22899d8" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="325a66ed-8e9b-403e-9b9f-3473153531bd" start_index="0" end="0e56683d-4287-4ddb-837f-086383684311" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0e56683d-4287-4ddb-837f-086383684311" start_index="0" end="007b02f3-089c-46e5-83ff-e50d25c0a37f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d130da9b-8d31-4d6c-9382-877383bc077c" start_index="0" end="2442eb3f-f0c1-4ded-8708-c699ef34779d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d130da9b-8d31-4d6c-9382-877383bc077c" start_index="0" end="7f885119-868e-4041-96c5-c8ff78c97514" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d130da9b-8d31-4d6c-9382-877383bc077c" start_index="0" end="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" start_index="0" end="007b02f3-089c-46e5-83ff-e50d25c0a37f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" start_index="0" end="0e56683d-4287-4ddb-837f-086383684311" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" start_index="1" end="0c83a972-a6bf-44fe-a9de-f2c7987f64f1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" start_index="1" end="0e56683d-4287-4ddb-837f-086383684311" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2442eb3f-f0c1-4ded-8708-c699ef34779d" start_index="0" end="044cfaa4-7069-48b6-810b-83661f5fef66" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="044cfaa4-7069-48b6-810b-83661f5fef66" start_index="0" end="69e751d8-8e60-434b-bf54-f6deb9ed7fc6" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

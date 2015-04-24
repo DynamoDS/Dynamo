@@ -1,0 +1,80 @@
+<Workspace Version="0.6.3.31052" X="-155.484471908207" Y="155.748029186749" zoom="1.19179377129296" Description="Lets you search in an element's members. Search is case-sensitive. Use * as a wildcard." Category="CAAD_RWTH.Scripting" Name="Search In Members" ID="4054a170-d9fb-4e88-89fb-f4a27b070c81">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" nickname="Replace Substring" x="619" y="95" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="03bc2e29-9993-4209-b04e-94f7449ceb9c" />
+      <Name value="Replace Substring" />
+      <Description value="Replaces a specified part (substring) of a string by another string" />
+      <Inputs>
+        <Input value="string(s)" />
+        <Input value="search" />
+        <Input value="replace" />
+      </Inputs>
+      <Outputs>
+        <Output value="string(s)" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="bb54a08b-7ff5-4837-aed8-3f9b7ea1c54c" nickname="String" x="486" y="116" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="*" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="780fd5e2-747a-488b-9f53-540b558e9a52" nickname="String" x="484" y="187" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="\w*" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8324b328-07aa-4816-86bf-5fa722b15b97" nickname="Input" x="439" y="42" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="search term" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7327af50-13bf-4869-9623-a6583a7ceace" nickname="Output" x="1098.9655719433" y="170.045639682996" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="results" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f80ea88a-536e-490e-a561-70c3535a7573" nickname="Get Members" x="607.034428056702" y="266.005209224237" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="02725396-8278-4c8f-8f7c-a79c9c100660" />
+      <Name value="Get Members" />
+      <Description value="Gets a list of all members (properties and methods) of a selected element" />
+      <Inputs>
+        <Input value="element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="members" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f615efd5-16f2-4e7f-857b-8a63ea50ea47" nickname="Input" x="164" y="269.890713427837" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="a5ba4bf8-c2c7-41bd-98c3-4e3285268693" nickname="Turn Into List" x="301" y="269.890713427837" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="8545585d-fb01-41ec-b673-41125a4be04c" nickname="First of List" x="465.101520187973" y="268.983276642042" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="32b59d7b-6a5f-4d70-a37d-3910dafdb671" nickname="Filter List by Regular Expression Matches" x="822.545912213815" y="170.811929536351" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="54ea3bf3-7523-4f77-a642-a9de1f08f8a0" />
+      <Name value="Filter List by Regular Expression Matches" />
+      <Description value="Filters out all items from a list of strings that don't begin with the regular expression.  The syntax for regular expressions is explained at&#xD;&#xA;http://ironpython-test.readthedocs.org/en/latest/howto/regex.html" />
+      <Inputs>
+        <Input value="regex" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="in" />
+        <Output value="out" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" start_index="0" end="32b59d7b-6a5f-4d70-a37d-3910dafdb671" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bb54a08b-7ff5-4837-aed8-3f9b7ea1c54c" start_index="0" end="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="780fd5e2-747a-488b-9f53-540b558e9a52" start_index="0" end="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8324b328-07aa-4816-86bf-5fa722b15b97" start_index="0" end="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f80ea88a-536e-490e-a561-70c3535a7573" start_index="0" end="32b59d7b-6a5f-4d70-a37d-3910dafdb671" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f615efd5-16f2-4e7f-857b-8a63ea50ea47" start_index="0" end="a5ba4bf8-c2c7-41bd-98c3-4e3285268693" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a5ba4bf8-c2c7-41bd-98c3-4e3285268693" start_index="0" end="8545585d-fb01-41ec-b673-41125a4be04c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8545585d-fb01-41ec-b673-41125a4be04c" start_index="0" end="f80ea88a-536e-490e-a561-70c3535a7573" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="32b59d7b-6a5f-4d70-a37d-3910dafdb671" start_index="0" end="7327af50-13bf-4869-9623-a6583a7ceace" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

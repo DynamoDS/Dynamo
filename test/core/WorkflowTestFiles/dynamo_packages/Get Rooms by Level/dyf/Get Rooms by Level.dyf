@@ -1,0 +1,78 @@
+<Workspace Version="0.6.3.7993" X="275.971608455888" Y="54.9066694976653" zoom="1.43479342472017" Description="Filters Rooms by level." Category="Revit.API" Name="Get Rooms by Level" ID="f7afa683-86b4-4fdb-840f-7e8ab64ce636">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="b63c2410-86b0-4010-bc9a-34d7c184f01a" nickname="Get from List" x="619.019594134039" y="151.821240729806" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="2bee8b80-b199-4791-a073-63081c000b67" nickname="Number" x="495.793966669761" y="194.854020258161" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c4b45d87-197c-42a4-8122-c46214c70fdc" nickname="Number" x="500.020600592095" y="83.2648689566601" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="2e9f3e05-8492-4031-ba03-cb2d992726fd" nickname="Get from List" x="623.246228056372" y="40.232089428305" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d3f3c0da-ca60-4de2-8831-81dc43ec04ca" nickname="Input" x="1.61086713980581" y="66.9657797296043" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Level" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="3365153c-7f5c-4301-aede-592cb301d5d6" nickname="Output" x="830.315239657956" y="159.605170688842" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Room Names" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5dfb38b2-ce2f-4762-b30f-7257605dda09" nickname="Output" x="835.990090171336" y="42.8871965599324" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Rooms" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8f83468b-1c8d-450a-a6d2-af7b4088cb79" nickname="Input" x="-113.871979723149" y="158.86611327984" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ExcludeUnplaced?" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="ea3b179a-1a40-43f3-97d6-c42da52c6e97" nickname="Python Script With Variable Number of Inputs" x="141.130764083131" y="108.683690702625" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN0
+level_input = IN0
+filterToggle = IN1
+roomNames = []
+validRooms = []
+
+doc = __doc__
+
+level_filter = ElementLevelFilter(level_input.Id)
+collector = FilteredElementCollector(doc)
+
+
+if filterToggle == 0:
+	all_rooms_on_level = collector.OfClass(Autodesk.Revit.DB.SpatialElement).WherePasses(level_filter).ToElements()
+	for i in all_rooms_on_level:
+		roomNames.append(i.get_Parameter("Name").AsString())
+	OUT = all_rooms_on_level, roomNames
+else:
+	all_rooms_on_level = collector.OfClass(Autodesk.Revit.DB.SpatialElement).WherePasses(level_filter).ToElements()
+	for i in all_rooms_on_level:
+		if i.Area !=0:
+			validRooms.append(i)
+	for i in validRooms:
+		roomNames.append(i.get_Parameter("Name").AsString())
+	OUT = validRooms, roomNames</Script>
+    </Dynamo.Nodes.PythonVarIn>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b63c2410-86b0-4010-bc9a-34d7c184f01a" start_index="0" end="3365153c-7f5c-4301-aede-592cb301d5d6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2bee8b80-b199-4791-a073-63081c000b67" start_index="0" end="b63c2410-86b0-4010-bc9a-34d7c184f01a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c4b45d87-197c-42a4-8122-c46214c70fdc" start_index="0" end="2e9f3e05-8492-4031-ba03-cb2d992726fd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2e9f3e05-8492-4031-ba03-cb2d992726fd" start_index="0" end="5dfb38b2-ce2f-4762-b30f-7257605dda09" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d3f3c0da-ca60-4de2-8831-81dc43ec04ca" start_index="0" end="ea3b179a-1a40-43f3-97d6-c42da52c6e97" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8f83468b-1c8d-450a-a6d2-af7b4088cb79" start_index="0" end="ea3b179a-1a40-43f3-97d6-c42da52c6e97" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ea3b179a-1a40-43f3-97d6-c42da52c6e97" start_index="0" end="2e9f3e05-8492-4031-ba03-cb2d992726fd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ea3b179a-1a40-43f3-97d6-c42da52c6e97" start_index="0" end="b63c2410-86b0-4010-bc9a-34d7c184f01a" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

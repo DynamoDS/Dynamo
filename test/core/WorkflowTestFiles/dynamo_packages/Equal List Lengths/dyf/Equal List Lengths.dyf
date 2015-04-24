@@ -1,0 +1,44 @@
+<Workspace Version="0.6.3.5256" X="223.25" Y="-1441" zoom="1" Description="Trims all given lists to the length of the shortest list" Category="CAAD_RWTH.Lists" Name="Equal List Lengths" ID="cd2bed0a-69a8-45d5-ab42-79019b5bfe73">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="bf1f9123-6476-4d6f-8f6d-06b220d20ee9" nickname="Input" x="-27.9999999999991" y="1710" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="lists" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="258dcfa9-74d3-4d24-828d-6ed90e70d50d" nickname="Get Highest And Lowest From List" x="238.560439560437" y="1778.24175824176" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="93a2ae60-1e9a-41e4-bb2f-3fdd60460c33" />
+      <Name value="Get Highest And Lowest From List" />
+      <Description value="Gets the highest and lowest value from a given list" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="highest" />
+        <Output value="lowest" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="27c40a32-c3c7-49ec-8e36-83848b9d4475" nickname="Map" x="681.560439560437" y="1688.24175824176" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.TakeList type="Dynamo.Nodes.TakeList" guid="514de558-d66f-444c-bb5c-161c0e440195" nickname="Take from List" x="500.560439560437" y="1642.24175824176" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="ddcb936e-c4ea-479f-be26-7d62304e21b6" nickname="Get Sublist Lengths" x="83.560439560437" y="1780.24175824176" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="94acdb87-65e9-4dbe-8430-aced99f668d5" />
+      <Name value="Get Sublist Lengths" />
+      <Description value="Gets the lengths of all sublists in a given list of lists." />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="lengths" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="60462f29-178e-48c5-86cd-57b998b390ae" nickname="Output" x="853.75" y="1687" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="lists" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="bf1f9123-6476-4d6f-8f6d-06b220d20ee9" start_index="0" end="ddcb936e-c4ea-479f-be26-7d62304e21b6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bf1f9123-6476-4d6f-8f6d-06b220d20ee9" start_index="0" end="27c40a32-c3c7-49ec-8e36-83848b9d4475" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="258dcfa9-74d3-4d24-828d-6ed90e70d50d" start_index="1" end="514de558-d66f-444c-bb5c-161c0e440195" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="27c40a32-c3c7-49ec-8e36-83848b9d4475" start_index="0" end="60462f29-178e-48c5-86cd-57b998b390ae" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="514de558-d66f-444c-bb5c-161c0e440195" start_index="0" end="27c40a32-c3c7-49ec-8e36-83848b9d4475" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ddcb936e-c4ea-479f-be26-7d62304e21b6" start_index="0" end="258dcfa9-74d3-4d24-828d-6ed90e70d50d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,73 @@
+<dynWorkspace X="10" Y="55" Name="Solar Radiation Optimizer" Category="Analyze.Solar" ID="c5e9ebfb-236f-43c0-93c3-f05a8f667ac6">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="4afe98cb-f3f3-405c-b42d-183ac3f100ad" nickname="Variable" x="0" y="0">
+      <Symbol value="famInst" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="ba61d47e-4501-4ce5-902c-9d2119ecba95" nickname="Variable" x="3" y="63.25">
+      <Symbol value="parameter" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="db1b3035-829a-4142-aeb6-85307812b1a2" nickname="Variable" x="0" y="135.05">
+      <Symbol value="increment" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="d86c032c-eeb7-490a-b795-90c2ab54b9a7" nickname="Variable" x="0" y="191.85">
+      <Symbol value="max" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="a11da7e3-a3dc-42ed-a252-ec8d291e723a" nickname="solarradopt" x="642.6" y="186.3375">
+      <ID value="d9380158-c69d-4ea8-b6eb-ae495afb90d0" />
+      <Name value="solarradopt" />
+      <Inputs>
+        <Input value="fI" />
+        <Input value="p" />
+        <Input value="i" />
+        <Input value="max" />
+        <Input value="amt" />
+        <Input value="acc" />
+        <Input value="path" />
+        <Input value="fw" />
+      </Inputs>
+      <Outputs>
+        <Output value="result" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynNewList type="Dynamo.Nodes.dynNewList" guid="d519edfd-af17-493f-8cac-0f5a9bd0b0a5" nickname="list" x="376.9" y="428.1375">
+      <Input name="item(s)" />
+      <Input name="index1" />
+    </Dynamo.Nodes.dynNewList>
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="368fbdb1-a80a-4726-b641-dc98442a9a53" nickname="Number" x="64.7999999999998" y="437.6875">
+      <System.Double value="1" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="1e2bc1d1-53c0-4099-854a-f1e2d3248c23" nickname="Variable" x="0" y="245.2375">
+      <Symbol value="path" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynFileWatcher type="Dynamo.Nodes.dynFileWatcher" guid="6d8e892b-f3e8-405b-aff6-04953184b2eb" nickname="Watch File" x="320.5" y="327.3875" />
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="39f742af-8378-4384-b7dc-a57a03e9763e" nickname="solarradupdate" x="858.995868064345" y="152.269971075477">
+      <ID value="3ad2dee3-f815-4afa-8372-3f580b01c748" />
+      <Name value="solarradupdate" />
+      <Inputs>
+        <Input value="fi" />
+        <Input value="p" />
+        <Input value="result" />
+      </Inputs>
+      <Outputs>
+        <Output value="last" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="4afe98cb-f3f3-405c-b42d-183ac3f100ad" start_index="0" end="a11da7e3-a3dc-42ed-a252-ec8d291e723a" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="4afe98cb-f3f3-405c-b42d-183ac3f100ad" start_index="0" end="39f742af-8378-4384-b7dc-a57a03e9763e" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="ba61d47e-4501-4ce5-902c-9d2119ecba95" start_index="0" end="a11da7e3-a3dc-42ed-a252-ec8d291e723a" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="ba61d47e-4501-4ce5-902c-9d2119ecba95" start_index="0" end="39f742af-8378-4384-b7dc-a57a03e9763e" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="db1b3035-829a-4142-aeb6-85307812b1a2" start_index="0" end="a11da7e3-a3dc-42ed-a252-ec8d291e723a" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d86c032c-eeb7-490a-b795-90c2ab54b9a7" start_index="0" end="a11da7e3-a3dc-42ed-a252-ec8d291e723a" end_index="3" portType="0" />
+    <Dynamo.Connectors.dynConnector start="a11da7e3-a3dc-42ed-a252-ec8d291e723a" start_index="0" end="39f742af-8378-4384-b7dc-a57a03e9763e" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d519edfd-af17-493f-8cac-0f5a9bd0b0a5" start_index="0" end="a11da7e3-a3dc-42ed-a252-ec8d291e723a" end_index="5" portType="0" />
+    <Dynamo.Connectors.dynConnector start="368fbdb1-a80a-4726-b641-dc98442a9a53" start_index="0" end="d519edfd-af17-493f-8cac-0f5a9bd0b0a5" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="368fbdb1-a80a-4726-b641-dc98442a9a53" start_index="0" end="d519edfd-af17-493f-8cac-0f5a9bd0b0a5" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="368fbdb1-a80a-4726-b641-dc98442a9a53" start_index="0" end="a11da7e3-a3dc-42ed-a252-ec8d291e723a" end_index="4" portType="0" />
+    <Dynamo.Connectors.dynConnector start="1e2bc1d1-53c0-4099-854a-f1e2d3248c23" start_index="0" end="a11da7e3-a3dc-42ed-a252-ec8d291e723a" end_index="6" portType="0" />
+    <Dynamo.Connectors.dynConnector start="1e2bc1d1-53c0-4099-854a-f1e2d3248c23" start_index="0" end="6d8e892b-f3e8-405b-aff6-04953184b2eb" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="6d8e892b-f3e8-405b-aff6-04953184b2eb" start_index="0" end="a11da7e3-a3dc-42ed-a252-ec8d291e723a" end_index="7" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

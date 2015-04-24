@@ -1,0 +1,14 @@
+<Workspace Version="0.6.2.279" X="166.188535272507" Y="114.931809523809" zoom="1" Description="Inverts a value between 0 and 1 or a boolean to its opposite (1-x)" Category="CAAD_RWTH.Math" Name="Invert Normalized Value" ID="18062fc4-d89d-4ac0-8103-b26c93473852">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="77ae41f2-7466-45bf-b40b-637ced8fc1d0" nickname="Input" x="15.3832655407139" y="25.3602380952381" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="d1bf4fc7-1b06-487a-87e7-5d8c1b7db0f6" nickname="Formula" x="125.383265540714" y="24.1102380952381" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1-x</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="77ae41f2-7466-45bf-b40b-637ced8fc1d0" start_index="0" end="d1bf4fc7-1b06-487a-87e7-5d8c1b7db0f6" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

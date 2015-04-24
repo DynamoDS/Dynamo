@@ -1,0 +1,26 @@
+<Workspace Version="0.6.3.31052" X="187.364" Y="187.274" zoom="1.1575" Description="replaces a null with a specified value.  Use with Map for lists" Category="buildz" Name="If Null Replace With New Value" ID="cc236292-c804-4e85-897f-4247bfdd217a">
+  <Elements>
+    <Dynamo.Nodes.IsNull type="Dynamo.Nodes.IsNull" guid="1ac8684d-01c2-4602-93ab-d405973a2413" nickname="Is Null?" x="263.6" y="21.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="c008ceae-39a8-44d7-9f31-3585f828c5fa" nickname="If" x="483.626012434251" y="163.268785895863" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="64908f40-f009-48a0-92ae-3013b8012d26" nickname="Input" x="83.5377969762419" y="27.3883369330452" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="item" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="ed50f758-35f7-408d-bbd7-07650a126819" nickname="Output" x="715.6" y="185.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="cleaned" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="9253a72b-56c4-445b-b963-d2fc6f3b73bf" nickname="Input" x="243.702807775378" y="212.333477321814" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="newValue" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1ac8684d-01c2-4602-93ab-d405973a2413" start_index="0" end="c008ceae-39a8-44d7-9f31-3585f828c5fa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c008ceae-39a8-44d7-9f31-3585f828c5fa" start_index="0" end="ed50f758-35f7-408d-bbd7-07650a126819" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="64908f40-f009-48a0-92ae-3013b8012d26" start_index="0" end="c008ceae-39a8-44d7-9f31-3585f828c5fa" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="64908f40-f009-48a0-92ae-3013b8012d26" start_index="0" end="1ac8684d-01c2-4602-93ab-d405973a2413" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9253a72b-56c4-445b-b963-d2fc6f3b73bf" start_index="0" end="c008ceae-39a8-44d7-9f31-3585f828c5fa" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

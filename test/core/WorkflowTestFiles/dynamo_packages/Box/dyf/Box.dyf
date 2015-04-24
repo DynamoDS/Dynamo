@@ -1,0 +1,54 @@
+<Workspace Version="0.7.0.21202" X="254.433535353534" Y="-25.6581818181824" zoom="0.8" Description="Makes a rectuangular extrusion Form Element in the Massing Environment" Category="buildz" Name="Box" ID="b428706c-526e-4c7f-8283-8c4a39214519">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4db69c2e-ee4a-4e6c-ace9-64853d13860f" nickname="Input" x="48" y="101.866666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="X" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ec15427f-0879-4017-898a-1c14b6581111" nickname="Input" x="48" y="251.866666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Y" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d807e397-011c-4d47-b0ae-609f830702a6" nickname="Input" x="52" y="357.866666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Z" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="448a564e-9440-4eeb-afcb-70230c3d854b" nickname="Input" x="48" y="551.866666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Width" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="07b02bf7-f205-4c0e-b0c0-709a523f1fd3" nickname="Input" x="48" y="701.866666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Length" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f872a5fd-fa6b-4a4f-828e-e851654562ea" nickname="Input" x="48" y="851.866666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Rotation(Radians)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="93d54fb5-29a0-40f5-ae6b-fca455407803" nickname="Input" x="56" y="965.866666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Height" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.FreeForm type="Dynamo.Nodes.FreeForm" guid="96044677-6589-4d60-ad17-7a594e27f98a" nickname="Free Form" x="842.60252525253" y="511.671338383838" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="fca507a3-0b7a-40b1-bb60-16b6fc3ee6e6" nickname="Geometry Box" x="488.208080808082" y="502.572727272728" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="5e773069-e976-4288-b925-5f3b8a4e0d39" />
+      <Name value="Geometry Box" />
+      <Description value="Creates a geometric box.  Needs a freeform element node to make a Revit Element" />
+      <Inputs>
+        <Input value="X" />
+        <Input value="Y" />
+        <Input value="Z" />
+        <Input value="Width" />
+        <Input value="Length" />
+        <Input value="Rotation(Radians)" />
+        <Input value="Height" />
+      </Inputs>
+      <Outputs>
+        <Output value="geometry" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4db69c2e-ee4a-4e6c-ace9-64853d13860f" start_index="0" end="fca507a3-0b7a-40b1-bb60-16b6fc3ee6e6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ec15427f-0879-4017-898a-1c14b6581111" start_index="0" end="fca507a3-0b7a-40b1-bb60-16b6fc3ee6e6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d807e397-011c-4d47-b0ae-609f830702a6" start_index="0" end="fca507a3-0b7a-40b1-bb60-16b6fc3ee6e6" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="448a564e-9440-4eeb-afcb-70230c3d854b" start_index="0" end="fca507a3-0b7a-40b1-bb60-16b6fc3ee6e6" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="07b02bf7-f205-4c0e-b0c0-709a523f1fd3" start_index="0" end="fca507a3-0b7a-40b1-bb60-16b6fc3ee6e6" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f872a5fd-fa6b-4a4f-828e-e851654562ea" start_index="0" end="fca507a3-0b7a-40b1-bb60-16b6fc3ee6e6" end_index="5" portType="0" />
+    <Dynamo.Models.ConnectorModel start="93d54fb5-29a0-40f5-ae6b-fca455407803" start_index="0" end="fca507a3-0b7a-40b1-bb60-16b6fc3ee6e6" end_index="6" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fca507a3-0b7a-40b1-bb60-16b6fc3ee6e6" start_index="0" end="96044677-6589-4d60-ad17-7a594e27f98a" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

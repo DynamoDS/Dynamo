@@ -1,0 +1,73 @@
+<Workspace Version="0.6.3.7375" X="28" Y="85" zoom="1.1" Description="Filters out everything that is *not* a topo subregion. Needs Revit 2014 or newer to work." Category="CAAD_RWTH.Revit.Topo" Name="Filter For Topo Subregions" ID="b88927ec-fb92-40c7-a33e-d16be99809c7">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="753cd253-79a4-4c4b-ab10-aee58856bc74" nickname="Input" x="50.4545454545456" y="194.854545454545" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Toposurface(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f6da18fc-3327-4d53-9baf-51ebf53e264a" nickname="Turn Into List" x="231.272727272727" y="193.763636363636" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8391a372-b113-4e1a-b6ea-aa1f0875826c" nickname="Output" x="976.090909090909" y="45.2181818181816" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Subregions" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="9360058e-8acd-40b3-8a55-a4891ad83340" nickname="Python Script" x="391.407784722407" y="192.597372222871" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+topos = IN
+subregions = list()
+justtopos = list()
+booleans = list()
+for item in topos:
+	try:
+		if item.IsSiteSubRegion:
+			subregions.append(item)
+			booleans.append(1)
+		else:
+			justtopos.append(item)
+			booleans.append(0)
+	except:
+		justtopos.append(item)
+		booleans.append(0)
+OUT = (subregions,justtopos,booleans)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="a0db6f61-14c3-46f5-8c95-38d517c6014e" nickname="First of List" x="625" y="45.4545454545454" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="8089ced4-09ce-4207-92cb-e12e851429ad" nickname="Get from List" x="738.636363636364" y="168.181818181818" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="fc276160-d532-4202-b405-cba7c5fe098b" nickname="Formula" x="622.272727272727" y="135.454545454545" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="be6d6856-3507-4a52-9d52-3fe5f82b87a8" nickname="Output" x="978.818181818182" y="163.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="No Subregions" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="28098b6d-689f-4c84-8a2c-02e7596159e0" nickname="Output" x="973.363636363636" y="282.490909090909" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="2719f38a-e794-4893-92a2-86628164330a" nickname="Get from List" x="741.363636363636" y="286.363636363636" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="bc267bc7-60a0-452d-80a4-40447aeb6087" nickname="Formula" x="618.636363636364" y="251.818181818182" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>2</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="753cd253-79a4-4c4b-ab10-aee58856bc74" start_index="0" end="f6da18fc-3327-4d53-9baf-51ebf53e264a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6da18fc-3327-4d53-9baf-51ebf53e264a" start_index="0" end="9360058e-8acd-40b3-8a55-a4891ad83340" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9360058e-8acd-40b3-8a55-a4891ad83340" start_index="0" end="a0db6f61-14c3-46f5-8c95-38d517c6014e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9360058e-8acd-40b3-8a55-a4891ad83340" start_index="0" end="8089ced4-09ce-4207-92cb-e12e851429ad" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9360058e-8acd-40b3-8a55-a4891ad83340" start_index="0" end="2719f38a-e794-4893-92a2-86628164330a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a0db6f61-14c3-46f5-8c95-38d517c6014e" start_index="0" end="8391a372-b113-4e1a-b6ea-aa1f0875826c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8089ced4-09ce-4207-92cb-e12e851429ad" start_index="0" end="be6d6856-3507-4a52-9d52-3fe5f82b87a8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fc276160-d532-4202-b405-cba7c5fe098b" start_index="0" end="8089ced4-09ce-4207-92cb-e12e851429ad" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2719f38a-e794-4893-92a2-86628164330a" start_index="0" end="28098b6d-689f-4c84-8a2c-02e7596159e0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bc267bc7-60a0-452d-80a4-40447aeb6087" start_index="0" end="2719f38a-e794-4893-92a2-86628164330a" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

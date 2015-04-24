@@ -1,0 +1,36 @@
+<Workspace Version="0.6.2.22517" X="15" Y="196" zoom="1" Description="" Category="Geometry.Point.Query" Name="Minimum Distance between collection points" ID="6a75a46a-5817-4063-a45c-79bd99aaa3ae">
+  <Elements>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="730dca45-4717-4772-b406-9f7f7dc01d75" nickname="Map" x="479.658730158729" y="76.666666666666" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="04190a75-4dbb-493f-960c-9fcb4ea701c0" nickname="Map" x="635.214285714289" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="4537ef25-e601-4f70-b9bc-cf0bbcaf399b" nickname="First of List" x="507.678571428569" y="1.40476190476201" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Sort type="Dynamo.Nodes.Sort" guid="f10b435f-85e3-4a47-8bb5-b48703e1928f" nickname="Sort" x="351.880952380949" y="61.111111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.XyzDistance type="Dynamo.Nodes.XyzDistance" guid="630ee933-270b-4ed1-ad11-6e241b38e1ae" nickname="XYZ Distance" x="250" y="104.146825396825" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="30408a13-eb58-4300-a4d2-0c7228fb815d" nickname="Input" x="4" y="74" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz list A" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="c895329f-af05-4900-bdf2-8733ea5f489a" nickname="Output" x="890.214285714289" y="30" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dist list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0776dd15-c098-4e3a-9b8b-555a45207867" nickname="Output" x="867.214285714289" y="96" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="sort dist list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="e95867fc-61ca-47cc-bfd1-80ecb604703f" nickname="Output" x="866.214285714289" y="161" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="min dist list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3d854e7e-e79c-4d6f-b4bf-9f0b7e9c8fc2" nickname="Input" x="3" y="137.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz list B" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="730dca45-4717-4772-b406-9f7f7dc01d75" start_index="0" end="04190a75-4dbb-493f-960c-9fcb4ea701c0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="730dca45-4717-4772-b406-9f7f7dc01d75" start_index="0" end="0776dd15-c098-4e3a-9b8b-555a45207867" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="04190a75-4dbb-493f-960c-9fcb4ea701c0" start_index="0" end="e95867fc-61ca-47cc-bfd1-80ecb604703f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4537ef25-e601-4f70-b9bc-cf0bbcaf399b" start_index="0" end="04190a75-4dbb-493f-960c-9fcb4ea701c0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f10b435f-85e3-4a47-8bb5-b48703e1928f" start_index="0" end="730dca45-4717-4772-b406-9f7f7dc01d75" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="630ee933-270b-4ed1-ad11-6e241b38e1ae" start_index="0" end="730dca45-4717-4772-b406-9f7f7dc01d75" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="630ee933-270b-4ed1-ad11-6e241b38e1ae" start_index="0" end="c895329f-af05-4900-bdf2-8733ea5f489a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="30408a13-eb58-4300-a4d2-0c7228fb815d" start_index="0" end="630ee933-270b-4ed1-ad11-6e241b38e1ae" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3d854e7e-e79c-4d6f-b4bf-9f0b7e9c8fc2" start_index="0" end="630ee933-270b-4ed1-ad11-6e241b38e1ae" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

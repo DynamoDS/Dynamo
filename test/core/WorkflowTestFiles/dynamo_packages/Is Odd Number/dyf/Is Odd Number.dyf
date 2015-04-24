@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.5256" X="97" Y="210.92" zoom="1" Description="Checks if a number is odd." Category="CAAD_RWTH.Math" Name="Is Odd Number" ID="54bd8823-9bed-4268-86eb-c4bd3854e026">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3f9a6686-0885-46ca-8d36-abdd37b32211" nickname="Input" x="13.5" y="25.3800000000001" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="val" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="21ccd606-06d6-4898-8c90-b6f465b24983" nickname="Formula" x="124.5" y="25.3800000000001" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>Round(n,0)/2!=Round(Round(n,0)/2,0)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="200dd1e4-e60e-46cb-9e1c-198df7569b7d" nickname="Output" x="429.5" y="26.3800000000001" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3f9a6686-0885-46ca-8d36-abdd37b32211" start_index="0" end="21ccd606-06d6-4898-8c90-b6f465b24983" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="21ccd606-06d6-4898-8c90-b6f465b24983" start_index="0" end="200dd1e4-e60e-46cb-9e1c-198df7569b7d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

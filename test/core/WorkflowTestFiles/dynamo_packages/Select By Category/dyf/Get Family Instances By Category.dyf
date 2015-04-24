@@ -1,0 +1,47 @@
+<Workspace Version="0.6.3.5244" X="0" Y="0" zoom="1.1" Description="Gets all family instances in the model for a given list of categories" Category="CAAD_RWTH.Revit.Categories" Name="Get Family Instances By Category" ID="9eb0e045-7f8f-4d3c-8742-986216eacc1e">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="753cd253-79a4-4c4b-ab10-aee58856bc74" nickname="Input" x="50.4545454545456" y="194.854545454545" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="BuiltInCategories" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f6da18fc-3327-4d53-9baf-51ebf53e264a" nickname="Turn Into List" x="231.272727272727" y="193.763636363636" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8391a372-b113-4e1a-b6ea-aa1f0875826c" nickname="Output" x="695.181818181818" y="137.945454545454" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="24028384-e05f-4424-adc4-3a305321377d" nickname="Revit Document" x="234.545454545454" y="105" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" nickname="Python Script With Variable Number of Inputs" x="387.272727272727" y="138.636363636364" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+cats = IN1
+
+elementlist = list()
+# This could be more elegant if only I knew how to implement a Multicategory filter in Python....
+for item in cats:
+	collector = FilteredElementCollector(doc)
+	filter = ElementCategoryFilter(item)
+	elementlist.append(collector.WherePasses(filter).WhereElementIsNotElementType().ToElements())
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="753cd253-79a4-4c4b-ab10-aee58856bc74" start_index="0" end="f6da18fc-3327-4d53-9baf-51ebf53e264a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6da18fc-3327-4d53-9baf-51ebf53e264a" start_index="0" end="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="24028384-e05f-4424-adc4-3a305321377d" start_index="0" end="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" start_index="0" end="8391a372-b113-4e1a-b6ea-aa1f0875826c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,54 @@
+<!--
+Copyright 2012 Ian Keough
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<dynWorkspace X="-82" Y="55" Name="Dice" Category="Logic.Conditional" ID="3df7a151-5ec3-44c8-a2ea-c3151b06e99d">
+  <dynElements>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="8199ef18-b7b8-4b1b-b133-7d7dc1ab1b5a" nickname="Variable" x="199.75" y="14">
+      <Symbol value="lst" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynSymbol type="Dynamo.Elements.dynSymbol" guid="a22d37de-6896-479c-9837-71d9d53320f7" nickname="Variable" x="201" y="164">
+      <Symbol value="amt" />
+    </Dynamo.Elements.dynSymbol>
+    <Dynamo.Elements.dynTakeList type="Dynamo.Elements.dynTakeList" guid="13796042-cb8f-4cc8-87d2-db35963ddcb3" nickname="Take" x="528.25" y="51" />
+    <Dynamo.Elements.dynDropList type="Dynamo.Elements.dynDropList" guid="e1a9ca3a-d0f5-45d0-ba06-b263650fe346" nickname="Drop" x="529.5" y="128.75" />
+    <Dynamo.Elements.dynFunction type="Dynamo.Elements.dynFunction" guid="767881fb-f0d0-47ea-a613-145b333ac4f8" nickname="Dice" x="685.25" y="202.5">
+      <ID value="3df7a151-5ec3-44c8-a2ea-c3151b06e99d" />
+      <Output value="out" />
+      <Inputs>
+        <Input value="lst" />
+        <Input value="amt" />
+      </Inputs>
+    </Dynamo.Elements.dynFunction>
+    <Dynamo.Elements.dynList type="Dynamo.Elements.dynList" guid="d10dcf2c-97cb-40a9-94fb-7067d72f3fa0" nickname="Cons" x="845.5" y="152" />
+    <Dynamo.Elements.dynConditional type="Dynamo.Elements.dynConditional" guid="980ab738-0673-4527-89be-d524316fd2f6" nickname="If" x="1095.5" y="85" />
+    <Dynamo.Elements.dynIsEmpty type="Dynamo.Elements.dynIsEmpty" guid="a2422db3-f78f-476b-a682-f0c2b71cd737" nickname="Is Empty?" x="833" y="0" />
+    <Dynamo.Elements.dynEmpty type="Dynamo.Elements.dynEmpty" guid="5965a825-6003-4bd6-b03d-796d251bc5a1" nickname="Empty" x="844.5" y="79.5" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="8199ef18-b7b8-4b1b-b133-7d7dc1ab1b5a" start_index="0" end="e1a9ca3a-d0f5-45d0-ba06-b263650fe346" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="8199ef18-b7b8-4b1b-b133-7d7dc1ab1b5a" start_index="0" end="13796042-cb8f-4cc8-87d2-db35963ddcb3" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="8199ef18-b7b8-4b1b-b133-7d7dc1ab1b5a" start_index="0" end="a2422db3-f78f-476b-a682-f0c2b71cd737" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="a22d37de-6896-479c-9837-71d9d53320f7" start_index="0" end="13796042-cb8f-4cc8-87d2-db35963ddcb3" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="a22d37de-6896-479c-9837-71d9d53320f7" start_index="0" end="e1a9ca3a-d0f5-45d0-ba06-b263650fe346" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="a22d37de-6896-479c-9837-71d9d53320f7" start_index="0" end="767881fb-f0d0-47ea-a613-145b333ac4f8" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="13796042-cb8f-4cc8-87d2-db35963ddcb3" start_index="0" end="d10dcf2c-97cb-40a9-94fb-7067d72f3fa0" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="e1a9ca3a-d0f5-45d0-ba06-b263650fe346" start_index="0" end="767881fb-f0d0-47ea-a613-145b333ac4f8" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="767881fb-f0d0-47ea-a613-145b333ac4f8" start_index="0" end="d10dcf2c-97cb-40a9-94fb-7067d72f3fa0" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="d10dcf2c-97cb-40a9-94fb-7067d72f3fa0" start_index="0" end="980ab738-0673-4527-89be-d524316fd2f6" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnector start="a2422db3-f78f-476b-a682-f0c2b71cd737" start_index="0" end="980ab738-0673-4527-89be-d524316fd2f6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="5965a825-6003-4bd6-b03d-796d251bc5a1" start_index="0" end="980ab738-0673-4527-89be-d524316fd2f6" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

@@ -1,0 +1,33 @@
+<Workspace Version="0.6.3.7375" X="73" Y="162" zoom="1" Description="Filters out all sublists that do not have the specified length" Category="CAAD_RWTH.Lists.Sublists" Name="Filter Sublists By Length" ID="f2959b30-b4c4-4100-beeb-4dfde79c2235">
+  <Elements>
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="d96f2662-954d-486a-a0cd-6a4854ba2d23" nickname="Filter by Boolean Mask" x="692.663577852572" y="74.086121124629" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="66b8581f-ba54-4bfa-a133-80e392eb4603" nickname="Formula" x="570.892614458531" y="10.684710431861" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>n=x</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="bce05e8d-e96c-4cef-83e8-94114a828cce" nickname="Map" x="407.242321169752" y="11.730070419703" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="2fb459a9-0f90-4f4c-97b8-793a59c491e7" nickname="List Length" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="34376b98-2702-40cb-845b-c0982030bff4" nickname="Input" x="298" y="75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="82ee6a71-3ed9-4d3d-88dc-1cb395edf7ad" nickname="Input" x="458" y="-64" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="length" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5c352892-c73d-4d31-ba68-f7e5c0522e2a" nickname="Output" x="873.663577852572" y="46" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="in" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8855ac49-9c5d-4f47-b125-abdf439fb306" nickname="Output" x="874.663577852572" y="120" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="out" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d96f2662-954d-486a-a0cd-6a4854ba2d23" start_index="0" end="5c352892-c73d-4d31-ba68-f7e5c0522e2a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d96f2662-954d-486a-a0cd-6a4854ba2d23" start_index="1" end="8855ac49-9c5d-4f47-b125-abdf439fb306" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="66b8581f-ba54-4bfa-a133-80e392eb4603" start_index="0" end="d96f2662-954d-486a-a0cd-6a4854ba2d23" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bce05e8d-e96c-4cef-83e8-94114a828cce" start_index="0" end="66b8581f-ba54-4bfa-a133-80e392eb4603" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2fb459a9-0f90-4f4c-97b8-793a59c491e7" start_index="0" end="bce05e8d-e96c-4cef-83e8-94114a828cce" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="34376b98-2702-40cb-845b-c0982030bff4" start_index="0" end="d96f2662-954d-486a-a0cd-6a4854ba2d23" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="34376b98-2702-40cb-845b-c0982030bff4" start_index="0" end="bce05e8d-e96c-4cef-83e8-94114a828cce" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="82ee6a71-3ed9-4d3d-88dc-1cb395edf7ad" start_index="0" end="66b8581f-ba54-4bfa-a133-80e392eb4603" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

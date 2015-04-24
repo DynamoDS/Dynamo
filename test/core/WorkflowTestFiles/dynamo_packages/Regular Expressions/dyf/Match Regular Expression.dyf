@@ -1,0 +1,59 @@
+<Workspace Version="0.6.3.5260" X="37.3555555555554" Y="134.266666666667" zoom="0.8" Description="Determines if a regular expression matches a string (or a list of strings) and returns a boolean value (or a list, depending on the input). The syntax for regular expressions is explained at&#xD;&#xA;http://ironpython-test.readthedocs.org/en/latest/howto/regex.html" Category="CAAD_RWTH.Strings" Name="Match Regular Expression" ID="8cc7fb35-db73-41f2-92d1-2b6505d4cf44">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="6c916853-f2a9-4538-9164-ac374103c476" nickname="Turn Into List" x="144.75" y="220.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="530bb7cb-3104-4bfe-b27c-d9235d17535d" nickname="Input" x="10" y="136.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="regex" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="601f6589-cfcc-41d1-8a9f-288c81465dcf" nickname="Input" x="11" y="221.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="string(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="79e28ed5-10cb-448b-9bd5-e1c700e5870e" nickname="Output" x="832" y="216.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="d6455be2-8efe-4008-afe7-57ebf981e42f" nickname="Python Script With Variable Number of Inputs" x="302.055555555556" y="137.791666666666" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import re
+
+regexstring = IN0
+regexlist = IN1
+elementlist = list()
+thisexp = re.compile(regexstring)
+for item in regexlist:
+	if (str(thisexp.match(item)) == 'None'):
+		elementlist.append(0)
+	else:
+		elementlist.append(1)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c4dbd8d0-8164-4a1c-a0e7-fc5e06687c02" nickname="Return List Or Single Value" x="610.805555555556" y="217.791666666666" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6c916853-f2a9-4538-9164-ac374103c476" start_index="0" end="d6455be2-8efe-4008-afe7-57ebf981e42f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6c916853-f2a9-4538-9164-ac374103c476" start_index="0" end="c4dbd8d0-8164-4a1c-a0e7-fc5e06687c02" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="530bb7cb-3104-4bfe-b27c-d9235d17535d" start_index="0" end="d6455be2-8efe-4008-afe7-57ebf981e42f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="601f6589-cfcc-41d1-8a9f-288c81465dcf" start_index="0" end="6c916853-f2a9-4538-9164-ac374103c476" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d6455be2-8efe-4008-afe7-57ebf981e42f" start_index="0" end="c4dbd8d0-8164-4a1c-a0e7-fc5e06687c02" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c4dbd8d0-8164-4a1c-a0e7-fc5e06687c02" start_index="0" end="79e28ed5-10cb-448b-9bd5-e1c700e5870e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

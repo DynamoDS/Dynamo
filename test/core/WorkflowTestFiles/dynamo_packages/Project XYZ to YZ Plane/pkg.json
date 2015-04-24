@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Project XYZ to YZ Plane","version":"0.0.4","description":"Take an XYZ and project it to the YZ plane.","group":"Core","keywords":["xyz","project","point"],"dependencies":[],"license":"MIT","contents":"Project XYZ to YZ Plane - Zeros out the X coordinate of the XYZ.","engine_version":"0.6.0.17659","engine_metadata":"","engine":"dynamo"}

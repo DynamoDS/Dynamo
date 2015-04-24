@@ -1,0 +1,18 @@
+<Workspace Version="0.6.2.279" X="131.542857142857" Y="34.6205714285712" zoom="1" Description="Creates a sequence of N values between 0 and 1" Category="CAAD_RWTH.Lists" Name="Normalized Sequence" ID="51a3c6f9-b388-48ee-a5e3-96b433d931b7">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4a8dc563-c6a2-4ec5-94db-84eb1af9e0a9" nickname="Input" x="14.142857142857" y="16" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="N" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="443a9356-f49e-45ce-a02d-93ec4db78582" nickname="Number" x="137.952290562221" y="16.399428571429" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="0..1..#N" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="a458c357-d6b5-4a1a-a094-4056e69bc9a1" nickname="Output" x="302.952290562221" y="16.399428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Sequence" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4a8dc563-c6a2-4ec5-94db-84eb1af9e0a9" start_index="0" end="443a9356-f49e-45ce-a02d-93ec4db78582" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="443a9356-f49e-45ce-a02d-93ec4db78582" start_index="0" end="a458c357-d6b5-4a1a-a094-4056e69bc9a1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

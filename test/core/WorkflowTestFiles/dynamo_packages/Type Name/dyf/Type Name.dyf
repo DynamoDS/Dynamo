@@ -1,0 +1,20 @@
+<Workspace Version="0.6.2.21747" X="0" Y="0" zoom="1" Description="Gets the type of the given data as a string." Category="Core.Types" Name="Type Name" ID="5928461e-6012-4f3d-9817-8168990adcc6">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="71f4a9a4-c9b1-449a-9998-a3e6571a9511" nickname="Input" x="10" y="75.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="faa53ceb-f7d9-418b-bec9-27f4999eee7e" nickname="Python Script" x="136" y="75.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>from System import *
+
+OUT = str(IN.GetType())</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8045c2c8-3553-4e9e-80e8-689bfe2a93ec" nickname="Output" x="280" y="75.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="71f4a9a4-c9b1-449a-9998-a3e6571a9511" start_index="0" end="faa53ceb-f7d9-418b-bec9-27f4999eee7e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="faa53ceb-f7d9-418b-bec9-27f4999eee7e" start_index="0" end="8045c2c8-3553-4e9e-80e8-689bfe2a93ec" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

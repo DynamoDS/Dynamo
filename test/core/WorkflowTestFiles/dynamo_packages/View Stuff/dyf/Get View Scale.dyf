@@ -1,0 +1,43 @@
+<Workspace Version="0.6.3.5263" X="0" Y="0" zoom="1" Description="Returns the scale of a given view" Category="CAAD_RWTH.Revit.Views" Name="Get View Scale" ID="a0aae28b-f76a-4408-a292-2367fb2683ba">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="5172a6bf-4d29-40aa-ab7a-e655c3b187cc" nickname="Python Script" x="322.994172494173" y="0.301666042391446" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+views = IN
+elementlist = list()
+for view in views:
+	try:
+		elementlist.append(view.Scale)
+	except:
+		elementlist.append(list())
+OUT = elementlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="d23f00f0-27df-4e67-b817-ee54c350b47a" nickname="Turn Into List" x="155" y="1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f5cbd3cf-f98c-4cde-8eda-0ba93b580a09" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="View(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="81c42cf2-533f-4967-99b9-4b80da424de6" nickname="Output" x="478.994172494173" y="1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Scale(s) 1:X" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5172a6bf-4d29-40aa-ab7a-e655c3b187cc" start_index="0" end="81c42cf2-533f-4967-99b9-4b80da424de6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d23f00f0-27df-4e67-b817-ee54c350b47a" start_index="0" end="5172a6bf-4d29-40aa-ab7a-e655c3b187cc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f5cbd3cf-f98c-4cde-8eda-0ba93b580a09" start_index="0" end="d23f00f0-27df-4e67-b817-ee54c350b47a" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

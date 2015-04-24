@@ -1,0 +1,32 @@
+<Workspace Version="0.6.3.5262" X="0" Y="0" zoom="1" Description="Returns true if any item in a list of booleans is false." Category="CAAD_RWTH.Conditional" Name="False For Any (Boolean)" ID="5504135c-3389-470b-a746-6ea992aa5e7d">
+  <Elements>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="105b2c21-9cc7-433d-8f55-0f92314fef4b" nickname="Formula" x="135" y="5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x=0</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.OrMap type="Dynamo.Nodes.OrMap" guid="467943d7-0543-48a6-99d9-32c33a2007be" nickname="True For Any" x="292" y="40" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="50fe5246-c384-4d28-8339-74425cf49cbd" nickname="Input" x="9" y="93" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="seq" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="61d7a7e2-f23b-482e-896a-595747b37775" nickname="Output" x="455" y="38" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="any?" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f2cba5ea-f4a7-4a3c-b049-ff78fb80c55c" nickname="Turn Into List" x="114" y="93.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="105b2c21-9cc7-433d-8f55-0f92314fef4b" start_index="0" end="467943d7-0543-48a6-99d9-32c33a2007be" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="467943d7-0543-48a6-99d9-32c33a2007be" start_index="0" end="61d7a7e2-f23b-482e-896a-595747b37775" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="50fe5246-c384-4d28-8339-74425cf49cbd" start_index="0" end="f2cba5ea-f4a7-4a3c-b049-ff78fb80c55c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f2cba5ea-f4a7-4a3c-b049-ff78fb80c55c" start_index="0" end="467943d7-0543-48a6-99d9-32c33a2007be" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

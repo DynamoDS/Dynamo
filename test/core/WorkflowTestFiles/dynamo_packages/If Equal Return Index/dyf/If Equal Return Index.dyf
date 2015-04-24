@@ -1,0 +1,36 @@
+<Workspace Version="0.6.2.29585" X="194" Y="116" zoom="1" Description="If element in list A is equal to an element in list B then return index from list B." Category="Core.Lists.Query" Name="If Equal Return Index" ID="1fdc7b8d-1dbe-42b9-bb4d-ba9f463c9e58">
+  <Elements>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="ff753908-6de8-4d55-939e-9a0f669b078c" nickname="List" x="250" y="0.333333333330074" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="fec5a7b2-2926-4e4e-ba95-0eb9066cc9d5" nickname="Python. If equal return index" x="398.666666666666" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>listaA = IN[0]
+listaB = IN[1]
+indiceslist = list()
+for lA in listaA:
+	counter = 0
+	for lB in listaB:
+		if (lA == lB):
+			indiceslist.append(counter)
+		counter += 1
+OUT = indiceslist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a3ae4422-bc97-4b35-bffd-96df5d35368c" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="listA" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="44777d05-f6f5-4251-876a-510db02e36a7" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="listB" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="b4f1e6d3-e8a2-4aed-8daa-8551855f1280" nickname="Output" x="606" y="2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Index" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ff753908-6de8-4d55-939e-9a0f669b078c" start_index="0" end="fec5a7b2-2926-4e4e-ba95-0eb9066cc9d5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fec5a7b2-2926-4e4e-ba95-0eb9066cc9d5" start_index="0" end="b4f1e6d3-e8a2-4aed-8daa-8551855f1280" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a3ae4422-bc97-4b35-bffd-96df5d35368c" start_index="0" end="ff753908-6de8-4d55-939e-9a0f669b078c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="44777d05-f6f5-4251-876a-510db02e36a7" start_index="0" end="ff753908-6de8-4d55-939e-9a0f669b078c" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

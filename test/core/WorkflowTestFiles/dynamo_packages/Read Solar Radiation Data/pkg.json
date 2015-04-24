@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Read Solar Radiation Data","version":"0.1.0","description":"Read Vasari-formatted solar radiation data.","group":"Sigradi","keywords":["solar","radiation","analysis"],"dependencies":[],"license":"MIT","contents":"Read Solar Radiation Data - Read solar radiation data from Vasari.","engine_version":"0.6.2.26476","engine_metadata":"","engine":"dynamo"}

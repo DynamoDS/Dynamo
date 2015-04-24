@@ -1,0 +1,70 @@
+<Workspace Version="0.6.2.29585" X="45.2" Y="68.86" zoom="0.8" Description="Gets the ID(s) for a list of Revit elements (or a single element)" Category="CAAD_RWTH.Revit" Name="Elements to IDs" ID="45153daa-f672-47f2-898f-f062bcb4e398">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="dd98f5db-2a02-44d6-acbd-817c565dea89" nickname="Python Script" x="306.239898989899" y="147.984848484849" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+elementlist = list()
+unmatched = list()
+for item in IN:
+	try:
+		elementlist.append(item.Id)
+	except:
+		unmatched.append(item)
+OUT = (elementlist, unmatched)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="45f0fea2-4696-43d5-9945-56be8adfde98" nickname="Turn Into List" x="145.444444444444" y="74.6666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4d40ca34-2891-438d-8e0a-25784e62905d" nickname="Input" x="4.44444444444446" y="74.6666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2198d823-b55d-48f7-8324-e839f200ddef" nickname="Output" x="815.55808080808" y="72.8535353535353" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ID(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="56ef94a5-ed83-4a0c-9212-1199a4e36521" nickname="First of List" x="458.426767676768" y="147.969292929293" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="7e407671-bc79-4fe0-a7f7-b5e24e859220" nickname="Get From List" x="475.555264180263" y="248.340897435898" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="446c6f0f-8f49-43b0-9f3b-3c9c14370f39" nickname="Formula" x="344.796717171716" y="248.597307692308" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1aa5a328-5f36-42ff-88b9-bd5d41797919" nickname="Output" x="654.79244366745" y="246.268247863248" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="unmatched" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="bf5804b1-a6b5-421c-9521-69528253b7b5" nickname="Return List Or Single Value" x="616.625" y="74.55" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="dd98f5db-2a02-44d6-acbd-817c565dea89" start_index="0" end="7e407671-bc79-4fe0-a7f7-b5e24e859220" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dd98f5db-2a02-44d6-acbd-817c565dea89" start_index="0" end="56ef94a5-ed83-4a0c-9212-1199a4e36521" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="45f0fea2-4696-43d5-9945-56be8adfde98" start_index="0" end="dd98f5db-2a02-44d6-acbd-817c565dea89" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="45f0fea2-4696-43d5-9945-56be8adfde98" start_index="0" end="bf5804b1-a6b5-421c-9521-69528253b7b5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4d40ca34-2891-438d-8e0a-25784e62905d" start_index="0" end="45f0fea2-4696-43d5-9945-56be8adfde98" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="56ef94a5-ed83-4a0c-9212-1199a4e36521" start_index="0" end="bf5804b1-a6b5-421c-9521-69528253b7b5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7e407671-bc79-4fe0-a7f7-b5e24e859220" start_index="0" end="1aa5a328-5f36-42ff-88b9-bd5d41797919" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="446c6f0f-8f49-43b0-9f3b-3c9c14370f39" start_index="0" end="7e407671-bc79-4fe0-a7f7-b5e24e859220" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bf5804b1-a6b5-421c-9521-69528253b7b5" start_index="0" end="2198d823-b55d-48f7-8324-e839f200ddef" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

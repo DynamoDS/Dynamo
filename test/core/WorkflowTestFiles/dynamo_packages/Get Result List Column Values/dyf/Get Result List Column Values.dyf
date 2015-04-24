@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.7993" X="0" Y="0" zoom="1" Description="Gets the list of result values in a column of a hierarchical list" Category="CEE120.Session11" Name="Get Result List Column Values" ID="60542cc5-ad52-4080-b734-285b45312a76">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="06a3982d-7d37-48e2-8f84-b801948c3509" nickname="Input" x="179.2" y="237.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="heirarchicalList" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="54d15cf2-8bca-4db3-ac5d-b0c8cc452177" nickname="Input" x="188" y="165.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="columnToGet" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="77cf6d54-cd99-4b27-83a5-3bbd66a011a8" nickname="Get from List" x="384.8" y="162.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="c2df2d06-001c-42cb-b694-cb6e9281b439" nickname="Map" x="577.6" y="278.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="06a3982d-7d37-48e2-8f84-b801948c3509" start_index="0" end="c2df2d06-001c-42cb-b694-cb6e9281b439" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="54d15cf2-8bca-4db3-ac5d-b0c8cc452177" start_index="0" end="77cf6d54-cd99-4b27-83a5-3bbd66a011a8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="77cf6d54-cd99-4b27-83a5-3bbd66a011a8" start_index="0" end="c2df2d06-001c-42cb-b694-cb6e9281b439" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

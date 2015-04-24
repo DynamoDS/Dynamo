@@ -1,0 +1,18 @@
+<Workspace Version="0.6.2.39994" X="32.7091701931424" Y="133.541333333333" zoom="0.8" Description="Returns a plane, its origin and its normal based on the first three XYZs in a given list" Category="CAAD_RWTH.XYZ" Name="Plane From First 3 XYZs" ID="7ac4f102-aa4a-4c97-b637-18e158f79348">
+  <Elements>
+    <Dynamo.Nodes.BestFitPlane type="Dynamo.Nodes.BestFitPlane" guid="5cc72d24-e179-43e0-a877-cd47fee4f80b" nickname="Best Fit Plane" x="339.892857142856" y="40" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.TakeList type="Dynamo.Nodes.TakeList" guid="b055960b-d87c-4e3a-a5a9-6bc61a0bb571" nickname="Take From List" x="145.694444444445" y="39.7460317460319" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="63be13c7-b965-4380-8fa6-0a4dbb0edc64" nickname="Input" x="8.88888888888891" y="98.8888888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="3a1eb70f-a544-44be-a852-e4f38fdceb45" nickname="Formula" x="10.363537258572" y="1.8483333333337" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>3</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b055960b-d87c-4e3a-a5a9-6bc61a0bb571" start_index="0" end="5cc72d24-e179-43e0-a877-cd47fee4f80b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="63be13c7-b965-4380-8fa6-0a4dbb0edc64" start_index="0" end="b055960b-d87c-4e3a-a5a9-6bc61a0bb571" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3a1eb70f-a544-44be-a852-e4f38fdceb45" start_index="0" end="b055960b-d87c-4e3a-a5a9-6bc61a0bb571" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

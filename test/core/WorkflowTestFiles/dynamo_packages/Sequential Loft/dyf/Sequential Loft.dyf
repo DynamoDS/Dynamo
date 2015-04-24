@@ -1,0 +1,57 @@
+<Workspace X="2.26296404275944" Y="4.18829348882431" zoom="0.7" Description="Sequence of lofts generated considering a pair of reference curves at a time. &#xD;&#xA;Could be used when loft geometry isn't automatically generated from a list of reference curves." Category="Create Geometry.Surface" Name="Sequential Loft" ID="748bdc4d-cb61-4e41-9533-a004ac4d36d8">
+  <Elements>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="065c8ce7-420e-4b81-a01d-f64e41f016c2" nickname="If" x="901.577030108232" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="3bb2a298-be32-4574-ad77-99414648c92c" nickname="List Length" x="163.333333333333" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.LessThan type="Dynamo.Nodes.LessThan" guid="304bc967-c346-419d-94b6-479878169936" nickname="Less Than" x="340.557823129252" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="903e93d1-86d6-4d8b-af80-d284da563619" nickname="Number" x="163.333333333333" y="68.3333333333335" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="fb967aa4-3711-459c-85a9-3f58d10c75ad" nickname="Empty List" x="750.035714285714" y="71.6666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.TakeList type="Dynamo.Nodes.TakeList" guid="7b44e397-b08b-4051-acd5-1729c2d3d34d" nickname="Take From List" x="297.557823129252" y="155.416666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.LoftForm type="Dynamo.Nodes.LoftForm" guid="cd7835cb-3ced-4b76-abd9-cec5dc259c68" nickname="Loft Form" x="500.822128264796" y="70.134308855483" isVisible="true" isUpstreamVisible="true" lacing="Longest" FormId="34596" PreferSurfaceForOneLoop="True" FormCurveToReferenceCurveMap="34315=34596;34316=34596;" />
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="fb164529-4c06-4486-a848-f7d6c6d91703" nickname="Boolean" x="342.557823129252" y="87.1652612364355" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean value="True" />
+    </Dynamo.Nodes.BoolSelector>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d110a933-b62c-4f72-a7f3-04231029ad79" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="a3902f0d-39ae-48a9-8241-40b8ca289e63" nickname="Add to List" x="733.035714285714" y="140.534761904762" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="ebc0f6d8-8304-4de6-8aab-f33ae9b2524d" nickname="Sequential Loft" x="503.561507936509" y="238.261507936508" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="748bdc4d-cb61-4e41-9533-a004ac4d36d8" />
+      <Name value="Sequential Loft" />
+      <Description value="Sequence of lofts generated considering a pair of reference curves at a time. &#xD;&#xA;Could be used when loft geometry isn't automatically generated from a list of reference curves." />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="loft" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="ab9f2658-b03d-474c-bd36-85a0f4c06160" nickname="Rest of List" x="331.557823129252" y="237.106802721088" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="32bf0624-0e74-4204-a884-e46cc90448f2" nickname="Output" x="1083.18297931417" y="1.39568235457426" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="loft" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="065c8ce7-420e-4b81-a01d-f64e41f016c2" start_index="0" end="32bf0624-0e74-4204-a884-e46cc90448f2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3bb2a298-be32-4574-ad77-99414648c92c" start_index="0" end="304bc967-c346-419d-94b6-479878169936" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="304bc967-c346-419d-94b6-479878169936" start_index="0" end="065c8ce7-420e-4b81-a01d-f64e41f016c2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="903e93d1-86d6-4d8b-af80-d284da563619" start_index="0" end="304bc967-c346-419d-94b6-479878169936" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="903e93d1-86d6-4d8b-af80-d284da563619" start_index="0" end="7b44e397-b08b-4051-acd5-1729c2d3d34d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb967aa4-3711-459c-85a9-3f58d10c75ad" start_index="0" end="065c8ce7-420e-4b81-a01d-f64e41f016c2" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7b44e397-b08b-4051-acd5-1729c2d3d34d" start_index="0" end="cd7835cb-3ced-4b76-abd9-cec5dc259c68" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cd7835cb-3ced-4b76-abd9-cec5dc259c68" start_index="0" end="a3902f0d-39ae-48a9-8241-40b8ca289e63" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb164529-4c06-4486-a848-f7d6c6d91703" start_index="0" end="cd7835cb-3ced-4b76-abd9-cec5dc259c68" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb164529-4c06-4486-a848-f7d6c6d91703" start_index="0" end="cd7835cb-3ced-4b76-abd9-cec5dc259c68" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d110a933-b62c-4f72-a7f3-04231029ad79" start_index="0" end="3bb2a298-be32-4574-ad77-99414648c92c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d110a933-b62c-4f72-a7f3-04231029ad79" start_index="0" end="7b44e397-b08b-4051-acd5-1729c2d3d34d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d110a933-b62c-4f72-a7f3-04231029ad79" start_index="0" end="ab9f2658-b03d-474c-bd36-85a0f4c06160" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a3902f0d-39ae-48a9-8241-40b8ca289e63" start_index="0" end="065c8ce7-420e-4b81-a01d-f64e41f016c2" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ebc0f6d8-8304-4de6-8aab-f33ae9b2524d" start_index="0" end="a3902f0d-39ae-48a9-8241-40b8ca289e63" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ab9f2658-b03d-474c-bd36-85a0f4c06160" start_index="0" end="ebc0f6d8-8304-4de6-8aab-f33ae9b2524d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

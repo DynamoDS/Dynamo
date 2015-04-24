@@ -1,0 +1,40 @@
+<Workspace Version="0.6.3.7993" X="0" Y="0" zoom="1" Description="Concatenates Values into a File Header String" Category="CEE120.Session11" Name="Concatenate File Header String" ID="44302e4e-b656-46cf-a0e1-8950b45cc9d7">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0e1e86a0-ab03-4c18-b208-38fb073bce57" nickname="Input" x="63.1999999999999" y="90" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="descriptionString" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3be055e8-5a98-448a-8d1a-ecf2841f61f9" nickname="Input" x="82.4" y="250" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="startingValue" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c085cd4b-0434-439b-8c26-75173e7cebc6" nickname="Input" x="91.2" y="388.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="endingValue" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.ConcatStrings type="Dynamo.Nodes.ConcatStrings" guid="46402aaa-9103-411a-b141-a649c3be3231" nickname="Concat Strings" x="500.8" y="162" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="s3" />
+      <Input name="s4" />
+      <Input name="s5" />
+    </Dynamo.Nodes.ConcatStrings>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="59978474-b469-44f3-95e4-74847be821f5" nickname="Output" x="699.2" y="189.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="fileHeaderString" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="ca438f1f-a021-439e-8854-40b028cf272a" nickname="String" x="133.6" y="318.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value=" to " />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="7b672f56-4a52-4bad-82fc-c9c4a72918a7" nickname="String" x="133.6" y="158" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value=": " />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="7143db4f-6d3d-49e3-8d4c-4c865134c562" nickname="Number to String" x="229.6" y="233.2" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="39600dbd-0343-444b-a5bb-e070fb972ae3" nickname="Number to String" x="227.2" y="389.2" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0e1e86a0-ab03-4c18-b208-38fb073bce57" start_index="0" end="46402aaa-9103-411a-b141-a649c3be3231" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3be055e8-5a98-448a-8d1a-ecf2841f61f9" start_index="0" end="7143db4f-6d3d-49e3-8d4c-4c865134c562" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c085cd4b-0434-439b-8c26-75173e7cebc6" start_index="0" end="39600dbd-0343-444b-a5bb-e070fb972ae3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="46402aaa-9103-411a-b141-a649c3be3231" start_index="0" end="59978474-b469-44f3-95e4-74847be821f5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ca438f1f-a021-439e-8854-40b028cf272a" start_index="0" end="46402aaa-9103-411a-b141-a649c3be3231" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7b672f56-4a52-4bad-82fc-c9c4a72918a7" start_index="0" end="46402aaa-9103-411a-b141-a649c3be3231" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7143db4f-6d3d-49e3-8d4c-4c865134c562" start_index="0" end="46402aaa-9103-411a-b141-a649c3be3231" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="39600dbd-0343-444b-a5bb-e070fb972ae3" start_index="0" end="46402aaa-9103-411a-b141-a649c3be3231" end_index="4" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

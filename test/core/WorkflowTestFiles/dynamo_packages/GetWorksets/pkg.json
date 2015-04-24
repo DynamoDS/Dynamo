@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"GetWorksets","version":"0.0.1","description":"Query an active document for all User Worksets and their IDs. ","group":"","keywords":["#workset","#worksetid"],"dependencies":[],"license":"MIT","contents":"GetWorksets - Query an active project for all User Worksets and their ID's. ","engine_version":"0.6.3.5244","engine_metadata":"","engine":"dynamo"}

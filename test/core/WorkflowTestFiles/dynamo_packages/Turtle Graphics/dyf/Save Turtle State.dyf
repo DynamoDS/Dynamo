@@ -1,0 +1,20 @@
+<Workspace Version="0.7.0.26170" X="0" Y="0" zoom="1" Description="" Category="Turtle.Actions" Name="Save Turtle State" ID="36ee2da6-aacd-4d10-bac6-ad586cb4d1d5">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4a4ad7ff-dab0-4b47-b2fa-5e7f87275cde" nickname="Input" x="6" y="144.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="current-world" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="7384f3c6-93bc-486c-96b1-1be1cd84294c" nickname="Add to List" x="451" y="122.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="fb468640-6272-4c9e-a105-7c4444c453c2" nickname="First of List" x="306" y="101.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="91e5a9f9-4628-41bb-b489-d3a603fc5456" nickname="Split List" x="135" y="143.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="5286bc37-7443-4282-ad2c-a28dc29c3ba8" nickname="Add to List" x="597" y="142.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4a4ad7ff-dab0-4b47-b2fa-5e7f87275cde" start_index="0" end="91e5a9f9-4628-41bb-b489-d3a603fc5456" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7384f3c6-93bc-486c-96b1-1be1cd84294c" start_index="0" end="5286bc37-7443-4282-ad2c-a28dc29c3ba8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb468640-6272-4c9e-a105-7c4444c453c2" start_index="0" end="7384f3c6-93bc-486c-96b1-1be1cd84294c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="91e5a9f9-4628-41bb-b489-d3a603fc5456" start_index="0" end="fb468640-6272-4c9e-a105-7c4444c453c2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="91e5a9f9-4628-41bb-b489-d3a603fc5456" start_index="0" end="7384f3c6-93bc-486c-96b1-1be1cd84294c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="91e5a9f9-4628-41bb-b489-d3a603fc5456" start_index="1" end="5286bc37-7443-4282-ad2c-a28dc29c3ba8" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

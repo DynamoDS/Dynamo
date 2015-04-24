@@ -1,0 +1,36 @@
+<Workspace X="310.214700854701" Y="280.397073504274" zoom="1" Description="Create polygon geometry inscribed inside a circle in the massing environment." Category="Create Geometry.Curve" Name="Inscribed Polygon" ID="0fda5de8-e8ab-4883-b420-1c42dd6b2787">
+  <Elements>
+    <Dynamo.Nodes.Circle type="Dynamo.Nodes.Circle" guid="8043ae27-2fd1-45c3-b059-7ac72a3e7895" nickname="Circle" x="250" y="0" isVisible="false" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzArrayAlongCurve type="Dynamo.Nodes.XyzArrayAlongCurve" guid="fb01a3ef-4e56-4609-aa07-aaca71b6146c" nickname="XYZ Array On Curve" x="521" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="ad5111cc-f08c-42f0-bd28-e34fb08e0ea8" nickname="Formula" x="408.555555555556" y="140.555555555556" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>s+1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.CurvesThroughPoints type="Dynamo.Nodes.CurvesThroughPoints" guid="1c576172-ba00-44e6-9ff6-c27bd3e6267a" nickname="Lines Through XYZ" x="705.0101010101" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="aa924ab6-5d6f-4199-93d0-c05143be72f9" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="center" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3374bf38-878e-49c7-b0b9-6bcbaa56ea07" nickname="Input" x="0" y="74.4444444444445" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="rad" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="54114668-3e00-4c1b-bd19-c94ebb2109c0" nickname="Input" x="0" y="141.666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="sides" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="07da0816-251c-476c-b54f-9e10e812a43b" nickname="Formula" x="124.467643467644" y="140.555555555556" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>if(S&lt;3,3,S)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Floor type="Dynamo.Nodes.Floor" guid="73993d9c-2bc7-4da6-9a1a-a6d27bc67f13" nickname="Floor" x="271.376068376069" y="140.555555555556" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.CurveLoop type="Dynamo.Nodes.CurveLoop" guid="5db3d93d-554e-4a93-9e91-6d8016c6451e" nickname="Curve Loop" x="886.963247863248" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8043ae27-2fd1-45c3-b059-7ac72a3e7895" start_index="0" end="fb01a3ef-4e56-4609-aa07-aaca71b6146c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb01a3ef-4e56-4609-aa07-aaca71b6146c" start_index="0" end="1c576172-ba00-44e6-9ff6-c27bd3e6267a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ad5111cc-f08c-42f0-bd28-e34fb08e0ea8" start_index="0" end="fb01a3ef-4e56-4609-aa07-aaca71b6146c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1c576172-ba00-44e6-9ff6-c27bd3e6267a" start_index="0" end="5db3d93d-554e-4a93-9e91-6d8016c6451e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aa924ab6-5d6f-4199-93d0-c05143be72f9" start_index="0" end="8043ae27-2fd1-45c3-b059-7ac72a3e7895" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3374bf38-878e-49c7-b0b9-6bcbaa56ea07" start_index="0" end="8043ae27-2fd1-45c3-b059-7ac72a3e7895" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="54114668-3e00-4c1b-bd19-c94ebb2109c0" start_index="0" end="07da0816-251c-476c-b54f-9e10e812a43b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="07da0816-251c-476c-b54f-9e10e812a43b" start_index="0" end="73993d9c-2bc7-4da6-9a1a-a6d27bc67f13" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="73993d9c-2bc7-4da6-9a1a-a6d27bc67f13" start_index="0" end="ad5111cc-f08c-42f0-bd28-e34fb08e0ea8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

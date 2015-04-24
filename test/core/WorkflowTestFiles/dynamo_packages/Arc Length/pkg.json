@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Arc Length","version":"0.0.1","description":"outputs arc length or a list of arc lengths if passed a list","group":"","keywords":["arc","length"],"dependencies":[],"license":"MIT","contents":"Arc Length - Returns Arc Radius","engine_version":"0.6.3.5244","engine_metadata":"","engine":"dynamo"}

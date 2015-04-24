@@ -1,0 +1,30 @@
+<dynWorkspace X="34.3352742513021" Y="-20.8746666666667" zoom="1.2" Description="Dispatches a value to one of two output ports (true/false) depending on a condition. The other output  port will return an empty list." Category="CAAD_RWTH.Conditional" Name="Dispatch" ID="dc92233d-c0a1-44c8-a646-9b5344c89711">
+  <dynElements>
+    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="e4f42893-67be-4334-a988-5336fefea9a3" nickname="If" x="263.995147705078" y="87.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="44796eaf-80db-4923-966c-00b23ed3ca14" nickname="Input" x="42.9951477050781" y="86.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="test" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="4103f32c-1887-4afd-9c56-3065ab462742" nickname="Input" x="43.9951477050781" y="163.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="value" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="0349e200-a68b-4d02-adbc-04c971c40b69" nickname="Output" x="526.995147705078" y="91.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="true" />
+    </Dynamo.Nodes.dynOutput>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="aae92fa6-0411-4157-83ec-3397621d947c" nickname="Output" x="526.995147705078" y="208.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="false" />
+    </Dynamo.Nodes.dynOutput>
+    <Dynamo.Nodes.dynEmpty type="Dynamo.Nodes.dynEmpty" guid="b57c4112-e2de-4395-bd42-32f433591093" nickname="Empty List" x="40.9951477050781" y="245.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="a98ffd76-ea47-4474-aadc-e6409f5dd9a1" nickname="If" x="264.995147705078" y="207.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="e4f42893-67be-4334-a988-5336fefea9a3" start_index="0" end="0349e200-a68b-4d02-adbc-04c971c40b69" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="44796eaf-80db-4923-966c-00b23ed3ca14" start_index="0" end="e4f42893-67be-4334-a988-5336fefea9a3" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="44796eaf-80db-4923-966c-00b23ed3ca14" start_index="0" end="a98ffd76-ea47-4474-aadc-e6409f5dd9a1" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="4103f32c-1887-4afd-9c56-3065ab462742" start_index="0" end="e4f42893-67be-4334-a988-5336fefea9a3" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="4103f32c-1887-4afd-9c56-3065ab462742" start_index="0" end="a98ffd76-ea47-4474-aadc-e6409f5dd9a1" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b57c4112-e2de-4395-bd42-32f433591093" start_index="0" end="e4f42893-67be-4334-a988-5336fefea9a3" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="b57c4112-e2de-4395-bd42-32f433591093" start_index="0" end="a98ffd76-ea47-4474-aadc-e6409f5dd9a1" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="a98ffd76-ea47-4474-aadc-e6409f5dd9a1" start_index="0" end="aae92fa6-0411-4157-83ec-3397621d947c" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

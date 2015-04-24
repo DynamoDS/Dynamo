@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Arc Radius","version":"0.0.2","description":"Gets radius of an arc or multiple if passed a list of arcs.","group":"archi-lab","keywords":["arc","radius"],"dependencies":[],"license":"MIT","contents":"Arc Radius - Returns Arc Radius","engine_version":"0.6.3.5244","engine_metadata":"","engine":"dynamo"}

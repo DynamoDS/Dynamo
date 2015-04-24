@@ -1,0 +1,66 @@
+<Workspace Version="0.6.3.13068" X="28.4894617227519" Y="-59.8788829068336" zoom="0.931811528498331" Description="Filters a selection set (Select Elements) by Family Type (Select Family Type). Output &quot;In&quot; contains a list of all Instances of the Family Type. Output &quot;Out&quot; contains a list of all Instances that are not of the Family Type." Category="Revit.Families" Name="Filter Selection by Family Type" ID="72418b47-a854-4de7-bedf-c49befb4f467">
+  <Elements>
+    <Dynamo.Nodes.GetFamilyInstancesByType type="Dynamo.Nodes.GetFamilyInstancesByType" guid="6509a618-a45d-4318-b89e-f46797f836ed" nickname="Get Family Instances by Type" x="314.006370220215" y="417.747456752551" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="19c55062-d44c-49de-b545-6ffe335b1021" nickname="Get Name" x="533.948734944973" y="456.369041244078" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="515c0f74-a450-497a-9a4c-937a07e2e2fd" />
+      <Name value="Get Name" />
+      <Description value="Gets the name of a given Revit element (if possible)" />
+      <Inputs>
+        <Input value="element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="name(s)" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="81a301d5-edb6-4827-9858-af8e467b15d1" nickname="List Contains" x="735.212247960069" y="343.180289873616" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f0dc9d53-957a-4216-afe2-39113b59b1a3" />
+      <Name value="List Contains" />
+      <Description value="Returns true if the given item is found in the given list, and false otherwise." />
+      <Inputs>
+        <Input value="item" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="exists?" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="d4b2c73f-6bed-4b5f-b45b-cbe12a628375" nickname="Get Name" x="753.42681741079" y="550.266426512997" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="515c0f74-a450-497a-9a4c-937a07e2e2fd" />
+      <Name value="Get Name" />
+      <Description value="Gets the name of a given Revit element (if possible)" />
+      <Inputs>
+        <Input value="element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="name(s)" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="5b2829fb-6508-4e1f-a6f4-f591d228fc43" nickname="Map" x="921.50824717952" y="347.298025221879" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="d6528fde-791c-4b79-b1ab-d585279ca1c0" nickname="Filter by Boolean Mask" x="1126.34984412286" y="415.557354475505" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8ea49c78-0076-4d7a-a616-4b5185b8afb6" nickname="Input" x="120" y="422.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Family Type" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="39fd785d-c7c2-4433-8e58-842f67b41ed8" nickname="Input" x="131" y="569.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Selection" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="13aa302b-b3ed-45db-9919-b5e0c91fbbe7" nickname="Output" x="1344" y="402.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="In" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="32497079-7c93-4b5d-83d3-934459cb581e" nickname="Output" x="1367" y="504.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Out" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6509a618-a45d-4318-b89e-f46797f836ed" start_index="0" end="19c55062-d44c-49de-b545-6ffe335b1021" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="19c55062-d44c-49de-b545-6ffe335b1021" start_index="0" end="81a301d5-edb6-4827-9858-af8e467b15d1" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="81a301d5-edb6-4827-9858-af8e467b15d1" start_index="0" end="5b2829fb-6508-4e1f-a6f4-f591d228fc43" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4b2c73f-6bed-4b5f-b45b-cbe12a628375" start_index="0" end="5b2829fb-6508-4e1f-a6f4-f591d228fc43" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5b2829fb-6508-4e1f-a6f4-f591d228fc43" start_index="0" end="d6528fde-791c-4b79-b1ab-d585279ca1c0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d6528fde-791c-4b79-b1ab-d585279ca1c0" start_index="0" end="13aa302b-b3ed-45db-9919-b5e0c91fbbe7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d6528fde-791c-4b79-b1ab-d585279ca1c0" start_index="1" end="32497079-7c93-4b5d-83d3-934459cb581e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8ea49c78-0076-4d7a-a616-4b5185b8afb6" start_index="0" end="6509a618-a45d-4318-b89e-f46797f836ed" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="39fd785d-c7c2-4433-8e58-842f67b41ed8" start_index="0" end="d4b2c73f-6bed-4b5f-b45b-cbe12a628375" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="39fd785d-c7c2-4433-8e58-842f67b41ed8" start_index="0" end="d6528fde-791c-4b79-b1ab-d585279ca1c0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

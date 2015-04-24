@@ -1,0 +1,31 @@
+<Workspace Version="0.6.3.22045" X="-600.703466358542" Y="94.9054529468965" zoom="1.78448845970493" Description="Checks if a given vector is parallel to a given plane" Category="CAAD_RWTH.XYZ" Name="Vector And Plane Are Parallel" ID="497e7270-d558-4941-bbb7-63071c37e81b">
+  <Elements>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="ba958fc4-3e99-486d-988b-e83b5b5cafcd" nickname="Output" x="717.489817558722" y="145.377798274097" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1534a587-7803-4ac5-98cb-9d744ae4a9a2" nickname="Input" x="390.77078184095" y="109.731398919288" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Vector" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f0f77f62-7552-42fb-8a2e-703ecb169edd" nickname="Input" x="351.600044589581" y="209.986631509272" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Plane Normal" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="1e0dd7f6-040e-4f3b-9f30-0636b4e07ae6" nickname="Vectors Are Orthogonal" x="526.944419727517" y="145.951494274062" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="e60e4116-6acf-4d75-b19f-41ece05a433c" />
+      <Name value="Vectors Are Orthogonal" />
+      <Description value="Checks if two vectors are orthogonal to each other" />
+      <Inputs>
+        <Input value="Vector #1" />
+        <Input value="Vector #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="bool" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1534a587-7803-4ac5-98cb-9d744ae4a9a2" start_index="0" end="1e0dd7f6-040e-4f3b-9f30-0636b4e07ae6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f0f77f62-7552-42fb-8a2e-703ecb169edd" start_index="0" end="1e0dd7f6-040e-4f3b-9f30-0636b4e07ae6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1e0dd7f6-040e-4f3b-9f30-0636b4e07ae6" start_index="0" end="ba958fc4-3e99-486d-988b-e83b5b5cafcd" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

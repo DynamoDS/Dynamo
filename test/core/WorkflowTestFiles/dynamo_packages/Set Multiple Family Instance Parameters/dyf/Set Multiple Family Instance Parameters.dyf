@@ -1,0 +1,57 @@
+<Workspace Version="0.6.2.29585" X="-757.745397902966" Y="312.11689242747" zoom="1.01694915254237" Description="Set multiple family instance parameters by inputting a list of parameter names and a corresponding list of parameter values." Category="Revit.Families" Name="Set Multiple Family Instance Parameters" ID="61ac98e0-3153-44b9-b74b-41b0fd435656">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f0d24147-b96f-485b-8b9d-9fc81b044df5" nickname="Input" x="110" y="72.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Family Instance" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="eab192ee-6137-4e5f-b0ff-a3d9db0fc088" nickname="Input" x="53" y="148.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List of Parameter Names" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="11ec3c6d-6866-4282-8fed-a1aceb737b60" nickname="Input" x="58" y="225.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List of Parameter Values" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="ca56f2c7-6c94-4464-8631-92da928a926e" nickname="Rest of List" x="357" y="148.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="3eaa3f0b-3a48-4519-aa95-7e400b9e789f" nickname="Rest of List" x="356" y="226.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="5416d5a9-c4fa-458b-96c0-b54a6b933715" nickname="First of List" x="358" y="328.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="da79f174-6de8-4138-bbbd-83216df0e0df" nickname="First of List" x="356" y="410.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="a453c9dc-99a9-429a-a999-54854d3b6d86" nickname="Is Empty List?" x="479.888888888889" y="-188.625" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FamilyInstanceParameterSetter type="Dynamo.Nodes.FamilyInstanceParameterSetter" guid="7a428e64-d3fd-41de-9c58-950d6580fec9" nickname="Set Family Instance Parameter" x="736.603174603174" y="137.047619047619" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="c6651fed-c24b-45d1-9734-861af7df62d7" nickname="If" x="1278.30555555556" y="-197.928571428572" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="514f37cd-9090-4448-a4ef-9b2537068b93" nickname="Output" x="1454.26870748299" y="-199.119047619048" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="fi" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="e4f93920-1f96-4924-8392-3d14d0831ab3" nickname="Set Multiple Family Instance Parameters" x="993.216307937918" y="-65.6982775536786" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="61ac98e0-3153-44b9-b74b-41b0fd435656" />
+      <Name value="Set Multiple Family Instance Parameters" />
+      <Description value="Set multiple family instance parameters by inputting a list of parameter names and a corresponding list of parameter values." />
+      <Inputs>
+        <Input value="Family Instance" />
+        <Input value="List of Parameter Names" />
+        <Input value="List of Parameter Values" />
+      </Inputs>
+      <Outputs>
+        <Output value="fi" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f0d24147-b96f-485b-8b9d-9fc81b044df5" start_index="0" end="7a428e64-d3fd-41de-9c58-950d6580fec9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f0d24147-b96f-485b-8b9d-9fc81b044df5" start_index="0" end="c6651fed-c24b-45d1-9734-861af7df62d7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eab192ee-6137-4e5f-b0ff-a3d9db0fc088" start_index="0" end="ca56f2c7-6c94-4464-8631-92da928a926e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eab192ee-6137-4e5f-b0ff-a3d9db0fc088" start_index="0" end="5416d5a9-c4fa-458b-96c0-b54a6b933715" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eab192ee-6137-4e5f-b0ff-a3d9db0fc088" start_index="0" end="a453c9dc-99a9-429a-a999-54854d3b6d86" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="11ec3c6d-6866-4282-8fed-a1aceb737b60" start_index="0" end="3eaa3f0b-3a48-4519-aa95-7e400b9e789f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="11ec3c6d-6866-4282-8fed-a1aceb737b60" start_index="0" end="da79f174-6de8-4138-bbbd-83216df0e0df" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ca56f2c7-6c94-4464-8631-92da928a926e" start_index="0" end="e4f93920-1f96-4924-8392-3d14d0831ab3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3eaa3f0b-3a48-4519-aa95-7e400b9e789f" start_index="0" end="e4f93920-1f96-4924-8392-3d14d0831ab3" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5416d5a9-c4fa-458b-96c0-b54a6b933715" start_index="0" end="7a428e64-d3fd-41de-9c58-950d6580fec9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="da79f174-6de8-4138-bbbd-83216df0e0df" start_index="0" end="7a428e64-d3fd-41de-9c58-950d6580fec9" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a453c9dc-99a9-429a-a999-54854d3b6d86" start_index="0" end="c6651fed-c24b-45d1-9734-861af7df62d7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7a428e64-d3fd-41de-9c58-950d6580fec9" start_index="0" end="e4f93920-1f96-4924-8392-3d14d0831ab3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c6651fed-c24b-45d1-9734-861af7df62d7" start_index="0" end="514f37cd-9090-4448-a4ef-9b2537068b93" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4f93920-1f96-4924-8392-3d14d0831ab3" start_index="0" end="c6651fed-c24b-45d1-9734-861af7df62d7" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

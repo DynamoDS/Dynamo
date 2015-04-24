@@ -1,0 +1,57 @@
+<Workspace Version="0.6.3.5244" X="37.066317016316" Y="237.294094794095" zoom="0.7" Description="Gets the orientation of a hosted object (e.g. a window or a door - orientation always facing towards exterior)" Category="CAAD_RWTH.Revit.HostedObjects" Name="Get Hosted Object Orientation" ID="0f1e972c-690f-466a-a6e4-8eff98dcdbef">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="6eaa085b-17a4-441e-964c-b7dd23aa07f0" nickname="Turn Into List" x="175.714285714286" y="108.829968881693" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7d675e6f-ff05-4b4b-89eb-be20b050e79e" nickname="Input" x="29.9999999999999" y="108.571428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4fc294fd-e0ca-4307-8144-597c5fd12d37" nickname="Output" x="672.762404262406" y="108.865578865579" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="f27486d9-0702-4b28-84ec-72a775b5e9eb" nickname="Python Script" x="327.142857142857" y="158.714285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+objinstances = IN
+vectorlist = list()
+for item in objinstances:
+	try:
+		vectorlist.append(item.FacingOrientation)
+	except:
+		vectorlist.append(list())
+OUT = vectorlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="d9372965-3d47-40e4-ba57-6105ddd15485" nickname="Return List Or Single Value" x="469.905261405263" y="108.865578865579" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6eaa085b-17a4-441e-964c-b7dd23aa07f0" start_index="0" end="f27486d9-0702-4b28-84ec-72a775b5e9eb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6eaa085b-17a4-441e-964c-b7dd23aa07f0" start_index="0" end="d9372965-3d47-40e4-ba57-6105ddd15485" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7d675e6f-ff05-4b4b-89eb-be20b050e79e" start_index="0" end="6eaa085b-17a4-441e-964c-b7dd23aa07f0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f27486d9-0702-4b28-84ec-72a775b5e9eb" start_index="0" end="d9372965-3d47-40e4-ba57-6105ddd15485" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d9372965-3d47-40e4-ba57-6105ddd15485" start_index="0" end="4fc294fd-e0ca-4307-8144-597c5fd12d37" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

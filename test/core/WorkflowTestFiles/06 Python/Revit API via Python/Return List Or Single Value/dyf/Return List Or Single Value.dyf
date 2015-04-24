@@ -1,0 +1,20 @@
+<Workspace Version="0.7.1.29946" X="30" Y="259.173232908459" zoom="1.48551564310545" Description="If the list in input #1 only contains one item, only the first item of the list in input #2 will be returned." Category="CAAD_RWTH.Lists" Name="Return List Or Single Value" ID="44ac4888-4aa4-49a9-9344-23b729c11df9">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="84536553-5cc9-42a1-b5bb-9baa162fc4b8" nickname="Input" x="0" y="96" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list #1" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4dd8b486-1ab5-401a-8bd0-c433b2fa98f1" nickname="Output" x="797" y="68" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fbb63b55-58f8-47e2-995d-04a270db761e" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list #2" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="9e4956fe-d207-4220-80dd-bd4c7a79a351" nickname="Code Block" x="174" y="35" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="returnsinglevalue = List.IsEmpty(list2) ? List.Empty : List.FirstItem(list2);&#xA;returnlist = List.Count(list1)&gt;1 ? list2 : returnsinglevalue;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="84536553-5cc9-42a1-b5bb-9baa162fc4b8" start_index="0" end="9e4956fe-d207-4220-80dd-bd4c7a79a351" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fbb63b55-58f8-47e2-995d-04a270db761e" start_index="0" end="9e4956fe-d207-4220-80dd-bd4c7a79a351" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9e4956fe-d207-4220-80dd-bd4c7a79a351" start_index="1" end="4dd8b486-1ab5-401a-8bd0-c433b2fa98f1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

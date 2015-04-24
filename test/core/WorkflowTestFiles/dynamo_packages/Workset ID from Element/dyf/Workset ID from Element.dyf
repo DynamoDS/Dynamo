@@ -1,0 +1,44 @@
+<Workspace Version="0.6.3.5244" X="-51.8509531476461" Y="205.200438894648" zoom="1.78359936238281" Description="Returns a Workset ID of an Element.  " Category="Revit.Document" Name="Workset ID from Element" ID="85663921-b9ec-420c-96c8-5b35c1e71ae1">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="b4f4da39-2777-4eee-a8bc-6346f7b2785d" nickname="Workset ID for Element" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+doc = __doc__
+
+ElementId = IN
+result = []
+
+for i in ElementId:
+	result.append(doc.GetWorksetId(i))
+
+#Assign your output to the OUT variable
+OUT = result</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="18101d14-2153-4bac-937c-eba9c9a6a4f8" nickname="Input" x="95.5881800056242" y="-3.95849834993061" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element IDs" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2cdee5b9-0e96-4d25-afc8-1b608db77620" nickname="Output" x="641.114277693904" y="6.13345412528938" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Workset IDs" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b4f4da39-2777-4eee-a8bc-6346f7b2785d" start_index="0" end="2cdee5b9-0e96-4d25-afc8-1b608db77620" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="18101d14-2153-4bac-937c-eba9c9a6a4f8" start_index="0" end="b4f4da39-2777-4eee-a8bc-6346f7b2785d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

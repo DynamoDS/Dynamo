@@ -1,0 +1,22 @@
+<dynWorkspace X="0" Y="0" zoom="1" Description="Returns true if the given item is found in the given list, and false otherwise." Category="Core.Lists" Name="List Contains" ID="f0dc9d53-957a-4216-afe2-39113b59b1a3">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="91e2a60d-7a75-4964-b01d-5a7f72c34c5e" nickname="Input" x="7" y="58.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="item" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="1bef7595-69cc-4b5e-935f-a84c9df37797" nickname="Input" x="8" y="217.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOrMap type="Dynamo.Nodes.dynOrMap" guid="895629c9-7155-455e-b380-0e4f6893c827" nickname="True For Any" x="303" y="195.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynEqual type="Dynamo.Nodes.dynEqual" guid="0dcb0032-5c8b-4f75-a0b9-344bf55e35b8" nickname="Equal" x="126" y="58.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="cd7d8627-b9a5-4153-98bb-d5c39b84faaa" nickname="Output" x="497" y="139.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="exists?" />
+    </Dynamo.Nodes.dynOutput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.dynConnectorModel start="91e2a60d-7a75-4964-b01d-5a7f72c34c5e" start_index="0" end="0dcb0032-5c8b-4f75-a0b9-344bf55e35b8" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="1bef7595-69cc-4b5e-935f-a84c9df37797" start_index="0" end="895629c9-7155-455e-b380-0e4f6893c827" end_index="1" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="895629c9-7155-455e-b380-0e4f6893c827" start_index="0" end="cd7d8627-b9a5-4153-98bb-d5c39b84faaa" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="0dcb0032-5c8b-4f75-a0b9-344bf55e35b8" start_index="0" end="895629c9-7155-455e-b380-0e4f6893c827" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

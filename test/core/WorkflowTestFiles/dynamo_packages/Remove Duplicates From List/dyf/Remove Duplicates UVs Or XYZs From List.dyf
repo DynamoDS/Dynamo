@@ -1,0 +1,52 @@
+<Workspace Version="0.6.3.7375" X="155.7576238396" Y="78.0337050422883" zoom="0.927086825615767" Description="Removes duplicate UVs or XYZs from a given list. May work for Revit Elements as well." Category="CAAD_RWTH.Lists" Name="Remove Duplicates UVs Or XYZs From List" ID="3155689f-3422-4d08-b7f8-ca3c3c08863e">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="11a2ccbb-204a-471a-b89f-d6382c21e672" nickname="Input" x="-18.0336213606245" y="322.581460091544" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="UVs / XYZs" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="342b6927-c943-4874-9a68-86dfb14e3262" nickname="Output" x="810.136485421506" y="321.330215424247" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="UVs / XYZs" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="26c305ba-aae5-4279-92b2-a1584232b550" nickname="Filter by Boolean Mask" x="636.056130164064" y="322.821820818657" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="053c5516-2391-472e-93d1-576a7cd1e00a" nickname="Python Script" x="483.220587610416" y="269.197978319031" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+items = IN
+uniquelist = list()
+booleans = list()
+for item in items:
+	if item not in uniquelist:
+		uniquelist.append(item)
+		booleans.append(1)
+	else:
+		booleans.append(0)
+OUT = booleans</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="5441fb7a-09db-4239-aa3b-a13b5294c7db" nickname="Map" x="299.232254320084" y="236.395387785915" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.ToString type="Dynamo.Nodes.ToString" guid="dddd3bda-20ff-42e3-8798-3941d59c4696" nickname="To String" x="113.172034014515" y="207.032465302849" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="705c38bc-5c84-4785-aa2e-d5652bfb589b" nickname="Turn Into List" x="126.553672981484" y="282.535368974261" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="11a2ccbb-204a-471a-b89f-d6382c21e672" start_index="0" end="705c38bc-5c84-4785-aa2e-d5652bfb589b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="11a2ccbb-204a-471a-b89f-d6382c21e672" start_index="0" end="26c305ba-aae5-4279-92b2-a1584232b550" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="26c305ba-aae5-4279-92b2-a1584232b550" start_index="0" end="342b6927-c943-4874-9a68-86dfb14e3262" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="053c5516-2391-472e-93d1-576a7cd1e00a" start_index="0" end="26c305ba-aae5-4279-92b2-a1584232b550" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5441fb7a-09db-4239-aa3b-a13b5294c7db" start_index="0" end="053c5516-2391-472e-93d1-576a7cd1e00a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dddd3bda-20ff-42e3-8798-3941d59c4696" start_index="0" end="5441fb7a-09db-4239-aa3b-a13b5294c7db" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="705c38bc-5c84-4785-aa2e-d5652bfb589b" start_index="0" end="5441fb7a-09db-4239-aa3b-a13b5294c7db" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

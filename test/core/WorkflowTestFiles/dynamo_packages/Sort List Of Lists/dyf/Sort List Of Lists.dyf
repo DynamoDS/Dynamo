@@ -1,0 +1,51 @@
+<Workspace Version="0.6.3.5263" X="226" Y="115" zoom="1" Description="Sorts a list of lists by one of its sublists" Category="CAAD_RWTH.Lists.Sublists" Name="Sort List Of Lists" ID="bdace65b-b01b-459e-8946-e6f6129306ed">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="57bb5c7c-2f81-471d-a591-ea67161da6a8" nickname="Python Script With Variable Number of Inputs" x="273.361111111111" y="-2.53571428571411" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="4">
+      <Script>lists = IN0
+sortindex = int(IN1)
+caseinsensitive = IN2
+sortdescending = IN3
+
+# make sure that case-insensitive is turned of if it is not strings we're sorting
+if caseinsensitive == 1 and isinstance(lists[0][sortindex], basestring) == False:
+	caseinsensitive = 0
+if caseinsensitive == 1:
+	if sortdescending == 1:
+		OUT = sorted(lists, key=lambda lists:lists[sortindex].lower(), reverse=True)
+	else:
+		OUT = sorted(lists, key=lambda lists:lists[sortindex].lower())
+else:
+	if sortdescending == 1:
+		OUT = sorted(lists, key=lambda lists:lists[sortindex], reverse=True)
+	else:
+		OUT = sorted(lists, key=lambda lists:lists[sortindex])</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="408fdc60-e7c5-46d1-934e-df50c5c8c6eb" nickname="Transpose Lists" x="578.5" y="-5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="35a02742-027b-41b4-86c6-65747d753c85" nickname="Transpose Lists" x="131" y="-80.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ba099a61-1551-4ccb-b1d4-79d3ed231976" nickname="Input" x="1" y="-80" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List of lists" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0c31c9a4-b8a7-44e6-9a4e-a1bed464f373" nickname="Output" x="714.5" y="-6" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Sorted" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f7fa4e35-f6ba-4801-b01f-d209929c2d08" nickname="Input" x="1.5" y="-4.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Sort index" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="857474aa-e51d-4900-9c2c-d8f0df3b05e7" nickname="Input" x="0.5" y="74.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Case-insensitive?" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="90fc23e1-71ce-42e5-891d-12a2f0254273" nickname="Input" x="-0.5" y="145.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Order Descending?" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="57bb5c7c-2f81-471d-a591-ea67161da6a8" start_index="0" end="408fdc60-e7c5-46d1-934e-df50c5c8c6eb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="408fdc60-e7c5-46d1-934e-df50c5c8c6eb" start_index="0" end="0c31c9a4-b8a7-44e6-9a4e-a1bed464f373" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="35a02742-027b-41b4-86c6-65747d753c85" start_index="0" end="57bb5c7c-2f81-471d-a591-ea67161da6a8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ba099a61-1551-4ccb-b1d4-79d3ed231976" start_index="0" end="35a02742-027b-41b4-86c6-65747d753c85" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f7fa4e35-f6ba-4801-b01f-d209929c2d08" start_index="0" end="57bb5c7c-2f81-471d-a591-ea67161da6a8" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="857474aa-e51d-4900-9c2c-d8f0df3b05e7" start_index="0" end="57bb5c7c-2f81-471d-a591-ea67161da6a8" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="90fc23e1-71ce-42e5-891d-12a2f0254273" start_index="0" end="57bb5c7c-2f81-471d-a591-ea67161da6a8" end_index="3" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

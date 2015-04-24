@@ -1,0 +1,22 @@
+<Workspace Version="0.6.3.5260" X="0" Y="0" zoom="1" Description="Computes the length of one of the catheti / legs of a right triangle using the Pythagorean Theorem. B is the other leg / cathetus of the triangle while C is the hypotenuse." Category="CAAD_RWTH.Math.Formulas" Name="Cathetus By Pythagoras" ID="b4ee0bd9-7a48-424d-b584-8468aaab7d5b">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ca920dba-38f3-459a-8642-f19a6f341f4b" nickname="Input" x="13" y="24.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="C" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="952d1976-c445-409c-9369-10c3b7df2cc0" nickname="Input" x="15" y="101.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="B" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="8cb2ea89-93dd-4094-9f8e-1ed435647b04" nickname="Formula" x="161" y="50.5199999999999" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>Sqrt(Pow(c,2)-Pow(b,2))</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5bab7cc2-714f-4c19-b692-f309f5fa83c0" nickname="Output" x="410" y="48.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="A" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ca920dba-38f3-459a-8642-f19a6f341f4b" start_index="0" end="8cb2ea89-93dd-4094-9f8e-1ed435647b04" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="952d1976-c445-409c-9369-10c3b7df2cc0" start_index="0" end="8cb2ea89-93dd-4094-9f8e-1ed435647b04" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8cb2ea89-93dd-4094-9f8e-1ed435647b04" start_index="0" end="5bab7cc2-714f-4c19-b692-f309f5fa83c0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

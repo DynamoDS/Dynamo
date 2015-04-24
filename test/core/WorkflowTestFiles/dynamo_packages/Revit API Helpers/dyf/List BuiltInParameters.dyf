@@ -1,0 +1,39 @@
+<Workspace Version="0.6.3.31052" X="-77.9843945977447" Y="145.489606284437" zoom="1.02988563947099" Description="List all the BuiltInCategories available" Category="CAAD_RWTH.Scripting" Name="List BuiltInParameters" ID="9e744762-ad3f-4e45-8e4e-1e77204584e6">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="aa76fbcd-3554-4037-b00a-86e0d094e928" nickname="Python Script" x="301.5" y="-16.1666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+OUT = dir(BuiltInParameter)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="963b99eb-01c5-44d5-8219-480a152de21e" nickname="Output" x="713.776932769291" y="-59.2231901423552" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="acf0bc6a-439b-4a8d-8e6b-efbfc9cf2811" nickname="String" x="161.247791451789" y="-76.5870552175667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="\w*__\w*" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="7281ee2c-0e00-40ba-a72e-3168a86d9fcc" nickname="Filter List by Regular Expression Matches" x="437.308098267534" y="-77.769999845543" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="54ea3bf3-7523-4f77-a642-a9de1f08f8a0" />
+      <Name value="Filter List by Regular Expression Matches" />
+      <Description value="Filters out all items from a list of strings that don't begin with the regular expression.  The syntax for regular expressions is explained at&#xD;&#xA;http://ironpython-test.readthedocs.org/en/latest/howto/regex.html" />
+      <Inputs>
+        <Input value="regex" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="in" />
+        <Output value="out" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="aa76fbcd-3554-4037-b00a-86e0d094e928" start_index="0" end="7281ee2c-0e00-40ba-a72e-3168a86d9fcc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="acf0bc6a-439b-4a8d-8e6b-efbfc9cf2811" start_index="0" end="aa76fbcd-3554-4037-b00a-86e0d094e928" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="acf0bc6a-439b-4a8d-8e6b-efbfc9cf2811" start_index="0" end="7281ee2c-0e00-40ba-a72e-3168a86d9fcc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7281ee2c-0e00-40ba-a72e-3168a86d9fcc" start_index="1" end="963b99eb-01c5-44d5-8219-480a152de21e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

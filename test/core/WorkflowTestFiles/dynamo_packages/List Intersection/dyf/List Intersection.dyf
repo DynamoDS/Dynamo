@@ -1,0 +1,42 @@
+<Workspace Version="0.6.3.7993" X="140" Y="170" zoom="1" Description="returns elements that are in both lists" Category="JBE" Name="List Intersection" ID="e204889b-2e0d-4c4e-bcac-0516d0803a4b">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="cced27ec-f762-4b3d-84d9-13f9e6ef1d1c" nickname="List Intersection" x="250" y="-1.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+listA = IN0
+listB = IN1
+b=[]
+a=list(set(listA).intersection(set(listB)))
+b.append(a)
+OUT = a</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d6158a40-31ba-4e00-8dca-6cb70b538b09" nickname="Input" x="0" y="-1.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ListA" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e76a4fa3-5d02-4116-a83c-78bd8786b0cd" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ListB" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1f4f2bd6-97b9-45a3-b3b2-85bfea1b80c3" nickname="Output" x="472" y="-1.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="cced27ec-f762-4b3d-84d9-13f9e6ef1d1c" start_index="0" end="1f4f2bd6-97b9-45a3-b3b2-85bfea1b80c3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d6158a40-31ba-4e00-8dca-6cb70b538b09" start_index="0" end="cced27ec-f762-4b3d-84d9-13f9e6ef1d1c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e76a4fa3-5d02-4116-a83c-78bd8786b0cd" start_index="0" end="cced27ec-f762-4b3d-84d9-13f9e6ef1d1c" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

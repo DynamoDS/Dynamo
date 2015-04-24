@@ -1,0 +1,36 @@
+<Workspace Version="0.6.3.7375" X="32" Y="187" zoom="1" Description="Gets the first three indices of a given list" Category="CAAD_RWTH.Patterning.Helpers" Name="Get First Three Indices" ID="a03174ea-f563-47e0-a166-c31997c0fe64">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="b2020ff4-be79-4d16-b376-0f4bb10fcc76" nickname="Get From List" x="178.576196797771" y="181.589639249639" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="d18ca462-76ab-43de-950d-55874bd366fe" nickname="Get From List" x="178.576196797771" y="82.145194805196" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="8094bc3f-eeb8-4e94-9b68-db33e1a7d335" nickname="First of List" x="216.233761455331" y="6" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6d7770d4-2c22-4c6e-ab43-611e912edba7" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="29fd24d0-e1c7-4966-837f-1cb43f57814b" nickname="Output" x="363.233761455331" y="6" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="0" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="cf954c47-d13c-4414-9ad5-302fa51ee1a7" nickname="Formula" x="4.79351281508434" y="176.902525252524" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>2</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="0944ee15-0dc4-42a3-a99b-74583d9210b1" nickname="Formula" x="2.79351281508434" y="75.902525252524" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0c83a9e8-4d1b-46bf-9330-dcf82e72be0c" nickname="Output" x="365.233761455331" y="83" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="1" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="44601f2f-ca8f-4cce-b810-42b98e4d7077" nickname="Output" x="365.233761455331" y="178" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="2" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b2020ff4-be79-4d16-b376-0f4bb10fcc76" start_index="0" end="44601f2f-ca8f-4cce-b810-42b98e4d7077" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d18ca462-76ab-43de-950d-55874bd366fe" start_index="0" end="0c83a9e8-4d1b-46bf-9330-dcf82e72be0c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8094bc3f-eeb8-4e94-9b68-db33e1a7d335" start_index="0" end="29fd24d0-e1c7-4966-837f-1cb43f57814b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6d7770d4-2c22-4c6e-ab43-611e912edba7" start_index="0" end="b2020ff4-be79-4d16-b376-0f4bb10fcc76" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6d7770d4-2c22-4c6e-ab43-611e912edba7" start_index="0" end="d18ca462-76ab-43de-950d-55874bd366fe" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6d7770d4-2c22-4c6e-ab43-611e912edba7" start_index="0" end="8094bc3f-eeb8-4e94-9b68-db33e1a7d335" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cf954c47-d13c-4414-9ad5-302fa51ee1a7" start_index="0" end="b2020ff4-be79-4d16-b376-0f4bb10fcc76" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0944ee15-0dc4-42a3-a99b-74583d9210b1" start_index="0" end="d18ca462-76ab-43de-950d-55874bd366fe" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,89 @@
+<Workspace Version="0.6.2.29585" X="-95.3977335889521" Y="50.3999047619036" zoom="0.7" Description="Inverts and mirrors (horizontally &amp; vertically) a list of normalized values." Category="CAAD_RWTH.Lists" Name="Invert And Mirror Normalized Values" ID="b0d28568-e6b9-49f6-9b72-4af771ddd068">
+  <Elements>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="25d3b2fb-fd07-4278-9aab-b0b3f7b4ca69" nickname="Map" x="240.583333333334" y="276.019725829726" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="32a33f16-4858-4c60-a3d9-3bf05668fc0b" nickname="Reverse" x="635.009091829102" y="261.054646464645" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="79747163-6c56-4465-9471-479157911ac7" nickname="Map" x="1200.88301945634" y="342.236392496392" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="727441ff-89f0-403f-92a9-325854229390" nickname="Reverse" x="1012.83052040053" y="314.717344877344" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="135faed9-8d40-49b8-95c6-836aa1730fe9" nickname="If" x="434.324922842943" y="198.316738816739" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="d5b22aab-77a4-429a-ab2d-d94e7ee1ff42" nickname="If" x="810.856668874688" y="157.197691197692" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="e58fccdc-6d38-4fbc-97b3-d2af231ca6c8" nickname="If" x="1570.56265733068" y="114.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Sublists type="Dynamo.Nodes.Sublists" guid="73d4f279-1643-4bbb-8135-0041b6e89e43" nickname="Build Sublists" x="1001.67517968517" y="418.992633477634" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.String value="0..n" />
+    </Dynamo.Nodes.Sublists>
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="118d0d7e-7627-42be-97d4-af1938ab0dba" nickname="Flatten Completely" x="1390.43311619311" y="340.829935064935" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a866dc19-c439-4990-847d-bd1758b5a276" nickname="Input" x="10" y="112" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="14da30ed-148f-488d-9441-7826f196ea44" nickname="Input" x="10" y="198.25" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Invert" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="91e75f19-4ebb-4a97-a02f-a0a5e19eb11a" nickname="Input" x="10" y="380.571428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Mirror Vertically" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="37ce0792-d689-4b43-870f-7aa01db2b77e" nickname="Input" x="10" y="460.333333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Mirror Horizontally" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4be87ea6-3442-48d1-a70d-423bd54ec228" nickname="Input" x="10" y="536" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="X" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5082c512-45c0-4950-9014-e1f9fc6a6827" nickname="-1" x="833.544846276827" y="529.682063492065" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f4181015-7167-4fb6-b23d-f6cff59ffc1a" />
+      <Name value="-1" />
+      <Description value="Decrements a value by 1" />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="37fd64cc-8620-46e6-90d8-0f4113c30bc4" nickname="Invert Normalized Value" x="13.7184448704754" y="276.322380952383" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="18062fc4-d89d-4ac0-8103-b26c93473852" />
+      <Name value="Invert Normalized Value" />
+      <Description value="Inverts a value between 0 and 1 or a boolean to its opposite (1-x)" />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="25d3b2fb-fd07-4278-9aab-b0b3f7b4ca69" start_index="0" end="135faed9-8d40-49b8-95c6-836aa1730fe9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="32a33f16-4858-4c60-a3d9-3bf05668fc0b" start_index="0" end="d5b22aab-77a4-429a-ab2d-d94e7ee1ff42" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="79747163-6c56-4465-9471-479157911ac7" start_index="0" end="118d0d7e-7627-42be-97d4-af1938ab0dba" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="727441ff-89f0-403f-92a9-325854229390" start_index="0" end="79747163-6c56-4465-9471-479157911ac7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="135faed9-8d40-49b8-95c6-836aa1730fe9" start_index="0" end="32a33f16-4858-4c60-a3d9-3bf05668fc0b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="135faed9-8d40-49b8-95c6-836aa1730fe9" start_index="0" end="d5b22aab-77a4-429a-ab2d-d94e7ee1ff42" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d5b22aab-77a4-429a-ab2d-d94e7ee1ff42" start_index="0" end="e58fccdc-6d38-4fbc-97b3-d2af231ca6c8" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d5b22aab-77a4-429a-ab2d-d94e7ee1ff42" start_index="0" end="73d4f279-1643-4bbb-8135-0041b6e89e43" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="73d4f279-1643-4bbb-8135-0041b6e89e43" start_index="0" end="79747163-6c56-4465-9471-479157911ac7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="118d0d7e-7627-42be-97d4-af1938ab0dba" start_index="0" end="e58fccdc-6d38-4fbc-97b3-d2af231ca6c8" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a866dc19-c439-4990-847d-bd1758b5a276" start_index="0" end="25d3b2fb-fd07-4278-9aab-b0b3f7b4ca69" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a866dc19-c439-4990-847d-bd1758b5a276" start_index="0" end="135faed9-8d40-49b8-95c6-836aa1730fe9" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="14da30ed-148f-488d-9441-7826f196ea44" start_index="0" end="135faed9-8d40-49b8-95c6-836aa1730fe9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="91e75f19-4ebb-4a97-a02f-a0a5e19eb11a" start_index="0" end="d5b22aab-77a4-429a-ab2d-d94e7ee1ff42" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="37ce0792-d689-4b43-870f-7aa01db2b77e" start_index="0" end="e58fccdc-6d38-4fbc-97b3-d2af231ca6c8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4be87ea6-3442-48d1-a70d-423bd54ec228" start_index="0" end="73d4f279-1643-4bbb-8135-0041b6e89e43" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4be87ea6-3442-48d1-a70d-423bd54ec228" start_index="0" end="5082c512-45c0-4950-9014-e1f9fc6a6827" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5082c512-45c0-4950-9014-e1f9fc6a6827" start_index="0" end="73d4f279-1643-4bbb-8135-0041b6e89e43" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="37fd64cc-8620-46e6-90d8-0f4113c30bc4" start_index="0" end="25d3b2fb-fd07-4278-9aab-b0b3f7b4ca69" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="For questions email me at dieckmann@caad.arch.rwth-aachen.de" x="10.6509845530161" y="12.2203968253989" />
+    <Dynamo.Models.NoteModel text="Invert the values (if applicable)" x="412.258127410159" y="155.073968253971" />
+    <Dynamo.Models.NoteModel text="Mirror the values vertically (if applicable)" x="770.258127410159" y="115.073968253971" />
+    <Dynamo.Models.NoteModel text="Mirror the values horizontally (if applicable)" x="1494.54384169587" y="73.6453968253992" />
+    <Dynamo.Models.NoteModel text="We first have to partition the list in sublists - which then can be reversed" x="1150.98828614032" y="443.417619047622" />
+  </Notes>
+</Workspace>

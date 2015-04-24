@@ -1,0 +1,22 @@
+<Workspace Version="0.6.3.22045" X="181" Y="272" zoom="1" Description="Computes the angle between two vectors" Category="CAAD_RWTH.XYZ" Name="Angle Between Vectors" ID="61cdaa2f-7e2e-424b-8850-3cba6d5fd4cb">
+  <Elements>
+    <Dynamo.Nodes.Acos type="Dynamo.Nodes.Acos" guid="0e25cafd-3241-4311-abeb-d45584d92bd5" nickname="Inverse Cosine" x="270.263169163608" y="37" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzDotProduct type="Dynamo.Nodes.XyzDotProduct" guid="75110ad2-7324-4dff-aebb-e25338e31a52" nickname="XYZ Dot Product" x="140" y="37" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2963dfe7-8934-4631-8841-ebbbe76691fc" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Vector #1" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0fe45283-a0a4-46f1-ad92-a5b88af130f8" nickname="Input" x="0" y="99" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Vector #2" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="91cf22af-dfd5-4c41-896a-dca127db9def" nickname="Output" x="424.263169163608" y="35" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="rad" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0e25cafd-3241-4311-abeb-d45584d92bd5" start_index="0" end="91cf22af-dfd5-4c41-896a-dca127db9def" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="75110ad2-7324-4dff-aebb-e25338e31a52" start_index="0" end="0e25cafd-3241-4311-abeb-d45584d92bd5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2963dfe7-8934-4631-8841-ebbbe76691fc" start_index="0" end="75110ad2-7324-4dff-aebb-e25338e31a52" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0fe45283-a0a4-46f1-ad92-a5b88af130f8" start_index="0" end="75110ad2-7324-4dff-aebb-e25338e31a52" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

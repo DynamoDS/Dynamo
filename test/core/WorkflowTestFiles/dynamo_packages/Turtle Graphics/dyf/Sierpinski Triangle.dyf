@@ -1,0 +1,83 @@
+<Workspace Version="0.7.0.26798" X="161" Y="90" zoom="1" Description="Sierpiński Arrowhead implemented with Turtle Graphics L-System" Category="Turtle.Examples" Name="Sierpiński" ID="6a8fef49-19e6-44b9-8ee9-20501a8a17bc">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a970f4d4-c33a-481b-a21a-8627b2542c1d" nickname="Input" x="0" y="28.4088888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="scale" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fdb2b9bb-64d8-4b12-9d62-e587eb1ef74a" nickname="Input" x="0" y="163.408888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="order" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="ec80359d-d028-4b10-8e22-d45418bbbb78" nickname="Formula" x="245.384575689878" y="214.545555555556" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>scale / Pow(2, order)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="6a8a90a0-2f54-4509-ab54-2949cbc01de7" nickname="Turtle" x="695" y="120.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="705d4ea5-ceef-48ae-b7eb-eb1e488fcd39" />
+      <Name value="Turtle" />
+      <Description value="" />
+      <Inputs>
+        <Input value="start" />
+        <Input value="rules" />
+        <Input value="iterations" />
+        <Input value="initial transform" />
+        <Input value="move length" />
+        <Input value="turn rotation" />
+        <Input value="line maker" />
+      </Inputs>
+      <Outputs>
+        <Output value="lines" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="dde6dc16-6a70-443e-a449-54ccf444b48d" nickname="If" x="446.661814317784" y="465.928888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="59aec287-00e9-40fe-b3dc-2be3ca42c202" nickname="Formula" x="248.106258762223" y="402.373333333333" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>order%2==1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="33db01f5-8920-4d1f-bbb8-7af7e5318c91" nickname="Rotate Z Origin" x="309.1067979121" y="574.73" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="71909492-20d1-47b4-8e53-1944751221a7" />
+      <Name value="Rotate Z Origin" />
+      <Description value="Creates a rotation transform around the z-axis at (0,0,0)" />
+      <Inputs>
+        <Input value="dn" />
+      </Inputs>
+      <Outputs>
+        <Output value="t" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.TransformIdentity type="Dynamo.Nodes.TransformIdentity" guid="311624ce-ed4c-48e3-8e15-dd4c67ad7f5e" nickname="Identity Transform" x="289.6067979121" y="486.323333333333" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="b35c632b-5bf3-426f-bd29-52aeeb8d8a66" nickname="Formula" x="221.829020134322" y="575.212222222222" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>pi/3</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="cc12c2d3-e7f8-494e-b604-9297ee72b340" nickname="Formula" x="470.940131245434" y="286.101111111111" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>pi/3</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="db490d0d-61a2-42c6-b301-22ed3227b18f" nickname="String" x="240" y="101.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="X-&gt;YF+XF+Y&#xD;&#xA;Y-&gt;XF-YF-X" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="96cebbb1-b5ca-434a-b3a7-c05886a16c91" nickname="String" x="243" y="41.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="XF" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.LineBound type="Dynamo.Nodes.LineBound" guid="573b062c-5629-45c7-9791-2ecda4788093" nickname="Line" x="695" y="296.8" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a970f4d4-c33a-481b-a21a-8627b2542c1d" start_index="0" end="ec80359d-d028-4b10-8e22-d45418bbbb78" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fdb2b9bb-64d8-4b12-9d62-e587eb1ef74a" start_index="0" end="ec80359d-d028-4b10-8e22-d45418bbbb78" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fdb2b9bb-64d8-4b12-9d62-e587eb1ef74a" start_index="0" end="59aec287-00e9-40fe-b3dc-2be3ca42c202" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fdb2b9bb-64d8-4b12-9d62-e587eb1ef74a" start_index="0" end="6a8a90a0-2f54-4509-ab54-2949cbc01de7" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ec80359d-d028-4b10-8e22-d45418bbbb78" start_index="0" end="6a8a90a0-2f54-4509-ab54-2949cbc01de7" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dde6dc16-6a70-443e-a449-54ccf444b48d" start_index="0" end="6a8a90a0-2f54-4509-ab54-2949cbc01de7" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="59aec287-00e9-40fe-b3dc-2be3ca42c202" start_index="0" end="dde6dc16-6a70-443e-a449-54ccf444b48d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="33db01f5-8920-4d1f-bbb8-7af7e5318c91" start_index="0" end="dde6dc16-6a70-443e-a449-54ccf444b48d" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="311624ce-ed4c-48e3-8e15-dd4c67ad7f5e" start_index="0" end="dde6dc16-6a70-443e-a449-54ccf444b48d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b35c632b-5bf3-426f-bd29-52aeeb8d8a66" start_index="0" end="33db01f5-8920-4d1f-bbb8-7af7e5318c91" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc12c2d3-e7f8-494e-b604-9297ee72b340" start_index="0" end="6a8a90a0-2f54-4509-ab54-2949cbc01de7" end_index="5" portType="0" />
+    <Dynamo.Models.ConnectorModel start="db490d0d-61a2-42c6-b301-22ed3227b18f" start_index="0" end="6a8a90a0-2f54-4509-ab54-2949cbc01de7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="96cebbb1-b5ca-434a-b3a7-c05886a16c91" start_index="0" end="6a8a90a0-2f54-4509-ab54-2949cbc01de7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="573b062c-5629-45c7-9791-2ecda4788093" start_index="0" end="6a8a90a0-2f54-4509-ab54-2949cbc01de7" end_index="6" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Even: start at 60 degrees" x="251.051242356545" y="662.656666666667" />
+    <Dynamo.Models.NoteModel text="Starting Transform" x="433.6067979121" y="418.545555555555" />
+    <Dynamo.Models.NoteModel text="Odd: identity" x="188.384575689878" y="490.323333333333" />
+  </Notes>
+</Workspace>

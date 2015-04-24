@@ -1,0 +1,44 @@
+<Workspace Version="0.6.3.7375" X="-51" Y="160" zoom="1" Description="Gets the directory from a given file path" Category="CAAD_RWTH.Strings" Name="Get Directory From File Path" ID="fa2bf609-1a40-4a05-9469-2854f44d3c64">
+  <Elements>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="24041837-b1dc-4c86-b815-c0f828488d2a" nickname="List Length" x="513.759063795956" y="1.20857425700696" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="1781059e-e11d-40c3-9434-8903f487387b" nickname="Split String" x="374.195356713918" y="54.7290331092509" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SplitString>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="c3507d70-5bd3-4aca-85c0-14bfd096c785" nickname="String" x="250" y="109.797889222655" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="\" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.TakeList type="Dynamo.Nodes.TakeList" guid="c28a1f19-7160-4313-9bac-756ede5f73ee" nickname="Take from List" x="790.046821526546" y="32.8382131495361" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.JoinStrings type="Dynamo.Nodes.JoinStrings" guid="3ce4bf3e-2b5d-4b9b-a5e6-bb2a90e01d16" nickname="Join Strings" x="977.596760899615" y="83.7703708254515" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.JoinStrings>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="49ee878f-5df0-4885-9961-8c306e6703fb" nickname="Input" x="246" y="36" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="path" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="3f19b3f1-f57f-404b-84ba-d208a39652aa" nickname="Output" x="1113.59676089961" y="82" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dir" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f836edf8-47a8-481f-8443-74e79388c353" nickname="-1" x="659" y="-0.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f4181015-7167-4fb6-b23d-f6cff59ffc1a" />
+      <Name value="-1" />
+      <Description value="Decrements a value by 1" />
+      <Inputs>
+        <Input value="" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="24041837-b1dc-4c86-b815-c0f828488d2a" start_index="0" end="f836edf8-47a8-481f-8443-74e79388c353" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1781059e-e11d-40c3-9434-8903f487387b" start_index="0" end="c28a1f19-7160-4313-9bac-756ede5f73ee" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1781059e-e11d-40c3-9434-8903f487387b" start_index="0" end="24041837-b1dc-4c86-b815-c0f828488d2a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c3507d70-5bd3-4aca-85c0-14bfd096c785" start_index="0" end="1781059e-e11d-40c3-9434-8903f487387b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c3507d70-5bd3-4aca-85c0-14bfd096c785" start_index="0" end="3ce4bf3e-2b5d-4b9b-a5e6-bb2a90e01d16" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c28a1f19-7160-4313-9bac-756ede5f73ee" start_index="0" end="3ce4bf3e-2b5d-4b9b-a5e6-bb2a90e01d16" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3ce4bf3e-2b5d-4b9b-a5e6-bb2a90e01d16" start_index="0" end="3f19b3f1-f57f-404b-84ba-d208a39652aa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="49ee878f-5df0-4885-9961-8c306e6703fb" start_index="0" end="1781059e-e11d-40c3-9434-8903f487387b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f836edf8-47a8-481f-8443-74e79388c353" start_index="0" end="c28a1f19-7160-4313-9bac-756ede5f73ee" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

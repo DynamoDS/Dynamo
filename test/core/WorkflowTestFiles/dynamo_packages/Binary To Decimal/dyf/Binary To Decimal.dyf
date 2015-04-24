@@ -1,0 +1,41 @@
+<Workspace Version="0.6.2.279" X="-84.6833333333333" Y="131.383333333333" zoom="0.7" Description="Converts a list of binary (boolean) values into a decimal value" Category="CAAD_RWTH.Lists" Name="Binary To Decimal" ID="80f8be3f-6864-42ce-a9cb-83aa4c2913ec">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="08c8058c-e62b-46ff-a85a-78b886058388" nickname="Number" x="436.452380952381" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="0..n" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="e07abc48-97f2-4873-a19d-86f3ab6d1a96" nickname="List Length" x="115.416666666667" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="2929e7b6-3fab-4ce0-a22e-c93cec0250b2" nickname="Formula" x="573.285714285714" y="71.6190476190476" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x*Pow(2,n)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5f965399-3251-44d1-858e-07badb7385bd" nickname="Sum List" x="755.674603174603" y="70.8368253968257" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f189c747-c166-4818-9072-92d6bdb47dbf" />
+      <Name value="Sum List" />
+      <Description value="" />
+      <Inputs>
+        <Input value="nums" />
+      </Inputs>
+      <Outputs>
+        <Output value="sum" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2be6528b-1f1a-4f58-804a-6c2ab21d1484" nickname="Input" x="0" y="75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5173713f-623e-4d53-94fa-f4d519cdeff9" nickname="Output" x="919.016594516595" y="71.875598845599" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="decimal" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="d475af5a-fa26-4e85-8998-5ca45f694247" nickname="Formula" x="283.261904761905" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>n-1</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="08c8058c-e62b-46ff-a85a-78b886058388" start_index="0" end="2929e7b6-3fab-4ce0-a22e-c93cec0250b2" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e07abc48-97f2-4873-a19d-86f3ab6d1a96" start_index="0" end="d475af5a-fa26-4e85-8998-5ca45f694247" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2929e7b6-3fab-4ce0-a22e-c93cec0250b2" start_index="0" end="5f965399-3251-44d1-858e-07badb7385bd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5f965399-3251-44d1-858e-07badb7385bd" start_index="0" end="5173713f-623e-4d53-94fa-f4d519cdeff9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2be6528b-1f1a-4f58-804a-6c2ab21d1484" start_index="0" end="e07abc48-97f2-4873-a19d-86f3ab6d1a96" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2be6528b-1f1a-4f58-804a-6c2ab21d1484" start_index="0" end="2929e7b6-3fab-4ce0-a22e-c93cec0250b2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d475af5a-fa26-4e85-8998-5ca45f694247" start_index="0" end="08c8058c-e62b-46ff-a85a-78b886058388" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

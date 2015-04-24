@@ -1,0 +1,70 @@
+<dynWorkspace X="-700" Y="-46" zoom="1" Description="" Category="Fractals" Name="Dragon Curve" ID="1c2cfe95-bd34-4201-9aa3-ab7a1690ba88">
+  <dynElements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="28877176-79ef-40fc-bb6b-11f943939203" nickname="Input" x="7.99514765111235" y="76.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="scale" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="25dded90-b266-4c23-b243-15098e489838" nickname="Input" x="7.99514765111235" y="211.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="order" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="010ef014-1ba2-4a45-a7f6-b71e06105e46" nickname="Formula" x="209.995147651112" y="77.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <FormulaText>scale / Pow(Sqrt(2), order)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="59ab3381-b87f-4096-9a82-1bf7286781e2" nickname="XYZ" x="457.995147651112" y="21.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.TransformTranslation type="Dynamo.Nodes.TransformTranslation" guid="71b577c7-c191-48bc-ae33-281bfc3de939" nickname="Translate Transform" x="585.995147651112" y="20.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="fc5f88ee-a8ea-4455-a0ee-233df093d69f" nickname="Output" x="1254.43959209556" y="214.964444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="pts" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="2acc404c-e25f-42ea-b5f3-15ae8d292bd8" nickname="List" x="630.440131245433" y="476.174444444445" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="c312fbb2-e991-4153-9b97-56345a4464f2" nickname="XYZ" x="509.051242356544" y="476.212222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="271a18ec-00a3-4fc7-b5f7-2ae9ac75b11e" nickname="dragon loop" x="829.995147651112" y="213.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="378a2d85-b426-45e8-b164-92b990cadd90" />
+      <Name value="dragon loop" />
+      <Description value="" />
+      <Inputs>
+        <Input value="order" />
+        <Input value="result" />
+        <Input value="transform" />
+        <Input value="translation" />
+        <Input value="direction" />
+      </Inputs>
+      <Outputs>
+        <Output value="pts" />
+        <Output value="transform" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.TransformIdentity type="Dynamo.Nodes.TransformIdentity" guid="bae90621-ff56-4bfd-a456-79e621415d69" nickname="Identity Transform" x="249.995147651112" y="258.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="4c858dd0-b8ea-4a41-8190-85437f745e39" nickname="Number" x="642.995147651112" y="311.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1.000" />
+    </Dynamo.Nodes.DoubleInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.ConnectorModel start="28877176-79ef-40fc-bb6b-11f943939203" start_index="0" end="010ef014-1ba2-4a45-a7f6-b71e06105e46" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="25dded90-b266-4c23-b243-15098e489838" start_index="0" end="010ef014-1ba2-4a45-a7f6-b71e06105e46" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="25dded90-b266-4c23-b243-15098e489838" start_index="0" end="271a18ec-00a3-4fc7-b5f7-2ae9ac75b11e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="010ef014-1ba2-4a45-a7f6-b71e06105e46" start_index="0" end="59ab3381-b87f-4096-9a82-1bf7286781e2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="59ab3381-b87f-4096-9a82-1bf7286781e2" start_index="0" end="71b577c7-c191-48bc-ae33-281bfc3de939" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="71b577c7-c191-48bc-ae33-281bfc3de939" start_index="0" end="271a18ec-00a3-4fc7-b5f7-2ae9ac75b11e" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2acc404c-e25f-42ea-b5f3-15ae8d292bd8" start_index="0" end="271a18ec-00a3-4fc7-b5f7-2ae9ac75b11e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c312fbb2-e991-4153-9b97-56345a4464f2" start_index="0" end="2acc404c-e25f-42ea-b5f3-15ae8d292bd8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="271a18ec-00a3-4fc7-b5f7-2ae9ac75b11e" start_index="0" end="fc5f88ee-a8ea-4455-a0ee-233df093d69f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bae90621-ff56-4bfd-a456-79e621415d69" start_index="0" end="271a18ec-00a3-4fc7-b5f7-2ae9ac75b11e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4c858dd0-b8ea-4a41-8190-85437f745e39" start_index="0" end="271a18ec-00a3-4fc7-b5f7-2ae9ac75b11e" end_index="4" portType="0" />
+  </dynConnectors>
+  <dynNotes>
+    <Dynamo.Models.NoteModel text="Starting Direction" x="623.495686800989" y="379.434444444444" />
+    <Dynamo.Models.NoteModel text="Starting Transform" x="366.6067979121" y="310.545555555555" />
+    <Dynamo.Models.NoteModel text="Starting Accumulator" x="633.495686800989" y="551.212222222222" />
+    <Dynamo.Models.NoteModel text="Length of line segments" x="240.384575689878" y="36.6566666666666" />
+    <Dynamo.Models.NoteModel text="Translation for &quot;drawing&quot; a line" x="561.162353467656" y="116.101111111111" />
+  </dynNotes>
+</dynWorkspace>

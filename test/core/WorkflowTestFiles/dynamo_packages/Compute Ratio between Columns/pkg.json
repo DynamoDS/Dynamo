@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Compute Ratio between Columns","version":"0.1.0","description":"CEE 220C Assignment4","group":"","keywords":null,"dependencies":[],"license":"MIT","contents":"Compute Ratio between Columns - Computes the ratio between the values in two input columns and adds it as a last column","engine_version":"0.6.2.29585","engine_metadata":"","engine":"dynamo"}

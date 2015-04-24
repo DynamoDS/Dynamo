@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Exterior Angle","version":"0.1.3","description":"Computes the exterior angle of a given angle.","group":"CAAD_RWTH","keywords":["exterior","angle","180-x","360-x"],"dependencies":[],"license":"MIT","contents":"Exterior Angle - Computes the exterior angle of a given angle.","engine_version":"0.6.3.5260","engine_metadata":"","engine":"dynamo"}

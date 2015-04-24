@@ -1,0 +1,28 @@
+<Workspace Version="0.6.2.20449" X="70.7678266178264" Y="39.803017399267" zoom="1.1" Description="Floor Area Ratio calculator" Category="NBBJ" Name="FAR" ID="fa9bd010-f126-40ca-9aa9-cbfc4b14a89d">
+  <Elements>
+    <Dynamo.Nodes.FamilyInstanceParameterGetter type="Dynamo.Nodes.FamilyInstanceParameterGetter" guid="c89b754f-1d59-4d03-8ec3-839cb504be26" nickname="Get Family Instance Parameter Value" x="213.428571428571" y="223" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Division type="Dynamo.Nodes.Division" guid="b25be5d9-8947-4ba2-ac16-c4157bb3ebc9" nickname="Divide" x="391.142857142857" y="55.8571428571428" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="341ae023-dea7-4c16-a1f4-5b030cbfa0c1" nickname="String" x="33.9999999999999" y="301.285714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="Gross Floor Area" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7b33fba9-356e-4e3c-b256-7d4cb836a9c4" nickname="Input" x="41" y="45.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Select Site Face" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="09f10c86-111c-4f89-99c9-6dd05f303c9f" nickname="Input" x="28" y="178.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Select Building Mass" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4b158c6f-cdcc-4990-911b-4a838e7c19f2" nickname="Output" x="844.428571428571" y="79.7285714285715" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="FAR" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.SurfaceArea type="Dynamo.Nodes.SurfaceArea" guid="9ba5a06a-429c-4fe5-af06-e2d7fbc33aa4" nickname="Surface Area" x="247.521672771673" y="21.258058608059" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c89b754f-1d59-4d03-8ec3-839cb504be26" start_index="0" end="b25be5d9-8947-4ba2-ac16-c4157bb3ebc9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b25be5d9-8947-4ba2-ac16-c4157bb3ebc9" start_index="0" end="4b158c6f-cdcc-4990-911b-4a838e7c19f2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="341ae023-dea7-4c16-a1f4-5b030cbfa0c1" start_index="0" end="c89b754f-1d59-4d03-8ec3-839cb504be26" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7b33fba9-356e-4e3c-b256-7d4cb836a9c4" start_index="0" end="9ba5a06a-429c-4fe5-af06-e2d7fbc33aa4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="09f10c86-111c-4f89-99c9-6dd05f303c9f" start_index="0" end="c89b754f-1d59-4d03-8ec3-839cb504be26" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9ba5a06a-429c-4fe5-af06-e2d7fbc33aa4" start_index="0" end="b25be5d9-8947-4ba2-ac16-c4157bb3ebc9" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>
