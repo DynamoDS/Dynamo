@@ -1664,4 +1664,10 @@ You can turn data collection off by using the tick box below or later by bringin
   <data name="LearnMore" xml:space="preserve">
     <value>Learn more</value>
   </data>
+  <data name="Autodesk360SignInButtonContentToolTip" xml:space="preserve">
+    <value>Sign in to Autodesk A360 to access online services that integrate with your desktop software.</value>
+  </data>
+  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
+    <value>Autodesk A360</value>
+  </data>
 </root>

@@ -265,10 +265,6 @@ namespace ProtoCore.AssociativeEngine
                         }
                         else if (!graphNode.isDirty)
                         {
-                            //if (core.Options.ElementBasedArrayUpdate)
-                            //{
-                            //    UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
-                            //}
                             graphNode.forPropertyChanged = propertyChanged;
                             reachableGraphNodes.Add(graphNode);
 
@@ -670,12 +666,6 @@ namespace ProtoCore.AssociativeGraph
         public int SSASubscript { get; set; }
         public bool IsLastNodeInSSA { get; set; }
 
-
-        
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-        public StackValue ArrayPointer { get; set; }
-#endif
-
         public GraphNode()
         {
             UID = Constants.kInvalidIndex;
@@ -708,10 +698,6 @@ namespace ProtoCore.AssociativeGraph
             forPropertyChanged = false;
             lastGraphNode = null;
             isActive = true;
-
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-            ArrayPointer = StackValue.Null;
-#endif
             symbolListWithinExpression = new List<SymbolNode>();
             reExecuteExpression = false;
             SSASubscript = Constants.kInvalidIndex;

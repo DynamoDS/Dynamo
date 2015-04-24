@@ -1494,18 +1494,6 @@ namespace ProtoCore
 
         public abstract ProtoCore.DSASM.ProcedureNode TraverseFunctionCall(Node node, Node parentNode, int lefttype, int depth, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null, ProtoCore.CompilerDefinitions.Associative.SubCompilePass subPass = ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, ProtoCore.AST.Node bnode = null);
 
-        protected void EmitAlloc(int symbol)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.ALLOC;
-            instr.op1 = StackValue.BuildInt(symbol);
-
-            ++pc;
-            AppendInstruction(instr);
-        }
-
-
         protected void EmitBounceIntrinsic(int blockId, int entry)
         {
             SetEntry();
@@ -1598,81 +1586,13 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitJleq(StackValue op1, StackValue op2, int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.JMP_LTEQ;
-            instr.op1 = op1;
-            instr.op2 = op2;
-            instr.op3 = StackValue.BuildLabelIndex(L1);
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, L1);
-            AppendInstruction(instr, line, col);
-        }
-
-        protected void EmitJgeq(StackValue op1, StackValue op2, int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.JMP_GTEQ;
-            instr.op1 = op1;
-            instr.op2 = op2;
-            instr.op3 = StackValue.BuildLabelIndex(L1);
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, L1);
-            AppendInstruction(instr, line, col);
-        }
-
-        protected void EmitJgz(StackValue op1, int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.JGZ;
-            instr.op1 = op1;
-            instr.op2 = StackValue.BuildLabelIndex(L1);
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, L1);
-            AppendInstruction(instr, line, col);
-        }
-
-        protected void EmitJlz(StackValue op1, int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.JLZ;
-            instr.op1 = op1;
-            instr.op2 = StackValue.BuildLabelIndex(L1);
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, L1);
-            AppendInstruction(instr, line, col);
-        }
-
-        protected void EmitJz(StackValue op1, int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+         protected void EmitJz(StackValue op1, int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.JZ;
             instr.op1 = op1;
             instr.op2 = StackValue.BuildLabelIndex(L1);
-
-            ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, L1);
-            AppendInstruction(instr, line, col);
-        }
-
-        protected void EmitJle(StackValue op1, StackValue op2, int L1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.JMP_LT;
-            instr.op1 = op1;
-            instr.op2 = op2;
-            instr.op3 = StackValue.BuildLabelIndex(L1);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, L1);
