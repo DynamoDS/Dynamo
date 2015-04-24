@@ -81,15 +81,6 @@ namespace ProtoCore.DSASM
 
         public List<AssociativeGraph.GraphNode> deferedGraphNodes {get; private set;}
         
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-        /// <summary>
-        /// Each symbol in this map is associated with a list of indices it was indexexd into
-        /// It can then be refered to for every function call that requries this argument
-        /// </summary>
-        /// This implementation needs to be moved to the array update class
-        private Dictionary<string, List<int>> symbolArrayIndexMap = new Dictionary<string,List<int>>();
-#endif
-
         public Executive(RuntimeCore runtimeCore, bool isFep = false)
         {
             IsExplicitCall = false;
@@ -603,36 +594,6 @@ namespace ProtoCore.DSASM
             }
         }
 
-
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-
-        //proc GetSymbolIndexedIntoList(string symbol, out List<int> indexList)
-        //    if symbolIndexMap.exists
-        //        indexList = symbolIndexMap[symbol]
-        //        return true
-        //    end
-        //    return false
-        //end 
-
-        /// <summary>
-        /// Retrives the symbol in the index into list
-        /// This implementation needs to be moved to the array update class
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <param name="indexList"></param>
-        /// <returns></returns>
-        private bool GetSymbolIndexedIntoList(string symbol, out List<int> indexList)
-        {
-            indexList = null;
-            if (symbolArrayIndexMap.ContainsKey(symbol))
-            {
-                indexList = symbolArrayIndexMap[symbol];
-                return true;
-            }
-            return false;
-        } 
-#endif
-
         public StackValue Callr(int functionIndex, 
                                 int classIndex, 
                                 int depth, 
@@ -717,49 +678,6 @@ namespace ProtoCore.DSASM
             arguments.Reverse();
 
             Runtime.Context runtimeContext = new Runtime.Context();
-
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-
-            //
-            // Comment Jun: Retrieve the indices used to index in an argument
-
-            //
-            //  List<List<int>> indexIntoList
-            //  foreach arg in functionNode.args
-            //      
-            //      Iterate over the symbols in the executing graph node
-	        //      foreach symbol in executingGraphNode.dependents
-            //          List<int> argIndexInto = GetSymbolIndexedIntoList(symbol)
-            //          indexIntoList.push(argIndexInto)
-            //      end            
-            //      context.indexlist = indexIntoList
-            //      sv = JILDispatch.callsite(function, args, context, ...)
-            //  end
-            //
-
-            if (null != Properties.executingGraphNode 
-                && null != Properties.executingGraphNode.dependentList 
-                && Properties.executingGraphNode.dependentList.Count > 0 )
-            {
-                // Save the LHS of this graphnode
-                runtimeContext.ArrayPointer = Properties.executingGraphNode.ArrayPointer;
-
-                // Iterate over the symbols in the executing graph node
-                for (int n = 0; n < Properties.executingGraphNode.dependentList.Count; n++)
-                {
-                    List<int> indexIntoList = new List<int>();
-                    {
-                        // Check if the current dependent was indexed into
-                        SymbolNode argSymbol = Properties.executingGraphNode.dependentList[n].updateNodeRefList[0].nodeList[0].symbol;
-                        if (symbolArrayIndexMap.ContainsKey(argSymbol.name))
-                        {
-                            indexIntoList = symbolArrayIndexMap[argSymbol.name];
-                        }
-                    }
-                    runtimeContext.IndicesIntoArgMap.Add(indexIntoList);
-                }
-            }
-#endif
 
             // Comment Jun: These function do not require replication guides
             // TODO Jun: Move these conditions or refactor JIL code emission so these checks dont reside here (Post R1)
@@ -1034,15 +952,6 @@ namespace ProtoCore.DSASM
 
                     CallExplicit(entryPC);
                 }
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-                else
-                {
-                    if (null != Properties.executingGraphNode)
-                    {
-                        Properties.executingGraphNode.ArrayPointer = sv;
-                    }
-                }
-#endif
             }
 
             // If the function was called implicitly, The code below assumes this and must be executed
@@ -1726,189 +1635,6 @@ namespace ProtoCore.DSASM
                 gnode.isActive = false;
             }
             return reachableGraphNodes.Count;
-        }
-
-        /// <summary>
-        /// To implement element based update: when an element in an array is
-        /// updated, only updates the corresponding element in its updatee.
-        /// 
-        /// For example:
-        /// 
-        ///     a = b;    // b = {1, 2, 3};
-        ///     b[0] = 0; // should only update a[0].
-        ///     
-        /// The basic idea is checking the dimension node in the executing 
-        /// graph node (i.e., [0] in the executing graph node b[0] = 0), and
-        /// apply thsi dimension to the dirty graph node (i.e., a = b), so when
-        /// executing that dirty graph node, [0] will be applied to all POP and
-        /// PUSH instructions. So for statement a = b; essentially the VM 
-        /// will do
-        /// 
-        ///      push b[0];
-        ///      pop to a[0];
-        ///  
-        /// Now this function only considers about the simpliest case, i.e., 
-        /// only variable is on the RHS of expression because a function may
-        /// involve array promotion, type conversion, replication guide and so
-        /// on.   -- Yu Ke
-        /// </summary>
-        /// <param name="graphNode">The graph node that is to be update</param>
-        /// <param name="matchingNode">Matching node</param>
-        /// <param name="executingGraphNode">The executing graph node</param>
-        private void UpdateDimensionsForGraphNode(
-            AssociativeGraph.GraphNode graphNode,
-            AssociativeGraph.GraphNode matchingNode,
-            AssociativeGraph.GraphNode executingGraphNode)
-        {
-            Validity.Assert(graphNode != null && executingGraphNode != null);
-            graphNode.updateDimensions.Clear();
-
-            var updateDimNodes = executingGraphNode.dimensionNodeList;
-            if (updateDimNodes == null)
-            {
-                return;
-            }
-
-            // Update node list can be a, b, c for the case like:
-            //     a.b.c[0] = ...
-            // 
-            // Let's only support the simplest case now:
-            //
-            //    a[0] = ...
-            Validity.Assert(matchingNode.updateNodeRefList != null
-                && matchingNode.updateNodeRefList.Count > 0);
-            var depNodes = matchingNode.updateNodeRefList[0].nodeList;
-            if (depNodes == null || depNodes.Count != 1)
-            {
-                return;
-            }
-
-
-            if (graphNode.firstProc != null && graphNode.firstProc.argTypeList.Count != 0)
-            {
-                // Skip the case that function on RHS takes over 1 parameters --
-                // there is potential replication guide which hasn't been supported
-                // yet right now. 
-                // 
-                //     x = foo(a, b);
-                //     a[0] = ...
-                //
-                if (graphNode.firstProc.argTypeList.Count > 1)
-                {
-                    return;
-                }
-
-                // Not support function parameter whose rank >= 1
-                // 
-                // def foo(a:int[])
-                // {
-                //    ...
-                // }
-                // a = {1, 2, 3};
-                // b = a;
-                // a[0] = 0;   // b[0] = foo(a[0]) doesn't work!
-                //  
-                if (graphNode.firstProc.argTypeList[0].rank >= 1)
-                {
-                    return;
-                }
-            }
-
-            var depDimNodes = depNodes.Last().dimensionNodeList;
-            int dimIndex = 0;
-
-            if (depDimNodes != null)
-            {
-                // Try to match all dependent dimensions. For example:
-                //  
-                //     ... = a[0][i];
-                //     a[0][j] = ...;  
-                //
-                // Here [i], [j] doesn't match, even they may have same value.
-                // Or, 
-                //  
-                //     ... = a[0][1][2];
-                //     a[0][1] = ...;  
-                //
-                // where [2] hasn't been matched yet. 
-                //
-                // For these cases, right now just do full update. 
-                if (depDimNodes.Count > updateDimNodes.Count)
-                {
-                    return;
-                }
-
-                // For the case:
-                //
-                //     x = a[0];
-                //     a[0] = 1;   
-                //
-                // We don't want to apply array indexing [0] to a[0] again. But we 
-                // do want to apply array indexing [1] for the following case:
-                //
-                //    x = a[0];
-                //    a[0][1] = 1;  --> x[1] = a[0][1]
-                //
-                // So basically we should eliminate the common part.
-                for (; dimIndex < depDimNodes.Count; ++dimIndex)
-                {
-                    var dimSymbol1 = depDimNodes[dimIndex].symbol;
-                    var dimSymbol2 = updateDimNodes[dimIndex].symbol;
-                    if (!dimSymbol1.Equals(dimSymbol2))
-                    {
-                        return;
-                    }
-                }
-            }
-
-            for (; dimIndex < updateDimNodes.Count; ++dimIndex)
-            {
-                var dimNode = updateDimNodes[dimIndex];
-                var dimSymbol = dimNode.symbol;
-
-                switch (dimNode.nodeType)
-                {
-                    case AssociativeGraph.UpdateNodeType.kSymbol:
-                        {
-                            var opSymbol = StackValue.Null;
-                            if (dimSymbol.classScope != Constants.kInvalidIndex &&
-                                dimSymbol.functionIndex == Constants.kInvalidIndex)
-                            {
-                                opSymbol = StackValue.BuildMemVarIndex(dimSymbol.symbolTableIndex);
-                            }
-                            else
-                            {
-                                opSymbol = StackValue.BuildVarIndex(dimSymbol.symbolTableIndex);
-                            }
-
-                            var dimValue = GetOperandData(dimSymbol.codeBlockId,
-                                                          opSymbol,
-                                                          StackValue.BuildInt(dimSymbol.classScope));
-                            graphNode.updateDimensions.Add(dimValue);
-                            break;
-                        }
-
-                    case AssociativeGraph.UpdateNodeType.kLiteral:
-                        {
-                            int dimValue;
-                            if (Int32.TryParse(dimSymbol.name, out dimValue))
-                            {
-                                graphNode.updateDimensions.Add(StackValue.BuildInt(dimValue));
-                            }
-                            else
-                            {
-                                // No idea for this dimension, just terminate. 
-                                return;
-                            }
-                            break;
-                        }
-                    default:
-                        // No idea to how to handle method and other node types,
-                        // just stop here at least we can get partial element
-                        // based array update. 
-                        return;
-                }
-            }
         }
 
         /// <summary>
@@ -4263,26 +3989,7 @@ namespace ProtoCore.DSASM
                 objectIndexing = true;
             }
 
-            bool elementBasedUpdate = runtimeCore.Options.ElementBasedArrayUpdate
-                                    && Properties.executingGraphNode != null
-                                    && Properties.executingGraphNode.updateDimensions.Count > 0;
-            // At present element based array update only supports single 
-            // variable on the RHS of expression. So for graph node
-            //
-            //    x = foo(a[i]);
-            //    a[i][0] = 1;
-            // 
-            // there are two dependent node 'a', 'i'. To avoid dimension '[0]'
-            // applied to 'i', double check to ensure it is the first dependent
-            // node 'a'. 
-            if (objectIndexing && elementBasedUpdate)
-            {
-                SymbolNode symbolNode = GetSymbolNode(blockId, (int)instruction.op2.opdata, (int)instruction.op1.opdata);
-                AssociativeGraph.UpdateNode firstDepNode = Properties.executingGraphNode.dependentList[0].updateNodeRefList[0].nodeList[0];
-                elementBasedUpdate = firstDepNode.symbol.Equals(symbolNode);
-            }
-
-            if (0 == dimensions && !elementBasedUpdate || !objectIndexing)
+            if (0 == dimensions || !objectIndexing)
             {
                 int fp = runtimeCore.RuntimeMemory.FramePointer;
                 if (runtimeCore.Options.RunMode == InterpreterMode.kExpressionInterpreter && instruction.op1.IsThisPtr)
@@ -4309,11 +4016,6 @@ namespace ProtoCore.DSASM
                     dims.Add(rmem.Pop());
                 }
                 dims.Reverse();
-
-                if (elementBasedUpdate)
-                {
-                    dims.AddRange(Properties.executingGraphNode.updateDimensions);
-                }
 
                 StackValue sv = GetIndexedArray(dims, blockId, instruction.op1, instruction.op2);
                 rmem.Push(sv);
@@ -4751,11 +4453,7 @@ namespace ProtoCore.DSASM
 
             // The returned stackvalue is used by watch test framework - pratapa
             StackValue tempSvData = StackValue.Null;
-
-            bool elementBasedUpdate = runtimeCore.Options.ElementBasedArrayUpdate
-                                    && Properties.executingGraphNode != null
-                                    && Properties.executingGraphNode.updateDimensions.Count > 0;
-            if (0 == dimensions && !elementBasedUpdate || !objectIndexing)
+            if (0 == dimensions || !objectIndexing)
             {
                 runtimeVerify(instruction.op2.IsClassIndex);
 
@@ -4800,61 +4498,15 @@ namespace ProtoCore.DSASM
                 runtimeVerify(instruction.op1.IsVariableIndex);
 
                 List<StackValue> dimList = new List<StackValue>();
-
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-                List<int> indexIntoList = new List<int>();
-                for (int i = 0; i < dimensions; ++i)
-                {
-                    StackValue svIndex = rmem.Pop();
-                    dimList.Add(svIndex);
-                    indexIntoList.Add((int)svIndex.opdata);
-                }
-                indexIntoList.Reverse();
-                dimList.Reverse();
-
-#else
                 for (int i = 0; i < dimensions; ++i)
                 {
                     dimList.Add(rmem.Pop());
                 }
                 dimList.Reverse();
-#endif
-
-                // Get the original value of variable. Test framework will add
-                // svData below too a map and do comparsion. But for element
-                // based array update, svData is just the value of element, not
-                // the whole array, so we have to get the original value of 
-                // array. 
-                List<StackValue> partialDimList = new List<StackValue>(dimList);
-                if (elementBasedUpdate)
-                {
-                    dimList.AddRange(Properties.executingGraphNode.updateDimensions);
-                }
-
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-                ProtoCore.AssociativeEngine.ArrayUpdate.UpdateSymbolArrayIndex(symbol.name, indexIntoList, symbolArrayIndexMap);
-#endif
 
                 svData = rmem.Pop();
                 tempSvData = svData;
                 EX = PopToIndexedArray(blockId, (int)instruction.op1.opdata, (int)instruction.op2.opdata, dimList, svData);
-
-                if (elementBasedUpdate)
-                {
-                    if (partialDimList.Count == 0)  // array promotion
-                    {
-                        tempSvData = GetOperandData(blockId,
-                                                    instruction.op1,
-                                                    instruction.op2);
-                    }
-                    else
-                    {
-                        tempSvData = GetIndexedArray(partialDimList,
-                                                     blockId,
-                                                     instruction.op1,
-                                                     instruction.op2);
-                    }
-                }
             }
 
             ++pc;
