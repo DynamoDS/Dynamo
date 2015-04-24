@@ -189,13 +189,13 @@
                         <DataTrigger Binding="{Binding Path=SearchRootCategories.Count}"
                                      Value="0">
                             <Setter Property="Visibility"
-                                    Value="Hidden" />
+                                    Value="Collapsed" />
                         </DataTrigger>
 
                         <DataTrigger Binding="{Binding Path=CurrentMode}"
                                      Value="{x:Static viewmodels:SearchViewModel+ViewMode.LibraryView}">
                             <Setter Property="Visibility"
-                                    Value="Hidden" />
+                                    Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
