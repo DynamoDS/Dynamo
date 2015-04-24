@@ -95,14 +95,11 @@
                   Background="#444444">
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Name="SearchIconAndTextBlockGrid"
-                            Grid.ColumnSpan="2"
                             Width="Auto"
                             Orientation="Horizontal">
                     <StackPanel.HorizontalAlignment>
@@ -146,10 +143,10 @@
                          MinWidth="280"
                          CaretBrush="{StaticResource CommonSidebarTextColor}"
                          Margin="26,0,0,-1"
-                         Grid.ColumnSpan="3" />
+                         Grid.ColumnSpan="2" />
 
                 <Button Name="SearchCancelButton"
-                        Grid.Column="2"
+                        Grid.Column="1"
                         Click="OnSearchCancelButtonClick"
                         VerticalAlignment="Center">
                     <Button.Visibility>
