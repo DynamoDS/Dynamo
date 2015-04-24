@@ -146,7 +146,7 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="SizeChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (ViewModel != null && !ViewModel.AnnotationModel.loadFromXML && e.HeightChanged)
+            if (ViewModel != null && e.HeightChanged)
             {
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.ActualHeight;                
             }  
