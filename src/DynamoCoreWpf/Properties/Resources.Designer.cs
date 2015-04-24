@@ -115,6 +115,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sign in to Autodesk A360 to access online services that integrate with your desktop software..
+        /// </summary>
+        public static string Autodesk360SignInButtonContentToolTip {
+            get {
+                return ResourceManager.GetString("Autodesk360SignInButtonContentToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk A360.
+        /// </summary>
+        public static string Autodesk360SignInButtonTitleToolTip {
+            get {
+                return ResourceManager.GetString("Autodesk360SignInButtonTitleToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk Sign In.
         /// </summary>
         public static string AutodeskSignIn {

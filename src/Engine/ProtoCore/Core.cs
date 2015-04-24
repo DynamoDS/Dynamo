@@ -102,7 +102,6 @@ namespace ProtoCore
             DisableDisposeFunctionDebug = true;
             GenerateExprID = true;
             IsDeltaExecution = false;
-            ElementBasedArrayUpdate = false;
 
             IsDeltaCompile = false;
 
@@ -142,7 +141,6 @@ namespace ProtoCore
         public bool DisableDisposeFunctionDebug { get; set; }
         public bool GenerateExprID { get; set; }
         public bool IsDeltaExecution { get; set; }
-        public bool ElementBasedArrayUpdate { get; set; }
         public InterpreterMode RunMode { get; set; }
 
         /// <summary>

@@ -466,31 +466,11 @@ namespace ProtoImperative
             int symbolindex = ProtoCore.DSASM.Constants.kInvalidIndex;
             if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
             {
-                
                 symbolindex = core.ClassTable.ClassNodes[globalClassIndex].symbols.Append(symbolnode);
             }
             else
             {
-                // Do not import global symbols from external libraries
-                //if (this.isEmittingImportNode && core.IsParsingPreloadedAssembly)
-                //{
-                //    bool importGlobalSymbolFromLib = !string.IsNullOrEmpty(symbolnode.ExternLib) &&
-                //        symbolnode.functionIndex == -1 && symbolnode.classScope == -1;
-
-                //    if (importGlobalSymbolFromLib)
-                //    {
-                //        return symbolnode;
-                //    }
-                //}
-
-                
                 symbolindex = codeBlock.symbolTable.Append(symbolnode);                
-            }
-
-            if (ProtoCore.DSASM.MemoryRegion.kMemHeap == symbolnode.memregion)
-            {
-                EmitInstrConsole(ProtoCore.DSASM.kw.alloca, symbolindex.ToString());
-                EmitAlloc(symbolindex);
             }
 
             symbolnode.symbolTableIndex = symbolindex;
@@ -2835,24 +2815,6 @@ namespace ProtoImperative
                 }
             }
 
-            // Replace with build-in RangeExpression() function. - Yu Ke
-            var tmpFrom = nodeBuilder.BuildTempVariable();
-            var assignFrom = nodeBuilder.BuildBinaryExpression(tmpFrom, range.FromNode);
-            EmitBinaryExpressionNode(assignFrom, ref inferedType);
-
-            var tmpTo = nodeBuilder.BuildTempVariable();
-            var assignTo = nodeBuilder.BuildBinaryExpression(tmpTo, range.ToNode);
-            EmitBinaryExpressionNode(assignTo, ref inferedType);
-
-            var tmpStep = nodeBuilder.BuildTempVariable();
-            var assignStep = nodeBuilder.BuildBinaryExpression(tmpStep, range.StepNode == null ? new NullNode() : range.StepNode);
-            EmitBinaryExpressionNode(assignStep, ref inferedType);
-
-            BooleanNode hasStep = new BooleanNode(range.StepNode != null);
-            var tmpStepSkip = nodeBuilder.BuildTempVariable();
-            var assignStepSkip = nodeBuilder.BuildBinaryExpression(tmpStepSkip, hasStep);
-            EmitBinaryExpressionNode(assignStepSkip, ref inferedType);
-
             IntNode op = null;
             switch (range.stepoperator)
             {
@@ -2870,8 +2832,17 @@ namespace ProtoImperative
                     break;
             }
 
-            var rangeExprFunc = nodeBuilder.BuildFunctionCall(Constants.kFunctionRangeExpression,
-                new List<ImperativeNode> { tmpFrom, tmpTo, tmpStep, op, tmpStepSkip, new BooleanNode(range.HasRangeAmountOperator) });
+            var rangeExprFunc = nodeBuilder.BuildFunctionCall(
+                Constants.kFunctionRangeExpression,
+                new List<ImperativeNode> 
+                { 
+                    range.FromNode, 
+                    range.ToNode, 
+                    range.StepNode ?? new NullNode(),
+                    op, 
+                    new BooleanNode(range.StepNode != null),
+                    new BooleanNode(range.HasRangeAmountOperator) 
+                });
 
             NodeUtils.CopyNodeLocation(rangeExprFunc, range);
             EmitFunctionCallNode(rangeExprFunc, ref inferedType, false, graphNode);
