@@ -339,7 +339,7 @@ limitations under the License.
       <ExternLibG220 Include="$(SolutionDir)..\extern\LibG_220\*" />
       <ExternLibG221 Include="$(SolutionDir)..\extern\LibG_221\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
-      <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\*" />
+      <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
     </ItemGroup>
     <Copy SourceFiles="$(SolutionDir)..\README.md" DestinationFiles="$(OutputPath)README.txt" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\License.rtf" DestinationFolder="$(OutputPath)\$(UICulture)" />
@@ -352,6 +352,6 @@ limitations under the License.
     <Copy SourceFiles="@(ExternLibG220)" DestinationFolder="$(OutputPath)libg_220\" />
     <Copy SourceFiles="@(ExternLibG221)" DestinationFolder="$(OutputPath)libg_221\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\" />
+    <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
   </Target>
 </Project>
