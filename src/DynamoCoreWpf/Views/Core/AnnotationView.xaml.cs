@@ -8,8 +8,10 @@ using System.Windows.Shapes;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using HelixToolkit.Wpf.SharpDX;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Dynamo.Selection;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Dynamo.Nodes
@@ -98,10 +100,18 @@ namespace Dynamo.Nodes
             {
                 var annotationGuid = this.ViewModel.AnnotationModel.GUID;
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(annotationGuid, Dynamo.Utilities.ModifierKeys.Shift));
-
+                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+                
                 foreach (var models in this.ViewModel.AnnotationModel.SelectedModels)
                 {
+                    //when a node is added to group, that node will be in selected mode. 
+                    //so remove that node from selection. Select that node with other nodes
+                    //in that group. Otherwise, this node will be unselected while the other 
+                    //nodes will be in selected.
+                    if (models.IsSelected)
+                    {
+                        DynamoSelection.Instance.Selection.Remove(models);
+                    }
                     ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                         new DynCmd.SelectModelCommand(models.GUID, Dynamo.Utilities.ModifierKeys.Shift));
                 }
@@ -125,15 +135,7 @@ namespace Dynamo.Nodes
         private void GroupTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {             
             if (ViewModel != null)
-            {
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(
-                        System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
-                        GroupTextBox.Text));
-
-                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();  
-
+            {               
                 ViewModel.AnnotationModel.TextBlockHeight = GroupTextBox.ActualHeight;
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }           
@@ -186,7 +188,17 @@ namespace Dynamo.Nodes
 
         private void GroupTextBlock_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            
+            if (ViewModel != null && (bool) e.NewValue)
+            {
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.UpdateModelValueCommand(
+                        System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
+                        GroupTextBox.Text));
+
+                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+            }
+
         }
     }
 }
