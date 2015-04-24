@@ -1,0 +1,98 @@
+<dynWorkspace X="-568" Y="24" zoom="0.9" Description="The Sierpiński arrowhead curve is a fractal curve similar in appearance and identical in limit to the Sierpiński triangle. This node generates XYZs for all endpoints in the curve." Category="Fractals" Name="Sierpiński Arrowhead" ID="0a1ec681-da8b-4a34-b610-0055bb64de5d">
+  <dynElements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2acad0dc-7033-4c79-88fc-2b628cc81c4e" nickname="Input" x="0" y="28.4088888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="scale" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b1cd52b3-b1ba-49a6-96b0-5d7cded3e750" nickname="Input" x="0" y="163.408888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="order" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9a47559b-6ce0-431b-991c-23dd38763e1e" nickname="Output" x="1116.43959209556" y="159.964444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="pts" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="4b00ef57-d937-4b77-8830-a7126b31ae05" nickname="If" x="326.661814317784" y="292.928888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="7b1d3bd7-4ecf-479d-afc8-1106600960a5" nickname="Formula" x="128.106258762223" y="229.373333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <FormulaText>order%2==0</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="125f0b20-f639-46ca-bc63-ff481a148f6b" nickname="arrowhead curve" x="676.884036540001" y="163.484444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="d06cd341-ed58-4e19-b78b-ce03eb244e16" />
+      <Name value="arrowhead curve" />
+      <Description value="internal recursive loop for sierpinski arrowhead" />
+      <Inputs>
+        <Input value="order" />
+        <Input value="translate" />
+        <Input value="rotation" />
+        <Input value="result" />
+        <Input value="transform" />
+      </Inputs>
+      <Outputs>
+        <Output value="pts" />
+        <Output value="transform" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="3154c7c1-7090-483f-b5f1-22567c929dab" nickname="List" x="495.440131245433" y="452.174444444445" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.TransformTranslation type="Dynamo.Nodes.TransformTranslation" guid="2610cf12-4e29-44b2-9de1-4f13809b0a53" nickname="Translate Transform" x="477.217909023211" y="13.1744444444441" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="dd0e5ea5-42b1-4639-905e-7681813d6932" nickname="XYZ" x="351.829020134322" y="13.3233333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="8522b5f5-113b-4fcb-a452-4325cacf00a7" nickname="Formula" x="101.829020134322" y="402.212222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <FormulaText>pi/3</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="f52ba109-04b0-4d32-9b1f-181d06846492" nickname="Formula" x="502.940131245434" y="211.101111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <FormulaText>-pi/3</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="ebe29165-7319-4059-adf1-a4140b10a30a" nickname="Formula" x="127.384575689878" y="55.5455555555556" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <FormulaText>scale / Pow(2, order)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="0f397f13-4d7c-4b2b-89ec-d6885ec0d27d" nickname="Rotate Z Origin" x="189.1067979121" y="401.73" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="71909492-20d1-47b4-8e53-1944751221a7" />
+      <Name value="Rotate Z Origin" />
+      <Description value="Creates a rotation transform around the z-axis at (0,0,0)" />
+      <Inputs>
+        <Input value="dn" />
+      </Inputs>
+      <Outputs>
+        <Output value="t" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="83519838-a94c-4b5b-a637-668223cb336f" nickname="XYZ" x="374.051242356544" y="452.212222222222" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.TransformIdentity type="Dynamo.Nodes.TransformIdentity" guid="1a6c4fa0-bba5-474b-826d-2c6fac745bd5" nickname="Identity Transform" x="169.6067979121" y="313.323333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.ConnectorModel start="2acad0dc-7033-4c79-88fc-2b628cc81c4e" start_index="0" end="ebe29165-7319-4059-adf1-a4140b10a30a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1cd52b3-b1ba-49a6-96b0-5d7cded3e750" start_index="0" end="7b1d3bd7-4ecf-479d-afc8-1106600960a5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1cd52b3-b1ba-49a6-96b0-5d7cded3e750" start_index="0" end="ebe29165-7319-4059-adf1-a4140b10a30a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1cd52b3-b1ba-49a6-96b0-5d7cded3e750" start_index="0" end="125f0b20-f639-46ca-bc63-ff481a148f6b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4b00ef57-d937-4b77-8830-a7126b31ae05" start_index="0" end="125f0b20-f639-46ca-bc63-ff481a148f6b" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7b1d3bd7-4ecf-479d-afc8-1106600960a5" start_index="0" end="4b00ef57-d937-4b77-8830-a7126b31ae05" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="125f0b20-f639-46ca-bc63-ff481a148f6b" start_index="0" end="9a47559b-6ce0-431b-991c-23dd38763e1e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3154c7c1-7090-483f-b5f1-22567c929dab" start_index="0" end="125f0b20-f639-46ca-bc63-ff481a148f6b" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2610cf12-4e29-44b2-9de1-4f13809b0a53" start_index="0" end="125f0b20-f639-46ca-bc63-ff481a148f6b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dd0e5ea5-42b1-4639-905e-7681813d6932" start_index="0" end="2610cf12-4e29-44b2-9de1-4f13809b0a53" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8522b5f5-113b-4fcb-a452-4325cacf00a7" start_index="0" end="0f397f13-4d7c-4b2b-89ec-d6885ec0d27d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f52ba109-04b0-4d32-9b1f-181d06846492" start_index="0" end="125f0b20-f639-46ca-bc63-ff481a148f6b" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ebe29165-7319-4059-adf1-a4140b10a30a" start_index="0" end="dd0e5ea5-42b1-4639-905e-7681813d6932" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0f397f13-4d7c-4b2b-89ec-d6885ec0d27d" start_index="0" end="4b00ef57-d937-4b77-8830-a7126b31ae05" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="83519838-a94c-4b5b-a637-668223cb336f" start_index="0" end="3154c7c1-7090-483f-b5f1-22567c929dab" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1a6c4fa0-bba5-474b-826d-2c6fac745bd5" start_index="0" end="4b00ef57-d937-4b77-8830-a7126b31ae05" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes>
+    <Dynamo.Models.NoteModel text="Starting Rotation" x="488.495686800989" y="164.434444444444" />
+    <Dynamo.Models.NoteModel text="Starting Transform" x="329.6067979121" y="245.545555555555" />
+    <Dynamo.Models.NoteModel text="Starting Accumulator" x="498.495686800989" y="522.212222222222" />
+    <Dynamo.Models.NoteModel text="Translation for &quot;drawing&quot; a line" x="615.162353467656" y="21.1011111111111" />
+    <Dynamo.Models.NoteModel text="Length of line segments" x="147.384575689878" y="16.6566666666666" />
+    <Dynamo.Models.NoteModel text="Even: identity" x="57.384575689878" y="333.323333333333" />
+    <Dynamo.Models.NoteModel text="Odd: start at 60 degrees" x="114.051242356545" y="486.656666666667" />
+  </dynNotes>
+</dynWorkspace>

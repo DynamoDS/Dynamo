@@ -1,0 +1,46 @@
+<Workspace Version="0.6.3.7375" X="-110.690671085035" Y="219.821562606211" zoom="1.00600419002725" Description="Checks if any XYzs in a given list are almost equal (within a reasonable computational tolerance) to a specified XYZ." Category="CAAD_RWTH.XYZ" Name="XYZs Almost Equal" ID="7c7d7002-6192-43ee-b03b-b957cc6867f2">
+  <Elements>
+    <Dynamo.Nodes.XyzDistance type="Dynamo.Nodes.XyzDistance" guid="a02cb71a-5e77-400d-9e92-62307878316a" nickname="XYZ Distance" x="412.062284231019" y="91.8152554962568" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="91b34523-d2c4-4b05-b9d2-5bdd7a1a581c" nickname="Turn Into List" x="263.095306145122" y="149.373799120806" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c5195af8-0639-4e31-b707-ed2755a38bf3" nickname="Almost Zero" x="406.062968282218" y="17.1769887919426" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="7203b34a-da51-4672-8993-3591ebf9537d" />
+      <Name value="Almost Zero" />
+      <Description value="Returns a feasable computational tolerance to zero (1.0e-9 or a billionth of 1) for use in calculations. More background info: https://github.com/ikeough/Dynamo/issues/879" />
+      <Inputs />
+      <Outputs>
+        <Output value="1.0e-9" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6620e890-f184-40e3-96a0-9cb4d5744777" nickname="Input" x="303.850791127742" y="68.1492088722583" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="51282366-bc28-4bce-a937-5f003d089d3e" nickname="Input" x="154.850791127742" y="150.149208872258" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="b68d73a7-cef7-4ec2-a267-f6b38a59c9c2" nickname="Output" x="711.096277545605" y="43.928379741316" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="2f445f7d-b1a7-47b2-981a-78b096b45263" nickname="Formula" x="552.771308106828" y="44.8089767795536" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>not(a &gt; b)</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a02cb71a-5e77-400d-9e92-62307878316a" start_index="0" end="2f445f7d-b1a7-47b2-981a-78b096b45263" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="91b34523-d2c4-4b05-b9d2-5bdd7a1a581c" start_index="0" end="a02cb71a-5e77-400d-9e92-62307878316a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c5195af8-0639-4e31-b707-ed2755a38bf3" start_index="0" end="2f445f7d-b1a7-47b2-981a-78b096b45263" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6620e890-f184-40e3-96a0-9cb4d5744777" start_index="0" end="a02cb71a-5e77-400d-9e92-62307878316a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="51282366-bc28-4bce-a937-5f003d089d3e" start_index="0" end="91b34523-d2c4-4b05-b9d2-5bdd7a1a581c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f445f7d-b1a7-47b2-981a-78b096b45263" start_index="0" end="b68d73a7-cef7-4ec2-a267-f6b38a59c9c2" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

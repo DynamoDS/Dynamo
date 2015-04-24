@@ -1,0 +1,126 @@
+<Workspace X="-462.077128427129" Y="-25.8171500721497" zoom="1" Description="Create a Staggered XYZ grid on a face.  The face surface must have an untrimmed UV parameter space." Category="LunchBox.Geometry.Panel" Name="LunchBox Staggered Grid by Face" ID="ee518492-ca77-4223-8a04-b09257817890">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="9af58928-3836-4a51-a6da-14fe948d4304" nickname="Python Script" x="486" y="339.04" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+
+udiv = dataEnteringNode[0]
+vdiv = dataEnteringNode[1]
+
+ustep = 1/udiv
+vstep = 1/vdiv
+
+quads = []
+for i in range(0,int(udiv)):
+	for j in range(0,int(vdiv)):
+		# Condition 1
+		if j%2 == 0:
+			ptA = UV(i*ustep,j*vstep)
+			ptB = UV((i+1)*ustep,j*vstep)
+			ptC = UV((i+1)*ustep,(j+1)*vstep)
+			ptD = UV(i*ustep,(j+1)*vstep)
+			
+			quad = []
+			#Append to quad
+			quad.append(ptA)
+			quad.append(ptB)
+			quad.append(ptC)
+			quad.append(ptD)
+			#Append quads
+			quads.append(quad)
+			
+		# Condition 2
+		if j%2 == 1:
+			if i &lt; (udiv-1):
+				ptA = UV((i+0.5)*ustep,j*vstep)
+				ptB = UV((i+1.5)*ustep,j*vstep)
+				ptC = UV((i+1.5)*ustep,(j+1)*vstep)
+				ptD = UV((i+0.5)*ustep,(j+1)*vstep)
+				
+				quad = []
+				#Append to quad
+				quad.append(ptA)
+				quad.append(ptB)
+				quad.append(ptC)
+				quad.append(ptD)
+				#Append quads
+				quads.append(quad)
+			
+			# Condition 3
+			if i == 0:
+				ptA = UV(i*ustep,j*vstep)
+				ptB = UV((i+0.5)*ustep,j*vstep)
+				ptC = UV((i+0.5)*ustep,(j+1)*vstep)
+				ptD = UV(i*ustep,(j+1)*vstep)
+			
+				quad = []
+				#Append to quad
+				quad.append(ptA)
+				quad.append(ptB)
+				quad.append(ptC)
+				quad.append(ptD)
+				#Append quads
+				quads.append(quad)
+			
+			# Condition 4
+			if i == udiv-1:
+				ptA = UV((i+0.5)*ustep,j*vstep)
+				ptB = UV((i+1)*ustep,j*vstep)
+				ptC = UV((i+1)*ustep,(j+1)*vstep)
+				ptD = UV((i+0.5)*ustep,(j+1)*vstep)
+			
+				quad = []
+				#Append to quad
+				quad.append(ptA)
+				quad.append(ptB)
+				quad.append(ptC)
+				quad.append(ptD)
+				#Append quads
+				quads.append(quad)
+
+
+#Assign your output to the OUT variable
+OUT = quads</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8d85fb30-bc86-43bd-9288-2a1ced4469d7" nickname="Input" x="173.833333333333" y="222.04" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Face" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5b620cf9-cc7c-4455-9c07-c693d820aef8" nickname="Input" x="183" y="320.04" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="U" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d3b4a7b7-7a58-44b8-9aec-60e61cd9bcf6" nickname="Input" x="182" y="387.79" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="de1e1cf3-a58c-411c-b292-50763e6bf743" nickname="Output" x="847.073232323232" y="242.931414141414" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="dd3b42aa-ca72-4c7f-9458-6f045ca28621" nickname="List" x="294" y="341.04" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.XyzEvaluate type="Dynamo.Nodes.XyzEvaluate" guid="01931a9d-af72-4ee4-b1d5-9ae1aee45798" nickname="Evaluate UV" x="459.042699724518" y="200.140338449429" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="9c97673c-04c4-492b-b247-4a93deaf0684" nickname="Map" x="670.444214876033" y="243.473671782762" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="25b00e69-4ca2-4b98-b40a-ab15f4eecf89" nickname="Watch" x="688.077128427129" y="358.85715007215" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9af58928-3836-4a51-a6da-14fe948d4304" start_index="0" end="9c97673c-04c4-492b-b247-4a93deaf0684" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9af58928-3836-4a51-a6da-14fe948d4304" start_index="0" end="25b00e69-4ca2-4b98-b40a-ab15f4eecf89" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8d85fb30-bc86-43bd-9288-2a1ced4469d7" start_index="0" end="01931a9d-af72-4ee4-b1d5-9ae1aee45798" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5b620cf9-cc7c-4455-9c07-c693d820aef8" start_index="0" end="dd3b42aa-ca72-4c7f-9458-6f045ca28621" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d3b4a7b7-7a58-44b8-9aec-60e61cd9bcf6" start_index="0" end="dd3b42aa-ca72-4c7f-9458-6f045ca28621" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dd3b42aa-ca72-4c7f-9458-6f045ca28621" start_index="0" end="9af58928-3836-4a51-a6da-14fe948d4304" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="01931a9d-af72-4ee4-b1d5-9ae1aee45798" start_index="0" end="9c97673c-04c4-492b-b247-4a93deaf0684" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9c97673c-04c4-492b-b247-4a93deaf0684" start_index="0" end="de1e1cf3-a58c-411c-b292-50763e6bf743" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

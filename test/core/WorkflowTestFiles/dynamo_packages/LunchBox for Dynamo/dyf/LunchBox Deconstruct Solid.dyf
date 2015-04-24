@@ -1,0 +1,131 @@
+<Workspace Version="0.6.3.38253" X="111.826759138815" Y="178.104026508336" zoom="0.910063803931439" Description="Deconstructs a solid into faces, edges, and vertices" Category="LunchBox.Geometry.Utilities" Name="LunchBox Deconstruct Solid" ID="0b5c17c2-b460-4599-a790-0c67734a5192">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="820a14f9-925e-46b2-a086-f30607ff0760" nickname="Get from List" x="557.988016876161" y="272.361149102555" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="b5eeebe7-6550-4d7b-b60e-b31a2f8186cc" nickname="Get from List" x="553.988016876161" y="134.361149102555" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="7b1b7a77-8924-49e6-a96f-7ac11e9f212b" nickname="Number" x="444.988016876161" y="236.361149102555" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="d223ce84-568c-4f56-9937-c099a1c0a327" nickname="Number" x="440.988016876161" y="98.3611491025551" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="ff84cbbb-1385-4adb-bfde-c5c069f830cc" nickname="Get from List" x="556.988016876161" y="-2.63885089744485" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="5171d83d-e5b0-40d1-bcfa-c89f5883801e" nickname="Number" x="443.988016876161" y="-38.6388508974449" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="40ddf0f2-2962-42e3-92c2-2408168c6a14" nickname="Python Script" x="260.988016876161" y="147.361149102555" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+solids = IN
+
+faces = []
+edges = []
+vertices = []
+if hasattr(solids, "__iter__"):
+	for solid in solids:
+		if hasattr(solid, "__iter__"):
+			for sol in solid:
+				fcs = []
+				edgs = []
+				verts = []
+				for face in solid.Faces:
+					fcs.append(face)
+	
+				for edge in solid.Edges:
+					crv = edge.AsCurve()
+					edgs.append(crv)
+		
+					pt = crv.Evaluate(0, True)
+					verts.append(pt)
+		
+				faces.append(fcs)
+				edges.append(edgs)
+				vertices.append(verts)
+		else:
+			fcs = []
+			edgs = []
+			verts = []
+			for face in solid.Faces:
+				fcs.append(face)
+	
+			for edge in solid.Edges:
+				crv = edge.AsCurve()
+				edgs.append(crv)
+		
+				pt = crv.Evaluate(0, True)
+				verts.append(pt)
+		
+			faces.append(fcs)
+			edges.append(edgs)
+			vertices.append(verts)
+else:
+	fcs = []
+	edgs = []
+	verts = []
+	for face in solids.Faces:
+		fcs.append(face)
+	
+	for edge in solids.Edges:
+		crv = edge.AsCurve()
+		edgs.append(crv)
+		
+		pt = crv.Evaluate(0, True)
+		verts.append(pt)
+		
+	faces.append(fcs)
+	edges.append(edgs)
+	vertices.append(verts)
+
+	
+	
+output = []
+output.append(faces)
+output.append(edges)
+output.append(vertices)
+	
+
+#Assign your output to the OUT variable
+OUT = output</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d9e2d265-f9a4-4b15-a0b4-b7e865732ede" nickname="Input" x="139.734005372685" y="147.670517735088" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Solid" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="76cb4d1a-f065-452c-8ea7-f635eb02aaaa" nickname="Output" x="756.174300631657" y="-3.96720195428446" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Faces" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="d6e3266a-5b2d-4a10-8fc2-17fb80b9c4f2" nickname="Output" x="761.661409980786" y="138.879925289328" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Edges" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0b914583-99ac-4a16-8dc8-1511848c3bd7" nickname="Output" x="756.160278772714" y="271.837636031459" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Vertices" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="820a14f9-925e-46b2-a086-f30607ff0760" start_index="0" end="0b914583-99ac-4a16-8dc8-1511848c3bd7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b5eeebe7-6550-4d7b-b60e-b31a2f8186cc" start_index="0" end="d6e3266a-5b2d-4a10-8fc2-17fb80b9c4f2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7b1b7a77-8924-49e6-a96f-7ac11e9f212b" start_index="0" end="820a14f9-925e-46b2-a086-f30607ff0760" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d223ce84-568c-4f56-9937-c099a1c0a327" start_index="0" end="b5eeebe7-6550-4d7b-b60e-b31a2f8186cc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ff84cbbb-1385-4adb-bfde-c5c069f830cc" start_index="0" end="76cb4d1a-f065-452c-8ea7-f635eb02aaaa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5171d83d-e5b0-40d1-bcfa-c89f5883801e" start_index="0" end="ff84cbbb-1385-4adb-bfde-c5c069f830cc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="40ddf0f2-2962-42e3-92c2-2408168c6a14" start_index="0" end="820a14f9-925e-46b2-a086-f30607ff0760" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="40ddf0f2-2962-42e3-92c2-2408168c6a14" start_index="0" end="b5eeebe7-6550-4d7b-b60e-b31a2f8186cc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="40ddf0f2-2962-42e3-92c2-2408168c6a14" start_index="0" end="ff84cbbb-1385-4adb-bfde-c5c069f830cc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d9e2d265-f9a4-4b15-a0b4-b7e865732ede" start_index="0" end="40ddf0f2-2962-42e3-92c2-2408168c6a14" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

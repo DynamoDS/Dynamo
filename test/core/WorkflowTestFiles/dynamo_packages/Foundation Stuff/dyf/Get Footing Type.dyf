@@ -1,0 +1,57 @@
+<Workspace Version="0.6.3.5256" X="3.19999999999999" Y="234.9" zoom="0.9" Description="Retrieves the footing type for a given wall footing instance" Category="CAAD_RWTH.Revit.Structural" Name="Get Footing Type" ID="b1fc3455-ed30-4b4c-8f86-02de38786347">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="9aa0bc9d-768e-4d70-bd66-7814feb8755b" nickname="Python Script" x="341.216394716395" y="66.5555555555555" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+footinginstances = IN
+elementlist = list()
+for item in footinginstances:
+	try:
+		elementlist.append(item.FootingType)
+	except:
+		emptylist = list()
+OUT = elementlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c0b27aa7-4090-43bb-81fd-48c102f646b5" nickname="Turn Into List" x="193" y="1.25854031026404" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2f089fd5-9acd-453b-b5c5-c0d9c3ad7fc4" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Footing Instance(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="414c875f-dab6-4efd-97d5-842b74a809d7" nickname="Output" x="706.883061383061" y="0.333333333333371" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Footing Type(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c3e8237a-5206-42bd-9ca6-8438206aa418" nickname="Return List Or Single Value" x="489.777777777778" y="0.666666666666714" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9aa0bc9d-768e-4d70-bd66-7814feb8755b" start_index="0" end="c3e8237a-5206-42bd-9ca6-8438206aa418" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0b27aa7-4090-43bb-81fd-48c102f646b5" start_index="0" end="9aa0bc9d-768e-4d70-bd66-7814feb8755b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0b27aa7-4090-43bb-81fd-48c102f646b5" start_index="0" end="c3e8237a-5206-42bd-9ca6-8438206aa418" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2f089fd5-9acd-453b-b5c5-c0d9c3ad7fc4" start_index="0" end="c0b27aa7-4090-43bb-81fd-48c102f646b5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c3e8237a-5206-42bd-9ca6-8438206aa418" start_index="0" end="414c875f-dab6-4efd-97d5-842b74a809d7" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

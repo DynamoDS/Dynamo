@@ -1,0 +1,58 @@
+<Workspace Version="0.6.3.7375" X="-71" Y="205" zoom="1" Description="Retrieves XYZs from MeshTriangles" Category="CAAD_RWTH.Revit.Meshes" Name="XYZs From MeshTriangle" ID="da3a1c23-0976-4ed0-8f83-cbf3a3e20e03">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="f8ad6864-120f-4abe-9a64-24af8e380a0f" nickname="Python Script" x="391.993850106028" y="47.4286147231032" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+triangles = IN
+elementlist = list()
+for tri in triangles:
+	trilist = list()
+	trilist.append(tri.Vertex.__getitem__(0))
+	trilist.append(tri.Vertex.__getitem__(1))
+	trilist.append(tri.Vertex.__getitem__(2))
+	elementlist.append(trilist)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="9897eb3a-4062-45db-9146-416507e216eb" nickname="Return List Or Single Value" x="533.787938467234" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="1122babd-1df4-4d16-8a99-5dab554c46d9" nickname="Turn Into List" x="250" y="1.66002702864441" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="aaf1802b-78c3-48f1-bcae-5b1a1d6a0add" nickname="Input" x="70" y="1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="MeshTriangle(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="91707beb-40d1-47ec-9956-f983773d0d65" nickname="Output" x="729.787938467234" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZs" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f8ad6864-120f-4abe-9a64-24af8e380a0f" start_index="0" end="9897eb3a-4062-45db-9146-416507e216eb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9897eb3a-4062-45db-9146-416507e216eb" start_index="0" end="91707beb-40d1-47ec-9956-f983773d0d65" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1122babd-1df4-4d16-8a99-5dab554c46d9" start_index="0" end="f8ad6864-120f-4abe-9a64-24af8e380a0f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1122babd-1df4-4d16-8a99-5dab554c46d9" start_index="0" end="9897eb3a-4062-45db-9146-416507e216eb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aaf1802b-78c3-48f1-bcae-5b1a1d6a0add" start_index="0" end="1122babd-1df4-4d16-8a99-5dab554c46d9" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

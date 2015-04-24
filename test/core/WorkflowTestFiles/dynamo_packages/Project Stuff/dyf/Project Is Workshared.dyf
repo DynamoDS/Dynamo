@@ -1,0 +1,26 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1.1" Description="Returns true if the current project is workshared" Category="CAAD_RWTH.Revit.Project" Name="Project Is Workshared" ID="070f6953-0854-4645-8eb5-9b4663673b79">
+  <Elements>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8391a372-b113-4e1a-b6ea-aa1f0875826c" nickname="Output" x="559.727272727273" y="190.672727272727" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="9360058e-8acd-40b3-8a55-a4891ad83340" nickname="Python Script" x="403.225966540589" y="191.68828131378" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN
+if doc.IsWorkshared:
+	OUT = 1
+else:
+	OUT = 0</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="d02f2cc9-64bb-4a39-b1da-eedb7a041ee9" nickname="Revit Document" x="259.090909090909" y="191.818181818182" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9360058e-8acd-40b3-8a55-a4891ad83340" start_index="0" end="8391a372-b113-4e1a-b6ea-aa1f0875826c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d02f2cc9-64bb-4a39-b1da-eedb7a041ee9" start_index="0" end="9360058e-8acd-40b3-8a55-a4891ad83340" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

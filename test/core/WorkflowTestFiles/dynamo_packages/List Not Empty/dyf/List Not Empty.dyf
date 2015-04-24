@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.22045" X="214" Y="227" zoom="1" Description="Just the inversion of the built-in Is Empty List node." Category="CAAD_RWTH.Lists" Name="List Not Empty" ID="cbc06bc3-4c8d-4b6a-bd05-e0f5b70427da">
+  <Elements>
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="d6e9429f-b4c4-4380-b10d-4cd7dcc5f39e" nickname="Is Empty List?" x="132" y="-1" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3fb55838-7053-4a18-8b32-e60a1152a72b" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0a2971d4-3a48-4465-9dfa-9420be121740" nickname="Output" x="440.785714285718" y="-2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Not type="Dynamo.Nodes.Not" guid="37386abf-adb6-432c-a1f6-ff55a2fe0643" nickname="Not" x="311" y="-1.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d6e9429f-b4c4-4380-b10d-4cd7dcc5f39e" start_index="0" end="37386abf-adb6-432c-a1f6-ff55a2fe0643" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3fb55838-7053-4a18-8b32-e60a1152a72b" start_index="0" end="d6e9429f-b4c4-4380-b10d-4cd7dcc5f39e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="37386abf-adb6-432c-a1f6-ff55a2fe0643" start_index="0" end="0a2971d4-3a48-4465-9dfa-9420be121740" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

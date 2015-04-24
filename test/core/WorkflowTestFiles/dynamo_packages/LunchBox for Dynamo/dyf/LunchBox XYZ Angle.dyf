@@ -1,0 +1,81 @@
+<Workspace Version="0.6.3.38253" X="93" Y="123" zoom="1" Description="Computes the angle between two XYZ vectors." Category="LunchBox.Geometry.Vector" Name="LunchBox XYZ Angle" ID="63001e95-2900-4494-be79-28cd155fcfad">
+  <Elements>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="0c027177-bb52-4c96-9817-3e45a814a1da" nickname="List" x="250" y="1.03466335139228" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="894b4701-4de3-4edb-a613-a79127cdb8e4" nickname="Python Script" x="412.786362007394" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+#TheProvingGround.org
+
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+vecA = IN[0]
+vecB = IN[1]
+
+testA = hasattr(vecA, "__iter__")
+testB = hasattr(vecB, "__iter__")
+
+bools = testA + testB
+
+angles = []
+
+#if the input is an array
+if bools&gt;0:
+	if bools == 2:
+		for i in range(0,len(vecA)):
+			angle = []
+			for j in range(0,len(vecB)):
+				a = vecA[i].AngleTo(vecB[j])
+				angle.append(a)
+			angles.append(angle)
+	
+	elif hasattr(vecA, "__iter__"):
+		for i in range(0,len(vecA)):
+			a = vecA[i].AngleTo(vecB)
+			angles.append(a)
+		
+	elif hasattr(vecB, "__iter__"):
+		angle = []
+		for i in range(0,len(vecB)):
+			a = vecA.AngleTo(vecB[i])
+			angles.append(a)
+else:
+	angle = vecA.AngleTo(vecB)
+	angles.append(angle)
+
+#Assign your output to the OUT variable
+OUT = angles</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6cb36fac-8125-40b7-a720-0b54adfe724c" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ1" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c0ccdee7-3062-43d8-826d-e1ce8c4acb32" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ2" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="491a0acc-9175-43a6-b768-5eca6eef9936" nickname="Output" x="593.786362007394" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Angle" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0c027177-bb52-4c96-9817-3e45a814a1da" start_index="0" end="894b4701-4de3-4edb-a613-a79127cdb8e4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="894b4701-4de3-4edb-a613-a79127cdb8e4" start_index="0" end="491a0acc-9175-43a6-b768-5eca6eef9936" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6cb36fac-8125-40b7-a720-0b54adfe724c" start_index="0" end="0c027177-bb52-4c96-9817-3e45a814a1da" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0ccdee7-3062-43d8-826d-e1ce8c4acb32" start_index="0" end="0c027177-bb52-4c96-9817-3e45a814a1da" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

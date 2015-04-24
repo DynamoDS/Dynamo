@@ -1,0 +1,40 @@
+<Workspace Version="0.6.3.5260" X="0" Y="0" zoom="1" Description="Selects a subcategory for a given element category by name" Category="CAAD_RWTH.Revit.Subcategories" Name="Select Subcategory By Name" ID="1f7b380b-bbae-480d-a210-47d3f0e6867a">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="dbe2db1a-36e2-4882-a915-ca127e0e9018" nickname="Python Script With Variable Number of Inputs" x="211.5" y="130" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+builtincat = IN1
+subcatname = IN2
+
+cat = doc.Settings.Categories.get_Item(builtincat)
+try:
+	OUT = cat.SubCategories.get_Item(subcatname)
+except:
+	OUT = list()</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="a5602e70-77a4-4323-9263-779b329605ce" nickname="Revit Document" x="5" y="67" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d6d71d1f-01c6-41d4-b96d-c508f552dfe6" nickname="Input" x="7" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="BuiltInCategory" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f7e2d305-757e-4518-af0c-2158ef95c640" nickname="Input" x="9" y="225" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Name" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="bbf8d8cc-b3aa-492f-ba7f-c4d5c2147b92" nickname="Output" x="690" y="127" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Subcategory" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="e36581ea-4be3-4e93-8306-8128c11d7999" nickname="Transaction" x="520.5" y="128.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="dbe2db1a-36e2-4882-a915-ca127e0e9018" start_index="0" end="e36581ea-4be3-4e93-8306-8128c11d7999" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a5602e70-77a4-4323-9263-779b329605ce" start_index="0" end="dbe2db1a-36e2-4882-a915-ca127e0e9018" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d6d71d1f-01c6-41d4-b96d-c508f552dfe6" start_index="0" end="dbe2db1a-36e2-4882-a915-ca127e0e9018" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f7e2d305-757e-4518-af0c-2158ef95c640" start_index="0" end="dbe2db1a-36e2-4882-a915-ca127e0e9018" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e36581ea-4be3-4e93-8306-8128c11d7999" start_index="0" end="bbf8d8cc-b3aa-492f-ba7f-c4d5c2147b92" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

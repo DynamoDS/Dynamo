@@ -1,0 +1,62 @@
+<Workspace Version="0.6.3.7993" X="84.0354624800709" Y="131.769193261277" zoom="0.867977507649016" Description="Create a new room at Level and UV(XY) in the active view" Category="JBE" Name="Create Room Level_UV" ID="8bcfe485-8d91-4ae0-afd8-6632258b02d6">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="4a96283f-9c4e-48b0-8b87-de4ea4309b73" nickname="Python Script With Variable Number of Inputs" x="436.636398738588" y="209.592888065852" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+doc = IN0
+level = IN1
+uv = IN2
+roomlist=[]
+for item in uv:
+	doccreation = doc.Create
+	a=doccreation.NewRoom(level,item)
+	roomlist.append(a)
+
+#Assign your output to the OUT variable
+OUT = roomlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b6fe2846-ea96-41a3-8c88-c5e700875744" nickname="Input" x="149.965621929069" y="191.57940867486" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Level" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="538c3935-b12c-4ef9-9425-8a0f37c9ddaf" nickname="Input" x="149.965621929069" y="308.34921064724" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="UV(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="7a5f8dda-7d44-4898-9a27-85e65bb7051e" nickname="Revit Document" x="149.965621929069" y="73.6575031154775" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="08590fd5-bae9-4582-a566-2a60a62a6b6e" nickname="Output" x="754.820005105429" y="209.592888065852" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Room(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e2232c94-efad-4fea-84e0-a9a25cb1174e" nickname="Turn Into List" x="274.392809325348" y="291.405081058967" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4a96283f-9c4e-48b0-8b87-de4ea4309b73" start_index="0" end="08590fd5-bae9-4582-a566-2a60a62a6b6e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b6fe2846-ea96-41a3-8c88-c5e700875744" start_index="0" end="4a96283f-9c4e-48b0-8b87-de4ea4309b73" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="538c3935-b12c-4ef9-9425-8a0f37c9ddaf" start_index="0" end="e2232c94-efad-4fea-84e0-a9a25cb1174e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7a5f8dda-7d44-4898-9a27-85e65bb7051e" start_index="0" end="4a96283f-9c4e-48b0-8b87-de4ea4309b73" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e2232c94-efad-4fea-84e0-a9a25cb1174e" start_index="0" end="4a96283f-9c4e-48b0-8b87-de4ea4309b73" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

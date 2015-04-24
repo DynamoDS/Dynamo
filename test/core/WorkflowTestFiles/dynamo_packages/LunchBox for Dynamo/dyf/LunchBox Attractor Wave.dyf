@@ -1,0 +1,92 @@
+<Workspace Version="0.6.2.2709" X="10" Y="175" zoom="1" Description="Generates a wave attractor effect using lists of attractors and targets." Category="LunchBox.Generate" Name="LunchBox Attractor Wave" ID="80bff10b-b588-4db1-9171-661dacfdb25e">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="5ce64cbb-f7f7-4dc6-b2e5-ff4d697709ea" nickname="LunchBox Remap Numbers" x="597.097502805836" y="112.793490460157" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="4f7086ab-e3da-451a-9c60-30985c4eb011" />
+      <Name value="LunchBox Remap Numbers" />
+      <Description value="Remaps a list of numbers to a new domain." />
+      <Inputs>
+        <Input value="Numbers" />
+        <Input value="Domain" />
+      </Inputs>
+      <Outputs>
+        <Output value="Remapped" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="bded4bb5-5468-43e3-a1a8-1fb0984a3b13" nickname="Python Script" x="446.847222222222" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+import math
+
+#The input to this node will be stored in the IN variable.
+list = IN[0]
+tar = IN[1]
+t = IN[2]
+
+distList = []
+
+att = []
+if hasattr(list, "__iter__"):
+    for i in range(0,len(list)):
+		att.append(list[i])
+else:
+    att.append(list)
+
+for i in range(0,len(tar)):
+	myTarget = tar[i]
+	distance = 0
+	vector = XYZ(0,0,0)
+	for j in range(0,len(att)):
+		distance = distance + (10 * math.sin(att[j].DistanceTo(myTarget) * t))
+	avg = distance/len(att)
+	distList.append(avg)
+
+
+#Assign your output to the OUT variable
+OUT = distList</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="5e6f3863-3199-418e-9c4c-baa2feb9be61" nickname="List" x="250" y="2.59722222222217" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7afc1587-2fa9-4e4d-b0d9-53bb90763f42" nickname="Input" x="-5" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Attractors" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d21dc824-8ecd-41af-8406-326248ea43c1" nickname="Input" x="-6" y="100" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Targets" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4bbbb78a-68c7-4365-b750-28d76c2d4f54" nickname="Input" x="-3" y="214" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Frequency" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="bcc1c950-6f2f-46ab-88cd-88dd9b21f6a9" nickname="Input" x="-7" y="313" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Domain" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="965f81b1-1f2b-4e9e-97d7-402ee55ccc8a" nickname="Output" x="868.097502805836" y="50" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Values" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5ce64cbb-f7f7-4dc6-b2e5-ff4d697709ea" start_index="0" end="965f81b1-1f2b-4e9e-97d7-402ee55ccc8a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bded4bb5-5468-43e3-a1a8-1fb0984a3b13" start_index="0" end="5ce64cbb-f7f7-4dc6-b2e5-ff4d697709ea" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5e6f3863-3199-418e-9c4c-baa2feb9be61" start_index="0" end="bded4bb5-5468-43e3-a1a8-1fb0984a3b13" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7afc1587-2fa9-4e4d-b0d9-53bb90763f42" start_index="0" end="5e6f3863-3199-418e-9c4c-baa2feb9be61" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d21dc824-8ecd-41af-8406-326248ea43c1" start_index="0" end="5e6f3863-3199-418e-9c4c-baa2feb9be61" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4bbbb78a-68c7-4365-b750-28d76c2d4f54" start_index="0" end="5e6f3863-3199-418e-9c4c-baa2feb9be61" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bcc1c950-6f2f-46ab-88cd-88dd9b21f6a9" start_index="0" end="5ce64cbb-f7f7-4dc6-b2e5-ff4d697709ea" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

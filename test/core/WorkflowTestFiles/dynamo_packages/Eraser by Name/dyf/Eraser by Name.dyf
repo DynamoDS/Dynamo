@@ -1,0 +1,93 @@
+<Workspace Version="0.6.3.7993" X="-182" Y="119" zoom="1" Description="Erase things matching a Regular expression" Category="JBE" Name="Eraser by Name" ID="1d2a108b-ebc2-4025-a2fc-eefdc9f9bc22">
+  <Elements>
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="e74ff481-8982-4141-aca6-e0d88620e2c5" nickname="Transaction" x="1441.99769951922" y="140.16975595754" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="c3d60a32-5c07-4b27-adaf-1eeb407d8538" nickname="Eraser" x="1269.84169719881" y="144.524920972377" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+doc = IN0
+x= IN1
+cantdelete=[]
+for item in x:
+	try:
+		doc.Delete(item)
+	except:
+		cantdelete.append(item)
+		
+OUT = cantdelete</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="827a198d-f302-4ed1-b3c2-f80cb7fbc5ef" nickname="Revit Document" x="1077.72618455378" y="39.9271312855713" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="784a6c01-ca02-414e-879d-439ff514da5a" nickname="Filter by Boolean Mask" x="1053.26364588928" y="167.026155852444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="35143dc1-7361-48b1-8b6d-2a5b275c4828" nickname="Match Regular Expression" x="842.771130221726" y="42.839412999239" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="8cc7fb35-db73-41f2-92d1-2b6505d4cf44" />
+      <Name value="Match Regular Expression" />
+      <Description value="Determines if a regular expression matches a string (or a list of strings) and returns a boolean value (or a list, depending on the input). The syntax for regular expressions is explained at&#xD;&#xA;http://ironpython-test.readthedocs.org/en/latest/howto/regex.html" />
+      <Inputs>
+        <Input value="regex" />
+        <Input value="string(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="bool" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="3e940cca-b04c-458f-b1dd-c62afcae6899" nickname="Get Name" x="611.198908612649" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="515c0f74-a450-497a-9a4c-937a07e2e2fd" />
+      <Name value="Get Name" />
+      <Description value="Gets the name of a given Revit element (if possible)" />
+      <Inputs>
+        <Input value="element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="name(s)" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="aa0148bd-ce49-48b5-a816-db247bc17a41" nickname="Turn Into List" x="387" y="155.452313137409" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="88c865c5-5c61-4d2f-8568-4c8cc712444e" nickname="Input" x="243" y="154.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Things(list)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a6604f25-6a6d-4b5e-a77f-515fdac935d6" nickname="Input" x="242" y="229.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Name (*as jocker / Blank for All)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="31574a43-ffb4-45d4-9db1-409022c99fba" nickname="Output" x="1488" y="287.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Can't Delete" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e74ff481-8982-4141-aca6-e0d88620e2c5" start_index="0" end="31574a43-ffb4-45d4-9db1-409022c99fba" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c3d60a32-5c07-4b27-adaf-1eeb407d8538" start_index="0" end="e74ff481-8982-4141-aca6-e0d88620e2c5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="827a198d-f302-4ed1-b3c2-f80cb7fbc5ef" start_index="0" end="c3d60a32-5c07-4b27-adaf-1eeb407d8538" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="784a6c01-ca02-414e-879d-439ff514da5a" start_index="0" end="c3d60a32-5c07-4b27-adaf-1eeb407d8538" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="35143dc1-7361-48b1-8b6d-2a5b275c4828" start_index="0" end="784a6c01-ca02-414e-879d-439ff514da5a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3e940cca-b04c-458f-b1dd-c62afcae6899" start_index="0" end="35143dc1-7361-48b1-8b6d-2a5b275c4828" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aa0148bd-ce49-48b5-a816-db247bc17a41" start_index="0" end="3e940cca-b04c-458f-b1dd-c62afcae6899" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aa0148bd-ce49-48b5-a816-db247bc17a41" start_index="0" end="784a6c01-ca02-414e-879d-439ff514da5a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="88c865c5-5c61-4d2f-8568-4c8cc712444e" start_index="0" end="aa0148bd-ce49-48b5-a816-db247bc17a41" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a6604f25-6a6d-4b5e-a77f-515fdac935d6" start_index="0" end="35143dc1-7361-48b1-8b6d-2a5b275c4828" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Node created from this discussion:&#xD;&#xA;http://dynamobim.org/forums/topic/tool-purge-line-pattern-available-as-package/" x="611.198908612649" y="-97.3182081172166" />
+    <Dynamo.Models.NoteModel text="Idea: Julien Benoit&#xD;&#xA;Python code: Andreas Dieckmann" x="611.198908612649" y="-170.769245931363" />
+  </Notes>
+</Workspace>

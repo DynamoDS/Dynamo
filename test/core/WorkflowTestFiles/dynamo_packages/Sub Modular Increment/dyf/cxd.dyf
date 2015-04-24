@@ -1,0 +1,22 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="" Category="Revit.Document" Name="cxd" ID="15eb8c6c-c2ba-4f64-9b69-6aa061ace0e8">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="d7ad076c-0894-4339-a893-c4a20a664123" nickname="Number" x="306" y="201" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="80026f2b-d22f-4135-afb9-35976496e986" nickname="Number" x="293" y="276" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="300" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="1d1017ed-36de-42c5-b878-de62fe8738f6" nickname="Number" x="300" y="357" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="20" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.NumberRange type="Dynamo.Nodes.NumberRange" guid="3c3e845b-cd25-426a-936c-86ca429d9fa7" nickname="Number Range" x="457" y="231" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="35717597-d249-41f9-ae15-6bf7c902b773" nickname="Watch" x="624" y="227" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d7ad076c-0894-4339-a893-c4a20a664123" start_index="0" end="3c3e845b-cd25-426a-936c-86ca429d9fa7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="80026f2b-d22f-4135-afb9-35976496e986" start_index="0" end="3c3e845b-cd25-426a-936c-86ca429d9fa7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1d1017ed-36de-42c5-b878-de62fe8738f6" start_index="0" end="3c3e845b-cd25-426a-936c-86ca429d9fa7" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3c3e845b-cd25-426a-936c-86ca429d9fa7" start_index="0" end="35717597-d249-41f9-ae15-6bf7c902b773" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

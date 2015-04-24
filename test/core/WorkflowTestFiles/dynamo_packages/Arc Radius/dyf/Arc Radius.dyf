@@ -1,0 +1,50 @@
+<Workspace Version="0.6.3.5244" X="-866.011287769336" Y="-162.002921202122" zoom="1.32529083718087" Description="Returns Arc Radius" Category="Geometry.Curve.Query" Name="Arc Radius" ID="0d4fcd59-3cef-444d-8419-f2295f20f157">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="9c28c31a-2bed-4113-a65f-1959bb7fd41b" nickname="Python Script" x="1208.24066407491" y="304.196716143656" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+
+#Query arc radius
+arcs = IN
+arc_radius = []
+
+for i in arcs:
+	arc_radius.append(i.Radius)
+
+#Assign your output to the OUT variable
+OUT = arc_radius</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="4700bdb5-dd9e-4672-a631-354e52be2c08" nickname="Add to List" x="914.644214531381" y="307.060961737697" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="91e226d1-43d5-44c5-85fc-31bd4bbd4384" nickname="Empty List" x="791.454152240268" y="376.824636616079" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="9c53ceca-eaac-4ac6-9c00-faf1c892509c" nickname="Input" x="804.715594593443" y="308.591764170039" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="arc(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="66598341-548b-41a1-a1b8-042b29858da6" nickname="Output" x="1344.97436641371" y="304.064456026294" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="radius('s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="39fbbe59-4dab-4037-a06b-599a6450c139" nickname="Flatten Completely" x="1062.01760742963" y="306.328110098167" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9c28c31a-2bed-4113-a65f-1959bb7fd41b" start_index="0" end="66598341-548b-41a1-a1b8-042b29858da6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4700bdb5-dd9e-4672-a631-354e52be2c08" start_index="0" end="39fbbe59-4dab-4037-a06b-599a6450c139" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="91e226d1-43d5-44c5-85fc-31bd4bbd4384" start_index="0" end="4700bdb5-dd9e-4672-a631-354e52be2c08" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9c53ceca-eaac-4ac6-9c00-faf1c892509c" start_index="0" end="4700bdb5-dd9e-4672-a631-354e52be2c08" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="39fbbe59-4dab-4037-a06b-599a6450c139" start_index="0" end="9c28c31a-2bed-4113-a65f-1959bb7fd41b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

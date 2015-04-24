@@ -1,0 +1,14 @@
+<Workspace Version="0.6.3.5256" X="63.9374982165015" Y="114.022025974024" zoom="1" Description="Returns an XYZ of -1,0,0" Category="CAAD_RWTH.XYZ" Name="X Axis (Negative)" ID="d7173a2c-acdd-452e-acb6-3bd0e12c9037">
+  <Elements>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="736d6bae-7579-41a1-929b-c31f20703209" nickname="Output" x="287.619610542863" y="30.7755266955292" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="-1,0,0" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.XyzBasisX type="Dynamo.Nodes.XyzBasisX" guid="98f79204-700a-4d9c-9a86-f817a27e18f8" nickname="X Axis" x="24.0625017834985" y="26.997974025976" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzNegate type="Dynamo.Nodes.XyzNegate" guid="33aec9a1-c7d5-4fab-aded-e9bd8cca9d4b" nickname="Negate XYZ" x="138.062501783498" y="22.997974025976" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="98f79204-700a-4d9c-9a86-f817a27e18f8" start_index="0" end="33aec9a1-c7d5-4fab-aded-e9bd8cca9d4b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="33aec9a1-c7d5-4fab-aded-e9bd8cca9d4b" start_index="0" end="736d6bae-7579-41a1-929b-c31f20703209" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

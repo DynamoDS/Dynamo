@@ -1,0 +1,62 @@
+<Workspace Version="0.7.0.26170" X="257" Y="381" zoom="1" Description="Locates the first element of the given list whose car is equal to v. If such an element exists, the pair (i.e., an element of the given list) is returned. Otherwise, the result is false." Category="Core.Lists" Name="Lookup" ID="5928d2c1-f373-4afa-8f25-b0a4b246fbac">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4e27e621-8ab5-492d-8356-b50e4e352e23" nickname="Input" x="14" y="10.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="key" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fff08888-6ed0-4f09-bbb1-82ae1ef62241" nickname="Input" x="14" y="111.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="281e7810-1a29-4b19-bc84-7b56759467c6" nickname="Split List" x="121" y="312.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="dc52c414-d444-4e04-ad21-66ef8c886774" nickname="If" x="526" y="293.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Equal type="Dynamo.Nodes.Equal" guid="3eb326d4-a527-4fa2-af81-91be822ba23a" nickname="Equal" x="376" y="159.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="bccd150c-812f-48e0-aa6b-54bd56d0b857" nickname="First of List" x="242" y="247.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="6c92a2fa-7555-4e35-8a69-9673877e8001" nickname="Output" x="853" y="94.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="pair" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="71f6d974-4100-445b-8099-1c995d8ecb03" nickname="Lookup" x="358" y="364.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="5928d2c1-f373-4afa-8f25-b0a4b246fbac" />
+      <Name value="Lookup" />
+      <Description value="Locates the first element of the given list whose car is equal to v. If such an element exists, the pair (i.e., an element of the given list) is returned. Otherwise, the result is false." />
+      <Inputs>
+        <Input value="key" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="pair" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="9f697f91-a6eb-4b13-96f6-a8677b3b770c" nickname="If" x="693" y="94.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="2c58bd84-eca0-4dcc-8ca5-a3c68a20244f" nickname="Boolean" x="565" y="114.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean value="False" />
+    </Dynamo.Nodes.BoolSelector>
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="dc5a2140-c279-43f4-bf4f-3ae092265d13" nickname="Is Empty List?" x="537" y="25.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4e27e621-8ab5-492d-8356-b50e4e352e23" start_index="0" end="3eb326d4-a527-4fa2-af81-91be822ba23a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e27e621-8ab5-492d-8356-b50e4e352e23" start_index="0" end="71f6d974-4100-445b-8099-1c995d8ecb03" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fff08888-6ed0-4f09-bbb1-82ae1ef62241" start_index="0" end="281e7810-1a29-4b19-bc84-7b56759467c6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fff08888-6ed0-4f09-bbb1-82ae1ef62241" start_index="0" end="dc5a2140-c279-43f4-bf4f-3ae092265d13" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="281e7810-1a29-4b19-bc84-7b56759467c6" start_index="0" end="bccd150c-812f-48e0-aa6b-54bd56d0b857" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="281e7810-1a29-4b19-bc84-7b56759467c6" start_index="0" end="dc52c414-d444-4e04-ad21-66ef8c886774" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="281e7810-1a29-4b19-bc84-7b56759467c6" start_index="1" end="71f6d974-4100-445b-8099-1c995d8ecb03" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dc52c414-d444-4e04-ad21-66ef8c886774" start_index="0" end="9f697f91-a6eb-4b13-96f6-a8677b3b770c" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3eb326d4-a527-4fa2-af81-91be822ba23a" start_index="0" end="dc52c414-d444-4e04-ad21-66ef8c886774" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bccd150c-812f-48e0-aa6b-54bd56d0b857" start_index="0" end="3eb326d4-a527-4fa2-af81-91be822ba23a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="71f6d974-4100-445b-8099-1c995d8ecb03" start_index="0" end="dc52c414-d444-4e04-ad21-66ef8c886774" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9f697f91-a6eb-4b13-96f6-a8677b3b770c" start_index="0" end="6c92a2fa-7555-4e35-8a69-9673877e8001" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2c58bd84-eca0-4dcc-8ca5-a3c68a20244f" start_index="0" end="9f697f91-a6eb-4b13-96f6-a8677b3b770c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dc5a2140-c279-43f4-bf4f-3ae092265d13" start_index="0" end="9f697f91-a6eb-4b13-96f6-a8677b3b770c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="If the list is empty, then we could not find the key, and return false." x="683" y="25" />
+    <Dynamo.Models.NoteModel text="If the list is not empty..." x="685" y="195" />
+    <Dynamo.Models.NoteModel text="...and if the first element in the first element of the list matches the key, we return the key/value pair." x="374" y="241" />
+    <Dynamo.Models.NoteModel text="...and if the first element in the first element of the list does not match the key, we look through the rest of the list." x="292" y="461" />
+  </Notes>
+</Workspace>

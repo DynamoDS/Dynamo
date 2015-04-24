@@ -1,0 +1,71 @@
+<Workspace Version="0.6.2.31398" X="-9" Y="-2" zoom="1" Description="Inserts an element into a list at a given index." Category="Core.Lists" Name="Insert Into List" ID="8819b181-ef9c-40a9-9b17-1c3515230a21">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b78743c0-4dff-4c00-a3f9-40b4b6caccf6" nickname="Input" x="15" y="17.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="item" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2b302f47-f991-4053-87ab-1cc87ef694bf" nickname="Input" x="17" y="92.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="9b1bebff-5080-49cf-aff7-6a5328c0fe56" nickname="Input" x="17" y="163.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="index" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="2b3eb077-7407-4838-985a-d43388d8c8b3" nickname="Split List" x="165" y="91.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="016d10ca-04e5-428d-ae8f-692138dc0c24" nickname="If" x="546" y="194.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="96bc920c-f86d-45d9-bc34-636572fe5166" nickname="Is Empty List?" x="337" y="15.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="fd704617-fb55-4283-a127-bc915d8f1522" nickname="Empty List" x="391" y="215.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="67e52098-4831-404a-91a1-c8ca6e6afa33" nickname="If" x="977" y="91.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Equal type="Dynamo.Nodes.Equal" guid="88a36178-1a45-46fb-aeb5-55e77d6da9cd" nickname="Equal" x="721" y="25.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="af7af334-9bc2-4c84-a762-4a3e1e303ddf" nickname="Number" x="613" y="8.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="02630318-b5b2-4d49-9a82-60d8814f4b54" nickname="Add to List" x="720" y="114.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="24f2a310-245c-4505-8b41-7c8b2f091d3a" nickname="Add to List" x="395" y="287.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c51e6e9f-e04a-4c45-856e-398bab6d2dc6" nickname="Insert Into List" x="216" y="308.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="8819b181-ef9c-40a9-9b17-1c3515230a21" />
+      <Name value="Insert Into List" />
+      <Description value="Inserts an element into a list at a given index." />
+      <Inputs>
+        <Input value="item" />
+        <Input value="list" />
+        <Input value="index" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="72a9cdfc-9c66-4eef-9b04-80029cf06068" nickname="Formula" x="96" y="349.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x-1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="506a56cd-a596-4a43-bb8d-ec3ba98ce491" nickname="Output" x="1116" y="90.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b78743c0-4dff-4c00-a3f9-40b4b6caccf6" start_index="0" end="96bc920c-f86d-45d9-bc34-636572fe5166" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b78743c0-4dff-4c00-a3f9-40b4b6caccf6" start_index="0" end="02630318-b5b2-4d49-9a82-60d8814f4b54" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b78743c0-4dff-4c00-a3f9-40b4b6caccf6" start_index="0" end="c51e6e9f-e04a-4c45-856e-398bab6d2dc6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b302f47-f991-4053-87ab-1cc87ef694bf" start_index="0" end="2b3eb077-7407-4838-985a-d43388d8c8b3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9b1bebff-5080-49cf-aff7-6a5328c0fe56" start_index="0" end="88a36178-1a45-46fb-aeb5-55e77d6da9cd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9b1bebff-5080-49cf-aff7-6a5328c0fe56" start_index="0" end="72a9cdfc-9c66-4eef-9b04-80029cf06068" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b3eb077-7407-4838-985a-d43388d8c8b3" start_index="0" end="24f2a310-245c-4505-8b41-7c8b2f091d3a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b3eb077-7407-4838-985a-d43388d8c8b3" start_index="1" end="c51e6e9f-e04a-4c45-856e-398bab6d2dc6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="016d10ca-04e5-428d-ae8f-692138dc0c24" start_index="0" end="02630318-b5b2-4d49-9a82-60d8814f4b54" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="016d10ca-04e5-428d-ae8f-692138dc0c24" start_index="0" end="67e52098-4831-404a-91a1-c8ca6e6afa33" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="96bc920c-f86d-45d9-bc34-636572fe5166" start_index="0" end="016d10ca-04e5-428d-ae8f-692138dc0c24" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd704617-fb55-4283-a127-bc915d8f1522" start_index="0" end="016d10ca-04e5-428d-ae8f-692138dc0c24" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="67e52098-4831-404a-91a1-c8ca6e6afa33" start_index="0" end="506a56cd-a596-4a43-bb8d-ec3ba98ce491" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="88a36178-1a45-46fb-aeb5-55e77d6da9cd" start_index="0" end="67e52098-4831-404a-91a1-c8ca6e6afa33" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="af7af334-9bc2-4c84-a762-4a3e1e303ddf" start_index="0" end="88a36178-1a45-46fb-aeb5-55e77d6da9cd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="02630318-b5b2-4d49-9a82-60d8814f4b54" start_index="0" end="67e52098-4831-404a-91a1-c8ca6e6afa33" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="24f2a310-245c-4505-8b41-7c8b2f091d3a" start_index="0" end="016d10ca-04e5-428d-ae8f-692138dc0c24" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c51e6e9f-e04a-4c45-856e-398bab6d2dc6" start_index="0" end="24f2a310-245c-4505-8b41-7c8b2f091d3a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="72a9cdfc-9c66-4eef-9b04-80029cf06068" start_index="0" end="c51e6e9f-e04a-4c45-856e-398bab6d2dc6" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

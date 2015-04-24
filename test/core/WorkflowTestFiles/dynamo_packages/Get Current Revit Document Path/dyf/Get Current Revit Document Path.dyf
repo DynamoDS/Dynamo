@@ -1,0 +1,47 @@
+<Workspace Version="0.6.3.7375" X="-6" Y="189" zoom="1" Description="Gets the path and directory of the current Revit document" Category="CAAD_RWTH.Revit" Name="Get Current Revit Document Path" ID="08924547-8719-4529-a722-0961bd7a971e">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="551c32c4-ceba-4183-9cc0-df22e6b83d6e" nickname="Python Script" x="382.838724535183" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+OUT = IN.PathName</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="68d27e36-ec30-4a82-8b24-a217d97af483" nickname="Revit Document" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9d80ebe7-f5d9-4449-bc50-22fcd5abb7c3" nickname="Output" x="755.838724535183" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="path" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="66d44a22-3c13-4acd-a99d-906100652860" nickname="Get Directory From File Path" x="547" y="75.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="fa2bf609-1a40-4a05-9469-2854f44d3c64" />
+      <Name value="Get Directory From File Path" />
+      <Description value="Gets the directory from a given file path" />
+      <Inputs>
+        <Input value="path" />
+      </Inputs>
+      <Outputs>
+        <Output value="dir" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1920a3fe-ceba-45e2-9ea3-acf18da97d7a" nickname="Output" x="754.838724535183" y="74" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="directory" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="551c32c4-ceba-4183-9cc0-df22e6b83d6e" start_index="0" end="9d80ebe7-f5d9-4449-bc50-22fcd5abb7c3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="551c32c4-ceba-4183-9cc0-df22e6b83d6e" start_index="0" end="66d44a22-3c13-4acd-a99d-906100652860" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="68d27e36-ec30-4a82-8b24-a217d97af483" start_index="0" end="551c32c4-ceba-4183-9cc0-df22e6b83d6e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="66d44a22-3c13-4acd-a99d-906100652860" start_index="0" end="1920a3fe-ceba-45e2-9ea3-acf18da97d7a" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

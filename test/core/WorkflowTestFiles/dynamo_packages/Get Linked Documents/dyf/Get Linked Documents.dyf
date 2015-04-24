@@ -1,0 +1,87 @@
+<Workspace Version="0.6.3.38253" X="-159.535241038683" Y="160.059316156081" zoom="1.14888954404725" Description="Gives Revit Links, file names and position information" Category="JBE" Name="Get Linked Documents" ID="37de194b-8c0a-44b7-8543-952a1e31fb6b">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="63a3bc76-ce3a-46bf-b097-ac1c1c7c267a" nickname="Get from List" x="720.272508410891" y="82.5709521411268" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="d4592ccb-6b18-4cda-8aa2-558f089451dc" nickname="Get from List" x="718.966734554032" y="213.990037382475" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="1298437b-0369-45ce-88ea-b4e590636122" nickname="Get from List" x="722.88405612461" y="345.031497369849" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="04a6e8aa-893f-4147-9296-6b3329322a04" nickname="Number" x="616.764935097892" y="82.5709521411268" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="3699cef3-69c2-4772-a3d4-7d0c8c6d2429" nickname="Number" x="615.459161241033" y="213.990037382475" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="e13201e3-01a8-4f02-bc84-4cbcd89d45c3" nickname="Number" x="619.376482811611" y="345.460415277789" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="58c9623c-7b99-44f5-ae8e-52b9cb8a1020" nickname="Python Get the documents" x="304.011917796914" y="82.5709521411268" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#WIP code from Julien BENOIT
+#@Jbenoit44
+#www.http://aecuandme.wordpress.com/
+
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+clr.AddReference('DynamoPython')
+clr.AddReference('Dynamocore')
+clr.AddReference("DynamoUtilities")
+clr.AddReference("DynamoRevit")
+import Dynamo
+
+rvt = IN
+link=[]
+name=[]
+linkinst=[]
+
+#get a document set
+x = Dynamo.Utilities.dynRevitSettings.Revit.Application.Documents
+
+#test if document is a link, returns doc and doc name in 2 separate lists
+for doc in x:
+	if doc.IsLinked:
+		link.append(doc)
+		name.append(doc.Title)
+			
+#looks for links in the active project, add instances to a list
+collector = FilteredElementCollector(rvt)
+filter = ElementCategoryFilter(BuiltInCategory.OST_RvtLinks)
+linkinst.append(collector.WherePasses(filter).WhereElementIsNotElementType().ToElements())
+	
+OUT = (link,name,linkinst)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="867c97d1-bb71-49fe-a78e-9ef9a891e929" nickname="Output" x="1082.56172471332" y="82.5709521411268" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Linked Revit Doct" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="119e21f0-3a9e-40cf-b45e-6b211b398c2c" nickname="Output" x="1082.56172471332" y="213.990037382475" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Link(s) name(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="82c66338-1551-44cd-8eb0-666ce57af165" nickname="Output" x="1082.56172471332" y="345.031497369849" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Link(s) Instances" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="ac291e3c-71c2-415c-a602-703ddc02a759" nickname="Flatten Completely" x="913.180972843041" y="345.031497369849" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="f5f7d8ef-0bc0-4982-95d7-c827d69b6986" nickname="Revit Document" x="164.972552862652" y="82.5709521411268" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="63a3bc76-ce3a-46bf-b097-ac1c1c7c267a" start_index="0" end="867c97d1-bb71-49fe-a78e-9ef9a891e929" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d4592ccb-6b18-4cda-8aa2-558f089451dc" start_index="0" end="119e21f0-3a9e-40cf-b45e-6b211b398c2c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1298437b-0369-45ce-88ea-b4e590636122" start_index="0" end="ac291e3c-71c2-415c-a602-703ddc02a759" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="04a6e8aa-893f-4147-9296-6b3329322a04" start_index="0" end="63a3bc76-ce3a-46bf-b097-ac1c1c7c267a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3699cef3-69c2-4772-a3d4-7d0c8c6d2429" start_index="0" end="d4592ccb-6b18-4cda-8aa2-558f089451dc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e13201e3-01a8-4f02-bc84-4cbcd89d45c3" start_index="0" end="1298437b-0369-45ce-88ea-b4e590636122" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="58c9623c-7b99-44f5-ae8e-52b9cb8a1020" start_index="0" end="63a3bc76-ce3a-46bf-b097-ac1c1c7c267a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="58c9623c-7b99-44f5-ae8e-52b9cb8a1020" start_index="0" end="d4592ccb-6b18-4cda-8aa2-558f089451dc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="58c9623c-7b99-44f5-ae8e-52b9cb8a1020" start_index="0" end="1298437b-0369-45ce-88ea-b4e590636122" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ac291e3c-71c2-415c-a602-703ddc02a759" start_index="0" end="82c66338-1551-44cd-8eb0-666ce57af165" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f5f7d8ef-0bc0-4982-95d7-c827d69b6986" start_index="0" end="58c9623c-7b99-44f5-ae8e-52b9cb8a1020" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

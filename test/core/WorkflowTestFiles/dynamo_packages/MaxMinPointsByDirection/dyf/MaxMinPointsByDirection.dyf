@@ -1,0 +1,27 @@
+<Workspace Version="0.7.0.26247" X="58" Y="124" zoom="1" Description="Get the max and min point of a curve following a direction pointed by a straight line." Category="EPR" Name="MaxMinPointsByDirection" ID="f9715056-ca30-442d-a85e-b80b098fc054">
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f246db8c-77dd-4822-b369-111d2f0e319a" nickname="Get Point in the side of the start of LineD" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="PlanePerp1=Plane.ByOriginNormal(LineD.StartPoint,LineD.Direction);&#xA;PointMax=CurveBase.GetClosestPoint(PlanePerp1);" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="6de6032f-446b-4960-8b31-c5b50a444cb0" nickname="Get Point in the side of the end of LineD" x="250" y="162.509086950944" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="PlanePerp2=Plane.ByOriginNormal(LineD.EndPoint,LineD.Direction);&#xA;PointMax=CurveBase.GetClosestPoint(PlanePerp2);" ShouldFocus="false" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="55ee270f-bc2c-455b-bcba-ad1a447e6c08" nickname="Output" x="1015" y="91" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Max Point " />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d540fab1-55f6-4ff9-9fc6-a299b8a2c8ca" nickname="Input" x="58" y="30.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Curve" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="22eb7ec7-e435-410b-84d7-bf3ed55c07ec" nickname="Input" x="53" y="166.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Dir Line" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="ccdaa96c-83c6-489c-8e5b-5c6997f04a3e" nickname="Output" x="1029" y="206.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Min Point" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f246db8c-77dd-4822-b369-111d2f0e319a" start_index="1" end="ccdaa96c-83c6-489c-8e5b-5c6997f04a3e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6de6032f-446b-4960-8b31-c5b50a444cb0" start_index="1" end="55ee270f-bc2c-455b-bcba-ad1a447e6c08" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d540fab1-55f6-4ff9-9fc6-a299b8a2c8ca" start_index="0" end="f246db8c-77dd-4822-b369-111d2f0e319a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d540fab1-55f6-4ff9-9fc6-a299b8a2c8ca" start_index="0" end="6de6032f-446b-4960-8b31-c5b50a444cb0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22eb7ec7-e435-410b-84d7-bf3ed55c07ec" start_index="0" end="f246db8c-77dd-4822-b369-111d2f0e319a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22eb7ec7-e435-410b-84d7-bf3ed55c07ec" start_index="0" end="6de6032f-446b-4960-8b31-c5b50a444cb0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Flips Image Horizontally","version":"0.0.1","description":"Takes an image, already mirrored correctly, and flips it about the Y-Axis","group":"","keywords":null,"dependencies":[],"license":"MIT","contents":"Flips Image Horizontally - Flips along the Y-Axis ","engine_version":"0.6.3.7993","engine_metadata":"","engine":"dynamo"}

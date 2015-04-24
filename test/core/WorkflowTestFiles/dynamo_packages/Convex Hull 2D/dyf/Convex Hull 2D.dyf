@@ -1,0 +1,94 @@
+<Workspace Version="0.6.3.7375" X="-216.780324463222" Y="220.569759035391" zoom="1.00600419002725" Description="Computes the convex hull of a given set of UV coordinates based on the monotone chain algorithm" Category="CAAD_RWTH.XYZ" Name="Convex Hull 2D" ID="00b165c2-054f-4d53-9862-2987b8039a97">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="600fb808-c385-4960-b77e-41aca4db3824" nickname="Get from List" x="1015.14275626436" y="78.6275527053402" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="9f592b98-ecfa-4a7c-b217-dbfd63474bc8" nickname="Number" x="885.119755840089" y="80.4102583101626" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Uv type="Dynamo.Nodes.Uv" guid="010e7353-c28a-4786-b249-cad02c913389" nickname="UV" x="1204.02795412849" y="32.9286460743763" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="1666aff3-c3dd-449f-a131-268fe9ecbdda" nickname="Python Script" x="712.440070616175" y="1.18694362017806" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+# based on a script found here:
+# http://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#Python
+
+points = IN
+#reformat points list
+newpoints = list()
+for pair in points:
+	newpoint = (pair[0],pair[1])
+	newpoints.append(newpoint)
+points = sorted(set(newpoints))
+
+def cross(o, a, b):
+	return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+ 
+if len(points) &lt;= 1:
+	OUT = points
+else:
+	lower = []
+	for p in points:
+		while len(lower) &gt;= 2 and cross(lower[-2], lower[-1], p) &lt;= 0:
+			lower.pop()
+		lower.append(p)
+	upper = []
+	for p in reversed(points):
+		while len(upper) &gt;= 2 and cross(upper[-2], upper[-1], p) &lt;= 0:
+			upper.pop()
+		upper.append(p)
+	OUT = lower[:-1] + upper[:-1]</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="65e41e9d-0fbc-46e4-b8e7-614a20eb1d69" nickname="Transpose Lists" x="862.539289772916" y="-0.6744360324833" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="9f97bac5-2fa8-4e44-8905-4cc05a16e7b1" nickname="First of List" x="1052.4276766899" y="-1.39552341850526" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="360b2d41-c904-48cf-8b7c-c90abfb236dc" nickname="Transpose Lists" x="569.817340294457" y="2.33747348042976" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="d5203cda-9f59-46af-ba72-83f218f50c91" nickname="List" x="402.716060564572" y="3.02366231260004" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="727d00a7-e8cf-4707-97ab-d20ce1c12d19" nickname="UV Components" x="250" y="4.53127030694191" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="de141032-8b29-443e-99a4-234c5ad60dfa" />
+      <Name value="UV Components" />
+      <Description value="Get the components of a UV" />
+      <Inputs>
+        <Input value="UV(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="U" />
+        <Output value="V" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="dfdada04-0316-432d-bfd5-d4555a03acd4" nickname="Input" x="143.620178041543" y="5.93471810089022" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="UVs" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="87a8db17-8fc7-4a9c-86aa-308f432fbbec" nickname="Output" x="1336.79353276351" y="32.0474777448072" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="UVs" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="600fb808-c385-4960-b77e-41aca4db3824" start_index="0" end="010e7353-c28a-4786-b249-cad02c913389" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9f592b98-ecfa-4a7c-b217-dbfd63474bc8" start_index="0" end="600fb808-c385-4960-b77e-41aca4db3824" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="010e7353-c28a-4786-b249-cad02c913389" start_index="0" end="87a8db17-8fc7-4a9c-86aa-308f432fbbec" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1666aff3-c3dd-449f-a131-268fe9ecbdda" start_index="0" end="65e41e9d-0fbc-46e4-b8e7-614a20eb1d69" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="65e41e9d-0fbc-46e4-b8e7-614a20eb1d69" start_index="0" end="9f97bac5-2fa8-4e44-8905-4cc05a16e7b1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="65e41e9d-0fbc-46e4-b8e7-614a20eb1d69" start_index="0" end="600fb808-c385-4960-b77e-41aca4db3824" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9f97bac5-2fa8-4e44-8905-4cc05a16e7b1" start_index="0" end="010e7353-c28a-4786-b249-cad02c913389" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="360b2d41-c904-48cf-8b7c-c90abfb236dc" start_index="0" end="1666aff3-c3dd-449f-a131-268fe9ecbdda" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d5203cda-9f59-46af-ba72-83f218f50c91" start_index="0" end="360b2d41-c904-48cf-8b7c-c90abfb236dc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="727d00a7-e8cf-4707-97ab-d20ce1c12d19" start_index="0" end="d5203cda-9f59-46af-ba72-83f218f50c91" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="727d00a7-e8cf-4707-97ab-d20ce1c12d19" start_index="1" end="d5203cda-9f59-46af-ba72-83f218f50c91" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dfdada04-0316-432d-bfd5-d4555a03acd4" start_index="0" end="727d00a7-e8cf-4707-97ab-d20ce1c12d19" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

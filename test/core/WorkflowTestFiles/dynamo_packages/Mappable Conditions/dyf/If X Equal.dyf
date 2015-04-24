@@ -1,0 +1,28 @@
+<Workspace Version="0.6.3.5256" X="0" Y="0" zoom="1" Description="If X = Y as a mappable function" Category="CAAD_RWTH.Conditional" Name="If X Equal" ID="dba96e4c-55cb-429c-97c7-1ed23d0419ce">
+  <Elements>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="a26c54eb-ee84-47b1-a2bb-d0428682249f" nickname="If" x="265.192349311368" y="133.45531970688" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4ff53b66-0432-485d-b2f0-fa1ba40ecce9" nickname="Input" x="21.3584768341542" y="26.346430817991" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7e3d3399-e46a-4bbe-afb1-56735172a86c" nickname="Input" x="24.3584768341542" y="102.346430817991" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="y" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5be6be6c-567e-4892-a9ef-52e27ccc9007" nickname="Input" x="26.3584768341542" y="185.346430817991" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="true" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="28665c3f-0c9d-4472-bd13-e9a6d803b915" nickname="Input" x="26.3584768341542" y="261.346430817991" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="false" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Equal type="Dynamo.Nodes.Equal" guid="cf63cef6-2908-4ebd-a00f-28d73a7ceb6d" nickname="Equal" x="134.863329129076" y="45.8464308179908" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4ff53b66-0432-485d-b2f0-fa1ba40ecce9" start_index="0" end="cf63cef6-2908-4ebd-a00f-28d73a7ceb6d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7e3d3399-e46a-4bbe-afb1-56735172a86c" start_index="0" end="cf63cef6-2908-4ebd-a00f-28d73a7ceb6d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5be6be6c-567e-4892-a9ef-52e27ccc9007" start_index="0" end="a26c54eb-ee84-47b1-a2bb-d0428682249f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="28665c3f-0c9d-4472-bd13-e9a6d803b915" start_index="0" end="a26c54eb-ee84-47b1-a2bb-d0428682249f" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cf63cef6-2908-4ebd-a00f-28d73a7ceb6d" start_index="0" end="a26c54eb-ee84-47b1-a2bb-d0428682249f" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Why is this a custom node?&#xD;&#xA;So it can be used in conjunction with a Map node." x="218.863329129076" y="242.846430817991" />
+  </Notes>
+</Workspace>

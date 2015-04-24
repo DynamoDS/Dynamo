@@ -1,0 +1,60 @@
+<Workspace Version="0.6.3.31052" X="117" Y="234" zoom="1" Description="Lets you search in Revit's built-in categories. Search is case-sensitive. Use * as a wildcard." Category="CAAD_RWTH.Scripting" Name="Search In BuiltInCategories" ID="0755c987-62c0-4139-b9d4-1dbc7247ad5c">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="fb5c954d-12ed-4918-94cc-926f98b0b757" nickname="List BuiltInCategories" x="182" y="172" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="129d96b7-0ce3-4a02-b99a-aa615f8ff0e0" />
+      <Name value="List BuiltInCategories" />
+      <Description value="List all the BuiltInCategories available" />
+      <Inputs />
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" nickname="Replace Substring" x="161" y="55" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="03bc2e29-9993-4209-b04e-94f7449ceb9c" />
+      <Name value="Replace Substring" />
+      <Description value="Replaces a specified part (substring) of a string by another string" />
+      <Inputs>
+        <Input value="string(s)" />
+        <Input value="search" />
+        <Input value="replace" />
+      </Inputs>
+      <Outputs>
+        <Output value="string(s)" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="bb54a08b-7ff5-4837-aed8-3f9b7ea1c54c" nickname="String" x="28" y="76" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="*" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="780fd5e2-747a-488b-9f53-540b558e9a52" nickname="String" x="26" y="147" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="\w*" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8324b328-07aa-4816-86bf-5fa722b15b97" nickname="Input" x="-19" y="2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="search term" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7327af50-13bf-4869-9623-a6583a7ceace" nickname="Output" x="635" y="104" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="results" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="925ec6ed-298b-489c-a791-23760a99c74f" nickname="Filter List by Regular Expression Matches" x="362" y="105.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="54ea3bf3-7523-4f77-a642-a9de1f08f8a0" />
+      <Name value="Filter List by Regular Expression Matches" />
+      <Description value="Filters out all items from a list of strings that don't begin with the regular expression.  The syntax for regular expressions is explained at&#xD;&#xA;http://ironpython-test.readthedocs.org/en/latest/howto/regex.html" />
+      <Inputs>
+        <Input value="regex" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="in" />
+        <Output value="out" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="fb5c954d-12ed-4918-94cc-926f98b0b757" start_index="0" end="925ec6ed-298b-489c-a791-23760a99c74f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" start_index="0" end="925ec6ed-298b-489c-a791-23760a99c74f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bb54a08b-7ff5-4837-aed8-3f9b7ea1c54c" start_index="0" end="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="780fd5e2-747a-488b-9f53-540b558e9a52" start_index="0" end="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8324b328-07aa-4816-86bf-5fa722b15b97" start_index="0" end="7a98e5f6-d50c-4fac-b14d-bc83c7e0c9cc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="925ec6ed-298b-489c-a791-23760a99c74f" start_index="0" end="7327af50-13bf-4869-9623-a6583a7ceace" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

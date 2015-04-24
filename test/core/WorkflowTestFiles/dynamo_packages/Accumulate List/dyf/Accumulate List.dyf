@@ -1,0 +1,40 @@
+<Workspace Version="0.6.3.5256" X="-62" Y="169" zoom="1" Description="Accumulates the values of a given list and returns a list of the accumulated values" Category="CAAD_RWTH.Lists" Name="Accumulate List" ID="0ef51618-8942-4d04-b415-1a510aa6f67a">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="01530924-f0c1-4711-9461-601d125464ce" nickname="Python Script" x="395.208333333333" y="1.04166666666669" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>items = IN
+elementlist = list()
+counter = 0
+while counter &lt; len(items):
+	if counter == 0:
+		lastval = items[0]
+	else:
+		lastval = items[counter]+lastval
+	elementlist.append(lastval)
+	counter += 1
+OUT = elementlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="ad8a6275-4dee-4482-ae5d-43df659575ff" nickname="Turn Into List" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="e5da15fb-34d5-4fcd-ada9-aeb2cf8620aa" nickname="Output" x="576.208333333333" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ae4ee217-4841-490d-97d4-703a517ad5fb" nickname="Input" x="123.5" y="-4.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="01530924-f0c1-4711-9461-601d125464ce" start_index="0" end="e5da15fb-34d5-4fcd-ada9-aeb2cf8620aa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ad8a6275-4dee-4482-ae5d-43df659575ff" start_index="0" end="01530924-f0c1-4711-9461-601d125464ce" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ae4ee217-4841-490d-97d4-703a517ad5fb" start_index="0" end="ad8a6275-4dee-4482-ae5d-43df659575ff" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

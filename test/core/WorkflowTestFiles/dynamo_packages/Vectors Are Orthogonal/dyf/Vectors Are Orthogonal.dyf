@@ -1,0 +1,38 @@
+<Workspace Version="0.6.3.22045" X="-52.0083661242474" Y="238.082105140857" zoom="0.878530757378055" Description="Checks if two vectors are orthogonal to each other" Category="CAAD_RWTH.XYZ" Name="Vectors Are Orthogonal" ID="e60e4116-6acf-4d75-b19f-41ece05a433c">
+  <Elements>
+    <Dynamo.Nodes.XyzDotProduct type="Dynamo.Nodes.XyzDotProduct" guid="a06d0a9b-6455-4f44-9e2c-a4ab35f20e93" nickname="XYZ Dot Product" x="415.887163172134" y="33.739762001112" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="ba813bba-39c5-4fa2-8c07-042a52779cca" nickname="Formula" x="573.340901675033" y="84.0244297697858" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x&lt;almost and x&gt;-almost</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.XyzNormalize type="Dynamo.Nodes.XyzNormalize" guid="684aed37-6329-4f08-b1b5-c587ac2e6dee" nickname="Unitize XYZ" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzNormalize type="Dynamo.Nodes.XyzNormalize" guid="6d99423c-3a07-479e-a50c-8b5e511f9dc0" nickname="Unitize XYZ" x="252.811646833426" y="100.282070392194" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="bf130ab6-673c-4d4c-a92b-b2337392b5fe" nickname="Input" x="92" y="1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Vector #1" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="821c40be-b5a3-4f86-a818-dd9d629f10b5" nickname="Input" x="93" y="102" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Vector #2" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2746e1b4-916c-4957-9d80-1113c42475c1" nickname="Output" x="843.35927925816" y="83.5299563504632" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c156fd9a-3916-4c07-8011-b9d71df39697" nickname="Almost Zero" x="428.164053708335" y="140.649394552915" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="7203b34a-da51-4672-8993-3591ebf9537d" />
+      <Name value="Almost Zero" />
+      <Description value="Returns a feasable computational tolerance to zero (1.0e-9 or a billionth of 1) for use in calculations. More background info: https://github.com/ikeough/Dynamo/issues/879" />
+      <Inputs />
+      <Outputs>
+        <Output value="1.0e-9" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a06d0a9b-6455-4f44-9e2c-a4ab35f20e93" start_index="0" end="ba813bba-39c5-4fa2-8c07-042a52779cca" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ba813bba-39c5-4fa2-8c07-042a52779cca" start_index="0" end="2746e1b4-916c-4957-9d80-1113c42475c1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="684aed37-6329-4f08-b1b5-c587ac2e6dee" start_index="0" end="a06d0a9b-6455-4f44-9e2c-a4ab35f20e93" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6d99423c-3a07-479e-a50c-8b5e511f9dc0" start_index="0" end="a06d0a9b-6455-4f44-9e2c-a4ab35f20e93" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bf130ab6-673c-4d4c-a92b-b2337392b5fe" start_index="0" end="684aed37-6329-4f08-b1b5-c587ac2e6dee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="821c40be-b5a3-4f86-a818-dd9d629f10b5" start_index="0" end="6d99423c-3a07-479e-a50c-8b5e511f9dc0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c156fd9a-3916-4c07-8011-b9d71df39697" start_index="0" end="ba813bba-39c5-4fa2-8c07-042a52779cca" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

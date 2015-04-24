@@ -1,0 +1,47 @@
+<Workspace Version="0.6.3.5260" X="0" Y="0" zoom="1" Description="Computes the missing interior angle of a *planar* polygon based on a given list of all other interior angles. " Category="CAAD_RWTH.Math.Formulas" Name="Angle By Angle Sum" ID="cfa4bd2b-a9ac-4236-9da5-0bb0c2c7570c">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="cff57b38-2187-4aeb-8a26-93a0cec9d94d" nickname="Input" x="15" y="127.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="5ef12bbb-cfdf-4421-8443-5aa464fc00db" nickname="List Length" x="132" y="95.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c7d41a11-b143-48c1-8936-dac0bf353071" nickname="Sum List" x="129" y="172.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f189c747-c166-4818-9072-92d6bdb47dbf" />
+      <Name value="Sum List" />
+      <Description value="" />
+      <Inputs>
+        <Input value="nums" />
+      </Inputs>
+      <Outputs>
+        <Output value="sum" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="0317d0c3-e994-437a-ad8a-a3e14417de5e" nickname="Formula" x="331" y="152.3" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>(n-1)*Pi-angles</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="e7fa14fb-fa89-436e-8ff7-872173e5947f" nickname="Output" x="775" y="131.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="angle" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="7624f1fb-89f6-47df-a675-97030c38e2c6" nickname="If" x="605" y="132.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="df40c8b8-5d7f-4910-b450-d4e2114731a3" nickname="Formula" x="334" y="61.3" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>n&gt;1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="acd0a5d5-bbe9-471f-b5b5-61b4f7528726" nickname="String" x="330" y="264.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="The list needs to consist of at least two angles." />
+    </Dynamo.Nodes.StringInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="cff57b38-2187-4aeb-8a26-93a0cec9d94d" start_index="0" end="5ef12bbb-cfdf-4421-8443-5aa464fc00db" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cff57b38-2187-4aeb-8a26-93a0cec9d94d" start_index="0" end="c7d41a11-b143-48c1-8936-dac0bf353071" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ef12bbb-cfdf-4421-8443-5aa464fc00db" start_index="0" end="0317d0c3-e994-437a-ad8a-a3e14417de5e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ef12bbb-cfdf-4421-8443-5aa464fc00db" start_index="0" end="df40c8b8-5d7f-4910-b450-d4e2114731a3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c7d41a11-b143-48c1-8936-dac0bf353071" start_index="0" end="0317d0c3-e994-437a-ad8a-a3e14417de5e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0317d0c3-e994-437a-ad8a-a3e14417de5e" start_index="0" end="7624f1fb-89f6-47df-a675-97030c38e2c6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7624f1fb-89f6-47df-a675-97030c38e2c6" start_index="0" end="e7fa14fb-fa89-436e-8ff7-872173e5947f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="df40c8b8-5d7f-4910-b450-d4e2114731a3" start_index="0" end="7624f1fb-89f6-47df-a675-97030c38e2c6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="acd0a5d5-bbe9-471f-b5b5-61b4f7528726" start_index="0" end="7624f1fb-89f6-47df-a675-97030c38e2c6" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

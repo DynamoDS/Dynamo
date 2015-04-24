@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Workset ID from Element","version":"0.0.1","description":"Returns a Workset ID that owns a given Element. ","group":"","keywords":["#workset","#worksetid","#element"],"dependencies":[],"license":"MIT","contents":"Workset ID from Element - Returns a Workset ID of an Element.  ","engine_version":"0.6.3.5244","engine_metadata":"","engine":"dynamo"}

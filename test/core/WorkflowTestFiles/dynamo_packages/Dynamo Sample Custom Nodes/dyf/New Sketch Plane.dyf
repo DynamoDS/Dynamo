@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.28490" X="10" Y="55" zoom="1" Description="" Category="Create Geometry.Surface" Name="New Sketch Plane" ID="d9bd10fc-a0ed-4c3b-be5a-4f4ba0f37979">
+  <Elements>
+    <Dynamo.Nodes.XyzBasisZ type="Dynamo.Nodes.XyzBasisZ" guid="e318da92-ddd9-48d3-84f6-0ff9dd1e432a" nickname="XYZ BasisZ" x="102.5" y="263.25" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Plane type="Dynamo.Nodes.Plane" guid="8fcf6e48-2f90-4dd8-b344-48f70e41116b" nickname="Plane" x="276.25" y="275.75" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.SketchPlane type="Dynamo.Nodes.SketchPlane" guid="2de02bf7-30d8-42b2-b62c-1f8d7b98c050" nickname="Sketch Plane" x="479.25" y="295" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="5c9d1020-070e-441d-a2cb-2430fa1e6d8f" nickname="XYZ" x="99.5" y="369" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e318da92-ddd9-48d3-84f6-0ff9dd1e432a" start_index="0" end="8fcf6e48-2f90-4dd8-b344-48f70e41116b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8fcf6e48-2f90-4dd8-b344-48f70e41116b" start_index="0" end="2de02bf7-30d8-42b2-b62c-1f8d7b98c050" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5c9d1020-070e-441d-a2cb-2430fa1e6d8f" start_index="0" end="8fcf6e48-2f90-4dd8-b344-48f70e41116b" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

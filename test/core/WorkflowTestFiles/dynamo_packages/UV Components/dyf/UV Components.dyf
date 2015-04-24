@@ -1,0 +1,51 @@
+<Workspace Version="0.6.3.7375" X="12.4350000000001" Y="247.58" zoom="1.1575" Description="Get the components of a UV" Category="CAAD_RWTH.XYZ" Name="UV Components" ID="de141032-8b29-443e-99a4-234c5ad60dfa">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="07d2a983-1faf-4f42-8c6d-26f2608d0d82" nickname="Python Script" x="399.446169294768" y="-0.840231516561744" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+UVs = IN
+
+ulist = list()
+vlist = list()
+for uv in UVs:
+	ulist.append(uv.U)
+	vlist.append(uv.V)
+OUT = (ulist,vlist)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="dc8ddc10-43a0-4f5b-94b5-77c7722d1f4b" nickname="Turn Into List" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6089c81b-bb04-4d2e-9965-45c2cbccdd15" nickname="Input" x="143" y="1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="UV(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7ec9e674-0167-4f66-b513-fe990c634b2f" nickname="Output" x="684.767653803785" y="-39.7408207343412" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="U" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="9c941738-7fe9-47a7-95d0-8592e961f994" nickname="First of List" x="547.572354211663" y="-38.7300215982722" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Last type="Dynamo.Nodes.Last" guid="d9a46416-e5f2-4cc7-876a-6c9490c3bfef" nickname="Last of List" x="548.436285097192" y="44.2073434125269" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1fa20c6e-5dbf-4a14-8f0e-ffc00bd8fede" nickname="Output" x="687.575429181754" y="43.1965442764579" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="07d2a983-1faf-4f42-8c6d-26f2608d0d82" start_index="0" end="9c941738-7fe9-47a7-95d0-8592e961f994" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="07d2a983-1faf-4f42-8c6d-26f2608d0d82" start_index="0" end="d9a46416-e5f2-4cc7-876a-6c9490c3bfef" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dc8ddc10-43a0-4f5b-94b5-77c7722d1f4b" start_index="0" end="07d2a983-1faf-4f42-8c6d-26f2608d0d82" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6089c81b-bb04-4d2e-9965-45c2cbccdd15" start_index="0" end="dc8ddc10-43a0-4f5b-94b5-77c7722d1f4b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9c941738-7fe9-47a7-95d0-8592e961f994" start_index="0" end="7ec9e674-0167-4f66-b513-fe990c634b2f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d9a46416-e5f2-4cc7-876a-6c9490c3bfef" start_index="0" end="1fa20c6e-5dbf-4a14-8f0e-ffc00bd8fede" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

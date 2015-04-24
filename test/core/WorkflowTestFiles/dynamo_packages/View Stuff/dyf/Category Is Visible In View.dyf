@@ -1,0 +1,73 @@
+<Workspace Version="0.6.3.5263" X="95.6555555555556" Y="212.555555555556" zoom="1.1" Description="Checks if a given category is visible in a given view" Category="CAAD_RWTH.Revit.Views" Name="Category Is Visible In View" ID="9b4bbcbf-1291-47ff-9bac-89add0b3dfd4">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="753cd253-79a4-4c4b-ab10-aee58856bc74" nickname="Input" x="50.4545454545456" y="194.854545454545" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="BuiltInCategories" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f6da18fc-3327-4d53-9baf-51ebf53e264a" nickname="Turn Into List" x="231.272727272727" y="193.763636363636" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8391a372-b113-4e1a-b6ea-aa1f0875826c" nickname="Output" x="695.181818181818" y="137.945454545454" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="24028384-e05f-4424-adc4-3a305321377d" nickname="Revit Document" x="234.545454545454" y="105" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" nickname="Python Script With Variable Number of Inputs" x="387.272727272727" y="138.636363636364" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+cats = IN1
+views = IN2
+cats2 = doc.Settings.Categories
+
+elementlist = list()
+for cat in cats:
+	catlist = list()
+	for view in views:
+		try:
+			if view.GetVisibility(cats2.get_Item(cat)):
+				catlist.append(1)
+			else:
+				catlist.append(0)
+		# some view types (like images, for example) will throw an exception.
+		# if we're not sure let's return false		
+		except:
+			catlist.append(0)
+	elementlist.append(catlist)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="89cbe01b-ccc3-4ab5-a510-eb7e838c5ecb" nickname="Input" x="53.1818181818183" y="272.127272727272" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="View(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="314c64ae-8696-4e20-92f6-85f0d3bfd4d1" nickname="Turn Into List" x="234" y="271.036363636363" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="753cd253-79a4-4c4b-ab10-aee58856bc74" start_index="0" end="f6da18fc-3327-4d53-9baf-51ebf53e264a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6da18fc-3327-4d53-9baf-51ebf53e264a" start_index="0" end="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="24028384-e05f-4424-adc4-3a305321377d" start_index="0" end="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" start_index="0" end="8391a372-b113-4e1a-b6ea-aa1f0875826c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="89cbe01b-ccc3-4ab5-a510-eb7e838c5ecb" start_index="0" end="314c64ae-8696-4e20-92f6-85f0d3bfd4d1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="314c64ae-8696-4e20-92f6-85f0d3bfd4d1" start_index="0" end="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

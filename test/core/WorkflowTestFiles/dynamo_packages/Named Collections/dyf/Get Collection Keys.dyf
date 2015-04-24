@@ -1,0 +1,45 @@
+<Workspace Version="0.6.3.25815" X="0" Y="0" zoom="1" Description="Gets all keys from a collection" Category="Collections.NamedCollection" Name="Get Collection Keys" ID="325bba70-07a8-456a-878c-1b99277b2a64">
+  <Elements>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="61834f21-4586-4c6d-85c9-6ffbbd7117cb" nickname="Output" x="725.609573586598" y="166.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Keys" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="d69e6ed4-6fc2-4b58-a178-2994c6197e02" nickname="Python Script With Variable Number of Inputs" x="384.609573586598" y="67.4543749069471" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="1">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+
+
+#The input to this node will be stored in the IN0...INX variable(s).
+collection = IN0
+
+x=[]
+
+for key in collection.dict.iterkeys():
+	x.append(key)
+
+
+#Assign your output to the OUT variable
+OUT = x</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7d62122e-72a7-4096-9c37-b6db2fabf153" nickname="Input" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Collection" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d69e6ed4-6fc2-4b58-a178-2994c6197e02" start_index="0" end="61834f21-4586-4c6d-85c9-6ffbbd7117cb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7d62122e-72a7-4096-9c37-b6db2fabf153" start_index="0" end="d69e6ed4-6fc2-4b58-a178-2994c6197e02" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

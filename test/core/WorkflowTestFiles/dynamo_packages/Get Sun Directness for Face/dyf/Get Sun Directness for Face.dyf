@@ -1,0 +1,60 @@
+<Workspace Version="0.6.2.29585" X="-193.778571428572" Y="88.0714285714282" zoom="0.9" Description="" Category="CEE220C" Name="Get Sun Directness for Face" ID="84492b22-3940-4f16-9544-3b767c29f88b">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="998ee5ba-cbad-4651-84ce-fa4a1b7f49e9" nickname="Input" x="275" y="412.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Face" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5ee8ae8a-efb8-42d8-8263-b87653ce138d" nickname="Input" x="252" y="506.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="UV Grid Number" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b4fa7004-4af8-4a5d-bd58-36187e1948d7" nickname="Input" x="876" y="70.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="SunPath" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="6f382a7c-51dd-4fea-93d6-4e526bb33006" nickname="Output" x="1804.55555555556" y="168.388888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Average Sun Directness on Face" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.UvGrid type="Dynamo.Nodes.UvGrid" guid="7d5fbbec-ff1e-41e4-83ac-52cd54e62c4a" nickname="UV Grid" x="643" y="402.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.SurfaceDomain type="Dynamo.Nodes.SurfaceDomain" guid="f6fa846c-f725-4b83-87e2-fe117c46ff13" nickname="Get Surface Domain" x="456" y="410.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="00e162c0-d084-4957-a3e3-334053150678" nickname="Quads from Rectangular Grid" x="1051" y="279.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="c4f135db-6eb6-47a4-9136-50952d8aeb4f" />
+      <Name value="Quads from Rectangular Grid" />
+      <Description value="Given a grid of points (xyz or uv) create a list of quadrilaterals" />
+      <Inputs>
+        <Input value="Row Number" />
+        <Input value="Point List" />
+      </Inputs>
+      <Outputs>
+        <Output value="Quads" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.XyzEvaluate type="Dynamo.Nodes.XyzEvaluate" guid="8de456ea-c46d-49d3-9412-b05819901b7d" nickname="Evaluate Surface" x="831" y="295.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="1651edf8-642a-4891-93ba-f837793fb121" nickname="Evaluate Sun Directness - Raw Distances" x="1293.90476190476" y="160.833333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="8ae4c7c2-2d99-4c5f-b0a6-4af9627f1caa" />
+      <Name value="Evaluate Sun Directness - Raw Distances" />
+      <Description value="Returns values from 0 to 1 based on orientation relative to sun path" />
+      <Inputs>
+        <Input value="Quads" />
+        <Input value="SunPath" />
+      </Inputs>
+      <Outputs>
+        <Output value="DirectnessValues" />
+        <Output value="rawDistanceValues" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Average type="Dynamo.Nodes.Average" guid="00bd6e77-e814-4524-ab4b-68fe14ca7eef" nickname="Average" x="1590.86507936508" y="162.698412698412" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="998ee5ba-cbad-4651-84ce-fa4a1b7f49e9" start_index="0" end="f6fa846c-f725-4b83-87e2-fe117c46ff13" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="998ee5ba-cbad-4651-84ce-fa4a1b7f49e9" start_index="0" end="8de456ea-c46d-49d3-9412-b05819901b7d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ee8ae8a-efb8-42d8-8263-b87653ce138d" start_index="0" end="7d5fbbec-ff1e-41e4-83ac-52cd54e62c4a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ee8ae8a-efb8-42d8-8263-b87653ce138d" start_index="0" end="7d5fbbec-ff1e-41e4-83ac-52cd54e62c4a" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5ee8ae8a-efb8-42d8-8263-b87653ce138d" start_index="0" end="00e162c0-d084-4957-a3e3-334053150678" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b4fa7004-4af8-4a5d-bd58-36187e1948d7" start_index="0" end="1651edf8-642a-4891-93ba-f837793fb121" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7d5fbbec-ff1e-41e4-83ac-52cd54e62c4a" start_index="0" end="8de456ea-c46d-49d3-9412-b05819901b7d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6fa846c-f725-4b83-87e2-fe117c46ff13" start_index="0" end="7d5fbbec-ff1e-41e4-83ac-52cd54e62c4a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="00e162c0-d084-4957-a3e3-334053150678" start_index="0" end="1651edf8-642a-4891-93ba-f837793fb121" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8de456ea-c46d-49d3-9412-b05819901b7d" start_index="0" end="00e162c0-d084-4957-a3e3-334053150678" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1651edf8-642a-4891-93ba-f837793fb121" start_index="1" end="00bd6e77-e814-4524-ab4b-68fe14ca7eef" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="00bd6e77-e814-4524-ab4b-68fe14ca7eef" start_index="0" end="6f382a7c-51dd-4fea-93d6-4e526bb33006" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

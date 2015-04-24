@@ -1,0 +1,68 @@
+<Workspace Version="0.6.3.5291" X="0" Y="0" zoom="1" Description="Gets the created and demolished phases of an element" Category="CAAD_RWTH.Revit.Phases" Name="Get Phases" ID="48ac7d7c-8035-45e6-8a63-8c9206be35b6">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="572b2da3-d3bc-4290-bbdb-dc9ba9639456" nickname="Get from List" x="738" y="131" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="de42e7be-15c7-43b1-91b0-927a22fc811a" nickname="First of List" x="738" y="40" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="b1341aa0-f8b0-473d-bb91-ca670b5cba0b" nickname="Python Script With Variable Number of Inputs" x="414" y="88" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+items = IN1
+createdlist = list()
+demolist = list()
+
+for item in items:
+	try:
+		if item.CreatedPhaseId.IntegerValue == -1:
+			createdlist.append(list())
+		else:
+			createdlist.append(doc.GetElement(item.CreatedPhaseId))
+		if item.DemolishedPhaseId.IntegerValue == -1:
+			demolist.append(list())
+		else:
+			demolist.append(doc.GetElement(item.DemolishedPhaseId))
+	except:
+		createdlist.append(list())
+		demolist.append(list())
+OUT = (createdlist,demolist)</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="4f445763-6a1e-421f-aba7-9526612d41a3" nickname="Number" x="606" y="190" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="0ad4d2f2-c901-4afa-9953-ec83f7ccc7c8" nickname="Revit Document" x="258" y="53" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="a2dc9c1f-662b-4c64-89ea-388e4d1c63c4" nickname="Turn Into List" x="249" y="144" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2b5dff10-11be-4d46-a935-cfee1f76d8e7" nickname="Input" x="98" y="145" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="b76d3543-3fa2-4e98-80f2-22200acf5987" nickname="Output" x="924" y="39" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Created" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="017e298c-114f-4f90-a67f-e6285fa68b0d" nickname="Output" x="926" y="129" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Demolished" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="572b2da3-d3bc-4290-bbdb-dc9ba9639456" start_index="0" end="017e298c-114f-4f90-a67f-e6285fa68b0d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="de42e7be-15c7-43b1-91b0-927a22fc811a" start_index="0" end="b76d3543-3fa2-4e98-80f2-22200acf5987" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1341aa0-f8b0-473d-bb91-ca670b5cba0b" start_index="0" end="de42e7be-15c7-43b1-91b0-927a22fc811a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1341aa0-f8b0-473d-bb91-ca670b5cba0b" start_index="0" end="572b2da3-d3bc-4290-bbdb-dc9ba9639456" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4f445763-6a1e-421f-aba7-9526612d41a3" start_index="0" end="572b2da3-d3bc-4290-bbdb-dc9ba9639456" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0ad4d2f2-c901-4afa-9953-ec83f7ccc7c8" start_index="0" end="b1341aa0-f8b0-473d-bb91-ca670b5cba0b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a2dc9c1f-662b-4c64-89ea-388e4d1c63c4" start_index="0" end="b1341aa0-f8b0-473d-bb91-ca670b5cba0b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b5dff10-11be-4d46-a935-cfee1f76d8e7" start_index="0" end="a2dc9c1f-662b-4c64-89ea-388e4d1c63c4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

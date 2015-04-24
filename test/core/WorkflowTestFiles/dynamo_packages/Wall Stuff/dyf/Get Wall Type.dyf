@@ -1,0 +1,60 @@
+<Workspace Version="0.6.3.5259" X="313.293646249895" Y="300.03395401024" zoom="0.943204375" Description="Gets the wall type of a given wall instance. " Category="CAAD_RWTH.Revit.Wall" Name="Get Wall Type" ID="4796d57c-a1a0-4676-b524-57abb5fa73be">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="6eaa085b-17a4-441e-964c-b7dd23aa07f0" nickname="Turn Into List" x="-40.0000000000001" y="95.9728260245498" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7d675e6f-ff05-4b4b-89eb-be20b050e79e" nickname="Input" x="-210" y="95.7142857142857" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Wall Instance(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f6657b38-376f-4e7b-9fb8-9538314be35d" nickname="Output" x="661.239128807386" y="93.4194555121572" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Wall Type(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="e8916af6-0865-4083-8b19-a04de06ed944" nickname="Python Script With Variable Number of Inputs" x="130.928333333333" y="35.1252380952386" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+wallinstances = IN1
+typelist = list()
+for item in wallinstances:
+	try: 
+		typelist.append(doc.GetElement(item.GetTypeId()))
+	except:
+		donothing = 1
+OUT = typelist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="950dda9a-7f82-441f-97de-59b1a5fc77c7" nickname="Revit Document" x="-31.7502380952386" y="-6.48190476190425" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="4e4c71b9-7dea-4a8e-9d1e-6eb2646caf3a" nickname="Return List Or Single Value" x="446.759925440449" y="94.5135655141125" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6eaa085b-17a4-441e-964c-b7dd23aa07f0" start_index="0" end="e8916af6-0865-4083-8b19-a04de06ed944" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6eaa085b-17a4-441e-964c-b7dd23aa07f0" start_index="0" end="4e4c71b9-7dea-4a8e-9d1e-6eb2646caf3a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7d675e6f-ff05-4b4b-89eb-be20b050e79e" start_index="0" end="6eaa085b-17a4-441e-964c-b7dd23aa07f0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e8916af6-0865-4083-8b19-a04de06ed944" start_index="0" end="4e4c71b9-7dea-4a8e-9d1e-6eb2646caf3a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="950dda9a-7f82-441f-97de-59b1a5fc77c7" start_index="0" end="e8916af6-0865-4083-8b19-a04de06ed944" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e4c71b9-7dea-4a8e-9d1e-6eb2646caf3a" start_index="0" end="f6657b38-376f-4e7b-9fb8-9538314be35d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

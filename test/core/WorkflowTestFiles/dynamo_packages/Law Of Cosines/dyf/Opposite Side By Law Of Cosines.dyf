@@ -1,0 +1,26 @@
+<Workspace Version="0.6.3.35252" X="0" Y="0" zoom="1" Description="Computes the length of the missing side of a triangle using the law of cosines. Gamma is the angle between sides A and B." Category="CAAD_RWTH.Math.Formulas" Name="Opposite Side By Law Of Cosines" ID="7af671ac-6490-49aa-97e1-5c078bad3ce5">
+  <Elements>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="22ba050f-180f-4f54-a87b-ddcc35581b9e" nickname="Formula" x="162.795207058024" y="107.744112554112" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>Sqrt(Pow(a,2)+Pow(b,2)-2*a*b*Cos(gamma))</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c0a5c599-388d-4edf-b277-435125df6e1e" nickname="Input" x="18" y="35.8533333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="A" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="999f16d4-c3a4-4ef0-87df-bd99a958de6d" nickname="Input" x="18" y="132.853333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="B" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fb6d0e5b-5840-40e2-8d18-c3e4a4121450" nickname="Input" x="18" y="229.853333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="gamma" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f0474317-178f-4cdb-a1c8-2ee3333fdd7a" nickname="Output" x="543" y="106.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="C" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="22ba050f-180f-4f54-a87b-ddcc35581b9e" start_index="0" end="f0474317-178f-4cdb-a1c8-2ee3333fdd7a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0a5c599-388d-4edf-b277-435125df6e1e" start_index="0" end="22ba050f-180f-4f54-a87b-ddcc35581b9e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="999f16d4-c3a4-4ef0-87df-bd99a958de6d" start_index="0" end="22ba050f-180f-4f54-a87b-ddcc35581b9e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb6d0e5b-5840-40e2-8d18-c3e4a4121450" start_index="0" end="22ba050f-180f-4f54-a87b-ddcc35581b9e" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

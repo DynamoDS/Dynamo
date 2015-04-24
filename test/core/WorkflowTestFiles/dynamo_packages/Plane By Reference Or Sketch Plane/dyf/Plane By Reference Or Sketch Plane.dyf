@@ -1,0 +1,54 @@
+<Workspace Version="0.6.3.7375" X="-8" Y="202" zoom="1" Description="Retrieves the plane of a reference or sketch plane." Category="CAAD_RWTH.XYZ" Name="Plane By Reference Or Sketch Plane" ID="e1c391db-f8b1-4ca8-827c-89fcabde8ee6">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="31f516c8-a635-46d6-bf59-bf82f8503edd" nickname="Return List Or Single Value" x="528.661105081059" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="97825297-5130-4f10-b569-275fbcd7c380" nickname="Python Script" x="392.167351721849" y="42.8000943505244" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+refplanes = IN
+elementlist = list()
+for refplane in refplanes:
+	elementlist.append(refplane.Plane)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f75bfa97-3c68-4750-8b3d-e407a7c8f196" nickname="Turn Into List" x="250" y="0.549121596465739" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1fb9cec1-678e-45c4-8376-890c4fcc1c02" nickname="Input" x="68" y="2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Ref./Sketch Plane(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="293ba062-7090-4ac6-a9a4-610614151c19" nickname="Output" x="727.661105081059" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Plane(s)" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="31f516c8-a635-46d6-bf59-bf82f8503edd" start_index="0" end="293ba062-7090-4ac6-a9a4-610614151c19" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="97825297-5130-4f10-b569-275fbcd7c380" start_index="0" end="31f516c8-a635-46d6-bf59-bf82f8503edd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f75bfa97-3c68-4750-8b3d-e407a7c8f196" start_index="0" end="97825297-5130-4f10-b569-275fbcd7c380" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f75bfa97-3c68-4750-8b3d-e407a7c8f196" start_index="0" end="31f516c8-a635-46d6-bf59-bf82f8503edd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1fb9cec1-678e-45c4-8376-890c4fcc1c02" start_index="0" end="f75bfa97-3c68-4750-8b3d-e407a7c8f196" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

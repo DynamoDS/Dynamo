@@ -1,0 +1,25 @@
+<Workspace Version="0.6.3.21482" X="0" Y="0" zoom="1" Description="Creates Structural Framing elements in Revit from lists of curves with up-vector vertical." Category="vasshaug" Name="Structural Framing from lists of curves" ID="713b9b6c-52a8-49d7-89e7-6e26bde4897a">
+  <Elements>
+    <Dynamo.Nodes.Repeat type="Dynamo.Nodes.Repeat" guid="4898c9fb-4624-4f22-9e15-47f5fe1d87a3" nickname="Repeat" x="509.177324343324" y="127.407034862374" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="a8b0ca0b-3a8b-4910-bc7f-9d86b8c1b08b" nickname="List Length" x="352.100158074642" y="149.223307955247" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.StructuralFraming type="Dynamo.Nodes.StructuralFraming" guid="a33632bf-264b-4208-a657-2033cfaa7ef7" nickname="Structural Framing" x="647.056170290276" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="317ab978-12cc-437b-a24c-e16e6e308699" nickname="Flatten Completely" x="250" y="25.3068767877318" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.XyzBasisZ type="Dynamo.Nodes.XyzBasisZ" guid="5f8cfd12-059e-41bb-a037-3d897385198a" nickname="Z Axis" x="256.981207389719" y="115.189921930366" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="03168e4b-0f50-4689-a0e6-b31c5912ec92" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="type" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="59b239d1-2394-4d38-9b98-e54f3d7caac1" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4898c9fb-4624-4f22-9e15-47f5fe1d87a3" start_index="0" end="a33632bf-264b-4208-a657-2033cfaa7ef7" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a8b0ca0b-3a8b-4910-bc7f-9d86b8c1b08b" start_index="0" end="4898c9fb-4624-4f22-9e15-47f5fe1d87a3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="317ab978-12cc-437b-a24c-e16e6e308699" start_index="0" end="a8b0ca0b-3a8b-4910-bc7f-9d86b8c1b08b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="317ab978-12cc-437b-a24c-e16e6e308699" start_index="0" end="a33632bf-264b-4208-a657-2033cfaa7ef7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5f8cfd12-059e-41bb-a037-3d897385198a" start_index="0" end="4898c9fb-4624-4f22-9e15-47f5fe1d87a3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="03168e4b-0f50-4689-a0e6-b31c5912ec92" start_index="0" end="a33632bf-264b-4208-a657-2033cfaa7ef7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="59b239d1-2394-4d38-9b98-e54f3d7caac1" start_index="0" end="317ab978-12cc-437b-a24c-e16e6e308699" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

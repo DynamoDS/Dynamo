@@ -1,0 +1,51 @@
+<Workspace Version="0.6.3.5244" X="92.66204375" Y="105.64735" zoom="1.33823125" Description="Unplaces rooms that area is equal to 0 (thus redundant)" Category="Revit.API" Name="Unplace Redundant Rooms" ID="84ba1cd4-7f6a-4cf7-b995-22d489ca09a1">
+  <Elements>
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="91542361-8de6-4772-8497-66916619cf4e" nickname="Transaction" x="581.990686844196" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="4e6acc46-3a8f-4db4-849b-d2fdf3a34aba" nickname="Delete Redundant Rooms" x="401.70005892268" y="0.269581056006928" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+
+rooms = IN
+valid_rooms = []
+room_names = []
+
+for i in rooms:
+	if i.Area == 0:
+		i.Unplace()
+	else:
+		valid_rooms.append(i)
+		room_names.append(i.get_Parameter("Name").AsString())
+#Assign your output to the OUT variable
+OUT = [[valid_rooms], [room_names]]</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="7a12c3bc-ca99-4c32-8388-8bd94cc72ad4" nickname="Flatten Completely" x="250" y="0.217027914496498" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="9d4d4f98-3d0d-4579-bb63-0221d87a4a2b" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Rooms" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="9c42e475-d751-4648-8485-4cea86dd60c9" nickname="Output" x="778.990686844196" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Rooms" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="91542361-8de6-4772-8497-66916619cf4e" start_index="0" end="9c42e475-d751-4648-8485-4cea86dd60c9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4e6acc46-3a8f-4db4-849b-d2fdf3a34aba" start_index="0" end="91542361-8de6-4772-8497-66916619cf4e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7a12c3bc-ca99-4c32-8388-8bd94cc72ad4" start_index="0" end="4e6acc46-3a8f-4db4-849b-d2fdf3a34aba" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9d4d4f98-3d0d-4579-bb63-0221d87a4a2b" start_index="0" end="7a12c3bc-ca99-4c32-8388-8bd94cc72ad4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

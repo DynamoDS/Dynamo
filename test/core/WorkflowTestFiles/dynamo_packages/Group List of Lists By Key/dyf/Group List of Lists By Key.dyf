@@ -1,0 +1,34 @@
+<Workspace Version="0.6.3.5263" X="246" Y="245" zoom="1" Description="Groups a list of lists by one of its keys" Category="CAAD_RWTH.Lists.Sublists" Name="Group List of Lists By Key" ID="1af622be-33ad-4be7-a0c3-cfa6c2338eed">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="7c37dc8d-975c-4592-b41d-bd279b9642dc" nickname="Python Script With Variable Number of Inputs" x="397.388107263108" y="37.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>from itertools import groupby
+items = IN0
+groupindex = int(IN1)
+listlist = list()
+
+for key, group in groupby(items, lambda x: x[groupindex]):
+	elementlist = list()
+	for thing in group:
+		elementlist.append(thing)
+	listlist.append(elementlist)
+OUT = listlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="705a1632-b5e2-4484-8012-af666caa643e" nickname="Transpose Lists" x="255" y="8.70983645983705" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a81d245b-73eb-4629-bb81-3b6babb2faac" nickname="Input" x="159" y="9" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7d0aea85-449b-42cd-9415-f351e2c26945" nickname="Output" x="697.388107263108" y="37" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7a8398e4-4142-4ba8-9cb9-6be9d68946b7" nickname="Input" x="254" y="87.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="key index" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="7c37dc8d-975c-4592-b41d-bd279b9642dc" start_index="0" end="7d0aea85-449b-42cd-9415-f351e2c26945" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="705a1632-b5e2-4484-8012-af666caa643e" start_index="0" end="7c37dc8d-975c-4592-b41d-bd279b9642dc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a81d245b-73eb-4629-bb81-3b6babb2faac" start_index="0" end="705a1632-b5e2-4484-8012-af666caa643e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7a8398e4-4142-4ba8-9cb9-6be9d68946b7" start_index="0" end="7c37dc8d-975c-4592-b41d-bd279b9642dc" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

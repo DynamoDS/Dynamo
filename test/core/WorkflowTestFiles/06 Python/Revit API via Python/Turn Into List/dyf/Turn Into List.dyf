@@ -1,0 +1,12 @@
+<Workspace Version="0.7.1.29946" X="189.670675661328" Y="351.017851960202" zoom="1.63636223357016" Description="Turns an element (or a nested list) into a flat list" Category="CAAD_RWTH.Lists" Name="Turn Into List" ID="cd09ad33-8c34-4850-ac26-24448d92c38f">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ed57fe5f-d33a-4359-b026-7b22e405bd5e" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="item" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="af202f93-b973-4bf4-a98d-86d0ca9a509f" nickname="Code Block" x="166" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Flatten(List.AddItemToFront(item,List.Empty));" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ed57fe5f-d33a-4359-b026-7b22e405bd5e" start_index="0" end="af202f93-b973-4bf4-a98d-86d0ca9a509f" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

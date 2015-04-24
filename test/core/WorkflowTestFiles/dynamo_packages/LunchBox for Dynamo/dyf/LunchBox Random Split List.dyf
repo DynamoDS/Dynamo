@@ -1,0 +1,89 @@
+<Workspace Version="0.6.2.26406" X="148.474543808462" Y="192.198663541004" zoom="0.9" Description="Randomly splits a list of objects into two separate lists." Category="LunchBox.Math.Random" Name="LunchBox Random Split List" ID="e67c1160-7948-48cb-a843-bfd4b20c4c3c">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="c730f080-d46e-49a8-b351-03f8ecaca611" nickname="Get from List" x="638.97746919747" y="165.454545454546" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="8263628e-2ed8-48c0-8c87-bd6884dbef45" nickname="Number" x="513.522923742924" y="202.727272727273" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="6a823900-33e5-4f4d-8658-a9593d1dbd52" nickname="Python Script" x="429.090909090909" y="107.800151015651" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+import System
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+
+list = IN[0]
+split = IN[1]
+seed = IN[2]
+
+master = []
+listA = []
+listB = []
+
+rand = System.Random(seed)
+
+for i in range(0,len(list)):
+	num = rand.NextDouble()
+	if num &lt;= split:
+		listA.append(list[i])
+	else:
+		listB.append(list[i])
+		
+master.append(listA)
+master.append(listB)
+#Assign your output to the OUT variable
+OUT = master</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="43b6a594-b264-4326-80a1-8fee2e32229c" nickname="Get from List" x="638.068378288379" y="12.7272727272728" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="5a0b4b6c-f7ee-412f-b893-2b09e12f42ef" nickname="Number" x="522.613832833833" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="f7970c33-85e5-4ee7-b192-cc5a5dd3561b" nickname="List" x="250" y="108.800151015651" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="29f3d365-d459-4545-af94-760eb983eb9f" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f1e71d85-e7bb-4e3e-ab8c-4ae6cabaa887" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Ratio" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="033ef952-5333-463b-a876-b3da0b671ff5" nickname="Input" x="0" y="300" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Seed" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="97a6e5b7-02fe-4edb-9501-238a4c368f97" nickname="Output" x="855.97746919747" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ListA" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="eb2933a1-a21f-4fd1-a862-23373a461faf" nickname="Output" x="855.97746919747" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ListB" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c730f080-d46e-49a8-b351-03f8ecaca611" start_index="0" end="eb2933a1-a21f-4fd1-a862-23373a461faf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8263628e-2ed8-48c0-8c87-bd6884dbef45" start_index="0" end="c730f080-d46e-49a8-b351-03f8ecaca611" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6a823900-33e5-4f4d-8658-a9593d1dbd52" start_index="0" end="43b6a594-b264-4326-80a1-8fee2e32229c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6a823900-33e5-4f4d-8658-a9593d1dbd52" start_index="0" end="c730f080-d46e-49a8-b351-03f8ecaca611" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="43b6a594-b264-4326-80a1-8fee2e32229c" start_index="0" end="97a6e5b7-02fe-4edb-9501-238a4c368f97" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5a0b4b6c-f7ee-412f-b893-2b09e12f42ef" start_index="0" end="43b6a594-b264-4326-80a1-8fee2e32229c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f7970c33-85e5-4ee7-b192-cc5a5dd3561b" start_index="0" end="6a823900-33e5-4f4d-8658-a9593d1dbd52" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="29f3d365-d459-4545-af94-760eb983eb9f" start_index="0" end="f7970c33-85e5-4ee7-b192-cc5a5dd3561b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f1e71d85-e7bb-4e3e-ab8c-4ae6cabaa887" start_index="0" end="f7970c33-85e5-4ee7-b192-cc5a5dd3561b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="033ef952-5333-463b-a876-b3da0b671ff5" start_index="0" end="f7970c33-85e5-4ee7-b192-cc5a5dd3561b" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

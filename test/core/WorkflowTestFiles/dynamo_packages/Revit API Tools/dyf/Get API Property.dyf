@@ -1,0 +1,47 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="Returns the value of the given property of the given object" Category="DME.Revit" Name="Get API Property" ID="1713b0d7-3c44-40ac-9198-e03e9855bc90">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="312a31da-74dc-4cf8-bfb2-fde677b2eec9" nickname="Input" x="236" y="308" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="object" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ca2d3536-a797-4f2c-8975-427df04c57e3" nickname="Input" x="228" y="428" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="property" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="de64da16-f64a-457e-bcb0-5c9bbdc39d07" nickname="Python Script With Variable Number of Inputs" x="391" y="363" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+el = IN0
+prop = IN1
+
+try:
+	result = [getattr(e, prop) for e in el]
+except:
+	result = getattr(el, prop)
+	
+#Assign your output to the OUT variable
+OUT = result</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="a423d50a-2c4d-4087-9041-7e1ce1855001" nickname="Output" x="774" y="390" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="value" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="312a31da-74dc-4cf8-bfb2-fde677b2eec9" start_index="0" end="de64da16-f64a-457e-bcb0-5c9bbdc39d07" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ca2d3536-a797-4f2c-8975-427df04c57e3" start_index="0" end="de64da16-f64a-457e-bcb0-5c9bbdc39d07" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="de64da16-f64a-457e-bcb0-5c9bbdc39d07" start_index="0" end="a423d50a-2c4d-4087-9041-7e1ce1855001" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

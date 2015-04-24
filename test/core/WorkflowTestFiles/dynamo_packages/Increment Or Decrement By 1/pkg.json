@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Increment Or Decrement By 1","version":"0.1.1","description":"These nodes increment or decrement a value by 1 ","group":"CAAD_RWTH","keywords":["increment","decrement","+1","-1"],"dependencies":[],"license":"MIT","contents":"+1 - Increments a value by 1, -1 - Decrements a value by 1","engine_version":"0.6.3.7375","engine_metadata":"","engine":"dynamo"}

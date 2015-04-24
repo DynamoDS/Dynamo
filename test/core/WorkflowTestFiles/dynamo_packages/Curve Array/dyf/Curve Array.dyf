@@ -1,0 +1,40 @@
+<Workspace Version="0.6.3.22045" X="0" Y="0" zoom="1" Description="Creates a curve array from a list of curves" Category="CAAD_RWTH.Revit" Name="Curve Array" ID="51410785-3d00-4ec3-817d-6da27b8aea5b">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="438fe737-291b-40a2-86b0-94c43cfb9a9e" nickname="Python Script" x="390.685076427864" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+curves = IN
+curvearray = CurveArray()
+for curve in curves:
+	curvearray.Append(curve)
+OUT = curvearray</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e714345f-d404-4bad-bf11-e5b0935470f0" nickname="Turn Into List" x="250" y="0.858728550110868" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4f995f79-32f9-4230-a93d-c3c295a4fe01" nickname="Input" x="123" y="3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Curve(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="d39dd4d6-993a-49b0-8afe-9db57cb37aff" nickname="Output" x="544.685076427864" y="-1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Curve Array" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="438fe737-291b-40a2-86b0-94c43cfb9a9e" start_index="0" end="d39dd4d6-993a-49b0-8afe-9db57cb37aff" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e714345f-d404-4bad-bf11-e5b0935470f0" start_index="0" end="438fe737-291b-40a2-86b0-94c43cfb9a9e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4f995f79-32f9-4230-a93d-c3c295a4fe01" start_index="0" end="e714345f-d404-4bad-bf11-e5b0935470f0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

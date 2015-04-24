@@ -1,0 +1,56 @@
+<Workspace Version="0.6.2.17011" X="7.18571428571431" Y="182.145238095238" zoom="0.6" Description="Define a series of planes radially with a sweep angle and a number of planes to create" Category="Ian" Name="Radial Planes" ID="193b2139-c47c-417c-b74c-0d9ad34adc46">
+  <Elements>
+    <Dynamo.Nodes.Plane type="Dynamo.Nodes.Plane" guid="75fd7a2e-e713-46c1-8092-5ecebf222e10" nickname="Plane by Normal Origin" x="1409.76826639133" y="135.26077272401" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzCrossProduct type="Dynamo.Nodes.XyzCrossProduct" guid="f9d282f7-2cd7-4f75-a20b-974a59ebce20" nickname="XYZ Cross Product" x="1217.54604416911" y="91.9274393906801" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzFromPolar type="Dynamo.Nodes.XyzFromPolar" guid="2ec917a5-b751-40bf-a52b-d9a6ccf33cd7" nickname="XYZ by Polar Coordinates" x="790.190148594087" y="138.75" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.XyzFromPolar>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="8ed92fb3-d273-4b28-8ba2-37152c72dfc3" nickname="XYZ" x="885.190148594087" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.XyzStartEndVector type="Dynamo.Nodes.XyzStartEndVector" guid="ab851127-662b-4e11-ae07-f2cd064d994b" nickname="Direction to XYZ" x="1044.21271083577" y="146.37188383512" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="fbb49813-7a1f-454e-98c7-edcba700b934" nickname="XYZ" x="1160.87937750244" y="256.37188383512" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.XyzBasisZ type="Dynamo.Nodes.XyzBasisZ" guid="90052dac-0d7e-47aa-80e5-05a6584d4fda" nickname="Unit Z" x="1059.76826639133" y="46.3718838351201" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="abdcd09d-22b0-4aec-9c40-c9a9bb6c8e7e" nickname="Number" x="505.190148594087" y="100" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="100" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b13ba183-7e9b-4956-89db-d47c828c7aad" nickname="Number" x="467.690148594087" y="178.75" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="0..sweep..#grids" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="35fa2528-3a08-4abf-a925-d48caacb7793" nickname="Number" x="651.440148594087" y="253.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="59a37886-b3d2-4cdb-b151-7fb3f3f52d27" nickname="Output" x="1620.76826639133" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="planes" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="48662903-9d6a-43ce-9e77-dff9381186d2" nickname="Input" x="201.5" y="131.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="sweep angle" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="14c80e52-8732-42cc-a19d-bb3d5561db3a" nickname="Input" x="185.357142857143" y="234.071428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="number of planes" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="75fd7a2e-e713-46c1-8092-5ecebf222e10" start_index="0" end="59a37886-b3d2-4cdb-b151-7fb3f3f52d27" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f9d282f7-2cd7-4f75-a20b-974a59ebce20" start_index="0" end="75fd7a2e-e713-46c1-8092-5ecebf222e10" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2ec917a5-b751-40bf-a52b-d9a6ccf33cd7" start_index="0" end="ab851127-662b-4e11-ae07-f2cd064d994b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8ed92fb3-d273-4b28-8ba2-37152c72dfc3" start_index="0" end="ab851127-662b-4e11-ae07-f2cd064d994b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ab851127-662b-4e11-ae07-f2cd064d994b" start_index="0" end="f9d282f7-2cd7-4f75-a20b-974a59ebce20" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fbb49813-7a1f-454e-98c7-edcba700b934" start_index="0" end="75fd7a2e-e713-46c1-8092-5ecebf222e10" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="90052dac-0d7e-47aa-80e5-05a6584d4fda" start_index="0" end="f9d282f7-2cd7-4f75-a20b-974a59ebce20" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="abdcd09d-22b0-4aec-9c40-c9a9bb6c8e7e" start_index="0" end="2ec917a5-b751-40bf-a52b-d9a6ccf33cd7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b13ba183-7e9b-4956-89db-d47c828c7aad" start_index="0" end="2ec917a5-b751-40bf-a52b-d9a6ccf33cd7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="35fa2528-3a08-4abf-a925-d48caacb7793" start_index="0" end="2ec917a5-b751-40bf-a52b-d9a6ccf33cd7" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="48662903-9d6a-43ce-9e77-dff9381186d2" start_index="0" end="b13ba183-7e9b-4956-89db-d47c828c7aad" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="14c80e52-8732-42cc-a19d-bb3d5561db3a" start_index="0" end="b13ba183-7e9b-4956-89db-d47c828c7aad" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

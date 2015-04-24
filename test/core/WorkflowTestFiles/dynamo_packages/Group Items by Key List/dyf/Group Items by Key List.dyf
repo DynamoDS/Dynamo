@@ -1,0 +1,59 @@
+<Workspace Version="0.7.0.40046" X="136" Y="270.4" zoom="1" Description="Group items in a list according to a key list" Category="Misc." Name="Group Items by Key List" ID="60f77e3a-db9a-43a1-aad7-e93747229cde">
+  <Elements>
+    <DSIronPythonNode.PythonNode type="DSIronPythonNode.PythonNode" guid="d465b3ad-d1a5-4bf2-882a-89ff84937a89" nickname="Python Script" x="234" y="59.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="2">
+      <Script>import clr
+clr.AddReference('ProtoGeometry')
+from Autodesk.DesignScript.Geometry import *
+#The inputs to this node will be stored as a list in the IN variable.
+
+# Sort data into bins according to a matching a set of criteria
+
+# Get input
+criteria = IN[0]	# List of criteria related to the data
+data = IN[1]		# Data (list of same length as criteria) to be binned
+
+# Find a unique set of values for the criteria, a list of all the bins
+# to sort data into
+bins = []
+bins.append(criteria[0])
+sorted = []
+sorted.append([])
+
+for i in range(1,len(criteria)):
+	if criteria[i] in bins:
+		continue
+	else:
+		bins.append(criteria[i])
+		sorted.append([]) # initialize an empty list
+
+# Sort data into bins
+for i in range(len(criteria)):
+	for j in range(len(bins)):
+		if criteria[i] == bins[j]:
+			temp = sorted[j]
+			temp.append(data[i])
+			sorted[j] = temp
+			continue
+
+# Assign your output to the OUT variable
+OUT = sorted</Script>
+    </DSIronPythonNode.PythonNode>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f359a31b-2fa6-4b07-8f1c-45875cf78266" nickname="Input" x="-3.19999999999993" y="40.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Keys" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6b925f88-1733-47c7-a8b5-830fe2229603" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="90d58621-8d7c-4441-910c-dfad43876fe4" nickname="Output" x="455.4" y="61.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="GroupedList" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d465b3ad-d1a5-4bf2-882a-89ff84937a89" start_index="0" end="90d58621-8d7c-4441-910c-dfad43876fe4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f359a31b-2fa6-4b07-8f1c-45875cf78266" start_index="0" end="d465b3ad-d1a5-4bf2-882a-89ff84937a89" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6b925f88-1733-47c7-a8b5-830fe2229603" start_index="0" end="d465b3ad-d1a5-4bf2-882a-89ff84937a89" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Group items in the list according to unique values in the key list." x="-3.60000000000002" y="-35.6" />
+  </Notes>
+</Workspace>

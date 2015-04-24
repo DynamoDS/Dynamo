@@ -1,0 +1,53 @@
+<Workspace Version="0.6.3.16650" X="-222.92352849007" Y="79.6532057579499" zoom="1.07925372895183" Description="union all solids" Category="buildz" Name="Union Solids" ID="f8e2d146-1121-48ef-8c90-f239221faeca">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="61872dcd-1518-419d-973b-f20f39d05ab8" nickname="Input" x="317.939718547846" y="338.413280528022" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="solids" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="89be01e0-3a86-4def-8ea9-796bf935cde3" nickname="Split List" x="504.987367252219" y="352.996983752567" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="458b9c0c-3586-41d7-97d8-c277e7cd5e87" nickname="First of List" x="716.532444883989" y="472.229812850806" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.SolidUnion type="Dynamo.Nodes.SolidUnion" guid="4a268541-4164-49eb-82f6-20d3adb739e1" nickname="Boolean Union" x="873.354870597253" y="385.965661285107" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="2337c01d-c23c-457c-9955-5726ed7151a7" nickname="Rest of List" x="1007.96359157771" y="615.524958892572" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="ba3a84d0-ae88-4fc3-b3b2-8c4e9216fe9c" nickname="Add to List" x="1226.47833582287" y="547.904350358252" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5ab88a6d-2e1d-4120-b3ad-12b5d83d1150" nickname="Output" x="1723.61503189926" y="231.715393785738" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Union" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="cdb7cecb-a767-4a1b-b393-8fb9b095c8f8" nickname="If" x="1540.34266202978" y="219.409066611139" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="84370621-caf7-4cb1-9752-36be8b83b814" nickname="List Length" x="524.60146390646" y="131.536714475635" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GreaterThan type="Dynamo.Nodes.GreaterThan" guid="b37365aa-41a6-4888-b084-938aacd86157" nickname="Greater Than" x="1096.24605271974" y="135.293414949764" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="908f00c1-51d3-4ea1-a7be-9b092cf90398" nickname="Number" x="906.532678776229" y="187.26110484188" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="71eb4362-ed4b-4fae-8e85-b05052bd1697" nickname="Union Solids" x="1387.06785571986" y="445.142238992725" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f8e2d146-1121-48ef-8c90-f239221faeca" />
+      <Name value="Union Solids" />
+      <Description value="union all solids" />
+      <Inputs>
+        <Input value="solids" />
+      </Inputs>
+      <Outputs>
+        <Output value="Union" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="61872dcd-1518-419d-973b-f20f39d05ab8" start_index="0" end="89be01e0-3a86-4def-8ea9-796bf935cde3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="61872dcd-1518-419d-973b-f20f39d05ab8" start_index="0" end="84370621-caf7-4cb1-9752-36be8b83b814" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="89be01e0-3a86-4def-8ea9-796bf935cde3" start_index="0" end="4a268541-4164-49eb-82f6-20d3adb739e1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="89be01e0-3a86-4def-8ea9-796bf935cde3" start_index="0" end="cdb7cecb-a767-4a1b-b393-8fb9b095c8f8" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="89be01e0-3a86-4def-8ea9-796bf935cde3" start_index="1" end="458b9c0c-3586-41d7-97d8-c277e7cd5e87" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="89be01e0-3a86-4def-8ea9-796bf935cde3" start_index="1" end="2337c01d-c23c-457c-9955-5726ed7151a7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="458b9c0c-3586-41d7-97d8-c277e7cd5e87" start_index="0" end="4a268541-4164-49eb-82f6-20d3adb739e1" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4a268541-4164-49eb-82f6-20d3adb739e1" start_index="0" end="ba3a84d0-ae88-4fc3-b3b2-8c4e9216fe9c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2337c01d-c23c-457c-9955-5726ed7151a7" start_index="0" end="ba3a84d0-ae88-4fc3-b3b2-8c4e9216fe9c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ba3a84d0-ae88-4fc3-b3b2-8c4e9216fe9c" start_index="0" end="71eb4362-ed4b-4fae-8e85-b05052bd1697" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cdb7cecb-a767-4a1b-b393-8fb9b095c8f8" start_index="0" end="5ab88a6d-2e1d-4120-b3ad-12b5d83d1150" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="84370621-caf7-4cb1-9752-36be8b83b814" start_index="0" end="b37365aa-41a6-4888-b084-938aacd86157" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b37365aa-41a6-4888-b084-938aacd86157" start_index="0" end="cdb7cecb-a767-4a1b-b393-8fb9b095c8f8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="908f00c1-51d3-4ea1-a7be-9b092cf90398" start_index="0" end="b37365aa-41a6-4888-b084-938aacd86157" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="71eb4362-ed4b-4fae-8e85-b05052bd1697" start_index="0" end="cdb7cecb-a767-4a1b-b393-8fb9b095c8f8" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

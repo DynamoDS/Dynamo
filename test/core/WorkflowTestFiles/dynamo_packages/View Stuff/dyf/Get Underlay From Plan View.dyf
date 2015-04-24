@@ -1,0 +1,64 @@
+<Workspace Version="0.6.3.5263" X="-299.04249084249" Y="22.253266178265" zoom="1.1" Description="Returns the view template assigned to a given view (if one is assigned)" Category="CAAD_RWTH.Revit.Views" Name="Get Underlay From Plan View" ID="a2b7f203-d18a-4cb6-8736-f3a881d3f4bc">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" nickname="Turn Into List" x="447.5" y="127.75854031026" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4d7090a5-55aa-4d07-aa91-3d027092bbd0" nickname="Input" x="322.5" y="128.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Plan(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7a99c4da-d79e-4fa4-9b6a-640fdaf8a4a1" nickname="Output" x="1145.10464535465" y="126.157925407925" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Level(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="08903bfc-b80a-48fc-9983-cd0487db842e" nickname="Python Script With Variable Number of Inputs" x="620.493173493173" y="26.1333943833953" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+views = IN1
+elementlist = list()
+
+for view in views:
+	try:
+		if view.get_Parameter(BuiltInParameter.VIEW_UNDERLAY_ID).AsElementId().IntegerValue == -1:
+			elementlist.append(list())
+		else:
+			elementlist.append(doc.GetElement(view.get_Parameter(BuiltInParameter.VIEW_UNDERLAY_ID).AsElementId()))
+	except:
+		elementlist.append(list())
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="aa94f9f4-53e4-447a-bb35-cb4bc7ee320c" nickname="Revit Document" x="454.129537129536" y="27.9515762015773" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="436bfe0a-8565-4b18-9def-41d090d1a5cd" nickname="Return List Or Single Value" x="944.129537129536" y="127.042485292486" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" start_index="0" end="08903bfc-b80a-48fc-9983-cd0487db842e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" start_index="0" end="436bfe0a-8565-4b18-9def-41d090d1a5cd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4d7090a5-55aa-4d07-aa91-3d027092bbd0" start_index="0" end="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="08903bfc-b80a-48fc-9983-cd0487db842e" start_index="0" end="436bfe0a-8565-4b18-9def-41d090d1a5cd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="aa94f9f4-53e4-447a-bb35-cb4bc7ee320c" start_index="0" end="08903bfc-b80a-48fc-9983-cd0487db842e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="436bfe0a-8565-4b18-9def-41d090d1a5cd" start_index="0" end="7a99c4da-d79e-4fa4-9b6a-640fdaf8a4a1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

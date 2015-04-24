@@ -1,0 +1,48 @@
+<dynWorkspace X="77.05359116106" Y="95.3239523658178" Name="ConnectPoints" Category="Revit" ID="fbdfbd95-f779-49ae-869f-227f4a3fdb1e">
+  <dynElements>
+    <Dynamo.Nodes.dynFunction type="Dynamo.Nodes.dynFunction" guid="9e0d5813-4074-43ed-90cc-901b93f1db94" nickname="ConnectPoints" x="476.539019748082" y="334.253365489783" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="fbdfbd95-f779-49ae-869f-227f4a3fdb1e" />
+      <Name value="ConnectPoints" />
+      <Inputs>
+        <Input value="refPts" />
+      </Inputs>
+      <Outputs>
+        <Output value="result" />
+      </Outputs>
+    </Dynamo.Nodes.dynFunction>
+    <Dynamo.Nodes.dynBoolSelector type="Dynamo.Nodes.dynBoolSelector" guid="44ce5111-682a-4d64-ab0b-9c79856eaabd" nickname="Boolean" x="310.393083075943" y="240.44236506749" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean value="True" />
+    </Dynamo.Nodes.dynBoolSelector>
+    <Dynamo.Nodes.dynList type="Dynamo.Nodes.dynList" guid="c44475ed-af9e-4ad8-8df5-fe58c1e2c39e" nickname="Make Pair" x="645.786703494977" y="180.977477366764" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynEmpty type="Dynamo.Nodes.dynEmpty" guid="1cec5478-a693-4fd1-920b-3378c1c09d7d" nickname="Empty List" x="650.724716615036" y="88.5972416228783" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynRest type="Dynamo.Nodes.dynRest" guid="7acda025-ff0a-46d4-a876-031b724cd5c6" nickname="List Rest" x="311.212916742411" y="335.891677484536" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynTakeList type="Dynamo.Nodes.dynTakeList" guid="c8f94a95-f158-4322-85b4-d1f263d82bc8" nickname="Take From List" x="292.135839161759" y="120.587337365852" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="aabc634a-2614-40b9-93a4-811f3b50d901" nickname="Number" x="0" y="116.739740213462" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="e61e4492-6c8c-434f-b038-e8a60844162b" nickname="Input" x="0.0578441156808367" y="4.48556049164591" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="refPts" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynLessThan type="Dynamo.Nodes.dynLessThan" guid="6ff4ce21-827d-4343-8c32-f2c823ef7234" nickname="Less Than" x="530.992061446184" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynCurveByPoints type="Dynamo.Nodes.dynCurveByPoints" guid="7222d646-f8cf-486c-a5c7-4dd46ee896e7" nickname="Curve By Points" x="470.691575729377" y="123.295197941705" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.dynConditional type="Dynamo.Nodes.dynConditional" guid="246e2bbf-a651-4e40-bb73-434fc0304777" nickname="If" x="848.901358265617" y="59.3066805204123" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynLength type="Dynamo.Nodes.dynLength" guid="11d60d61-82d6-457f-b929-b4502783d4f0" nickname="List Length" x="287.765027794179" y="3.71256069659785" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="9e0d5813-4074-43ed-90cc-901b93f1db94" start_index="0" end="c44475ed-af9e-4ad8-8df5-fe58c1e2c39e" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="44ce5111-682a-4d64-ab0b-9c79856eaabd" start_index="0" end="7222d646-f8cf-486c-a5c7-4dd46ee896e7" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="c44475ed-af9e-4ad8-8df5-fe58c1e2c39e" start_index="0" end="246e2bbf-a651-4e40-bb73-434fc0304777" end_index="2" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="1cec5478-a693-4fd1-920b-3378c1c09d7d" start_index="0" end="246e2bbf-a651-4e40-bb73-434fc0304777" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7acda025-ff0a-46d4-a876-031b724cd5c6" start_index="0" end="9e0d5813-4074-43ed-90cc-901b93f1db94" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="c8f94a95-f158-4322-85b4-d1f263d82bc8" start_index="0" end="7222d646-f8cf-486c-a5c7-4dd46ee896e7" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="aabc634a-2614-40b9-93a4-811f3b50d901" start_index="0" end="c8f94a95-f158-4322-85b4-d1f263d82bc8" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="aabc634a-2614-40b9-93a4-811f3b50d901" start_index="0" end="6ff4ce21-827d-4343-8c32-f2c823ef7234" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e61e4492-6c8c-434f-b038-e8a60844162b" start_index="0" end="c8f94a95-f158-4322-85b4-d1f263d82bc8" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e61e4492-6c8c-434f-b038-e8a60844162b" start_index="0" end="7acda025-ff0a-46d4-a876-031b724cd5c6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="e61e4492-6c8c-434f-b038-e8a60844162b" start_index="0" end="11d60d61-82d6-457f-b929-b4502783d4f0" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="6ff4ce21-827d-4343-8c32-f2c823ef7234" start_index="0" end="246e2bbf-a651-4e40-bb73-434fc0304777" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7222d646-f8cf-486c-a5c7-4dd46ee896e7" start_index="0" end="c44475ed-af9e-4ad8-8df5-fe58c1e2c39e" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="11d60d61-82d6-457f-b929-b4502783d4f0" start_index="0" end="6ff4ce21-827d-4343-8c32-f2c823ef7234" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

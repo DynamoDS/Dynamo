@@ -1,0 +1,47 @@
+<Workspace Version="0.6.3.38253" X="241.018276449201" Y="-155.79177163964" zoom="2.33041206914125" Description="Remove 'null' values from a list." Category="LunchBox.Format" Name="LunchBox Remove Null Values" ID="7ee545fa-4856-4297-a5e7-99afcacd80a1">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="e5db37a5-e12b-427e-a7ae-3e54c9635e2b" nickname="Python Script" x="103.990173496771" y="124.399070084415" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+list = IN
+
+cleanlist = []
+for i in list:
+	if hasattr(i, "__iter__"):
+		for ii in i:
+			if not (i is None):
+				cleanlist.append(i)	
+	else:
+		if not (i is None):
+			cleanlist.append(i)	
+
+#Assign your output to the OUT variable
+OUT = cleanlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6b83e5bd-6407-4bcd-b584-7b6b521067ab" nickname="Input" x="-16.3316539024578" y="120.687052925003" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2ce0420d-38bf-416c-97ea-61c11affa302" nickname="Output" x="250.14482389438" y="124.119922204189" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Cleaned" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e5db37a5-e12b-427e-a7ae-3e54c9635e2b" start_index="0" end="2ce0420d-38bf-416c-97ea-61c11affa302" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6b83e5bd-6407-4bcd-b584-7b6b521067ab" start_index="0" end="e5db37a5-e12b-427e-a7ae-3e54c9635e2b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

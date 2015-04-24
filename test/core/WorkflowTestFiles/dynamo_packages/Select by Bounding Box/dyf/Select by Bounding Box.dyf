@@ -1,0 +1,182 @@
+<Workspace Version="0.6.3.7993" X="-289.965" Y="223.1025" zoom="0.8425" Description="select elements that intersect or are inside an element bounding box" Category="JBE" Name="Select by Bounding Box" ID="e5065c2a-db0a-438d-87c4-219f064a2757">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="ff8d254b-8940-4579-a600-7471d8f59c80" nickname="Python Script With Variable Number of Inputs" x="1366.38124134102" y="303.911018047239" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+app = __revit__.Application
+document = __revit__.ActiveUIDocument.Document
+
+minXYZ = IN0
+maxXYZ = IN1
+cat = IN2
+
+elementlist = []
+intersect = []
+outline = Outline(minXYZ,maxXYZ)
+
+boxfilter = BoundingBoxIsInsideFilter(outline, False)
+
+intersectbox = BoundingBoxIntersectsFilter(outline)
+
+for item in cat:
+	try:
+		collector = FilteredElementCollector(document).OfCategory(item)
+		elementlist.append(collector.WherePasses(boxfilter).WhereElementIsNotElementType().ToElements())
+	except:
+		OUT = 0
+		
+for item in cat:
+	try:
+		collector = FilteredElementCollector(document).OfCategory(item)
+		intersect.append(collector.WherePasses(intersectbox).WhereElementIsNotElementType().ToElements())
+	except:
+		OUT = 0			
+
+OUT=[elementlist,intersect]</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="641fafe8-d29a-4d3d-af9a-c15bf19eddf5" nickname="Inside entirely" x="1739.83349030066" y="439.352992523226" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="250383cd-9120-45eb-8463-2a95cdbb0d3b" nickname="First of List" x="1052.57110322802" y="343.754452840805" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="bf59c86c-0dae-4f97-bf84-603a81e31a64" nickname="First of List" x="1052.1412265606" y="262.33279045789" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="914969b3-8177-4d7f-ba5a-65ec5b9dfb52" nickname="Turn Into List" x="1046.68400943202" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="4571c79f-04d4-44df-9c11-ec739ffc7486" nickname="Number" x="1567.06688179502" y="462.76811504067" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="3bbac6b7-217f-44d7-8329-937baefa2cc8" nickname="Get Bounding Box" x="691.937354118381" y="255.245903655413" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="a2d5ef3c-b3a2-403f-8b95-fd94457ce395" />
+      <Name value="Get Bounding Box" />
+      <Description value="Gets the bounding box of a Revit element" />
+      <Inputs>
+        <Input value="Element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="bbox" />
+        <Output value="bottom left rear corner" />
+        <Output value="top right front corner" />
+      </Outputs>
+      <InnerNode id="1f033186-d044-4017-af7c-15936122d7fe">
+        <Run />
+      </InnerNode>
+      <InnerNode id="465fa45c-0465-4c51-8d3a-dea442d7fdd8">
+        <Run />
+      </InnerNode>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="bc8f5181-82cb-4d71-b937-db26a2e37fc4" nickname="Elements to IDs" x="1947.02004173596" y="569.184901370559" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="45153daa-f672-47f2-898f-f062bcb4e398" />
+      <Name value="Elements to IDs" />
+      <Description value="Gets the ID(s) for a list of Revit elements (or a single element)" />
+      <Inputs>
+        <Input value="Element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="ID(s)" />
+        <Output value="unmatched" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="99cf1ba6-dc70-4f67-98ac-46dcfe838bda" nickname="IDs to Elements" x="2497.33414359458" y="571.957781328483" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="a4dd8f6e-689f-4998-b8ef-4a04146d12c2" />
+      <Name value="IDs to Elements" />
+      <Description value="Gets the Revit element(s) for a list of IDs (or a single ID)" />
+      <Inputs>
+        <Input value="ID(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="Element(s)" />
+        <Output value="unmatched" />
+      </Outputs>
+      <InnerNode id="18c7de15-e52f-4116-af0c-7c7ea96346d2">
+        <Run />
+      </InnerNode>
+      <InnerNode id="465fa45c-0465-4c51-8d3a-dea442d7fdd8">
+        <Run />
+      </InnerNode>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="7e3b027a-ee84-4433-938c-1a6a2e640d50" nickname="Remove List Intersection" x="2262.29833837577" y="572.330197913655" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="c68c8c95-5f15-4b98-9b2b-b317f461789b" />
+      <Name value="Remove List Intersection" />
+      <Description value="returns a list of elements that are not in both lists" />
+      <Inputs>
+        <Input value="listA" />
+        <Input value="listB" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="70ff788c-7188-4741-b906-33476cac53e1" nickname="Intersect" x="1736.3630807157" y="595.44078737219" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="52723b39-e60c-4351-8c9f-5fadda329e16" nickname="Number" x="1549.24730756699" y="606.774555196416" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="73d32a51-630a-423b-a495-fb74cf32f2df" nickname="Elements to IDs" x="1945.62685194062" y="663.640643994106" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="45153daa-f672-47f2-898f-f062bcb4e398" />
+      <Name value="Elements to IDs" />
+      <Description value="Gets the ID(s) for a list of Revit elements (or a single element)" />
+      <Inputs>
+        <Input value="Element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="ID(s)" />
+        <Output value="unmatched" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3b17f8a4-6fb4-47e2-8570-1ad6777bfd19" nickname="Input" x="402.373887240356" y="-1.18694362017806" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Category(ies) to test" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f99c4e9b-8d7e-4e19-9050-676420413723" nickname="Input" x="404" y="252.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element as Box" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="dbbf8cbd-fb8d-47c2-ac91-4e11348fd30d" nickname="Output" x="1058.41543026706" y="162.786350148368" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Bounding Box" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7487a335-638c-409b-b0be-86ad4d6e2013" nickname="Output" x="2737.94065281899" y="718.275964391691" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Intersect" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="3528502c-8122-4d3b-9d8d-907ee88c6729" nickname="Output" x="2735.56676557863" y="413.231454005935" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Full inside" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ff8d254b-8940-4579-a600-7471d8f59c80" start_index="0" end="641fafe8-d29a-4d3d-af9a-c15bf19eddf5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ff8d254b-8940-4579-a600-7471d8f59c80" start_index="0" end="70ff788c-7188-4741-b906-33476cac53e1" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="641fafe8-d29a-4d3d-af9a-c15bf19eddf5" start_index="0" end="bc8f5181-82cb-4d71-b937-db26a2e37fc4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="641fafe8-d29a-4d3d-af9a-c15bf19eddf5" start_index="0" end="3528502c-8122-4d3b-9d8d-907ee88c6729" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="250383cd-9120-45eb-8463-2a95cdbb0d3b" start_index="0" end="ff8d254b-8940-4579-a600-7471d8f59c80" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bf59c86c-0dae-4f97-bf84-603a81e31a64" start_index="0" end="ff8d254b-8940-4579-a600-7471d8f59c80" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="914969b3-8177-4d7f-ba5a-65ec5b9dfb52" start_index="0" end="ff8d254b-8940-4579-a600-7471d8f59c80" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4571c79f-04d4-44df-9c11-ec739ffc7486" start_index="0" end="641fafe8-d29a-4d3d-af9a-c15bf19eddf5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3bbac6b7-217f-44d7-8329-937baefa2cc8" start_index="0" end="dbbf8cbd-fb8d-47c2-ac91-4e11348fd30d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3bbac6b7-217f-44d7-8329-937baefa2cc8" start_index="1" end="250383cd-9120-45eb-8463-2a95cdbb0d3b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3bbac6b7-217f-44d7-8329-937baefa2cc8" start_index="2" end="bf59c86c-0dae-4f97-bf84-603a81e31a64" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bc8f5181-82cb-4d71-b937-db26a2e37fc4" start_index="0" end="7e3b027a-ee84-4433-938c-1a6a2e640d50" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="99cf1ba6-dc70-4f67-98ac-46dcfe838bda" start_index="0" end="7487a335-638c-409b-b0be-86ad4d6e2013" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7e3b027a-ee84-4433-938c-1a6a2e640d50" start_index="0" end="99cf1ba6-dc70-4f67-98ac-46dcfe838bda" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="70ff788c-7188-4741-b906-33476cac53e1" start_index="0" end="73d32a51-630a-423b-a495-fb74cf32f2df" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="52723b39-e60c-4351-8c9f-5fadda329e16" start_index="0" end="70ff788c-7188-4741-b906-33476cac53e1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="73d32a51-630a-423b-a495-fb74cf32f2df" start_index="0" end="7e3b027a-ee84-4433-938c-1a6a2e640d50" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3b17f8a4-6fb4-47e2-8570-1ad6777bfd19" start_index="0" end="914969b3-8177-4d7f-ba5a-65ec5b9dfb52" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f99c4e9b-8d7e-4e19-9050-676420413723" start_index="0" end="3bbac6b7-217f-44d7-8329-937baefa2cc8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

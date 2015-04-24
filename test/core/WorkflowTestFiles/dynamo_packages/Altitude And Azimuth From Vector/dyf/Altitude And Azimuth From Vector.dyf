@@ -1,0 +1,217 @@
+<Workspace Version="0.6.3.22045" X="-273.698383930647" Y="102.174501639066" zoom="0.695616441301115" Description="Computes the altitude and azimuth of a given vector" Category="CAAD_RWTH.XYZ" Name="Altitude And Azimuth From Vector" ID="1e4729d4-4868-4859-94df-65d0eb8a1eea">
+  <Elements>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="1a212ceb-3135-4f92-a541-0fd31680ac6f" nickname="XYZ" x="531.372858711383" y="566.296015468456" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.XyzNormalize type="Dynamo.Nodes.XyzNormalize" guid="fae35f4f-dafe-4a01-929c-09285f14ebb6" nickname="Unitize XYZ" x="250" y="697.927984877194" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f9934b8b-6027-4d09-b411-5253b70ed8da" nickname="Project XYZ To XY Plane" x="479.716201506303" y="696.854727343038" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f58d1ef4-5313-4f7e-8b1a-a5abf789cfff" />
+      <Name value="Project XYZ To XY Plane" />
+      <Description value="Given an XYZ, make the Z value 0 - effectively projecting the XYZ to the XY plane." />
+      <Inputs>
+        <Input value="xyz" />
+      </Inputs>
+      <Outputs>
+        <Output value="xyz" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.XyzBasisY type="Dynamo.Nodes.XyzBasisY" guid="c0522de3-6f8b-4c6f-b6c6-94a1bf6a8093" nickname="Y Axis" x="548.113613307983" y="790.289107252663" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="fbe8d104-011f-4e93-b702-bada1ef7fac5" nickname="Turn Into List" x="628.346191781603" y="71.52667703945" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="6086e21c-5d25-4cf2-ab4f-6914298834d3" nickname="Z Axis (Negative)" x="633.391129841253" y="157.507112621948" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="4cb9a1f2-5c84-47cf-b976-28b92bd7f882" />
+      <Name value="Z Axis (Negative)" />
+      <Description value="Returns an XYZ of 0,0,-1" />
+      <Inputs />
+      <Outputs>
+        <Output value="0,0,-1" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="b444f447-1639-40b1-a7eb-210d14d33eaf" nickname="Solve Triangle By XYZs" x="723.294536219583" y="313.049329050406" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="75656523-56b4-4c88-b0db-e17529063b95" />
+      <Name value="Solve Triangle By XYZs" />
+      <Description value="Solves a triangle based on the XYZ coordinates of its vertices." />
+      <Inputs>
+        <Input value="XYZ (A)" />
+        <Input value="XYZ (B)" />
+        <Input value="XYZ (C)" />
+      </Inputs>
+      <Outputs>
+        <Output value="a" />
+        <Output value="b" />
+        <Output value="c" />
+        <Output value="alpha" />
+        <Output value="beta" />
+        <Output value="gamma" />
+        <Output value="Ha" />
+        <Output value="Hb" />
+        <Output value="Hc" />
+        <Output value="Area" />
+        <Output value="Plane" />
+        <Output value="Normal" />
+        <Output value="Origin/Centroid" />
+        <Output value="Incircle center" />
+        <Output value="Incircle radius" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="1d78f44c-cd43-428d-ab87-6d81f9bf880d" nickname="XYZs Almost Equal" x="794.345512757483" y="115.79639794365" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="7c7d7002-6192-43ee-b03b-b957cc6867f2" />
+      <Name value="XYZs Almost Equal" />
+      <Description value="Checks if any XYzs in a given list are almost equal (within a reasonable computational tolerance) to a specified XYZ." />
+      <Inputs>
+        <Input value="XYZ" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="bool" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.XyzGetZ type="Dynamo.Nodes.XyzGetZ" guid="031124e7-83f0-4e74-849f-908a621c5cae" nickname="XYZ Z" x="816.219664760133" y="221.110667260237" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="fa9f912a-4828-4e9b-8b23-601edb4c2a23" nickname="Solve Triangle By XYZs" x="716.528295015603" y="749.015637786732" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="75656523-56b4-4c88-b0db-e17529063b95" />
+      <Name value="Solve Triangle By XYZs" />
+      <Description value="Solves a triangle based on the XYZ coordinates of its vertices." />
+      <Inputs>
+        <Input value="XYZ (A)" />
+        <Input value="XYZ (B)" />
+        <Input value="XYZ (C)" />
+      </Inputs>
+      <Outputs>
+        <Output value="a" />
+        <Output value="b" />
+        <Output value="c" />
+        <Output value="alpha" />
+        <Output value="beta" />
+        <Output value="gamma" />
+        <Output value="Ha" />
+        <Output value="Hb" />
+        <Output value="Hc" />
+        <Output value="Area" />
+        <Output value="Plane" />
+        <Output value="Normal" />
+        <Output value="Origin/Centroid" />
+        <Output value="Incircle center" />
+        <Output value="Incircle radius" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.XyzGetX type="Dynamo.Nodes.XyzGetX" guid="bb7ff97b-a7e0-4de4-8e6f-c898c1f4079e" nickname="XYZ X" x="815.159042914793" y="1115.07715971555" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzBasisZ type="Dynamo.Nodes.XyzBasisZ" guid="afe4193b-2fbb-49b9-bc80-b7580459a16f" nickname="Z Axis" x="922.483028544513" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="45fafb26-6559-496a-aab3-280ac8039ab0" nickname="First of List" x="979.228648755643" y="168.968210127112" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="43fa8b8f-032e-4eb0-973d-9604d07354d3" nickname="Formula" x="964.063300600593" y="252.587074724397" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>if(z&lt;0,-x,x)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="e5c71c33-51cc-4ef2-9ea0-95655e481feb" nickname="Formula" x="996.498108323173" y="1115.26425160842" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>if(x&lt;0,2*pi-a,a)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="3a4d2152-4ac1-4ea5-a99e-296ed9ad8190" nickname="XYZs Almost Equal" x="1044.71180826915" y="49.183926269703" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="7c7d7002-6192-43ee-b03b-b957cc6867f2" />
+      <Name value="XYZs Almost Equal" />
+      <Description value="Checks if any XYzs in a given list are almost equal (within a reasonable computational tolerance) to a specified XYZ." />
+      <Inputs>
+        <Input value="XYZ" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="bool" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="1c996822-11b4-42bb-ab41-b2766f696e39" nickname="First of List" x="1203.79654010969" y="113.062686044868" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="01827468-8b89-4c77-bc77-2fcd8f9e997a" nickname="Formula" x="1134.26847746139" y="194.224820914257" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>if(x=1,-pi/2,[else])</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="9b182a6f-a25c-4fa6-b8ca-213a0f7c713f" nickname="Radians To Degrees" x="1204.57681396024" y="1168.07178830969" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="fda87f0f-2aca-46bb-9954-2d56b18c5fd1" />
+      <Name value="Radians To Degrees" />
+      <Description value="Converts radians into degrees" />
+      <Inputs>
+        <Input value="rad" />
+      </Inputs>
+      <Outputs>
+        <Output value="deg" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="8dabab2d-d0e3-4e6c-b165-e886018477ea" nickname="If" x="1369.41169478863" y="1073.88512553397" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="1a14b0cb-3379-4542-a99b-ccec60615141" nickname="Formula" x="1343.3809321951" y="138.319296832013" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>if(x=1,pi/2,[else])</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="8fbe0177-ee6f-4e0e-bea8-45a39d45c7b9" nickname="Radians To Degrees" x="1576.87767510056" y="137.130429373254" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="fda87f0f-2aca-46bb-9954-2d56b18c5fd1" />
+      <Name value="Radians To Degrees" />
+      <Description value="Converts radians into degrees" />
+      <Inputs>
+        <Input value="rad" />
+      </Inputs>
+      <Outputs>
+        <Output value="deg" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="27195645-f254-4c0d-b6b4-c01d910ac13e" nickname="If" x="1726.89550334514" y="182.595018992203" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6c46520b-4f2c-4fbc-9179-cd940a44ea55" nickname="Input" x="139.060618849069" y="699.333836820683" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="99817233-e294-4a54-9591-72736c6845bb" nickname="Input" x="1245.49945577862" y="647.796708053916" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Deg/Rad" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4f49249e-b0c0-42ee-9404-edc63ba62f7e" nickname="Output" x="1890.29491714336" y="181.54759330162" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Altitude" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="6738ccfa-9601-43bc-a8e4-a2c434cfcb36" nickname="Output" x="1545.75904314125" y="1072.19826271323" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Azimuth" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1a212ceb-3135-4f92-a541-0fd31680ac6f" start_index="0" end="b444f447-1639-40b1-a7eb-210d14d33eaf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1a212ceb-3135-4f92-a541-0fd31680ac6f" start_index="0" end="fa9f912a-4828-4e9b-8b23-601edb4c2a23" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fae35f4f-dafe-4a01-929c-09285f14ebb6" start_index="0" end="f9934b8b-6027-4d09-b411-5253b70ed8da" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fae35f4f-dafe-4a01-929c-09285f14ebb6" start_index="0" end="b444f447-1639-40b1-a7eb-210d14d33eaf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fae35f4f-dafe-4a01-929c-09285f14ebb6" start_index="0" end="fbe8d104-011f-4e93-b702-bada1ef7fac5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fae35f4f-dafe-4a01-929c-09285f14ebb6" start_index="0" end="031124e7-83f0-4e74-849f-908a621c5cae" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fae35f4f-dafe-4a01-929c-09285f14ebb6" start_index="0" end="bb7ff97b-a7e0-4de4-8e6f-c898c1f4079e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f9934b8b-6027-4d09-b411-5253b70ed8da" start_index="0" end="b444f447-1639-40b1-a7eb-210d14d33eaf" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f9934b8b-6027-4d09-b411-5253b70ed8da" start_index="0" end="fa9f912a-4828-4e9b-8b23-601edb4c2a23" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0522de3-6f8b-4c6f-b6c6-94a1bf6a8093" start_index="0" end="fa9f912a-4828-4e9b-8b23-601edb4c2a23" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fbe8d104-011f-4e93-b702-bada1ef7fac5" start_index="0" end="3a4d2152-4ac1-4ea5-a99e-296ed9ad8190" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fbe8d104-011f-4e93-b702-bada1ef7fac5" start_index="0" end="1d78f44c-cd43-428d-ab87-6d81f9bf880d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6086e21c-5d25-4cf2-ab4f-6914298834d3" start_index="0" end="1d78f44c-cd43-428d-ab87-6d81f9bf880d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b444f447-1639-40b1-a7eb-210d14d33eaf" start_index="4" end="43fa8b8f-032e-4eb0-973d-9604d07354d3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1d78f44c-cd43-428d-ab87-6d81f9bf880d" start_index="0" end="45fafb26-6559-496a-aab3-280ac8039ab0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="031124e7-83f0-4e74-849f-908a621c5cae" start_index="0" end="43fa8b8f-032e-4eb0-973d-9604d07354d3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fa9f912a-4828-4e9b-8b23-601edb4c2a23" start_index="4" end="e5c71c33-51cc-4ef2-9ea0-95655e481feb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bb7ff97b-a7e0-4de4-8e6f-c898c1f4079e" start_index="0" end="e5c71c33-51cc-4ef2-9ea0-95655e481feb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="afe4193b-2fbb-49b9-bc80-b7580459a16f" start_index="0" end="3a4d2152-4ac1-4ea5-a99e-296ed9ad8190" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="45fafb26-6559-496a-aab3-280ac8039ab0" start_index="0" end="01827468-8b89-4c77-bc77-2fcd8f9e997a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="43fa8b8f-032e-4eb0-973d-9604d07354d3" start_index="0" end="01827468-8b89-4c77-bc77-2fcd8f9e997a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e5c71c33-51cc-4ef2-9ea0-95655e481feb" start_index="0" end="9b182a6f-a25c-4fa6-b8ca-213a0f7c713f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e5c71c33-51cc-4ef2-9ea0-95655e481feb" start_index="0" end="8dabab2d-d0e3-4e6c-b165-e886018477ea" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3a4d2152-4ac1-4ea5-a99e-296ed9ad8190" start_index="0" end="1c996822-11b4-42bb-ab41-b2766f696e39" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1c996822-11b4-42bb-ab41-b2766f696e39" start_index="0" end="1a14b0cb-3379-4542-a99b-ccec60615141" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="01827468-8b89-4c77-bc77-2fcd8f9e997a" start_index="0" end="1a14b0cb-3379-4542-a99b-ccec60615141" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9b182a6f-a25c-4fa6-b8ca-213a0f7c713f" start_index="0" end="8dabab2d-d0e3-4e6c-b165-e886018477ea" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8dabab2d-d0e3-4e6c-b165-e886018477ea" start_index="0" end="6738ccfa-9601-43bc-a8e4-a2c434cfcb36" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1a14b0cb-3379-4542-a99b-ccec60615141" start_index="0" end="8fbe0177-ee6f-4e0e-bea8-45a39d45c7b9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1a14b0cb-3379-4542-a99b-ccec60615141" start_index="0" end="27195645-f254-4c0d-b6b4-c01d910ac13e" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8fbe0177-ee6f-4e0e-bea8-45a39d45c7b9" start_index="0" end="27195645-f254-4c0d-b6b4-c01d910ac13e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="27195645-f254-4c0d-b6b4-c01d910ac13e" start_index="0" end="4f49249e-b0c0-42ee-9404-edc63ba62f7e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6c46520b-4f2c-4fbc-9179-cd940a44ea55" start_index="0" end="fae35f4f-dafe-4a01-929c-09285f14ebb6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="99817233-e294-4a54-9591-72736c6845bb" start_index="0" end="8dabab2d-d0e3-4e6c-b165-e886018477ea" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="99817233-e294-4a54-9591-72736c6845bb" start_index="0" end="27195645-f254-4c0d-b6b4-c01d910ac13e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

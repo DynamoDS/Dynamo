@@ -1,0 +1,92 @@
+<Workspace Version="0.6.3.5244" X="81.107899525125" Y="338.752251825054" zoom="0.784737952486216" Description="Gets a list of all boundary elements of a given room" Category="CAAD_RWTH.Revit.Rooms" Name="Get Room Boundaries" ID="fb07f5d8-94b8-4985-bf2f-a54fe832aa66">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="908ba4c9-9b43-406c-b84d-b16728ff4b0a" nickname="Return List Or Single Value" x="827.31612124519" y="-4.06630556689186" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="cc276bbf-e20a-4a4d-983f-8e3b0e005d49" nickname="Turn Into List" x="160" y="-1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="981a0e03-9fe7-44f9-9504-2ea77ca18745" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Room(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="aa6058d6-2d2c-419c-adc4-23f58c7f5767" nickname="Output" x="1034.47359703179" y="-3.89241457291672" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Elements" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="e1c3cd5c-3e54-42eb-9666-da650b1bd55e" nickname="Python Script With Variable Number of Inputs" x="350.569510320437" y="-72.8925819069823" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+items = IN1
+elementlist = list()
+
+calculator = SpatialElementGeometryCalculator(doc)
+options = Autodesk.Revit.DB.SpatialElementBoundaryOptions()
+for item in items:
+	#method #1 - get boundary segments
+	blist = list()
+	try:
+		for boundarylist in item.GetBoundarySegments(options):
+			for boundary in boundarylist:
+				blist.append(boundary.Element)
+	except:
+		donothing = 1
+	#method #2 - spatial element geometry calculator
+	try:
+		results = calculator.CalculateSpatialElementGeometry(item)
+		for face in results.GetGeometry().Faces:
+			for bface in results.GetBoundaryFaceInfo(face):
+				blist.append(doc.GetElement(bface.SpatialBoundaryElement.HostElementId))
+	except:
+		donothing = 1	
+	# write results to list
+	elementlist.append(blist)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="02f09ea9-28bf-42c6-951f-181804b538f3" nickname="Revit Document" x="166.492677476856" y="-93.3327476118944" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="37ee78eb-4eb3-41b5-9842-6d7769c0e9e8" nickname="Remove Duplicate Revit Elements From List" x="363.393779653796" y="-172.813042876223" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="1cf55ec9-9b38-4829-ac5f-2987c5e700a7" />
+      <Name value="Remove Duplicate Revit Elements From List" />
+      <Description value="Removes all duplicates of Revit elements from a given list. (Will also remove any other duplicates from a list...)" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="elements" />
+        <Output value="other" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="59cec019-21e5-43c0-ba39-f7a3ae7d0a93" nickname="Map" x="655.528770587005" y="-125.807661985623" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="908ba4c9-9b43-406c-b84d-b16728ff4b0a" start_index="0" end="aa6058d6-2d2c-419c-adc4-23f58c7f5767" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc276bbf-e20a-4a4d-983f-8e3b0e005d49" start_index="0" end="908ba4c9-9b43-406c-b84d-b16728ff4b0a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc276bbf-e20a-4a4d-983f-8e3b0e005d49" start_index="0" end="e1c3cd5c-3e54-42eb-9666-da650b1bd55e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="981a0e03-9fe7-44f9-9504-2ea77ca18745" start_index="0" end="cc276bbf-e20a-4a4d-983f-8e3b0e005d49" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e1c3cd5c-3e54-42eb-9666-da650b1bd55e" start_index="0" end="59cec019-21e5-43c0-ba39-f7a3ae7d0a93" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="02f09ea9-28bf-42c6-951f-181804b538f3" start_index="0" end="e1c3cd5c-3e54-42eb-9666-da650b1bd55e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="37ee78eb-4eb3-41b5-9842-6d7769c0e9e8" start_index="0" end="59cec019-21e5-43c0-ba39-f7a3ae7d0a93" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="59cec019-21e5-43c0-ba39-f7a3ae7d0a93" start_index="0" end="908ba4c9-9b43-406c-b84d-b16728ff4b0a" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

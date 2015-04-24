@@ -1,0 +1,43 @@
+<Workspace Version="0.6.3.5256" X="37.066317016316" Y="237.294094794095" zoom="0.7" Description="Gets the orientation of a given wall instance (normal of the exterior face of the wall). Will *not* work for walls hosted on mass faces or in-place walls." Category="CAAD_RWTH.Revit.Wall" Name="Get Wall Orientation" ID="8cfc6f31-34cf-4c99-be21-5af290dbe7b7">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="54fe245d-b624-4bc5-80b5-09fdf8a5468f" nickname="Python Script" x="322.660839160839" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+wallinstances = IN
+vectorlist = list()
+for item in wallinstances:
+	try:
+		vectorlist.append(item.Orientation)
+	except:
+		vectorlist.append(list())
+OUT = vectorlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="6eaa085b-17a4-441e-964c-b7dd23aa07f0" nickname="Turn Into List" x="170" y="0.258540310264095" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7d675e6f-ff05-4b4b-89eb-be20b050e79e" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Wall Instance(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4fc294fd-e0ca-4307-8144-597c5fd12d37" nickname="Output" x="464.190975690977" y="-1.13442113442147" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="54fe245d-b624-4bc5-80b5-09fdf8a5468f" start_index="0" end="4fc294fd-e0ca-4307-8144-597c5fd12d37" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6eaa085b-17a4-441e-964c-b7dd23aa07f0" start_index="0" end="54fe245d-b624-4bc5-80b5-09fdf8a5468f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7d675e6f-ff05-4b4b-89eb-be20b050e79e" start_index="0" end="6eaa085b-17a4-441e-964c-b7dd23aa07f0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

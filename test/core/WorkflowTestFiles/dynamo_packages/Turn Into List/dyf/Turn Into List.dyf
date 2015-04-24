@@ -1,0 +1,16 @@
+<Workspace Version="0.6.2.279" X="98.1980590820312" Y="84.808" zoom="0.8" Description="Turns an element into a list" Category="CAAD_RWTH.Lists" Name="Turn Into List" ID="cd09ad33-8c34-4850-ac26-24448d92c38f">
+  <Elements>
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="20787bdf-9d04-4bd3-bd4d-37c44b90a165" nickname="Empty List" x="20" y="145.125396825397" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="3bcf0247-3cbf-48bc-9fb8-febb8ed47d48" nickname="Add to List" x="165.416666666667" y="87.7642857142858" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ed57fe5f-d33a-4359-b026-7b22e405bd5e" nickname="Input" x="20" y="70" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="item" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="657dd771-e771-47c3-b09b-2ee114df0d02" nickname="Flatten Completely" x="301.621360778809" y="88.39" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="20787bdf-9d04-4bd3-bd4d-37c44b90a165" start_index="0" end="3bcf0247-3cbf-48bc-9fb8-febb8ed47d48" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3bcf0247-3cbf-48bc-9fb8-febb8ed47d48" start_index="0" end="657dd771-e771-47c3-b09b-2ee114df0d02" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ed57fe5f-d33a-4359-b026-7b22e405bd5e" start_index="0" end="3bcf0247-3cbf-48bc-9fb8-febb8ed47d48" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

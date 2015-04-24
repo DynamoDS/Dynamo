@@ -1,0 +1,22 @@
+<Workspace Version="0.6.2.279" X="40.5165146408298" Y="40.5423496074473" zoom="0.9" Description="Scales a normalized value according to a given minimum and maximum" Category="CAAD_RWTH.Math" Name="Scale Normalized Value" ID="60ee3acf-a1fd-4afb-bb49-0d11b819842f">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="b7297616-5ab8-4ae2-b1be-e28d9a167d58" nickname="Input" x="5.00182869350135" y="20.1987502136591" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="val" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1f36cd6e-d491-462b-9876-ac407ecb3068" nickname="Input" x="5.00182869350124" y="113.532083546993" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Min" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1530801b-4198-4361-9f3e-a539d6ae8c0b" nickname="Input" x="5.00182869350135" y="214.643194658104" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Max" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="2b3de9be-6122-4f22-9ff1-14622a4794c5" nickname="Formula" x="147.224050915723" y="112.420972435882" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>min+(max-min)*value</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b7297616-5ab8-4ae2-b1be-e28d9a167d58" start_index="0" end="2b3de9be-6122-4f22-9ff1-14622a4794c5" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f36cd6e-d491-462b-9876-ac407ecb3068" start_index="0" end="2b3de9be-6122-4f22-9ff1-14622a4794c5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1530801b-4198-4361-9f3e-a539d6ae8c0b" start_index="0" end="2b3de9be-6122-4f22-9ff1-14622a4794c5" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

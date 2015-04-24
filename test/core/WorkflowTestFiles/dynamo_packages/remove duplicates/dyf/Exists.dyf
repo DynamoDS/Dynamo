@@ -1,0 +1,18 @@
+<Workspace Version="0.6.1.18684" X="0" Y="0" zoom="1" Description="checks if a given item exists in a given list" Category="buildz" Name="Exists" ID="1466dc48-7736-4030-864a-f15309954f57">
+  <Elements>
+    <Dynamo.Nodes.Equal type="Dynamo.Nodes.Equal" guid="1608e2cb-399e-4ce1-a49b-6d95bb0970fb" nickname="Equal" x="197.2" y="46.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.OrMap type="Dynamo.Nodes.OrMap" guid="17d7d0ea-40d5-481a-a8c8-76068c0fad9a" nickname="True For Any" x="338" y="123.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a70f28f0-013a-4687-9179-03643ac4cf4a" nickname="Input" x="82.1999999999999" y="79" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Exists?" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6d45e0b8-1a3b-4306-a0cd-75ec0bf90e8b" nickname="Input" x="101.4" y="170.2" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Seq" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1608e2cb-399e-4ce1-a49b-6d95bb0970fb" start_index="0" end="17d7d0ea-40d5-481a-a8c8-76068c0fad9a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a70f28f0-013a-4687-9179-03643ac4cf4a" start_index="0" end="1608e2cb-399e-4ce1-a49b-6d95bb0970fb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6d45e0b8-1a3b-4306-a0cd-75ec0bf90e8b" start_index="0" end="17d7d0ea-40d5-481a-a8c8-76068c0fad9a" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,57 @@
+<Workspace Version="0.6.3.7993" X="135.466173627596" Y="214.68545" zoom="0.70823125" Description="Compute the centroid of an element - alpha version for single material element" Category="JBE" Name="Compute Centroid" ID="728cdd2d-78c5-4887-beed-dce58bc56462">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="95560342-aaae-489c-81ec-891dde3b53e9" nickname="Python Script" x="403.561872140123" y="-7.19336021956104" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+solids = IN
+b=[]
+d=[]
+for item in solids:
+	try:
+		a=item.ComputeCentroid()
+		b.append(a)
+	except:
+		0
+
+OUT = b</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="c55be34c-e9bf-42d1-a813-2ab0c369e11f" nickname="Turn Into List" x="243" y="-7.19336021956104" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d13834e5-361e-4b13-8945-9d28ca93b495" nickname="Input" x="-111.545487437896" y="-7.19336021956104" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="61362a57-f96e-426e-82ed-d00237d09d33" nickname="Output" x="584.561872140123" y="-7.19336021956104" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.ElementSolid type="Dynamo.Nodes.ElementSolid" guid="ecb08749-db8d-4574-97cc-bf4946360661" nickname="Solid from Element" x="55.5281908275016" y="-7.19336021956104" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="95560342-aaae-489c-81ec-891dde3b53e9" start_index="0" end="61362a57-f96e-426e-82ed-d00237d09d33" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c55be34c-e9bf-42d1-a813-2ab0c369e11f" start_index="0" end="95560342-aaae-489c-81ec-891dde3b53e9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d13834e5-361e-4b13-8945-9d28ca93b495" start_index="0" end="ecb08749-db8d-4574-97cc-bf4946360661" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ecb08749-db8d-4574-97cc-bf4946360661" start_index="0" end="c55be34c-e9bf-42d1-a813-2ab0c369e11f" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

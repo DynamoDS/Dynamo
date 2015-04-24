@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.5260" X="0" Y="-20" zoom="1" Description="Converts degrees into radians" Category="CAAD_RWTH.Conversion.Angle" Name="Degrees To Radians" ID="4aa3ae48-1f54-4c42-a529-2cf9e438380b">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f75f0b92-07c4-47bb-aa4d-36acdadaef64" nickname="Input" x="23" y="47.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="deg" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="5f6a7a73-f0d2-4054-8f2a-011a2b351ede" nickname="Formula" x="151" y="40.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>degrees*Pi/180</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="b5e8992e-3bc0-4688-aee6-891529a34090" nickname="Output" x="381" y="45.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="rad" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f75f0b92-07c4-47bb-aa4d-36acdadaef64" start_index="0" end="5f6a7a73-f0d2-4054-8f2a-011a2b351ede" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5f6a7a73-f0d2-4054-8f2a-011a2b351ede" start_index="0" end="b5e8992e-3bc0-4688-aee6-891529a34090" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,62 @@
+<Workspace Version="0.6.3.22045" X="334.967317048019" Y="255.347761357302" zoom="0.894168083312074" Description="Filters out all elements that are not of a specified category" Category="CAAD_RWTH.Revit.Categories" Name="Filter List By Category" ID="9532f794-8360-459f-bfd4-bcfd59db7b6f">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="77c3b56c-e5c1-49eb-b63d-fe0dcf40a4f2" nickname="Is Of Category" x="188" y="71" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="ee585799-3d67-4bed-a135-b7b0ce52b916" />
+      <Name value="Is Of Category" />
+      <Description value="Checks whether an element is of a specified category" />
+      <Inputs>
+        <Input value="element(s)" />
+        <Input value="BuiltInCategory" />
+      </Inputs>
+      <Outputs>
+        <Output value="bool" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6bc2ca99-74a4-4d62-aaea-ad8e4e53f6e7" nickname="Input" x="-146.504893704956" y="3.35507390164025" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4407d467-a88e-4519-8ee4-6533c81b5506" nickname="Input" x="-3" y="92" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="BuiltInCategory" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="ce32f496-0dd5-4c06-af1a-1b9b6eebfdcb" nickname="Output" x="762.384676596588" y="-28.9781864638538" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="in" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="cbee8e54-0897-45ee-be9a-0cbcf5c1edb6" nickname="Filter by Boolean Mask" x="569.284477039302" y="0.708243640726494" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="cc3c415a-7cfb-4707-a037-6471c0ce509d" nickname="Output" x="765.861727508745" y="50.2042524950149" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="out" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e4297d38-087a-40ac-a8b2-f65243509803" nickname="Turn Into List" x="393.627597175528" y="69.7853660759571" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="9dba1f03-e417-4acf-81b4-ea8a9b3f96ec" nickname="Turn Into List" x="6.48179798695185" y="2.10320380568979" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="77c3b56c-e5c1-49eb-b63d-fe0dcf40a4f2" start_index="0" end="e4297d38-087a-40ac-a8b2-f65243509803" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6bc2ca99-74a4-4d62-aaea-ad8e4e53f6e7" start_index="0" end="9dba1f03-e417-4acf-81b4-ea8a9b3f96ec" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4407d467-a88e-4519-8ee4-6533c81b5506" start_index="0" end="77c3b56c-e5c1-49eb-b63d-fe0dcf40a4f2" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cbee8e54-0897-45ee-be9a-0cbcf5c1edb6" start_index="0" end="ce32f496-0dd5-4c06-af1a-1b9b6eebfdcb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cbee8e54-0897-45ee-be9a-0cbcf5c1edb6" start_index="1" end="cc3c415a-7cfb-4707-a037-6471c0ce509d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4297d38-087a-40ac-a8b2-f65243509803" start_index="0" end="cbee8e54-0897-45ee-be9a-0cbcf5c1edb6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9dba1f03-e417-4acf-81b4-ea8a9b3f96ec" start_index="0" end="77c3b56c-e5c1-49eb-b63d-fe0dcf40a4f2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9dba1f03-e417-4acf-81b4-ea8a9b3f96ec" start_index="0" end="cbee8e54-0897-45ee-be9a-0cbcf5c1edb6" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

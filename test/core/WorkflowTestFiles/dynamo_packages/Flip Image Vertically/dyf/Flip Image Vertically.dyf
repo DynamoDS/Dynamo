@@ -1,0 +1,28 @@
+<Workspace Version="0.6.3.7993" X="146.378909294601" Y="296.867100167242" zoom="1.06060772236021" Description="Takes Image, flips vertically. " Category="CEE220C" Name="Flip Image Vertically" ID="4aff0b6e-90cb-4c6b-ab28-85cf70f821d7">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ff84c5bb-8e74-46bd-856d-bd3478c52d4c" nickname="Input" x="64.9196106074171" y="38.6858774110724" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List (image) to Flip" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Slice type="Dynamo.Nodes.Slice" guid="360da1dd-fb59-45fc-8a56-c8c4049b34ca" nickname="Partition List" x="323.919610607417" y="44.6858774110724" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="da16f8b6-18cf-42af-9775-f68133e5d15b" nickname="Input" x="72.9196106074171" y="191.685877411072" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Number of Elements in Each Row" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="7a4cc8e2-4de2-4204-94a8-3a57f3243307" nickname="Reverse" x="459.919610607417" y="41.6858774110724" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="f2ed25b4-4234-409d-8218-d8485e133789" nickname="Transpose Lists" x="572.919610607417" y="43.6858774110724" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="b2d9bc61-a6ea-4c2a-95da-b51f47b0e6b3" nickname="Reverse" x="692.919610607417" y="44.6858774110724" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="e2e06da0-4d42-47a3-8e0b-9ec877001be6" nickname="Flatten Completely" x="818.919610607417" y="46.6858774110724" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f4e6c4a6-6ea1-4c0b-85ba-284cc19f472c" nickname="Output" x="1033.52828732697" y="72.2777789377052" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ff84c5bb-8e74-46bd-856d-bd3478c52d4c" start_index="0" end="360da1dd-fb59-45fc-8a56-c8c4049b34ca" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="360da1dd-fb59-45fc-8a56-c8c4049b34ca" start_index="0" end="7a4cc8e2-4de2-4204-94a8-3a57f3243307" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="da16f8b6-18cf-42af-9775-f68133e5d15b" start_index="0" end="360da1dd-fb59-45fc-8a56-c8c4049b34ca" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7a4cc8e2-4de2-4204-94a8-3a57f3243307" start_index="0" end="f2ed25b4-4234-409d-8218-d8485e133789" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f2ed25b4-4234-409d-8218-d8485e133789" start_index="0" end="b2d9bc61-a6ea-4c2a-95da-b51f47b0e6b3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2d9bc61-a6ea-4c2a-95da-b51f47b0e6b3" start_index="0" end="e2e06da0-4d42-47a3-8e0b-9ec877001be6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e2e06da0-4d42-47a3-8e0b-9ec877001be6" start_index="0" end="f4e6c4a6-6ea1-4c0b-85ba-284cc19f472c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

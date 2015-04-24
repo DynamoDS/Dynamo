@@ -1,0 +1,37 @@
+<Workspace Version="0.6.3.25815" X="-44" Y="77" zoom="1" Description="Gets the name of a collection" Category="Collections.NamedCollection" Name="Get Collection Name" ID="5e77e202-039f-41ce-b5e0-5959e80c7744">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="ce291d4e-71de-4593-b36c-cc91f35110c4" nickname="Python Script" x="407.8509021445" y="14" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+collection = IN
+
+name = collection.name
+OUT = name</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="135efd31-7a05-4629-9c67-0c15f2bc949e" nickname="Input" x="255" y="17.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="collection" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="b141a43e-79ef-4a35-bf60-9d81603cf24a" nickname="Output" x="562" y="14.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="name" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ce291d4e-71de-4593-b36c-cc91f35110c4" start_index="0" end="b141a43e-79ef-4a35-bf60-9d81603cf24a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="135efd31-7a05-4629-9c67-0c15f2bc949e" start_index="0" end="ce291d4e-71de-4593-b36c-cc91f35110c4" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

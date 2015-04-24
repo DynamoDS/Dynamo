@@ -1,0 +1,222 @@
+<Workspace Version="0.6.3.7375" X="-210.884390114911" Y="288.604581416599" zoom="0.375745934555456" Description="Projects a list of points onto a given face" Category="CAAD_RWTH.XYZ" Name="Central Projection On Face" ID="4776f465-5705-4468-84f1-ab1f2636918a">
+  <Elements>
+    <Dynamo.Nodes.CurveFaceIntersection type="Dynamo.Nodes.CurveFaceIntersection" guid="cc54f4b5-67f1-46fa-bcf4-3be6913d3fda" nickname="Curve-Face Intersection" x="3134.51710880428" y="17.0210779507607" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.LineBound type="Dynamo.Nodes.LineBound" guid="a3e25212-28c2-4848-9048-48c56e05e777" nickname="Line by Endpoints" x="2963.39814944759" y="333.789244126506" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="e4adfab0-c6bd-4fc7-83c4-b1219e6e048c" nickname="Map" x="2773.4949259853" y="504.982771942731" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.XyzStartEndVector type="Dynamo.Nodes.XyzStartEndVector" guid="d3bc2574-66ed-4fff-af37-b59fab833aaa" nickname="Direction to XYZ" x="2220.24707379656" y="527.866954189297" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="c38832a4-fa97-42e0-af1c-4a8d6cab056a" nickname="Get from List" x="2185.46586220386" y="431.650328064772" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="74ce51b7-7815-412f-9428-3928d173056a" nickname="Number" x="2057.85642484535" y="433.174826339712" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="48e05ced-e401-40cc-b8d7-229c86e3f53a" nickname="Get from List" x="2183.81439136515" y="290.53311057567" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="6d48d828-78ad-43b1-b868-a3837c0600c7" nickname="Number" x="2058.16671692526" y="293.150770459834" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="069f7a99-f460-4554-859a-80038072c44a" nickname="Sort List Of Lists" x="1745.56460598066" y="205.211692099631" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="bdace65b-b01b-459e-8946-e6f6129306ed" />
+      <Name value="Sort List Of Lists" />
+      <Description value="Sorts a list of lists by one of its sublists" />
+      <Inputs>
+        <Input value="List of lists" />
+        <Input value="Sort index" />
+        <Input value="Case-insensitive?" />
+        <Input value="Order Descending?" />
+      </Inputs>
+      <Outputs>
+        <Output value="Sorted" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="12dc5d4f-1c93-459c-8b04-d9d2ec12bedb" nickname="List" x="1549.05534612035" y="95.4591799436073" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+      <Input name="index3" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.BoolSelector type="Dynamo.Nodes.BoolSelector" guid="1b2d8274-e032-49f2-a152-02d112fed5f5" nickname="Boolean" x="1587.73004088009" y="306.602108091386" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Boolean value="False" />
+    </Dynamo.Nodes.BoolSelector>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="d1d12769-1f89-4a8a-a5a2-b37e69034e54" nickname="Map" x="2003.6050259938" y="152.016472707413" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="2b3717fd-65d6-4893-a33b-9d2af9704d24" nickname="Number" x="1602.36370916756" y="227.162194530836" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="1db99e43-c6ac-4aa5-8b4d-0bb49a9007f5" nickname="First of List" x="1844.25549620003" y="129.952691659044" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="b80caa37-ffa1-4346-94fa-3392c17deb8d" nickname="Angle Between Vectors" x="1365.01076865585" y="185.8599318597" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="61cdaa2f-7e2e-424b-8850-3cba6d5fd4cb" />
+      <Name value="Angle Between Vectors" />
+      <Description value="Computes the angle between two vectors" />
+      <Inputs>
+        <Input value="Vector #1" />
+        <Input value="Vector #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="rad" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="66fce249-641a-4bc9-a260-8fc11e6f472d" nickname="Plane From Planar Face" x="1131.3543446357" y="98.8761088392722" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="31a34783-93cd-4d65-8500-66885bf5a65b" />
+      <Name value="Plane From Planar Face" />
+      <Description value="Creates a plane from a planar face" />
+      <Inputs>
+        <Input value="Planar face(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="Plane(s)" />
+        <Output value="Origin(s)" />
+        <Output value="Normal(s)" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.XyzStartEndVector type="Dynamo.Nodes.XyzStartEndVector" guid="c6b27437-4dcb-4a57-bedf-8570b6314041" nickname="Direction to XYZ" x="1215.02845079493" y="230.682294533407" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzAverage type="Dynamo.Nodes.XyzAverage" guid="19912d32-00ad-473a-804a-d9e79e79f7d2" nickname="Average XYZs" x="1097.22949442299" y="449.450423155612" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="001f2327-17b9-4399-8705-21242d347d4a" nickname="Get Faces From Solid" x="930.819161965917" y="101.087716684038" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="5d087c7b-011e-4521-8d66-33bbc8eab5f8" />
+      <Name value="Get Faces From Solid" />
+      <Description value="Retrieves a list of faces from a given solid" />
+      <Inputs>
+        <Input value="Solid(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="Faces" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.SolidBoxByTwoCorners type="Dynamo.Nodes.SolidBoxByTwoCorners" guid="a2df6c76-caf6-46cd-a102-0c2ec5cdf40d" nickname="Box by Two Corners" x="756.675128051913" y="101.174223377311" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SolidBoxByTwoCorners>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="f89260be-c512-4872-a45b-47940ccc73fa" nickname="Get Bounding Box" x="459.227875796158" y="81.8208671604722" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="a2d5ef3c-b3a2-403f-8b95-fd94457ce395" />
+      <Name value="Get Bounding Box" />
+      <Description value="Gets the bounding box of a Revit element" />
+      <Inputs>
+        <Input value="Element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="bbox" />
+        <Output value="bottom left rear corner" />
+        <Output value="top right front corner" />
+      </Outputs>
+      <InnerNode id="1f033186-d044-4017-af7c-15936122d7fe">
+        <Run />
+      </InnerNode>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="8cb96b32-2b12-4ae3-b070-86e2546742f4" nickname="Get Element By Face" x="250" y="83.7946644412932" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="0b4bb7ab-9433-4f3c-8abe-d26de134cc8c" />
+      <Name value="Get Element By Face" />
+      <Description value="Returns the underlying Revit element of a given face" />
+      <Inputs>
+        <Input value="Face(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="Element(s)" />
+      </Outputs>
+      <InnerNode id="e077262d-6994-4564-9929-b709feec59ca">
+        <Run />
+      </InnerNode>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ffcf7dc2-7ded-433a-b258-b3e1105d0165" nickname="Input" x="524.075308765972" y="379.724321612493" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Central Projection Point" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="61911a8b-9f4b-48f1-b413-13e8380fc47a" nickname="Input" x="515.336282584463" y="531.501417951738" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Points to be projected" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="228f3785-9083-4601-a105-c05846313c1d" nickname="Output" x="3836.39683671188" y="-14.3022594791492" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZs" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3867d9ab-b793-4452-9d8e-031f35965438" nickname="Input" x="132.588579606398" y="33.0297821579453" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Face" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="79fb8549-ea48-4768-a480-260390c6d134" nickname="XYZs Almost Equal" x="761.152963841778" y="446.782398130681" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="7c7d7002-6192-43ee-b03b-b957cc6867f2" />
+      <Name value="XYZs Almost Equal" />
+      <Description value="Checks if any XYzs in a given list are almost equal (within a reasonable computational tolerance) to a specified XYZ." />
+      <Inputs>
+        <Input value="XYZ" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="bool" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="23a696b1-fca0-4c03-bfb5-bbffd33fcbd0" nickname="Filter by Boolean Mask" x="923.086570526691" y="529.751743869464" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="a055c257-2ed9-4172-a834-822f3059c6f9" nickname="Map" x="3307.39948683233" y="-30.6386523176745" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="e719093c-e186-4271-8eca-74fc33a07739" nickname="First of List" x="3177.57188535615" y="-58.2942360640797" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.IsNull type="Dynamo.Nodes.IsNull" guid="3599e335-9ae5-4374-9fec-a1ef0e9b98cd" nickname="Is Null?" x="3333.51864925949" y="60.0102055177646" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="455b919e-cf26-4896-86e7-62a02ad84461" nickname="Map" x="3490.23362382246" y="16.9904085789122" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FilterMask type="Dynamo.Nodes.FilterMask" guid="9a4d412a-5434-4913-bac1-cd44e7fa01be" nickname="Filter by Boolean Mask" x="3660.77639025862" y="-32.9432842965416" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="6757297a-d00f-4fcc-aff0-87210f539bb4" nickname="Plane-Vector Intersection" x="2433.63994171995" y="383.658933875861" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="3c082b0b-3bf7-434c-8101-abdb981b5992" />
+      <Name value="Plane-Vector Intersection" />
+      <Description value="Finds the intersection point between a plane and a vector" />
+      <Inputs>
+        <Input value="Vector Basepoint" />
+        <Input value="Vector (Normalized)" />
+        <Input value="Plane Origin" />
+        <Input value="Plane Normal" />
+      </Inputs>
+      <Outputs>
+        <Output value="XYZ" />
+        <Output value="Vector In Plane" />
+        <Output value="Vector Is Parallel" />
+      </Outputs>
+    </Dynamo.Nodes.FunctionWithRevit>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="cc54f4b5-67f1-46fa-bcf4-3be6913d3fda" start_index="1" end="a055c257-2ed9-4172-a834-822f3059c6f9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a3e25212-28c2-4848-9048-48c56e05e777" start_index="0" end="cc54f4b5-67f1-46fa-bcf4-3be6913d3fda" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4adfab0-c6bd-4fc7-83c4-b1219e6e048c" start_index="0" end="a3e25212-28c2-4848-9048-48c56e05e777" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d3bc2574-66ed-4fff-af37-b59fab833aaa" start_index="0" end="e4adfab0-c6bd-4fc7-83c4-b1219e6e048c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c38832a4-fa97-42e0-af1c-4a8d6cab056a" start_index="0" end="6757297a-d00f-4fcc-aff0-87210f539bb4" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="74ce51b7-7815-412f-9428-3928d173056a" start_index="0" end="c38832a4-fa97-42e0-af1c-4a8d6cab056a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="48e05ced-e401-40cc-b8d7-229c86e3f53a" start_index="0" end="6757297a-d00f-4fcc-aff0-87210f539bb4" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6d48d828-78ad-43b1-b868-a3837c0600c7" start_index="0" end="48e05ced-e401-40cc-b8d7-229c86e3f53a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="069f7a99-f460-4554-859a-80038072c44a" start_index="0" end="d1d12769-1f89-4a8a-a5a2-b37e69034e54" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="12dc5d4f-1c93-459c-8b04-d9d2ec12bedb" start_index="0" end="069f7a99-f460-4554-859a-80038072c44a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1b2d8274-e032-49f2-a152-02d112fed5f5" start_index="0" end="069f7a99-f460-4554-859a-80038072c44a" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1b2d8274-e032-49f2-a152-02d112fed5f5" start_index="0" end="069f7a99-f460-4554-859a-80038072c44a" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d1d12769-1f89-4a8a-a5a2-b37e69034e54" start_index="0" end="48e05ced-e401-40cc-b8d7-229c86e3f53a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d1d12769-1f89-4a8a-a5a2-b37e69034e54" start_index="0" end="c38832a4-fa97-42e0-af1c-4a8d6cab056a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2b3717fd-65d6-4893-a33b-9d2af9704d24" start_index="0" end="069f7a99-f460-4554-859a-80038072c44a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1db99e43-c6ac-4aa5-8b4d-0bb49a9007f5" start_index="0" end="d1d12769-1f89-4a8a-a5a2-b37e69034e54" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b80caa37-ffa1-4346-94fa-3392c17deb8d" start_index="0" end="12dc5d4f-1c93-459c-8b04-d9d2ec12bedb" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="66fce249-641a-4bc9-a260-8fc11e6f472d" start_index="0" end="12dc5d4f-1c93-459c-8b04-d9d2ec12bedb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="66fce249-641a-4bc9-a260-8fc11e6f472d" start_index="1" end="12dc5d4f-1c93-459c-8b04-d9d2ec12bedb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="66fce249-641a-4bc9-a260-8fc11e6f472d" start_index="2" end="b80caa37-ffa1-4346-94fa-3392c17deb8d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="66fce249-641a-4bc9-a260-8fc11e6f472d" start_index="2" end="12dc5d4f-1c93-459c-8b04-d9d2ec12bedb" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c6b27437-4dcb-4a57-bedf-8570b6314041" start_index="0" end="b80caa37-ffa1-4346-94fa-3392c17deb8d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="19912d32-00ad-473a-804a-d9e79e79f7d2" start_index="0" end="c6b27437-4dcb-4a57-bedf-8570b6314041" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="001f2327-17b9-4399-8705-21242d347d4a" start_index="0" end="66fce249-641a-4bc9-a260-8fc11e6f472d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a2df6c76-caf6-46cd-a102-0c2ec5cdf40d" start_index="0" end="001f2327-17b9-4399-8705-21242d347d4a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f89260be-c512-4872-a45b-47940ccc73fa" start_index="1" end="a2df6c76-caf6-46cd-a102-0c2ec5cdf40d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f89260be-c512-4872-a45b-47940ccc73fa" start_index="2" end="a2df6c76-caf6-46cd-a102-0c2ec5cdf40d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8cb96b32-2b12-4ae3-b070-86e2546742f4" start_index="0" end="f89260be-c512-4872-a45b-47940ccc73fa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ffcf7dc2-7ded-433a-b258-b3e1105d0165" start_index="0" end="a3e25212-28c2-4848-9048-48c56e05e777" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ffcf7dc2-7ded-433a-b258-b3e1105d0165" start_index="0" end="d3bc2574-66ed-4fff-af37-b59fab833aaa" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ffcf7dc2-7ded-433a-b258-b3e1105d0165" start_index="0" end="c6b27437-4dcb-4a57-bedf-8570b6314041" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ffcf7dc2-7ded-433a-b258-b3e1105d0165" start_index="0" end="79fb8549-ea48-4768-a480-260390c6d134" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ffcf7dc2-7ded-433a-b258-b3e1105d0165" start_index="0" end="6757297a-d00f-4fcc-aff0-87210f539bb4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="61911a8b-9f4b-48f1-b413-13e8380fc47a" start_index="0" end="79fb8549-ea48-4768-a480-260390c6d134" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="61911a8b-9f4b-48f1-b413-13e8380fc47a" start_index="0" end="23a696b1-fca0-4c03-bfb5-bbffd33fcbd0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3867d9ab-b793-4452-9d8e-031f35965438" start_index="0" end="8cb96b32-2b12-4ae3-b070-86e2546742f4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3867d9ab-b793-4452-9d8e-031f35965438" start_index="0" end="cc54f4b5-67f1-46fa-bcf4-3be6913d3fda" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="79fb8549-ea48-4768-a480-260390c6d134" start_index="0" end="23a696b1-fca0-4c03-bfb5-bbffd33fcbd0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="23a696b1-fca0-4c03-bfb5-bbffd33fcbd0" start_index="1" end="19912d32-00ad-473a-804a-d9e79e79f7d2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="23a696b1-fca0-4c03-bfb5-bbffd33fcbd0" start_index="1" end="d3bc2574-66ed-4fff-af37-b59fab833aaa" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a055c257-2ed9-4172-a834-822f3059c6f9" start_index="0" end="455b919e-cf26-4896-86e7-62a02ad84461" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a055c257-2ed9-4172-a834-822f3059c6f9" start_index="0" end="9a4d412a-5434-4913-bac1-cd44e7fa01be" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e719093c-e186-4271-8eca-74fc33a07739" start_index="0" end="a055c257-2ed9-4172-a834-822f3059c6f9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3599e335-9ae5-4374-9fec-a1ef0e9b98cd" start_index="0" end="455b919e-cf26-4896-86e7-62a02ad84461" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="455b919e-cf26-4896-86e7-62a02ad84461" start_index="0" end="9a4d412a-5434-4913-bac1-cd44e7fa01be" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9a4d412a-5434-4913-bac1-cd44e7fa01be" start_index="1" end="228f3785-9083-4601-a105-c05846313c1d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6757297a-d00f-4fcc-aff0-87210f539bb4" start_index="0" end="e4adfab0-c6bd-4fc7-83c4-b1219e6e048c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Filter out XYZs that coincide with the point of projection" x="867.298226492073" y="619.19112515787" />
+    <Dynamo.Models.NoteModel text="Get the bounding box of the element and create a solid from it" x="549.277188867261" y="12.1602395910603" />
+    <Dynamo.Models.NoteModel text="Determine the average direction of the projection" x="1054.36114079611" y="349.612759832081" />
+    <Dynamo.Models.NoteModel text="Find the face/plane of the bounding box the normal of which is closest to the general direction of projection - this plane will be more orthogonal to the projection than any other plane. (Nice side-effect: of two parallel planes, it will always be the one that's further away from the point of projection)" x="1732.51040024527" y="9.66750566499218" />
+    <Dynamo.Models.NoteModel text="Find intersection points between projections and the bounding box plane" x="2427.26428741104" y="316.768300793391" />
+    <Dynamo.Models.NoteModel text="Create lines between bounding box plane and point of projection" x="2957.46912467" y="273.662216463394" />
+    <Dynamo.Models.NoteModel text="Find intersections on surface" x="2994.23600908422" y="-23.9550923376839" />
+    <Dynamo.Models.NoteModel text="Only keep first intersection (surface might be shaped in such a way that multiple intersections occur)" x="3185.63528653979" y="-116.139234132611" />
+    <Dynamo.Models.NoteModel text="Remove non-intersections from list (depending on location of point of projection there may not be an intersection for each projected point)" x="3509.06100436267" y="-107.545797185626" />
+  </Notes>
+</Workspace>

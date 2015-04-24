@@ -1,0 +1,62 @@
+<Workspace Version="0.6.3.22045" X="-0.252500000000055" Y="272.8775" zoom="0.8425" Description="Creates a plane from a planar face" Category="CAAD_RWTH.Revit" Name="Plane From Planar Face" ID="31a34783-93cd-4d65-8500-66885bf5a65b">
+  <Elements>
+    <Dynamo.Nodes.Plane type="Dynamo.Nodes.Plane" guid="d7d8540a-7e50-4d39-b089-f19abf203747" nickname="Plane by Normal Origin" x="781.745666272012" y="91.7674271054756" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="79bba78c-1cc5-4fda-8829-8e3e7677fea0" nickname="First of List" x="610.388756929022" y="5.93471810089022" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="443aea75-cc05-4bf5-8191-af2254631b47" nickname="Get from List" x="600.708754094213" y="185.264770117549" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="a6c94be7-b8c6-45c5-a623-2c3f5bc2ae4f" nickname="Python Script" x="408.607597921863" y="6.21479548262545" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+items = IN
+normallist = list()
+originlist = list()
+
+for item in items:
+	normallist.append(item.Normal)
+	originlist.append(item.Origin)
+OUT = (normallist,originlist)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="1da3af22-f88a-44ad-89d1-f08dc46b85b7" nickname="Number" x="435.01921527652" y="187.867223606832" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="b13b2a7f-5f77-49a7-bb08-84479b1f7001" nickname="Turn Into List" x="250" y="5.78435203960629" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="04153f83-f5c1-412a-b148-af1dcbe329bd" nickname="Input" x="81.8991097922849" y="7.12166172106822" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Planar face(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="05b01b23-a1f9-4a05-b5d3-703a5315cfbf" nickname="Output" x="981.128455589519" y="91.3946587537091" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Plane(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="cf73516e-6fd1-4c90-93e2-ec16364fc5a1" nickname="Output" x="982.018663304653" y="182.789317507418" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Origin(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="ec230f8e-33be-4f21-a148-abab0db40302" nickname="Output" x="979.348040159252" y="2.373887240356" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Normal(s)" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d7d8540a-7e50-4d39-b089-f19abf203747" start_index="0" end="05b01b23-a1f9-4a05-b5d3-703a5315cfbf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="79bba78c-1cc5-4fda-8829-8e3e7677fea0" start_index="0" end="d7d8540a-7e50-4d39-b089-f19abf203747" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="79bba78c-1cc5-4fda-8829-8e3e7677fea0" start_index="0" end="ec230f8e-33be-4f21-a148-abab0db40302" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="443aea75-cc05-4bf5-8191-af2254631b47" start_index="0" end="d7d8540a-7e50-4d39-b089-f19abf203747" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="443aea75-cc05-4bf5-8191-af2254631b47" start_index="0" end="cf73516e-6fd1-4c90-93e2-ec16364fc5a1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a6c94be7-b8c6-45c5-a623-2c3f5bc2ae4f" start_index="0" end="443aea75-cc05-4bf5-8191-af2254631b47" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a6c94be7-b8c6-45c5-a623-2c3f5bc2ae4f" start_index="0" end="79bba78c-1cc5-4fda-8829-8e3e7677fea0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1da3af22-f88a-44ad-89d1-f08dc46b85b7" start_index="0" end="443aea75-cc05-4bf5-8191-af2254631b47" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b13b2a7f-5f77-49a7-bb08-84479b1f7001" start_index="0" end="a6c94be7-b8c6-45c5-a623-2c3f5bc2ae4f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="04153f83-f5c1-412a-b148-af1dcbe329bd" start_index="0" end="b13b2a7f-5f77-49a7-bb08-84479b1f7001" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,31 @@
+<Workspace Version="0.6.3.20252" X="152" Y="124" zoom="1" Description="Get ID of analytical model host" Category="JBE" Name="Get Host ID for Analytical member" ID="fe8252e5-969d-4f43-8b98-b468c057a159">
+  <Elements>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f4c1324e-2749-4f3e-bbfd-dd62a545350a" nickname="Output" x="258.762404262406" y="107.865578865579" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ID" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="0ee07762-38cc-4559-ad7c-55b3786be337" nickname="Python Script" x="99.142857142857" y="107.865578865579" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+#@jbenoit44
+analytics = IN
+hostid = list()
+for item in analytics:
+	try:
+		hostid.append(item.GetElementId())
+	except:
+		hostid.append(list())
+OUT = hostid</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5d622c06-9877-4115-adda-2f4572ffa233" nickname="Input" x="-70.0000000000001" y="107.865578865579" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="element(s)" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0ee07762-38cc-4559-ad7c-55b3786be337" start_index="0" end="f4c1324e-2749-4f3e-bbfd-dd62a545350a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5d622c06-9877-4115-adda-2f4572ffa233" start_index="0" end="0ee07762-38cc-4559-ad7c-55b3786be337" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

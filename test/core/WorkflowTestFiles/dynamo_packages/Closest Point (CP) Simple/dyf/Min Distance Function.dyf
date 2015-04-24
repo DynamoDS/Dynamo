@@ -1,0 +1,24 @@
+<Workspace Version="0.6.2.22517" X="256" Y="151" zoom="1" Description="Use with Map to get Closest Point between collections XYZ" Category="Geometry.Point.Query" Name="Min Distance Function" ID="ceb5e6b8-5d65-4aaa-820c-302d4e4b0902">
+  <Elements>
+    <Dynamo.Nodes.ListMin type="Dynamo.Nodes.ListMin" guid="4c0d9d6c-fa9c-43b3-a567-00b06b29133f" nickname="List Minimum" x="403.75" y="47.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="0" default="True" />
+    </Dynamo.Nodes.ListMin>
+    <Dynamo.Nodes.XyzDistance type="Dynamo.Nodes.XyzDistance" guid="4c6f2fe0-7198-4c70-9e4b-c41261be86f1" nickname="XYZ Distance" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d585ec5a-b824-4445-a374-6560ec473daf" nickname="Input" x="11" y="70" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e58ab7fe-5de9-41e5-8025-babc8abef587" nickname="Input" x="5" y="7" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="free" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="df34c401-cdbb-452c-b871-fd3e7003a375" nickname="Output" x="596.75" y="46" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="min" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="4c0d9d6c-fa9c-43b3-a567-00b06b29133f" start_index="0" end="df34c401-cdbb-452c-b871-fd3e7003a375" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4c6f2fe0-7198-4c70-9e4b-c41261be86f1" start_index="0" end="4c0d9d6c-fa9c-43b3-a567-00b06b29133f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d585ec5a-b824-4445-a374-6560ec473daf" start_index="0" end="4c0d9d6c-fa9c-43b3-a567-00b06b29133f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e58ab7fe-5de9-41e5-8025-babc8abef587" start_index="0" end="4c6f2fe0-7198-4c70-9e4b-c41261be86f1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

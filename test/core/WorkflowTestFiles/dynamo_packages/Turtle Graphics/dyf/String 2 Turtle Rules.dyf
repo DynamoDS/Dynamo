@@ -1,0 +1,36 @@
+<Workspace Version="0.7.0.26170" X="0" Y="0" zoom="1" Description="Converts a string representation of turtle production rules into the internal associative list representation." Category="Turtle.Internal" Name="String -&gt; Turtle Rules" ID="cfe36b16-b5a4-4549-b322-27ec314d9b8c">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f0593b0b-fcaa-4d9b-9fba-7a1e06d7996c" nickname="Input" x="10" y="49.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="rule string" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="ba7eeb14-4b53-4f01-a5a5-23092a8c2052" nickname="Split String" x="184" y="50.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SplitString>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="2aded506-66c7-4398-9ca2-26064c9a2867" nickname="String" x="75" y="156.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="&#xD;&#xA;" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="0470a96a-2afb-4fea-ba64-4960dbe07d67" nickname="Map" x="445" y="31.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f5d8a029-a4b7-4afd-bdf1-636a0910b545" nickname="Output" x="651" y="32.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="rules" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="78e03105-d05f-4652-8a60-8db40fbb5a1e" nickname="rule str -&gt; rule" x="463" y="108.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="509f6011-fb16-4c1a-ac0a-38c7469c1563" />
+      <Name value="rule str -&gt; rule" />
+      <Description value="" />
+      <Inputs>
+        <Input value="r" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f0593b0b-fcaa-4d9b-9fba-7a1e06d7996c" start_index="0" end="ba7eeb14-4b53-4f01-a5a5-23092a8c2052" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ba7eeb14-4b53-4f01-a5a5-23092a8c2052" start_index="0" end="0470a96a-2afb-4fea-ba64-4960dbe07d67" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2aded506-66c7-4398-9ca2-26064c9a2867" start_index="0" end="ba7eeb14-4b53-4f01-a5a5-23092a8c2052" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0470a96a-2afb-4fea-ba64-4960dbe07d67" start_index="0" end="f5d8a029-a4b7-4afd-bdf1-636a0910b545" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="78e03105-d05f-4652-8a60-8db40fbb5a1e" start_index="0" end="0470a96a-2afb-4fea-ba64-4960dbe07d67" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

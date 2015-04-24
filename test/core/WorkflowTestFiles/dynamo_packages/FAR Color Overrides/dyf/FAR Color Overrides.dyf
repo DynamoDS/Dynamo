@@ -1,0 +1,90 @@
+<Workspace Version="0.6.3.21482" X="121" Y="235" zoom="1" Description="Calculates the Floor Area Ratio of a Mass (building) to a Surface (site)" Category="sdb Tools" Name="FAR Color Overrides" ID="b0409a5f-0ef1-494c-87b4-b66c8f9d8b7f">
+  <Elements>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="e7e7994d-2cf0-4c0e-a201-71c1f9334ff3" nickname="Floor Area Ratio" x="250" y="1.92520137250699" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="fa9bd010-f126-40ca-9aa9-cbfc4b14a89d" />
+      <Name value="Floor Area Ratio" />
+      <Description value="Floor Area Ratio calculator" />
+      <Inputs>
+        <Input value="Select Site Face" />
+        <Input value="Select Building Mass" />
+      </Inputs>
+      <Outputs>
+        <Output value="FAR" />
+      </Outputs>
+      <InnerNode id="c89b754f-1d59-4d03-8ec3-839cb504be26">
+        <Run />
+      </InnerNode>
+      <InnerNode id="9e94a30c-000b-46dd-a223-f85add1c1608">
+        <Run />
+      </InnerNode>
+      <InnerNode id="a9b99290-dfb3-4a53-9a95-179933f16f51">
+        <Run />
+      </InnerNode>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="7bbd2b71-ee92-4d63-8da1-48adff07fa29" nickname="String" x="346.61850950596" y="191.742296211389" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="FAR = " />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="3f850f26-7b1d-4f11-a116-0c89840f63ee" nickname="Watch" x="532.519677243643" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="1d18404b-c996-4cb7-a00d-fc78e11397cf" nickname="Number to String" x="349.982145869597" y="258.015023484117" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.ConcatStrings type="Dynamo.Nodes.ConcatStrings" guid="41559fa3-76be-4921-9b7a-b03b2dd6ece8" nickname="Concat Strings" x="517.709418596869" y="185.015023484117" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GreaterThan type="Dynamo.Nodes.GreaterThan" guid="9caeeb4b-086d-4138-a7f8-565c89300c3e" nickname="Greater Than" x="708.105050334372" y="42.978210040353" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="fd120c25-9bc4-430a-895c-3c5e0eeb8a13" nickname="Red" x="468.902791224819" y="369.744003954158" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="6315a707-503e-4065-948a-410bdb059454" />
+      <Name value="Red" />
+      <Description value="Returns the colour red." />
+      <Inputs />
+      <Outputs>
+        <Output value="255,0,0" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="72afe360-272d-4f78-80e6-e5e6c4f731fc" nickname="Watch" x="924.164488812024" y="95.7082860888418" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="483680e1-0f7d-43c8-9e82-cc59da423cdf" nickname="If" x="1026.46325023415" y="245.120857152685" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="4d3adf38-57f1-4892-bc9b-5619bc8c4768" nickname="Green" x="470.607232205191" y="453.261611992384" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="1c62460c-247d-478c-b6fb-4875e1d2affe" />
+      <Name value="Green" />
+      <Description value="Returns the colour green." />
+      <Inputs />
+      <Outputs>
+        <Output value="0,128,0" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.OverrideColorInView type="Dynamo.Nodes.OverrideColorInView" guid="5989784f-b817-458c-b870-746779898610" nickname="Override Element Color in View" x="1238.46325023415" y="335.120857152685" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4c16ca35-e112-4ff8-90bb-02a41d1b4bd8" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Select Site Face" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8a78b996-9c18-4485-b34c-91bc31653c1a" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Select Building Mass" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="dfe0cc85-221f-440f-873f-d266d9646165" nickname="Input" x="2" y="274" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Max FAR" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="3769d1ef-387b-46a9-a455-85725ed1fd53" nickname="Output" x="1467" y="332.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Color" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="854aba69-386b-45a4-87d6-8532d866bca1" nickname="Output" x="1152" y="94.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Actual FAR" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e7e7994d-2cf0-4c0e-a201-71c1f9334ff3" start_index="0" end="3f850f26-7b1d-4f11-a116-0c89840f63ee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e7e7994d-2cf0-4c0e-a201-71c1f9334ff3" start_index="0" end="1d18404b-c996-4cb7-a00d-fc78e11397cf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7bbd2b71-ee92-4d63-8da1-48adff07fa29" start_index="0" end="41559fa3-76be-4921-9b7a-b03b2dd6ece8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3f850f26-7b1d-4f11-a116-0c89840f63ee" start_index="0" end="9caeeb4b-086d-4138-a7f8-565c89300c3e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1d18404b-c996-4cb7-a00d-fc78e11397cf" start_index="0" end="41559fa3-76be-4921-9b7a-b03b2dd6ece8" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="41559fa3-76be-4921-9b7a-b03b2dd6ece8" start_index="0" end="72afe360-272d-4f78-80e6-e5e6c4f731fc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9caeeb4b-086d-4138-a7f8-565c89300c3e" start_index="0" end="483680e1-0f7d-43c8-9e82-cc59da423cdf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd120c25-9bc4-430a-895c-3c5e0eeb8a13" start_index="0" end="483680e1-0f7d-43c8-9e82-cc59da423cdf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="72afe360-272d-4f78-80e6-e5e6c4f731fc" start_index="0" end="854aba69-386b-45a4-87d6-8532d866bca1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="483680e1-0f7d-43c8-9e82-cc59da423cdf" start_index="0" end="5989784f-b817-458c-b870-746779898610" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4d3adf38-57f1-4892-bc9b-5619bc8c4768" start_index="0" end="483680e1-0f7d-43c8-9e82-cc59da423cdf" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5989784f-b817-458c-b870-746779898610" start_index="0" end="3769d1ef-387b-46a9-a455-85725ed1fd53" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4c16ca35-e112-4ff8-90bb-02a41d1b4bd8" start_index="0" end="e7e7994d-2cf0-4c0e-a201-71c1f9334ff3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8a78b996-9c18-4485-b34c-91bc31653c1a" start_index="0" end="e7e7994d-2cf0-4c0e-a201-71c1f9334ff3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8a78b996-9c18-4485-b34c-91bc31653c1a" start_index="0" end="5989784f-b817-458c-b870-746779898610" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dfe0cc85-221f-440f-873f-d266d9646165" start_index="0" end="9caeeb4b-086d-4138-a7f8-565c89300c3e" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

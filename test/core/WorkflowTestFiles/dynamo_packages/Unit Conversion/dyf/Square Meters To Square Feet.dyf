@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.5263" X="0" Y="0" zoom="1" Description="Converts square meters into square feet" Category="CAAD_RWTH.Conversion.Area" Name="Square Meters To Square Feet" ID="a19a22f3-d9a6-4e4d-a9d2-d01ad45d8051">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c5ebc0a1-9ddb-4bba-96f7-5618eb7cd658" nickname="Input" x="20.5" y="58.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="m2" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4539e7cd-b403-4fba-be2b-744144dfe6aa" nickname="Output" x="350.5" y="55.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="sq ft" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="77258d2a-fffd-4116-8e1f-b33d49f4d415" nickname="Formula" x="138.5" y="57.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>m2/0.09290304</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="c5ebc0a1-9ddb-4bba-96f7-5618eb7cd658" start_index="0" end="77258d2a-fffd-4116-8e1f-b33d49f4d415" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="77258d2a-fffd-4116-8e1f-b33d49f4d415" start_index="0" end="4539e7cd-b403-4fba-be2b-744144dfe6aa" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

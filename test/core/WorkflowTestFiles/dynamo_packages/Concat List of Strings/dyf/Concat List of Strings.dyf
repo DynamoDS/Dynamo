@@ -1,0 +1,51 @@
+<Workspace Version="0.6.3.38253" X="-172.289475276671" Y="115.675017751804" zoom="0.888789228297156" Description="Concatenate Two or More List of Strings" Category="Core.Strings" Name="Concat List of Strings" ID="10ea80e4-a9ab-4e14-bbb1-dacf1cbf570b">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="52db5c89-e564-4c28-8dd2-17bd9f7518ec" nickname="Python Script With Variable Number of Inputs" x="854.066395435117" y="243.726825784963" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+
+a = IN0
+b = IN1 
+newlst = []
+c = len(a)
+
+for i in range(0,c):
+	d = a[i]
+	newlst.append(b.join(d))
+
+#Assign your output to the OUT variable
+OUT = newlst</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Transpose type="Dynamo.Nodes.Transpose" guid="8ce6a2e4-46f9-4886-8f04-b86b5ad0d547" nickname="Transpose Lists" x="633.227385430028" y="148.079835357515" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2dd38450-b346-46e9-ac04-abf1bcbf5949" nickname="Input" x="336.978015829048" y="274.733668956166" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Nested List" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="d3be5bea-3326-4cd9-866e-7a9bd34e9bc5" nickname="Output" x="1195.06639543512" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e251db7c-99bf-4b90-82a1-ac3b5cd690ce" nickname="Input" x="338.867737496958" y="345.318467773525" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Spacer String" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="52db5c89-e564-4c28-8dd2-17bd9f7518ec" start_index="0" end="d3be5bea-3326-4cd9-866e-7a9bd34e9bc5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8ce6a2e4-46f9-4886-8f04-b86b5ad0d547" start_index="0" end="52db5c89-e564-4c28-8dd2-17bd9f7518ec" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2dd38450-b346-46e9-ac04-abf1bcbf5949" start_index="0" end="8ce6a2e4-46f9-4886-8f04-b86b5ad0d547" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e251db7c-99bf-4b90-82a1-ac3b5cd690ce" start_index="0" end="52db5c89-e564-4c28-8dd2-17bd9f7518ec" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

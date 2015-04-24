@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"List Range Converter","version":"0.0.1","description":"Convert a slider into the range of an input list","group":"","keywords":["list","convert","ranges"],"dependencies":[],"license":"MIT","contents":"List Range Converter - Takes a List lenth and allows a slider indexing","engine_version":"0.6.2.29585","engine_metadata":"","engine":"dynamo"}

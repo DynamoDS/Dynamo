@@ -1,0 +1,82 @@
+<Workspace Version="0.6.3.22045" X="-60" Y="170" zoom="1" Description="Retrieves all materials froma given element" Category="CAAD_RWTH.Revit" Name="Get Materials From Element" ID="55f518fb-661b-47e7-ae55-18517d658dd4">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="a71cc168-3745-4a3f-bb9c-2a7000c9f807" nickname="Python Script With Variable Number of Inputs" x="415.44881312367" y="18.3659675031631" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+items = IN1
+paintedmats = IN2
+elementmats = list()
+elementareas = list()
+elementvols = list()
+
+for item in items:
+	matlist = list()
+	arealist = list()
+	vollist = list()
+	for matid in item.GetMaterialIds(paintedmats):
+		matlist.append(doc.GetElement(matid))
+		arealist.append(item.GetMaterialArea(matid,paintedmats))
+		vollist.append(item.GetMaterialVolume(matid))
+	elementmats.append(matlist)
+	elementareas.append(arealist)
+	elementvols.append(vollist)
+OUT = (elementmats,elementareas,elementvols)</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="10ccf09a-ba55-4113-8439-3180fbcc4d40" nickname="Revit Document" x="256.349398379062" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="1f0d9a69-bfc2-41a9-8831-95e20b45f978" nickname="Turn Into List" x="250" y="88.8915773068743" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c7336c48-67b6-45bd-9553-4c4ed2ab3281" nickname="Input" x="106" y="89" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="31f0afdc-64e6-4fdf-b489-a3f6290dcd47" nickname="Output" x="949.072212045184" y="16" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Materials" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7e02b1ec-ad9d-41d1-b5d2-1aebcf7d7836" nickname="Input" x="179" y="176.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Include paint materials?" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="55475f0c-3be9-4f51-9843-5a36194114c7" nickname="First of List" x="758" y="16.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="89db9bfc-6359-4148-b80c-f5cba72f325e" nickname="Get from List" x="744" y="135.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="7e728c4a-5e50-46f3-a156-73c21c785282" nickname="Number" x="603" y="135.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="eaf60a43-ae76-4fb6-9879-a2b677482f85" nickname="Output" x="948.072212045184" y="134" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Material Areas (sqft)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="a8b0c586-c2f9-48a1-819f-2aaafb09f8ec" nickname="Get from List" x="753" y="237.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="adbdb202-43f1-4eca-b9ac-8d69c094f1be" nickname="Output" x="957.072212045184" y="236" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Material Volumes (cbft)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="29905205-2fce-4a5e-8edb-5e78a04f3b33" nickname="Number" x="612" y="237.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a71cc168-3745-4a3f-bb9c-2a7000c9f807" start_index="0" end="55475f0c-3be9-4f51-9843-5a36194114c7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a71cc168-3745-4a3f-bb9c-2a7000c9f807" start_index="0" end="89db9bfc-6359-4148-b80c-f5cba72f325e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a71cc168-3745-4a3f-bb9c-2a7000c9f807" start_index="0" end="a8b0c586-c2f9-48a1-819f-2aaafb09f8ec" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="10ccf09a-ba55-4113-8439-3180fbcc4d40" start_index="0" end="a71cc168-3745-4a3f-bb9c-2a7000c9f807" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f0d9a69-bfc2-41a9-8831-95e20b45f978" start_index="0" end="a71cc168-3745-4a3f-bb9c-2a7000c9f807" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c7336c48-67b6-45bd-9553-4c4ed2ab3281" start_index="0" end="1f0d9a69-bfc2-41a9-8831-95e20b45f978" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7e02b1ec-ad9d-41d1-b5d2-1aebcf7d7836" start_index="0" end="a71cc168-3745-4a3f-bb9c-2a7000c9f807" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="55475f0c-3be9-4f51-9843-5a36194114c7" start_index="0" end="31f0afdc-64e6-4fdf-b489-a3f6290dcd47" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="89db9bfc-6359-4148-b80c-f5cba72f325e" start_index="0" end="eaf60a43-ae76-4fb6-9879-a2b677482f85" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7e728c4a-5e50-46f3-a156-73c21c785282" start_index="0" end="89db9bfc-6359-4148-b80c-f5cba72f325e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a8b0c586-c2f9-48a1-819f-2aaafb09f8ec" start_index="0" end="adbdb202-43f1-4eca-b9ac-8d69c094f1be" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="29905205-2fce-4a5e-8edb-5e78a04f3b33" start_index="0" end="a8b0c586-c2f9-48a1-819f-2aaafb09f8ec" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

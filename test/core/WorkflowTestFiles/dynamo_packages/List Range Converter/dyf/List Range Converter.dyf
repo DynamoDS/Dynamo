@@ -1,0 +1,24 @@
+<Workspace Version="0.6.2.29585" X="253.818181818182" Y="205.890909090909" zoom="1" Description="Takes a List lenth and allows a slider indexing" Category="buildz" Name="List Range Converter" ID="08795bf0-7f0c-4a3f-b55f-578655357247">
+  <Elements>
+    <Dynamo.Nodes.Length type="Dynamo.Nodes.Length" guid="ac6b3fa5-be13-48a8-b95a-a7077618edeb" nickname="List Length" x="250" y="23.8940244940244" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="c8caa236-b27f-4e9d-b34d-35020ca86c40" nickname="Formula" x="387.200916860917" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>Round((x*(listLength-1)),0)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c8cdf31a-2a87-4650-a9cf-05cb8331fa3b" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6758a41a-d27d-4f2b-9ac0-7abd74ad5175" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="ac710bc5-743d-4366-bb4c-d43fac242050" nickname="Output" x="727.800916860916" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ac6b3fa5-be13-48a8-b95a-a7077618edeb" start_index="0" end="c8caa236-b27f-4e9d-b34d-35020ca86c40" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c8caa236-b27f-4e9d-b34d-35020ca86c40" start_index="0" end="ac710bc5-743d-4366-bb4c-d43fac242050" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c8cdf31a-2a87-4650-a9cf-05cb8331fa3b" start_index="0" end="ac6b3fa5-be13-48a8-b95a-a7077618edeb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6758a41a-d27d-4f2b-9ac0-7abd74ad5175" start_index="0" end="c8caa236-b27f-4e9d-b34d-35020ca86c40" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

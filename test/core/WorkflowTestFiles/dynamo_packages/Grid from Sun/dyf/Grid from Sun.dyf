@@ -1,0 +1,117 @@
+<Workspace Version="0.6.3.25646" X="38.5574611103371" Y="115.189953783993" zoom="0.24986456896059" Description="" Category="Analyze.Solar" Name="Grid from Sun" ID="5c9ffd69-76f0-44cf-ad14-6aee883c7ed5">
+  <Elements>
+    <Dynamo.Nodes.XyzNormalize type="Dynamo.Nodes.XyzNormalize" guid="01183ad1-e8ad-4342-b545-3c3bc342609b" nickname="Unitize XYZ" x="336.14144198184" y="412.149925440849" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzDotProduct type="Dynamo.Nodes.XyzDotProduct" guid="5c405e0a-e847-44f9-b2e0-1645e8525c85" nickname="XYZ Dot Product" x="981.650365933422" y="548.187676405537" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="65a4ae9b-dfb3-4826-ab08-a274c175d5a6" nickname="Formula" x="1119.36403870687" y="547.734795181663" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>-Acos(dotProd)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.XyzBasisZ type="Dynamo.Nodes.XyzBasisZ" guid="f19e40ba-6d78-4341-b456-4c3dadaa78ed" nickname="Z Axis" x="780.03109624995" y="663.317036623678" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzCrossProduct type="Dynamo.Nodes.XyzCrossProduct" guid="c5dce28e-815c-4a54-b6f1-bcf4fcc7f828" nickname="XYZ Cross Product" x="1039.70014295856" y="656.498720492376" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="c051d79a-fcc9-493e-84bc-3c41a10b411e" nickname="XYZ" x="996.598689971571" y="180.726301355018" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.TransformRotation type="Dynamo.Nodes.TransformRotation" guid="b0caeeb1-d788-4f9e-bf10-37a63b6a18c1" nickname="Rotate Transform" x="1375.23794998651" y="524.529829898492" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.TransformPoint type="Dynamo.Nodes.TransformPoint" guid="9ebf3c00-a275-4667-90d3-6c41140485bc" nickname="Transform XYZ" x="1515.29118859286" y="539.911449002191" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="eec34a1b-2a5e-4ec8-8baa-676df32723fd" nickname="Map" x="1668.26179842195" y="635.602926273733" isVisible="false" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="fd94598f-51fa-4911-80c3-56b84a8d8375" nickname="Formula" x="833.933811652078" y="1032.11501385296" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>-(count-1)*space/2</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="9c2bd5ac-e26e-437a-af29-e80cc5448031" nickname="Number" x="2058.48244646692" y="791.472650768445" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="f19bb2c1-9e55-41c4-a6b5-4720e657a11b" nickname="Number" x="2060.73291597173" y="874.446392415789" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.ReferencePtGrid type="Dynamo.Nodes.ReferencePtGrid" guid="fad4e350-81e5-4c85-a381-be3ca4596031" nickname="XYZ Grid" x="1167.63317479856" y="949.192283553848" isVisible="false" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="7fbd16bf-c9a4-4221-a32b-d0ec8e3b228e" nickname="Get from List" x="2156.54232295924" y="897.075594683246" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="7ca94275-368e-4ea6-8d1c-2cc6b466dae4" nickname="Get from List" x="2163.24727177923" y="801.530073998428" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="f41a9890-39d6-4446-a83b-6104fdd06a55" nickname="Number" x="946.400771469683" y="1163.61807039974" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.XyzNegate type="Dynamo.Nodes.XyzNegate" guid="9eeb3fc5-b59f-4132-9521-abe47d44f0d8" nickname="Negate XYZ" x="2344.37202080146" y="799.495291875445" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzAdd type="Dynamo.Nodes.XyzAdd" guid="706552f0-fdba-4dc8-9707-cf5dc26c4ab5" nickname="Add XYZs" x="2483.92173492304" y="858.076018673941" isVisible="false" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzNormalize type="Dynamo.Nodes.XyzNormalize" guid="34806b36-57cc-4a18-8afb-e07f6c39b3a2" nickname="Unitize XYZ" x="2666.25865877317" y="861.788814899921" isVisible="false" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="44a1a0ae-a779-4bcb-8ca8-47ce59aa6247" nickname="Formula" x="3108.18086756662" y="601.555388299737" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>acos(dotProd)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.TransformRotation type="Dynamo.Nodes.TransformRotation" guid="0f0e2783-4910-4e46-9c82-f77141bee959" nickname="Rotate Transform" x="3331.23228601611" y="515.602646972852" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.TransformPoint type="Dynamo.Nodes.TransformPoint" guid="56933e70-d729-4b3c-a43f-9b0489d9e0d2" nickname="Transform XYZ" x="3470.8334446056" y="518.598398690844" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="f649ae2d-4c48-409c-8ad9-f2b1532e7405" nickname="Map" x="3621.85476301219" y="603.9902909124" isVisible="false" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="49ff4787-adc7-4d27-8f57-7e9363fbc074" nickname="Input" x="168.429430735717" y="359.819871948233" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="sun vector" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="2183a3c0-1c95-4ba9-9e3f-62a4d76d90cf" nickname="Output" x="4290.78889753473" y="348.179212481441" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="grid" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="398e964b-e806-45fc-9bce-7f1a3fbf75b4" nickname="Input" x="168.119641668443" y="958.679588508135" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="grid count" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="421829a2-9412-424d-8f20-fcf3848743f7" nickname="Input" x="158.519641668443" y="1117.67513515806" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="grid spacing" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="bf90439d-831d-4259-a004-2d1689c2a143" nickname="Number" x="922.354380381138" y="917.896058842822" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.XyzDotProduct type="Dynamo.Nodes.XyzDotProduct" guid="706c8360-4024-4d03-be2a-e38dc77daf80" nickname="XYZ Dot Product" x="2960.80736472381" y="595.887686851752" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzNormalize type="Dynamo.Nodes.XyzNormalize" guid="9b13c1a3-a1f5-4f89-95f2-29273785f377" nickname="Unitize XYZ" x="1176.68718111587" y="663.146359763778" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzAdd type="Dynamo.Nodes.XyzAdd" guid="2fa92ac5-098f-46d3-bc61-d26af1d3a2ed" nickname="Add XYZs" x="3905.41320246601" y="314.537606358569" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="01183ad1-e8ad-4342-b545-3c3bc342609b" start_index="0" end="5c405e0a-e847-44f9-b2e0-1645e8525c85" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="01183ad1-e8ad-4342-b545-3c3bc342609b" start_index="0" end="c5dce28e-815c-4a54-b6f1-bcf4fcc7f828" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="01183ad1-e8ad-4342-b545-3c3bc342609b" start_index="0" end="0f0e2783-4910-4e46-9c82-f77141bee959" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5c405e0a-e847-44f9-b2e0-1645e8525c85" start_index="0" end="65a4ae9b-dfb3-4826-ab08-a274c175d5a6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="65a4ae9b-dfb3-4826-ab08-a274c175d5a6" start_index="0" end="b0caeeb1-d788-4f9e-bf10-37a63b6a18c1" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f19e40ba-6d78-4341-b456-4c3dadaa78ed" start_index="0" end="5c405e0a-e847-44f9-b2e0-1645e8525c85" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f19e40ba-6d78-4341-b456-4c3dadaa78ed" start_index="0" end="c5dce28e-815c-4a54-b6f1-bcf4fcc7f828" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c5dce28e-815c-4a54-b6f1-bcf4fcc7f828" start_index="0" end="9b13c1a3-a1f5-4f89-95f2-29273785f377" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c051d79a-fcc9-493e-84bc-3c41a10b411e" start_index="0" end="b0caeeb1-d788-4f9e-bf10-37a63b6a18c1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c051d79a-fcc9-493e-84bc-3c41a10b411e" start_index="0" end="0f0e2783-4910-4e46-9c82-f77141bee959" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b0caeeb1-d788-4f9e-bf10-37a63b6a18c1" start_index="0" end="9ebf3c00-a275-4667-90d3-6c41140485bc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9ebf3c00-a275-4667-90d3-6c41140485bc" start_index="0" end="eec34a1b-2a5e-4ec8-8baa-676df32723fd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eec34a1b-2a5e-4ec8-8baa-676df32723fd" start_index="0" end="7ca94275-368e-4ea6-8d1c-2cc6b466dae4" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eec34a1b-2a5e-4ec8-8baa-676df32723fd" start_index="0" end="7fbd16bf-c9a4-4221-a32b-d0ec8e3b228e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eec34a1b-2a5e-4ec8-8baa-676df32723fd" start_index="0" end="f649ae2d-4c48-409c-8ad9-f2b1532e7405" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd94598f-51fa-4911-80c3-56b84a8d8375" start_index="0" end="fad4e350-81e5-4c85-a381-be3ca4596031" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd94598f-51fa-4911-80c3-56b84a8d8375" start_index="0" end="fad4e350-81e5-4c85-a381-be3ca4596031" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9c2bd5ac-e26e-437a-af29-e80cc5448031" start_index="0" end="7ca94275-368e-4ea6-8d1c-2cc6b466dae4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f19bb2c1-9e55-41c4-a6b5-4720e657a11b" start_index="0" end="7fbd16bf-c9a4-4221-a32b-d0ec8e3b228e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fad4e350-81e5-4c85-a381-be3ca4596031" start_index="0" end="eec34a1b-2a5e-4ec8-8baa-676df32723fd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7fbd16bf-c9a4-4221-a32b-d0ec8e3b228e" start_index="0" end="706552f0-fdba-4dc8-9707-cf5dc26c4ab5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7ca94275-368e-4ea6-8d1c-2cc6b466dae4" start_index="0" end="9eeb3fc5-b59f-4132-9521-abe47d44f0d8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f41a9890-39d6-4446-a83b-6104fdd06a55" start_index="0" end="fad4e350-81e5-4c85-a381-be3ca4596031" end_index="5" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f41a9890-39d6-4446-a83b-6104fdd06a55" start_index="0" end="fad4e350-81e5-4c85-a381-be3ca4596031" end_index="8" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9eeb3fc5-b59f-4132-9521-abe47d44f0d8" start_index="0" end="706552f0-fdba-4dc8-9707-cf5dc26c4ab5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="706552f0-fdba-4dc8-9707-cf5dc26c4ab5" start_index="0" end="34806b36-57cc-4a18-8afb-e07f6c39b3a2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="34806b36-57cc-4a18-8afb-e07f6c39b3a2" start_index="0" end="706c8360-4024-4d03-be2a-e38dc77daf80" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="44a1a0ae-a779-4bcb-8ca8-47ce59aa6247" start_index="0" end="0f0e2783-4910-4e46-9c82-f77141bee959" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0f0e2783-4910-4e46-9c82-f77141bee959" start_index="0" end="56933e70-d729-4b3c-a43f-9b0489d9e0d2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="56933e70-d729-4b3c-a43f-9b0489d9e0d2" start_index="0" end="f649ae2d-4c48-409c-8ad9-f2b1532e7405" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f649ae2d-4c48-409c-8ad9-f2b1532e7405" start_index="0" end="2fa92ac5-098f-46d3-bc61-d26af1d3a2ed" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="49ff4787-adc7-4d27-8f57-7e9363fbc074" start_index="0" end="01183ad1-e8ad-4342-b545-3c3bc342609b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="49ff4787-adc7-4d27-8f57-7e9363fbc074" start_index="0" end="2fa92ac5-098f-46d3-bc61-d26af1d3a2ed" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="398e964b-e806-45fc-9bce-7f1a3fbf75b4" start_index="0" end="fd94598f-51fa-4911-80c3-56b84a8d8375" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="398e964b-e806-45fc-9bce-7f1a3fbf75b4" start_index="0" end="fad4e350-81e5-4c85-a381-be3ca4596031" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="398e964b-e806-45fc-9bce-7f1a3fbf75b4" start_index="0" end="fad4e350-81e5-4c85-a381-be3ca4596031" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="421829a2-9412-424d-8f20-fcf3848743f7" start_index="0" end="fd94598f-51fa-4911-80c3-56b84a8d8375" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="421829a2-9412-424d-8f20-fcf3848743f7" start_index="0" end="fad4e350-81e5-4c85-a381-be3ca4596031" end_index="6" portType="0" />
+    <Dynamo.Models.ConnectorModel start="421829a2-9412-424d-8f20-fcf3848743f7" start_index="0" end="fad4e350-81e5-4c85-a381-be3ca4596031" end_index="7" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bf90439d-831d-4259-a004-2d1689c2a143" start_index="0" end="fad4e350-81e5-4c85-a381-be3ca4596031" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="706c8360-4024-4d03-be2a-e38dc77daf80" start_index="0" end="44a1a0ae-a779-4bcb-8ca8-47ce59aa6247" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9b13c1a3-a1f5-4f89-95f2-29273785f377" start_index="0" end="706c8360-4024-4d03-be2a-e38dc77daf80" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9b13c1a3-a1f5-4f89-95f2-29273785f377" start_index="0" end="b0caeeb1-d788-4f9e-bf10-37a63b6a18c1" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2fa92ac5-098f-46d3-bc61-d26af1d3a2ed" start_index="0" end="2183a3c0-1c95-4ba9-9e3f-62a4d76d90cf" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="x-vector of new reference frame" x="1087.10730109888" y="755.724070949543" />
+    <Dynamo.Models.NoteModel text="&quot;x-vector&quot; of first transform&#xD;&#xA;to correct to be parallel to x/y plane" x="2535.13845835558" y="965.236567255065" />
+    <Dynamo.Models.NoteModel text="Grid" x="1207.15099506028" y="1209.70645941558" />
+    <Dynamo.Models.NoteModel text="Origin" x="1016.3295797526" y="305.178522910321" />
+    <Dynamo.Models.NoteModel text="Grid transformed to be&#xD;&#xA;perpendicular to sun vector" x="1658.52491169775" y="733.244603480585" />
+    <Dynamo.Models.NoteModel text="Grid rotated to have x-direction&#xD;&#xA;parallel with global x/y plane" x="3588.31244060555" y="691.900346004393" />
+    <Dynamo.Models.NoteModel text="Create a square grid of points at the position of the sun given a vector. Grid rows are aligned to the global XY plane." x="173.851572982713" y="180.455287829421" />
+    <Dynamo.Models.NoteModel text="Grid at position of sun vector" x="3911.16140970355" y="428.000891253612" />
+  </Notes>
+</Workspace>

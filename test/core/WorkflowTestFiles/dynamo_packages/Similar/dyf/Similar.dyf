@@ -1,0 +1,35 @@
+<Workspace Version="0.6.3.5256" X="-4.5555555555556" Y="-0.535888888888962" zoom="1.3" Description="Computes the difference between two values and whether that difference is within a given tolerance percentage" Category="CAAD_RWTH.Conditional" Name="Similar" ID="c7d5bf14-d592-4205-8675-1d448fc6484a">
+  <Elements>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="1ee5cbd2-919b-4fb7-8f12-e6cd96bedb2f" nickname="Formula" x="209.491853813482" y="15.8720214404985" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>Abs(A-B)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="395052af-b58e-40ba-8f4b-2b67f296f4c2" nickname="Input" x="12.2222222222223" y="14.4444444444445" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="A" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="98a74635-c0c9-495b-9793-87f2ee6ad73f" nickname="Input" x="12.2222222222223" y="103.333333333334" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="B" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5a074402-4692-49f4-8ad1-cad4cb569929" nickname="Input" x="12.2222222222223" y="189.000000000001" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Tolerance" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4a27de03-8dc0-46d0-a43d-546623470e66" nickname="Output" x="467.737058699066" y="148.000000000001" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="IsSimilar" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="48df450c-740e-4bb4-99f7-799357051ce1" nickname="Output" x="455.625947587954" y="15.5555555555555" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Difference" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="514561ef-5feb-4194-a77c-7f0c74b22495" nickname="Formula" x="207.571545797681" y="148.082857142859" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>Abs(1-A/B)&lt;=T</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="1ee5cbd2-919b-4fb7-8f12-e6cd96bedb2f" start_index="0" end="48df450c-740e-4bb4-99f7-799357051ce1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="395052af-b58e-40ba-8f4b-2b67f296f4c2" start_index="0" end="1ee5cbd2-919b-4fb7-8f12-e6cd96bedb2f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="395052af-b58e-40ba-8f4b-2b67f296f4c2" start_index="0" end="514561ef-5feb-4194-a77c-7f0c74b22495" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="98a74635-c0c9-495b-9793-87f2ee6ad73f" start_index="0" end="1ee5cbd2-919b-4fb7-8f12-e6cd96bedb2f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="98a74635-c0c9-495b-9793-87f2ee6ad73f" start_index="0" end="514561ef-5feb-4194-a77c-7f0c74b22495" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5a074402-4692-49f4-8ad1-cad4cb569929" start_index="0" end="514561ef-5feb-4194-a77c-7f0c74b22495" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="514561ef-5feb-4194-a77c-7f0c74b22495" start_index="0" end="4a27de03-8dc0-46d0-a43d-546623470e66" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

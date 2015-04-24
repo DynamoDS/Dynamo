@@ -1,0 +1,55 @@
+<Workspace Version="0.6.3.7993" X="-239.3775" Y="163.06" zoom="1.1575" Description="Highlight the choosen elements in view" Category="JBE" Name="Highlight Elements in view" ID="9009d720-4029-4859-90fc-59286ff27301">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="545c2614-88b0-47a1-8cdc-d50b514aeb4c" nickname="Python Script" x="402" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+
+uidoc = __revit__.ActiveUIDocument
+
+b=[]
+
+elements = IN
+for item in elements:
+	uidoc.Selection.Elements.Add(item)
+	b.append(item.Id)
+
+OUT = b</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="60ebd467-49c5-461c-bdf7-2a863fe2d0cd" nickname="Turn Into List" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="de4c1637-3fb7-4470-b516-50cc9a4b8226" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Elements" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="c5fe26cb-59aa-479a-99cf-0de9962eae0b" nickname="Output" x="572.464362850972" y="8.37149028077752" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="IDs" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="545c2614-88b0-47a1-8cdc-d50b514aeb4c" start_index="0" end="c5fe26cb-59aa-479a-99cf-0de9962eae0b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="60ebd467-49c5-461c-bdf7-2a863fe2d0cd" start_index="0" end="545c2614-88b0-47a1-8cdc-d50b514aeb4c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="de4c1637-3fb7-4470-b516-50cc9a4b8226" start_index="0" end="60ebd467-49c5-461c-bdf7-2a863fe2d0cd" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

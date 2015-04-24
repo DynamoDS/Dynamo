@@ -1,0 +1,57 @@
+<Workspace Version="0.6.3.21482" X="-137" Y="190" zoom="1" Description="Create unplaced rooms at given phase(s)" Category="JBE" Name="Create Unplaced Room at Phase" ID="45c3a4e7-c645-4b3f-bd22-7bcec32e7293">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="8015529f-ee94-4911-8b2e-97f72df92a67" nickname="Python Script With Variable Number of Inputs" x="615.443775491632" y="121.513729622327" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+doc = IN0
+phases = IN1
+roomlist=[]
+for item in phases:
+	doccreation = doc.Create
+	a=doccreation.NewRoom(item)
+	roomlist.append(a)
+
+#Assign your output to the OUT variable
+OUT = roomlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="a820ee20-d6cb-49dd-903d-81a67f8e9806" nickname="Turn Into List" x="380.001107385329" y="121.513729622327" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="da27572e-15f9-4c43-9a7a-31f09fcaeb00" nickname="Revit Document" x="383.501107385329" y="-15" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="eda3d400-c780-487e-872e-f6fae8135f8a" nickname="Input" x="234" y="121.513729622327" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Phase(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8410b513-dd66-4084-918c-1901d01d892a" nickname="Output" x="939" y="121.513729622327" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Unplaced Room(s)" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8015529f-ee94-4911-8b2e-97f72df92a67" start_index="0" end="8410b513-dd66-4084-918c-1901d01d892a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a820ee20-d6cb-49dd-903d-81a67f8e9806" start_index="0" end="8015529f-ee94-4911-8b2e-97f72df92a67" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="da27572e-15f9-4c43-9a7a-31f09fcaeb00" start_index="0" end="8015529f-ee94-4911-8b2e-97f72df92a67" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eda3d400-c780-487e-872e-f6fae8135f8a" start_index="0" end="a820ee20-d6cb-49dd-903d-81a67f8e9806" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

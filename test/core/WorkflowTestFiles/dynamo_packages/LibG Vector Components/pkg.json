@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"LibG Vector Components","version":"0.1.1","description":"Gets the X, Y and Z of a LibG vector","group":"CAAD_RWTH","keywords":["libg","vector","x","y","z","xyz"],"dependencies":[],"license":"MIT","contents":"LibG Vector Components - Gets the X, Y and Z of a LibG vector","engine_version":"0.6.3.7375","engine_metadata":"","engine":"dynamo"}

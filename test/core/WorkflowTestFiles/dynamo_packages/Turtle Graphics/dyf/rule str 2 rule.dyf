@@ -1,0 +1,38 @@
+<Workspace Version="0.7.0.26170" X="0" Y="0" zoom="1" Description="" Category="Turtle.Internal" Name="rule str -&gt; rule" ID="509f6011-fb16-4c1a-ac0a-38c7469c1563">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="28748a32-eab2-4250-badb-a115dbceb2f7" nickname="Input" x="3" y="53.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="r" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="8e1aaace-7eb8-4840-8cb4-cc37d80a817c" nickname="Split String" x="233" y="54.7999999999999" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SplitString>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="ba79f72a-6c79-4248-815d-8d45ef2403e9" nickname="String" x="157" y="110.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="-&gt;" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="93a01343-a2e3-423a-9d7c-6ce977b882d6" nickname="Split List" x="377" y="54.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="c2a180f0-9d87-4b07-b10d-0344b0228ce0" nickname="First of List" x="409" y="129.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="33018953-0ca5-4317-b39f-4da9b8c05ea5" nickname="Split String" x="527" y="130.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SplitString>
+    <Dynamo.Nodes.Reverse type="Dynamo.Nodes.Reverse" guid="fb96ad83-2e05-4b6d-9927-0ae741d450be" nickname="Reverse" x="645" y="130.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="c8d5c2b2-bd4a-4f75-8a24-ecd36ad5b7cc" nickname="List" x="780" y="54.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5d10f009-515c-4f56-8e96-4a1b62f0bb89" nickname="Output" x="937" y="54.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="28748a32-eab2-4250-badb-a115dbceb2f7" start_index="0" end="8e1aaace-7eb8-4840-8cb4-cc37d80a817c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8e1aaace-7eb8-4840-8cb4-cc37d80a817c" start_index="0" end="93a01343-a2e3-423a-9d7c-6ce977b882d6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ba79f72a-6c79-4248-815d-8d45ef2403e9" start_index="0" end="8e1aaace-7eb8-4840-8cb4-cc37d80a817c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="93a01343-a2e3-423a-9d7c-6ce977b882d6" start_index="0" end="c8d5c2b2-bd4a-4f75-8a24-ecd36ad5b7cc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="93a01343-a2e3-423a-9d7c-6ce977b882d6" start_index="1" end="c2a180f0-9d87-4b07-b10d-0344b0228ce0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c2a180f0-9d87-4b07-b10d-0344b0228ce0" start_index="0" end="33018953-0ca5-4317-b39f-4da9b8c05ea5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="33018953-0ca5-4317-b39f-4da9b8c05ea5" start_index="0" end="fb96ad83-2e05-4b6d-9927-0ae741d450be" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fb96ad83-2e05-4b6d-9927-0ae741d450be" start_index="0" end="c8d5c2b2-bd4a-4f75-8a24-ecd36ad5b7cc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c8d5c2b2-bd4a-4f75-8a24-ecd36ad5b7cc" start_index="0" end="5d10f009-515c-4f56-8e96-4a1b62f0bb89" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

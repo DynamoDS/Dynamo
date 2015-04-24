@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Type Name","version":"0.1.0","description":"Gets the type of the given data as a string.","group":"Steellworks","keywords":["type","typeof"],"dependencies":[],"license":"MIT","contents":"Type Name - Gets the type of the given data as a string.","engine_version":"0.6.2.21747","engine_metadata":"","engine":"dynamo"}

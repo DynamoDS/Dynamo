@@ -1,0 +1,68 @@
+<Workspace Version="0.6.3.7375" X="65" Y="143" zoom="1" Description="Duplicates a given view. Duplication options: 0 = Duplicate, 1 = Duplicate with Detailing, 2 = Duplicate as Dependent View. Probably needs to be used in conjunction with a Transaction node." Category="CAAD_RWTH.Revit.Views" Name="Duplicate View" ID="237e943c-c1a0-4936-9269-1b5ad1dc8b4c">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="e6fe9d75-5a37-4ad4-b00a-d4b8db843593" nickname="Python Script With Variable Number of Inputs" x="388.713210284764" y="29.9292203782556" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+views = IN0
+option = IN1
+elementlist = list()
+if option == 1:
+	dupopt = Autodesk.Revit.DB.ViewDuplicateOption.WithDetailing
+elif option == 2:
+	dupopt = Autodesk.Revit.DB.ViewDuplicateOption.AsDependent
+else:
+	dupopt = Autodesk.Revit.DB.ViewDuplicateOption.Duplicate
+for view in views:
+	newview = view.Duplicate(dupopt)
+	elementlist.append(newview)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="8956bebd-7ed7-4f47-9480-e311451a403c" nickname="IDs to Elements" x="689.909084214115" y="27.9919049912604" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="a4dd8f6e-689f-4998-b8ef-4a04146d12c2" />
+      <Name value="IDs to Elements" />
+      <Description value="Gets the Revit element(s) for a list of IDs (or a single ID)" />
+      <Inputs>
+        <Input value="ID(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="Element(s)" />
+        <Output value="unmatched" />
+      </Outputs>
+      <InnerNode id="18c7de15-e52f-4116-af0c-7c7ea96346d2">
+        <Run />
+      </InnerNode>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="9946b309-ce58-49ea-b1d5-4e617bef849b" nickname="Turn Into List" x="224" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="426563f5-9c8e-4016-8c0c-a9f1debb81fb" nickname="Input" x="115" y="1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="view(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="c6ad3ceb-20c6-4892-be23-446170905627" nickname="Output" x="881.909084214115" y="27" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="view(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="284a20de-c0d8-4bed-ac89-965b5556d3fc" nickname="Input" x="187" y="77" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="duplication option" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e6fe9d75-5a37-4ad4-b00a-d4b8db843593" start_index="0" end="8956bebd-7ed7-4f47-9480-e311451a403c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8956bebd-7ed7-4f47-9480-e311451a403c" start_index="0" end="c6ad3ceb-20c6-4892-be23-446170905627" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9946b309-ce58-49ea-b1d5-4e617bef849b" start_index="0" end="e6fe9d75-5a37-4ad4-b00a-d4b8db843593" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="426563f5-9c8e-4016-8c0c-a9f1debb81fb" start_index="0" end="9946b309-ce58-49ea-b1d5-4e617bef849b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="284a20de-c0d8-4bed-ac89-965b5556d3fc" start_index="0" end="e6fe9d75-5a37-4ad4-b00a-d4b8db843593" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

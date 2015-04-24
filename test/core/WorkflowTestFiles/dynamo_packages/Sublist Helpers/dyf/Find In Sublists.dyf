@@ -1,0 +1,33 @@
+<Workspace Version="0.6.3.5260" X="183.878463203466" Y="179.076787434787" zoom="0.9" Description="Looks for an item in each sublist of a given list and returns true/false for each sublist." Category="CAAD_RWTH.Lists.Sublists" Name="Find In Sublists" ID="7902e399-955e-486c-a5f2-d49dfc2377f3">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="17a53f0f-f7a6-4213-a383-1104fc869e22" nickname="Input" x="1.1111111111112" y="76.6666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a2957fc5-66ec-4923-8e46-31f00458cb97" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="item" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="bc589af0-b093-415f-a5f4-477eb5e14301" nickname="Output" x="448.301587301586" y="56.6666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="booleans" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="889756ed-d882-47db-8269-a947b521efa0" nickname="Map" x="281.603866465712" y="56.6666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="a424044c-1a97-464c-9178-6f1c6f0bcfdd" nickname="List Contains" x="108.67457353642" y="148.931272622379" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="f0dc9d53-957a-4216-afe2-39113b59b1a3" />
+      <Name value="List Contains" />
+      <Description value="Returns true if the given item is found in the given list, and false otherwise." />
+      <Inputs>
+        <Input value="item" />
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="exists?" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="17a53f0f-f7a6-4213-a383-1104fc869e22" start_index="0" end="889756ed-d882-47db-8269-a947b521efa0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a2957fc5-66ec-4923-8e46-31f00458cb97" start_index="0" end="a424044c-1a97-464c-9178-6f1c6f0bcfdd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="889756ed-d882-47db-8269-a947b521efa0" start_index="0" end="bc589af0-b093-415f-a5f4-477eb5e14301" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a424044c-1a97-464c-9178-6f1c6f0bcfdd" start_index="0" end="889756ed-d882-47db-8269-a947b521efa0" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

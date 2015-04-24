@@ -1,0 +1,51 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="SQL 'SELECT FROM' query." Category="Core.Lists.Query" Name="Slingshot! SELECT FROM" ID="8c71004c-a751-4997-a1dd-35cac3900a79">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="8c54434c-7858-4fd9-b734-084f216f7fad" nickname="Python Script" x="417" y="126" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+_select = IN[0]
+_from = IN[1]
+
+selstring = 'SELECT ' + _select + ' FROM ' + _from + ';'
+
+#Assign your output to the OUT variable
+OUT = selstring</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="cc64a08c-1aea-4096-9250-52563378e133" nickname="List" x="195" y="128" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1b5a29a7-3321-4354-b4c0-7ee06d3f9d62" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="SELECT" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="46a3b7e2-1e4b-4a78-b10c-df30110a9f00" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="FROM" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f1c60712-5e58-4725-9078-1c64d122205e" nickname="Output" x="594" y="123" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="SQL" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="c0dab7b0-a25f-46e6-a475-74db6d4ef70b" nickname="Watch" x="594" y="236.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8c54434c-7858-4fd9-b734-084f216f7fad" start_index="0" end="f1c60712-5e58-4725-9078-1c64d122205e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8c54434c-7858-4fd9-b734-084f216f7fad" start_index="0" end="c0dab7b0-a25f-46e6-a475-74db6d4ef70b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc64a08c-1aea-4096-9250-52563378e133" start_index="0" end="8c54434c-7858-4fd9-b734-084f216f7fad" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1b5a29a7-3321-4354-b4c0-7ee06d3f9d62" start_index="0" end="cc64a08c-1aea-4096-9250-52563378e133" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="46a3b7e2-1e4b-4a78-b10c-df30110a9f00" start_index="0" end="cc64a08c-1aea-4096-9250-52563378e133" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

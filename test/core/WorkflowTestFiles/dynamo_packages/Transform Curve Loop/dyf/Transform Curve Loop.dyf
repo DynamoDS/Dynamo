@@ -1,0 +1,24 @@
+<Workspace Version="0.6.3.37653" X="-61" Y="157" zoom="1" Description="Returns the curve loop transformed by the transform" Category="CAAD_RWTH.Revit" Name="Transform Curve Loop" ID="c3f1c1e9-d9ed-4ae6-849f-704791bd80cb">
+  <Elements>
+    <Dynamo.Nodes.CurveTransformed type="Dynamo.Nodes.CurveTransformed" guid="48e3f292-6766-4d97-bb69-505012a77641" nickname="Transform Curve" x="474" y="30" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.ListCurveLoop type="Dynamo.Nodes.ListCurveLoop" guid="6a2f1075-6abf-4c62-b0ac-11def0ed2c99" nickname="Curve Loop Components" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="15c9f660-dcc5-4348-99af-80f48946e513" nickname="Input" x="321" y="93" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Transform" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="60d57c38-9489-4db6-bbb0-8989f29b566e" nickname="Input" x="99" y="1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="CurveLoop" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="c6619492-b574-4c56-a0d7-952f4e54a981" nickname="Output" x="814" y="28" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="CurveLoop" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.CurveLoop type="Dynamo.Nodes.CurveLoop" guid="111df222-c5fb-487f-95c0-827911531f45" nickname="Curve Loop" x="619" y="28.5" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="48e3f292-6766-4d97-bb69-505012a77641" start_index="0" end="111df222-c5fb-487f-95c0-827911531f45" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6a2f1075-6abf-4c62-b0ac-11def0ed2c99" start_index="0" end="48e3f292-6766-4d97-bb69-505012a77641" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="15c9f660-dcc5-4348-99af-80f48946e513" start_index="0" end="48e3f292-6766-4d97-bb69-505012a77641" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="60d57c38-9489-4db6-bbb0-8989f29b566e" start_index="0" end="6a2f1075-6abf-4c62-b0ac-11def0ed2c99" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="111df222-c5fb-487f-95c0-827911531f45" start_index="0" end="c6619492-b574-4c56-a0d7-952f4e54a981" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

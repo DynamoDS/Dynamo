@@ -1,0 +1,14 @@
+<dynWorkspace X="10" Y="55" Name="New Sketch Plane" Category="Create Geometry.Surface" ID="d9bd10fc-a0ed-4c3b-be5a-4f4ba0f37979">
+  <dynElements>
+    <Dynamo.Elements.dynXYZZero type="Dynamo.Elements.dynXYZZero" guid="59981965-f45e-4635-a835-ee13aaf61b5e" nickname="XYZ Zero" x="111.25" y="344.75" />
+    <Dynamo.Elements.dynXYZBasisZ type="Dynamo.Elements.dynXYZBasisZ" guid="e318da92-ddd9-48d3-84f6-0ff9dd1e432a" nickname="XYZ BasisZ" x="102.5" y="263.25" />
+    <Dynamo.Elements.dynPlane type="Dynamo.Elements.dynPlane" guid="8fcf6e48-2f90-4dd8-b344-48f70e41116b" nickname="Plane" x="276.25" y="275.75" />
+    <Dynamo.Elements.dynSketchPlane type="Dynamo.Elements.dynSketchPlane" guid="2de02bf7-30d8-42b2-b62c-1f8d7b98c050" nickname="Sketch Plane" x="479.25" y="295" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="59981965-f45e-4635-a835-ee13aaf61b5e" start_index="0" end="8fcf6e48-2f90-4dd8-b344-48f70e41116b" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="e318da92-ddd9-48d3-84f6-0ff9dd1e432a" start_index="0" end="8fcf6e48-2f90-4dd8-b344-48f70e41116b" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="8fcf6e48-2f90-4dd8-b344-48f70e41116b" start_index="0" end="2de02bf7-30d8-42b2-b62c-1f8d7b98c050" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Facet curve intersection","version":"0.0.1","description":"Facet curve intersection","group":"","keywords":["facet","curve","intersection"],"dependencies":[{"name":"Unit Conversion","version":"0.2.0"}],"license":"MIT","contents":"","engine_version":"0.6.3.19486","engine_metadata":"","engine":"dynamo"}

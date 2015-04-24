@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Get Active Family Parameter","version":"0.0.1","description":"Use Python to Get a Paramete Value from an Active Family","group":"Revit.Families","keywords":["get","parameter","active","family","python"],"dependencies":[],"license":"MIT","contents":"","engine_version":"0.6.3.5280","engine_metadata":"","engine":"dynamo"}

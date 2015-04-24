@@ -1,0 +1,55 @@
+<Workspace Version="0.6.3.22045" X="133.267949200686" Y="142.338107755278" zoom="0.954042924882813" Description="Creates room separation lines from geometry curves. PLEASE NOTE: Might need a transaction node to work." Category="CAAD_RWTH.Revit.Rooms" Name="Room Separators From Curves" ID="c68c0799-65c3-42f4-b8ba-93a248013d35">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="73fbae11-d335-4f98-a704-2dce38c94906" nickname="Python Script With Variable Number of Inputs" x="492.556099345963" y="91.9096348967287" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="4">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+curvearray = IN0
+sketchplane = IN1
+view = IN2
+doc = IN3
+doccreation = doc.Create
+separatorarray = doccreation.NewRoomBoundaryLines(sketchplane, curvearray, view)
+elementlist = list()
+for item in separatorarray:
+	elementlist.append(item)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="b26f1da4-2151-4a31-8192-8a16a25d6f7c" nickname="Revit Document" x="318.050720273368" y="239.365513755594" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d233a39a-cfad-4a80-b0e8-859917c5f97f" nickname="Input" x="122" y="1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Curve(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1cd26b14-cb68-4c9f-b1f2-75c8db318a86" nickname="Output" x="801.556099345963" y="90" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Room Separator(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="9663d7ec-7e83-43e8-aa70-ba9607d8a183" nickname="Input" x="299" y="78" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Sketch plane" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1692d858-5038-4192-880f-5db8e03012db" nickname="Input" x="345" y="159" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="View" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="d08cc810-2767-49c2-a010-8a45e8d3f3c1" nickname="Curve Array" x="244.567358790164" y="-0.254076873521257" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="51410785-3d00-4ec3-817d-6da27b8aea5b" />
+      <Name value="Curve Array" />
+      <Description value="Creates a curve array from a list of curves" />
+      <Inputs>
+        <Input value="Curve(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="Curve Array" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="73fbae11-d335-4f98-a704-2dce38c94906" start_index="0" end="1cd26b14-cb68-4c9f-b1f2-75c8db318a86" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b26f1da4-2151-4a31-8192-8a16a25d6f7c" start_index="0" end="73fbae11-d335-4f98-a704-2dce38c94906" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d233a39a-cfad-4a80-b0e8-859917c5f97f" start_index="0" end="d08cc810-2767-49c2-a010-8a45e8d3f3c1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9663d7ec-7e83-43e8-aa70-ba9607d8a183" start_index="0" end="73fbae11-d335-4f98-a704-2dce38c94906" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1692d858-5038-4192-880f-5db8e03012db" start_index="0" end="73fbae11-d335-4f98-a704-2dce38c94906" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d08cc810-2767-49c2-a010-8a45e8d3f3c1" start_index="0" end="73fbae11-d335-4f98-a704-2dce38c94906" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

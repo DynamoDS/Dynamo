@@ -1,0 +1,62 @@
+<Workspace Version="0.6.3.5244" X="15.7857353491926" Y="155.203016078468" zoom="0.79068485095583" Description="Checks whether an element is of a specified category" Category="CAAD_RWTH.Revit.Categories" Name="Is Of Category" ID="ee585799-3d67-4bed-a135-b7b0ce52b916">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="b104a053-4c8f-4227-8177-ce410101b4f4" nickname="Turn Into List" x="133.146915245008" y="-18.7061695099835" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="87f38510-c9e9-4c95-8119-d85d995c924f" nickname="Input" x="-8.85308475499176" y="-17.7061695099835" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8f1bdb12-4403-406c-90d6-7cefe95d4b2d" nickname="Output" x="800.470547212859" y="-19.6763680321487" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="7eb5842a-cdde-48bb-bab0-1a0eac9ba0c1" nickname="Python Script With Variable Number of Inputs" x="291.745274066018" y="74.3413128141452" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+elements = IN0
+cat = IN1
+elementlist = list()
+for item in elements:
+	if item.Category.Id.IntegerValue == int(cat):
+		elementlist.append(1)
+	else:
+		elementlist.append(0)
+OUT = (elementlist)</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="da029636-f4d3-4f10-9dd3-82c3e669002a" nickname="Input" x="-1.35134130152028" y="93.5897531241988" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="BuiltInCategory" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="bccc5b52-1750-460c-b347-179792b984b7" nickname="Return List Or Single Value" x="592.708686638799" y="-18.6819074074763" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b104a053-4c8f-4227-8177-ce410101b4f4" start_index="0" end="7eb5842a-cdde-48bb-bab0-1a0eac9ba0c1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b104a053-4c8f-4227-8177-ce410101b4f4" start_index="0" end="bccc5b52-1750-460c-b347-179792b984b7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="87f38510-c9e9-4c95-8119-d85d995c924f" start_index="0" end="b104a053-4c8f-4227-8177-ce410101b4f4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7eb5842a-cdde-48bb-bab0-1a0eac9ba0c1" start_index="0" end="bccc5b52-1750-460c-b347-179792b984b7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="da029636-f4d3-4f10-9dd3-82c3e669002a" start_index="0" end="7eb5842a-cdde-48bb-bab0-1a0eac9ba0c1" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bccc5b52-1750-460c-b347-179792b984b7" start_index="0" end="8f1bdb12-4403-406c-90d6-7cefe95d4b2d" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

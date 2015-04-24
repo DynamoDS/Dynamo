@@ -1,0 +1,64 @@
+<Workspace Version="0.7.2.40823" X="-147.276959351658" Y="-48.9963950791852" zoom="0.401326835334059" Description="" Category="" Name="Home">
+  <Elements>
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="eed8d389-5ad2-4ac0-a270-7d737f487ad0" nickname="Select Model Element" x="488.473327025733" y="817.655613056825" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="a82f4643-a505-4e28-b6d6-a6ee4cbe5cb6-000fae5c" />
+    </Dynamo.Nodes.DSModelElementSelection>
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="f46e385f-3b0a-446c-adeb-8d419a480cba" nickname="Select Model Element" x="488.473327025733" y="675.927180499302" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="a82f4643-a505-4e28-b6d6-a6ee4cbe5cb6-000faebc" />
+    </Dynamo.Nodes.DSModelElementSelection>
+    <Dynamo.Nodes.DSModelElementSelection type="Dynamo.Nodes.DSModelElementSelection" guid="fe4c569f-a1b4-46da-8e76-d1b1bd5b6ef4" nickname="Select Model Element" x="488.473327025733" y="959.384045614348" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <instance id="a82f4643-a505-4e28-b6d6-a6ee4cbe5cb6-000faf4f" />
+    </Dynamo.Nodes.DSModelElementSelection>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1c420759-4d5f-45b4-8310-f1fa07e92c99" nickname="CurveElement.Curve" x="892.85612088369" y="807.174427649834" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.CurveElement.Curve" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="5265ed61-345d-4279-a79c-856b4ca58452" nickname="Surface.ByLoft" x="2533.00629076928" y="857.850446980897" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="0358f2f7-c510-47c4-8798-df94694f259b" nickname="Surface.Thicken" x="2750.48289975841" y="868.088990169513" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Surface.Thicken@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e3fedc00-247a-4971-901c-7fcb063344c6" nickname="ImportInstance.ByGeometries" x="2924.93659842395" y="867.293105174156" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="RevitNodes.dll" function="Revit.Elements.ImportInstance.ByGeometries@Autodesk.DesignScript.Geometry.Geometry[]" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b1450930-c74b-4dcd-b56a-1eae6abd9852" nickname="Curve.ExtendEnd" x="2231.28076074062" y="879.610670341944" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.ExtendEnd@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="c430fc10-0690-48ff-9657-4f7a1f7a93b3" nickname="Curve.ExtendStart" x="2024.78693889936" y="837.3161191294" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.ExtendStart@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="9db2c362-f310-4971-8d4d-cf3242df5d26" nickname="Curve.PointAtParameter" x="1121.11101278377" y="846.163740000115" isVisible="true" isUpstreamVisible="true" lacing="CrossProduct" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="4a9a6e50-995a-482a-944f-d7f759911c43" nickname="Code Block" x="954.61712433661" y="968.14232313051" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..1..#9;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ee2c522c-066c-4b3a-ad3e-89dd61ad4e82" nickname="NurbsCurve.ByPoints" x="1484.1421157281" y="852.215894913864" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]" />
+    <DSCoreNodesUI.CreateList type="DSCoreNodesUI.CreateList" guid="fec47eab-ea56-4c5b-b0ca-f4752c3c4309" nickname="List.Create" x="733.567250287397" y="791.634472864265" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputcount="3" />
+    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="f7428f2c-e4b5-41cc-b5eb-f0d32e7af269" nickname="List.Transpose" x="1325.10131871419" y="849.762098085395" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.List.Transpose@var[]..[]" />
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="8f840306-8e44-44da-85e6-300c03bb65f5" nickname="Double Slider" x="1817.47649705788" y="977.414922100426" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>3</System.Double>
+      <Range min="0" max="5" />
+    </Dynamo.Nodes.DoubleSlider>
+    <Dynamo.Nodes.DoubleSlider type="Dynamo.Nodes.DoubleSlider" guid="19bef19b-b82b-42e6-858a-9a4bcf5446d4" nickname="Double Slider" x="2547.45228757655" y="961.069665832006" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double>0.312633966900676</System.Double>
+      <Range min="0" max="1" />
+    </Dynamo.Nodes.DoubleSlider>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="eed8d389-5ad2-4ac0-a270-7d737f487ad0" start_index="0" end="fec47eab-ea56-4c5b-b0ca-f4752c3c4309" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f46e385f-3b0a-446c-adeb-8d419a480cba" start_index="0" end="fec47eab-ea56-4c5b-b0ca-f4752c3c4309" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fe4c569f-a1b4-46da-8e76-d1b1bd5b6ef4" start_index="0" end="fec47eab-ea56-4c5b-b0ca-f4752c3c4309" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1c420759-4d5f-45b4-8310-f1fa07e92c99" start_index="0" end="9db2c362-f310-4971-8d4d-cf3242df5d26" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5265ed61-345d-4279-a79c-856b4ca58452" start_index="0" end="0358f2f7-c510-47c4-8798-df94694f259b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0358f2f7-c510-47c4-8798-df94694f259b" start_index="0" end="e3fedc00-247a-4971-901c-7fcb063344c6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1450930-c74b-4dcd-b56a-1eae6abd9852" start_index="0" end="5265ed61-345d-4279-a79c-856b4ca58452" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c430fc10-0690-48ff-9657-4f7a1f7a93b3" start_index="0" end="b1450930-c74b-4dcd-b56a-1eae6abd9852" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9db2c362-f310-4971-8d4d-cf3242df5d26" start_index="0" end="f7428f2c-e4b5-41cc-b5eb-f0d32e7af269" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4a9a6e50-995a-482a-944f-d7f759911c43" start_index="0" end="9db2c362-f310-4971-8d4d-cf3242df5d26" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ee2c522c-066c-4b3a-ad3e-89dd61ad4e82" start_index="0" end="c430fc10-0690-48ff-9657-4f7a1f7a93b3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fec47eab-ea56-4c5b-b0ca-f4752c3c4309" start_index="0" end="1c420759-4d5f-45b4-8310-f1fa07e92c99" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f7428f2c-e4b5-41cc-b5eb-f0d32e7af269" start_index="0" end="ee2c522c-066c-4b3a-ad3e-89dd61ad4e82" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8f840306-8e44-44da-85e6-300c03bb65f5" start_index="0" end="c430fc10-0690-48ff-9657-4f7a1f7a93b3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8f840306-8e44-44da-85e6-300c03bb65f5" start_index="0" end="b1450930-c74b-4dcd-b56a-1eae6abd9852" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="19bef19b-b82b-42e6-858a-9a4bcf5446d4" start_index="0" end="0358f2f7-c510-47c4-8798-df94694f259b" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Select curve from Revit" x="488.473327025733" y="640.176975764796" />
+    <Dynamo.Models.NoteModel text="Select curve from Revit" x="488.473327025733" y="784.246342425269" />
+    <Dynamo.Models.NoteModel text="Select curve from Revit" x="488.473327025733" y="925.974774982792" />
+    <Dynamo.Models.NoteModel text="Run this graph the .RVT file in the Samples folder." x="480.032605416287" y="545.265883668323" />
+  </Notes>
+</Workspace>

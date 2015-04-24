@@ -1,0 +1,82 @@
+<Workspace Version="0.6.3.37653" X="178.846028043475" Y="281.48201208028" zoom="0.568853839275299" Description="XYZ unit vector by altitude (-90° - 90°) and azimuth (0° - 360°) with positive Y-axis as North, positive Z-axis as up." Category="Geometry.Point.Create" Name="Vector by altitude and azimuth" ID="c95afe82-acd1-4bf8-a2d7-16d254c8d1df">
+  <Elements>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="ca89036b-2ea3-4d8e-a2f4-a3d79143f3c6" nickname="Formula" x="1263.54619215768" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>sin(phi) * cos(theta)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="1ecc6ab4-e282-4f59-a89e-d3da246a7d1d" nickname="XYZ" x="1531.31015726771" y="66.9745267794996" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="a31eb261-2bbc-46f2-8e3f-5bc4214d39ad" nickname="Formula" x="1265.14619215768" y="99.6778633149931" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>sin(theta) * sin(phi)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="0e1ac126-91ad-4230-8abb-f022c5f500c7" nickname="Formula" x="882.394456897658" y="27.0098841444791" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>(pi/2 - azimuth)%(2*pi)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="ea0a40c3-59d6-4f87-9a5b-a16ee2672c48" nickname="Formula" x="883.383976576642" y="192.807413431965" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>pi/2 - altitude</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="7a6048c7-81b1-4ee3-af38-fb1e12c7fed1" nickname="Formula" x="1316.34619215768" y="199.355726629986" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>cos(phi)</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="d33c8860-247c-4805-b32a-01d7bbd1b42a" nickname="Get from List" x="683.630039743295" y="193.833824975372" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="b5ef2eb9-d5c9-410d-a0f9-ac7fee359bf7" nickname="Get from List" x="679.519143970043" y="24.9626184217637" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="7fdb3324-ac9c-47f8-8f96-3692cf8110c1" nickname="List" x="469.776773665872" y="96.7149098171278" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="a22d4dc0-12e7-465f-a0d2-d65237ad4178" nickname="List" x="468.063964037056" y="281.62809848156" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="b1ce6d7c-0424-478c-9cff-492fefa9b4fe" nickname="Formula" x="261.232840625633" y="228.157737365704" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>a*pi/180</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="8e5b6cde-db86-4950-8533-e33cb4e73e5a" nickname="Formula" x="250" y="83.8752016893993" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>a*pi/180</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="176ff335-354c-452d-bdfd-cb46f6d9e977" nickname="Input" x="23.1745007616536" y="-59.3299924535559" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Deg/Rad" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="19754258-bb7e-4862-86ec-a110809e058f" nickname="Input" x="18.6562025363212" y="295.785744814462" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Altitude" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="bbd80ca3-ce74-4086-94de-59880e8bf47e" nickname="Output" x="1707.01086369136" y="64.807266071796" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="61e92fb3-296e-443c-ad5b-432c3222491f" nickname="Input" x="22.250277350053" y="124.326374353785" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Azimuth" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ca89036b-2ea3-4d8e-a2f4-a3d79143f3c6" start_index="0" end="1ecc6ab4-e282-4f59-a89e-d3da246a7d1d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1ecc6ab4-e282-4f59-a89e-d3da246a7d1d" start_index="0" end="bbd80ca3-ce74-4086-94de-59880e8bf47e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a31eb261-2bbc-46f2-8e3f-5bc4214d39ad" start_index="0" end="1ecc6ab4-e282-4f59-a89e-d3da246a7d1d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0e1ac126-91ad-4230-8abb-f022c5f500c7" start_index="0" end="a31eb261-2bbc-46f2-8e3f-5bc4214d39ad" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0e1ac126-91ad-4230-8abb-f022c5f500c7" start_index="0" end="ca89036b-2ea3-4d8e-a2f4-a3d79143f3c6" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ea0a40c3-59d6-4f87-9a5b-a16ee2672c48" start_index="0" end="a31eb261-2bbc-46f2-8e3f-5bc4214d39ad" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ea0a40c3-59d6-4f87-9a5b-a16ee2672c48" start_index="0" end="7a6048c7-81b1-4ee3-af38-fb1e12c7fed1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ea0a40c3-59d6-4f87-9a5b-a16ee2672c48" start_index="0" end="ca89036b-2ea3-4d8e-a2f4-a3d79143f3c6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7a6048c7-81b1-4ee3-af38-fb1e12c7fed1" start_index="0" end="1ecc6ab4-e282-4f59-a89e-d3da246a7d1d" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d33c8860-247c-4805-b32a-01d7bbd1b42a" start_index="0" end="ea0a40c3-59d6-4f87-9a5b-a16ee2672c48" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b5ef2eb9-d5c9-410d-a0f9-ac7fee359bf7" start_index="0" end="0e1ac126-91ad-4230-8abb-f022c5f500c7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7fdb3324-ac9c-47f8-8f96-3692cf8110c1" start_index="0" end="b5ef2eb9-d5c9-410d-a0f9-ac7fee359bf7" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a22d4dc0-12e7-465f-a0d2-d65237ad4178" start_index="0" end="d33c8860-247c-4805-b32a-01d7bbd1b42a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b1ce6d7c-0424-478c-9cff-492fefa9b4fe" start_index="0" end="a22d4dc0-12e7-465f-a0d2-d65237ad4178" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8e5b6cde-db86-4950-8533-e33cb4e73e5a" start_index="0" end="7fdb3324-ac9c-47f8-8f96-3692cf8110c1" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="176ff335-354c-452d-bdfd-cb46f6d9e977" start_index="0" end="d33c8860-247c-4805-b32a-01d7bbd1b42a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="176ff335-354c-452d-bdfd-cb46f6d9e977" start_index="0" end="b5ef2eb9-d5c9-410d-a0f9-ac7fee359bf7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="19754258-bb7e-4862-86ec-a110809e058f" start_index="0" end="a22d4dc0-12e7-465f-a0d2-d65237ad4178" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="19754258-bb7e-4862-86ec-a110809e058f" start_index="0" end="b1ce6d7c-0424-478c-9cff-492fefa9b4fe" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="61e92fb3-296e-443c-ad5b-432c3222491f" start_index="0" end="8e5b6cde-db86-4950-8533-e33cb4e73e5a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="61e92fb3-296e-443c-ad5b-432c3222491f" start_index="0" end="7fdb3324-ac9c-47f8-8f96-3692cf8110c1" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Y-axis is North&#xD;&#xA;&#xD;&#xA;Azimuthal convention:&#xD;&#xA;N  =     0°&#xD;&#xA;E   =   90°&#xD;&#xA;S   = 180°&#xD;&#xA;W =  270°" x="270.171482515817" y="-185.186032907387" />
+    <Dynamo.Models.NoteModel text="Theta.&#xD;&#xA;0 azimuth is North (positive Y-axis).&#xD;&#xA;Translated to CCW from positive X-axis" x="881.407311950481" y="-41.1812080093921" />
+    <Dynamo.Models.NoteModel text="Azimuth in radians" x="677.654372804363" y="-19.4377132844749" />
+    <Dynamo.Models.NoteModel text="Phi.&#xD;&#xA;0 altitude is perfectly horizontal.&#xD;&#xA;Translated to angle from positive z-axis" x="887.040022974385" y="124.487056865481" />
+    <Dynamo.Models.NoteModel text="Altitude in radians" x="681.064166134314" y="153.060488212737" />
+  </Notes>
+</Workspace>

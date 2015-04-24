@@ -1,0 +1,80 @@
+<Workspace Version="0.6.3.5244" X="140.577777777778" Y="186.933333333333" zoom="0.7" Description="Finds all elements of a specified category that intersect with a list of vectors" Category="CAAD_RWTH.Revit.Categories" Name="Reference Intersector By Category" ID="335463a8-f774-4d16-bb66-55ff7eaea076">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ea2a65bc-dd9f-4940-b509-063c9df271f8" nickname="Input" x="57.4285714285714" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="View" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="1f5d7880-bc85-4f4d-9808-db6b1d95e975" nickname="Input" x="1.42857142857144" y="68.5714285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="BuiltInCategory" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="bd0315e0-f0e8-4c49-9fa5-0da7783001e4" nickname="Input" x="23.4285714285714" y="138.571428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="VectorStart" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="bffe844f-1ade-41f6-b1c1-271a2f95cdde" nickname="Input" x="28.4285714285714" y="208.571428571429" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="VectorEnd" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="17cb003f-b0f2-4eac-a195-4add52786df8" nickname="Output" x="677.63095238095" y="47.0238095238103" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="d354ea81-c0d9-427a-8100-b94c05df9498" nickname="Revit Document" x="184.174603174603" y="283.666666666667" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="6f2379ed-8370-43f2-a589-1574504eca42" nickname="Python Script With Variable Number of Inputs" x="364.888888888888" y="47.9523809523815" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="5">
+      <Script>import clr
+clr.AddReference('RevitAPI') 
+clr.AddReference('RevitAPIUI')  
+from Autodesk.Revit.DB import * 
+import Autodesk
+
+theview = IN0
+cat = IN1
+vstart = IN2
+vend = IN3
+doc = IN4
+
+intersectorlist = list()
+counter = 0
+filter = ElementCategoryFilter(cat)
+
+while counter &lt; len(vstart):
+	ThisReferenceArr = ReferenceIntersector(filter, FindReferenceTarget.All, theview)
+	found = ThisReferenceArr.Find(vstart[counter], vend[counter])
+	foundreferences = list()
+	for item in found:
+		foundreferences.append(doc.GetElement(item.GetReference()))
+	intersectorlist.append(foundreferences)
+	counter += 1
+OUT = intersectorlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="d9edc9f0-9efb-4912-a878-3009e270b3ff" nickname="Turn Into List" x="177.746031746031" y="137.952380952381" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="ac8947b3-80a1-4c0c-9d07-d15a9fb08b88" nickname="Turn Into List" x="177.746031746032" y="209.380952380953" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="ea2a65bc-dd9f-4940-b509-063c9df271f8" start_index="0" end="6f2379ed-8370-43f2-a589-1574504eca42" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1f5d7880-bc85-4f4d-9808-db6b1d95e975" start_index="0" end="6f2379ed-8370-43f2-a589-1574504eca42" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bd0315e0-f0e8-4c49-9fa5-0da7783001e4" start_index="0" end="d9edc9f0-9efb-4912-a878-3009e270b3ff" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bffe844f-1ade-41f6-b1c1-271a2f95cdde" start_index="0" end="ac8947b3-80a1-4c0c-9d07-d15a9fb08b88" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d354ea81-c0d9-427a-8100-b94c05df9498" start_index="0" end="6f2379ed-8370-43f2-a589-1574504eca42" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6f2379ed-8370-43f2-a589-1574504eca42" start_index="0" end="17cb003f-b0f2-4eac-a195-4add52786df8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d9edc9f0-9efb-4912-a878-3009e270b3ff" start_index="0" end="6f2379ed-8370-43f2-a589-1574504eca42" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ac8947b3-80a1-4c0c-9d07-d15a9fb08b88" start_index="0" end="6f2379ed-8370-43f2-a589-1574504eca42" end_index="3" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

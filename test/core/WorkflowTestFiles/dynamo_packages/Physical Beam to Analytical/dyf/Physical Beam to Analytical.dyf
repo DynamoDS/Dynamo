@@ -1,0 +1,147 @@
+<Workspace Version="0.6.3.7993" X="-152" Y="180" zoom="1" Description="Moves a beam instance to his analytical model location" Category="JBE" Name="Physical Beam to Analytical" ID="0621fe80-9a35-471f-9c4c-376b6e973577">
+  <Elements>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="5233ce7d-5880-4063-982a-e1a52269f4c1" nickname="First of List" x="1085.15755831406" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="ac019ff6-290f-472f-8477-614260345b40" nickname="Rest of List" x="1082.86780355009" y="68.423270215248" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Begin type="Dynamo.Nodes.Begin" guid="0851557c-8bae-4342-9989-826076c4a1df" nickname="Perform All" x="1342.55556028167" y="200.360273410576" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="expr1" />
+      <Input name="expr2" />
+      <Input name="expr3" />
+    </Dynamo.Nodes.Begin>
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="31312e65-9cdf-4e8a-bf41-4a44408bfb9a" nickname="Transaction" x="886.585359845875" y="219.996937080928" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="f4f00c7d-4e98-4036-ad95-8254f2cb9be7" nickname="Transaction" x="886.585359845875" y="51.8153825789749" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="ee10a042-90a2-4151-add6-3843338eeea9" nickname="reset manual adjustment" x="638.870699060285" y="220.538064562197" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+element = IN
+for item in element:
+		a=item.ResetManualAdjustment()
+#Assign your output to the OUT variable
+OUT = a</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="e818ff2d-b256-4cd2-a312-bf9236e92fdc" nickname="Python Script" x="596.000063130418" y="51.8769917512873" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+element = IN
+start=[]
+end=[]
+for item in element:
+	b=item.GetCurve().GetEndPoint(0)
+	c=item.GetCurve().GetEndPoint(1)
+	start.append(b)
+	end.append(c)
+	
+OUT= b,c</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="5b72d1aa-870d-4dd2-bcf5-5f5f911699eb" nickname="Python Script With Variable Number of Inputs" x="597.446293183467" y="424.490846262876" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+doc = IN0
+element = IN1
+line = IN2
+
+
+for item in element:
+	a=item.Location
+
+for item in line:
+	a.Curve=item
+
+OUT= 0</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="691f0770-7fd3-46df-92a6-2c016cde701a" nickname="Transaction" x="886.585359845875" y="421.570398076987" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="6dffd6f4-ec15-49fa-bd3b-d008c6a2ce03" nickname="Revit Document" x="461.228505056489" y="267.629775991508" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.LineBound type="Dynamo.Nodes.LineBound" guid="ede9bbc9-9f9d-479d-84a6-80b89b3066a5" nickname="Line by Endpoints" x="349.742000676912" y="536.464236983365" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e6c72395-f50d-43bc-a76b-efc05dcecfdf" nickname="Turn Into List" x="260.444050176973" y="33.8745676905496" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f30925c0-4d20-4a16-9a24-132cae1bfcf2" nickname="Turn Into List" x="250" y="259.688160815639" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e4aaa543-73f8-499c-8a96-1b4279d5cd65" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Analytical Beam" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6f1cc3cf-8925-4a6c-bbca-afe5f8903945" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Physical beam" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="e3a23d86-da24-4085-9c50-1c61ec9ef6b0" nickname="Output" x="1541" y="198.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="5233ce7d-5880-4063-982a-e1a52269f4c1" start_index="0" end="ede9bbc9-9f9d-479d-84a6-80b89b3066a5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ac019ff6-290f-472f-8477-614260345b40" start_index="0" end="ede9bbc9-9f9d-479d-84a6-80b89b3066a5" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0851557c-8bae-4342-9989-826076c4a1df" start_index="0" end="e3a23d86-da24-4085-9c50-1c61ec9ef6b0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="31312e65-9cdf-4e8a-bf41-4a44408bfb9a" start_index="0" end="0851557c-8bae-4342-9989-826076c4a1df" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f4f00c7d-4e98-4036-ad95-8254f2cb9be7" start_index="0" end="5233ce7d-5880-4063-982a-e1a52269f4c1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f4f00c7d-4e98-4036-ad95-8254f2cb9be7" start_index="0" end="ac019ff6-290f-472f-8477-614260345b40" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f4f00c7d-4e98-4036-ad95-8254f2cb9be7" start_index="0" end="0851557c-8bae-4342-9989-826076c4a1df" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ee10a042-90a2-4151-add6-3843338eeea9" start_index="0" end="31312e65-9cdf-4e8a-bf41-4a44408bfb9a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e818ff2d-b256-4cd2-a312-bf9236e92fdc" start_index="0" end="f4f00c7d-4e98-4036-ad95-8254f2cb9be7" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5b72d1aa-870d-4dd2-bcf5-5f5f911699eb" start_index="0" end="691f0770-7fd3-46df-92a6-2c016cde701a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="691f0770-7fd3-46df-92a6-2c016cde701a" start_index="0" end="0851557c-8bae-4342-9989-826076c4a1df" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6dffd6f4-ec15-49fa-bd3b-d008c6a2ce03" start_index="0" end="5b72d1aa-870d-4dd2-bcf5-5f5f911699eb" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ede9bbc9-9f9d-479d-84a6-80b89b3066a5" start_index="0" end="5b72d1aa-870d-4dd2-bcf5-5f5f911699eb" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e6c72395-f50d-43bc-a76b-efc05dcecfdf" start_index="0" end="e818ff2d-b256-4cd2-a312-bf9236e92fdc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e6c72395-f50d-43bc-a76b-efc05dcecfdf" start_index="0" end="ee10a042-90a2-4151-add6-3843338eeea9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f30925c0-4d20-4a16-9a24-132cae1bfcf2" start_index="0" end="5b72d1aa-870d-4dd2-bcf5-5f5f911699eb" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e4aaa543-73f8-499c-8a96-1b4279d5cd65" start_index="0" end="e6c72395-f50d-43bc-a76b-efc05dcecfdf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6f1cc3cf-8925-4a6c-bbca-afe5f8903945" start_index="0" end="f30925c0-4d20-4a16-9a24-132cae1bfcf2" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

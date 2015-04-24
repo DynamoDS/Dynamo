@@ -1,0 +1,83 @@
+<Workspace Version="0.6.3.7993" X="119.742870427862" Y="-9.41841678240894" zoom="0.679007436100058" Description="Write a CSV string for two data values" Category="CEE120.Session11" Name="Write CSV String - Seven_Values" ID="f2897c0f-c828-43e6-946e-a91d27a4dd0d">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0d70a02c-ddb4-43d4-8a97-9c224c908b0f" nickname="Input" x="135.2" y="160.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dataValue1" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a6008b06-60d4-4a6e-ad40-d1381bdfe478" nickname="Input" x="132" y="359.6" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dataValue2" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="36f46a1c-d5a3-4897-ae08-a517aa78b786" nickname="Number to String" x="272.8" y="159.6" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="b2a22429-a5d5-4196-b436-645ea47da6cc" nickname="Number to String" x="280" y="357.2" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="83c0f0cb-35e4-49ce-a585-2833c734feab" nickname="String" x="172.8" y="78" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="&#xD;&#xA;" />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="3e18bb71-265c-488e-b7d7-4c54d90df834" nickname="String" x="173.6" y="262" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="," />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.ConcatStrings type="Dynamo.Nodes.ConcatStrings" guid="bcf0d888-295a-4fd5-b0f1-f2a67c593454" nickname="Concat Strings" x="757.146764321849" y="477.747818532118" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="s3" />
+      <Input name="s4" />
+      <Input name="s5" />
+      <Input name="s6" />
+      <Input name="s7" />
+      <Input name="s8" />
+      <Input name="s9" />
+      <Input name="s10" />
+      <Input name="s11" />
+      <Input name="s12" />
+      <Input name="s13" />
+      <Input name="s14" />
+    </Dynamo.Nodes.ConcatStrings>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="51c25000-69cb-4c95-98ae-a5bd53f1ed28" nickname="Output" x="1029.38330898422" y="473.456866846854" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="CSVString" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="68db1057-8b51-479a-934c-a47c15b5a853" nickname="Input" x="142.2" y="501.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dataValue3" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="f8a40147-66a1-4838-b17a-27c853e41456" nickname="Number to String" x="283" y="500.2" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d9d90346-f09a-49d8-b31f-4121a8835bb7" nickname="Input" x="125.381551967104" y="979.784011791064" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dataValue6" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="481e219b-6355-4e98-b112-54ff8f30cab6" nickname="Input" x="123.054407022894" y="741.873323593687" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dataValue4" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="466dc065-67f6-447d-a72f-d2a6c71feefc" nickname="Input" x="127.599648596577" y="1096.65698398133" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dataValue7" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6fdbb251-d33c-4bd4-b91d-69994fd13e07" nickname="Input" x="122.180263487887" y="870.346647187375" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="dataValue5" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="ef1c751f-af33-4b55-bcc9-c0986e35785b" nickname="Number to String" x="311.128199154478" y="1096.65885813292" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="12a77ee0-fa03-4d1f-8ed6-1a8afee4950f" nickname="Number to String" x="305.237247469215" y="872.802694092909" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="eea44c6e-e8a4-42f9-b2f2-c38963adafa0" nickname="Number to String" x="308.182723311847" y="980.312562348965" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Num2String type="Dynamo.Nodes.Num2String" guid="dbf00c29-ea64-4185-92fe-64954f3a3562" nickname="Number to String" x="294.928082020004" y="738.783543253167" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="a94d1b5b-f9d4-4f5d-a3e0-a09c38a89921" nickname="String" x="203.762696262643" y="625.939644510422" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value=" " />
+    </Dynamo.Nodes.StringInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0d70a02c-ddb4-43d4-8a97-9c224c908b0f" start_index="0" end="36f46a1c-d5a3-4897-ae08-a517aa78b786" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a6008b06-60d4-4a6e-ad40-d1381bdfe478" start_index="0" end="b2a22429-a5d5-4196-b436-645ea47da6cc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="36f46a1c-d5a3-4897-ae08-a517aa78b786" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2a22429-a5d5-4196-b436-645ea47da6cc" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="83c0f0cb-35e4-49ce-a585-2833c734feab" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3e18bb71-265c-488e-b7d7-4c54d90df834" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3e18bb71-265c-488e-b7d7-4c54d90df834" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="4" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3e18bb71-265c-488e-b7d7-4c54d90df834" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="8" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3e18bb71-265c-488e-b7d7-4c54d90df834" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="10" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3e18bb71-265c-488e-b7d7-4c54d90df834" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="12" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bcf0d888-295a-4fd5-b0f1-f2a67c593454" start_index="0" end="51c25000-69cb-4c95-98ae-a5bd53f1ed28" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="68db1057-8b51-479a-934c-a47c15b5a853" start_index="0" end="f8a40147-66a1-4838-b17a-27c853e41456" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f8a40147-66a1-4838-b17a-27c853e41456" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="5" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d9d90346-f09a-49d8-b31f-4121a8835bb7" start_index="0" end="eea44c6e-e8a4-42f9-b2f2-c38963adafa0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="481e219b-6355-4e98-b112-54ff8f30cab6" start_index="0" end="dbf00c29-ea64-4185-92fe-64954f3a3562" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="466dc065-67f6-447d-a72f-d2a6c71feefc" start_index="0" end="ef1c751f-af33-4b55-bcc9-c0986e35785b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6fdbb251-d33c-4bd4-b91d-69994fd13e07" start_index="0" end="12a77ee0-fa03-4d1f-8ed6-1a8afee4950f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ef1c751f-af33-4b55-bcc9-c0986e35785b" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="13" portType="0" />
+    <Dynamo.Models.ConnectorModel start="12a77ee0-fa03-4d1f-8ed6-1a8afee4950f" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="9" portType="0" />
+    <Dynamo.Models.ConnectorModel start="eea44c6e-e8a4-42f9-b2f2-c38963adafa0" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="11" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dbf00c29-ea64-4185-92fe-64954f3a3562" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="7" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a94d1b5b-f9d4-4f5d-a3e0-a09c38a89921" start_index="0" end="bcf0d888-295a-4fd5-b0f1-f2a67c593454" end_index="6" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

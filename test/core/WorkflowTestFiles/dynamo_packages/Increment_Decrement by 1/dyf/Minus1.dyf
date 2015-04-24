@@ -1,0 +1,16 @@
+<dynWorkspace X="136.251367374325" Y="162.682507936502" zoom="1.1" Description="Decrements a value by 1" Category="CAAD_RWTH.Math" Name="-1" ID="f4181015-7167-4fb6-b23d-f6cff59ffc1a">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="5fb1e88f-8907-4a26-8a6d-9eba9fd6a192" nickname="Input" x="15.7914544614727" y="24.3909018759081" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="07e57b7e-ef39-4e4d-97d0-f134d6f3e1a4" nickname="Output" x="223.973272643291" y="24.3909018759081" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.dynOutput>
+    <Dynamo.Nodes.dynFormula type="Dynamo.Nodes.dynFormula" guid="7a443c91-5a24-44f2-97aa-7c17630430f5" nickname="Formula" x="115.791454461473" y="25.299992784999" isVisible="true" isUpstreamVisible="true" lacing="Longest" formula="x-1" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnectorModel start="5fb1e88f-8907-4a26-8a6d-9eba9fd6a192" start_index="0" end="7a443c91-5a24-44f2-97aa-7c17630430f5" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnectorModel start="7a443c91-5a24-44f2-97aa-7c17630430f5" start_index="0" end="07e57b7e-ef39-4e4d-97d0-f134d6f3e1a4" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

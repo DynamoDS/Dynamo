@@ -1,0 +1,79 @@
+<Workspace Version="0.6.3.5262" X="59.2444444444444" Y="191.355555555556" zoom="0.8" Description="Assigns the given element(s) to the specified subcategory (0 for Cut, 1 for Projection)." Category="CAAD_RWTH.Revit.Subcategories" Name="Set Element Subcategory" ID="07cc14b2-6e6c-4433-9d7e-967ed64e0676">
+  <Elements>
+    <Dynamo.Nodes.Transaction type="Dynamo.Nodes.Transaction" guid="46569fd0-1bbf-4020-b531-2655bdc378e2" nickname="Transaction" x="603.333333333333" y="-2.91666666666657" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="96dca637-9992-4917-8e6e-226f20f0ec4f" nickname="Python Script With Variable Number of Inputs" x="288.5" y="-2" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+items = IN0
+subcat = IN1
+gstyletype = IN2
+
+if gstyletype == 0:
+	gstyletype = GraphicsStyleType.Projection
+else:
+	gstyletype = GraphicsStyleType.Cut
+
+elementlist = list()
+faillist = list()
+try:
+	gstyle = subcat.GetGraphicsStyle(gstyletype)
+	for item in items:
+		try:
+			item.Subcategory = gstyle
+			elementlist.append(item)
+		except:
+			faillist.append(item)
+	OUT = (elementlist,faillist)
+except:
+	OUT = 'Subcategory not found...'</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="40b80480-01e5-4cf8-9049-2a034a7231a3" nickname="Turn Into List" x="131" y="-66" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f8d14fcf-9e38-4e96-a267-9f52c1a3833b" nickname="Input" x="-10" y="17" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Subcategory" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ae72d50c-01da-43d8-b4d7-2b06ab3ebfec" nickname="Input" x="-9" y="96" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Cut/Projection" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7945014e-bb46-4065-a4c2-d39d42278ff3" nickname="Input" x="-11" y="-65" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="acd8083e-e11e-4c7a-92a3-f006799633bd" nickname="Output" x="944.583333333333" y="-65.25" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Success" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="1e9137af-05af-485d-ba46-96f3fb61e33a" nickname="First of List" x="790.944444444444" y="-62.3194444444444" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="a7a809e4-157b-4d60-9e80-b68826366faa" nickname="Get from List" x="789.694444444444" y="38.9305555555556" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="0ab98a47-0d44-49f2-9ddd-038a33228a5e" nickname="Formula" x="658.444444444444" y="77.6805555555556" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="e605f506-0e9c-462d-a7af-e3f327779c11" nickname="Output" x="969.583333333333" y="34.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Fail" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="46569fd0-1bbf-4020-b531-2655bdc378e2" start_index="0" end="1e9137af-05af-485d-ba46-96f3fb61e33a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="46569fd0-1bbf-4020-b531-2655bdc378e2" start_index="0" end="a7a809e4-157b-4d60-9e80-b68826366faa" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="96dca637-9992-4917-8e6e-226f20f0ec4f" start_index="0" end="46569fd0-1bbf-4020-b531-2655bdc378e2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="40b80480-01e5-4cf8-9049-2a034a7231a3" start_index="0" end="96dca637-9992-4917-8e6e-226f20f0ec4f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f8d14fcf-9e38-4e96-a267-9f52c1a3833b" start_index="0" end="96dca637-9992-4917-8e6e-226f20f0ec4f" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ae72d50c-01da-43d8-b4d7-2b06ab3ebfec" start_index="0" end="96dca637-9992-4917-8e6e-226f20f0ec4f" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7945014e-bb46-4065-a4c2-d39d42278ff3" start_index="0" end="40b80480-01e5-4cf8-9049-2a034a7231a3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1e9137af-05af-485d-ba46-96f3fb61e33a" start_index="0" end="acd8083e-e11e-4c7a-92a3-f006799633bd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a7a809e4-157b-4d60-9e80-b68826366faa" start_index="0" end="e605f506-0e9c-462d-a7af-e3f327779c11" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0ab98a47-0d44-49f2-9ddd-038a33228a5e" start_index="0" end="a7a809e4-157b-4d60-9e80-b68826366faa" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

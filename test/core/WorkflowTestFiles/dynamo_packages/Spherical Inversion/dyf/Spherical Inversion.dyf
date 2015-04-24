@@ -1,0 +1,32 @@
+<Workspace Version="0.6.3.5258" X="113.94" Y="115.2" zoom="0.7" Description="Performs a spherical inversion of  XY Coordinates" Category="buildz" Name="Spherical Inversion" ID="19fe03d4-3c8d-40c5-858c-29ba7660f801">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="27ee8471-6f02-4306-87a4-5e4f7a1b3770" nickname="Input" x="-100" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Sphere Center" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.XyzDistance type="Dynamo.Nodes.XyzDistance" guid="d5797d21-f9a8-47f3-b0dd-63178a927610" nickname="XYZ Distance" x="150" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="18e13245-ba5b-46f6-a76e-44fcf82bc145" nickname="Formula" x="315.222473748728" y="32.9740130346183" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x-y</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a68aa689-284f-499e-bc0f-a329ffbb97f9" nickname="Input" x="-100" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.XyzScaleOffset type="Dynamo.Nodes.XyzScaleOffset" guid="882b586a-2aa2-4efb-b021-2ba4ee0f283a" nickname="Scale XYZ with Base Point" x="415.449180375435" y="128.328196106451" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="094c3db4-81a9-4029-86e9-abcdb7cebe17" nickname="Input" x="-100" y="300" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Sphere Radius" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7bc80dab-7fad-4792-ac5a-2f82a3d054da" nickname="Output" x="644.849180375435" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="27ee8471-6f02-4306-87a4-5e4f7a1b3770" start_index="0" end="d5797d21-f9a8-47f3-b0dd-63178a927610" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="27ee8471-6f02-4306-87a4-5e4f7a1b3770" start_index="0" end="882b586a-2aa2-4efb-b021-2ba4ee0f283a" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d5797d21-f9a8-47f3-b0dd-63178a927610" start_index="0" end="18e13245-ba5b-46f6-a76e-44fcf82bc145" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="18e13245-ba5b-46f6-a76e-44fcf82bc145" start_index="0" end="882b586a-2aa2-4efb-b021-2ba4ee0f283a" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a68aa689-284f-499e-bc0f-a329ffbb97f9" start_index="0" end="d5797d21-f9a8-47f3-b0dd-63178a927610" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a68aa689-284f-499e-bc0f-a329ffbb97f9" start_index="0" end="882b586a-2aa2-4efb-b021-2ba4ee0f283a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="882b586a-2aa2-4efb-b021-2ba4ee0f283a" start_index="0" end="7bc80dab-7fad-4792-ac5a-2f82a3d054da" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="094c3db4-81a9-4029-86e9-abcdb7cebe17" start_index="0" end="18e13245-ba5b-46f6-a76e-44fcf82bc145" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

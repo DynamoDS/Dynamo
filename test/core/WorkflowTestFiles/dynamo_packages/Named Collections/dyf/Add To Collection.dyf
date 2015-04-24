@@ -1,0 +1,59 @@
+<Workspace Version="0.6.3.25815" X="-252" Y="81" zoom="1" Description="Sets a key equal to a value inside collection" Category="Collections.NamedCollection" Name="Add To Collection" ID="9ae0e542-fb79-4575-830e-2aef2c293618">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="0fe46d1c-bf47-463d-8df4-028eaac9b018" nickname="Python Script With Variable Number of Inputs" x="464.855544337744" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="3">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+sys.path.append(r'C:\Program Files (x86)\IronPython 2.7\Lib')
+import copy
+
+collection = IN0
+key = IN1
+value = IN2
+
+
+
+
+collection2 = copy.deepcopy(collection)
+
+collection2.dict[key] = value
+
+
+
+
+
+#Assign your output to the OUT variable
+OUT = collection2</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fd09cdae-32c4-4614-93ad-3a183eedd831" nickname="Input" x="278" y="69" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Value" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="cf99847c-17a4-4833-ab23-a6345d6f6ad8" nickname="Output" x="805.855544337744" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Collection" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="633b180d-84ed-46fc-b387-e6202bff776c" nickname="Input" x="277" y="4" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Key" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="175d188a-7dfd-4fab-8aca-069ff239eb3c" nickname="Input" x="279" y="-58" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Collection" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0fe46d1c-bf47-463d-8df4-028eaac9b018" start_index="0" end="cf99847c-17a4-4833-ab23-a6345d6f6ad8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd09cdae-32c4-4614-93ad-3a183eedd831" start_index="0" end="0fe46d1c-bf47-463d-8df4-028eaac9b018" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="633b180d-84ed-46fc-b387-e6202bff776c" start_index="0" end="0fe46d1c-bf47-463d-8df4-028eaac9b018" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="175d188a-7dfd-4fab-8aca-069ff239eb3c" start_index="0" end="0fe46d1c-bf47-463d-8df4-028eaac9b018" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,60 @@
+<Workspace Version="0.6.3.7375" X="-803.154478372579" Y="210.350769052996" zoom="1.25584483561315" Description="Calculates the intersection of a toposurface and a plane" Category="CAAD_RWTH.Revit.Topo" Name="Topo-Plane Intersection" ID="777672d3-73cb-44ab-9c7e-0f0d82f9c236">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="2d73391d-7c61-4d92-a908-e826f7386e2a" nickname="Input" x="886.318331913954" y="46.6906395853258" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Plane" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="358fc10f-e3f2-456c-98fc-b70870f1984e" nickname="Input" x="727.143451019328" y="126.665810685729" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Topo" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1236a2a4-5394-4031-9a9f-2f8288f3a828" nickname="Output" x="1241.07765612572" y="-11.3947139764436" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZs" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="a16d4d59-a570-4bb2-9d93-330943e1849f" nickname="Output" x="1239.31954118714" y="57.7319988488714" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Lines" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f49f3de3-ecff-4e61-bbb3-a254bfda7993" nickname="Output" x="1239.31954118714" y="129.495884082057" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Nurbs Spline" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="d2cbc1b8-a2c0-47bb-81d6-e2667ac739a2" nickname="Output" x="1241.07765612572" y="201.259769315242" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Hermite Spline" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="220a44ac-34aa-45ee-997b-af0b5eedf3ee" nickname="Mesh-Plane Intersection" x="1002.14027311285" y="68.9089410026364" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="b922a271-0699-4c95-9f75-2b8e213c169f" />
+      <Name value="Mesh-Plane Intersection" />
+      <Description value="Calculates the intersection of a mesh and a plane" />
+      <Inputs>
+        <Input value="Plane" />
+        <Input value="Mesh" />
+      </Inputs>
+      <Outputs>
+        <Output value="XYZ" />
+        <Output value="Lines" />
+        <Output value="Nurbs Spline" />
+        <Output value="Hermite Spline" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="940e4ddd-a5f9-46ed-958c-cf4742c18e1f" nickname="Topo To Mesh" x="836.14628577788" y="125.465139416496" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="70ec025d-39d4-4689-9adc-7aff30ad042b" />
+      <Name value="Topo To Mesh" />
+      <Description value="Extracts the mesh of a toposurface" />
+      <Inputs>
+        <Input value="Topo" />
+      </Inputs>
+      <Outputs>
+        <Output value="Mesh" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="2d73391d-7c61-4d92-a908-e826f7386e2a" start_index="0" end="220a44ac-34aa-45ee-997b-af0b5eedf3ee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="358fc10f-e3f2-456c-98fc-b70870f1984e" start_index="0" end="940e4ddd-a5f9-46ed-958c-cf4742c18e1f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="220a44ac-34aa-45ee-997b-af0b5eedf3ee" start_index="0" end="1236a2a4-5394-4031-9a9f-2f8288f3a828" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="220a44ac-34aa-45ee-997b-af0b5eedf3ee" start_index="1" end="a16d4d59-a570-4bb2-9d93-330943e1849f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="220a44ac-34aa-45ee-997b-af0b5eedf3ee" start_index="2" end="f49f3de3-ecff-4e61-bbb3-a254bfda7993" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="220a44ac-34aa-45ee-997b-af0b5eedf3ee" start_index="3" end="d2cbc1b8-a2c0-47bb-81d6-e2667ac739a2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="940e4ddd-a5f9-46ed-958c-cf4742c18e1f" start_index="0" end="220a44ac-34aa-45ee-997b-af0b5eedf3ee" end_index="1" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Based on an idea of Marcello Sgambelluri" x="734.621004640937" y="206.685364326047" />
+  </Notes>
+</Workspace>

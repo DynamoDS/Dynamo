@@ -1,0 +1,27 @@
+<Workspace Version="0.6.3.5262" X="-20" Y="150" zoom="1" Description="Returns the colour teal." Category="CAAD_RWTH.Colours" Name="Teal" ID="42a1639a-7e5d-4a2b-9b4b-08ba9916f008">
+  <Elements>
+    <Dynamo.Nodes.Color type="Dynamo.Nodes.Color" guid="fbdea8a7-70bb-44f2-bafd-77dce48e02a0" nickname="Color" x="372.142857142857" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+      <PortInfo index="3" default="True" />
+    </Dynamo.Nodes.Color>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="a6dccbfc-5773-4988-9162-c690a77d2057" nickname="Number" x="248" y="1.14285714285722" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="d6c98772-88dc-4dfc-8106-d8ad5fe3fcb1" nickname="Output" x="484" y="-1.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="0,128,128" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="f08b5ed7-576e-464a-944c-11d68314f3fe" nickname="Number" x="234" y="65.1428571428572" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="128" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="fbdea8a7-70bb-44f2-bafd-77dce48e02a0" start_index="0" end="d6c98772-88dc-4dfc-8106-d8ad5fe3fcb1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a6dccbfc-5773-4988-9162-c690a77d2057" start_index="0" end="fbdea8a7-70bb-44f2-bafd-77dce48e02a0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a6dccbfc-5773-4988-9162-c690a77d2057" start_index="0" end="fbdea8a7-70bb-44f2-bafd-77dce48e02a0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f08b5ed7-576e-464a-944c-11d68314f3fe" start_index="0" end="fbdea8a7-70bb-44f2-bafd-77dce48e02a0" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f08b5ed7-576e-464a-944c-11d68314f3fe" start_index="0" end="fbdea8a7-70bb-44f2-bafd-77dce48e02a0" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

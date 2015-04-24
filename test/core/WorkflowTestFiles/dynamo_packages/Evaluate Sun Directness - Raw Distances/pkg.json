@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Evaluate Sun Directness - Raw Distances","version":"0.1.0","description":"CEE220C Assignment 4","group":"","keywords":null,"dependencies":[],"license":"MIT","contents":"Evaluate Sun Directness - Raw Distances - Returns values from 0 to 1 based on orientation relative to sun path","engine_version":"0.6.2.29585","engine_metadata":"","engine":"dynamo"}

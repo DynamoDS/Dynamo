@@ -1,0 +1,49 @@
+<Workspace Version="0.6.3.22045" X="39.9702529161423" Y="294.485907063219" zoom="0.884902504596397" Description="Transform a slab shape based on a list of XYZs. PLEASE NOTE: Will reset any previous edits on the slab shape. May likely need to be used in conjunction with a Transaction node." Category="CAAD_RWTH.Revit.Roof &amp; Floor" Name="Slab Shape By XYZs" ID="d145e1db-d069-452f-b46d-7ad9b0fd906d">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="753cd253-79a4-4c4b-ab10-aee58856bc74" nickname="Input" x="106.240392432096" y="107.774198953002" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZs" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="f6da18fc-3327-4d53-9baf-51ebf53e264a" nickname="Turn Into List" x="226.510520823424" y="108.04392027618" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8391a372-b113-4e1a-b6ea-aa1f0875826c" nickname="Output" x="685.792922711035" y="137.792260481685" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Floor/Roof" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" nickname="Python Script With Variable Number of Inputs" x="387.272727272727" y="138.636363636364" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+xyzs = IN0
+slabshape = IN1
+successlist = list()
+faillist = list()
+
+slabshape.SlabShapeEditor.ResetSlabShape()
+for item in xyzs:
+	slabshape.SlabShapeEditor.DrawPoint(item)
+
+OUT = slabshape</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="386d7dbc-4d19-4934-b5e2-d1bfa63d2158" nickname="Input" x="231.42472596343" y="192.813599833415" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Floor/Roof" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="753cd253-79a4-4c4b-ab10-aee58856bc74" start_index="0" end="f6da18fc-3327-4d53-9baf-51ebf53e264a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f6da18fc-3327-4d53-9baf-51ebf53e264a" start_index="0" end="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" start_index="0" end="8391a372-b113-4e1a-b6ea-aa1f0875826c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="386d7dbc-4d19-4934-b5e2-d1bfa63d2158" start_index="0" end="abe578e4-b2e7-4fbd-a9a7-f088f5d07c8f" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,47 @@
+<Workspace Version="0.6.3.7375" X="140.445238095238" Y="66.9928571428571" zoom="1.1" Description="Gets all family symbols of a given category in the model  (does *not *work for system families)" Category="CAAD_RWTH.Revit" Name="Get Family Symbols From Family" ID="3b0ac515-3992-4626-916a-66bc8f75b61e">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="84e462d7-c7a7-49cf-a2c6-87c8dc290653" nickname="Input" x="-72.7272727272726" y="198.4" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Family/ies" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="15aaa15b-b989-4b77-8235-e1fdc663da9f" nickname="Turn Into List" x="128.090909090909" y="198.218181818182" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="e72cc930-7abf-411f-b378-d51ad9ffce1e" nickname="Output" x="593.337662337662" y="137.893506493507" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="bf9408de-5a6a-4756-9213-58a6ad2d9309" nickname="Revit Document" x="134.545454545454" y="105" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="25e0b71b-c16b-41df-823d-280b24298aaf" nickname="Python Script With Variable Number of Inputs" x="285.309523809524" y="139.714285714286" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+fams = IN1
+
+elementlist = list()
+for item in fams:
+	famfilter = FamilySymbolFilter(item.Id)
+	collector = FilteredElementCollector(doc)
+	collector.WherePasses(famfilter)
+	elementlist.append(collector.ToElements())
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="84e462d7-c7a7-49cf-a2c6-87c8dc290653" start_index="0" end="15aaa15b-b989-4b77-8235-e1fdc663da9f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="15aaa15b-b989-4b77-8235-e1fdc663da9f" start_index="0" end="25e0b71b-c16b-41df-823d-280b24298aaf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bf9408de-5a6a-4756-9213-58a6ad2d9309" start_index="0" end="25e0b71b-c16b-41df-823d-280b24298aaf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="25e0b71b-c16b-41df-823d-280b24298aaf" start_index="0" end="e72cc930-7abf-411f-b378-d51ad9ffce1e" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

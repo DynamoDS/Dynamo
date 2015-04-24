@@ -1,0 +1,97 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="Query a MySQL Database Server" Category="Input/Output.File" Name="Slingshot! MySQL Query" ID="c8d23932-c860-4cf8-8f3c-40c52806032a">
+  <Elements>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="cf62de25-32f8-4711-94d7-0a65db760604" nickname="List" x="250" y="0.881850175967884" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+      <Input name="index2" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="f64c55ef-fa2a-404c-906a-b0d7277e536a" nickname="Python Script" x="424.853695324284" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Slingshot! for Dynamo
+#An Open Source project by Nathan Miller
+#http://TheProvingGround.org
+
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+import System
+clr.AddReference('System.Data')
+from System import Data
+from System.Data import DataSet
+from System.Data import DataTable
+
+#Reference to System.Data.SQLite library
+clr.AddReference('MySQL.Data.dll')
+from MySql import *
+import MySql
+
+#The input to this node will be stored in the IN variable.
+cs = IN[0]
+connect = IN[1]
+query = IN[2]
+
+status = []
+result = []
+
+#SQLite Connection
+SQLConnect = MySql.Data.MySqlClient.MySqlConnection(cs)
+SQLConnect.Open()
+status.append(SQLConnect.State.ToString())
+
+#SQLite Query
+SQLquery = MySql.Data.MySqlClient.MySqlDataAdapter(query, SQLConnect)
+status.append(query)
+
+#Fill DataSet
+SQLDataset = System.Data.DataSet()
+SQLquery.Fill(SQLDataset,'result')
+
+#Close Connection
+SQLConnect.Close()
+status.append(SQLConnect.State.ToString())
+
+#Iterate through Datatable
+SQLDatatable = SQLDataset.Tables[0]
+for i in range(0,SQLDatatable.Columns.Count):
+	row = []
+	for j in range(0,SQLDatatable.Rows.Count):
+		value = SQLDatatable.Rows[j][i]
+		row.append(value)
+	result.append(row)
+
+#Assign your output to the OUT variable
+OUT = result</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="848b95b7-0ccc-4cbe-a06d-832f79831e6f" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ConnectionString" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3f9e609f-8a41-41e2-99af-9a2f8b8f19c1" nickname="Input" x="0" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Connect" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="f95db885-3ca9-4c34-a3ea-9a25fb47c1d9" nickname="Input" x="13" y="240" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Query" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0bc9e037-5353-4da1-b680-5c836df379bf" nickname="Output" x="605.853695324284" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="OUT" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="cf62de25-32f8-4711-94d7-0a65db760604" start_index="0" end="f64c55ef-fa2a-404c-906a-b0d7277e536a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f64c55ef-fa2a-404c-906a-b0d7277e536a" start_index="0" end="0bc9e037-5353-4da1-b680-5c836df379bf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="848b95b7-0ccc-4cbe-a06d-832f79831e6f" start_index="0" end="cf62de25-32f8-4711-94d7-0a65db760604" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3f9e609f-8a41-41e2-99af-9a2f8b8f19c1" start_index="0" end="cf62de25-32f8-4711-94d7-0a65db760604" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f95db885-3ca9-4c34-a3ea-9a25fb47c1d9" start_index="0" end="cf62de25-32f8-4711-94d7-0a65db760604" end_index="2" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

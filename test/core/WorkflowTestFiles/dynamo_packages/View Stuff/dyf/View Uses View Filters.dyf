@@ -1,0 +1,71 @@
+<Workspace Version="0.6.3.5260" X="-322.04249084249" Y="128.253266178265" zoom="1.1" Description="Checks if a given view has any view filters applied to it." Category="CAAD_RWTH.Revit.Views" Name="View Uses View Filters" ID="9bd2cce4-e9c7-4cfa-a19d-59837d2a9eea">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" nickname="Turn Into List" x="447.5" y="127.75854031026" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4d7090a5-55aa-4d07-aa91-3d027092bbd0" nickname="Input" x="322.5" y="128.75" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="View(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="7a99c4da-d79e-4fa4-9b6a-640fdaf8a4a1" nickname="Output" x="1097.83191808192" y="127.067016317016" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="436bfe0a-8565-4b18-9def-41d090d1a5cd" nickname="Return List Or Single Value" x="896.856809856808" y="127.951576201577" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="37e6abb0-0df1-43a6-87c4-15487d40a297" nickname="Python Script With Variable Number of Inputs" x="602.7659007659" y="209.315212565214" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN0
+views = IN1
+elementlist = list()
+
+collector = FilteredElementCollector(doc)
+filters = collector.OfClass(FilterElement).ToElements()
+
+for view in views:
+	try:
+		thisfilter = False
+		for filter in filters:
+			if view.IsFilterApplied(filter.Id):
+				thisfilter = True
+		if thisfilter:
+			elementlist.append(1)
+		else:
+			elementlist.append(0)
+	except:
+		elementlist.append(0)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="90340e4a-5c53-4ad4-a9f2-6f76befb0441" nickname="Revit Document" x="456.402264402264" y="210.224303474305" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" start_index="0" end="436bfe0a-8565-4b18-9def-41d090d1a5cd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" start_index="0" end="37e6abb0-0df1-43a6-87c4-15487d40a297" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4d7090a5-55aa-4d07-aa91-3d027092bbd0" start_index="0" end="e8f2edca-cf74-4cf1-aa9c-4058f9fd139e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="436bfe0a-8565-4b18-9def-41d090d1a5cd" start_index="0" end="7a99c4da-d79e-4fa4-9b6a-640fdaf8a4a1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="37e6abb0-0df1-43a6-87c4-15487d40a297" start_index="0" end="436bfe0a-8565-4b18-9def-41d090d1a5cd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="90340e4a-5c53-4ad4-a9f2-6f76befb0441" start_index="0" end="37e6abb0-0df1-43a6-87c4-15487d40a297" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,28 @@
+<Workspace Version="0.6.3.5291" X="-40" Y="223" zoom="1" Description="Lists all phases in the active document" Category="CAAD_RWTH.Revit.Phases" Name="List Phases" ID="4131ba2c-da9b-40bd-9ce1-b74a9ad5b5da">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="e874cbdc-e1a9-4250-a29f-6462ee786257" nickname="Python Script" x="399.632132490049" y="-0.121235596246407" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN
+elementlist = list()
+
+for phase in doc.Phases:
+	elementlist.append(phase)
+
+OUT = elementlist</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="2cf85494-7d7f-4629-8386-354662c923ff" nickname="Revit Document" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="90287dab-a9bc-4442-822f-66ce34f17eff" nickname="Output" x="553.632132490049" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Phases" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e874cbdc-e1a9-4250-a29f-6462ee786257" start_index="0" end="90287dab-a9bc-4442-822f-66ce34f17eff" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2cf85494-7d7f-4629-8386-354662c923ff" start_index="0" end="e874cbdc-e1a9-4250-a29f-6462ee786257" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

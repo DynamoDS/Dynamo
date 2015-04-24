@@ -1,0 +1,46 @@
+<Workspace Version="0.6.2.29585" X="-249" Y="63" zoom="1.1" Description="Gets all linked and imported files in the document" Category="CAAD_RWTH.Revit.Project" Name="Get Links And Imports" ID="6951ad79-d085-4850-bd0b-acc7153a71b1">
+  <Elements>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8391a372-b113-4e1a-b6ea-aa1f0875826c" nickname="Output" x="739.727272727273" y="69.7636363636358" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="links" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="9360058e-8acd-40b3-8a55-a4891ad83340" nickname="Python Script" x="378.680511995134" y="103.506463131962" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+doc = IN
+
+# need to learn how to implement LINQ here...
+collector = FilteredElementCollector(doc)
+impinst = collector.OfClass(ImportInstance).ToElements()
+linkedlist = list()
+importlist = list()
+for item in impinst:
+	if item.IsLinked:
+		linkedlist.append(item)
+	else:
+		importlist.append(item)
+OUT = (linkedlist,importlist)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.RevitDocument type="Dynamo.Nodes.RevitDocument" guid="24028384-e05f-4424-adc4-3a305321377d" nickname="Revit Document" x="234.545454545454" y="105" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="01e92cd2-046d-40da-8c97-d9584ef5d826" nickname="Output" x="739.727272727273" y="154.30909090909" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="imports" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="95e70714-4dfd-4cea-b47e-431e5c610c7c" nickname="Get from List" x="542.727272727273" y="155" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="e476edba-26cb-4cfa-88bb-f2262fecf35b" nickname="Formula" x="420.909090909091" y="186.818181818182" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="878369cb-ae62-41e7-a77c-9f03f291c364" nickname="First of List" x="542.727272727273" y="71.3636363636363" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9360058e-8acd-40b3-8a55-a4891ad83340" start_index="0" end="95e70714-4dfd-4cea-b47e-431e5c610c7c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9360058e-8acd-40b3-8a55-a4891ad83340" start_index="0" end="878369cb-ae62-41e7-a77c-9f03f291c364" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="24028384-e05f-4424-adc4-3a305321377d" start_index="0" end="9360058e-8acd-40b3-8a55-a4891ad83340" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="95e70714-4dfd-4cea-b47e-431e5c610c7c" start_index="0" end="01e92cd2-046d-40da-8c97-d9584ef5d826" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e476edba-26cb-4cfa-88bb-f2262fecf35b" start_index="0" end="95e70714-4dfd-4cea-b47e-431e5c610c7c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="878369cb-ae62-41e7-a77c-9f03f291c364" start_index="0" end="8391a372-b113-4e1a-b6ea-aa1f0875826c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

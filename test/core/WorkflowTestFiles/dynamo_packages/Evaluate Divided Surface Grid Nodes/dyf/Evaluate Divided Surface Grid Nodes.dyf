@@ -1,0 +1,112 @@
+<Workspace Version="0.6.3.7375" X="-283.135662236028" Y="185.221840046544" zoom="1.18529255198324" Description="Returns UV and XYZ coordinates as well as surface normals for all grid nodes of a given divided surface. Also returns the underlying face and the UV count. PLEASE NOTE: Does not run in Revit version prior to 2014." Category="CAAD_RWTH.Revit.DividedSurfaces" Name="Evaluate Divided Surface Grid Nodes" ID="5238a365-de30-43a9-bd8a-b5ebd79e2fe6">
+  <Elements>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="d763dfda-f93f-4ede-a968-97d7f49dc325" nickname="Get from List" x="633.419199482687" y="157.66504850309" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="cf6868bf-4229-480b-b7bc-98a4836d4cdd" nickname="Get from List" x="628.879871653982" y="-39.4361307006332" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="5720e7f5-fd58-4da9-b9d8-cac02fce7426" nickname="Number" x="459.395667059227" y="167.563345158062" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="3" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="f03728e4-791a-483d-a9de-c93637c1edb0" nickname="Number" x="454.856339230523" y="-29.5378340456613" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="2" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="ddf6a8a8-043d-49a3-a79d-bde63e816cc3" nickname="Get from List" x="634.598916507358" y="57.2829141527419" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c78cde35-7a19-4964-8edc-3344c7933d49" nickname="Number" x="455.856339230523" y="69.3609867506159" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="0a054e2f-5054-4cce-9457-5da72491ae8d" nickname="First of List" x="631.937104767768" y="-123.128747115923" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ec43968a-e4a4-477f-ad44-885bf4705f5f" nickname="Input" x="157.16326948563" y="-162.093795096005" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="DS" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="143b3a89-6e2b-4d8d-9199-5c28819de919" nickname="Output" x="853.937163685999" y="-123.128747115923" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="UVs" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="59b26563-aac4-45dc-9104-06a04e7ae61f" nickname="Output" x="851.059887995413" y="-41.3014018503601" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZs" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0828d98b-883e-45e2-8d5b-e7d423862578" nickname="Output" x="851.059887995413" y="54.6985981496399" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Normals" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="8ecf4aae-6b13-455d-b466-50671b7dfcb0" nickname="Output" x="853.059887995413" y="156.69859814964" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Face" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="29a7ad69-a341-4447-875c-26029401bc0c" nickname="Get from List" x="632.419199482687" y="252.66504850309" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="23118c04-c888-4624-a0af-ce06532b1d57" nickname="Output" x="852.059887995413" y="251.69859814964" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="U" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="c0cee15f-396b-4c18-be3e-dac23e868321" nickname="Number" x="458.395667059227" y="262.563345158062" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="4" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="539a4a7a-7065-4665-a03a-c1b22e8f151d" nickname="Get from List" x="633.419199482687" y="354.66504850309" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="c6f620ed-270e-4817-af69-c2bee799b1a1" nickname="Output" x="853.059887995413" y="353.69859814964" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="V" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="01107eb1-c9d9-402f-badb-6c385d6f6ac1" nickname="Number" x="459.395667059227" y="364.563345158062" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="d6e37e42-1fba-4ff6-be85-1dbe3c090c15" nickname="Input" x="21.6071803425996" y="-87.5143836482877" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="include overhanging nodes?" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="8bbe62d8-11c5-48b3-bbf2-d19ea282609b" nickname="Python Script With Variable Number of Inputs" x="268.533803783055" y="-134.638428466417" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+ds = IN0
+overhanging = int(IN1)
+uvlist = list()
+uvnormals = list()
+uvxyzs = list()
+
+face = ds.Host.GetGeometryObjectFromReference(ds.HostReference)
+gn = GridNode()
+if overhanging == 1:
+	i = 0
+	j = 1
+else:
+	i = 1
+	j = 3
+u = i
+while (u &lt; (ds.NumberOfUGridlines-i)):
+	gn.UIndex = u
+	v = i
+	vlist = list()
+	vnormals = list()
+	vxyzs = list()
+	while (v &lt; (ds.NumberOfVGridlines-i)):
+		gn.VIndex = v
+		uv = ds.GetGridNodeUV(gn)
+ 		vlist.append(uv)
+ 		vnormals.append(face.ComputeNormal(uv))
+ 		vxyzs.append(face.Evaluate(uv))
+ 		v += 1
+ 	uvlist.append(vlist)
+ 	uvnormals.append(vnormals)
+ 	uvxyzs.append(vxyzs)
+ 	u += 1
+OUT = (uvlist,uvnormals,uvxyzs,face,(ds.NumberOfUGridlines-j),(ds.NumberOfVGridlines-j))</Script>
+    </Dynamo.Nodes.PythonVarIn>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="d763dfda-f93f-4ede-a968-97d7f49dc325" start_index="0" end="8ecf4aae-6b13-455d-b466-50671b7dfcb0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cf6868bf-4229-480b-b7bc-98a4836d4cdd" start_index="0" end="59b26563-aac4-45dc-9104-06a04e7ae61f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5720e7f5-fd58-4da9-b9d8-cac02fce7426" start_index="0" end="d763dfda-f93f-4ede-a968-97d7f49dc325" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f03728e4-791a-483d-a9de-c93637c1edb0" start_index="0" end="cf6868bf-4229-480b-b7bc-98a4836d4cdd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ddf6a8a8-043d-49a3-a79d-bde63e816cc3" start_index="0" end="0828d98b-883e-45e2-8d5b-e7d423862578" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c78cde35-7a19-4964-8edc-3344c7933d49" start_index="0" end="ddf6a8a8-043d-49a3-a79d-bde63e816cc3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0a054e2f-5054-4cce-9457-5da72491ae8d" start_index="0" end="143b3a89-6e2b-4d8d-9199-5c28819de919" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ec43968a-e4a4-477f-ad44-885bf4705f5f" start_index="0" end="8bbe62d8-11c5-48b3-bbf2-d19ea282609b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="29a7ad69-a341-4447-875c-26029401bc0c" start_index="0" end="23118c04-c888-4624-a0af-ce06532b1d57" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0cee15f-396b-4c18-be3e-dac23e868321" start_index="0" end="29a7ad69-a341-4447-875c-26029401bc0c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="539a4a7a-7065-4665-a03a-c1b22e8f151d" start_index="0" end="c6f620ed-270e-4817-af69-c2bee799b1a1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="01107eb1-c9d9-402f-badb-6c385d6f6ac1" start_index="0" end="539a4a7a-7065-4665-a03a-c1b22e8f151d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d6e37e42-1fba-4ff6-be85-1dbe3c090c15" start_index="0" end="8bbe62d8-11c5-48b3-bbf2-d19ea282609b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8bbe62d8-11c5-48b3-bbf2-d19ea282609b" start_index="0" end="0a054e2f-5054-4cce-9457-5da72491ae8d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8bbe62d8-11c5-48b3-bbf2-d19ea282609b" start_index="0" end="cf6868bf-4229-480b-b7bc-98a4836d4cdd" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8bbe62d8-11c5-48b3-bbf2-d19ea282609b" start_index="0" end="ddf6a8a8-043d-49a3-a79d-bde63e816cc3" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8bbe62d8-11c5-48b3-bbf2-d19ea282609b" start_index="0" end="d763dfda-f93f-4ede-a968-97d7f49dc325" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8bbe62d8-11c5-48b3-bbf2-d19ea282609b" start_index="0" end="29a7ad69-a341-4447-875c-26029401bc0c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8bbe62d8-11c5-48b3-bbf2-d19ea282609b" start_index="0" end="539a4a7a-7065-4665-a03a-c1b22e8f151d" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

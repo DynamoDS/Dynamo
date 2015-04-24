@@ -1,0 +1,24 @@
+<Workspace Version="0.6.2.279" X="53.2" Y="29.104" zoom="0.9" Description="Creates a sequence of N values between 0 and 1 driven by a function" Category="CAAD_RWTH.Lists" Name="Normalized Sequence by Function" ID="f584aeed-f101-459d-80d1-174c09579060">
+  <Elements>
+    <Dynamo.Nodes.Map type="Dynamo.Nodes.Map" guid="73d90c59-2e21-4238-aa73-ec200f36e278" nickname="Map" x="312.593228546607" y="11.1111111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="8c11cd7b-13a9-4e18-ad4b-b6e77a90e083" nickname="Input" x="12.2222222222223" y="11.1111111111111" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="f(x)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a97f42db-ee83-47af-9c38-0b4ea286c745" nickname="Input" x="12.2222222222223" y="83.3333333333331" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="N" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4527d873-f5aa-4792-bae0-ff6ea8e4f1fc" nickname="Output" x="504.037672991052" y="12.2222222222221" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Sequence" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="4f5f85a8-9931-4746-b6cd-11b2b748a71d" nickname="Number" x="145.730068339999" y="83.0660952380957" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <System.Double value="0..1..#N" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="73d90c59-2e21-4238-aa73-ec200f36e278" start_index="0" end="4527d873-f5aa-4792-bae0-ff6ea8e4f1fc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8c11cd7b-13a9-4e18-ad4b-b6e77a90e083" start_index="0" end="73d90c59-2e21-4238-aa73-ec200f36e278" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a97f42db-ee83-47af-9c38-0b4ea286c745" start_index="0" end="4f5f85a8-9931-4746-b6cd-11b2b748a71d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4f5f85a8-9931-4746-b6cd-11b2b748a71d" start_index="0" end="73d90c59-2e21-4238-aa73-ec200f36e278" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

@@ -1,0 +1,18 @@
+<Workspace Version="0.6.3.5260" X="0" Y="0" zoom="1" Description="Converts feet into millimeters" Category="CAAD_RWTH.Conversion.Length" Name="Feet To Millimeters" ID="b9ae969d-ed22-4f0b-9a19-0f51354677aa">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="bbe5acd9-8701-463f-93ae-d07509a2248a" nickname="Input" x="18.5" y="40.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="ft" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="85ace49f-6678-45cd-80c0-4f414f0f4aeb" nickname="Output" x="325.5" y="38.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="mm" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="f7125172-094f-48e8-9fa8-c24f85c8c3d0" nickname="Formula" x="129.5" y="38.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>feet*0.3048*1000</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="bbe5acd9-8701-463f-93ae-d07509a2248a" start_index="0" end="f7125172-094f-48e8-9fa8-c24f85c8c3d0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f7125172-094f-48e8-9fa8-c24f85c8c3d0" start_index="0" end="85ace49f-6678-45cd-80c0-4f414f0f4aeb" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

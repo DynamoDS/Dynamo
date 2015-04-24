@@ -1,0 +1,75 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="Converts XYZ objects to strings." Category="LunchBox.Format" Name="LunchBox XYZ to String" ID="5f229687-2ca6-4cff-9a0d-b9933b48c249">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="68382b6e-af78-4036-85d4-122951688929" nickname="Python Script" x="352.177277355847" y="23" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+
+#The input to this node will be stored in the IN variable.
+ptslist = IN
+
+ptsarr = []
+
+#if the input is an array
+if hasattr(ptslist, "__iter__"):
+
+	#if the input is a nested array
+	if hasattr(ptslist[0], "__iter__"):
+		for i in range(0, len(ptslist)):
+			ptstr = ptslist[i]
+			pts = []
+			for j in range(0,len(ptstr)):
+				pt = ptstr[j]
+				x = str(pt.X)
+				y = str(pt.Y)
+				z = str(pt.Z)
+				pt = x + ',' + y + ',' + z
+				pts.append(pt)
+			ptsarr.append(pts)
+	else:
+		for i in range(0,len(ptslist)):
+		
+			pt = ptslist[i]
+			x = str(pt.X)
+			y = str(pt.Y)
+			z = str(pt.Z)
+			pt = x + ',' + y + ',' + z
+			ptsarr.append(pt)
+else:
+	pt = ptslist
+	x = str(pt.X)
+	y = str(pt.Y)
+	z = str(pt.Z)
+	pt = x + ',' + y + ',' + z
+	ptsarr.append(pt)
+
+#Assign your output to the OUT variable
+OUT = ptsarr</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="6e5bce44-37f8-4152-a11a-e379703aba99" nickname="Input" x="229" y="27" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="640e4f20-8283-4880-b18f-75d2f60977c8" nickname="Output" x="533.177277355847" y="23" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="PointString" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="68382b6e-af78-4036-85d4-122951688929" start_index="0" end="640e4f20-8283-4880-b18f-75d2f60977c8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6e5bce44-37f8-4152-a11a-e379703aba99" start_index="0" end="68382b6e-af78-4036-85d4-122951688929" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

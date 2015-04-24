@@ -1,0 +1,51 @@
+<Workspace Version="0.6.3.7993" X="86" Y="271" zoom="1" Description="Create N views from Active view type" Category="JBE" Name="Create N views from Active view type" ID="dd31c6db-d149-4236-aa2c-7c97244ff237">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="faec76b0-ff60-4916-871d-bd344f77833e" nickname="Python Script With Variable Number of Inputs" x="495.31054801377" y="56.031217595727" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN0...INX variable(s).
+doc = __doc__
+
+view = IN0
+number = IN1
+viewlist = []
+typeid=View.GetTypeId(view)
+count = 0
+while (count &lt; number):
+	b=View3D.CreateIsometric(doc, typeid)
+	viewlist.append(b)
+	count = count + 1
+
+#Assign your output to the OUT variable
+OUT = viewlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="60e1bb47-dfc9-4668-9da1-8d34229a7c83" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="View" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="5bd4cc6d-81d5-445c-bc3c-b15c7fc57a4e" nickname="Output" x="880" y="55.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Views" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fc9f6222-4241-40e5-b127-d5c2f7f649bb" nickname="Input" x="-1" y="100" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value=" N Number" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="faec76b0-ff60-4916-871d-bd344f77833e" start_index="0" end="5bd4cc6d-81d5-445c-bc3c-b15c7fc57a4e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="60e1bb47-dfc9-4668-9da1-8d34229a7c83" start_index="0" end="faec76b0-ff60-4916-871d-bd344f77833e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fc9f6222-4241-40e5-b127-d5c2f7f649bb" start_index="0" end="faec76b0-ff60-4916-871d-bd344f77833e" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

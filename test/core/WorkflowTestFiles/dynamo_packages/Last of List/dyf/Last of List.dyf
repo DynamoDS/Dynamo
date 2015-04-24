@@ -1,0 +1,39 @@
+<Workspace Version="0.7.0.26505" X="-14.762730224321" Y="135.436197717436" zoom="0.9" Description="Gets the last element of a list." Category="Core.Lists" Name="Last of List" ID="6acb83b4-04aa-4c5b-a241-1f64536fe96c">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="51a51895-a59c-4150-93de-4d7bdb5f58cc" nickname="Input" x="51.3359172077921" y="125.56619264069" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Rest type="Dynamo.Nodes.Rest" guid="2e6daa25-7065-435e-b852-ff14e2b3167e" nickname="Rest of List" x="240.847478027024" y="128.213484017664" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="0b7f768c-8871-4f97-8a65-f0e648b514dd" nickname="First of List" x="239.736366915913" y="238.213484017664" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="7361e755-6e31-4637-ab81-bb678ea357f8" nickname="Is Empty List?" x="461.958589138134" y="121.546817350998" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e1ef4e01-d4e7-4492-beda-88ce8837e07c" nickname="Last of List" x="467.514144693691" y="311.546817350997" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="6acb83b4-04aa-4c5b-a241-1f64536fe96c" />
+      <Name value="Last of List" />
+      <Description value="Gets the last element of a list." />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="last" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="12627dd1-67fb-4b51-8dd8-5ae11f17b3f7" nickname="Output" x="941.958589138134" y="204.880150684331" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="last" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="ee1b565c-9ddb-4a74-99b9-d92dee54b261" nickname="If" x="733.069700249246" y="203.76903957322" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="51a51895-a59c-4150-93de-4d7bdb5f58cc" start_index="0" end="2e6daa25-7065-435e-b852-ff14e2b3167e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="51a51895-a59c-4150-93de-4d7bdb5f58cc" start_index="0" end="0b7f768c-8871-4f97-8a65-f0e648b514dd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2e6daa25-7065-435e-b852-ff14e2b3167e" start_index="0" end="7361e755-6e31-4637-ab81-bb678ea357f8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2e6daa25-7065-435e-b852-ff14e2b3167e" start_index="0" end="e1ef4e01-d4e7-4492-beda-88ce8837e07c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0b7f768c-8871-4f97-8a65-f0e648b514dd" start_index="0" end="ee1b565c-9ddb-4a74-99b9-d92dee54b261" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7361e755-6e31-4637-ab81-bb678ea357f8" start_index="0" end="ee1b565c-9ddb-4a74-99b9-d92dee54b261" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e1ef4e01-d4e7-4492-beda-88ce8837e07c" start_index="0" end="ee1b565c-9ddb-4a74-99b9-d92dee54b261" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ee1b565c-9ddb-4a74-99b9-d92dee54b261" start_index="0" end="12627dd1-67fb-4b51-8dd8-5ae11f17b3f7" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

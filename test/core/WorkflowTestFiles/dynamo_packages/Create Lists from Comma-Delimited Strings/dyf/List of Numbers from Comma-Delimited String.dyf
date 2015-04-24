@@ -1,0 +1,24 @@
+<Workspace Version="0.6.2.29585" X="646.066337379902" Y="189.46814625765" zoom="0.95561177934467" Description="Converts a string of comma-delimited numbers into a list of numbers" Category="Core.Lists.Create" Name="List of Numbers from Comma-Delimited String" ID="c9bd80b2-0d47-404c-855b-d45cb97ba5e1">
+  <Elements>
+    <Dynamo.Nodes.StringInput type="Dynamo.Nodes.StringInput" guid="6c2fc3fc-d2cf-4f58-a0f5-d76366d014e8" nickname="String" x="-521.182560733151" y="83.5431244998699" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.String value="," />
+    </Dynamo.Nodes.StringInput>
+    <Dynamo.Nodes.SplitString type="Dynamo.Nodes.SplitString" guid="b2852d5b-c7d9-4e4b-87bf-b243ec36b471" nickname="Split String" x="-427.019841269841" y="9.5595238095238" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+    </Dynamo.Nodes.SplitString>
+    <Dynamo.Nodes.String2Num type="Dynamo.Nodes.String2Num" guid="1773f32a-1e8c-4ca7-9dea-4a10711f85a2" nickname="String to Number" x="-284.382936507937" y="9.28571428571422" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="bbe8d461-e37c-45bd-8afc-f55b1bef4e47" nickname="Input" x="-694.963180291912" y="10.6445655779073" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Comma-delimited list of numbers" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="6add8cbd-2f21-4c0c-bc1f-538d12bbb09e" nickname="Output" x="-142.721577018837" y="8.86044120008188" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="List" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="6c2fc3fc-d2cf-4f58-a0f5-d76366d014e8" start_index="0" end="b2852d5b-c7d9-4e4b-87bf-b243ec36b471" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b2852d5b-c7d9-4e4b-87bf-b243ec36b471" start_index="0" end="1773f32a-1e8c-4ca7-9dea-4a10711f85a2" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1773f32a-1e8c-4ca7-9dea-4a10711f85a2" start_index="0" end="6add8cbd-2f21-4c0c-bc1f-538d12bbb09e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bbe8d461-e37c-45bd-8afc-f55b1bef4e47" start_index="0" end="b2852d5b-c7d9-4e4b-87bf-b243ec36b471" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

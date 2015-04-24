@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Write CSV String - Seven_Values","version":"0.1.0","description":"Takes in Values and converts to strings, up to 7 inputs","group":"","keywords":null,"dependencies":[],"license":"MIT","contents":"Write CSV String - Seven_Values - Write a CSV string for two data values","engine_version":"0.6.3.7993","engine_metadata":"","engine":"dynamo"}

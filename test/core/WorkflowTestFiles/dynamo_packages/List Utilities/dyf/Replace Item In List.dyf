@@ -1,0 +1,71 @@
+<Workspace Version="0.6.2.31398" X="15" Y="91" zoom="1" Description="Inserts an item into a list at a specific index, replacing the item that was already at that index." Category="Core.Lists" Name="Replace Item In List" ID="a52de7b7-22df-4e0b-a640-4ae282a573c7">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="59d07590-795f-4fdb-a19a-d400a6fa6c68" nickname="Input" x="23" y="19.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="item" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="c1903639-6522-41b3-9a94-d166f9160e13" nickname="Input" x="23" y="103.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3ee2ab00-b33c-4652-9b4f-5ca38b1608a6" nickname="Input" x="23" y="257.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="index" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="c28c807d-4969-403a-b8f7-54def804d719" nickname="If" x="1244" y="0.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="dad58d97-3a3a-4c0f-b7b8-d739f81d7e06" nickname="Is Empty List?" x="801" y="2.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="ea86e118-4e59-458e-b40e-88157e1bebc4" nickname="Empty List" x="1107" y="45.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DeCons type="Dynamo.Nodes.DeCons" guid="cb3a63c9-bf62-4587-a7ad-3114f4d3ed93" nickname="Split List" x="548" y="247.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="c0c54996-06c5-4c13-81ae-f09b702266cc" nickname="If" x="1076" y="178.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="9ecc1b3b-7fe2-4a69-83b6-72f503558657" nickname="Formula" x="875" y="108.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x==0</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="1ed07020-324c-425d-9089-6fa49a8cab6b" nickname="Add to List" x="858" y="199.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.List type="Dynamo.Nodes.List" guid="fce4aab7-ea15-422f-8240-093c0bd51038" nickname="Add to List" x="858" y="304.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="46517422-9877-46a8-b6e7-0cfdf96e261c" nickname="Replace Item At List Index" x="691" y="354.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="a52de7b7-22df-4e0b-a640-4ae282a573c7" />
+      <Name value="Replace Item At List Index" />
+      <Description value="Inserts an item into a list at a specific index, replacing the item that was already at that index." />
+      <Inputs>
+        <Input value="item" />
+        <Input value="list" />
+        <Input value="index" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="30d77b17-187e-4ce7-864b-c883ef297b1d" nickname="Formula" x="459" y="394.5" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>x-1</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="19a7f1e0-5ad9-43e8-af2d-5f924de899ef" nickname="Output" x="1393" y="0.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="59d07590-795f-4fdb-a19a-d400a6fa6c68" start_index="0" end="1ed07020-324c-425d-9089-6fa49a8cab6b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="59d07590-795f-4fdb-a19a-d400a6fa6c68" start_index="0" end="46517422-9877-46a8-b6e7-0cfdf96e261c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c1903639-6522-41b3-9a94-d166f9160e13" start_index="0" end="dad58d97-3a3a-4c0f-b7b8-d739f81d7e06" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c1903639-6522-41b3-9a94-d166f9160e13" start_index="0" end="cb3a63c9-bf62-4587-a7ad-3114f4d3ed93" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3ee2ab00-b33c-4652-9b4f-5ca38b1608a6" start_index="0" end="9ecc1b3b-7fe2-4a69-83b6-72f503558657" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3ee2ab00-b33c-4652-9b4f-5ca38b1608a6" start_index="0" end="30d77b17-187e-4ce7-864b-c883ef297b1d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c28c807d-4969-403a-b8f7-54def804d719" start_index="0" end="19a7f1e0-5ad9-43e8-af2d-5f924de899ef" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dad58d97-3a3a-4c0f-b7b8-d739f81d7e06" start_index="0" end="c28c807d-4969-403a-b8f7-54def804d719" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ea86e118-4e59-458e-b40e-88157e1bebc4" start_index="0" end="c28c807d-4969-403a-b8f7-54def804d719" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cb3a63c9-bf62-4587-a7ad-3114f4d3ed93" start_index="0" end="fce4aab7-ea15-422f-8240-093c0bd51038" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cb3a63c9-bf62-4587-a7ad-3114f4d3ed93" start_index="1" end="1ed07020-324c-425d-9089-6fa49a8cab6b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cb3a63c9-bf62-4587-a7ad-3114f4d3ed93" start_index="1" end="46517422-9877-46a8-b6e7-0cfdf96e261c" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c0c54996-06c5-4c13-81ae-f09b702266cc" start_index="0" end="c28c807d-4969-403a-b8f7-54def804d719" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9ecc1b3b-7fe2-4a69-83b6-72f503558657" start_index="0" end="c0c54996-06c5-4c13-81ae-f09b702266cc" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1ed07020-324c-425d-9089-6fa49a8cab6b" start_index="0" end="c0c54996-06c5-4c13-81ae-f09b702266cc" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fce4aab7-ea15-422f-8240-093c0bd51038" start_index="0" end="c0c54996-06c5-4c13-81ae-f09b702266cc" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="46517422-9877-46a8-b6e7-0cfdf96e261c" start_index="0" end="fce4aab7-ea15-422f-8240-093c0bd51038" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="30d77b17-187e-4ce7-864b-c883ef297b1d" start_index="0" end="46517422-9877-46a8-b6e7-0cfdf96e261c" end_index="2" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="This should really be an error..." x="1063" y="107.5" />
+  </Notes>
+</Workspace>

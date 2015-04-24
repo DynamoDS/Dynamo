@@ -1,0 +1,22 @@
+<Workspace Version="0.6.3.5258" X="39.1199999999999" Y="222.56" zoom="1.1" Description="Checks if an XYZs Z  coordinate is Less Than or Equal to a number" Category="buildz" Name="XYZ Z Less Than or Eq N" ID="6c16544a-e965-442e-adbc-db0254a45a2a">
+  <Elements>
+    <Dynamo.Nodes.XyzGetZ type="Dynamo.Nodes.XyzGetZ" guid="42140690-6b28-4db8-b59b-e35aa1d5542e" nickname="XYZ Z" x="217.272727272727" y="-32.7272727272728" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.LessThanEquals type="Dynamo.Nodes.LessThanEquals" guid="01bfe0a5-ffe8-486a-a232-25e8f8962a9e" nickname="Less Than Or Equal" x="379.230769230769" y="29.5384615384617" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="b943e66b-4f8b-4ce3-a952-76e78f3c0f8a" nickname="Output" x="571.830769230769" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="x≤y" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="da08d323-4ba8-4f87-9764-0572b116c170" nickname="Input" x="61.8909090909089" y="5.30909090909086" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ed3f6d95-e390-4913-a11f-f7396902c4c3" nickname="Input" x="212.436363636364" y="125.309090909091" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="limit" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="42140690-6b28-4db8-b59b-e35aa1d5542e" start_index="0" end="01bfe0a5-ffe8-486a-a232-25e8f8962a9e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="01bfe0a5-ffe8-486a-a232-25e8f8962a9e" start_index="0" end="b943e66b-4f8b-4ce3-a952-76e78f3c0f8a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="da08d323-4ba8-4f87-9764-0572b116c170" start_index="0" end="42140690-6b28-4db8-b59b-e35aa1d5542e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ed3f6d95-e390-4913-a11f-f7396902c4c3" start_index="0" end="01bfe0a5-ffe8-486a-a232-25e8f8962a9e" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

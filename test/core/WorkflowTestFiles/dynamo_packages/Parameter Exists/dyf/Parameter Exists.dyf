@@ -1,0 +1,65 @@
+<Workspace Version="0.6.3.5244" X="77" Y="269" zoom="1" Description="Checks if an element contains a parameter of a given name" Category="CAAD_RWTH.Revit.Properties" Name="Parameter Exists" ID="a4abfd29-b99f-4586-b07c-d865028f7e9e">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="bf64df03-9ffa-46d4-83a0-7e882c1bce2e" nickname="Python Script With Variable Number of Inputs" x="398.75" y="55.625" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+items = IN0
+param = IN1
+elementlist = list()
+for item in items:
+	try:
+		if item.Parameter[param].GetType().Name == 'Parameter':
+			elementlist.append(1)
+		else:
+			elementlist.append(0)
+	except:
+		elementlist.append(0)
+OUT = elementlist</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="89554e43-43c6-4387-a698-f4bcaf05c6d9" nickname="Return List Or Single Value" x="708.75" y="5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="375ad0df-8a3c-491c-97b7-c24dec0a6e3c" nickname="Turn Into List" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="5530f294-d432-4db4-a028-e43a2bdde46f" nickname="Input" x="94" y="76" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="param" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="dfe3171e-3f68-4db2-840a-1b66287a7387" nickname="Input" x="93" y="1" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0f814619-1868-4f19-bd6f-19ce277620b8" nickname="Output" x="944.75" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="bf64df03-9ffa-46d4-83a0-7e882c1bce2e" start_index="0" end="89554e43-43c6-4387-a698-f4bcaf05c6d9" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="89554e43-43c6-4387-a698-f4bcaf05c6d9" start_index="0" end="0f814619-1868-4f19-bd6f-19ce277620b8" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="375ad0df-8a3c-491c-97b7-c24dec0a6e3c" start_index="0" end="89554e43-43c6-4387-a698-f4bcaf05c6d9" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="375ad0df-8a3c-491c-97b7-c24dec0a6e3c" start_index="0" end="bf64df03-9ffa-46d4-83a0-7e882c1bce2e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5530f294-d432-4db4-a028-e43a2bdde46f" start_index="0" end="bf64df03-9ffa-46d4-83a0-7e882c1bce2e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="dfe3171e-3f68-4db2-840a-1b66287a7387" start_index="0" end="375ad0df-8a3c-491c-97b7-c24dec0a6e3c" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

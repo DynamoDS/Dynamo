@@ -1,0 +1,44 @@
+<!--
+Copyright Autodesk, Inc. 2012. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<dynWorkspace X="10" Y="54.2" Name="C*f(dx)" Category="Logic.Math" ID="55ed5d06-66b4-455a-a6d7-bef44619db0b">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="165c9880-4013-41ec-8aab-678afd8755f9" nickname="Variable" x="0" y="20.85">
+      <Symbol value="C" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="50741722-a69a-461e-a507-9b0a5d3b4d2a" nickname="Variable" x="0" y="71.05">
+      <Symbol value="d" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="ff1ad931-dc36-4588-a7ad-3b3fcdcd951f" nickname="Variable" x="0" y="123.05">
+      <Symbol value="f" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="00f79b13-c3c8-4cd1-81da-48aeab26750b" nickname="Variable" x="0" y="175.05">
+      <Symbol value="x" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynMultiplication type="Dynamo.Nodes.dynMultiplication" guid="71c301af-5ff7-49bc-bc04-edc350047fc6" nickname="×" x="648.7" y="21.5000000000001" />
+    <Dynamo.Nodes.dynMultiplication type="Dynamo.Nodes.dynMultiplication" guid="4c0345d6-2c32-45c1-93f3-3d3c7555c14c" nickname="×" x="297.7" y="155.1" />
+    <Dynamo.Nodes.dynApply1 type="Dynamo.Nodes.dynApply1" guid="14e3c83d-c54f-42d8-b5b5-d7acd438c386" nickname="apply" x="417.5" y="89.9">
+      <Input name="arg1" />
+    </Dynamo.Nodes.dynApply1>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Connectors.dynConnector start="165c9880-4013-41ec-8aab-678afd8755f9" start_index="0" end="71c301af-5ff7-49bc-bc04-edc350047fc6" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="50741722-a69a-461e-a507-9b0a5d3b4d2a" start_index="0" end="4c0345d6-2c32-45c1-93f3-3d3c7555c14c" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="ff1ad931-dc36-4588-a7ad-3b3fcdcd951f" start_index="0" end="14e3c83d-c54f-42d8-b5b5-d7acd438c386" end_index="0" portType="0" />
+    <Dynamo.Connectors.dynConnector start="00f79b13-c3c8-4cd1-81da-48aeab26750b" start_index="0" end="4c0345d6-2c32-45c1-93f3-3d3c7555c14c" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="4c0345d6-2c32-45c1-93f3-3d3c7555c14c" start_index="0" end="14e3c83d-c54f-42d8-b5b5-d7acd438c386" end_index="1" portType="0" />
+    <Dynamo.Connectors.dynConnector start="14e3c83d-c54f-42d8-b5b5-d7acd438c386" start_index="0" end="71c301af-5ff7-49bc-bc04-edc350047fc6" end_index="1" portType="0" />
+  </dynConnectors>
+</dynWorkspace>

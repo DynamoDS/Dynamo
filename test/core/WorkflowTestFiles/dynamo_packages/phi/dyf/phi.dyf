@@ -1,0 +1,16 @@
+<Workspace Version="0.7.0.28529" X="252.871771383119" Y="-28.1725309821071" zoom="3.12659003831418" Description="The golden ratio, also known as the divine proportion, golden mean, or golden section, is a number often encountered when taking the ratios of distances in simple geometric figures such as the pentagon, pentagram, decagon and dodecahedron. It is denoted as phi.&#xD;&#xA;&#xD;&#xA;source:&#xD;&#xA;Wolfram - http://mathworld.wolfram.com/GoldenRatio.html" Category="Logic.Math.Constants" Name="phi" ID="ff1070d5-739e-465e-84b3-d85e109e4a94">
+  <Elements>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="3fd974a1-1868-4bc6-9f01-0a09851d523b" nickname="Output" x="194.712541278686" y="202.563478312917" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="phi" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="3624dd98-d332-49a5-8cd1-39cb6cf3a5da" nickname="Formula" x="38.1188672438611" y="200.605743084077" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>(1+sqrt (5))/2</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="3624dd98-d332-49a5-8cd1-39cb6cf3a5da" start_index="0" end="3fd974a1-1868-4bc6-9f01-0a09851d523b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="phi: The golden ratio, also known as the divine proportion, golden mean, or golden section, is a number often encountered when taking the ratios of distances in simple geometric figures such as the pentagon, pentagram, decagon and dodecahedron. It is denoted as phi.&#xD;&#xA;&#xD;&#xA;source:&#xD;&#xA;Wolfram - http://mathworld.wolfram.com/GoldenRatio.html" x="24.6643217893154" y="18.6057430840767" />
+  </Notes>
+</Workspace>

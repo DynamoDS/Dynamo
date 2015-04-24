@@ -1,0 +1,25 @@
+<dynWorkspace X="0" Y="0" zoom="1" Description="Projects an XYZ to the XZ plane, zeroing out its Y coordinate." Category="Create Geometry.Point" Name="Project XYZ To XZ Plane" ID="9d0b1b17-1491-4116-bbaf-2203608209b0">
+  <dynElements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fd369b67-acd9-4fd1-931b-83f3e1a8b627" nickname="Input" x="101" y="139.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="xyz" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Xyz type="Dynamo.Nodes.Xyz" guid="5cd95b13-8235-4711-9b11-93354f3be1f6" nickname="XYZ" x="393" y="139.52" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Xyz>
+    <Dynamo.Nodes.XyzGetX type="Dynamo.Nodes.XyzGetX" guid="9986ef03-0063-4b0c-a114-beb089034565" nickname="XYZ -&gt; X" x="225" y="83.52" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.XyzGetZ type="Dynamo.Nodes.XyzGetZ" guid="d112a96c-e875-4fec-946d-aea6adf7d54e" nickname="XYZ -&gt; Z" x="226" y="182.52" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="80dadb46-c31e-418a-9f68-406fa3cf3db9" nickname="Number" x="110" y="290.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.0" />
+    </Dynamo.Nodes.DoubleInput>
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.ConnectorModel start="fd369b67-acd9-4fd1-931b-83f3e1a8b627" start_index="0" end="9986ef03-0063-4b0c-a114-beb089034565" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd369b67-acd9-4fd1-931b-83f3e1a8b627" start_index="0" end="d112a96c-e875-4fec-946d-aea6adf7d54e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9986ef03-0063-4b0c-a114-beb089034565" start_index="0" end="5cd95b13-8235-4711-9b11-93354f3be1f6" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d112a96c-e875-4fec-946d-aea6adf7d54e" start_index="0" end="5cd95b13-8235-4711-9b11-93354f3be1f6" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="80dadb46-c31e-418a-9f68-406fa3cf3db9" start_index="0" end="5cd95b13-8235-4711-9b11-93354f3be1f6" end_index="1" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"List Intersection","version":"0.0.1","description":"returns a list of elements that are in both lists","group":"JBE","keywords":["list","intersection"],"dependencies":[],"license":"MIT","contents":"List Intersection - returns elements that are in both lists","engine_version":"0.6.3.7993","engine_metadata":"","engine":"dynamo"}

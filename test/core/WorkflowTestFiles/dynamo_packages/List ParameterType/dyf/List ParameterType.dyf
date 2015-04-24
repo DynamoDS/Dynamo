@@ -1,0 +1,22 @@
+<Workspace Version="0.6.3.7993" X="-46.7042080442369" Y="213.69398445419" zoom="0.827702570441194" Description="List all the BuiltInCategories available" Category="CAAD_RWTH.Scripting" Name="List ParameterType" ID="507b592f-81b9-4c4f-ab68-cf3371d9e8fc">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="aa76fbcd-3554-4037-b00a-86e0d094e928" nickname="Python Script" x="301.5" y="-16.1666666666667" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+OUT = dir(ParameterType)</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="963b99eb-01c5-44d5-8219-480a152de21e" nickname="Output" x="484.225875680362" y="-15.7293056412949" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="6863f9d3-f2fc-46d9-a76c-276826ffced0" nickname="Empty List" x="118.924302660615" y="-16.8710863020103" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="aa76fbcd-3554-4037-b00a-86e0d094e928" start_index="0" end="963b99eb-01c5-44d5-8219-480a152de21e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6863f9d3-f2fc-46d9-a76c-276826ffced0" start_index="0" end="aa76fbcd-3554-4037-b00a-86e0d094e928" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

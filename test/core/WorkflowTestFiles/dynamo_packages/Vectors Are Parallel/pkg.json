@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Vectors Are Parallel","version":"0.1.1","description":"Checks if two vectors are parallel to each other","group":"CAAD_RWTH","keywords":["vector","parallel"],"dependencies":[],"license":"MIT","contents":"Vectors Are Parallel - Checks if two vectors are parallel to each other","engine_version":"0.6.3.22045","engine_metadata":"","engine":"dynamo"}

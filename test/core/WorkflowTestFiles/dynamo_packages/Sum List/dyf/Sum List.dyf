@@ -1,0 +1,22 @@
+<dynWorkspace X="102" Y="158" zoom="1" Description="" Category="Logic.Math" Name="Sum List" ID="f189c747-c166-4818-9072-92d6bdb47dbf">
+  <dynElements>
+    <Dynamo.Nodes.dynSymbol type="Dynamo.Nodes.dynSymbol" guid="5be85bc8-511e-4875-bef9-4dbb41145e8a" nickname="Input" x="0" y="94.1288888888889" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="nums" />
+    </Dynamo.Nodes.dynSymbol>
+    <Dynamo.Nodes.dynOutput type="Dynamo.Nodes.dynOutput" guid="07794ff7-9b26-4937-9d31-d26fa1dbc0f3" nickname="Output" x="597.777777777777" y="54.24" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="sum" />
+    </Dynamo.Nodes.dynOutput>
+    <Dynamo.Nodes.dynFold type="Dynamo.Nodes.dynFold" guid="20267ddd-8b7c-49c4-8ef8-444340a2a642" nickname="Reduce" x="465" y="53.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.dynDoubleInput type="Dynamo.Nodes.dynDoubleInput" guid="e4ed6294-6ecc-4609-b25f-ca96863d9646" nickname="Number" x="338" y="161.52" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0.0" />
+    </Dynamo.Nodes.dynDoubleInput>
+    <Dynamo.Nodes.dynAddition type="Dynamo.Nodes.dynAddition" guid="91af835b-3077-4e37-8b6b-7ccfc053a0ab" nickname="Add" x="317" y="8.51999999999998" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+  </dynElements>
+  <dynConnectors>
+    <Dynamo.Models.dynConnectorModel start="5be85bc8-511e-4875-bef9-4dbb41145e8a" start_index="0" end="20267ddd-8b7c-49c4-8ef8-444340a2a642" end_index="2" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="20267ddd-8b7c-49c4-8ef8-444340a2a642" start_index="0" end="07794ff7-9b26-4937-9d31-d26fa1dbc0f3" end_index="0" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="e4ed6294-6ecc-4609-b25f-ca96863d9646" start_index="0" end="20267ddd-8b7c-49c4-8ef8-444340a2a642" end_index="1" portType="0" />
+    <Dynamo.Models.dynConnectorModel start="91af835b-3077-4e37-8b6b-7ccfc053a0ab" start_index="0" end="20267ddd-8b7c-49c4-8ef8-444340a2a642" end_index="0" portType="0" />
+  </dynConnectors>
+  <dynNotes />
+</dynWorkspace>

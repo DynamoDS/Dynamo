@@ -1,0 +1,26 @@
+<Workspace Version="0.6.3.35252" X="0" Y="0" zoom="1" Description="Determines the angle of a triangle based on the law of sines. (Alpha is the angle opposite side A and beta is the angle opposite side B...)" Category="CAAD_RWTH.Math.Formulas" Name="Angle By Law Of Sines" ID="ee83a3f0-fc48-480b-a67e-878db6b14b89">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="a21657fd-ae5c-43bb-90ae-be6618aa714a" nickname="Input" x="21" y="52.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="A" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="fe02a7ec-7959-407a-85ac-bcda448f550a" nickname="Input" x="22" y="126.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="B" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="89af6d23-e41c-42c2-8f8f-c6f1b63b9def" nickname="Input" x="21" y="202.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="beta" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="1deb7f35-1974-446b-89ce-aa33c91368ea" nickname="Output" x="384" y="106.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="alpha" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="380136e9-372d-4ca5-94bc-998c635d6a5b" nickname="Formula" x="148" y="106.3" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>Asin(a/b*Sin(beta))</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a21657fd-ae5c-43bb-90ae-be6618aa714a" start_index="0" end="380136e9-372d-4ca5-94bc-998c635d6a5b" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fe02a7ec-7959-407a-85ac-bcda448f550a" start_index="0" end="380136e9-372d-4ca5-94bc-998c635d6a5b" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="89af6d23-e41c-42c2-8f8f-c6f1b63b9def" start_index="0" end="380136e9-372d-4ca5-94bc-998c635d6a5b" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="380136e9-372d-4ca5-94bc-998c635d6a5b" start_index="0" end="1deb7f35-1974-446b-89ce-aa33c91368ea" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

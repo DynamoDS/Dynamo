@@ -1,0 +1,26 @@
+<Workspace Version="0.6.3.5260" X="0" Y="0" zoom="1" Description="Computes the exterior angle of a given angle." Category="CAAD_RWTH.Math.Formulas" Name="Exterior Angle" ID="d356cef7-8d8b-4444-b557-c5a5804142d3">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="48f1e74f-5c73-4bbc-968a-b4fdf71ec8e6" nickname="Input" x="14" y="85.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="angle" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="b14d9c8b-8f6f-4c9f-93b9-58af988576cd" nickname="Formula" x="130" y="39.3" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>2*Pi-angle</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="60ad9ede-0470-4217-a456-87007a0cf3d4" nickname="Output" x="306" y="38.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="360°-angle" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="45bb7a2b-6597-4c22-b59d-dd58d14536b6" nickname="Output" x="307" y="128.3" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="180°-angle" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="12c8d066-db0d-4654-9ae9-fe2f9e7b5646" nickname="Formula" x="131" y="129.3" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>Pi-angle</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="48f1e74f-5c73-4bbc-968a-b4fdf71ec8e6" start_index="0" end="b14d9c8b-8f6f-4c9f-93b9-58af988576cd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="48f1e74f-5c73-4bbc-968a-b4fdf71ec8e6" start_index="0" end="12c8d066-db0d-4654-9ae9-fe2f9e7b5646" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b14d9c8b-8f6f-4c9f-93b9-58af988576cd" start_index="0" end="60ad9ede-0470-4217-a456-87007a0cf3d4" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="12c8d066-db0d-4654-9ae9-fe2f9e7b5646" start_index="0" end="45bb7a2b-6597-4c22-b59d-dd58d14536b6" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

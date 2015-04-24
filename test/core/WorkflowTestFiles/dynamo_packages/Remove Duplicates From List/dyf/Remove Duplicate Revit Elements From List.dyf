@@ -1,0 +1,77 @@
+<Workspace Version="0.6.3.5291" X="18.4285714285716" Y="91.7142857142857" zoom="1" Description="Removes all duplicates of Revit elements from a given list. (Will also remove any other duplicates from a list...)" Category="CAAD_RWTH.Revit" Name="Remove Duplicate Revit Elements From List" ID="1cf55ec9-9b38-4829-ac5f-2987c5e700a7">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="00d26088-e6dd-4a32-bb4f-422e54fd6480" nickname="Elements to IDs" x="151" y="0.666666666666515" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="45153daa-f672-47f2-898f-f062bcb4e398" />
+      <Name value="Elements to IDs" />
+      <Description value="Gets the ID(s) for a list of Revit elements (or a single element)" />
+      <Inputs>
+        <Input value="Element(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="ID(s)" />
+        <Output value="unmatched" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="e43f2c6c-a224-490a-a793-926b60bf0b7e" nickname="IDs to Elements" x="626.666666666667" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="a4dd8f6e-689f-4998-b8ef-4a04146d12c2" />
+      <Name value="IDs to Elements" />
+      <Description value="Gets the Revit element(s) for a list of IDs (or a single ID)" />
+      <Inputs>
+        <Input value="ID(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="Element(s)" />
+        <Output value="unmatched" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="6e59e2b3-b77f-43a0-b844-62d19649d93f" nickname="Remove Duplicates From List" x="385" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="37c694fc-0d35-4332-9e25-3821184d5838" />
+      <Name value="Remove Duplicates From List" />
+      <Description value="Removes duplicate items from a given list. Will *not* work for Revit elements!" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="cc3b9592-5a17-4037-b214-50062efd1b0b" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="0ac4a069-36d0-4dcd-82af-f797e4d7c7cd" nickname="Output" x="865.666666666667" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="elements" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="3b11f887-26f9-4310-bb8e-6b198835bf69" nickname="Remove Duplicates From List" x="384" y="194" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="37c694fc-0d35-4332-9e25-3821184d5838" />
+      <Name value="Remove Duplicates From List" />
+      <Description value="Removes duplicate items from a given list. Will *not* work for Revit elements!" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.IsEmpty type="Dynamo.Nodes.IsEmpty" guid="1251ebb1-055d-4417-a3a0-43011ac91d54" nickname="Is Empty List?" x="406.571428571428" y="110.805714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="4899aa85-983d-43c0-821f-8ae1b92edb72" nickname="If" x="648.571428571428" y="110.805714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="86a05adf-9746-48ab-8784-2897ff3ce95a" nickname="Output" x="865.571428571428" y="108.805714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="other" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="00d26088-e6dd-4a32-bb4f-422e54fd6480" start_index="0" end="6e59e2b3-b77f-43a0-b844-62d19649d93f" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="00d26088-e6dd-4a32-bb4f-422e54fd6480" start_index="1" end="3b11f887-26f9-4310-bb8e-6b198835bf69" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="00d26088-e6dd-4a32-bb4f-422e54fd6480" start_index="1" end="1251ebb1-055d-4417-a3a0-43011ac91d54" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="00d26088-e6dd-4a32-bb4f-422e54fd6480" start_index="1" end="4899aa85-983d-43c0-821f-8ae1b92edb72" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e43f2c6c-a224-490a-a793-926b60bf0b7e" start_index="0" end="0ac4a069-36d0-4dcd-82af-f797e4d7c7cd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="6e59e2b3-b77f-43a0-b844-62d19649d93f" start_index="0" end="e43f2c6c-a224-490a-a793-926b60bf0b7e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cc3b9592-5a17-4037-b214-50062efd1b0b" start_index="0" end="00d26088-e6dd-4a32-bb4f-422e54fd6480" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3b11f887-26f9-4310-bb8e-6b198835bf69" start_index="0" end="4899aa85-983d-43c0-821f-8ae1b92edb72" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="1251ebb1-055d-4417-a3a0-43011ac91d54" start_index="0" end="4899aa85-983d-43c0-821f-8ae1b92edb72" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4899aa85-983d-43c0-821f-8ae1b92edb72" start_index="0" end="86a05adf-9746-48ab-8784-2897ff3ce95a" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

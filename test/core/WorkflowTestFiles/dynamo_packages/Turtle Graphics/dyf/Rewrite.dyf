@@ -1,0 +1,71 @@
+<Workspace Version="0.7.0.26170" X="14.8777777777777" Y="75.58" zoom="0.7" Description="" Category="Turtle.Internal" Name="Rewrite" ID="d02d359d-267b-47b0-b919-b34c9b66a8c2">
+  <Elements>
+    <Dynamo.Nodes.Conditional type="Dynamo.Nodes.Conditional" guid="f4106b06-e2de-421e-89c4-6b0ff4061a80" nickname="If" x="852" y="76.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.Conditional>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="62239187-e188-4ea6-b245-c4a1a03c294e" nickname="Input" x="11" y="9.79999999999996" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="iterations" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="0740e097-bb70-4ea0-932f-987b0d54c9b1" nickname="Input" x="38" y="96.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="start" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="d3af6b2b-5c63-4946-b27c-ef9434116edd" nickname="Formula" x="706" y="10.8" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>n&lt;=0</FormulaText>
+    </Dynamo.Nodes.Formula>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="7b85934d-677d-43ff-bde6-617700138723" nickname="Rewrite Production" x="335" y="148.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="68b83816-091e-4962-b690-957ea007fa9e" />
+      <Name value="Rewrite Production" />
+      <Description value="Rewrites an L-system production by replacing all variables with their production rule." />
+      <Inputs>
+        <Input value="production" />
+        <Input value="rules" />
+        <Input value="result" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="589e1047-6b25-41f1-a789-a4d22d8cfdec" nickname="Input" x="44" y="326.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="rules" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Empty type="Dynamo.Nodes.Empty" guid="b979e3c3-6f3f-4787-8a72-01879fe367cc" nickname="Empty List" x="130" y="188.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="70a5aa66-2182-4aa0-96ea-151dc8854e2e" nickname="Output" x="1032" y="76.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="production" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="cddc3d37-74a9-45cb-96b9-09d1a3b83e48" nickname="Rewrite" x="645" y="147.8" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="d02d359d-267b-47b0-b919-b34c9b66a8c2" />
+      <Name value="Rewrite" />
+      <Description value="" />
+      <Inputs>
+        <Input value="iterations" />
+        <Input value="start" />
+        <Input value="rules" />
+      </Inputs>
+      <Outputs>
+        <Output value="production" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Formula type="Dynamo.Nodes.Formula" guid="9289f182-f3f4-4389-98b5-64c1702aeec5" nickname="Formula" x="225" y="53.8" isVisible="true" isUpstreamVisible="true" lacing="Longest">
+      <FormulaText>n-1</FormulaText>
+    </Dynamo.Nodes.Formula>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="f4106b06-e2de-421e-89c4-6b0ff4061a80" start_index="0" end="70a5aa66-2182-4aa0-96ea-151dc8854e2e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="62239187-e188-4ea6-b245-c4a1a03c294e" start_index="0" end="d3af6b2b-5c63-4946-b27c-ef9434116edd" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="62239187-e188-4ea6-b245-c4a1a03c294e" start_index="0" end="9289f182-f3f4-4389-98b5-64c1702aeec5" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0740e097-bb70-4ea0-932f-987b0d54c9b1" start_index="0" end="7b85934d-677d-43ff-bde6-617700138723" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0740e097-bb70-4ea0-932f-987b0d54c9b1" start_index="0" end="f4106b06-e2de-421e-89c4-6b0ff4061a80" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d3af6b2b-5c63-4946-b27c-ef9434116edd" start_index="0" end="f4106b06-e2de-421e-89c4-6b0ff4061a80" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7b85934d-677d-43ff-bde6-617700138723" start_index="0" end="cddc3d37-74a9-45cb-96b9-09d1a3b83e48" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="589e1047-6b25-41f1-a789-a4d22d8cfdec" start_index="0" end="7b85934d-677d-43ff-bde6-617700138723" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="589e1047-6b25-41f1-a789-a4d22d8cfdec" start_index="0" end="cddc3d37-74a9-45cb-96b9-09d1a3b83e48" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b979e3c3-6f3f-4787-8a72-01879fe367cc" start_index="0" end="7b85934d-677d-43ff-bde6-617700138723" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="cddc3d37-74a9-45cb-96b9-09d1a3b83e48" start_index="0" end="f4106b06-e2de-421e-89c4-6b0ff4061a80" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="9289f182-f3f4-4389-98b5-64c1702aeec5" start_index="0" end="cddc3d37-74a9-45cb-96b9-09d1a3b83e48" end_index="0" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="If iterations are &lt;= 0, then do nothing." x="597.31746031746" y="96.3142857142857" />
+    <Dynamo.Models.NoteModel text="If iterations are &gt; 0, then perform one rewrite of the production, and recur with one less iteration." x="401.603174603175" y="290.6" />
+  </Notes>
+</Workspace>

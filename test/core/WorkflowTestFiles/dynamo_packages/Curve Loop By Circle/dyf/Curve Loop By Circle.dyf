@@ -1,0 +1,56 @@
+<Workspace Version="0.6.3.22045" X="55.0260628082672" Y="134.579481479919" zoom="0.558504695848861" Description="Creates a curve loop from a circle so that it can be used with other nodes (e.g. sweep)" Category="Geometry.Curve.Create" Name="Curve Loop By Circle" ID="f8a3cd45-c126-4559-926b-fd7b7a70176c">
+  <Elements>
+    <Dynamo.Nodes.ArcCenter type="Dynamo.Nodes.ArcCenter" guid="e984bb53-97d4-447a-9d17-34af654361bf" nickname="Arc by Center, Radius, Parameters" x="284.436627670931" y="122.090830851683" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.ArcCenter type="Dynamo.Nodes.ArcCenter" guid="5cf314cd-55e3-4339-aeca-20f3b50e5958" nickname="Arc by Center, Radius, Parameters" x="284.436627670931" y="263.090830851683" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="b9a8fa67-71aa-4679-9d72-9c5543328786" nickname="Number" x="100.532431654957" y="230.611166142166" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="0" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.Pi type="Dynamo.Nodes.Pi" guid="2dc6cde5-212a-441e-8099-8b186d06c124" nickname="Pi" x="100.532431654957" y="304.91923577942" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.PiTimes2 type="Dynamo.Nodes.PiTimes2" guid="bbf0133e-9e81-414d-99f5-b8e0752e52a0" nickname="2*Pi" x="100.532431654957" y="379.227305416674" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="30ba5aec-47c0-4ce6-95ec-d05525d03e2b" nickname="Input" x="100.532431654957" y="81.9950268676575" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="center" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ebb323f4-8eea-4a1c-b1c2-9aa831944226" nickname="Input" x="100.532431654957" y="156.303096504911" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="radius" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="b610121a-6768-4d93-b5f7-4d0859d67cb3" nickname="List" x="506.446615005868" y="279.579019044952" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.CurveLoop type="Dynamo.Nodes.CurveLoop" guid="3c28a01c-40bb-420e-8b5a-8bb6ec291e84" nickname="Curve Loop" x="1017.2469882891" y="174.284543725111" isVisible="true" isUpstreamVisible="true" lacing="Longest" />
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="4fc0d120-1d76-46f2-a7e2-a6f04321ad6c" nickname="Output" x="1201.7347622224" y="174.284543725111" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="CurveLoop" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="c6520c46-9e40-45e0-bcd1-b323f834a9c0" nickname="List" x="506.446615005868" y="145.514223236485" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.Combine type="Dynamo.Nodes.Combine" guid="b3b8265c-bdc0-461b-8ebf-c9aded14fdee" nickname="Combine" x="826.858679058621" y="174.284543725111" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2" />
+    <Dynamo.Nodes.NewList type="Dynamo.Nodes.NewList" guid="505d1c86-e544-4cd2-aafa-9f7ef14807fe" nickname="List" x="660.701459916711" y="108.923185210858" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Input name="index0" />
+      <Input name="index1" />
+    </Dynamo.Nodes.NewList>
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="b6535fb4-2d09-44b4-ad9a-35815a9fd091" nickname="Flatten Completely" x="676.701459916711" y="201.403101076191" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.FlattenList type="Dynamo.Nodes.FlattenList" guid="d9a9c738-af2a-4f9c-8041-8946412694f1" nickname="Flatten Completely" x="676.701459916711" y="281.905825184114" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e984bb53-97d4-447a-9d17-34af654361bf" start_index="0" end="c6520c46-9e40-45e0-bcd1-b323f834a9c0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5cf314cd-55e3-4339-aeca-20f3b50e5958" start_index="0" end="b610121a-6768-4d93-b5f7-4d0859d67cb3" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b9a8fa67-71aa-4679-9d72-9c5543328786" start_index="0" end="e984bb53-97d4-447a-9d17-34af654361bf" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2dc6cde5-212a-441e-8099-8b186d06c124" start_index="0" end="5cf314cd-55e3-4339-aeca-20f3b50e5958" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="2dc6cde5-212a-441e-8099-8b186d06c124" start_index="0" end="e984bb53-97d4-447a-9d17-34af654361bf" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="bbf0133e-9e81-414d-99f5-b8e0752e52a0" start_index="0" end="5cf314cd-55e3-4339-aeca-20f3b50e5958" end_index="3" portType="0" />
+    <Dynamo.Models.ConnectorModel start="30ba5aec-47c0-4ce6-95ec-d05525d03e2b" start_index="0" end="e984bb53-97d4-447a-9d17-34af654361bf" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="30ba5aec-47c0-4ce6-95ec-d05525d03e2b" start_index="0" end="5cf314cd-55e3-4339-aeca-20f3b50e5958" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ebb323f4-8eea-4a1c-b1c2-9aa831944226" start_index="0" end="e984bb53-97d4-447a-9d17-34af654361bf" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ebb323f4-8eea-4a1c-b1c2-9aa831944226" start_index="0" end="5cf314cd-55e3-4339-aeca-20f3b50e5958" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b610121a-6768-4d93-b5f7-4d0859d67cb3" start_index="0" end="d9a9c738-af2a-4f9c-8041-8946412694f1" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3c28a01c-40bb-420e-8b5a-8bb6ec291e84" start_index="0" end="4fc0d120-1d76-46f2-a7e2-a6f04321ad6c" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="c6520c46-9e40-45e0-bcd1-b323f834a9c0" start_index="0" end="b6535fb4-2d09-44b4-ad9a-35815a9fd091" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b3b8265c-bdc0-461b-8ebf-c9aded14fdee" start_index="0" end="3c28a01c-40bb-420e-8b5a-8bb6ec291e84" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="505d1c86-e544-4cd2-aafa-9f7ef14807fe" start_index="0" end="b3b8265c-bdc0-461b-8ebf-c9aded14fdee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b6535fb4-2d09-44b4-ad9a-35815a9fd091" start_index="0" end="b3b8265c-bdc0-461b-8ebf-c9aded14fdee" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="d9a9c738-af2a-4f9c-8041-8946412694f1" start_index="0" end="b3b8265c-bdc0-461b-8ebf-c9aded14fdee" end_index="2" portType="0" />
+  </Connectors>
+  <Notes>
+    <Dynamo.Models.NoteModel text="Curve Loop By Circle&#xD;&#xA;By Wassim Jabi (wassim.jabi@gmail.com)&#xD;&#xA;(c) 2014. All rights reserved.&#xD;&#xA;This software is provided 'as is' without warranty of any kind, either express or implied, including, but not limited to, the implied warranties of fitness for a purpose, or the warranty of non-infringement.&#xD;&#xA;&#xD;&#xA;This was derived from the excellent work of Zach Kron." x="22.8413867368261" y="-120.730708910572" />
+  </Notes>
+</Workspace>

@@ -1,0 +1,1 @@
+{"file_hash":null,"name":"Get Result List Column Values","version":"0.1.0","description":"CEE 220C A4","group":"","keywords":null,"dependencies":[],"license":"MIT","contents":"Get Result List Column Values - Gets the list of result values in a column of a hierarchical list","engine_version":"0.6.3.7993","engine_metadata":"","engine":"dynamo"}

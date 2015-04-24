@@ -1,0 +1,38 @@
+<Workspace Version="0.6.2.29585" X="0" Y="0" zoom="1" Description="Returns the members of an iterable collection as a list" Category="DME.Revit" Name="Iterable to List" ID="992b184d-ca53-42ad-9a36-db2ad1dc49f9">
+  <Elements>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="e26f2904-d806-4afb-b5b5-232df09ab477" nickname="Input" x="253" y="316" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="iterable" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="16244109-b65f-432b-adbf-f6f618041cfc" nickname="Output" x="515" y="315" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="list" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="216b4c0b-b51a-4b94-b146-3362d0c41dce" nickname="Python Script" x="376" y="312" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+iterable = IN
+list = [e for e in iterable]
+
+#Assign your output to the OUT variable
+OUT = list</Script>
+    </Dynamo.Nodes.Python>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e26f2904-d806-4afb-b5b5-232df09ab477" start_index="0" end="216b4c0b-b51a-4b94-b146-3362d0c41dce" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="216b4c0b-b51a-4b94-b146-3362d0c41dce" start_index="0" end="16244109-b65f-432b-adbf-f6f618041cfc" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

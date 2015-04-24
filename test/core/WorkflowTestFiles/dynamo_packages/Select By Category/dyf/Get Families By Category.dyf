@@ -1,0 +1,57 @@
+<Workspace Version="0.6.3.7375" X="47.565" Y="22.995" zoom="0.8425" Description="Gets all famiies of a given category in the model  (does *not *work for system families)" Category="CAAD_RWTH.Revit.Categories" Name="Get Families By Category" ID="2a75c2fa-c410-434d-87af-f9d59ee44c4b">
+  <Elements>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="9f3a0330-3927-4c9f-a7f5-73d6e7169b9a" nickname="Remove Duplicate Revit Elements From List" x="704.175348830888" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="1cf55ec9-9b38-4829-ac5f-2987c5e700a7" />
+      <Name value="Remove Duplicate Revit Elements From List" />
+      <Description value="Removes all duplicates of Revit elements from a given list. (Will also remove any other duplicates from a list...)" />
+      <Inputs>
+        <Input value="list" />
+      </Inputs>
+      <Outputs>
+        <Output value="elements" />
+        <Output value="other" />
+      </Outputs>
+      <InnerNode id="18c7de15-e52f-4116-af0c-7c7ea96346d2">
+        <Run />
+      </InnerNode>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="b24b491c-2be9-4e33-a543-bb019d6ac9fe" nickname="Get Family From Family Type" x="474.022858849556" y="1.369955297508" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="5cbed99e-2a1e-4351-b005-ea713ce00a65" />
+      <Name value="Get Family From Family Type" />
+      <Description value="Retrieves the family of a given family type" />
+      <Inputs>
+        <Input value="Family Type(s)" />
+      </Inputs>
+      <Outputs>
+        <Output value="Family/ies" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.FunctionWithRevit type="Dynamo.Nodes.FunctionWithRevit" guid="244b8a07-6d0e-4eba-975e-2f261874ac5b" nickname="Get Family Symbols By Category" x="221.513353115727" y="-0.550697193164041" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="65f93a80-674c-4a98-9d0c-db3a138287e5" />
+      <Name value="Get Family Symbols By Category" />
+      <Description value="Gets all family symbols of a given category in the model  (does *not *work for system families)" />
+      <Inputs>
+        <Input value="BuiltInCategories" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+      <InnerNode id="bf9408de-5a6a-4756-9213-58a6ad2d9309">
+        <Run />
+      </InnerNode>
+    </Dynamo.Nodes.FunctionWithRevit>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="7051506d-0987-4906-8b5b-68f643bb6941" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="BuiltInCategories" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="27647f3a-c7d7-48fa-bf00-8adabac27375" nickname="Output" x="1031.17534883089" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="families" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="9f3a0330-3927-4c9f-a7f5-73d6e7169b9a" start_index="0" end="27647f3a-c7d7-48fa-bf00-8adabac27375" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b24b491c-2be9-4e33-a543-bb019d6ac9fe" start_index="0" end="9f3a0330-3927-4c9f-a7f5-73d6e7169b9a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="244b8a07-6d0e-4eba-975e-2f261874ac5b" start_index="0" end="b24b491c-2be9-4e33-a543-bb019d6ac9fe" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="7051506d-0987-4906-8b5b-68f643bb6941" start_index="0" end="244b8a07-6d0e-4eba-975e-2f261874ac5b" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

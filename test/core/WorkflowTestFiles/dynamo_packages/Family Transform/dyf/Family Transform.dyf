@@ -1,0 +1,43 @@
+<Workspace Version="0.6.3.7993" X="178.17715" Y="131.16218125" zoom="1.33823125" Description="Extracts transformation matrix from family instance. " Category="Revit.Families" Name="Family Transform" ID="c6184dd1-0643-4473-814a-baf946689518">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="02dec71e-da49-4129-babc-ec5cddfeb8d2" nickname="Family Transform" x="243.873456748012" y="-5.23078503808665" isVisible="false" isUpstreamVisible="true" lacing="Disabled">
+      <Script># Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+
+#The input to this node will be stored in the IN variable.
+dataEnteringNode = IN
+
+fam_inst = IN
+result = []
+
+for i in fam_inst:
+	result.append(i.GetTransform())
+
+#Assign your output to the OUT variable
+OUT = result</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="3562046b-35f0-48cc-8129-b3bbc7a68d71" nickname="Input" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="fi transaction" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="fec0291c-8e2f-4cec-80d5-f2e5737f121a" nickname="Output" x="444.07130185139" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="transform" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="02dec71e-da49-4129-babc-ec5cddfeb8d2" start_index="0" end="fec0291c-8e2f-4cec-80d5-f2e5737f121a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="3562046b-35f0-48cc-8129-b3bbc7a68d71" start_index="0" end="02dec71e-da49-4129-babc-ec5cddfeb8d2" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

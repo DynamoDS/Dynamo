@@ -1,0 +1,57 @@
+<Workspace Version="0.6.3.35252" X="13.4958839406207" Y="293.924325236167" zoom="0.85" Description="Returns true if an object (wall, roof, floor or curtain system) has been modelled by face and the underlying mass still exists in the project." Category="CAAD_RWTH.Revit" Name="Is Related To Mass" ID="7feb7f1e-7c29-4137-9248-1bc4778beaba">
+  <Elements>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="0fc79c03-3f7d-4709-bdd8-ea262655c9ee" nickname="Turn Into List" x="250" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="e9c9099f-aacd-4ddf-a12c-ef301bae5a89" nickname="Python Script" x="410.983964683464" y="57.1219973954404" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+items = IN
+booleans = list()
+for item in items:
+	try:
+		booleans.append(item.get_Parameter(BuiltInParameter.RELATED_TO_MASS).AsInteger())
+	except:
+		booleans.append(0)
+OUT = booleans</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ec26387a-7a4c-4698-9820-b3011eb0da0f" nickname="Input" x="111.14479638009" y="0.361990950226247" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="f1cb0b48-3ad2-4a2e-bfd6-d7c5cfd974c8" nickname="Output" x="786.56084782091" y="1.90485829959516" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="bool" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="8e5cfad7-d3be-4196-a245-d4c008a3a69d" nickname="Return List Or Single Value" x="572.35778359927" y="1.26549972215651" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="44ac4888-4aa4-49a9-9344-23b729c11df9" />
+      <Name value="Return List Or Single Value" />
+      <Description value="If the list in input #1 has only one item, only the first item of the list in input #2 will be returned." />
+      <Inputs>
+        <Input value="list #1" />
+        <Input value="list #2" />
+      </Inputs>
+      <Outputs>
+        <Output value="" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="0fc79c03-3f7d-4709-bdd8-ea262655c9ee" start_index="0" end="e9c9099f-aacd-4ddf-a12c-ef301bae5a89" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0fc79c03-3f7d-4709-bdd8-ea262655c9ee" start_index="0" end="8e5cfad7-d3be-4196-a245-d4c008a3a69d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e9c9099f-aacd-4ddf-a12c-ef301bae5a89" start_index="0" end="8e5cfad7-d3be-4196-a245-d4c008a3a69d" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ec26387a-7a4c-4698-9820-b3011eb0da0f" start_index="0" end="0fc79c03-3f7d-4709-bdd8-ea262655c9ee" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="8e5cfad7-d3be-4196-a245-d4c008a3a69d" start_index="0" end="f1cb0b48-3ad2-4a2e-bfd6-d7c5cfd974c8" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

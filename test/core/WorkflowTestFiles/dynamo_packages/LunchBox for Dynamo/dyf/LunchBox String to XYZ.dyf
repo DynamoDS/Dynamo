@@ -1,0 +1,82 @@
+<Workspace Version="0.6.2.2709" X="141" Y="173" zoom="1.1" Description="Converts a point string &quot;x,y,z&quot; into a true Revit XYZ point." Category="LunchBox.Format" Name="LunchBox String to XYZ" ID="02f21938-a837-4030-9346-cb3aae489e7f">
+  <Elements>
+    <Dynamo.Nodes.Python type="Dynamo.Nodes.Python" guid="b46b21a7-aad3-4839-8c63-3b3198ab7948" nickname="Python Script" x="489.58361083361" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Script>#Copyright(c) 2014, Nathan Miller
+# The Proving Ground, http://theprovingground.org
+# Default imports
+import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+import sys
+import clr
+path = r'C:\Autodesk\Dynamo\Core'
+exec_path = r'C:\Autodesk\Dynamo\Core\dll'
+sys.path.append(path)
+sys.path.append(exec_path)
+clr.AddReference('LibGNet')
+from Autodesk.LibG import *
+import System
+
+#The input to this node will be stored in the IN variable.
+ptslist = IN
+
+ptsarr = []
+
+#if the input is an array
+if hasattr(ptslist, "__iter__"):
+
+	#if the input is a nested array
+	if hasattr(ptslist[0], "__iter__"):
+		for i in range(0, len(ptslist)):
+			ptstr = ptslist[i]
+			pts = []
+			for j in range(0,len(ptstr)):
+				str = ptstr[j]
+				strarr = str.Split(",")
+				x = float(strarr[0])
+				y = float(strarr[1])
+				z = float(strarr[2])
+				pt = XYZ(x,y,z)
+				pts.append(pt)
+			ptsarr.append(pts)
+	else:
+		for i in range(0,len(ptslist)):
+		
+			#split string
+			str = ptslist[i]
+			strarr = str.Split(",")
+	
+			#compose points
+			x = float(strarr[0])
+			y = float(strarr[1])
+			z = float(strarr[2])
+			pt = XYZ(x,y,z)
+			ptsarr.append(pt)
+else:
+	#split string
+	str = ptslist
+	strarr = str.Split(",")
+	x = float(strarr[0])
+	y = float(strarr[1])
+	z = float(strarr[2])
+	pt = XYZ(x,y,z)
+	ptsarr.append(pt)
+
+#Assign your output to the OUT variable
+OUT = ptsarr</Script>
+    </Dynamo.Nodes.Python>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="ceb3f037-3e22-43ef-b0b1-e51a463da6ac" nickname="Input" x="339.090909090909" y="3.63636363636365" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="PointString" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="3c3960fd-340a-4054-822a-11468cefef22" nickname="Output" x="639.674519924519" y="-2.72727272727272" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="XYZ" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="b46b21a7-aad3-4839-8c63-3b3198ab7948" start_index="0" end="3c3960fd-340a-4054-822a-11468cefef22" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ceb3f037-3e22-43ef-b0b1-e51a463da6ac" start_index="0" end="b46b21a7-aad3-4839-8c63-3b3198ab7948" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

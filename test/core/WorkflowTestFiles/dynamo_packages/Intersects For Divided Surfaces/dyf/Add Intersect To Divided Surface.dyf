@@ -1,0 +1,44 @@
+<Workspace Version="0.6.3.5262" X="81" Y="147" zoom="1" Description="Adds an intersect to a divided surface" Category="CAAD_RWTH.Revit.DividedSurfaces" Name="Add Intersect To Divided Surface" ID="e29fe7ec-cf80-41fd-a1a1-d55b01e15697">
+  <Elements>
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="e6b304b0-b0fa-43f6-baf8-aeb169192087" nickname="Python Script With Variable Number of Inputs" x="257.375" y="65" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+divsurf = IN0
+intersects = IN1
+for item in intersects:
+	divsurf.AddIntersectionElement(item.Id)
+OUT = divsurf</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="a0f9c6c3-ed1e-4827-be8a-d2703c863736" nickname="Turn Into List" x="110" y="148.910714285714" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="251115e5-2e53-4f4a-96a3-f6b8c07be1fe" nickname="Input" x="126" y="48" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="DivSurf" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="4ac14baa-4281-4e3e-9f78-e81303cb130c" nickname="Input" x="-52" y="150" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Element(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="972c5d42-56dd-4db7-8330-77ef221a318a" nickname="Output" x="556.375" y="64" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="DivSurf" />
+    </Dynamo.Nodes.Output>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="e6b304b0-b0fa-43f6-baf8-aeb169192087" start_index="0" end="972c5d42-56dd-4db7-8330-77ef221a318a" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a0f9c6c3-ed1e-4827-be8a-d2703c863736" start_index="0" end="e6b304b0-b0fa-43f6-baf8-aeb169192087" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="251115e5-2e53-4f4a-96a3-f6b8c07be1fe" start_index="0" end="e6b304b0-b0fa-43f6-baf8-aeb169192087" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4ac14baa-4281-4e3e-9f78-e81303cb130c" start_index="0" end="a0f9c6c3-ed1e-4827-be8a-d2703c863736" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

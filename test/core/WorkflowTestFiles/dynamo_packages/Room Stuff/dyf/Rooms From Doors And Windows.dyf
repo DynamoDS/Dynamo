@@ -1,0 +1,70 @@
+<Workspace Version="0.6.3.5291" X="113.114230365448" Y="334.787238576007" zoom="0.960233205802179" Description="Gets the rooms that are connected by a given door or a window" Category="CAAD_RWTH.Revit.Rooms" Name="Rooms From Doors And Windows" ID="22afc586-3029-4a8c-ade8-183c160acd2e">
+  <Elements>
+    <Dynamo.Nodes.DoubleInput type="Dynamo.Nodes.DoubleInput" guid="bd4fb26e-b5a3-43eb-ae57-d3152e37ee3f" nickname="Number" x="600.185731508648" y="122.147130908606" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="1" />
+    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.GetFromList type="Dynamo.Nodes.GetFromList" guid="ebb2cda7-1f97-4de8-991e-7ed0bd0ba99e" nickname="Get from List" x="731.143457814988" y="65.7829306928625" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.PythonVarIn type="Dynamo.Nodes.PythonVarIn" guid="e278e2c4-351d-441c-bb9e-fd1d17bfce11" nickname="Python Script With Variable Number of Inputs" x="409.75660571226" y="20.1504193642485" isVisible="true" isUpstreamVisible="true" lacing="Disabled" inputs="2">
+      <Script>import clr
+clr.AddReference('RevitAPI')
+clr.AddReference('RevitAPIUI')
+from Autodesk.Revit.DB import *
+import Autodesk
+
+items = IN0
+phase = IN1
+fromlist = list()
+tolist = list()
+
+for item in items:
+	try:
+		if item.FromRoom[phase]:
+			fromlist.append(item.FromRoom[phase])
+		else:
+			fromlist.append(list())
+		if item.ToRoom[phase]:
+			tolist.append(item.ToRoom[phase])
+		else:
+			tolist.append(list())
+	except:
+		fromlist.append(list('###'))
+		tolist.append(list())
+OUT = (fromlist,tolist)</Script>
+    </Dynamo.Nodes.PythonVarIn>
+    <Dynamo.Nodes.First type="Dynamo.Nodes.First" guid="a331f6ff-92e0-44d5-a8ac-41aa9c67b349" nickname="First of List" x="735.536894122249" y="-21.9041082035032" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.Function type="Dynamo.Nodes.Function" guid="b39a2641-b2c2-49e5-b214-79c84f66b861" nickname="Turn Into List" x="248.944674135324" y="-22.0562813716566" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <ID value="cd09ad33-8c34-4850-ac26-24448d92c38f" />
+      <Name value="Turn Into List" />
+      <Description value="Turns an element into a (flat) list" />
+      <Inputs>
+        <Input value="item" />
+      </Inputs>
+      <Outputs>
+        <Output value="list" />
+      </Outputs>
+    </Dynamo.Nodes.Function>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="22c4a926-db9a-4ac5-82f5-daffb460626a" nickname="Input" x="54.1277155389663" y="-20.1618431581952" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Door(s) / Window(s)" />
+    </Dynamo.Nodes.Symbol>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="6e3f2e82-deb1-4adc-bd74-a81611e8256d" nickname="Output" x="947.361168236291" y="-21.9041082035032" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="From Room(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Output type="Dynamo.Nodes.Output" guid="641cbb8c-8401-421f-b77f-71d4a5221c23" nickname="Output" x="945.143457814988" y="65.619864745621" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="To Room(s)" />
+    </Dynamo.Nodes.Output>
+    <Dynamo.Nodes.Symbol type="Dynamo.Nodes.Symbol" guid="95423006-b7e5-44f5-8870-76a1ab6109ad" nickname="Input" x="279.718242057004" y="62.3637086672094" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <Symbol value="Phase" />
+    </Dynamo.Nodes.Symbol>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="bd4fb26e-b5a3-43eb-ae57-d3152e37ee3f" start_index="0" end="ebb2cda7-1f97-4de8-991e-7ed0bd0ba99e" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="ebb2cda7-1f97-4de8-991e-7ed0bd0ba99e" start_index="0" end="641cbb8c-8401-421f-b77f-71d4a5221c23" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e278e2c4-351d-441c-bb9e-fd1d17bfce11" start_index="0" end="a331f6ff-92e0-44d5-a8ac-41aa9c67b349" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="e278e2c4-351d-441c-bb9e-fd1d17bfce11" start_index="0" end="ebb2cda7-1f97-4de8-991e-7ed0bd0ba99e" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="a331f6ff-92e0-44d5-a8ac-41aa9c67b349" start_index="0" end="6e3f2e82-deb1-4adc-bd74-a81611e8256d" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="b39a2641-b2c2-49e5-b214-79c84f66b861" start_index="0" end="e278e2c4-351d-441c-bb9e-fd1d17bfce11" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="22c4a926-db9a-4ac5-82f5-daffb460626a" start_index="0" end="b39a2641-b2c2-49e5-b214-79c84f66b861" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="95423006-b7e5-44f5-8870-76a1ab6109ad" start_index="0" end="e278e2c4-351d-441c-bb9e-fd1d17bfce11" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

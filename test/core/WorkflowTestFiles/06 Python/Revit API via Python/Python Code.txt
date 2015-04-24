@@ -1,0 +1,51 @@
+GET MEMBERS
+###########
+
+import clr
+
+OUT = (dir(IN[0]),dir(UnwrapElement(IN[0])))
+
+
+GET HOST
+########
+
+import clr
+clr.AddReference('RevitAPI')
+from Autodesk.Revit.DB import *
+
+faminsts = UnwrapElement(IN[0])
+elementlist = list()
+for item in faminsts:
+	try:
+		elementlist.append(item.Host)
+	except:
+		elementlist.append(list())
+OUT = elementlist
+
+GET INSERTS
+###########
+
+import clr
+
+clr.AddReference('RevitAPI')
+from Autodesk.Revit.DB import *
+
+clr.AddReference("RevitServices")
+import RevitServices
+from RevitServices.Persistence import DocumentManager
+
+doc = DocumentManager.Instance.CurrentDBDocument
+items = UnwrapElement(IN[0])
+incopenings = IN[1]
+incshadows = IN[2]
+incwalls = IN[3]
+incshared = IN[4]
+elementlist = list()
+
+for item in items:
+	itemlist = list()
+	for insert in item.FindInserts(incopenings,incshadows,incwalls,incshared):
+		itemlist.append(doc.GetElement(insert))
+	elementlist.append(itemlist)
+OUT = elementlist
+
