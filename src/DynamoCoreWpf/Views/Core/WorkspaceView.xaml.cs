@@ -93,6 +93,7 @@ namespace Dynamo.Views
             var searchViewModel = new SearchViewModel(this.ViewModel.DynamoViewModel, this.ViewModel.DynamoViewModel.Model.SearchModel);
             searchViewModel.Visible = true;
             IncanvasSearch.DataContext = searchViewModel;
+            workspaceContextMenu.DataContext = searchViewModel;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
