@@ -15,7 +15,7 @@
         mc:Ignorable="d"
         Focusable="True"
         Padding="0,0,0,16">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -70,7 +70,7 @@
         <KeyBinding Key="Escape"             
                     Command="{Binding Path=CloseGalleryCommand}" />
     </UserControl.InputBindings>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"></ColumnDefinition>
@@ -85,8 +85,8 @@
             <RowDefinition Height="100"></RowDefinition>
         </Grid.RowDefinitions>
 
+        <!-- Dynamo Version -->
         <TextBlock 
-            x:Name="Version"
             FontFamily="{StaticResource OpenSansRegular}"
             Text="{Binding Path=DynamoVersion}"
             Foreground="#888888" FontSize="14"
@@ -96,6 +96,7 @@
             Grid.Column="1" Grid.Row="0"
             />
 
+        <!-- Close button -->
         <dynui:ImageButton 
             Width="86" Height="21"
             Grid.Column="1" Grid.Row="0"
@@ -105,6 +106,7 @@
             Command="{Binding Path=CloseGalleryCommand}"
             StateImage="/DynamoCoreWpf;component/UI/Images/Gallery/gallery-button-close-states.png"/>
 
+        <!-- Left button -->
         <dynui:ImageButton 
             Focusable="False"
             Width="20" Height="38"
@@ -114,8 +116,8 @@
             StateImage="/DynamoCoreWpf;component/UI/Images/Gallery/gallery-button-next-prev-states.png"
             Command="{Binding Path=MovePrevCommand}"/>
 
+        <!-- Gallery image -->
         <Image 
-            x:Name="currentImage"
             Source="{Binding Path=CurrentImagePath, UpdateSourceTrigger=PropertyChanged}"
             Stretch="UniformToFill"
             Width="600" Height="400"
@@ -124,6 +126,7 @@
             Grid.Column="1" 
             Grid.Row="1"/>
 
+        <!-- Right button -->
         <dynui:ImageButton
             Focusable="False"
             Width="20" Height="38"
@@ -137,6 +140,7 @@
             </dynui:ImageButton.RenderTransform>
         </dynui:ImageButton>
 
+        <!-- Gallery bullets -->
         <ListBox 
             Name="GalleryBullets" 
             VerticalAlignment="Top" 
@@ -148,6 +152,7 @@
             Grid.Row="2">
         </ListBox>
 
+        <!-- Gallery header -->
         <TextBlock 
             FontFamily="{StaticResource OpenSansRegular}"
             Text="{Binding Path=CurrentHeader, UpdateSourceTrigger=PropertyChanged}"
@@ -157,7 +162,8 @@
             Foreground="#333333"
             FontWeight="SemiBold" Margin="16,0,0,0" 
             VerticalAlignment="Center"/>
-        
+
+        <!-- Gallery content -->
         <ScrollViewer 
             Grid.Row="4" Grid.Column="1" 
             HorizontalAlignment="Left"
@@ -170,7 +176,7 @@
                 FontSize="14"
                 />
         </ScrollViewer>
-        
+
     </Grid>
-    
+
 </UserControl>
