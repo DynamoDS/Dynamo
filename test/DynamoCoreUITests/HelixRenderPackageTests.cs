@@ -164,10 +164,24 @@ namespace DynamoCoreUITests
             Assert.IsEmpty(p.Lines.Colors);
         }
 
+        [Test]
+        public void HelixRenderPackage_MeshVertexBufferCorrect()
+        {
+            var p = new HelixRenderPackage();
+
+            PushQuadIntoPackage(p);
+
+            var test1 = p.MeshVertexBuffer.Skip(3).Take(3).ToArray();
+            var test2 = p.MeshNormalBuffer.Take(3).ToArray();
+
+            // Expect Y Up.
+            Assert.AreEqual(test1, new double[]{1,0,0});
+            Assert.AreEqual(test2, new double[]{0,1,0});
+        }
+
         /// <summary>
-        /// Pushes an uncolored test cube into a package.
+        /// Pushes an uncolored quad into a package.
         /// </summary>
-        /// <param name="package"></param>
         private static void PushQuadIntoPackage(IRenderPackage package)
         {
             package.PushTriangleVertex(0,0,0);
@@ -193,6 +207,9 @@ namespace DynamoCoreUITests
             package.PushTriangleVertexUV(0, 0);
         }
 
+        /// <summary>
+        /// Pushes an uncolored line into a package.
+        /// </summary>
         private static void PushLineIntoPackage(IRenderPackage package)
         {
             package.PushLineStripVertex(0,0,0);
@@ -200,6 +217,9 @@ namespace DynamoCoreUITests
             package.PushLineStripVertexCount(2);
         }
 
+        /// <summary>
+        /// Pushes a point into a package.
+        /// </summary>
         private static void PushPointIntoPackage(IRenderPackage package)
         {
             package.PushPointVertex(0,0,0);

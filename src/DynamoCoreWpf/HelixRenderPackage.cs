@@ -530,7 +530,7 @@ namespace Dynamo.Wpf
             {
                 doubles[count] = v.X;
                 doubles[count + 1] = v.Y;
-                doubles[count + 1] = v.Z;
+                doubles[count + 2] = v.Z;
                 count += 3;
             }
 
