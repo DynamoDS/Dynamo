@@ -74,7 +74,16 @@ namespace Dynamo.Wpf.UI
                     resource = string.Format(Properties.Resources.UsageReportPromptDialogFeatureUsage,ProductName);
                     break;
                 case ResourceNames.ConsentForm.Consent:
-                    resource = string.Format(Properties.Resources.UsageReportPromptDialogConsent,ProductName);
+                    resource = string.Format(Properties.Resources.UsageReportPromptDialogConsent, ProductName);
+                    break;
+                case ResourceNames.ConsentForm.AgreementThree:
+                    resource = string.Format(Properties.Resources.UsageReportPromptDialogMessagePart3, ProductName);
+                    break;
+                case ResourceNames.ConsentForm.ConsentTwo:
+                    resource = string.Format(Properties.Resources.UsageReportPromptDialogConsent2, ProductName);
+                    break;
+                case ResourceNames.ConsentForm.LearnMore:
+                    resource = string.Format(Properties.Resources.LearnMore, ProductName);
                     break;
 
             }

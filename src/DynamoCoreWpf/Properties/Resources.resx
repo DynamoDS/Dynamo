@@ -446,7 +446,7 @@
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReporting" xml:space="preserve">
-    <value>_Enable detailed usability data reporting</value>
+    <value>_Enable detailed usability data reporting(Instrumentation)</value>
     <comment>Setting menu | Enable data reporting during usage</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
@@ -454,7 +454,7 @@
     <comment>Setting menu | Tooltip for enable data reporting during usage menu item</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReporting" xml:space="preserve">
-    <value>Enable anonymous summary reporting</value>
+    <value>Enable anonymous summary reporting(Google Analytics)</value>
     <comment>Setting menu | Eanble summary reporting</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReportingTooltip" xml:space="preserve">
@@ -1650,5 +1650,18 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
+  </data>
+  <data name="UsageReportPromptDialogConsent2" xml:space="preserve">
+    <value>Yes, I would like to contribute to this program.</value>
+  </data>
+  <data name="UsageReportPromptDialogMessagePart3" xml:space="preserve">
+    <value>Autodesk uses Google Analytics in this product. If you agree to its use, Autodesk will receive non-personal product usage information about this Autodesk software.  We use this information to improve our products and understand how people use them.
+
+This information is limited to session length times, use frequency, which features are used (feature buttons), your city and country location, and operating system type.  This information is not used to identify or contact you, and we do not track use of standard pull down menu controls (e.g., “file,” “edit,” etc.).  
+
+You can turn data collection off by using the tick box below or later by bringing this dialogue box back up though the Setting menu tool.  Thank you for your consideration.</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Learn more</value>
   </data>
 </root>
