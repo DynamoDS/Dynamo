@@ -184,8 +184,36 @@ namespace ProtoCore.AssociativeEngine
                 return false;
             }
 
-            bool areLHSEqual = varAssignNode.IsUpdateableBy(assignNode.updateNodeRefList[0]);  
+            bool areLHSEqual = AreLHSEqual(varAssignNode, assignNode);  
             return areLHSEqual;
+        }
+
+
+        /// <summary>
+        /// Checks if the lhs (updateNodeRefList) are equal for both graphnodes
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="otherNode"></param>
+        /// <returns></returns>
+        private static bool AreLHSEqual(AssociativeGraph.GraphNode node, AssociativeGraph.GraphNode otherNode)
+        {
+            Validity.Assert(node != null && otherNode != null);
+            Validity.Assert(node.updateNodeRefList.Count > 0);
+
+            // Check for same number of noderefs
+            if (node.updateNodeRefList.Count != otherNode.updateNodeRefList.Count)
+            {
+                return false;
+            }
+
+            for (int n = 0; n < node.updateNodeRefList.Count; ++n)
+            {
+                if (!node.updateNodeRefList[n].Equals(otherNode.updateNodeRefList[n]))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         /// <summary>
@@ -1033,7 +1061,7 @@ namespace ProtoCore.AssociativeGraph
         {
             // Function to check if the current graphnode can be modified by the modified reference
             bool isUpdateable = false;
-            if (modifiedRef.nodeList.Count <= updateNodeRefList[0].nodeList.Count)
+            if (modifiedRef.nodeList.Count < updateNodeRefList[0].nodeList.Count)
             {
                 isUpdateable = true;
                 for (int n = 0; n < modifiedRef.nodeList.Count; ++n)
