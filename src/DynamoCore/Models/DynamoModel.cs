@@ -567,8 +567,7 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
-            var renderPackageFactoryAsm = config.PackageManagerAddress ??
-                      AssemblyConfiguration.Instance.GetAppSetting("renderPackageFactoryAssembly");
+            var renderPackageFactoryAsm = AssemblyConfiguration.Instance.GetAppSetting("renderPackageFactoryAssembly");
             SetRenderPackageFactory(renderPackageFactoryAsm);
 
             StartBackupFilesTimer();
