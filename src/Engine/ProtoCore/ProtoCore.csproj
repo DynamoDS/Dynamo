@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="AssociativeGraph.cs" />
     <Compile Include="ASTCompilerUtils.cs" />
+    <Compile Include="SyntaxAnalysis\AstVisitor.cs" />
     <Compile Include="AttributeEntry.cs" />
     <Compile Include="BuildStatus.cs" />
     <Compile Include="CodeBlock.cs" />

@@ -294,6 +294,29 @@ namespace Dynamo.Models
             DeleteModelInternal(modelsToDelete);
         }
 
+        void UngroupModelImpl(UngroupModelCommand command)
+        {
+            var modelsToUngroup = new List<ModelBase>();
+            if (command.ModelGuid != Guid.Empty)
+            {
+                modelsToUngroup.Add(CurrentWorkspace.GetModelInternal(command.ModelGuid));
+            }
+
+            UngroupModel(modelsToUngroup);
+        }
+
+        void AddToGroupImpl(AddModelToGroupCommand command)
+        {
+            var modelsToUngroup = new List<ModelBase>();
+            if (command.ModelGuid != Guid.Empty)
+            {
+                modelsToUngroup.Add(CurrentWorkspace.GetModelInternal(command.ModelGuid));
+            }
+
+            AddToGroup(modelsToUngroup);
+        }
+
+       
         void UndoRedoImpl(UndoRedoCommand command)
         {
             switch (command.CmdOperation)

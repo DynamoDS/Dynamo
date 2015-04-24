@@ -153,6 +153,14 @@
     <value>Create Group</value>
     <comment>Context menu item</comment>
   </data>
+  <data name="ContextUnGroupFromSelection" xml:space="preserve">
+    <value>Remove from Group</value>
+    <comment>Context menu item</comment>
+  </data>
+  <data name="ContextAddGroupFromSelection" xml:space="preserve">
+    <value>Add To Group</value>
+    <comment>Context menu item</comment>
+  </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
     <value>Nodes From _Selected Geometry</value>
     <comment>Context menu item</comment>
@@ -1429,11 +1437,11 @@ Do you want to install the latest Dynamo update?</value>
     <value>Install Dynamo</value>
   </data>
   <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
-    <value>Enable background 3D preview navigation (Ctrl + G)</value>
+    <value>Enable background 3D preview navigation (Ctrl + B)</value>
     <comment>Enable background 3D preview navigation</comment>
   </data>
   <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
-    <value>Enable graph view navigation (Ctrl + G)</value>
+    <value>Enable graph view navigation (Ctrl + B)</value>
     <comment>Enable graph view navigation</comment>
   </data>
   <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
@@ -1646,5 +1654,11 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
+  </data>
+  <data name="Autodesk360SignInButtonContentToolTip" xml:space="preserve">
+    <value>Sign in to Autodesk A360 to access online services that integrate with your desktop software.</value>
+  </data>
+  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
+    <value>Autodesk A360</value>
   </data>
 </root>

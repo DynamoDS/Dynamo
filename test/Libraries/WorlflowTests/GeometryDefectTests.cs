@@ -6,9 +6,9 @@ using Dynamo.Models;
 using Autodesk.DesignScript.Geometry;
 
 namespace Dynamo.Tests
-{
+{   
     [TestFixture]
-    class GeometryDefectTests : DSEvaluationViewModelUnitTest
+    class GeometryDefectTests : DSEvaluationViewModelUnitTest 
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -450,6 +450,61 @@ namespace Dynamo.Tests
             }
         }
 
+
+        
+        [Test]
+        public void MAGN_6799_ListMapDoesntWorkWithFlatten()
+        {
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6799
+            // Flatten Does Not work With List.Map.
+
+            var model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\list\Listmap.dyn");
+            RunModel(openPath);
+
+            //check the point.x , point.y and point.z
+            //get Point.X guid
+            var pointX = GetFlattenedPreviewValues("b63b850f-a9cc-4c5d-9bbd-ad144d74e227");
+            Assert.AreEqual(pointX,new object [] {1,2,3,4,10,20,30,40});
+
+            //get Point.y guid
+            var pointY = GetFlattenedPreviewValues("2a5daf0c-1316-4ff0-be16-74e3241eff58");
+            Assert.AreEqual(pointY, new object[] { 1, 2, 3, 4, 10, 20, 30, 40 });
+
+
+            //get Point.z guid
+            var pointZ = GetFlattenedPreviewValues("24b75bda-4e39-48d1-98ec-de103f739567");
+            Assert.AreEqual(pointY, new object[] { 1, 2, 3, 4, 10, 20, 30, 40 });
+            
+
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(7, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(8, model.CurrentWorkspace.Connectors.Count());
+
+            //get List.Map guid
+            string ListMapGuid = "0af8a082-0d22-476f-bc28-e61b4ce01170";  
+            
+            //check the dimension of list
+            var levelCount = 2;
+            AssertPreviewCount(ListMapGuid, levelCount);
+            
+            //flatten the list
+            var levelList = GetFlattenedPreviewValues(ListMapGuid);
+            Assert.AreEqual(levelList.Count, levelCount * 4);
+            
+            //check the first parameter is not null
+            Assert.IsNotNull(levelList[0]);
+            
+          
+
+          
+
+
+        }
+
         [Test]
         public void TestExportWithUnits()
         {
@@ -466,6 +521,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(exportPreview.Contains("exported.sat"));
         }
      
+
         
     }
 }
