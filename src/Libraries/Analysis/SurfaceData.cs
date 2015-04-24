@@ -188,10 +188,12 @@ namespace Analysis
             var colorCount = 0;
             var uvCount = 0;
 
-            var uvs = package.TriangleUVs;
-            var colors = package.TriangleVertexColors;
+            var uvs = package.MeshTextureCoordinateBuffer;
+            var colors = package.MeshColorBuffer;
 
-            for (var i = 0; i < package.TriangleVertices.Count; i += 3)
+            var newColors = new byte[colors.Count()];
+
+            for (var i = 0; i < colors.Count(); i += 4)
             {
                 var uvu = uvs[uvCount];
                 var uvv = uvs[uvCount + 1];
@@ -200,17 +202,16 @@ namespace Analysis
                 var vv = (int)(uvv * (COLOR_MAP_HEIGHT - 1));
                 var color = colorMap[uu,vv];
 
-                colors[colorCount] = color.Red;
-                colors[colorCount + 1] = color.Green;
-                colors[colorCount + 2] = color.Blue;
-                colors[colorCount + 3] = color.Alpha;
+                newColors[colorCount] = color.Red;
+                newColors[colorCount + 1] = color.Green;
+                newColors[colorCount + 2] = color.Blue;
+                newColors[colorCount + 3] = color.Alpha;
 
                 colorCount += 4;
                 uvCount += 2;
             }
 
-            package.TriangleVertexColors = null;
-            package.TriangleVertexColors = colors;
+            package.ApplyMeshVertexColors(newColors);
 
             DebugTime(sw, "Ellapsed for setting colors on mesh.");
             sw.Stop();

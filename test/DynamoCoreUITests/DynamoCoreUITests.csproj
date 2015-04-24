@@ -85,6 +85,7 @@
     <Compile Include="DropDownTests.cs" />
     <Compile Include="DynamoConverterTest.cs" />
     <Compile Include="DynamoTestUIBase.cs" />
+    <Compile Include="HelixRenderPackageTests.cs" />
     <Compile Include="NodePreviewTests.cs" />
     <Compile Include="NodeViewCustomizationTests.cs" />
     <Compile Include="PackageManagerUITests.cs" />

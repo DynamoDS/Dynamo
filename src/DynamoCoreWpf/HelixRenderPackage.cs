@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Autodesk.DesignScript.Interfaces;
@@ -68,7 +69,7 @@ namespace Dynamo.Wpf
             points = InitPointGeometry();
             mesh = InitMeshGeometry();
             lines = InitLineGeometry();
-            
+
             LineStripVertexCounts.Clear();
 
             IsSelected = false;
@@ -174,164 +175,135 @@ namespace Dynamo.Wpf
         }
 
         /// <summary>
-        /// Get or set the line positions as a list of doubles.
-        /// Setting the positions in this way is expensive. It is recommded
-        /// that you do not attempt to set individual positions using the
-        /// setter, but that you set the entire collection at once.
+        /// Apply a color to a sequence of point vertices.
         /// </summary>
-        public List<double> LineStripVertices
+        public void ApplyPointVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
-            get { return lines.Positions.ToDoubles(); }
-            set
+            var message = string.Empty;
+            if (!HasValidStartEnd(startIndex, endIndex, points, out message))
             {
-                if (value == null)
-                    return;
+                if (!string.IsNullOrEmpty(message))
+                {
+                    throw new Exception(message);
+                }
 
-                lines.Positions = null;
-                lines.Positions = value.ToVector3Collection();
+                return;
+            }
+
+            for (var i = startIndex; i <= endIndex; i++)
+            {
+                points.Colors[i] = Color4FromBytes(red, green, blue, alpha);
             }
         }
 
         /// <summary>
-        /// Get or set the point positions as a list of doubles.
-        /// Setting the positions in this way is expensive. It is recommded
-        /// that you do not attempt to set individual positions using the
-        /// setter, but that you set the entire collection at once.
+        /// Apply a color to each point vertex.
         /// </summary>
-        public List<double> PointVertices
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        public void ApplyPointVertexColors(byte[] colors)
         {
-            get { return points.Positions.ToDoubles(); }
-            set
+            if (colors.Count()/4 != points.Positions.Count)
             {
-                if (value == null)
-                    return;
+                throw new Exception("The number of colors specified must be equal to the number of vertices.");
+            }
 
-                points.Positions = null;
-                points.Positions = value.ToVector3Collection();
+            points.Colors = null;
+            points.Colors = colors.ToColor4Collection();
+        }
+
+        /// <summary>
+        /// Apply a color to a sequence of line vertices.
+        /// </summary>
+        public void ApplyLineVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        {
+            var message = string.Empty;
+            if (!HasValidStartEnd(startIndex, endIndex, lines, out message))
+            {
+                if (!string.IsNullOrEmpty(message))
+                {
+                    throw new Exception(message);
+                }
+
+                return;
+            }
+
+            for (var i = startIndex; i <= endIndex; i++)
+            {
+                lines.Colors[i] = Color4FromBytes(red, green, blue, alpha);
             }
         }
 
         /// <summary>
-        /// Get or set the mesh positions as a list of doubles.
-        /// Setting the positions in this way is expensive. It is recommded
-        /// that you do not attempt to set individual positions using the
-        /// setter, but that you set the entire collection at once.
+        /// Apply a color to each line vertex.
         /// </summary>
-        public List<double> TriangleVertices
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        public void ApplyLineVertexColors(byte[] colors)
         {
-            get { return mesh.Positions.ToDoubles(); }
-            set
+            if (colors.Count() / 4 != lines.Positions.Count)
             {
-                if (value == null)
-                    return;
+                throw new Exception("The number of colors specified must be equal to the number of vertices.");
+            }
 
-                mesh.Positions = null;
-                mesh.Positions = value.ToVector3Collection();
+            lines.Colors = null;
+            lines.Colors = colors.ToColor4Collection();
+        }
+
+        /// <summary>
+        /// Apply a color to a sequence of mesh vertices.
+        /// </summary>
+        public void ApplyMeshVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        {
+            var message = string.Empty;
+            if (!HasValidStartEnd(startIndex, endIndex, mesh, out message))
+            {
+                if (!string.IsNullOrEmpty(message))
+                {
+                    throw new Exception(message);
+                }
+
+                return;
+            }
+
+            for (var i = startIndex; i <= endIndex; i++)
+            {
+                mesh.Colors[i] = Color4FromBytes(red, green, blue, alpha);
             }
         }
 
         /// <summary>
-        /// Get or set the mesh normals as a list of doubles.
-        /// Setting the positions in this way is expensive. It is recommded
-        /// that you do not attempt to set individual positions using the
-        /// setter, but that you set the entire collection at once.
+        /// Apply a color to each mesh vertex.
         /// </summary>
-        public List<double> TriangleNormals
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        public void ApplyMeshVertexColors(byte[] colors)
         {
-            get { return mesh.Normals.ToDoubles(); }
-            set
+            if (colors.Count() / 4 != mesh.Positions.Count)
             {
-                if (value == null)
-                    return;
-
-                mesh.Normals = null;
-                mesh.Normals = value.ToVector3Collection();
+                throw new Exception("The number of colors specified must be equal to the number of vertices.");
             }
+
+            mesh.Colors = null;
+            mesh.Colors = colors.ToColor4Collection();
         }
 
-        /// <summary>
-        /// Get or set the mesh texture coordinates as a list of doubles.
-        /// Setting the positions in this way is expensive. It is recommded
-        /// that you do not attempt to set individual positions using the
-        /// setter, but that you set the entire collection at once.
-        /// </summary>
-        public List<double> TriangleUVs
+        private bool HasValidStartEnd(int startIndex, int endIndex, Geometry3D geom, out string message)
         {
-            get { return mesh.TextureCoordinates.ToDoubles(); }
-            set
+            message = string.Empty;
+
+            if (startIndex > geom.Colors.Count ||
+                endIndex > geom.Colors.Count - 1)
             {
-                if (value == null)
-                    return;
-
-                mesh.TextureCoordinates = null;
-                mesh.TextureCoordinates = value.ToVector2Collection();
+                message = "The start and end indices must be within the bounds of the array.";
+                return false;
             }
-        }
 
-        /// <summary>
-        /// Get or set the point colors as a list of bytes.
-        /// Setting the positions in this way is expensive. It is recommded
-        /// that you do not attempt to set individual positions using the
-        /// setter, but that you set the entire collection at once.
-        /// </summary>
-        public List<byte> PointVertexColors
-        {
-            get { return points.Colors.ToBytes(); }
-            set
+            if (endIndex < startIndex)
             {
-                if (value == null)
-                    return;
-
-                points.Colors = null;
-                points.Colors = value.ToColor4Collection();
+                message = "The end index must be greater than the start index.";
+                return false;
             }
+
+            return true;
         }
-
-        /// <summary>
-        /// Get or set the line colors as a list of bytes.
-        /// Setting the positions in this way is expensive. It is recommded
-        /// that you do not attempt to set individual positions using the
-        /// setter, but that you set the entire collection at once.
-        /// </summary>
-        public List<byte> LineStripVertexColors
-        {
-            get { return lines.Colors.ToBytes(); }
-            set
-            {
-                if (value == null)
-                    return;
-
-                lines.Colors = null;
-                lines.Colors = value.ToColor4Collection();
-            }
-        }
-
-        /// <summary>
-        /// Get or set the mesh colors as a list of bytes.
-        /// Setting the positions in this way is expensive. It is recommded
-        /// that you do not attempt to set individual positions using the
-        /// setter, but that you set the entire collection at once.
-        /// </summary>
-        public List<byte> TriangleVertexColors
-        {
-            get { return mesh.Colors.ToBytes(); }
-            set
-            {
-                if (value == null)
-                    return;
-
-                mesh.Colors = null;
-                mesh.Colors = value.ToColor4Collection();
-            }
-        }
-
-        /// <summary>
-        /// A list of line strip vertex counts.
-        /// A render package can contain information for more than one 
-        /// curve. This property is used to store, for each curve, the 
-        /// number of vertices for that curve.
-        /// </summary>
-        public List<int> LineStripVertexCounts { get; set; }
 
         /// <summary>
         /// A tag used to store information about the render package.
@@ -367,6 +339,87 @@ namespace Dynamo.Wpf
         /// per vertex coloration.
         /// </summary>
         public bool RequiresPerVertexColoration { get; set; }
+
+        /// <summary>
+        /// The number of point vertices in the package.
+        /// </summary>
+        public int PointVertexCount
+        {
+            get { return points.Positions.Count; }
+        }
+
+        /// <summary>
+        /// The number of line vertices in the package.
+        /// </summary>
+        public int LineVertexCount
+        {
+            get { return lines.Positions.Count; }
+        }
+
+        /// <summary>
+        /// The number of mesh vertices in the package.
+        /// </summary>
+        public int MeshVertexCount
+        {
+            get { return mesh.Positions.Count; }
+        }
+
+        public List<int> LineStripVertexCounts { get; private set; }
+
+        public double[] LineStripVertexBuffer
+        {
+            get { return lines.Positions.ToDoubleArray(); }
+        }
+
+        public byte[] LineStripColorBuffer
+        {
+            get { return lines.Colors.ToByteArray(); }
+        }
+
+        public int[] LineStripIndexBuffer
+        {
+            get { return lines.Indices.ToArray(); }
+        }
+
+        public double[] MeshVertexBuffer
+        {
+            get { return mesh.Positions.ToDoubleArray(); }
+        }
+
+        public byte[] MeshColorBuffer
+        {
+            get { return mesh.Colors.ToByteArray(); }
+        }
+
+        public int[] MeshIndexBuffer
+        {
+            get { return mesh.Indices.ToArray(); }
+        }
+
+        public double[] MeshNormalBuffer
+        {
+            get { return mesh.Normals.ToDoubleArray(); }
+        }
+
+        public double[] MeshTextureCoordinateBuffer
+        {
+            get { return mesh.TextureCoordinates.ToDoubleArray(); }
+        }
+
+        public double[] PointVertexBuffer
+        {
+            get { return points.Positions.ToDoubleArray(); }
+        }
+
+        public byte[] PointColorBuffer
+        {
+            get { return points.Colors.ToByteArray(); }
+        }
+
+        public int[] PointIndexBuffer
+        {
+            get { return points.Indices.ToArray(); }
+        }
 
         #endregion
 
@@ -453,48 +506,58 @@ namespace Dynamo.Wpf
 
     internal static class HelixRenderExtensions
     {
-        public static List<double> ToDoubles(this Vector2Collection collection)
+        public static double[] ToDoubleArray(this Vector2Collection collection)
         {
-            var doubles = new List<double>();
+            var doubles = new double[collection.Count*2];
+
+            var count = 0;
             foreach (var v in collection)
             {
-                doubles.Add(v.X);
-                doubles.Add(v.Y);
+                doubles[count] = v.X;
+                doubles[count + 1] = v.Y;
+                count += 2;
             }
 
             return doubles;
         }
 
-        public static List<double> ToDoubles(this Vector3Collection collection)
+        public static double[] ToDoubleArray(this Vector3Collection collection)
         {
-            var doubles = new List<double>();
+            var doubles = new double[collection.Count*3];
+
+            var count = 0;
             foreach (var v in collection)
             {
-                doubles.Add(v.X);
-                doubles.Add(v.Y);
-                doubles.Add(v.Z);
+                doubles[count] = v.X;
+                doubles[count + 1] = v.Y;
+                doubles[count + 1] = v.Z;
+                count += 3;
             }
 
             return doubles;
         }
 
-        public static List<byte> ToBytes(this Color4Collection collection)
+        public static byte[] ToByteArray(this Color4Collection collection)
         {
-            var bytes = new List<byte>();
-            foreach (var v in collection)
+            var bytes = new byte[collection.Count * 4];
+
+            var count = 0;
+            foreach (var c in collection)
             {
-                bytes.Add((byte)(v.Red * 255));
-                bytes.Add((byte)(v.Green * 255));
-                bytes.Add((byte)(v.Blue * 255));
-                bytes.Add((byte)(v.Alpha * 255));
+                bytes[count] = (byte)(c.Red * 255.0f);
+                bytes[count + 1] = (byte)(c.Green * 255.0f);
+                bytes[count + 2] = (byte)(c.Blue * 255.0f);
+                bytes[count + 3] = (byte)(c.Alpha * 255.0f);
+                count += 4;
             }
+
             return bytes;
         }
 
-        public static Color4Collection ToColor4Collection(this List<byte> collection)
+        public static Color4Collection ToColor4Collection(this byte[] collection)
         {
             var colors = new Color4Collection();
-            for(var i = 0; i<collection.Count; i+=4)
+            for(var i = 0; i<collection.Count(); i+=4)
             {
                 var a = collection[i]/255.0f;
                 var b = collection[i + 1]/255.0f;
@@ -504,33 +567,6 @@ namespace Dynamo.Wpf
                 colors.Add(newColor);
             }
             return colors;
-        }
-
-        public static Vector3Collection ToVector3Collection(this List<double> collection)
-        {
-            var vectors = new Vector3Collection();
-            for (var i = 0; i < collection.Count; i += 3)
-            {
-                var a = collection[i];
-                var b = collection[i + 1];
-                var c = collection[i + 2];
-                vectors.Add(new Vector3((float)a,(float)b,(float)c));
-            }
-
-            return vectors;
-        }
-
-        public static Vector2Collection ToVector2Collection(this List<double> collection)
-        {
-            var vectors = new Vector2Collection();
-            for (var i = 0; i < collection.Count; i += 2)
-            {
-                var a = collection[i];
-                var b = collection[i + 1];
-                vectors.Add(new Vector2((float)a, (float)b));
-            }
-
-            return vectors;
         }
     }
 }

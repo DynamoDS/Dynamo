@@ -146,8 +146,6 @@ namespace Dynamo.Core.Threading
                 return;
             }
 
-            
-            
             if (mirrorData.IsCollection)
             {
                 foreach (var el in mirrorData.GetElements())
@@ -235,13 +233,12 @@ namespace Dynamo.Core.Threading
                         var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
                         package.PushLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
 
-                        var lineVertCounts = package.LineStripVertices.Count;
-                        for (var i = 0; i < lineVertCounts / 3 / 2; i++)
+                        for (var i = 0; i < package.LineVertexCount / 3 / 2; i++)
                         {
                             package.PushLineStripVertexCount(2);
                         }
 
-                        for (var i = 0; i < (lineVertCounts / 3) * 4; i += 4)
+                        for (var i = 0; i < (package.LineVertexCount / 3) * 4; i += 4)
                         {
                             package.PushLineStripVertexColor(180,180,180,255);
                         }
@@ -255,7 +252,6 @@ namespace Dynamo.Core.Threading
                         {
                             package.PushTriangleVertexColor(0, 0, 0, 10);
                         }
-
                     }
 
                     // The default color coming from the geometry library for
@@ -263,27 +259,10 @@ namespace Dynamo.Core.Threading
                     // color of 0,0,0,255 (Black), we adjust the color components here.
                     if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
                     {
-                        var newLineColors = new List<byte>();
-                        for (var i = 0; i < package.LineStripVertexColors.Count; i += 4)
-                        {
-                            newLineColors.Add(defR);
-                            newLineColors.Add(defG);
-                            newLineColors.Add(defB);
-                            newLineColors.Add(defA);
-                        }
-                        package.LineStripVertexColors = null;
-                        package.LineStripVertexColors = newLineColors;
-
-                        var newPointColors = new List<byte>(package.PointVertexColors.Count);
-                        for (var i = 0; i < package.PointVertexColors.Count; i += 4)
-                        {
-                            newPointColors.Add(defR);
-                            newPointColors.Add(defG);
-                            newPointColors.Add(defB);
-                            newPointColors.Add(defA);
-                        }
-                        package.PointVertexColors = null;
-                        package.PointVertexColors = newPointColors;
+                        if(package.LineVertexCount > 0)
+                            package.ApplyLineVertexColors(0, package.LineVertexCount-1, defR, defG, defB, defA);
+                        if(package.PointVertexCount > 0)
+                            package.ApplyPointVertexColors(0, package.PointVertexCount-1, defR, defG, defB, defA);
                     }
                 }
                 catch (Exception e)

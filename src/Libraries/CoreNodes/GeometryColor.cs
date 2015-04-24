@@ -47,97 +47,77 @@ namespace DSCore
             // As you add more data to the render package, you need
             // to keep track of the index where this coloration will 
             // start from.
-            var lineStripStartIndex = package.LineStripVertexColors.Count;
-            var pointVertexStartIndex = package.PointVertexColors.Count;
-            var triangleVertexStartIndex = package.TriangleVertexColors.Count;
+            var linesStart = package.LineVertexCount;
+            var pointsStart = package.PointVertexCount;
+            var meshStart = package.MeshVertexCount;
 
             geometry.Tessellate(package, tol, maxGridLines);
 
-            package.LineStripVertexColors = ResetColorOnArray(package.LineStripVertexColors, color, lineStripStartIndex);
-            package.PointVertexColors = ResetColorOnArray(package.PointVertexColors, color, pointVertexStartIndex);
-            package.TriangleVertexColors = ResetColorOnArray(package.TriangleVertexColors, color, triangleVertexStartIndex);
+            var linesEnd = package.LineVertexCount - 1;
+            var pointsEnd = package.PointVertexCount - 1;
+            var meshEnd = package.MeshVertexCount - 1;
+
+            if(package.LineVertexCount > 0)
+                package.ApplyLineVertexColors(linesStart, linesEnd,  color.Red, color.Green, color.Blue, color.Alpha);
+            if(package.PointVertexCount > 0)
+                package.ApplyPointVertexColors(pointsStart, pointsEnd, color.Red, color.Green, color.Blue, color.Alpha);
+            if(package.MeshVertexCount > 0)
+                package.ApplyMeshVertexColors(meshStart, meshEnd, color.Red, color.Green, color.Blue, color.Alpha);
 
             var surf = geometry as Surface;
             if (surf != null)
             {
-                var start = package.LineStripVertexColors.Count;
+                var start = package.LineVertexCount;
                 surf.PerimeterCurves().ForEach(
                         e =>
                             e.Tessellate(
                                 package,
                                 tol,
                                 maxGridLines));
-                var end = package.LineStripVertexColors.Count - 1;
-                ReColorLineVerticesFromTo(start, end, package);
+                var end = package.LineVertexCount - 1;
+                package.ApplyLineVertexColors(start, end, color.Red, color.Green, color.Blue, color.Alpha);
             }
 
             var solid = geometry as Solid;
             if (solid != null)
             {
-                var start = package.LineStripVertexColors.Count;
+                var start = package.LineVertexCount;
                 solid.Edges.ForEach(
                         e =>
                             e.CurveGeometry.Tessellate(
                                 package,
                                 tol,
                                 maxGridLines));
-                var end = package.LineStripVertexColors.Count - 1;
-                ReColorLineVerticesFromTo(start, end, package);
+                var end = package.LineVertexCount - 1;
+                package.ApplyLineVertexColors(start, end, color.Red, color.Green, color.Blue, color.Alpha);
             }
 
-            var existingVerts = package.TriangleVertices;
-            var existingNormals = package.TriangleNormals;
+            //var existingVerts = package.TriangleVertices;
+            //var existingNormals = package.TriangleNormals;
 
-            var newVerts = new List<double>();
-            for (var i = 0; i < existingVerts.Count; i += 3)
-            {
-                newVerts.AddRange(NudgeVertexAlongVector(existingVerts, existingNormals, i, 0.001));
-            }
-            package.TriangleVertices = newVerts;
+            //var newVerts = new List<double>();
+            //for (var i = 0; i < existingVerts.Count; i += 3)
+            //{
+            //    newVerts.AddRange(NudgeVertexAlongVector(existingVerts, existingNormals, i, 0.001));
+            //}
+            //package.TriangleVertices = newVerts;
         }
 
-        private static IEnumerable<double> NudgeVertexAlongVector(IList<double> vertices, IList<double> normals, int i, double amount)
-        {
-            var x = (float)vertices[i];
-            var y = (float)vertices[i + 1];
-            var z = (float)vertices[i + 2];
-            var v = Vector.ByCoordinates(x, y, z);
+        //private static IEnumerable<double> NudgeVertexAlongVector(IList<double> vertices, IList<double> normals, int i, double amount)
+        //{
+        //    var x = (float)vertices[i];
+        //    var y = (float)vertices[i + 1];
+        //    var z = (float)vertices[i + 2];
+        //    var v = Vector.ByCoordinates(x, y, z);
 
-            var nx = (float)normals[i];
-            var ny = (float)normals[i + 1];
-            var nz = (float)normals[i + 2];
-            var n = Vector.ByCoordinates(nx, ny, nz);
+        //    var nx = (float)normals[i];
+        //    var ny = (float)normals[i + 1];
+        //    var nz = (float)normals[i + 2];
+        //    var n = Vector.ByCoordinates(nx, ny, nz);
 
-            var nudge = v.Add(n.Normalized().Scale(amount));
+        //    var nudge = v.Add(n.Normalized().Scale(amount));
 
-            return new [] { nudge.X, nudge.Y, nudge.Z };
-        }
-
-        private void ReColorLineVerticesFromTo(int start, int end, IRenderPackage package)
-        {
-            var colors = package.LineStripVertexColors;
-            for (var i = start; i < end; i += 4)
-            {
-                colors[i] = color.Red;
-                colors[i + 1] = color.Green;
-                colors[i + 2] = color.Blue;
-                colors[i + 3] = color.Alpha;
-            }
-            package.LineStripVertexColors = null;
-            package.LineStripVertexColors = colors;
-        }
-
-        private static List<byte> ResetColorOnArray(List<byte> array, Color color, int startIndex)
-        {
-            var colors = array;
-            for (var i = startIndex; i < array.Count; i += 4)
-            {
-                colors[i] = color.Red;
-                colors[i + 1] = color.Green;
-                colors[i + 2] = color.Blue;
-                colors[i + 3] = color.Alpha;
-            }
-            return colors;
-        }
+        //    return new [] { nudge.X, nudge.Y, nudge.Z };
+        //}
     }
 }

@@ -11,12 +11,12 @@ namespace Dynamo
         {
             var packages = dynamoModel.CurrentWorkspace.Nodes
                 .Where(node => node.HasRenderPackages)
-                .SelectMany(rp=>rp.RenderPackages)
-                .Where(rp=>rp.TriangleVertices.Count % 9 == 0)
+                .SelectMany(node=>node.RenderPackages)
+                .Where(rp=>rp.HasData)
                 .ToList();
 
-            var n = packages.SelectMany(rp => rp.TriangleNormals).ToList();
-            var v = packages.SelectMany(rp => rp.TriangleVertices).ToList();
+            var n = packages.SelectMany(p => p.MeshNormalBuffer).ToList();
+            var v = packages.SelectMany(rp => rp.MeshVertexBuffer).ToList();
 
             using (TextWriter tw = new StreamWriter(path))
             {
