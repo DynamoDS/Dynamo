@@ -44,7 +44,7 @@ namespace Dynamo.Models
         }
 
         public static event SettingsMigrationHandler RequestMigrationStatusDialog;
-        public static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
+        internal static void OnRequestMigrationStatusDialog(SettingsMigrationEventArgs args)
         {
             if (RequestMigrationStatusDialog != null)
                 RequestMigrationStatusDialog(args);
