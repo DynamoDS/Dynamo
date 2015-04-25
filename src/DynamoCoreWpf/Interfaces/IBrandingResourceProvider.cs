@@ -14,7 +14,10 @@ namespace Dynamo.Wpf.Interfaces
             AgreementTwo,
             FeatureUsage,
             NodeUsage,
+            AgreementThree,
             Consent,
+            ConsentTwo,
+            LearnMore,
         }
 
         public enum StartPage

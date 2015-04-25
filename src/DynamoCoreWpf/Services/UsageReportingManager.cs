@@ -1,4 +1,5 @@
 ﻿using Dynamo.Core;
+using Dynamo.ViewModels;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
@@ -18,7 +19,7 @@ namespace Dynamo.Services
 
         #region Private
 
-        private static DynamoModel dynamoModel;
+        private static DynamoViewModel dynamoViewModel;
         private static UsageReportingManager instance;
         private static IBrandingResourceProvider resourceProvider;
 
@@ -34,6 +35,7 @@ namespace Dynamo.Services
         public static void DestroyInstance()
         {
             instance = null;
+            dynamoViewModel = null;
         }
 
         #endregion
@@ -47,24 +49,24 @@ namespace Dynamo.Services
         {
             get {
                 return !DynamoModel.IsTestMode
-                    && (dynamoModel != null
-                        && dynamoModel.PreferenceSettings.IsUsageReportingApproved);
+                    && (dynamoViewModel != null
+                        && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
             }
             private set
             {
-                dynamoModel.PreferenceSettings.IsUsageReportingApproved = value;
+                dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved = value;
                 RaisePropertyChanged("IsUsageReportingApproved");
-                var path = dynamoModel.PathManager.PreferenceFilePath;
+                var path = dynamoViewModel.Model.PathManager.PreferenceFilePath;
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynamoModel.PreferenceSettings.SaveInternal(path);
+                    dynamoViewModel.Model.PreferenceSettings.SaveInternal(path);
                 }
                 catch (Exception args)
                 {
                     DynamoModel.IsCrashing = true;
-                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(
+                    dynamoViewModel.Model.OnRequestsCrashPrompt(this, new CrashPromptArgs(
                         args.Message, Properties.Resources.UsageReportingErrorMessage, path));
                 }
             }
@@ -76,10 +78,10 @@ namespace Dynamo.Services
         /// the beginning of a Dynamo session.  It will not be mutated 
         /// in subsequent calls.
         /// </summary>
-        public void InitializeCore(DynamoModel dynamoModel)
+        public void InitializeCore(DynamoViewModel dynamoViewModel)
         {
-            if (UsageReportingManager.dynamoModel == null)
-                UsageReportingManager.dynamoModel = dynamoModel;
+            if (UsageReportingManager.dynamoViewModel == null)
+                UsageReportingManager.dynamoViewModel = dynamoViewModel;
         }
 
         /// <summary>
@@ -93,27 +95,27 @@ namespace Dynamo.Services
                 if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
-                if (dynamoModel != null)
-                    return dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved;
+                if (dynamoViewModel.Model != null)
+                    return dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved;
 
                 return true;
             }
 
             private set
             {
-                dynamoModel.PreferenceSettings.IsAnalyticsReportingApproved = value;
+                dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved = value;
                 RaisePropertyChanged("IsAnalyticsReportingApproved");
-                var path = dynamoModel.PathManager.PreferenceFilePath;
+                var path = dynamoViewModel.Model.PathManager.PreferenceFilePath;
 
                 // Call PreferenceSettings to save
                 try
                 {
-                    dynamoModel.PreferenceSettings.SaveInternal(path);
+                    dynamoViewModel.Model.PreferenceSettings.SaveInternal(path);
                 }
                 catch (Exception args)
                 {
                     DynamoModel.IsCrashing = true;
-                    dynamoModel.OnRequestsCrashPrompt(this, new CrashPromptArgs(
+                    dynamoViewModel.Model.OnRequestsCrashPrompt(this, new CrashPromptArgs(
                         args.Message, Properties.Resources.UsageReportingErrorMessage, path));
                 }
             }
@@ -125,11 +127,11 @@ namespace Dynamo.Services
         {
             get
             {
-                return dynamoModel.PreferenceSettings.IsFirstRun;
+                return dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
             }
             private set
             {
-                dynamoModel.PreferenceSettings.IsFirstRun = value;
+                dynamoViewModel.Model.PreferenceSettings.IsFirstRun = value;
                 RaisePropertyChanged("FirstRun");
             }
         }
@@ -146,7 +148,7 @@ namespace Dynamo.Services
         {
             resourceProvider = resource;
             // First run of Dynamo
-            if (dynamoModel.PreferenceSettings.IsFirstRun)
+            if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun)
             {
                 FirstRun = false;
 
@@ -178,7 +180,19 @@ namespace Dynamo.Services
 
         public void ToggleIsAnalyticsReportingApproved(object parameter)
         {
-            IsAnalyticsReportingApproved = !IsAnalyticsReportingApproved;
+            if (!(parameter is Dynamo.Controls.DynamoView))
+            {
+                var message = "DynamoView must be supplied for this command";
+                throw new InvalidOperationException(message);
+            }
+
+            bool resultOption = !IsAnalyticsReportingApproved;
+
+            // If toggling to approve analytics reporting, show agreement consent
+            if (resultOption)
+                ShowUsageReportingPrompt(parameter as Window);
+            else
+                IsAnalyticsReportingApproved = false;
         }
 
         internal bool CanToggleIsUsageReportingApproved(object parameter)
@@ -196,6 +210,11 @@ namespace Dynamo.Services
             IsUsageReportingApproved = approved;
         }
 
+        public void SetAnalyticsReportingAgreement(bool approved)
+        {
+            IsAnalyticsReportingApproved = approved;
+        }
+
         private void ShowUsageReportingPrompt(Window ownerWindow)
         {
             // If an owner window is not supplied, then we will fallback onto 
@@ -210,7 +229,7 @@ namespace Dynamo.Services
             if (ownerWindow == null && (null != Application.Current))
                 ownerWindow = Application.Current.MainWindow;
 
-            var usageReportingPrompt = new UsageReportingAgreementPrompt(resourceProvider)
+            var usageReportingPrompt = new UsageReportingAgreementPrompt(resourceProvider, dynamoViewModel)
             {
                 Owner = ownerWindow
             };
