@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
@@ -68,12 +69,11 @@ namespace DSCore
             if (surf != null)
             {
                 var start = package.LineVertexCount;
-                surf.PerimeterCurves().ForEach(
-                        e =>
-                            e.Tessellate(
-                                package,
-                                tol,
-                                maxGridLines));
+                foreach (var curve in surf.PerimeterCurves())
+                {
+                    curve.Tessellate(package, tol, maxGridLines);
+                    curve.Dispose();
+                }
                 var end = package.LineVertexCount - 1;
                 package.ApplyLineVertexColors(start, end, color.Red, color.Green, color.Blue, color.Alpha);
             }
@@ -82,12 +82,11 @@ namespace DSCore
             if (solid != null)
             {
                 var start = package.LineVertexCount;
-                solid.Edges.ForEach(
-                        e =>
-                            e.CurveGeometry.Tessellate(
-                                package,
-                                tol,
-                                maxGridLines));
+                foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry))
+                {
+                    geom.Tessellate(package, tol, maxGridLines);
+                    geom.Dispose();
+                }
                 var end = package.LineVertexCount - 1;
                 package.ApplyLineVertexColors(start, end, color.Red, color.Green, color.Blue, color.Alpha);
             }
