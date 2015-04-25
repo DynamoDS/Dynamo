@@ -165,7 +165,7 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        public void HelixRenderPackage_MeshVertexBufferCorrect()
+        public void HelixRenderPackage_MeshVertexBufferCheck()
         {
             var p = new HelixRenderPackage();
 
@@ -177,6 +177,20 @@ namespace DynamoCoreUITests
             // Expect Y Up.
             Assert.AreEqual(test1, new double[]{1,0,0});
             Assert.AreEqual(test2, new double[]{0,1,0});
+        }
+
+        [Test]
+        public void HelixRenderPackage_MeshColorBufferCheck()
+        {
+            var p = new HelixRenderPackage();
+
+            PushQuadIntoPackage(p);
+
+            var testColors = WhiteByteArrayOfLength(6);
+
+            p.ApplyMeshVertexColors(testColors);
+
+            Assert.AreEqual(p.MeshColorBuffer, testColors);
         }
 
         /// <summary>
