@@ -527,7 +527,122 @@ namespace DynamoCoreUITests
             Assert.AreEqual(cmdOne.MakeCurrent, cmdTwo.MakeCurrent);
         }
 
-        
+        [Test, RequiresSTA]
+        public void Defect_MAGN_6821_withoutInput()
+        {
+               
+            //Custom Node without Input
+            //Scenario:
+            //1. Create CBN and convert that into CustomNode
+            //2. Place this custom node and execute
+            //3. Verify the results of custom node instance are correct
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+            RunCommandsFromFile("Defect_MAGN_6821_withoutInput.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                var cbn = GetNode("66c0f6b3-e9a0-495e-b3e1-c02b4615c71c") as Function;
+                if (commandTag == "Run")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
+                    AssertPreviewValue("66c0f6b3-e9a0-495e-b3e1-c02b4615c71c", 12);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_6821_withInput()
+        {
+            
+            //Create one input node
+            //Scenario
+            //1. Create one input node
+            //2. Create one output node
+            //3. Connect the above with single node in between
+            //4. Place the custom node instance and connect with relavant inputs
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+            RunCommandsFromFile("Defect_MAGN_6821_withInput.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "Run")
+                {
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
+                    AssertPreviewValue("fb5bf7c3-8312-42e8-85cb-e17fbee1fbae", 2);
+                    AssertPreviewValue("fb9c8be5-7fc2-4735-a33c-c1c9b2a97f18", 2);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_6821_multipleInput()
+        {        
+            // Create Multiple Input nodes
+            //Scenario: 
+            //1. Create custom node with multiple input nodes
+            //2. Connect them to complete the graph
+            //3. Create instance of custom node and Execute.
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+            RunCommandsFromFile("Defect_MAGN_6821_multipleInput.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                if (commandTag == "Run")
+                {
+                    AssertPreviewValue("9eb488ec-c232-4048-a30c-e610f10deeb5", 4);
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(3, workspace.Connectors.Count());
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
+        public void Defect_MAGN_6821_multipleInstance()
+        {         
+            //Create Multiple Instances nodes
+            //Scenario:
+            //1. Create custom node with multiple input nodes
+            //2. Connect them to complete the graph
+            //3. Create multiple instances of custom node and Execute.
+            //4. verify the results are correct
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+            RunCommandsFromFile("Defect_MAGN_6821_multipleInstance.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "Run")
+                {
+                    AssertPreviewValue("d48647e8-0129-4e16-9fa8-7c4d8f20c1be", 4);
+                }
+            });
+        }
+
+        [Test, RequiresSTA]
+
+        public void Defect_MAGN_6821_nestedCustomNode()
+        {          
+            // Single Instance
+            //Scenario: Create a custom node inside another one
+            //  http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6821
+
+            RunCommandsFromFile("Defect_MAGN_6821_nestedCustomNode.xml", false, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                if (commandTag == "Run")
+                {
+                    AssertPreviewValue("2088ab88-dd22-4963-8fe9-2f393328aa56", 2);
+                    AssertPreviewValue("f89e3e11-aa50-408e-97a0-c48d11b64d4f", 2);
+                }
+            });
+        }
+       
+
+        [Test]
         public void TestCustomNode()
         {
             RunCommandsFromFile("TestCustomNode.xml");
@@ -3209,7 +3324,9 @@ namespace DynamoCoreUITests
 
             });
 
-        }
+        } 
+       
+
         #endregion
 
         #region Tests moved from FScheme
@@ -3656,44 +3773,6 @@ namespace DynamoCoreUITests
             });
 
         }
-        [Test, RequiresSTA]
-        [Category("RegressionTests")]
-        public void MAGN_CustomNode_automatic7073()
-        {
-            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7073
-            // In Run automatic mode - Create a file with custom node    
-            // Open a graph with custom node instance in Run  Automatic mode   
-
-            RunCommandsFromFile("MAGN_7073.xml", true, (commandTag) =>
-            {
-                var workspace = ViewModel.Model.CurrentWorkspace;
-
-                Assert.AreEqual(2, workspace.Nodes.Count);
-                Assert.AreEqual(1, workspace.Connectors.Count());
-                var point = GetNode("1677e207-e314-4460-827c-161f90062513") as DoubleInput;
-                Assert.IsNotNull(point);
-
-            });
-        }
-        [Test, RequiresSTA]
-        [Category("RegressionTests")]
-        public void MAGN_6856_namespace()
-        {
-            // Details are available in defect http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6856
-            // 1. Create CBN with code  "Autodesk.Point.ByCoordinates(1,1,1);"   
-            // 2. Create a CBN with code  "Point.ByCoordinates(1,1,1);"    
-
-            RunCommandsFromFile("MAGN-6856_Namespace.xml", true, (commandTag) =>
-            {
-                var workspace = ViewModel.Model.CurrentWorkspace;
-                var point = GetNode("1677e207-e314-4460-827c-161f90062513") as DoubleInput;
-                Assert.IsNotNull(point);
-                var pt = GetNode("3aaa6ce2-9134-4ec9-972f-c8ee2190ee8a") as DoubleInput;
-                Assert.IsNotNull(pt);
-                Assert.AreEqual(ElementState.Warning, pt.State);
-            });
-        }
-        
         #endregion
     }
 
