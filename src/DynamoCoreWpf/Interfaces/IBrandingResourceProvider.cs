@@ -8,13 +8,13 @@ namespace Dynamo.Wpf.Interfaces
     {
         public enum ConsentForm
         {
-            Image,        
-            Title, 
-            AgreementOne,  
+            Image,
+            Title,
+            AgreementOne,
             AgreementTwo,
             FeatureUsage,
             NodeUsage,
-            Consent,
+            AgreementThree,
         }
 
         public enum StartPage
