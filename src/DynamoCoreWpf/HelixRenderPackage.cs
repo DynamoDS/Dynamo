@@ -49,10 +49,7 @@ namespace Dynamo.Wpf
             points = InitPointGeometry();
             lines = InitLineGeometry();
             mesh = InitMeshGeometry();
-
             LineStripVertexCounts = new List<int>();
-            IsSelected = false;
-            RequiresPerVertexColoration = false;
         }
 
         #endregion
