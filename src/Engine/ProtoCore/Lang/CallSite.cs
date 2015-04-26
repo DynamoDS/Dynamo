@@ -289,7 +289,7 @@ namespace ProtoCore
         private readonly FunctionTable globalFunctionTable;
         private readonly ExecutionMode executionMode;
         private int invokeCount; //Number of times the callsite has been executed within this run
-        private List<ISerializable> historicalSerializables = new List<ISerializable>();
+        private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
 
         //TODO(Luke): This should be loaded from the attribute
         private string TRACE_KEY = TraceUtils.__TEMP_REVIT_TRACE_ID;
@@ -386,7 +386,7 @@ namespace ProtoCore
             // Cache the historical trace data for comparison
             // when graph update is complete. This data will be cleared
             // after the first reconciliation.
-            historicalSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData()).ToList();
+            beforeFirstRunSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData()).ToList();
         }
 
         public void UpdateCallSite(int classScope, string methodName)
@@ -570,15 +570,15 @@ namespace ProtoCore
         {
             var result = new List<ISerializable>();
 
-            if (!historicalSerializables.Any())
+            if (!beforeFirstRunSerializables.Any())
                 return result;
 
             var currentSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData());
-            result.AddRange(historicalSerializables.Where(hs=>!currentSerializables.Contains(hs)).ToList());
+            result.AddRange(beforeFirstRunSerializables.Where(hs=>!currentSerializables.Contains(hs)).ToList());
             
             // Clear the historical serializable to avoid 
             // them being used again. 
-            historicalSerializables.Clear();
+            beforeFirstRunSerializables.Clear();
 
             return result;
         }
