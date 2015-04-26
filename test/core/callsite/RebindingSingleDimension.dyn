@@ -1,0 +1,16 @@
+<Workspace Version="0.8.1.1151" X="446.097546502025" Y="510.643411740913" zoom="0.906217674817656" Name="Home" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Autodesk.Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="16aa9869-04a9-4577-889c-e8b99114eaa5" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="169" y="4.21833333333331" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Autodesk.Point.ByCoordinates(0..end, 0,0);" ShouldFocus="false" />
+    <Dynamo.Nodes.DoubleInput guid="8d9300ea-8f8a-4c2c-b010-a26e3f00ff6d" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="0" y="0" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
+      <System.Double value="5" />
+    </Dynamo.Nodes.DoubleInput>
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="8d9300ea-8f8a-4c2c-b010-a26e3f00ff6d" start_index="0" end="16aa9869-04a9-4577-889c-e8b99114eaa5" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>
