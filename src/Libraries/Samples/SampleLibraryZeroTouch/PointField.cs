@@ -106,6 +106,7 @@ namespace SampleLibraryZeroTouch
             package.PushTriangleVertex(p.X, p.Y, p.Z);
             package.PushTriangleVertexColor(255, 255, 255, 255);
             package.PushTriangleVertexNormal(n.X,n.Y,n.Z);
+            package.PushTriangleVertexUV(0,0);
         }
     }
 
