@@ -265,10 +265,6 @@ namespace ProtoCore.AssociativeEngine
                         }
                         else if (!graphNode.isDirty)
                         {
-                            //if (core.Options.ElementBasedArrayUpdate)
-                            //{
-                            //    UpdateDimensionsForGraphNode(graphNode, matchingNode, executingGraphNode);
-                            //}
                             graphNode.forPropertyChanged = propertyChanged;
                             reachableGraphNodes.Add(graphNode);
 
@@ -490,33 +486,6 @@ namespace ProtoCore.AssociativeEngine
 
        
 
-        /// <summary>
-        /// Marks a graphnode dirty and returns the graphnode
-        /// </summary>
-        /// <param name="runtimeCore"></param>
-        /// <param name="astID"></param>
-        /// <returns></returns>
-        public static AssociativeGraph.GraphNode MarkGraphNodeDirty(RuntimeCore runtimeCore, int astID)
-        {
-            Executable exe = runtimeCore.DSExecutable;
-            List<AssociativeGraph.GraphNode> nodesInScope = 
-                exe.instrStreamList[0].dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope);
-            foreach (var gnode in nodesInScope)
-            {
-                if (gnode.isActive && gnode.OriginalAstID == astID)
-                {
-                    gnode.isDirty = true;
-                    gnode.isActive = true;
-
-                    if (gnode.updateBlock.updateRegisterStartPC != Constants.kInvalidIndex)
-                    {
-                        gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;
-                    }
-                    return gnode;
-                }
-            }
-            return null;
-        }
 
         /// <summary>
         ///  Finds all graphnodes associated with each AST and marks them dirty. Returns the first dirty node
@@ -524,7 +493,8 @@ namespace ProtoCore.AssociativeEngine
         /// <param name="core"></param>
         /// <param name="nodeList"></param>
         /// <returns></returns>
-        public static AssociativeGraph.GraphNode MarkGraphNodesDirty(Core core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
+        public static AssociativeGraph.GraphNode MarkGraphNodesDirtyAtGlobalScope
+(RuntimeCore core, IEnumerable<AST.AssociativeAST.AssociativeNode> nodeList)
         {
             if (nodeList == null)
             {
@@ -540,16 +510,21 @@ namespace ProtoCore.AssociativeEngine
                     continue;
                 }
 
-                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GraphList)
+                foreach (var gnode in core.DSExecutable.instrStreamList[0].dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidIndex, Constants.kGlobalScope))
                 {
                     if (gnode.isActive && gnode.OriginalAstID == bNode.OriginalAstID)
                     {
+                        
+                        gnode.isDirty = true;
+                        gnode.isActive = true;
+                        if (gnode.updateBlock.updateRegisterStartPC != Constants.kInvalidIndex)
+                        {
+                            gnode.updateBlock.startpc = gnode.updateBlock.updateRegisterStartPC;
+                        }
                         if (firstDirtyNode == null)
                         {
                             firstDirtyNode = gnode;
                         }
-                        gnode.isDirty = true;
-                        gnode.isActive = true;
                     }
                 }
             }
@@ -691,12 +666,6 @@ namespace ProtoCore.AssociativeGraph
         public int SSASubscript { get; set; }
         public bool IsLastNodeInSSA { get; set; }
 
-
-        
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-        public StackValue ArrayPointer { get; set; }
-#endif
-
         public GraphNode()
         {
             UID = Constants.kInvalidIndex;
@@ -729,10 +698,6 @@ namespace ProtoCore.AssociativeGraph
             forPropertyChanged = false;
             lastGraphNode = null;
             isActive = true;
-
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-            ArrayPointer = StackValue.Null;
-#endif
             symbolListWithinExpression = new List<SymbolNode>();
             reExecuteExpression = false;
             SSASubscript = Constants.kInvalidIndex;

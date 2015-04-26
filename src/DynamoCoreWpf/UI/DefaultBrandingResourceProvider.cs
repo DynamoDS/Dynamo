@@ -87,6 +87,12 @@ namespace Dynamo.Wpf.UI
         }
 
         public string ProductName { get { return "Dynamo"; } }
+
+        public string AdditionalPackagePublisherTermsOfUse
+        {
+            get { return String.Empty; } // No additional terms of use.
+        }
+
         #endregion
 
         #region private members

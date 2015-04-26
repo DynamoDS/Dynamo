@@ -395,6 +395,28 @@ namespace Dynamo.Controls
             watchSettingsControl.DataContext = background_preview;
         }
 
+        /// <summary>
+        /// Call this method to optionally bring up terms of use dialog. User 
+        /// needs to accept terms of use before any packages can be downloaded 
+        /// from package manager.
+        /// </summary>
+        /// <returns>Returns true if the terms of use for downloading a package 
+        /// is accepted by the user, or false otherwise. If this method returns 
+        /// false, then download of package should be terminated.</returns>
+        /// 
+        bool DisplayTermsOfUseForAcceptance()
+        {
+            var prefSettings = dynamoViewModel.Model.PreferenceSettings;
+            if (prefSettings.PackageDownloadTouAccepted)
+                return true; // User accepts the terms of use.
+
+            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null);
+            prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
+
+            // User may or may not accept the terms.
+            return prefSettings.PackageDownloadTouAccepted;
+        }
+
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
         {
             UnsubscribeNodeViewCustomizationEvents();
@@ -431,6 +453,9 @@ namespace Dynamo.Controls
         private PackageManagerSearchViewModel _pkgSearchVM;
         void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
+            if (!DisplayTermsOfUseForAcceptance())
+                return; // Terms of use not accepted.
+
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);

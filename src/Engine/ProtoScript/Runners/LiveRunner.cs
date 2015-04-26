@@ -172,7 +172,8 @@ namespace ProtoScript.Runners
             if (changeSet.ForceExecuteASTList.Count > 0)
             {
                 // Mark all graphnodes dirty which are associated with the force exec ASTs
-                ProtoCore.AssociativeGraph.GraphNode firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirty(core, changeSet.ForceExecuteASTList);
+                ProtoCore.AssociativeGraph.GraphNode firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope
+(runtimeCore, changeSet.ForceExecuteASTList);
                 Validity.Assert(firstDirtyNode != null);
 
                 // If the only ASTs to execute are force exec, then set the entrypoint here.
@@ -226,7 +227,7 @@ namespace ProtoScript.Runners
                 AssociativeNode node = modifiedNodes[0];
 
                 StackValue sv = GetStackValueForRuntime(node);
-                int startPC = runtimeCore.SetValue((node as BinaryExpressionNode).OriginalAstID, sv);
+                int startPC = runtimeCore.SetValue(modifiedNodes, sv);
                 Validity.Assert(startPC != Constants.kInvalidIndex);
                 runtimeCore.SetStartPC(startPC);
             }

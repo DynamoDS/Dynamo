@@ -115,6 +115,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sign in to Autodesk A360 to access online services that integrate with your desktop software..
+        /// </summary>
+        public static string Autodesk360SignInButtonContentToolTip {
+            get {
+                return ResourceManager.GetString("Autodesk360SignInButtonContentToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk A360.
+        /// </summary>
+        public static string Autodesk360SignInButtonTitleToolTip {
+            get {
+                return ResourceManager.GetString("Autodesk360SignInButtonTitleToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autodesk Sign In.
         /// </summary>
         public static string AutodeskSignIn {
@@ -174,6 +192,15 @@ namespace Dynamo.Wpf.Properties {
         public static string CannotSubmitPackage {
             get {
                 return ResourceManager.GetString("CannotSubmitPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add To Group.
+        /// </summary>
+        public static string ContextAddGroupFromSelection {
+            get {
+                return ResourceManager.GetString("ContextAddGroupFromSelection", resourceCulture);
             }
         }
         
@@ -399,6 +426,15 @@ namespace Dynamo.Wpf.Properties {
         public static string ContextMenuShowUpstreamPreview {
             get {
                 return ResourceManager.GetString("ContextMenuShowUpstreamPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove from Group.
+        /// </summary>
+        public static string ContextUnGroupFromSelection {
+            get {
+                return ResourceManager.GetString("ContextUnGroupFromSelection", resourceCulture);
             }
         }
         
@@ -1926,7 +1962,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable background 3D preview navigation (Ctrl + G).
+        ///   Looks up a localized string similar to Enable background 3D preview navigation (Ctrl + B).
         /// </summary>
         public static string InCanvasGeomButtonToolTip {
             get {
@@ -1935,7 +1971,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable graph view navigation (Ctrl + G).
+        ///   Looks up a localized string similar to Enable graph view navigation (Ctrl + B).
         /// </summary>
         public static string InCanvasNodeButtonToolTip {
             get {
@@ -3715,6 +3751,33 @@ namespace Dynamo.Wpf.Properties {
         public static string StartPageVisitDynamoBim {
             get {
                 return ResourceManager.GetString("StartPageVisitDynamoBim", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I Accept.
+        /// </summary>
+        public static string TermsOfUseAcceptButton {
+            get {
+                return ResourceManager.GetString("TermsOfUseAcceptButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I Decline.
+        /// </summary>
+        public static string TermsOfUseDeclineButton {
+            get {
+                return ResourceManager.GetString("TermsOfUseDeclineButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Manager Terms of Use.
+        /// </summary>
+        public static string TermsOfUseViewTitle {
+            get {
+                return ResourceManager.GetString("TermsOfUseViewTitle", resourceCulture);
             }
         }
         

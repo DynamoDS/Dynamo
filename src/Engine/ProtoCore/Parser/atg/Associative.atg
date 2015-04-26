@@ -174,24 +174,6 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         Associative_LanguageBlock<out node>
     |
         (
-            kw_break 
-                (. 
-                    if (la.val != ";")
-                        SynErr(Resources.SemiColonExpected);  
-                .)
-            endline
-        )      (. node = new ProtoCore.AST.AssociativeAST.BreakNode(); .)
-    |   
-        (
-            kw_continue 
-                (. 
-                    if (la.val != ";")
-                        SynErr(Resources.SemiColonExpected); 
-                .)
-            endline
-        )   (. node = new ProtoCore.AST.AssociativeAST.ContinueNode(); .)
-    |
-        (
             (
                 IF(core.ParsingMode == ParseMode.AllowNonAssignment)  
                     [
@@ -1240,9 +1222,6 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                 .)
         |
         (
-                                (. 
-                                    if(!(leftNode is ProtoCore.AST.AssociativeAST.PostFixNode)) {
-                                .)
             '='                 
                                 (. 
                                     ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
@@ -1458,7 +1437,6 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                         isLeftVarIdentList = false;                                  
                                     }  
                                 .)
-            (. } .)
         )
         |
         (
