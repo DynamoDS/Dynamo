@@ -53,6 +53,7 @@
     <Compile Include="HelloDynamoZeroTouch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PointField.cs" />
+    <Compile Include="TraceExample.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\NodeServices\DynamoServices.csproj">
