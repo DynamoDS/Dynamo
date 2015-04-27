@@ -2060,7 +2060,6 @@ namespace ProtoAssociative
                     EmitInstrConsole(kw.callr, funcCall.Function.Name + "[dynamic]");
                     EmitDynamicCall(dynFunc.Index, 
                                     globalClassIndex, 
-                                    blockId,
                                     funcCall.line, 
                                     funcCall.col, 
                                     funcCall.endLine, 

@@ -1561,7 +1561,6 @@ namespace ProtoCore
         }
 
         protected void EmitDynamicCall(int functionIndex, int type, 
-            int blockId,
             int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex, 
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex, 
             int entrypoint = ProtoCore.DSASM.Constants.kInvalidIndex)
