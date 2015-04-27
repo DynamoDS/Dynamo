@@ -971,7 +971,8 @@ namespace ProtoCore.DSASM
             return sv;
         }
 
-        private StackValue CallrForMemberFunction(int classIndex,
+        private StackValue CallrForMemberFunction(int blockIndex,
+                                                  int classIndex,
                                                   int procIndex,
                                                   bool hasDebugInfo,
                                                   ref bool isExplicitCall)
@@ -981,9 +982,6 @@ namespace ProtoCore.DSASM
 
             var arrayDim = rmem.Pop();
             Validity.Assert(arrayDim.IsArrayDimension);
-
-            var blockIndex = rmem.Pop();
-            Validity.Assert(blockIndex.IsBlockIndex);
 
             ClassNode classNode = exe.classTable.ClassNodes[classIndex];
             ProcedureNode procNode = classNode.vtable.procList[procIndex];
@@ -5691,7 +5689,7 @@ namespace ProtoCore.DSASM
             //
             if (isMemberFunctionPointer)
             {
-                RX = CallrForMemberFunction(classIndex, functionIndex, instr.debug != null, ref explicitCall);
+                RX = CallrForMemberFunction(blockIndex, classIndex, functionIndex, instr.debug != null, ref explicitCall);
             }
             else if (!runtimeCore.Options.IsDeltaExecution)
             {
