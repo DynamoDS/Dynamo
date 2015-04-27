@@ -1,10 +1,10 @@
 # See http://docs.travis-ci.com/user/languages/csharp/
 
 language: csharp
-solution: src/Dynamo.Mono.sln
+solution: src/Dynamo.Mono.2013.sln
 install:
-  - nuget restore src/Dynamo.Mono.sln
+  - nuget restore src/Dynamo.Mono.2013.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release src/Dynamo.Mono.sln
-# - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe bin/AnyCPU/Release/ProtoTest.dll
+#  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe bin/AnyCPU/Release/ProtoTest.dll
