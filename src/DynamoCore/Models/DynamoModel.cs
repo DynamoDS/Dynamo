@@ -552,7 +552,7 @@ namespace Dynamo.Models
             Debug.WriteLine("TRACE RECONCILIATION: {0} serializables were orphaned.", obj.OrphanedSerializables.Count());
 
             var orphans = new List<ISerializable>();
-            foreach (HomeWorkspaceModel ws in Workspaces.Where(w => w is HomeWorkspaceModel))
+            foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
             {
                 orphans.AddRange(ws.GetOrphanedSerializablesAndClearHistoricalTraceData());
             }
@@ -965,7 +965,9 @@ namespace Dynamo.Models
         {
             ResetEngineInternal();
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
+            {
                 workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
+            }
         }
 
         protected void ResetEngineInternal()
@@ -996,7 +998,9 @@ namespace Dynamo.Models
         public void ForceRun()
         {
             Logger.Log("Beginning engine reset");
+
             ResetEngine(true);
+
             Logger.Log("Reset complete");
 
             ((HomeWorkspaceModel)CurrentWorkspace).Run();
@@ -1023,7 +1027,26 @@ namespace Dynamo.Models
                     WorkspaceModel ws;
                     if (OpenFile(workspaceInfo, xmlDoc, out ws))
                     {
+                        // TODO: #4258
+                        // The logic to remove all other home workspaces from the model
+                        // was moved from the ViewModel. When #4258 is implemented, we will need to
+                        // remove this step.
+                        var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
+                        if (currentHomeSpaces.Any())
+                        {
+                            foreach (var s in currentHomeSpaces)
+                            {
+                                RemoveWorkspace(s);
+                            }
+                        }
+
                         AddWorkspace(ws);
+
+                        // TODO: #4258
+                        // Remove this ResetEngine call when multiple home workspaces is supported.
+                        // This call formerly lived in DynamoViewModel
+                        ResetEngine();
+
                         CurrentWorkspace = ws;
                         return;
                     }
