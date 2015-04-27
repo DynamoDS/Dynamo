@@ -417,6 +417,11 @@ namespace ProtoCore.SyntaxAnalysis
 
     public class AstReplacer : AssociativeAstVisitor<AssociativeNode>
     {
+        public override AssociativeNode DefaultVisit(AssociativeNode node)
+        {
+            return node;
+        }
+
         public override AssociativeNode VisitGroupExpressionNode(GroupExpressionNode node)
         {
             var newExpression = node.Expression.Accept(this);
