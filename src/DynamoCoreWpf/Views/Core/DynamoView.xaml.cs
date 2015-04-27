@@ -389,9 +389,8 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow += DynamoViewModelRequestAboutWindow;
 
-            //SHOW GALLERY
-            dynamoViewModel.RequestShowGallery += DynamoViewModelRequestShowGallery;
-            dynamoViewModel.RequestCloseGallery += DynamoViewModelRequestCloseGallery;
+            //SHOW or HIDE GALLERY
+            dynamoViewModel.RequestShowHideGallery += DynamoViewModelRequestShowHideGallery;
 
             LoadNodeViewCustomizations();
             SubscribeNodeViewCustomizationEvents();
@@ -443,31 +442,34 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
-        void DynamoViewModelRequestShowGallery()
+        void DynamoViewModelRequestShowHideGallery(bool showGallery)
         {
-            if (galleryView == null) //On-demand instantiation
+            if (showGallery)
             {
-                galleryView = new GalleryView(new GalleryViewModel(dynamoViewModel));
-                Grid.SetColumnSpan(galleryBackground, mainGrid.ColumnDefinitions.Count);
-                Grid.SetRowSpan(galleryBackground, mainGrid.RowDefinitions.Count);
+                if (galleryView == null) //On-demand instantiation
+                {
+                    galleryView = new GalleryView(new GalleryViewModel(dynamoViewModel));
+                    Grid.SetColumnSpan(galleryBackground, mainGrid.ColumnDefinitions.Count);
+                    Grid.SetRowSpan(galleryBackground, mainGrid.RowDefinitions.Count);
+                }
+
+                if (galleryView.ViewModel.HasContents)
+                {
+                    galleryBackground.Children.Add(galleryView);
+                    galleryBackground.Visibility = Visibility.Visible;
+                    galleryView.Focus(); //get keyboard focus
+                }
             }
-
-            if (GalleryViewModel.HasContents)
+            //hide gallery
+            else
             {
-                galleryBackground.Children.Add(galleryView);
-                galleryBackground.Visibility = Visibility.Visible;
-                galleryView.Focus(); //get keyboard focus (for ESC)
-            }
-        }
+                if (galleryBackground != null)
+                {
+                    if (galleryView != null && galleryBackground.Children.Contains(galleryView))
+                        galleryBackground.Children.Remove(galleryView);
 
-        void DynamoViewModelRequestCloseGallery()
-        {
-            if (galleryBackground != null)
-            {
-                if (galleryView != null && galleryBackground.Children.Contains(galleryView))
-                    galleryBackground.Children.Remove(galleryView);
-
-                galleryBackground.Visibility = Visibility.Hidden;
+                    galleryBackground.Visibility = Visibility.Hidden;
+                }
             }
         }
 
@@ -814,9 +816,8 @@ namespace Dynamo.Controls
             //ABOUT WINDOW
             dynamoViewModel.RequestAboutWindow -= DynamoViewModelRequestAboutWindow;
 
-            //SHOW GALLERY
-            dynamoViewModel.RequestShowGallery -= DynamoViewModelRequestShowGallery;
-            dynamoViewModel.RequestCloseGallery -= DynamoViewModelRequestCloseGallery;
+            //SHOW or HIDE GALLERY
+            dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
         }
 
         // the key press event is being intercepted before it can get to

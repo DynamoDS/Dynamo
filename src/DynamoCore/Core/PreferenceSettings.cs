@@ -134,7 +134,7 @@ namespace Dynamo
         /// Indicates if the Gallery has to be shown
         /// after Dynamo launches
         /// </summary>
-        public bool ShowGaleryAtStartUp { get; set; }
+        public bool ShowGalleryAtStartUp { get; set; }
 
         public PreferenceSettings()
         {
@@ -156,7 +156,7 @@ namespace Dynamo
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
-            ShowGaleryAtStartUp = true;
+            ShowGalleryAtStartUp = true;
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
         }

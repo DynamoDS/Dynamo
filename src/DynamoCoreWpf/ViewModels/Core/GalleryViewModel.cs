@@ -77,7 +77,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             dvm = dynamoViewModel;
             var pathManager = dynamoViewModel.Model.PathManager;
             var galleryFilePath = pathManager.GalleryFilePath;
-            var galleryDirectory = pathManager.GalleryDirectory;
+            var galleryDirectory = Path.GetDirectoryName(galleryFilePath);
 
             DynamoVersion = string.Format(Properties.Resources.GalleryDynamoVersion,
                             pathManager.MajorFileVersion,
@@ -98,38 +98,10 @@ namespace Dynamo.Wpf.ViewModels.Core
             }
 
 
-            MoveNextCommand = new DelegateCommand(MoveNext, o => contents.Count > 1);
-            MovePrevCommand = new DelegateCommand(MovePrev, o => contents.Count > 1);
-            CloseGalleryCommand = new DelegateCommand(CloseGallery, o => true);
+            MoveNextCommand = new DelegateCommand(p => MoveIndex(true), o => contents.Count > 1);
+            MovePrevCommand = new DelegateCommand(p => MoveIndex(false), o => contents.Count > 1);
+            CloseGalleryCommand = new DelegateCommand(p => dvm.CloseGalleryCommand.Execute(null), o => true);
         }
-
-        #region event handlers
-        internal event RequestCloseGalleryHandler RequestCloseGallery;
-        internal virtual void OnRequestCloseGallery()
-        {
-            if (RequestCloseGallery != null)
-            {
-                RequestCloseGallery();
-            }
-        }
-
-        internal void CloseGallery(object parameters)
-        {
-            //forward CloseGallery to DynamoViewModel
-            dvm.CloseGalleryCommand.Execute(null);
-        }
-
-        internal void MoveNext(object parameters)
-        {
-            MoveIndex(true);
-        }
-
-        internal void MovePrev(object parameters)
-        {
-            MoveIndex(false);
-        }
-
-        #endregion
 
         /// <summary>
         /// Move the currentIndex of the Gallery Bullets
@@ -150,11 +122,11 @@ namespace Dynamo.Wpf.ViewModels.Core
             RaisePropertyChanged("CurrentBody");
         }
 
-        public static bool HasContents { get { return currentContent != null; } }
+        public bool HasContents { get { return currentContent != null; } }
 
         #region private fields
         private DynamoViewModel dvm;
-        private static GalleryContent currentContent;
+        private GalleryContent currentContent;
         private List<GalleryContent> contents;
         private int currentIndex = 0;
         #endregion

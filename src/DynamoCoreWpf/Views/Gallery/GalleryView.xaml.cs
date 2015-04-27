@@ -8,10 +8,13 @@ namespace Dynamo.Wpf.Views.Gallery
     /// </summary>
     public partial class GalleryView : UserControl
     {
+        public GalleryViewModel ViewModel { get; private set; }
+
         public GalleryView(GalleryViewModel galleryViewModel)
         {
             InitializeComponent();
             DataContext = galleryViewModel;
+            ViewModel = galleryViewModel;
         }
 
         private void GalleryView_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

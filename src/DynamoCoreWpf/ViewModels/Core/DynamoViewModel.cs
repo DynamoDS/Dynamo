@@ -1128,16 +1128,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowGallery(object parameter)
-        {
-            OnRequestShowGallery();
-        }
-
-        private void CloseGallery(object parameter)
-        {
-            OnRequestCloseGallery();
-        }
-
         private void OpenRecent(object path)
         {
             this.Open(path as string);

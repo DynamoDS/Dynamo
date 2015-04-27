@@ -163,11 +163,11 @@ namespace Dynamo.UI.Controls
 
             #region Reference List
 
-            references.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-discussion.png")
+            /*references.Add(new StartPageListItem(Resources.StartPageWhatsNew, "icon-discussion.png")
             {
                 ContextData = ButtonNames.ShowGallery,
                 ClickAction = StartPageListItem.Action.RegularCommand
-            });
+            });*/
 
             references.Add(new StartPageListItem(Resources.StartPageAdvancedTutorials, "icon-reference.png")
             {
@@ -365,9 +365,9 @@ namespace Dynamo.UI.Controls
                     dvm.ShowNewFunctionDialogCommand.Execute(null);
                     break;
 
-                case ButtonNames.ShowGallery:
+                /*case ButtonNames.ShowGallery:
                     dvm.ShowGalleryCommand.Execute(null);
-                    break;
+                    break;*/
 
                 default:
                     throw new ArgumentException(
@@ -433,11 +433,11 @@ namespace Dynamo.UI.Controls
             var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
             StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
 
-            if (dynamoViewModel.Model.PreferenceSettings.ShowGaleryAtStartUp)
+            /*if (dynamoViewModel.Model.PreferenceSettings.ShowGalleryAtStartUp)
             {
-                dynamoViewModel.Model.PreferenceSettings.ShowGaleryAtStartUp = false;
+                dynamoViewModel.Model.PreferenceSettings.ShowGalleryAtStartUp = false;
                 dynamoViewModel.ShowGalleryCommand.Execute(null);
-            }
+            }*/
 
         }
 

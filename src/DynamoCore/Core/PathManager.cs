@@ -62,7 +62,6 @@ namespace Dynamo.Core
         private readonly string samplesDirectory;
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
-        private readonly string galleryDirectory;
         private readonly string galleryFilePath;
 
         private readonly HashSet<string> nodeDirectories;
@@ -106,11 +105,6 @@ namespace Dynamo.Core
         public string SamplesDirectory
         {
             get { return samplesDirectory; }
-        }
-
-        public string GalleryDirectory
-        {
-            get { return galleryDirectory; }
         }
 
         public string BackupDirectory
@@ -239,7 +233,7 @@ namespace Dynamo.Core
             preferenceFilePath = Path.Combine(userDataDir, PreferenceSettingsFileName);
             backupDirectory = Path.Combine(Directory.GetParent(userDataDir).FullName, BackupDirectoryName);
 
-            galleryDirectory = GetGalleryDirectory(userDataDir);
+            var galleryDirectory = GetGalleryDirectory(userDataDir);
             galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
 
             // Common directories.
