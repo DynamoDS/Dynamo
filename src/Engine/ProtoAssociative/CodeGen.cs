@@ -4565,7 +4565,7 @@ namespace ProtoAssociative
                 if (ProtoCore.DSASM.InterpreterMode.kExpressionInterpreter == core.Options.RunMode)
                 {
                     EmitInstrConsole(ProtoCore.DSASM.kw.pushw, t.Value);
-                    EmitPushForSymbolW(symbolnode, t.line, t.col);
+                    EmitPushForSymbolW(symbolnode, runtimeIndex, t.line, t.col);
                 }
                 else
                 {
@@ -8492,7 +8492,7 @@ namespace ProtoAssociative
                                 else
                                 {
                                     EmitInstrConsole(ProtoCore.DSASM.kw.popw, t.Name);
-                                    EmitPopForSymbolW(symbolnode, node.line, node.col, node.endLine, node.endCol);
+                                    EmitPopForSymbolW(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
                                 }
                             }
                         }

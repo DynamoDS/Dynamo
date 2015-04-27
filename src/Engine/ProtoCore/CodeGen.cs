@@ -1990,7 +1990,7 @@ namespace ProtoCore
             // Pop to the rx register
             StackValue op = StackValue.BuildRegister(Registers.RX);
             EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regRX);
-            EmitPop(op, Constants.kGlobalScope, line, col, endline, endcol);
+            EmitPop(op, Constants.kGlobalScope, Constants.kInvalidIndex, line, col, endline, endcol);
 
             // Emit the ret instruction only if this is a function we are returning from
             if (core.IsFunctionCodeBlock(codeBlock))
