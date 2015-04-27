@@ -580,7 +580,10 @@ namespace Dynamo.Controls
             }
 #endif
             var c = new Vector3((float)camera.LookDirection.X, (float)camera.LookDirection.Y, (float)camera.LookDirection.Z);
-            DirectionalLightDirection = c;
+            if (!DirectionalLightDirection.Equals(c))
+            {
+                DirectionalLightDirection = c; 
+            }
         }
 
 
