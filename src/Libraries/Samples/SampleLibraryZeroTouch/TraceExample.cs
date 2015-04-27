@@ -75,7 +75,8 @@ namespace SampleLibraryZeroTouch
             {
                 // If there's and id stored in trace, then retrieve the object stored
                 // with that id from the trace object manager.
-                item = (TraceExampleItem)TraceableObjectManager.GetTracedObjectById(traceId.IntID);
+                item = (TraceExampleItem)TraceableObjectManager.GetTracedObjectById(traceId.IntID)
+                    ?? new TraceExampleItem(description);
 
                 // Update the item
                 item.Description = description;
