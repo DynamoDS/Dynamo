@@ -115,6 +115,8 @@ namespace Dynamo.Tests
 
             //Undo Annotation text
             ViewModel.UndoCommand.Execute(null);
+
+            //Title should be changed now.
             Assert.AreEqual("This is a test group", annotation.AnnotationText);
         }
 
