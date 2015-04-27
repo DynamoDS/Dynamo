@@ -739,8 +739,11 @@ namespace ProtoImperative
                     // Jun TODO: Implementeation of indexing into a function call:
                     //  x = f()[0][1]
                     int dimensions = 0;
-                    EmitPushVarData(blockId, dimensions);
+                    EmitPushVarData(dimensions);
 
+                    // Emit depth
+                    EmitInstrConsole(kw.push, depth + "[depth]");
+                    EmitPush(StackValue.BuildInt(depth));
 
                     // The function call
                     EmitInstrConsole(ProtoCore.DSASM.kw.callr, procNode.name);
@@ -748,24 +751,20 @@ namespace ProtoImperative
                     DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
                     if(procNode.name.StartsWith(Constants.kSetterPrefix))
                     {
-                        EmitCall(procNode.procId, type, depth, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
+                        EmitCall(procNode.procId, blockId, type, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
                     }
-                    /*else if(procNode.isExternal)
-                    {
-                        EmitCall(procNode.procId, type, depth);
-                    }*/
                     else if (bnode != null)
                     {
-                        EmitCall(procNode.procId, type, depth, bnode.line, bnode.col, bnode.endLine, bnode.endCol);
+                        EmitCall(procNode.procId, blockId, type, bnode.line, bnode.col, bnode.endLine, bnode.endCol);
                     }
                     else if (!procNode.name.Equals(Constants.kFunctionRangeExpression) ||
                         oldOptions.HasFlag(DebugProperties.BreakpointOptions.EmitCallrForTempBreakpoint))
                     {
-                        EmitCall(procNode.procId, type, depth, node.line, node.col, node.endLine, node.endCol);
+                        EmitCall(procNode.procId, blockId, type, node.line, node.col, node.endLine, node.endCol);
                     }
                     else
                     {
-                        EmitCall(procNode.procId, type, depth);
+                        EmitCall(procNode.procId, blockId, type);
                     }
                     EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
                     StackValue opReturn = StackValue.BuildRegister(Registers.RX);
@@ -821,9 +820,14 @@ namespace ProtoImperative
                             dynFunc = core.DynamicFunctionTable.AddNewFunction(procName, arglist.Count, lefttype);
                         }
                     }
+
+                    // Emit depth
+                    EmitInstrConsole(kw.push, depth + "[depth]");
+                    EmitPush(StackValue.BuildInt(depth));
+
                     // The function call
                     EmitInstrConsole(ProtoCore.DSASM.kw.callr, funcCall.Function.Name + "[dynamic]");
-                    EmitDynamicCall(dynFunc.Index, globalClassIndex, depth, funcCall.line, funcCall.col, funcCall.endLine, funcCall.endCol);
+                    EmitDynamicCall(dynFunc.Index, globalClassIndex, blockId, funcCall.line, funcCall.col, funcCall.endLine, funcCall.endCol);
 
                     // The function return value
                     EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regRX);
@@ -1053,11 +1057,11 @@ namespace ProtoImperative
                         core.FunctionPointerTable.functionPointerDictionary.TryAdd(fptr, fptrNode);
                         core.FunctionPointerTable.functionPointerDictionary.TryGetBySecond(fptrNode, out fptr);
 
-                        EmitPushVarData(runtimeIndex, 0);
+                        EmitPushVarData(0);
 
                         EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Name);
                         StackValue opFunctionPointer = StackValue.BuildFunctionPointer(fptr);
-                        EmitPush(opFunctionPointer, t.line, t.col);
+                        EmitPush(opFunctionPointer, runtimeIndex, t.line, t.col);
                         return;
                     }
                 }
@@ -1088,13 +1092,13 @@ namespace ProtoImperative
 
                 EmitPushNull();
 
-                EmitPushVarData(runtimeIndex, dimensions);
+                EmitPushVarData(dimensions);
 
                 ProtoCore.Type varType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.kTypeVar, 0);
                 symbolnode = Allocate(t.Value, globalProcIndex, varType);
 
                 EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
-                EmitPopForSymbol(symbolnode);
+                EmitPopForSymbol(symbolnode, runtimeIndex);
             }
             else
             {
@@ -1135,10 +1139,10 @@ namespace ProtoImperative
                 }
             }
 
-            EmitPushVarData(runtimeIndex, dimensions);
+            EmitPushVarData(dimensions);
 
             EmitInstrConsole(ProtoCore.DSASM.kw.push, t.Value);
-            EmitPushForSymbol(symbolnode, t);
+            EmitPushForSymbol(symbolnode, runtimeIndex, t);
 
             if (core.TypeSystem.IsHigherRank(type.UID, inferedType.UID))
             {
@@ -1965,7 +1969,7 @@ namespace ProtoImperative
                             EmitPop(opRes, Constants.kGlobalScope);
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, tVar.Value);
-                            EmitPopForSymbol(symnode);
+                            EmitPopForSymbol(symnode, symnode.runtimeTableIndex);
                         }
                     }
                     else
@@ -1982,7 +1986,7 @@ namespace ProtoImperative
                     DfsTraverse(bNode.RightNode, ref inferedType);
 
                     EmitInstrConsole(ProtoCore.DSASM.kw.pop, tVar.Value);
-                    EmitPopForSymbol(symnode);
+                    EmitPopForSymbol(symnode, symnode.runtimeTableIndex);
                 }
             }
             else
@@ -2326,11 +2330,11 @@ namespace ProtoImperative
                                 symbolnode.SetStaticType(castType);
                             }
                             castType = symbolnode.staticType;
-                            EmitPushVarData(runtimeIndex, dimensions, castType.UID, castType.rank);
+                            EmitPushVarData(dimensions, castType.UID, castType.rank);
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.pop, s);
                             StackValue operand = StackValue.BuildVarIndex(symbol);
-                            EmitPop(operand, symbolnode.classScope, node.line, node.col, node.endLine, node.endCol);
+                            EmitPop(operand, symbolnode.classScope, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
                         }
                         else
                         {
@@ -2339,7 +2343,7 @@ namespace ProtoImperative
                                 symbolnode.SetStaticType(castType);
                             }
                             castType = symbolnode.staticType;
-                            EmitPushVarData(runtimeIndex, dimensions, castType.UID, castType.rank);
+                            EmitPushVarData(dimensions, castType.UID, castType.rank);
 
                             EmitInstrConsole(ProtoCore.DSASM.kw.popm, t.Name);
 
@@ -2347,7 +2351,7 @@ namespace ProtoImperative
                                                  ? StackValue.BuildStaticMemVarIndex(symbol)
                                                  : StackValue.BuildMemVarIndex(symbol);
 
-                            EmitPopm(operand, node.line, node.col, node.endLine, node.endCol);
+                            EmitPopm(operand, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
                         }
                     }
                     else
@@ -2373,15 +2377,15 @@ namespace ProtoImperative
                             symbolnode.SetStaticType(castType);
                         }
                         castType = symbolnode.staticType;
-                        EmitPushVarData(runtimeIndex, dimensions, castType.UID, castType.rank);
+                        EmitPushVarData(dimensions, castType.UID, castType.rank);
                         EmitInstrConsole(ProtoCore.DSASM.kw.pop, t.Value);
                         if (parentNode != null)
                         {
-                            EmitPopForSymbol(symbolnode, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
+                            EmitPopForSymbol(symbolnode, runtimeIndex, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
                         }
                         else
                         {
-                            EmitPopForSymbol(symbolnode, node.line, node.col, node.endLine, node.endCol);
+                            EmitPopForSymbol(symbolnode, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
                         }
                         
 
@@ -2609,7 +2613,7 @@ namespace ProtoImperative
                 // Push the identifier local block information 
                 // Push the array dimensions
                 int dimensions = 0;
-                EmitPushVarData(codeBlock.symbolTable.RuntimeIndex, dimensions);
+                EmitPushVarData(dimensions);
 
                 if (ProtoCore.DSASM.Constants.kInvalidIndex != globalClassIndex && !IsInLanguageBlockDefinedInFunction())
                 {
@@ -2629,7 +2633,7 @@ namespace ProtoImperative
                 }
                 StackValue opDest = StackValue.BuildVarIndex(symbolIndex);
                 EmitInstrConsole(ProtoCore.DSASM.kw.pop, keyIdent);
-                EmitPop(opDest, (symbol == null) ? globalClassIndex : symbol.classScope);
+                EmitPop(opDest, (symbol == null) ? globalClassIndex : symbol.classScope, symbol.runtimeTableIndex);
 
                 // key == null ?
                 BinaryExpressionNode condition = new BinaryExpressionNode();

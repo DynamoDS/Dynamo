@@ -1507,8 +1507,13 @@ namespace ProtoCore
         }
 
 
-        protected void EmitCall(int fi, int type, int depth, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex, 
-            int endLine = ProtoCore.DSASM.Constants.kInvalidIndex, int endCol = ProtoCore.DSASM.Constants.kInvalidIndex,
+        protected void EmitCall(int fi, 
+            int blockId,
+            int type, 
+            int line = ProtoCore.DSASM.Constants.kInvalidIndex, 
+            int col = ProtoCore.DSASM.Constants.kInvalidIndex, 
+            int endLine = ProtoCore.DSASM.Constants.kInvalidIndex, 
+            int endCol = ProtoCore.DSASM.Constants.kInvalidIndex,
             int entrypoint = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             SetEntry();
@@ -1516,11 +1521,11 @@ namespace ProtoCore
             instr.opCode = ProtoCore.DSASM.OpCode.CALLR;
             instr.op1 = StackValue.BuildFunctionIndex(fi); 
             instr.op2 = StackValue.BuildClassIndex(type);
-            instr.op3 = StackValue.BuildInt(depth);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, endLine, endCol, entrypoint);
-            AppendInstruction(instr, line, col);
+            AppendInstruction(instr);
         }
 
         protected void EmitCallBaseCtor(int fi, int ci, int offset)
@@ -1555,7 +1560,8 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitDynamicCall(int functionIndex, int type, int depth, 
+        protected void EmitDynamicCall(int functionIndex, int type, 
+            int blockId,
             int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex, 
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex, 
             int entrypoint = ProtoCore.DSASM.Constants.kInvalidIndex)
@@ -1565,7 +1571,6 @@ namespace ProtoCore
             instr.opCode = ProtoCore.DSASM.OpCode.CALLR;
             instr.op1 = StackValue.BuildDynamic(functionIndex);
             instr.op2 = StackValue.BuildClassIndex(type);
-            instr.op3 = StackValue.BuildInt(depth);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, endline, endcol, entrypoint);
@@ -1686,7 +1691,9 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-        protected void EmitPop(StackValue op, int classIndex, 
+        protected void EmitPop(StackValue op, 
+            int classIndex, 
+            int blockId = Constants.kInvalidIndex, 
             int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
@@ -1694,6 +1701,7 @@ namespace ProtoCore
             instr.opCode = ProtoCore.DSASM.OpCode.POP;
             instr.op1 = op;
             instr.op2 = StackValue.BuildClassIndex(classIndex);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             // For debugging, assert here but these should raise runtime errors in the VM
             Validity.Assert(op.IsVariableIndex || op.IsMemberVariableIndex || op.IsRegister);
@@ -1704,6 +1712,7 @@ namespace ProtoCore
         }
 
         protected void EmitPopForSymbol(SymbolNode symbol,
+            int blockId,
             int line = ProtoCore.DSASM.Constants.kInvalidIndex, 
             int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, 
@@ -1719,6 +1728,7 @@ namespace ProtoCore
             instr.opCode = ProtoCore.DSASM.OpCode.POP;
             instr.op1 = BuildOperand(symbol);
             instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
 
@@ -1738,6 +1748,7 @@ namespace ProtoCore
         }
 
         protected void EmitPopForSymbolW(SymbolNode symbol,
+            int blockId,
             int line = ProtoCore.DSASM.Constants.kInvalidIndex,
             int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex,
@@ -1753,6 +1764,7 @@ namespace ProtoCore
             instr.opCode = ProtoCore.DSASM.OpCode.POPW;
             instr.op1 = BuildOperand(symbol);
             instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
 
@@ -1808,14 +1820,17 @@ namespace ProtoCore
             AppendInstruction(instr);
         }
 
-        protected void EmitPush(StackValue op, int rank = 0, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex)
+        protected void EmitPush(StackValue op, 
+            int blockId = 0, 
+            int line = ProtoCore.DSASM.Constants.kInvalidIndex, 
+            int col = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.PUSH;
             instr.op1 = op;
             instr.op2 = StackValue.BuildClassIndex(globalClassIndex);
-            instr.op3 = StackValue.BuildArrayDimension(rank);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
             AppendInstruction(instr, line, col);
@@ -1862,13 +1877,14 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitPushForSymbol(SymbolNode symbol, ProtoCore.AST.Node identNode)
+        protected void EmitPushForSymbol(SymbolNode symbol, int blockId, ProtoCore.AST.Node identNode)
         {
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.PUSH;
             instr.op1 = BuildOperand(symbol);
             instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
 
@@ -1882,13 +1898,14 @@ namespace ProtoCore
             AppendInstruction(instr, identNode.line, identNode.col);
         }
 
-        protected void EmitPushForSymbolW(SymbolNode symbol, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex)
+        protected void EmitPushForSymbolW(SymbolNode symbol, int blockId, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.PUSHW;
             instr.op1 = BuildOperand(symbol);
             instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
+            instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
             //instr.debug = GetDebugObject(line, col, pc);
@@ -1924,13 +1941,14 @@ namespace ProtoCore
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitPopm(StackValue op, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+        protected void EmitPopm(StackValue op, int blockId, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int endline = ProtoCore.DSASM.Constants.kInvalidIndex, int endcol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.POPM;
             instr.op1 = op;
+            instr.op2 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
             if (emitDebugInfo)
@@ -2740,34 +2758,9 @@ namespace ProtoCore
             EmitPush(StackValue.BuildDefaultArgument());
         }
 
-        /*
-        protected void EmitPushVarData(int block, int dimensions)
+        protected void EmitPushVarData(int dimensions, int UID = (int)ProtoCore.PrimitiveType.kTypeVar, int rank = 0)
         {
             // TODO Jun: Consider adding the block and dimension information in the instruction instead of storing them on the stack
-
-            // Push the identifier block information 
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, block + "[block]");
-            StackValue opblock = StackValue.BuildBlockIndex(block);
-            EmitPush(opblock);
-
-            // TODO Jun: Performance 
-            // Is it faster to have a 'pop' specific to arrays to prevent popping dimension for pop to instruction?
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, dimensions + "[dim]");
-            StackValue opdim = StackValue.BuildArrayDimension(dimensions);
-            EmitPush(opdim);
-
-        }
-        */
-       
-         
-        protected void EmitPushVarData(int block, int dimensions, int UID = (int)ProtoCore.PrimitiveType.kTypeVar, int rank = 0)
-        {
-            // TODO Jun: Consider adding the block and dimension information in the instruction instead of storing them on the stack
-
-            // Push the identifier block information 
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, block + "[block]");
-            StackValue opblock = StackValue.BuildBlockIndex(block);
-            EmitPush(opblock);
 
             // TODO Jun: Performance 
             // Is it faster to have a 'pop' specific to arrays to prevent popping dimension for pop to instruction?
@@ -2826,7 +2819,7 @@ namespace ProtoCore
             var fptrNode = new FunctionPointerNode(procNode);
             fptrDict.TryAdd(fptr, fptrNode);
             fptrDict.TryGetBySecond(fptrNode, out fptr);
-            EmitPushVarData(fptrNode.blockId, 0);
+            EmitPushVarData(0);
 
             string name = procNode.name;
             if (Constants.kGlobalScope != procNode.classScope)
@@ -2838,7 +2831,7 @@ namespace ProtoCore
 
             EmitInstrConsole(kw.push, name);
             var op = StackValue.BuildFunctionPointer(fptr);
-            EmitPush(op);
+            EmitPush(op, fptrNode.blockId);
         }
 
         protected List<ProtoCore.DSASM.AttributeEntry> PopulateAttributes(dynamic attributenodes)
