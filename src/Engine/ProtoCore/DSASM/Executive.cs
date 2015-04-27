@@ -3731,8 +3731,9 @@ namespace ProtoCore.DSASM
                 if (isLeftClass || (isFunctionPointerCall && depth > 0)) //constructor or static function or function pointer call
                 {
                     rmem.Pop(); //remove the array dimension for "isLeftClass" or final pointer for "isFunctionPointerCall"
-                    instr.op3.opdata = 0; //depth = 0
+                    depth = 0;
                 }
+
                 //push back the function arguments
                 for (int i = argSvList.Count - 1; i >= 0; i--)
                 {
@@ -3746,11 +3747,13 @@ namespace ProtoCore.DSASM
 
                 // Push the function declaration block  
                 StackValue opblock = StackValue.BuildBlockIndex(procNode.runtimeIndex);
-                rmem.Push(opblock);
+                instr.op3 = opblock;
 
                 int dimensions = 0;
                 StackValue opdim = StackValue.BuildArrayDimension(dimensions);
                 rmem.Push(opdim);
+
+                rmem.Push(StackValue.BuildInt(depth));
 
                 //Modify the operand data
                 instr.op1.opdata = procNode.procId;
@@ -3763,6 +3766,7 @@ namespace ProtoCore.DSASM
             if (!(isFunctionPointerCall && depth == 0))
             {
                 rmem.Pop(); //remove the array dimension for "isLeftClass" or final pointer
+                rmem.Push(StackValue.BuildInt(0));
             }
             return false;
         }
