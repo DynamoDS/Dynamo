@@ -434,7 +434,7 @@
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReporting" xml:space="preserve">
-    <value>_Enable detailed usability data reporting (Instrumentation)</value>
+    <value>Enable detailed usability data reporting (Instrumentation)</value>
     <comment>Setting menu | Enable data reporting during usage</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
@@ -1014,9 +1014,6 @@ You will get a chance to save your work.</value>
   <data name="GenericTaskDialogTitle" xml:space="preserve">
     <value>Generic Task Dialog</value>
   </data>
-  <data name="ConsentDialogInstrumentationCheckBox" xml:space="preserve">
-    <value>I give my consent for Autodesk to collect information on how I use {0}.</value>
-  </data>
   <data name="UsageReportPromptDialogFeatureUsage" xml:space="preserve">
     <value>The features and commands you use in {0}</value>
   </data>
@@ -1574,9 +1571,6 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
     <value>Package Manager Terms of Use</value>
-  </data>
-  <data name="ConsentDialogAnalyticsCheckBox" xml:space="preserve">
-    <value>Yes, I would like to contribute to this program.</value>
   </data>
   <data name="UsageReportPromptDialogMessagePart3" xml:space="preserve">
     <value>Autodesk uses Google Analytics in this product. If you agree to its use, Autodesk will receive non-personal product usage information about this Autodesk software.  We use this information to improve our products and understand how people use them.
