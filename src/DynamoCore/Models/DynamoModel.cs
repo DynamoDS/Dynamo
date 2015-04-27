@@ -795,6 +795,7 @@ namespace Dynamo.Models
                 {
                     NodeFactory.AddTypeFactoryAndLoader(type.Type);
                     NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
+                    type.IsPackageMember = true;
                     AddNodeTypeToSearch(type);
                 }
                 catch (Exception e)

@@ -169,6 +169,10 @@ namespace Dynamo.Wpf.ViewModels
                     subCategories.All(subCat => subCat.ElementType.HasFlag(ElementTypes.ZeroTouch)))
                     return ElementTypes.ZeroTouch;
 
+                if (entries.All(entry => entry.ElementType.HasFlag(ElementTypes.CustomNode)) &&
+                    subCategories.All(subCat => subCat.ElementType.HasFlag(ElementTypes.CustomNode)))
+                    return ElementTypes.CustomNode;
+
                 return ElementTypes.None;
             }
         }

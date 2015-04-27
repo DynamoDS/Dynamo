@@ -127,5 +127,7 @@ namespace Dynamo.Models
         ///     The description of this type.
         /// </summary>
         public readonly string Description;
+
+        public bool IsPackageMember;
     }
 }
