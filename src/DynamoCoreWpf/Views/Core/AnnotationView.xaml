@@ -209,7 +209,8 @@
                     MinHeight="20"   
                     FontFamily="Trebuchet" 
                     FontSize="{Binding FontSize}"                   
-                    LineStackingStrategy="BlockLineHeight"                    
+                    LineStackingStrategy="BlockLineHeight"
+                    IsVisibleChanged="GroupTextBlock_OnIsVisibleChanged"   
                     TextWrapping="Wrap">                  
             </TextBlock>
             <TextBox 
