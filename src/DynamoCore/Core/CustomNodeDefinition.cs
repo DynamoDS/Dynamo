@@ -230,7 +230,7 @@ namespace Dynamo
     /// </summary>
     public class CustomNodeInfo
     {
-        public CustomNodeInfo(Guid functionId, string name, string category, string description, string path, bool isPackageMember = false)
+        public CustomNodeInfo(Guid functionId, string name, string category, string description, string path)
         {
             if (functionId == Guid.Empty)
                 throw new ArgumentException(@"FunctionId invalid.", "functionId");
@@ -240,7 +240,6 @@ namespace Dynamo
             Category = category;
             Description = description;
             Path = path;
-            IsPackageMember = isPackageMember;
         }
 
         public Guid FunctionId { get; set; }
