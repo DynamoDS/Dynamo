@@ -30,16 +30,14 @@ namespace Dynamo.Search.SearchElements
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
+
+            ElementType = ElementTypes.ZeroTouch;
+
             if (functionDescriptor.IsBuiltIn)
-                ElementType = ElementTypes.None;
-            else
-            {
-                // Assembly, that is located in package directory, considered as part of package.
-                if (Assembly.StartsWith(functionDescriptor.PathManager.PackagesDirectory))
-                    ElementType = ElementTypes.Packaged;
-                else
-                    ElementType = ElementTypes.ZeroTouch;
-            }
+                ElementType |= ElementTypes.BuiltIn;
+            // Assembly, that is located in package directory, considered as part of package.
+            if (Assembly.StartsWith(functionDescriptor.PathManager.PackagesDirectory))
+                ElementType |= ElementTypes.Packaged;
 
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);
             outputParameters = new List<string>() { functionDescriptor.ReturnType };

@@ -49,7 +49,9 @@ namespace Dynamo.Search.SearchElements
             FullCategoryName = info.Category;
             Description = info.Description;
             Path = info.Path;
-            ElementType = (info.IsPackageMember) ? ElementTypes.Packaged : ElementTypes.CustomNode;
+            ElementType = ElementTypes.CustomNode;
+            if (info.IsPackageMember)
+                ElementType |= ElementTypes.Packaged; // Add one more flag.
         }
 
         protected override NodeModel ConstructNewNodeModel()

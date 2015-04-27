@@ -157,15 +157,19 @@ namespace Dynamo.Wpf.ViewModels
         {
             get
             {
-                if (entries.All(entry => entry.ElementType == ElementTypes.Packaged) &&
-                    subCategories.All(subCategory => subCategory.ElementType == ElementTypes.Packaged))
+                if (entries.Any(entry => entry.ElementType.HasFlag(ElementTypes.BuiltIn)) ||
+                    subCategories.Any(subCat => subCat.ElementType.HasFlag(ElementTypes.BuiltIn)))
+                    return ElementTypes.BuiltIn;
+
+                if (entries.All(entry => entry.ElementType.HasFlag(ElementTypes.Packaged)) &&
+                    subCategories.All(subCat => subCat.ElementType.HasFlag(ElementTypes.Packaged)))
                     return ElementTypes.Packaged;
-                else
-                    if (entries.All(entry => entry.ElementType == ElementTypes.ZeroTouch) &&
-                        subCategories.All(subCategory => subCategory.ElementType == ElementTypes.ZeroTouch))
-                        return ElementTypes.ZeroTouch;
-                    else
-                        return ElementTypes.None;
+
+                if (entries.All(entry => entry.ElementType.HasFlag(ElementTypes.ZeroTouch)) &&
+                    subCategories.All(subCat => subCat.ElementType.HasFlag(ElementTypes.ZeroTouch)))
+                    return ElementTypes.ZeroTouch;
+
+                return ElementTypes.None;
             }
         }
 

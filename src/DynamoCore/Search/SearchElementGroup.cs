@@ -5,6 +5,7 @@
         None, Create, Action, Query
     }
 
+    [System.Flags]
     public enum ElementTypes
     {
         None = 0x00000000,
