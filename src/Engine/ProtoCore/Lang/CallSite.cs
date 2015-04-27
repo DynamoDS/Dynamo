@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
@@ -89,7 +90,7 @@ namespace ProtoCore
 
                     IFormatter formatter = new SoapFormatter();
                     MemoryStream s = new MemoryStream(data);
-
+                    formatter.Binder = new TraceBinder();
                     srtd.Data = (ISerializable) formatter.Deserialize(s);
                 }
 
@@ -214,6 +215,22 @@ namespace ProtoCore
                 }
 
                 return ret;
+            }
+        }
+
+        private class TraceBinder : SerializationBinder
+        {
+            // Use a custom serialization binder to make the serializer more permissive
+            // http://www.codeproject.com/Articles/11079/NET-XML-and-SOAP-Serialization-Samples-Tips
+
+            public override System.Type BindToType(string assemblyName, string typeName)
+            {
+                var result = AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(a => !a.IsDynamic)
+                    .SelectMany(a => a.GetTypes())
+                    .FirstOrDefault(t => t.FullName == typeName);
+
+                return result;
             }
         }
 
