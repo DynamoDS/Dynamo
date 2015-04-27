@@ -8510,12 +8510,12 @@ namespace ProtoAssociative
                             if (symbolnode.isStatic)
                             {
                                 var op = StackValue.BuildStaticMemVarIndex(symbol);
-                                EmitPopm(op, node.line, node.col, node.endLine, node.endCol);
+                                EmitPopm(op, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
                             }
                             else
                             {
                                 var op = StackValue.BuildMemVarIndex(symbol);
-                                EmitPopm(op, node.line, node.col, node.endLine, node.endCol);
+                                EmitPopm(op, runtimeIndex, node.line, node.col, node.endLine, node.endCol);
                             }
                         }
 

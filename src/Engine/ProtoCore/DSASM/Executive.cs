@@ -6149,8 +6149,11 @@ namespace ProtoCore.DSASM
             // This is unused in Callr() but needed for stack alignment
             rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
 
+            // Depth
+            rmem.Push(StackValue.BuildInt(runtimeCore.ContinuationStruct.InitialDepth));
+
             bool explicitCall = true;
-            Callr(fi, ci, runtimeCore.ContinuationStruct.InitialDepth, ref explicitCall);
+            Callr(procNode.runtimeIndex, fi, ci, ref explicitCall);
         }
 
         private void JMP_Handler(Instruction instruction)
