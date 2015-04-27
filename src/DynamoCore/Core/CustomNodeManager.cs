@@ -315,9 +315,7 @@ namespace Dynamo.Core
             {
                 CustomNodeInfo info;
                 if (TryGetInfoFromPath(file, isTestMode, out info))
-                {
                     yield return info;
-                }
             }
         }
 
