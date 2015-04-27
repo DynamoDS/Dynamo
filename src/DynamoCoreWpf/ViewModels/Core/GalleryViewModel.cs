@@ -34,11 +34,16 @@ namespace Dynamo.Wpf.ViewModels.Core
     {
         public List<GalleryContent> GalleryUiContents { get; set; }
 
+        public GalleryContents()
+        {
+            GalleryUiContents = new List<GalleryContent>();
+        }
+
         public static GalleryContents Load(string filePath)
         {
             try
             {
-                var galleryContents = new GalleryContents();
+                GalleryContents galleryContents;
                 var serializer = new XmlSerializer(typeof(GalleryContents));
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
@@ -54,7 +59,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         }
     }
 
-    public class GalleryViewModel: ViewModelBase
+    public class GalleryViewModel : ViewModelBase
     {
         #region public members
         public string CurrentImagePath { get { return (currentContent == null) ? string.Empty : currentContent.ImagePath; } }
@@ -67,7 +72,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         public DelegateCommand CloseGalleryCommand { get; set; }
         #endregion
 
-        public GalleryViewModel(DynamoViewModel dynamoViewModel) 
+        public GalleryViewModel(DynamoViewModel dynamoViewModel)
         {
             dvm = dynamoViewModel;
             var pathManager = dynamoViewModel.Model.PathManager;
@@ -80,20 +85,18 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             contents = GalleryContents.Load(galleryFilePath).GalleryUiContents;
 
-            if (contents != null)
+            //Set image path relative to gallery Directory
+            foreach (GalleryContent content in contents)
             {
-                //Set image path relative to gallery Directory
-                foreach (GalleryContent content in contents)
-                {
-                    content.ImagePath = Path.Combine(galleryDirectory, content.ImagePath);
-                }
-
-                currentContent = contents.FirstOrDefault();
-
-                if (currentContent != null) //if contents is not empty
-                {
-                    currentContent.IsCurrent = true;                }
+                content.ImagePath = Path.Combine(galleryDirectory, content.ImagePath);
             }
+
+            currentContent = contents.FirstOrDefault();
+            if (currentContent != null) //if contents is not empty
+            {
+                currentContent.IsCurrent = true;
+            }
+
 
             MoveNextCommand = new DelegateCommand(MoveNext, o => contents.Count > 1);
             MovePrevCommand = new DelegateCommand(MovePrev, o => contents.Count > 1);
@@ -138,16 +141,16 @@ namespace Dynamo.Wpf.ViewModels.Core
         private void MoveIndex(bool forward)
         {
             contents[currentIndex].IsCurrent = false;
-            currentIndex = (currentIndex + (forward? 1:-1) + contents.Count) % (contents.Count);
+            currentIndex = (currentIndex + (forward ? 1 : -1) + contents.Count) % (contents.Count);
             contents[currentIndex].IsCurrent = true;
             currentContent = contents[currentIndex];
-            
+
             RaisePropertyChanged("CurrentImagePath");
             RaisePropertyChanged("CurrentHeader");
             RaisePropertyChanged("CurrentBody");
         }
 
-        public static bool HasContents { get {return currentContent != null;} }
+        public static bool HasContents { get { return currentContent != null; } }
 
         #region private fields
         private DynamoViewModel dvm;

@@ -69,6 +69,10 @@
     <UserControl.InputBindings>
         <KeyBinding Key="Escape"             
                     Command="{Binding Path=CloseGalleryCommand}" />
+        <KeyBinding Key="Left"
+                    Command="{Binding Path=MovePrevCommand}" />
+        <KeyBinding Key="Right"
+                    Command="{Binding Path=MoveNextCommand}" />
     </UserControl.InputBindings>
 
     <Grid>
