@@ -196,6 +196,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Yes, I would like to contribute to this program..
+        /// </summary>
+        public static string ConsentDialogAnalyticsCheckBox {
+            get {
+                return ResourceManager.GetString("ConsentDialogAnalyticsCheckBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I give my consent for Autodesk to collect information on how I use {0}..
+        /// </summary>
+        public static string ConsentDialogInstrumentationCheckBox {
+            get {
+                return ResourceManager.GetString("ConsentDialogInstrumentationCheckBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add To Group.
+        /// </summary>
+        public static string ContextAddGroupFromSelection {
+            get {
+                return ResourceManager.GetString("ContextAddGroupFromSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create Group.
         /// </summary>
         public static string ContextCreateGroupFromSelection {
@@ -421,7 +448,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ungroup.
+        ///   Looks up a localized string similar to Remove from Group.
         /// </summary>
         public static string ContextUnGroupFromSelection {
             get {
@@ -1269,7 +1296,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Enable detailed usability data reporting.
+        ///   Looks up a localized string similar to _Enable detailed usability data reporting (Instrumentation).
         /// </summary>
         public static string DynamoViewSettingMenuEnableDataReporting {
             get {
@@ -1287,7 +1314,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable anonymous summary reporting.
+        ///   Looks up a localized string similar to Enable anonymous summary reporting (Google Analytics).
         /// </summary>
         public static string DynamoViewSettingMenuEnableSummaryReporting {
             get {
@@ -1962,7 +1989,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable background 3D preview navigation (Ctrl + G).
+        ///   Looks up a localized string similar to Enable background 3D preview navigation (Ctrl + B).
         /// </summary>
         public static string InCanvasGeomButtonToolTip {
             get {
@@ -1971,7 +1998,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable graph view navigation (Ctrl + G).
+        ///   Looks up a localized string similar to Enable graph view navigation (Ctrl + B).
         /// </summary>
         public static string InCanvasNodeButtonToolTip {
             get {
@@ -2273,6 +2300,15 @@ namespace Dynamo.Wpf.Properties {
         public static string LacingShortestToolTip {
             get {
                 return ResourceManager.GetString("LacingShortestToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more.
+        /// </summary>
+        public static string LearnMore {
+            get {
+                return ResourceManager.GetString("LearnMore", resourceCulture);
             }
         }
         
@@ -3847,15 +3883,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I give my consent for Autodesk to collect information on how I use {0}..
-        /// </summary>
-        public static string UsageReportPromptDialogConsent {
-            get {
-                return ResourceManager.GetString("UsageReportPromptDialogConsent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The features and commands you use in {0}.
         /// </summary>
         public static string UsageReportPromptDialogFeatureUsage {
@@ -3889,6 +3916,17 @@ namespace Dynamo.Wpf.Properties {
         public static string UsageReportPromptDialogMessagePart2 {
             get {
                 return ResourceManager.GetString("UsageReportPromptDialogMessagePart2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autodesk uses Google Analytics in this product. If you agree to its use, Autodesk will receive non-personal product usage information about this Autodesk software.  We use this information to improve our products and understand how people use them.
+        ///
+        ///This information is limited to session length times, use frequency, which features are used (feature buttons), your city and country location, and operating system type.  This information is not used to identify or contact you, and we do not track use of stand [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string UsageReportPromptDialogMessagePart3 {
+            get {
+                return ResourceManager.GetString("UsageReportPromptDialogMessagePart3", resourceCulture);
             }
         }
         

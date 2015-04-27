@@ -367,6 +367,13 @@ namespace Dynamo.ViewModels
             }
             ShowExecutionPreview = workspaceViewModel.DynamoViewModel.ShowRunPreview;
             IsNodeAddedRecently = true;
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+        }
+
+        private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+           AddToGroupCommand.RaiseCanExecuteChanged();
+           UngroupCommand.RaiseCanExecuteChanged();
         }
 
         void DebugSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -475,7 +482,7 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
-                    RaisePropertyChanged("PreviewState");
+                    RaisePropertyChanged("PreviewState");                    
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -903,9 +910,24 @@ namespace Dynamo.ViewModels
         private bool CanUngroupNode(object parameters)
         {
             var groups = WorkspaceViewModel.Model.Annotations;
-            return (from model in groups 
-                    let nodeModel = DynamoSelection.Instance.Selection.OfType<NodeModel>().FirstOrDefault() 
-                    where model.SelectedModels.Any(x => x.GUID == nodeModel.GUID) select model).Any();
+            if (groups != null
+                && DynamoSelection.Instance.Selection.OfType<NodeModel>().Any())
+                return (from model in groups
+                    let nodeModel = DynamoSelection.Instance.Selection.OfType<NodeModel>().FirstOrDefault()
+                    where model.SelectedModels.Any(x => x.GUID == nodeModel.GUID)
+                    select model).Any();
+            return false;
+        }
+
+        private void AddToGroup(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
+        }
+
+        private bool CanAddToGroup(object parameters)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            return groups != null && groups.Any(x => x.IsSelected);
         }
 
 

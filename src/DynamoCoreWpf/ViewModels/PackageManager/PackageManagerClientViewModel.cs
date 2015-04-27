@@ -161,31 +161,19 @@ namespace Dynamo.ViewModels
         public readonly DynamoViewModel DynamoViewModel;
         public PackageManagerClient Model { get; private set; }
 
-        private LoginState loginState;
         public LoginState LoginState
         {
             get
             {
-                return loginState;
-            }
-            private set
-            {
-                loginState = value;
-                RaisePropertyChanged("LoginState");
+                return Model.LoginState;
             }
         }
 
-        private string username;
         public string Username
         {
             get
             {
-                return username;
-            }
-            private set
-            {
-                username = value;
-                RaisePropertyChanged("Username");
+                return Model.Username;
             }
         }
 
@@ -208,8 +196,8 @@ namespace Dynamo.ViewModels
 
             model.LoginStateChanged += (loginState) =>
             {
-                Username = Model.Username;
-                LoginState = loginState;
+                RaisePropertyChanged("LoginState");
+                RaisePropertyChanged("Username");
             };
 
         }
