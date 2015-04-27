@@ -1,26 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Dynamo.Wpf
 {
-    public partial class BrowserWindow : Window
+    public partial class BrowserWindow
     {
         private readonly Uri _location;
 
         public BrowserWindow(Uri location)
         {
-            this._location = location;
-            this.Loaded += Window_Loaded;
+            _location = location;
+            Loaded += Window_Loaded;
 
             InitializeComponent();
         }
@@ -28,12 +18,22 @@ namespace Dynamo.Wpf
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // hide loading grid when navigation ready
-            this.Browser.Navigated += (s, a) =>
+            Browser.Navigated += (s, a) =>
             {
-                this.LoadingGrid.Visibility = Visibility.Collapsed;
-                this.Browser.Visibility = Visibility.Visible;
+                LoadingTextBlock.Visibility = Visibility.Collapsed;
+                Browser.Visibility = Visibility.Visible;
+
+                var localPath = ((a.Uri == null) ? string.Empty : a.Uri.LocalPath);
+                if (localPath.ToLowerInvariant().Equals("/register"))
+                {
+                    // This is navigating to new user registration page,
+                    // which requires the window to be of a larger size.
+                    Width = 460;
+                    Height = 722;
+                }
             };
-            this.Browser.Navigate( _location.AbsoluteUri );
+
+            Browser.Navigate(_location.AbsoluteUri);
         }
     }
 }

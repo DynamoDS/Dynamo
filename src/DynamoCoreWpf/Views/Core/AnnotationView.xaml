@@ -9,7 +9,7 @@
              mc:Ignorable="d"                          
              Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
-             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"              
+             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"                 
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">   
     <UserControl.Resources>
