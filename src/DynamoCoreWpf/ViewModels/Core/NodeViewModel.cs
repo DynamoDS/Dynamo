@@ -902,17 +902,16 @@ namespace Dynamo.ViewModels
         {
             var groups = WorkspaceViewModel.Model.Annotations;
             //Create Group should be disabled when a group is selected
-            if (groups != null && groups.Any(x => x.IsSelected))
+            if (groups.Any(x => x.IsSelected))
             {
                 return false;
             }
 
             //Create Group should be disabled when a node selected is already in a group
-            if (groups != null && !groups.Any(x => x.IsSelected))
-            {               
-                return !((from model in groups
-                    where model.SelectedModels.Any(x => x.GUID == this.NodeLogic.GUID)
-                    select model).Any());
+            if (!groups.Any(x => x.IsSelected))
+            {
+                return
+                    !(groups.CheckIfModelExistsInAGroup(NodeLogic.GUID));
             }
 
             return true;
@@ -926,11 +925,9 @@ namespace Dynamo.ViewModels
         private bool CanUngroupNode(object parameters)
         {
             var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups != null && !groups.Any(x => x.IsSelected))
+            if (!groups.Any(x => x.IsSelected))
             {
-                return (from model in groups
-                          where model.SelectedModels.Any(x => x.GUID == this.NodeLogic.GUID)
-                          select model).Any();
+                return (groups.CheckIfModelExistsInAGroup(NodeLogic.GUID));
             }
             return false;
         }
@@ -943,11 +940,9 @@ namespace Dynamo.ViewModels
         private bool CanAddToGroup(object parameters)
         {          
             var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups != null && groups.Any(x => x.IsSelected))
+            if (groups.Any(x => x.IsSelected))
             {
-                return !((from model in groups
-                          where model.SelectedModels.Any(x => x.GUID == this.NodeLogic.GUID)
-                          select model).Any());
+                return !(groups.CheckIfModelExistsInAGroup(NodeLogic.GUID));
             }
             return false;
         }
@@ -974,6 +969,17 @@ namespace Dynamo.ViewModels
         {
             Model = model;
             Handled = false;
+        }
+    }
+
+    /// <summary>
+    /// Extension method to check if a model exists in a group
+    /// </summary>
+    internal static class Extensions
+    {
+        public static bool CheckIfModelExistsInAGroup(this ObservableCollection<AnnotationModel> groups, Guid nodeGuid)
+        {
+            return (groups.SelectMany(m => m.SelectedModels).Any(m => m.GUID == nodeGuid));
         }
     }
 }

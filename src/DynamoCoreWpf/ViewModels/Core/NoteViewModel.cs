@@ -151,9 +151,7 @@ namespace Dynamo.ViewModels
             //Create Group should be disabled when a note selected is already in a group
             if (groups != null && !groups.Any(x => x.IsSelected))
             {
-                return !((from model in groups
-                          where model.SelectedModels.Any(x => x.GUID == this.Model.GUID)
-                          select model).Any());
+                return !(groups.CheckIfModelExistsInAGroup(Model.GUID));
             }
 
             return true;
@@ -169,9 +167,7 @@ namespace Dynamo.ViewModels
             var groups = WorkspaceViewModel.Model.Annotations;
             if (groups != null && !groups.Any(x => x.IsSelected))
             {
-                return (from model in groups
-                        where model.SelectedModels.Any(x => x.GUID == this.Model.GUID)
-                        select model).Any();
+                return (groups.CheckIfModelExistsInAGroup(Model.GUID));
             }
             return false;
         }
@@ -186,9 +182,7 @@ namespace Dynamo.ViewModels
             var groups = WorkspaceViewModel.Model.Annotations;
             if (groups != null && groups.Any(x => x.IsSelected))
             {
-                return !((from model in groups
-                          where model.SelectedModels.Any(x => x.GUID == this.Model.GUID)
-                          select model).Any());
+                return !(groups.CheckIfModelExistsInAGroup(Model.GUID));
             }
             return false;
         }
