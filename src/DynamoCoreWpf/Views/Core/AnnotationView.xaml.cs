@@ -163,6 +163,14 @@ namespace Dynamo.Nodes
             var textbox = sender as TextBox;
             if (textbox != null && textbox.Visibility == Visibility.Visible)
             {
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                   new DynCmd.UpdateModelValueCommand(
+                       System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
+                       GroupTextBox.Text));
+
+                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
+                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
+
                 textbox.Focus();
                 if (textbox.Text.Equals(Dynamo.Properties.Resources.GroupDefaultText))
                 {
@@ -180,21 +188,6 @@ namespace Dynamo.Nodes
         private void GroupTextBox_OnGotFocus(object sender, RoutedEventArgs e)
         {
             this.GroupTextBox.CaretIndex = Int32.MaxValue;
-        }
-
-        private void GroupTextBlock_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (ViewModel != null && (bool) e.NewValue)
-            {
-                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.UpdateModelValueCommand(
-                        System.Guid.Empty, this.ViewModel.AnnotationModel.GUID, "TextBlockText",
-                        GroupTextBox.Text));
-
-                ViewModel.WorkspaceViewModel.DynamoViewModel.UndoCommand.RaiseCanExecuteChanged();
-                ViewModel.WorkspaceViewModel.DynamoViewModel.RedoCommand.RaiseCanExecuteChanged();
-            }
-
         }
     }
 }
