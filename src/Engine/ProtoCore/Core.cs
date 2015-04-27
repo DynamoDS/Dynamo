@@ -251,7 +251,7 @@ namespace ProtoCore
 
         public LangVerify Langverify { get; private set; }
         public FunctionTable FunctionTable { get; private set; }    
-        public RuntimeData RuntimeData { get; set; }
+    
 
 #endregion
 
@@ -574,7 +574,7 @@ namespace ProtoCore
             //Rmem = new RuntimeMemory(Heap);
             Configurations = new Dictionary<string, object>();
             DllTypesToLoad = new List<System.Type>();           
-            RuntimeData = new ProtoCore.RuntimeData();
+          
 
             Validity.AssertExpiry();
             Options = options;
@@ -916,7 +916,7 @@ namespace ProtoCore
             ExprInterpreterExe.Configurations = Configurations;
             ExprInterpreterExe.CodeToLocation = codeToLocation;
             ExprInterpreterExe.CurrentDSFileName = CurrentDSFileName;
-            ExprInterpreterExe.RuntimeData = GenerateRuntimeData();
+          
             // Copy all tables
             ExprInterpreterExe.classTable = DSExecutable.classTable;
             ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
@@ -950,24 +950,7 @@ namespace ProtoCore
             }
         }
 
-        /// <summary>
-        /// Populate the runtime data
-        /// </summary>
-        /// <returns></returns>
-        private RuntimeData GenerateRuntimeData()
-        {
-            Validity.Assert(RuntimeData != null);
-          //  RuntimeData.FunctionTable = FunctionTable;
-          //  RuntimeData.DynamicVarTable = DynamicVariableTable;
-          //  RuntimeData.DynamicFuncTable = DynamicFunctionTable;
-          //  RuntimeData.FuncPointerTable = FunctionPointerTable;
-          //  RuntimeData.ContextDataMngr = ContextDataManager;
-           // RuntimeData.Configurations = Configurations;
-          //  RuntimeData.CodeToLocation = codeToLocation;
-          //  RuntimeData.CurrentDSFileName = CurrentDSFileName;
-            return RuntimeData;
-        }
-
+       
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
@@ -1019,7 +1002,7 @@ namespace ProtoCore
             DSExecutable.Configurations = Configurations;
             DSExecutable.CodeToLocation = codeToLocation;
             DSExecutable.CurrentDSFileName = CurrentDSFileName;
-            DSExecutable.RuntimeData = GenerateRuntimeData();
+        
              
         }
 

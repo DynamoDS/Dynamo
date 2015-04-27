@@ -46,7 +46,7 @@ namespace ProtoCore.DSASM
         /// The RuntimeData will eventually be integrated completely into executable,
         /// this means moving RuntimeData properties to Executable and deprecating the RuntimeData object
         /// </summary>
-        public RuntimeData RuntimeData { get; set; }
+      
 
         public ProtoCore.DSASM.ClassTable classTable { get; set; }
         public ProtoCore.DSASM.ProcedureTable[] procedureTable { get; set; }
@@ -64,12 +64,7 @@ namespace ProtoCore.DSASM
         
 #region COMPILER_GENERATED_READ_ONLY
         public FunctionTable FunctionTable { get; set; }
-        public IDictionary<string, CallSite> CallsiteCache { get; set; }
-        /// <summary>
-        /// Map from a callsite's guid to a graph UI node. 
-        /// </summary>
-        public Dictionary<Guid, Guid> CallSiteToNodeMap { get; private set; }
-        public Dictionary<int, CallSite> ASTToCallSiteMap { get; private set; }
+
         /// <summary>
         /// This is a mapping of the current guid and number of callsites that appear within that guid.
         /// Language only execution contains only 1 guid for the entire program.
@@ -120,12 +115,9 @@ namespace ProtoCore.DSASM
             classTable = null;
             instrStreamList = null;
             iStreamCanvas = null;
-            RuntimeData = null;
+          
             CodeBlocks = null;
             CompleteCodeBlocks = null;
-            CallsiteCache = new Dictionary<string, CallSite>();
-            CallSiteToNodeMap = new Dictionary<Guid, Guid>();
-            ASTToCallSiteMap = new Dictionary<int, CallSite>();
 
             ContextDataMngr = null;
             CodeToLocation = null;
