@@ -3548,11 +3548,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visit www.dynamobim.org.
+        ///   Looks up a localized string similar to {0} website.
         /// </summary>
-        public static string StartPageVisitDynamoBim {
+        public static string StartPageVisitWebsite {
             get {
-                return ResourceManager.GetString("StartPageVisitDynamoBim", resourceCulture);
+                return ResourceManager.GetString("StartPageVisitWebsite", resourceCulture);
             }
         }
         
