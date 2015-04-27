@@ -96,7 +96,8 @@
                 <TextBlock FontWeight="SemiBold"
                            Foreground="#4790cd"
                            TextWrapping="Wrap"
-                           Name="AcceptUsageReportingTextBlock" />
+                           Name="AcceptUsageReportingTextBlock"
+                           Text="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}" />
             </CheckBox>
             <CheckBox x:Name="AcceptAnalyticsReportingCheck"
                       Click="ToggleIsAnalyticsReportingChecked"
@@ -109,7 +110,7 @@
                            Foreground="#4790cd"
                            TextWrapping="Wrap"
                            Name="AcceptAnalyticsReportingTextBlock"
-                           Text="{x:Static p:Resources.ConsentDialogAnalyticsCheckBox}" />
+                           Text="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReporting}"/>
             </CheckBox>
         </StackPanel>
 
