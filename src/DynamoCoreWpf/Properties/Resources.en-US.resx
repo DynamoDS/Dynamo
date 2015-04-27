@@ -775,8 +775,8 @@
     <value>Video Tutorials</value>
     <comment>Start page | Link to videos</comment>
   </data>
-  <data name="StartPageVisitDynamoBim" xml:space="preserve">
-    <value>Visit www.dynamobim.org</value>
+  <data name="StartPageVisitWebsite" xml:space="preserve">
+    <value>{0} website</value>
     <comment>Start page | Link to DynamoBIM</comment>
   </data>
   <data name="StartPageAdvancedTutorials" xml:space="preserve">
