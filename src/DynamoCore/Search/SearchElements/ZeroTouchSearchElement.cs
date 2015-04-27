@@ -31,14 +31,14 @@ namespace Dynamo.Search.SearchElements
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
             if (functionDescriptor.IsBuiltIn)
-                ElementType = ElementTypeEnum.RegularNode;
+                ElementType = ElementTypes.None;
             else
             {
                 // Assembly, that is located in package directory, considered as part of package.
                 if (Assembly.StartsWith(functionDescriptor.PathManager.PackagesDirectory))
-                    ElementType = ElementTypeEnum.Package;
+                    ElementType = ElementTypes.Packaged;
                 else
-                    ElementType = ElementTypeEnum.CustomDll;
+                    ElementType = ElementTypes.ZeroTouch;
             }
 
             inputParameters = new List<Tuple<string, string>>(functionDescriptor.InputParameters);

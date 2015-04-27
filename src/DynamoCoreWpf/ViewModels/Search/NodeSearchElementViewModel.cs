@@ -29,7 +29,7 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public ElementTypeEnum ElementType
+        public ElementTypes ElementType
         {
             get { return Model.ElementType; }
         }

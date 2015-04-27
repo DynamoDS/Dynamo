@@ -89,7 +89,7 @@ namespace Dynamo.Wpf.ViewModels
         bool IsSelected { get; }
         string Description { get; }
         ICommand ClickedCommand { get; }
-        ElementTypeEnum ElementType { get; }
+        ElementTypes ElementType { get; }
     }
 
     public class NodeCategoryViewModel : NotificationObject, ISearchEntryViewModel
@@ -153,19 +153,19 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
-        public ElementTypeEnum ElementType
+        public ElementTypes ElementType
         {
             get
             {
-                if (entries.All(entry => entry.ElementType == ElementTypeEnum.Package) &&
-                    subCategories.All(subCategory => subCategory.ElementType == ElementTypeEnum.Package))
-                    return ElementTypeEnum.Package;
+                if (entries.All(entry => entry.ElementType == ElementTypes.Packaged) &&
+                    subCategories.All(subCategory => subCategory.ElementType == ElementTypes.Packaged))
+                    return ElementTypes.Packaged;
                 else
-                    if (entries.All(entry => entry.ElementType == ElementTypeEnum.CustomDll) &&
-                        subCategories.All(subCategory => subCategory.ElementType == ElementTypeEnum.CustomDll))
-                        return ElementTypeEnum.CustomDll;
+                    if (entries.All(entry => entry.ElementType == ElementTypes.ZeroTouch) &&
+                        subCategories.All(subCategory => subCategory.ElementType == ElementTypes.ZeroTouch))
+                        return ElementTypes.ZeroTouch;
                     else
-                        return ElementTypeEnum.RegularCategory;
+                        return ElementTypes.None;
             }
         }
 

@@ -211,7 +211,7 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        public ElementTypeEnum ElementType
+        public ElementTypes ElementType
         {
             get;
             protected set;
