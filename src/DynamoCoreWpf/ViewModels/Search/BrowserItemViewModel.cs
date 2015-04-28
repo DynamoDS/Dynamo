@@ -153,27 +153,48 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+
+        private ElementTypes elementType;
         public ElementTypes ElementType
         {
             get
             {
-                if (entries.Any(entry => entry.ElementType.HasFlag(ElementTypes.BuiltIn)) ||
-                    subCategories.Any(subCat => subCat.ElementType.HasFlag(ElementTypes.BuiltIn)))
-                    return ElementTypes.BuiltIn;
+                if (elementType == ElementTypes.None)
+                    DetermineElementType();
+                return elementType;
+            }
 
-                if (entries.All(entry => entry.ElementType.HasFlag(ElementTypes.Packaged)) &&
-                    subCategories.All(subCat => subCat.ElementType.HasFlag(ElementTypes.Packaged)))
-                    return ElementTypes.Packaged;
+            private set
+            {
+                if (value == elementType) return;
+                elementType = value;
+            }
+        }
 
-                if (entries.All(entry => entry.ElementType.HasFlag(ElementTypes.ZeroTouch)) &&
-                    subCategories.All(subCat => subCat.ElementType.HasFlag(ElementTypes.ZeroTouch)))
-                    return ElementTypes.ZeroTouch;
+        private void DetermineElementType()
+        {
+            if (Items.Count == 0)
+            {
+                ElementType = ElementTypes.None;
+                return;
+            }
 
-                if (entries.All(entry => entry.ElementType.HasFlag(ElementTypes.CustomNode)) &&
-                    subCategories.All(subCat => subCat.ElementType.HasFlag(ElementTypes.CustomNode)))
-                    return ElementTypes.CustomNode;
-
-                return ElementTypes.None;
+            // If at list one item is builtin, the whole category considers as builtin.
+            if (Items.Any(item => item.ElementType.HasFlag(ElementTypes.BuiltIn)))
+                ElementType = ElementTypes.BuiltIn;
+            else
+            {
+                // If all items come from package, the whole category considers as package.
+                if (Items.All(item => item.ElementType.HasFlag(ElementTypes.Packaged)))
+                    ElementType = ElementTypes.Packaged;
+                else
+                {
+                    if (Items.All(item => item.ElementType.HasFlag(ElementTypes.ZeroTouch)))
+                        ElementType = ElementTypes.ZeroTouch;
+                    else
+                        if (Items.All(item => item.ElementType.HasFlag(ElementTypes.CustomNode)))
+                            ElementType = ElementTypes.CustomNode;
+                }
             }
         }
 
