@@ -66,9 +66,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnotationModelTest.cs" />
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="ConverterTests.cs" />
-    <Compile Include="GroupTests.cs" />
     <Compile Include="CrashProtectionTests.cs" />
     <Compile Include="DynamoModelTestBase.cs" />
     <Compile Include="MessageLogTests.cs" />
