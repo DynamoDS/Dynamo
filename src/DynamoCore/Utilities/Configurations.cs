@@ -227,6 +227,12 @@ namespace Dynamo.UI
         public static string HeaderQuery = Resources.HeaderQuery;
 
         #endregion
+
+        #region Backup
+
+        public static string BackupFileNamePrefix = "recent_new_file_";
+
+        #endregion
     }
 
     public class ResourceNames

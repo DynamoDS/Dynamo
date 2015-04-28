@@ -895,6 +895,12 @@ namespace Dynamo.ViewModels
         //    NodeFromSelectionCommand.RaiseCanExecuteChanged();
         //}
 
+        private void AlignSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            AlignSelectedCommand.RaiseCanExecuteChanged();
+
+        }
+
         private static bool CanCreateNodeFromSelection(object parameter)
         {
             return DynamoSelection.Instance.Selection.OfType<NodeModel>().Any();

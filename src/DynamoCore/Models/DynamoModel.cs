@@ -32,6 +32,7 @@ using ProtoCore;
 using Dynamo.Models.NodeLoaders;
 using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
+using Dynamo.UI;
 using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 using Symbol = Dynamo.Nodes.Symbol;
 using Utils = Dynamo.Nodes.Utilities;
@@ -53,6 +54,7 @@ namespace Dynamo.Models
         private readonly string geometryFactoryPath;
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
+        private Timer backupFilesTimer;
         #endregion
 
         #region events
@@ -465,8 +467,6 @@ namespace Dynamo.Models
             {
                 DynamoMigratorBase migrator = null;
 
-                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
@@ -543,6 +543,8 @@ namespace Dynamo.Models
             InitializeNodeLibrary(preferences);
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
+
+            StartBackupFilesTimer();
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -615,6 +617,13 @@ namespace Dynamo.Models
 
             EngineController.Dispose();
             EngineController = null;
+
+            if (backupFilesTimer != null)
+            {
+                backupFilesTimer.Dispose();
+                backupFilesTimer = null;
+                Logger.Log("Backup files timer is disposed");
+            }
 
             if (PreferenceSettings != null)
             {
@@ -1050,6 +1059,56 @@ namespace Dynamo.Models
 
         #endregion
 
+        #region backup/timer
+
+        /// <summary>
+        /// Backup all the files
+        /// </summary>
+        protected void SaveBackupFiles(object state)
+        {
+            DynamoModel.OnRequestDispatcherBeginInvoke(() =>
+            {
+                foreach (var workspace in Workspaces)
+                {
+                    if (!workspace.HasUnsavedChanges)
+                        continue;
+
+                    string fileName;
+                    if (string.IsNullOrEmpty(workspace.FileName))
+                    {
+                        fileName = Configurations.BackupFileNamePrefix + workspace.Guid;
+                        var ext = workspace is HomeWorkspaceModel ? ".DYN" : ".DYF";
+                        fileName += ext;
+                    }
+                    else
+                    {
+                        fileName = Path.GetFileName(workspace.FileName);
+                    }
+
+                    var savePath = Path.Combine(pathManager.BackupDirectory, fileName);
+                    workspace.SaveAs(savePath, null);
+                    Logger.Log("Backup file is saved: " + savePath);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Start the timer to backup files periodically
+        /// </summary>
+        private void StartBackupFilesTimer()
+        {
+            if (backupFilesTimer != null)
+            {
+                throw new Exception("The timer to backup files has already been started!");
+            }
+
+            backupFilesTimer = new Timer(SaveBackupFiles);
+            backupFilesTimer.Change(PreferenceSettings.BackupInterval, PreferenceSettings.BackupInterval);
+            Logger.Log(String.Format("Backup files timer is started with an interval of {0} milliseconds", PreferenceSettings.BackupInterval));
+        }
+
+        #endregion
+
         #region internal methods
 
         internal void PostUIActivation(object parameter)
@@ -1110,6 +1169,22 @@ namespace Dynamo.Models
                 }
             }
         }
+
+        internal void AddToGroup(List<ModelBase> modelsToAdd)
+        {
+            var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
+            var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.IsSelected);
+            if (selectedGroup != null)
+            {                      
+                foreach (var model in modelsToAdd)
+                {
+                    CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
+                    selectedGroup.AddToSelectedModels(model);
+                }
+            }
+
+        }
+
 
         internal void DumpLibraryToXml(object parameter)
         {

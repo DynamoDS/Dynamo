@@ -68,11 +68,6 @@ namespace Dynamo.Wpf.ViewModels
             return WrapExplicit(itemDyn);
         }
 
-        internal static BrowserRootElementViewModel WrapExplicit(BrowserRootElement elem)
-        {
-            return new BrowserRootElementViewModel(elem);
-        }
-
         internal static BrowserInternalElementViewModel WrapExplicit(BrowserInternalElement elem)
         {
             return new BrowserInternalElementViewModel(elem);

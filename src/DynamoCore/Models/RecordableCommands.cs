@@ -1561,6 +1561,42 @@ namespace Dynamo.Models
             #endregion
         }
 
+
+        [DataContract]
+        public class AddModelToGroupCommand : ModelSpecificRecordableCommand
+        {
+            #region Public Class Methods
+
+            [JsonConstructor]
+            public AddModelToGroupCommand(string modelGuid) : base(modelGuid) { }
+
+            public AddModelToGroupCommand(Guid modelGuid) : base(modelGuid) { }
+
+            internal static AddModelToGroupCommand DeserializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                Guid modelGuid = helper.ReadGuid("ModelGuid");
+                return new AddModelToGroupCommand(modelGuid);
+            }
+
+            #endregion
+
+            #region Protected Overridable Methods
+
+            protected override void ExecuteCore(DynamoModel dynamoModel)
+            {
+                dynamoModel.AddToGroupImpl(this);
+            }
+
+            protected override void SerializeCore(XmlElement element)
+            {
+                var helper = new XmlElementHelper(element);
+                helper.SetAttribute("ModelGuid", ModelGuid);
+            }
+
+            #endregion
+        }
+
     }
 
     // public class XxxYyyCommand : RecordableCommand
