@@ -3337,6 +3337,191 @@
             This interface caches render specific data.
             </summary>
         </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddPointVertex(System.Double,System.Double,System.Double)">
+            <summary>
+            Add a point vertex to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddPointVertexColor(System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Add a point color to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertex(System.Double,System.Double,System.Double)">
+            <summary>
+            Add a triangle vertex location to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertexNormal(System.Double,System.Double,System.Double)">
+            <summary>
+            Add a triangle vertex normal to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertexUV(System.Double,System.Double)">
+            <summary>
+            Add a triangle texture coordinate to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddTriangleVertexColor(System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Add a triangle vertex color to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddLineStripVertex(System.Double,System.Double,System.Double)">
+            <summary>
+            Add a line vertex to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddLineStripVertexCount(System.Int32)">
+            <summary>
+            Add a line strip vertex count to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.AddLineStripVertexColor(System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Add a line strip vertex color to the render package.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyLineVertexColors(System.Int32,System.Int32,System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Apply a color to a sequence of line vertices.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyMeshVertexColors(System.Int32,System.Int32,System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Apply a color to a sequence of mesh vertices.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyPointVertexColors(System.Int32,System.Int32,System.Byte,System.Byte,System.Byte,System.Byte)">
+            <summary>
+            Apply a color to each point vertex.
+            </summary>
+            <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyPointVertexColors(System.Byte[])">
+            <summary>
+            Apply a color to each point vertex.
+            </summary>
+            <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyLineVertexColors(System.Byte[])">
+            <summary>
+            Apply a color to a sequence of line vertices.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.ApplyMeshVertexColors(System.Byte[])">
+            <summary>
+            Apply a color to each mesh vertex.
+            </summary>
+            <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        </member>
+        <member name="M:Autodesk.DesignScript.Interfaces.IRenderPackage.Clear">
+            <summary>
+            Clear all render data from the render package.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.Description">
+            <summary>
+            A tag used to store information about the render package.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.IsSelected">
+            <summary>
+            A flag indicating whether the render package is selected.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.HasRenderingData">
+            <summary>
+            A flag indicating whether the render package has data.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.DisplayLabels">
+            <summary>
+            A flag indicating whether the render package is displaying labels
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.RequiresPerVertexColoration">
+            <summary>
+            A flag indicating whether the render package requires 
+            per vertex coloration.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointVertexCount">
+            <summary>
+            The number of point vertices in the package.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineVertexCount">
+            <summary>
+            The number of line vertices in the package.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshVertexCount">
+            <summary>
+            The number of mesh vertices in the package.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripVertexCounts">
+            <summary>
+            A collection of int values representing how many vertices
+            comprise each line segment in the package.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripVertexBuffer">
+            <summary>
+            A collection containing all line strip vertices as x1,y1,z1,x2,y2,z2...
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripVertexColorBuffer">
+            <summary>
+            A collection containing all line strip colors as r1,g1,b1,a1,r2,g2,b2,a2...
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.LineStripIndexBuffer">
+            <summary>
+            A collection containing all line strip indices.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshVertexBuffer">
+            <summary>
+            A collection containing all mesh vertices as x1,y1,z1,x2,y2,z2...
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshVertexColorBuffer">
+            <summary>
+            A collection containing all mesh vertex colors as r1,g1,b1,a1,r2,g2,b2,a2...
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshIndexBuffer">
+            <summary>
+            A collection containing all mesh vertex indices.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshNormalBuffer">
+            <summary>
+            A collection containing all mesh normals as x1,y1,z1,x2,y2,z2...
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.MeshTextureCoordinateBuffer">
+            <summary>
+            A collection containing all mesh texture coordinates as u1,v1,u2,v2...
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointVertexBuffer">
+            <summary>
+            A collection containing all point vertices as x1,y1,z1,x2,y2,z2...
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointVertexColorBuffer">
+            <summary>
+            A collection containing all mesh vertex colors as r1,g1,b1,a1,r2,g2,b2,a2...
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Interfaces.IRenderPackage.PointIndexBuffer">
+            <summary>
+            A collection containing all mesh vertex indices.
+            </summary>
+        </member>
         <member name="T:Autodesk.DesignScript.Interfaces.IGraphicItem">
             <summary>
             Represents a graphics item object, that can provide tesselated data
