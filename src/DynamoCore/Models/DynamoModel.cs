@@ -46,7 +46,7 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager // : ModelBase
+    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
         public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
 
@@ -311,6 +311,12 @@ namespace Dynamo.Models
             get { return _workspaces; } 
         }
 
+        /// <summary>
+        /// An object which implements the ITraceReconciliationProcessor interface,
+        /// and is used for handlling the results of a trace reconciliation.
+        /// </summary>
+        public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
+
         #endregion
 
         #region initialization and disposal
@@ -545,24 +551,68 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
             StartBackupFilesTimer();
+
+            TraceReconciliationProcessor = this;
         }
 
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
         {
-            Debug.WriteLine("TRACE RECONCILIATION: {0} serializables were orphaned.", obj.OrphanedSerializables.Count());
+            Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp=>kvp.Value).Count());
+            
+            // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
+            // This dictionary gets redistributed into a dictionary keyed by the workspace id.
 
-            var orphans = new List<ISerializable>();
+            var workspaceOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+
             foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
             {
-                orphans.AddRange(ws.GetOrphanedSerializablesAndClearHistoricalTraceData());
+                // Get the orphaned serializables to this workspace
+                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
+
+                if (!wsOrphans.Any())
+                    continue;
+
+                if (!workspaceOrphanMap.ContainsKey(ws.Guid))
+                {
+                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
+                }
+                else
+                {
+                    workspaceOrphanMap[ws.Guid].AddRange(wsOrphans);
+                }
             }
 
-            orphans.AddRange(obj.OrphanedSerializables);
+            foreach (var kvp in obj.CallsiteToOrphanMap)
+            {
+                if (!kvp.Value.Any()) continue;
 
-            PostTraceReconciliation(orphans);
+                var nodeGuid = EngineController.LiveRunnerCore.DSExecutable.CallSiteToNodeMap[kvp.Key];
+
+                // Find the owning workspace for a node.
+                var nodeSpace =
+                    Workspaces.FirstOrDefault(
+                        ws =>
+                            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
+                                != null);
+
+                if (nodeSpace == null) continue;
+
+                // Add the node's orphaned serializables to the workspace
+                // orphan map.
+                if (workspaceOrphanMap.ContainsKey(nodeSpace.Guid))
+                {
+                    workspaceOrphanMap[nodeSpace.Guid].AddRange(kvp.Value);
+                }
+                else
+                {
+                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);  
+                }
+            }
+
+            TraceReconciliationProcessor.PostTraceReconciliation(workspaceOrphanMap);
         }
 
-        protected virtual void PostTraceReconciliation(IEnumerable<ISerializable> orphanedSerializables)
+        public virtual void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
         {
             // Override in derived classes to deal with orphaned serializables.
         }
