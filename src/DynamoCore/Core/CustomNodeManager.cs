@@ -287,6 +287,9 @@ namespace Dynamo.Core
         /// <param name="isTestMode">
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
+        /// <param name="isPackageMember">
+        ///     Indicates whether custom node comes from package or not.
+        /// </param>
         /// <returns></returns>
         public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode, bool isPackageMember = false)
         {

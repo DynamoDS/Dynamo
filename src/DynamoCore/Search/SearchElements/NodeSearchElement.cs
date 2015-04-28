@@ -211,6 +211,10 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
+        /// <summary>
+        ///     Indicates whether it is custom node or zero-touch element.
+        ///     And whether this element comes from package or not.
+        /// </summary>
         public ElementTypes ElementType
         {
             get;
