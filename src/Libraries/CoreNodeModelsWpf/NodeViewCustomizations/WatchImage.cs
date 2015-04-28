@@ -57,19 +57,7 @@ namespace Dynamo.Wpf.Nodes
 
         private void SetImageSource(Bitmap bmp)
         {
-            try
-            {
-                if (bmp != null)
-                    image.Source = ResourceUtilities.ConvertToImageSource(bmp);
-            }
-            catch (Exception e)
-            {
-            }
-            finally 
-            {
-                bmp.Dispose();
-                bmp = null;
-            }
+            image.Source = ResourceUtilities.ConvertToImageSource(bmp);
         }
 
         public void Dispose()
