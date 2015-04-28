@@ -49,15 +49,26 @@ namespace Dynamo.Wpf.Nodes
                 return;
 
             var bitmap = data.Data as Bitmap;
-            
-            nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { bitmap });
+            if (bitmap != null)
+            {
+                nodeView.Dispatcher.BeginInvoke(new Action<Bitmap>(SetImageSource), new object[] { bitmap });
+            }
         }
 
         private void SetImageSource(Bitmap bmp)
         {
-            using (bmp)
+            try
             {
-                image.Source = ResourceUtilities.ConvertToImageSource(bmp);
+                if (bmp != null)
+                    image.Source = ResourceUtilities.ConvertToImageSource(bmp);
+            }
+            catch (Exception e)
+            {
+            }
+            finally 
+            {
+                bmp.Dispose();
+                bmp = null;
             }
         }
 
