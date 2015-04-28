@@ -406,6 +406,47 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestUnqualifiedNameReplacer5()
+        {
+            // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
+            OpenModel(@"core\node2code\unqualifiedName4.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.True(result != null && result.AstNodes != null);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+            var expr2 = result.AstNodes.Last() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.IsNotNull(expr2);
+
+            Assert.IsTrue(expr1.RightNode.ToString().Equals("Point.ByCoordinates(0, 0)"));
+            Assert.IsTrue(expr2.RightNode.ToString().Equals("Point.ByCoordinates(0, 0)"));
+        }
+
+        [Test]
+        public void TestUnqualifiedNameReplacer6()
+        {
+            OpenModel(@"core\node2code\unqualifiedName5.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.True(result != null && result.AstNodes != null);
+
+            var expr = result.AstNodes.Last() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr);
+            Assert.IsTrue(expr.RightNode.ToString().Equals("t1.DistanceTo(t2)"));
+        }
+
+        [Test]
         public void TestBasicNode2Code()
         {
             // 1 -> a -> x
@@ -425,6 +466,24 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(expr1.ToString().StartsWith("a = 1;"));
             Assert.IsTrue(expr2.ToString().StartsWith("x = a;"));
+        }
+
+        [Test]
+        public void TestShortName1()
+        {
+            OpenModel(@"core\node2code\shortName1.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.IsTrue(result != null && result.AstNodes != null);
+
+            var expr = result.AstNodes.Last() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr);
+            Assert.IsTrue(expr.RightNode.ToString().Equals("Point.ByCoordinates(t1, 0)"));
         }
     }
 }

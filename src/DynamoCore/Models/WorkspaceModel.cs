@@ -1571,6 +1571,9 @@ namespace Dynamo.Models
                 var variableName = kvp.Value;
 
                 var endPortIndex = CodeBlockNodeModel.GetInportIndex(cbn, variableName);
+                if (endPortIndex < 0)
+                    continue;
+
                 if (Connectors.Any(c => c.End == cbn.InPorts[endPortIndex]))
                     continue;
 

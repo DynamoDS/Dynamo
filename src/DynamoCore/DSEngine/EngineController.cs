@@ -560,7 +560,7 @@ namespace Dynamo.DSEngine
 
         public NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes)
         {
-            return NodeToCodeUtils.NodeToCode(astBuilder, graph, nodes);
+            return NodeToCodeUtils.NodeToCode(libraryServices.LibraryManagementCore, astBuilder, graph, nodes);
         }
 
         private bool HasVariableDefined(string var)

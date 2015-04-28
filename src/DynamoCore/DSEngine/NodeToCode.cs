@@ -52,9 +52,12 @@ namespace Dynamo.DSEngine
         private class IdentifierVisitor : AssociativeAstVisitor 
         {
             private Action<IdentifierNode> identFunc;
-            public IdentifierVisitor(Action<IdentifierNode> func)
+            private ProtoCore.Core core;
+
+            public IdentifierVisitor(Action<IdentifierNode> func, ProtoCore.Core core)
             {
                 identFunc = func;
+                this.core = core;
             }
 
             public override void VisitIdentifierNode(IdentifierNode node)
@@ -62,6 +65,27 @@ namespace Dynamo.DSEngine
                 identFunc(node);
                 if (node.ArrayDimensions != null)
                     node.ArrayDimensions.Accept(this);
+            }
+
+            public override void VisitIdentifierListNode(IdentifierListNode node)
+            {
+                if ((node.LeftNode is IdentifierNode ||
+                    node.RightNode is IdentifierListNode) &&
+                    node.RightNode is FunctionCallNode)
+                {
+                    var lhs = node.LeftNode.ToString();
+                    ClassMirror mirror = null;
+                    try
+                    {
+                        mirror = new ClassMirror(lhs, core);
+                        node.RightNode.Accept(this);
+                        return;
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+                base.VisitIdentifierListNode(node);
             }
         }
 
@@ -420,8 +444,8 @@ namespace Dynamo.DSEngine
                     var portIndex = startPort.Index; 
                     var cbn = inputNode as CodeBlockNodeModel;
 
-                    if (nodes.Contains(inputNode))
-                    {
+                    //if (nodes.Contains(inputNode))
+                    //{
                         // internal node
                         if (cbn != null)
                         {
@@ -432,7 +456,7 @@ namespace Dynamo.DSEngine
                             var key = String.Format("{0}%{1}", originalVar, cbn.GUID);
                             renamingMap[key] = inputVar;
                         }
-                    }
+                    //}
                     else // extern node, so they should be added to inputMap
                     {
                         string inputVar = inputNode.GetAstIdentifierForOutputIndex(portIndex).Value;
@@ -474,6 +498,7 @@ namespace Dynamo.DSEngine
         /// <param name="numberingMap"></param>
         /// <param name="variableMap"></param>
         private static void VariableNumbering(
+            ProtoCore.Core core,
             AssociativeNode astNode, 
             NodeModel node,
             Dictionary<string, NumberingState> numberingMap, 
@@ -546,7 +571,7 @@ namespace Dynamo.DSEngine
                 mappedVariables.Add(ns.NumberedVariable);
             };
 
-            IdentifierVisitor visitor = new IdentifierVisitor(func);
+            IdentifierVisitor visitor = new IdentifierVisitor(func, core);
             astNode.Accept(visitor);
         }
 
@@ -556,6 +581,7 @@ namespace Dynamo.DSEngine
         /// <param name="astNode"></param>
         /// <param name="renamingMap"></param>
         private static void VariableRemapping(
+            ProtoCore.Core core,
             AssociativeNode astNode, 
             Dictionary<string, string> renamingMap)
         {
@@ -566,7 +592,7 @@ namespace Dynamo.DSEngine
                         n.Value = n.Name = newIdent;
                 };
 
-            IdentifierVisitor visitor = new IdentifierVisitor(func);
+            IdentifierVisitor visitor = new IdentifierVisitor(func, core);
             astNode.Accept(visitor);
         }
 
@@ -577,6 +603,7 @@ namespace Dynamo.DSEngine
         /// <param name="shortNameMap"></param>
         /// <param name="nameGenerator"></param>
         private static void ShortNameMapping(
+            ProtoCore.Core core,
             AssociativeNode astNode,
             Dictionary<string, string> shortNameMap,
             ShortNameGenerator nameGenerator,
@@ -599,7 +626,7 @@ namespace Dynamo.DSEngine
                 }
             };
 
-            IdentifierVisitor visitor = new IdentifierVisitor(func);
+            IdentifierVisitor visitor = new IdentifierVisitor(func, core);
             astNode.Accept(visitor);
         }
 
@@ -761,11 +788,13 @@ namespace Dynamo.DSEngine
         ///    whole graph so that each to-be-converted node will have correct
         ///    order in the final code block node.
         /// </summary>
+        /// <param name="core">Library core</param>
         /// <param name="astBuilder">Ast builder</param>
         /// <param name="workspaceNodes">The whole workspace nodes</param>
         /// <param name="nodes">Selected node that can be converted to a single code block node</param>
         /// <returns></returns>
         public static NodeToCodeResult NodeToCode(
+            ProtoCore.Core core,
             AstBuilder astBuilder, 
             IEnumerable<NodeModel> workspaceNodes,
             IEnumerable<NodeModel> nodes)
@@ -836,7 +865,7 @@ namespace Dynamo.DSEngine
                     p.Value.IsNewSession = true;
 
                 foreach (var astNode in t.Item2)
-                    VariableNumbering(astNode, t.Item1, numberingMap, renamingMap, inputMap, outputMap, mappedVariables); 
+                    VariableNumbering(core, astNode, t.Item1, numberingMap, renamingMap, inputMap, outputMap, mappedVariables); 
             }
 
             renamingMap = renamingMap.Where(p => !p.Key.Contains("%"))
@@ -850,7 +879,7 @@ namespace Dynamo.DSEngine
             foreach (var ts in allAstNodes)
             {
                 foreach (var astNode in ts.Item2)
-                    VariableRemapping(astNode, renamingMap);
+                    VariableRemapping(core, astNode, renamingMap);
             }
             #endregion
 
@@ -896,8 +925,8 @@ namespace Dynamo.DSEngine
             {
                 foreach (var astNode in ts.Item2)
                 {
-                    ShortNameMapping(astNode, inputMap, nameGenerator, mappedVariables);
-                    ShortNameMapping(astNode, outputMap, nameGenerator, mappedVariables);
+                    ShortNameMapping(core, astNode, inputMap, nameGenerator, mappedVariables);
+                    ShortNameMapping(core, astNode, outputMap, nameGenerator, mappedVariables);
                 }
             }
             #endregion
