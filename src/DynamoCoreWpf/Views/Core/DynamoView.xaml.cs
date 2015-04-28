@@ -275,8 +275,11 @@ namespace Dynamo.Controls
         /// page is incurred, when user opts to not display start page at start 
         /// up, then this method will not be called (therefore incurring no cost).
         /// </summary>
-        /// 
-        private void InitializeStartPage()
+        /// <param name="isFirstRun">
+        /// Indicates if it is the first time new Dynamo version runs.
+        /// It is used to decide whether the Gallery need to be shown on the StartPage.
+        /// </param>
+        private void InitializeStartPage(bool isFirstRun)
         {
             if (DynamoModel.IsTestMode) // No start screen in unit testing.
                 return;
@@ -289,7 +292,7 @@ namespace Dynamo.Controls
                     throw new InvalidOperationException(message);
                 }
 
-                startPage = new StartPageViewModel(dynamoViewModel);
+                startPage = new StartPageViewModel(dynamoViewModel, isFirstRun);
                 startPageItemsControl.Items.Add(startPage);
             }
         }
@@ -325,6 +328,8 @@ namespace Dynamo.Controls
         private void DynamoView_Loaded(object sender, EventArgs e)
         {
 
+            //Backing up IsFirstRun to determine whether to show Gallery
+            var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
 
@@ -339,7 +344,7 @@ namespace Dynamo.Controls
                                                                      _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
             InitializeLogin();
             InitializeShortcutBar();
-            InitializeStartPage();
+            InitializeStartPage(isFirstRun);
 
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();

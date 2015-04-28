@@ -130,12 +130,6 @@ namespace Dynamo
         /// </summary>
         public bool PackageDownloadTouAccepted { get; set; }
 
-        /// <summary>
-        /// Indicates if the Gallery has to be shown
-        /// after Dynamo launches
-        /// </summary>
-        public bool ShowGalleryAtStartUp { get; set; }
-
         public PreferenceSettings()
         {
             RecentFiles = new List<string>();
@@ -156,7 +150,7 @@ namespace Dynamo
             NumberFormat = "f3";
             UseHardwareAcceleration = true;
             PackageDownloadTouAccepted = false;
-            ShowGalleryAtStartUp = true;
+
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
         }

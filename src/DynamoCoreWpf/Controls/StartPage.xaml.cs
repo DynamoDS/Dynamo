@@ -115,9 +115,10 @@ namespace Dynamo.UI.Controls
         ObservableCollection<StartPageListItem> recentFiles = null;
         internal readonly DynamoViewModel DynamoViewModel;
 
-        internal StartPageViewModel(DynamoViewModel dynamoViewModel)
+        internal StartPageViewModel(DynamoViewModel dynamoViewModel, bool isFirstRun)
         {
             this.DynamoViewModel = dynamoViewModel;
+            IsFirstRun = isFirstRun;
 
             this.recentFiles = new ObservableCollection<StartPageListItem>();
             sampleFiles = new ObservableCollection<SampleFileEntry>();
@@ -274,6 +275,8 @@ namespace Dynamo.UI.Controls
                 }
             }
         }
+
+        public bool IsFirstRun { get; private set; }
 
         public string SampleFolderPath
         {
@@ -433,9 +436,8 @@ namespace Dynamo.UI.Controls
             var id = Wpf.Interfaces.ResourceNames.StartPage.Image;
             StartPageLogo.Source = dynamoViewModel.BrandingResourceProvider.GetImageSource(id);
 
-            /*if (dynamoViewModel.Model.PreferenceSettings.ShowGalleryAtStartUp)
+            /*if (startPageViewModel.IsFirstRun)
             {
-                dynamoViewModel.Model.PreferenceSettings.ShowGalleryAtStartUp = false;
                 dynamoViewModel.ShowGalleryCommand.Execute(null);
             }*/
 
