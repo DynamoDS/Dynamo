@@ -16,7 +16,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
-    internal class GroupTests : DynamoModelTestBase
+    internal class AnnotationModelTest : DynamoModelTestBase
     {
         [Test]
         [Category("UnitTests")]
