@@ -146,29 +146,27 @@ namespace Dynamo.DSEngine
 
             public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
             {
-                if (node.LeftNode is IdentifierNode && node.RightNode is FunctionCallNode)
+                if ((node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
+                    && node.RightNode is FunctionCallNode)
                 {
-                    var qualifiedClass = node.LeftNode as IdentifierNode;
-
+                    var qualifiedClassName = node.LeftNode.ToString();
                     ClassMirror mirror = null;
-
                     try
                     {
-                        mirror = new ClassMirror(qualifiedClass.Value, core);
+                        mirror = new ClassMirror(qualifiedClassName, core);
+                        if (!qualifiedClassName.Equals(mirror.Alias))
+                        {
+                            node.LeftNode = AstFactory.BuildIdentifier(mirror.Alias);
+                        }
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
-                        // class not defined
-                        return node;
                     }
 
-                    qualifiedClass.Value = qualifiedClass.Name = mirror.Alias;
-                    return node;
+                    node.RightNode.Accept(this);
                 }
-                else
-                {
-                    return node;
-                }
+
+                return node;
             }
         }
 
