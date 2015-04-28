@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Dynamo.Nodes;
 using Dynamo.DSEngine;
 using ProtoCore.AST.AssociativeAST;
+using Dynamo.Models;
 
 namespace Dynamo.Tests
 {
@@ -447,7 +448,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TestBasicNode2Code()
+        public void TestBasicNode2CodeWorkFlow1()
         {
             // 1 -> a -> x
             OpenModel(@"core\node2code\workflow1.dyn");
@@ -466,6 +467,33 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(expr1.ToString().StartsWith("a = 1;"));
             Assert.IsTrue(expr2.ToString().StartsWith("x = a;"));
+        }
+
+        [Test]
+        public void TestBasicNode2CodeWorkFlow2()
+        {
+            // 1 -> Point.ByCoordinates ---+
+            //                             |---------------------------+ 
+            //                             +-- List.Create (index0)    |-> Line.ByStartPointEndPoint
+            //                             +--> List.Create (index1)   |
+            //                             |---------------------------+ 
+            // 2 -> Point.ByCoordinates ---+
+            OpenModel(@"core\node2code\workflow2.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            ViewModel.SelectAll(null);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            ViewModel.ExecuteCommand(command);
+
+            Assert.IsTrue(ViewModel.CurrentSpace.Connectors.Count() == 2);
+            Assert.IsTrue(ViewModel.CurrentSpace.Nodes.Count == 2);
+
+            var undo = new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo);
+            ViewModel.ExecuteCommand(undo);
+
+            Assert.IsTrue(ViewModel.CurrentSpace.Connectors.Count() == 6);
+            Assert.IsTrue(ViewModel.CurrentSpace.Nodes.Count == 6);
         }
 
         [Test]

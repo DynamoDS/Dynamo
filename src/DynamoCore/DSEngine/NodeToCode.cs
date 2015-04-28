@@ -74,16 +74,12 @@ namespace Dynamo.DSEngine
                     node.RightNode is FunctionCallNode)
                 {
                     var lhs = node.LeftNode.ToString();
-                    ClassMirror mirror = null;
-                    try
+                    if (core.ClassTable.IndexOf(lhs) < 0)
                     {
-                        mirror = new ClassMirror(lhs, core);
-                        node.RightNode.Accept(this);
-                        return;
+                        node.LeftNode.Accept(this);
                     }
-                    catch (Exception)
-                    {
-                    }
+                    node.RightNode.Accept(this);
+                    return;
                 }
                 base.VisitIdentifierListNode(node);
             }
@@ -173,18 +169,10 @@ namespace Dynamo.DSEngine
                 if ((node.LeftNode is IdentifierNode || node.LeftNode is IdentifierListNode)
                     && node.RightNode is FunctionCallNode)
                 {
-                    var qualifiedClassName = node.LeftNode.ToString();
-                    ClassMirror mirror = null;
-                    try
+                    var fullName = node.LeftNode.ToString();
+                    if (core.ClassTable.IndexOf(fullName) >= 0 && fullName.Contains("."))
                     {
-                        mirror = new ClassMirror(qualifiedClassName, core);
-                        if (!qualifiedClassName.Equals(mirror.Alias))
-                        {
-                            node.LeftNode = AstFactory.BuildIdentifier(mirror.Alias);
-                        }
-                    }
-                    catch (Exception)
-                    {
+                        node.LeftNode = AstFactory.BuildIdentifier(fullName.Split('.').Last());
                     }
 
                     node.RightNode.Accept(this);
