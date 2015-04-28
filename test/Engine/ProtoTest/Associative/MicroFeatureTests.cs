@@ -3169,6 +3169,17 @@ c = [Associative]
             thisTest.Verify("b", false);
         }
 
+        [Test]
+        public void TestAddNullToString()
+        {
+            string code =
+@"
+a = ""hello"" + null;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+        }
+        
 
     }
 }
