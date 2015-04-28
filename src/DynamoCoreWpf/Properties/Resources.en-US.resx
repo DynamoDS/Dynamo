@@ -450,7 +450,7 @@
     <comment>Setting menu | Decimal inch</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReporting" xml:space="preserve">
-    <value>_Enable detailed usability data reporting (Instrumentation)</value>
+    <value>Enable detailed usability data reporting (Instrumentation)</value>
     <comment>Setting menu | Enable data reporting during usage</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
@@ -775,8 +775,8 @@
     <value>Video Tutorials</value>
     <comment>Start page | Link to videos</comment>
   </data>
-  <data name="StartPageVisitDynamoBim" xml:space="preserve">
-    <value>Visit www.dynamobim.org</value>
+  <data name="StartPageVisitWebsite" xml:space="preserve">
+    <value>{0} website</value>
     <comment>Start page | Link to DynamoBIM</comment>
   </data>
   <data name="StartPageAdvancedTutorials" xml:space="preserve">
@@ -1029,9 +1029,6 @@ You will get a chance to save your work.</value>
   </data>
   <data name="GenericTaskDialogTitle" xml:space="preserve">
     <value>Generic Task Dialog</value>
-  </data>
-  <data name="ConsentDialogInstrumentationCheckBox" xml:space="preserve">
-    <value>I give my consent for Autodesk to collect information on how I use {0}.</value>
   </data>
   <data name="UsageReportPromptDialogFeatureUsage" xml:space="preserve">
     <value>The features and commands you use in {0}</value>
@@ -1660,9 +1657,6 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="GalleryDynamoVersion" xml:space="preserve">
     <value>Version {0}.{1}</value>
-  </data>
-  <data name="ConsentDialogAnalyticsCheckBox" xml:space="preserve">
-    <value>Yes, I would like to contribute to this program.</value>
   </data>
   <data name="UsageReportPromptDialogMessagePart3" xml:space="preserve">
     <value>Autodesk uses Google Analytics in this product. If you agree to its use, Autodesk will receive non-personal product usage information about this Autodesk software.  We use this information to improve our products and understand how people use them.

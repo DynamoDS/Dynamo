@@ -196,24 +196,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Yes, I would like to contribute to this program..
-        /// </summary>
-        public static string ConsentDialogAnalyticsCheckBox {
-            get {
-                return ResourceManager.GetString("ConsentDialogAnalyticsCheckBox", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I give my consent for Autodesk to collect information on how I use {0}..
-        /// </summary>
-        public static string ConsentDialogInstrumentationCheckBox {
-            get {
-                return ResourceManager.GetString("ConsentDialogInstrumentationCheckBox", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add To Group.
         /// </summary>
         public static string ContextAddGroupFromSelection {
@@ -1296,7 +1278,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Enable detailed usability data reporting (Instrumentation).
+        ///   Looks up a localized string similar to Enable detailed usability data reporting (Instrumentation).
         /// </summary>
         public static string DynamoViewSettingMenuEnableDataReporting {
             get {
@@ -3782,11 +3764,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visit www.dynamobim.org.
+        ///   Looks up a localized string similar to {0} website.
         /// </summary>
-        public static string StartPageVisitDynamoBim {
+        public static string StartPageVisitWebsite {
             get {
-                return ResourceManager.GetString("StartPageVisitDynamoBim", resourceCulture);
+                return ResourceManager.GetString("StartPageVisitWebsite", resourceCulture);
             }
         }
         

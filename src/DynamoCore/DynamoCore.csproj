@@ -145,7 +145,6 @@ limitations under the License.
     </Compile>
     <Compile Include="Nodes\DummyNode.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Search\Legacy\BrowserRootElement.cs" />
     <Compile Include="Interfaces\ICustomNodeSource.cs" />
     <Compile Include="Search\SearchLibrary.cs" />
     <Compile Include="Search\SearchElementGroup.cs" />
@@ -198,7 +197,7 @@ limitations under the License.
     <Compile Include="Nodes\FunctionCallBase.cs" />
     <Compile Include="Nodes\ZeroTouch\UnresolvedFunctionException.cs" />
     <Compile Include="PackageManager\PackageUtilities.cs" />
-    <Compile Include="Search\Legacy\BrowserItem.cs" />
+    <Compile Include="Search\BrowserItem.cs" />
     <Compile Include="Services\StabilityTracking.cs" />
     <Compile Include="DSEngine\AstBuilder.cs" />
     <Compile Include="Library\FunctionType.cs" />
@@ -239,7 +238,7 @@ limitations under the License.
     <Compile Include="Utilities\TypeExtensions.cs" />
     <Compile Include="Utilities\VersionUtilities.cs" />
     <Compile Include="Utilities\XmlHelper.cs" />
-    <Compile Include="Search\Legacy\BrowserInternalElement.cs" />
+    <Compile Include="Search\BrowserInternalElement.cs" />
     <Compile Include="PackageManager\PackageDownloadHandle.cs" />
     <Compile Include="PackageManager\PackageLoader.cs" />
     <Compile Include="Utilities\Extensions.cs" />
@@ -249,7 +248,7 @@ limitations under the License.
     <Compile Include="Core\NodeModelAssemblyLoader.cs" />
     <Compile Include="Utilities\Guid.cs" />
     <Compile Include="PackageManager\PackageManagerSearchElement.cs" />
-    <Compile Include="Search\Legacy\SearchElements\SearchElementBase.cs" />
+    <Compile Include="Search\SearchElementBase.cs" />
     <Compile Include="Nodes\NodeCategories.cs" />
     <Compile Include="Models\ConnectorModel.cs" />
     <Compile Include="Nodes\Custom Nodes\Function.cs" />

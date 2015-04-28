@@ -204,7 +204,6 @@
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
-    <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
     <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
@@ -1140,6 +1139,7 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\StartPage\icon-whats-new.png" />
     <Resource Include="UI\Images\Gallery\gallery-button-close-states.png" />
     <Resource Include="UI\Images\Gallery\gallery-button-next-prev-states.png" />
     <Resource Include="UI\Images\profile_normal.png" />
