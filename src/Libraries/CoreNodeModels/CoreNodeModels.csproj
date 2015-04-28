@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Condition=" '$(OS)' != 'Unix' " Include="DynamoConvert.cs" />
+    <Compile Include="DynamoConvert.cs" />
     <Compile Include="Input\SliderBase.cs" />
     <Compile Include="Input\Double.cs" />
     <Compile Include="Input\BaseTypes.cs" />
