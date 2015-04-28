@@ -1607,54 +1607,6 @@ namespace ProtoCore
                 //Now iterate over each of these options
                 for (int i = 0; i < retSize; i++)
                 {
-#if __PROTOTYPE_ARRAYUPDATE_FUNCTIONCALL
-
-                    // Comment Jun: If the array pointer passed in was of type DS Null, 
-                    // then it means this is the first time the results are being computed.
-                    bool executeAll = c.ArrayPointer.IsNull;
-
-                    if (executeAll || ProtoCore.AssociativeEngine.ArrayUpdate.IsIndexInElementUpdateList(i, c.IndicesIntoArgMap))
-                    {
-                        List<List<int>> prevIndexIntoList = new List<List<int>>();
-
-                        foreach (List<int> dimList in c.IndicesIntoArgMap)
-                        {
-                            prevIndexIntoList.Add(new List<int>(dimList));
-                        }
-
-
-                        StackValue svPrevPtr = c.ArrayPointer;
-                        if (!executeAll)
-                        {
-                            c.IndicesIntoArgMap = ProtoCore.AssociativeEngine.ArrayUpdate.UpdateIndexIntoList(i, c.IndicesIntoArgMap);
-                            c.ArrayPointer = ProtoCore.Utils.ArrayUtils.GetArrayElementAt(c.ArrayPointer, i, core);
-                        }
-
-                        //Build the call
-                        List<StackValue> newFormalParams = new List<StackValue>();
-                        newFormalParams.AddRange(formalParameters);
-
-                        if (he != null)
-                        {
-                            //It was an array pack the arg with the current value
-                            newFormalParams[cartIndex] = he.Stack[i];
-                        }
-
-                        List<ReplicationInstruction> newRIs = new List<ReplicationInstruction>();
-                        newRIs.AddRange(replicationInstructions);
-                        newRIs.RemoveAt(0);
-
-                        retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core, funcGroup);
-
-                        // Restore the context properties for arrays
-                        c.IndicesIntoArgMap = new List<List<int>>(prevIndexIntoList);
-                        c.ArrayPointer = svPrevPtr;
-                    }
-                    else
-                    {
-                        retSVs[i] = ProtoCore.Utils.ArrayUtils.GetArrayElementAt(c.ArrayPointer, i, core);
-                    }
-#else
                     //Build the call
                     List<StackValue> newFormalParams = new List<StackValue>();
                     newFormalParams.AddRange(formalParameters);
@@ -1702,10 +1654,6 @@ namespace ProtoCore
 
 
                     retTrace.NestedData[i] = cleanRetTrace;
-
-//                        retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, core,
-//                                                        funcGroup, previousTraceData, newTraceData);
-#endif
                 }
 
                 StackValue ret = runtimeCore.RuntimeMemory.Heap.AllocateArray(retSVs, null);

@@ -467,8 +467,6 @@ namespace Dynamo.Models
             {
                 DynamoMigratorBase migrator = null;
 
-                OnRequestMigrationStatusDialog(new SettingsMigrationEventArgs(
-                    SettingsMigrationEventArgs.EventStatusType.Begin));
                 try
                 {
                     migrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(pathManager, config.PathResolver);
@@ -1171,6 +1169,22 @@ namespace Dynamo.Models
                 }
             }
         }
+
+        internal void AddToGroup(List<ModelBase> modelsToAdd)
+        {
+            var workspaceAnnotations = Workspaces.SelectMany(ws => ws.Annotations);
+            var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.IsSelected);
+            if (selectedGroup != null)
+            {                      
+                foreach (var model in modelsToAdd)
+                {
+                    CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
+                    selectedGroup.AddToSelectedModels(model);
+                }
+            }
+
+        }
+
 
         internal void DumpLibraryToXml(object parameter)
         {

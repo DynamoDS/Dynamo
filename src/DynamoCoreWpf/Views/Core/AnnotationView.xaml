@@ -9,7 +9,7 @@
              mc:Ignorable="d"                          
              Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
-             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"              
+             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"                 
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}">   
     <UserControl.Resources>
@@ -200,7 +200,7 @@
             </Rectangle.Fill>
         </Rectangle>
         <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 
-              Margin="0,0,0,0"
+              Margin="5,0,0,0"
               VerticalAlignment="Top">            
             <TextBlock x:Name="GroupTextBlock"                                     
                     Text ="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}}"    
