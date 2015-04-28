@@ -15,6 +15,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
+using ProtoCore;
+
 using BuildWarning = ProtoCore.BuildData.WarningEntry;
 using Constants = ProtoCore.DSASM.Constants;
 using RuntimeWarning = ProtoCore.Runtime.WarningEntry;
@@ -485,13 +487,21 @@ namespace Dynamo.DSEngine
 
         internal void ReconcileTraceDataAndNotify()
         {
-            var orphans = new List<ISerializable>();
+            var callsiteToOrphanMap = new Dictionary<Guid, List<ISerializable>>();
             foreach (var cs in liveRunnerServices.Core.DSExecutable.CallsiteCache.Values)
             {
-                orphans.AddRange(cs.GetOrphanedSerializables());
+                var orphanedSerializables = cs.GetOrphanedSerializables().ToList();
+                if (callsiteToOrphanMap.ContainsKey(cs.CallSiteID))
+                {
+                    callsiteToOrphanMap[cs.CallSiteID].AddRange(orphanedSerializables);
+                }
+                else
+                {
+                    callsiteToOrphanMap.Add(cs.CallSiteID, orphanedSerializables);
+                }
             }
 
-            OnTraceReconciliationComplete(new TraceReconciliationEventArgs(orphans));
+            OnTraceReconciliationComplete(new TraceReconciliationEventArgs(callsiteToOrphanMap));
         }
 
         private static void ClearWarnings(IEnumerable<NodeModel> nodes)
@@ -698,11 +708,19 @@ namespace Dynamo.DSEngine
 
     public class TraceReconciliationEventArgs : EventArgs
     {
-        public IList<ISerializable> OrphanedSerializables { get; private set; }
+        /// <summary>
+        /// A list of ISerializable items.
+        /// </summary>
+        public Dictionary<Guid,List<ISerializable>> CallsiteToOrphanMap { get; private set; }
 
-        public TraceReconciliationEventArgs(IList<ISerializable> orphanedSerializables)
+        public TraceReconciliationEventArgs(Dictionary<Guid, List<ISerializable>> callsiteToOrphanMap)
         {
-            OrphanedSerializables = orphanedSerializables;
+            CallsiteToOrphanMap = callsiteToOrphanMap;
         }
+    }
+
+    public interface ITraceReconciliationProcessor
+    {
+        void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables);
     }
 }
