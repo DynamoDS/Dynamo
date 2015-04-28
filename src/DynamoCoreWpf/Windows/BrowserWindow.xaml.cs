@@ -23,17 +23,39 @@ namespace Dynamo.Wpf
                 LoadingTextBlock.Visibility = Visibility.Collapsed;
                 Browser.Visibility = Visibility.Visible;
 
+                var windowSize = new Size();
                 var localPath = ((a.Uri == null) ? string.Empty : a.Uri.LocalPath);
-                if (localPath.ToLowerInvariant().Equals("/register"))
+                if (GetWindowSizeForContent(localPath, ref windowSize))
                 {
-                    // This is navigating to new user registration page,
-                    // which requires the window to be of a larger size.
-                    Width = 460;
-                    Height = 722;
+                    Width = windowSize.Width;
+                    Height = windowSize.Height;
                 }
             };
 
             Browser.Navigate(_location.AbsoluteUri);
+        }
+
+        private bool GetWindowSizeForContent(string localPath, ref Size size)
+        {
+            switch (localPath.ToLowerInvariant()) // All lower case!
+            {
+                case "/logon":
+                    size.Width = 360;
+                    size.Height = 365;
+                    return true;
+
+                case "/register":
+                    size.Width = 460;
+                    size.Height = 722;
+                    return true;
+
+                case "/account/forgotcredentials":
+                    size.Width = 640;
+                    size.Height = 260;
+                    return true;
+            }
+
+            return false; // No window size change required.
         }
     }
 }
