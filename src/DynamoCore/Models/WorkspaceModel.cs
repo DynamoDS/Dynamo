@@ -1132,6 +1132,7 @@ namespace Dynamo.Models
                     #region Step II. Create the new code block node
                     var outputVariables = externalOutputConnections.Values;
                     var newResult = NodeToCodeUtils.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
+                    NodeToCodeUtils.ReplaceWithUnqualifiedName(newResult, engineController.LibraryServices.LibraryManagementCore);
                     var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
                     var code = codegen.GenerateCode();
 

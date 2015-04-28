@@ -7,6 +7,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using Dynamo.Utilities;
 using ProtoCore.SyntaxAnalysis;
+using ProtoCore.Mirror;
 
 namespace Dynamo.DSEngine
 {
@@ -93,6 +94,9 @@ namespace Dynamo.DSEngine
             }
         }
 
+        /// <summary>
+        /// Replace an identifier with a constant value.
+        /// </summary>
         private class ConstantIdentifierReplacer : AstReplacer 
         {
             private string variableName;
@@ -124,6 +128,46 @@ namespace Dynamo.DSEngine
                 {
                     var newNode = new BinaryExpressionNode(node.LeftNode, newRightNode, node.Optr);
                     return newNode;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Replace a fully qualified function call with short name. 
+        /// </summary>
+        private class UnqualifiedNameReplacer : AstReplacer
+        {
+            private ProtoCore.Core core;
+
+            public UnqualifiedNameReplacer(ProtoCore.Core core)
+            {
+                this.core = core;
+            }
+
+            public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
+            {
+                if (node.LeftNode is IdentifierNode && node.RightNode is FunctionCallNode)
+                {
+                    var qualifiedClass = node.LeftNode as IdentifierNode;
+
+                    ClassMirror mirror = null;
+
+                    try
+                    {
+                        mirror = new ClassMirror(qualifiedClass.Value, core);
+                    }
+                    catch (Exception e)
+                    {
+                        // class not defined
+                        return node;
+                    }
+
+                    qualifiedClass.Value = qualifiedClass.Name = mirror.Alias;
+                    return node;
+                }
+                else
+                {
+                    return node;
                 }
             }
         }
@@ -677,6 +721,27 @@ namespace Dynamo.DSEngine
             }
 
             return new NodeToCodeResult(newAsts, result.InputMap, result.OutputMap);
+        }
+
+        /// <summary>
+        /// Replace fully qualified class name with unqualified name. 
+        /// 
+        /// For example, replace
+        /// 
+        ///     Autodesk.Geometry.Point.ByCoordinates(...)
+        ///     
+        /// with
+        /// 
+        ///     Point.ByCoordinates(...)
+        /// </summary>
+        /// <param name="result"></param>
+        public static void ReplaceWithUnqualifiedName(NodeToCodeResult result, ProtoCore.Core core)
+        {
+            UnqualifiedNameReplacer replacer = new UnqualifiedNameReplacer(core);
+            foreach (var ast in result.AstNodes)
+            {
+                ast.Accept(replacer);
+            }
         }
 
         /// <summary>
