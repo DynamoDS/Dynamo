@@ -732,11 +732,11 @@ namespace Dynamo.DSEngine
         /// 
         ///     Point.ByCoordinates(...)
         /// </summary>
-        /// <param name="result"></param>
-        public static void ReplaceWithUnqualifiedName(NodeToCodeResult result, ProtoCore.Core core)
+        /// <param name="asts">Input ASTs</param>
+        public static void ReplaceWithUnqualifiedName(ProtoCore.Core core, IEnumerable<AssociativeNode> asts)
         {
             UnqualifiedNameReplacer replacer = new UnqualifiedNameReplacer(core);
-            foreach (var ast in result.AstNodes)
+            foreach (var ast in asts)
             {
                 ast.Accept(replacer);
             }

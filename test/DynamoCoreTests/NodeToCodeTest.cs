@@ -13,6 +13,12 @@ namespace Dynamo.Tests
     [Category("NodeToCode")]
     class NodeToCodeTest : DynamoViewModelUnitTest
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         public void OpenModel(string relativeFilePath)
         {
             string openPath = Path.Combine(TestDirectory, relativeFilePath);
@@ -323,6 +329,80 @@ namespace Dynamo.Tests
             // It totally depends on which code block node is compiled firstly.
             // Variables in the first one won't be renamed.
             Assert.IsTrue(exprs.Contains("b=t2") && exprs.Contains("t2=2"));
+        }
+
+        [Test]
+        public void TestUnqualifiedNameReplacer1()
+        {
+            var functionCall = AstFactory.BuildFunctionCall(
+                "Autodesk.DesignScript.Geometry.Point", 
+                "ByCoordinates", 
+                new List<AssociativeNode> { new IntNode(1), new IntNode(2)});
+            var lhs = AstFactory.BuildIdentifier("lhs");
+            var ast = AstFactory.BuildBinaryExpression(lhs, functionCall, ProtoCore.DSASM.Operator.assign);
+
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(
+                ViewModel.Model.EngineController.LibraryServices.LibraryManagementCore, 
+                new [] { ast });
+
+            Assert.IsTrue(ast.RightNode.ToString().Equals("Point.ByCoordinates(1, 2)"));
+        }
+
+        [Test]
+        public void TestUnqualifiedNameReplacer2()
+        {
+            // Point.ByCoordinates(1,2); 
+            OpenModel(@"core\node2code\unqualifiedName1.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.True(result != null && result.AstNodes != null);
+
+            var expr = result.AstNodes.Last() as BinaryExpressionNode;
+            Assert.IsTrue(expr != null);
+
+            Assert.IsTrue(expr.RightNode.ToString().Equals("Point.ByCoordinates(1, 2)"));
+        }
+
+        [Test]
+        public void TestUnqualifiedNameReplacer3()
+        {
+            // 1 -> Point.ByCoordinates(x, y); 
+            OpenModel(@"core\node2code\unqualifiedName2.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.True(result != null && result.AstNodes != null);
+
+            var expr = result.AstNodes.Last() as BinaryExpressionNode;
+            Assert.IsTrue(expr != null);
+
+            Assert.IsTrue(expr.RightNode.ToString().Equals("Point.ByCoordinates(x, x)"));
+        }
+
+        [Test]
+        public void TestUnqualifiedNameReplacer4()
+        {
+            // 1 -> Autodesk.DesignScript.Geometry.Point.ByCoordinates(x, x); 
+            OpenModel(@"core\node2code\unqualifiedName3.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeUtils.ReplaceWithUnqualifiedName(engine.LibraryServices.LibraryManagementCore, result.AstNodes);
+            Assert.True(result != null && result.AstNodes != null);
+
+            var expr = result.AstNodes.Last() as BinaryExpressionNode;
+            Assert.IsTrue(expr != null);
+
+            Assert.IsTrue(expr.RightNode.ToString().Equals("Point.ByCoordinates(x, x)"));
         }
     }
 }
