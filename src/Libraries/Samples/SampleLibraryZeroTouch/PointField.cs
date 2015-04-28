@@ -103,10 +103,10 @@ namespace SampleLibraryZeroTouch
 
         private void PushTriangleVertex(IRenderPackage package, Point p, Vector n)
         {
-            package.PushTriangleVertex(p.X, p.Y, p.Z);
-            package.PushTriangleVertexColor(255, 255, 255, 255);
-            package.PushTriangleVertexNormal(n.X,n.Y,n.Z);
-            package.PushTriangleVertexUV(0,0);
+            package.AddTriangleVertex(p.X, p.Y, p.Z);
+            package.AddTriangleVertexColor(255, 255, 255, 255);
+            package.AddTriangleVertexNormal(n.X,n.Y,n.Z);
+            package.AddTriangleVertexUV(0,0);
         }
     }
 

@@ -188,15 +188,15 @@ namespace Analysis
             var colorCount = 0;
             var uvCount = 0;
 
-            var uvs = package.MeshTextureCoordinateBuffer;
-            var colors = package.MeshColorBuffer;
+            var uvs = package.MeshTextureCoordinateBuffer.ToList();
+            var colors = package.MeshVertexColorBuffer.ToList();
 
             var newColors = new byte[colors.Count()];
 
             for (var i = 0; i < colors.Count(); i += 4)
             {
-                var uvu = uvs[uvCount];
-                var uvv = uvs[uvCount + 1];
+                var uvu = uvs.ElementAt(uvCount);
+                var uvv = uvs.ElementAt(uvCount + 1);
 
                 var uu = (int)(uvu * (COLOR_MAP_WIDTH - 1));
                 var vv = (int)(uvv * (COLOR_MAP_HEIGHT - 1));
@@ -291,38 +291,38 @@ namespace Analysis
                     continue;
                 }
 
-                package.PushTriangleVertex(pt1.X, pt1.Y, pt1.Z);
-                package.PushTriangleVertexNormal(n1.X, n1.Y, n1.Z);
-                package.PushTriangleVertexUV(v1.X, v1.Y);
-                package.PushTriangleVertexColor(0, 0, 0, 255);
+                package.AddTriangleVertex(pt1.X, pt1.Y, pt1.Z);
+                package.AddTriangleVertexNormal(n1.X, n1.Y, n1.Z);
+                package.AddTriangleVertexUV(v1.X, v1.Y);
+                package.AddTriangleVertexColor(0, 0, 0, 255);
 
-                package.PushTriangleVertex(pt2.X, pt2.Y, pt2.Z);
-                package.PushTriangleVertexNormal(n2.X, n2.Y, n2.Z);
-                package.PushTriangleVertexUV(v2.X, v2.Y);
-                package.PushTriangleVertexColor(0, 0, 0, 255);
+                package.AddTriangleVertex(pt2.X, pt2.Y, pt2.Z);
+                package.AddTriangleVertexNormal(n2.X, n2.Y, n2.Z);
+                package.AddTriangleVertexUV(v2.X, v2.Y);
+                package.AddTriangleVertexColor(0, 0, 0, 255);
 
-                package.PushTriangleVertex(pt3.X, pt3.Y, pt3.Z);
-                package.PushTriangleVertexNormal(n3.X, n3.Y, n3.Z);
-                package.PushTriangleVertexUV(v3.X, v3.Y);
-                package.PushTriangleVertexColor(0, 0, 0, 255);
+                package.AddTriangleVertex(pt3.X, pt3.Y, pt3.Z);
+                package.AddTriangleVertexNormal(n3.X, n3.Y, n3.Z);
+                package.AddTriangleVertexUV(v3.X, v3.Y);
+                package.AddTriangleVertexColor(0, 0, 0, 255);
 
-                package.PushLineStripVertex(pt1.X, pt1.Y, pt1.Z);
-                package.PushLineStripVertex(pt2.X, pt2.Y, pt2.Z);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexCount(2);
+                package.AddLineStripVertex(pt1.X, pt1.Y, pt1.Z);
+                package.AddLineStripVertex(pt2.X, pt2.Y, pt2.Z);
+                package.AddLineStripVertexColor(100, 100, 100, 255);
+                package.AddLineStripVertexColor(100, 100, 100, 255);
+                package.AddLineStripVertexCount(2);
 
-                package.PushLineStripVertex(pt2.X, pt2.Y, pt2.Z);
-                package.PushLineStripVertex(pt3.X, pt3.Y, pt3.Z);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexCount(2);
+                package.AddLineStripVertex(pt2.X, pt2.Y, pt2.Z);
+                package.AddLineStripVertex(pt3.X, pt3.Y, pt3.Z);
+                package.AddLineStripVertexColor(100, 100, 100, 255);
+                package.AddLineStripVertexColor(100, 100, 100, 255);
+                package.AddLineStripVertexCount(2);
 
-                package.PushLineStripVertex(pt3.X, pt3.Y, pt3.Z);
-                package.PushLineStripVertex(pt1.X, pt1.Y, pt1.Z);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexColor(100, 100, 100, 255);
-                package.PushLineStripVertexCount(2);
+                package.AddLineStripVertex(pt3.X, pt3.Y, pt3.Z);
+                package.AddLineStripVertex(pt1.X, pt1.Y, pt1.Z);
+                package.AddLineStripVertexColor(100, 100, 100, 255);
+                package.AddLineStripVertexColor(100, 100, 100, 255);
+                package.AddLineStripVertexCount(2);
 
                 v1.Dispose(); v2.Dispose(); v3.Dispose();
                 pt1.Dispose(); pt2.Dispose(); pt3.Dispose();

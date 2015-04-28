@@ -162,7 +162,7 @@ namespace Dynamo.Core.Threading
                 }
 
                 var package = DynamoModel.RenderPackageFactory.CreateRenderPackage();
-                package.Tag = labelMap.Count > count ? labelMap[count] : "?";
+                package.Description = labelMap.Count > count ? labelMap[count] : "?";
 
                 try
                 {
@@ -203,54 +203,54 @@ namespace Dynamo.Core.Threading
                         // Get rid of the original plane geometry.
                         package.Clear();
 
-                        package.PushTriangleVertex(a.X, a.Y, a.Z);
-                        package.PushTriangleVertex(b.X, b.Y, b.Z);
-                        package.PushTriangleVertex(c.X, c.Y, c.Z);
+                        package.AddTriangleVertex(a.X, a.Y, a.Z);
+                        package.AddTriangleVertex(b.X, b.Y, b.Z);
+                        package.AddTriangleVertex(c.X, c.Y, c.Z);
 
-                        package.PushTriangleVertex(c.X, c.Y, c.Z);
-                        package.PushTriangleVertex(d.X, d.Y, d.Z);
-                        package.PushTriangleVertex(a.X, a.Y, a.Z);
+                        package.AddTriangleVertex(c.X, c.Y, c.Z);
+                        package.AddTriangleVertex(d.X, d.Y, d.Z);
+                        package.AddTriangleVertex(a.X, a.Y, a.Z);
 
-                        package.PushTriangleVertexUV(0, 0);
-                        package.PushTriangleVertexUV(0, 0);
-                        package.PushTriangleVertexUV(0, 0);
-                        package.PushTriangleVertexUV(0, 0);
-                        package.PushTriangleVertexUV(0, 0);
-                        package.PushTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
+                        package.AddTriangleVertexUV(0, 0);
 
                         // Draw plane edges
-                        package.PushLineStripVertex(a.X, a.Y, a.Z);
-                        package.PushLineStripVertex(b.X, b.Y, b.Z);
-                        package.PushLineStripVertex(b.X, b.Y, b.Z);
-                        package.PushLineStripVertex(c.X, c.Y, c.Z);
-                        package.PushLineStripVertex(c.X, c.Y, c.Z);
-                        package.PushLineStripVertex(d.X, d.Y, d.Z);
-                        package.PushLineStripVertex(d.X, d.Y, d.Z);
-                        package.PushLineStripVertex(a.X, a.Y, a.Z);
+                        package.AddLineStripVertex(a.X, a.Y, a.Z);
+                        package.AddLineStripVertex(b.X, b.Y, b.Z);
+                        package.AddLineStripVertex(b.X, b.Y, b.Z);
+                        package.AddLineStripVertex(c.X, c.Y, c.Z);
+                        package.AddLineStripVertex(c.X, c.Y, c.Z);
+                        package.AddLineStripVertex(d.X, d.Y, d.Z);
+                        package.AddLineStripVertex(d.X, d.Y, d.Z);
+                        package.AddLineStripVertex(a.X, a.Y, a.Z);
 
                         // Draw normal
-                        package.PushLineStripVertex(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
+                        package.AddLineStripVertex(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
                         var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
-                        package.PushLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
+                        package.AddLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
 
                         for (var i = 0; i < package.LineVertexCount / 3 / 2; i++)
                         {
-                            package.PushLineStripVertexCount(2);
+                            package.AddLineStripVertexCount(2);
                         }
 
                         for (var i = 0; i < (package.LineVertexCount / 3) * 4; i += 4)
                         {
-                            package.PushLineStripVertexColor(180,180,180,255);
+                            package.AddLineStripVertexColor(180,180,180,255);
                         }
 
                         for (var i = 0; i < 6; i++)
                         {
-                            package.PushTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
+                            package.AddTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
                         }
 
                         for (var i = 0; i < 6; i++)
                         {
-                            package.PushTriangleVertexColor(0, 0, 0, 10);
+                            package.AddTriangleVertexColor(0, 0, 0, 10);
                         }
                     }
 
@@ -271,7 +271,7 @@ namespace Dynamo.Core.Threading
                         "PushGraphicItemIntoPackage: " + e);
                 }
 
-                package.IsDisplayingLabels = displayLabels;
+                package.DisplayLabels = displayLabels;
                 package.IsSelected = isNodeSelected;
 
                 renderPackages.Add(package);

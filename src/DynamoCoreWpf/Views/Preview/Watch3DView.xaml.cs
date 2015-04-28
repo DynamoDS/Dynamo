@@ -921,10 +921,10 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    if (rp.IsDisplayingLabels)
+                    if (rp.DisplayLabels)
                     {
                         var pt = p.Positions[0];
-                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
 
                 }
@@ -952,10 +952,10 @@ namespace Dynamo.Controls
                         }
                     }
 
-                    if (rp.IsDisplayingLabels)
+                    if (rp.DisplayLabels)
                     {
                         var pt = lineSet.Positions[startIdx];
-                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
                 }
 
@@ -980,10 +980,10 @@ namespace Dynamo.Controls
                     meshSet.TextureCoordinates.AddRange(m.TextureCoordinates);
                     meshSet.Indices.AddRange(m.Indices.Select(i => i + idxCount));
 
-                    if (rp.IsDisplayingLabels)
+                    if (rp.DisplayLabels)
                     {
                         var pt = meshSet.Positions[idxCount];
-                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Tag), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
 
                     MeshCount++;

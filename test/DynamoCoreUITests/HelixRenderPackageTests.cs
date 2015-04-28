@@ -190,7 +190,7 @@ namespace DynamoCoreUITests
 
             p.ApplyMeshVertexColors(testColors);
 
-            Assert.AreEqual(p.MeshColorBuffer, testColors);
+            Assert.AreEqual(p.MeshVertexColorBuffer, testColors);
         }
 
         /// <summary>
@@ -198,27 +198,27 @@ namespace DynamoCoreUITests
         /// </summary>
         private static void PushQuadIntoPackage(IRenderPackage package)
         {
-            package.PushTriangleVertex(0,0,0);
-            package.PushTriangleVertex(1,0,0);
-            package.PushTriangleVertex(1,1,0);
+            package.AddTriangleVertex(0,0,0);
+            package.AddTriangleVertex(1,0,0);
+            package.AddTriangleVertex(1,1,0);
 
-            package.PushTriangleVertex(0,0,0);
-            package.PushTriangleVertex(1,1,0);
-            package.PushTriangleVertex(0,1,0);
+            package.AddTriangleVertex(0,0,0);
+            package.AddTriangleVertex(1,1,0);
+            package.AddTriangleVertex(0,1,0);
 
-            package.PushTriangleVertexNormal(0, 0, 1);
-            package.PushTriangleVertexNormal(0, 0, 1);
-            package.PushTriangleVertexNormal(0, 0, 1);
-            package.PushTriangleVertexNormal(0, 0, 1);
-            package.PushTriangleVertexNormal(0, 0, 1);
-            package.PushTriangleVertexNormal(0, 0, 1);
+            package.AddTriangleVertexNormal(0, 0, 1);
+            package.AddTriangleVertexNormal(0, 0, 1);
+            package.AddTriangleVertexNormal(0, 0, 1);
+            package.AddTriangleVertexNormal(0, 0, 1);
+            package.AddTriangleVertexNormal(0, 0, 1);
+            package.AddTriangleVertexNormal(0, 0, 1);
 
-            package.PushTriangleVertexUV(0, 0);
-            package.PushTriangleVertexUV(0, 0);
-            package.PushTriangleVertexUV(0, 0);
-            package.PushTriangleVertexUV(0, 0);
-            package.PushTriangleVertexUV(0, 0);
-            package.PushTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
         }
 
         /// <summary>
@@ -226,9 +226,9 @@ namespace DynamoCoreUITests
         /// </summary>
         private static void PushLineIntoPackage(IRenderPackage package)
         {
-            package.PushLineStripVertex(0,0,0);
-            package.PushLineStripVertex(1,1,1);
-            package.PushLineStripVertexCount(2);
+            package.AddLineStripVertex(0,0,0);
+            package.AddLineStripVertex(1,1,1);
+            package.AddLineStripVertexCount(2);
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace DynamoCoreUITests
         /// </summary>
         private static void PushPointIntoPackage(IRenderPackage package)
         {
-            package.PushPointVertex(0,0,0);
+            package.AddPointVertex(0,0,0);
         }
 
         private byte[] WhiteByteArrayOfLength(int numberOfVertices)

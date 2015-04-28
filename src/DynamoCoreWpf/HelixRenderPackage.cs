@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting;
 
 using Autodesk.DesignScript.Interfaces;
 
@@ -39,7 +40,8 @@ namespace Dynamo.Wpf
         private LineGeometry3D lines;
         private MeshGeometry3D mesh;
         private bool hasData;
-
+        private List<int> lineStripVertexCounts;
+ 
         #endregion
 
         #region constructors
@@ -49,7 +51,7 @@ namespace Dynamo.Wpf
             points = InitPointGeometry();
             lines = InitLineGeometry();
             mesh = InitMeshGeometry();
-            LineStripVertexCounts = new List<int>();
+            lineStripVertexCounts = new List<int>();
         }
 
         #endregion
@@ -67,16 +69,16 @@ namespace Dynamo.Wpf
             mesh = InitMeshGeometry();
             lines = InitLineGeometry();
 
-            LineStripVertexCounts.Clear();
+            lineStripVertexCounts.Clear();
 
             IsSelected = false;
-            IsDisplayingLabels = false;
+            DisplayLabels = false;
         }
 
         /// <summary>
         /// Add a point vertex to the render package.
         /// </summary>
-        public void PushPointVertex(double x, double y, double z)
+        public void AddPointVertex(double x, double y, double z)
         {
             points.Indices.Add(points.Positions.Count);
             points.Positions.Add(Vector3ForYUp(x,y,z));
@@ -85,7 +87,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a point color to the render package.
         /// </summary>
-        public void PushPointVertexColor(byte red, byte green, byte blue, byte alpha)
+        public void AddPointVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             var ptColor = Color4FromBytes(red, green, blue, alpha);
             points.Colors.Add(ptColor);
@@ -94,7 +96,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a triangle vertex location to the render package.
         /// </summary>
-        public void PushTriangleVertex(double x, double y, double z)
+        public void AddTriangleVertex(double x, double y, double z)
         {
             mesh.Indices.Add(mesh.Indices.Count);
             mesh.Positions.Add(Vector3ForYUp(x, y, z));
@@ -104,7 +106,7 @@ namespace Dynamo.Wpf
         /// Add a triangle normal to the render package.
         /// Triangle normals are per-vertex.
         /// </summary>
-        public void PushTriangleVertexNormal(double x, double y, double z)
+        public void AddTriangleVertexNormal(double x, double y, double z)
         {
             mesh.Normals.Add(Vector3ForYUp(x,y,z));
         }
@@ -112,7 +114,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a triangle texture coordinate to the render package.
         /// </summary>
-        public void PushTriangleVertexUV(double u, double v)
+        public void AddTriangleVertexUV(double u, double v)
         {
             mesh.TextureCoordinates.Add(new Vector2((float)u, (float)v));
         }
@@ -120,7 +122,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a triangle vertex color to the render package.
         /// </summary>
-        public void PushTriangleVertexColor(byte red, byte green, byte blue, byte alpha)
+        public void AddTriangleVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             mesh.Colors.Add(Color4FromBytes(red,green,blue,alpha));
         }
@@ -128,7 +130,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a line vertex to the render package.
         /// </summary>
-        public void PushLineStripVertex(double x, double y, double z)
+        public void AddLineStripVertex(double x, double y, double z)
         {
             lines.Positions.Add(Vector3ForYUp(x,y,z));
         }
@@ -137,7 +139,7 @@ namespace Dynamo.Wpf
         /// Add a line strip vertex count to the render package.
         /// </summary>
         /// <param name="n"></param>
-        public void PushLineStripVertexCount(int n)
+        public void AddLineStripVertexCount(int n)
         {
             // The line strip vertex count is pushed after
             // the tessellated geometry is added to the package.
@@ -147,7 +149,7 @@ namespace Dynamo.Wpf
             // an end point, we duplicate every point except the first
             // and the last.
 
-            LineStripVertexCounts.Add(n);
+            lineStripVertexCounts.Add(n);
 
             var idxCount = lines.Indices.Any() ? lines.Indices.Last() + 1 : 0;
 
@@ -166,7 +168,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Add a line strip vertex color to the render package.
         /// </summary>
-        public void PushLineStripVertexColor(byte red, byte green, byte blue, byte alpha)
+        public void AddLineStripVertexColor(byte red, byte green, byte blue, byte alpha)
         {
             lines.Colors.Add(Color4FromBytes(red,green,blue,alpha));
         }
@@ -305,7 +307,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// A tag used to store information about the render package.
         /// </summary>
-        public string Tag { get; set; }
+        public string Description { get; set; }
 
         /// <summary>
         /// A flag indicating whether the render package is selected.
@@ -315,7 +317,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// A flag indicating whether the render package has data.
         /// </summary>
-        public bool HasData
+        public bool HasRenderingData
         {
             get
             {
@@ -329,7 +331,7 @@ namespace Dynamo.Wpf
         /// <summary>
         /// A flag indicating whether the render package is displaying labels
         /// </summary>
-        public bool IsDisplayingLabels { get; set; }
+        public bool DisplayLabels { get; set; }
 
         /// <summary>
         /// A flag indicating whether the render package requires 
@@ -361,59 +363,65 @@ namespace Dynamo.Wpf
             get { return mesh.Positions.Count; }
         }
 
-        public List<int> LineStripVertexCounts { get; private set; }
+        public IEnumerable<int> LineStripVertexCounts
+        {
+            get
+            {
+                return lineStripVertexCounts;
+            }
+        }
 
-        public double[] LineStripVertexBuffer
+        public IEnumerable<double> LineStripVertexBuffer
         {
             get { return lines.Positions.ToDoubleArray(); }
         }
 
-        public byte[] LineStripColorBuffer
+        public IEnumerable<byte> LineStripVertexColorBuffer
         {
             get { return lines.Colors.ToByteArray(); }
         }
 
-        public int[] LineStripIndexBuffer
+        public IEnumerable<int> LineStripIndexBuffer
         {
             get { return lines.Indices.ToArray(); }
         }
 
-        public double[] MeshVertexBuffer
+        public IEnumerable<double> MeshVertexBuffer
         {
             get { return mesh.Positions.ToDoubleArray(); }
         }
 
-        public byte[] MeshColorBuffer
+        public IEnumerable<byte> MeshVertexColorBuffer
         {
             get { return mesh.Colors.ToByteArray(); }
         }
 
-        public int[] MeshIndexBuffer
+        public IEnumerable<int> MeshIndexBuffer
         {
             get { return mesh.Indices.ToArray(); }
         }
 
-        public double[] MeshNormalBuffer
+        public IEnumerable<double> MeshNormalBuffer
         {
             get { return mesh.Normals.ToDoubleArray(); }
         }
 
-        public double[] MeshTextureCoordinateBuffer
+        public IEnumerable<double> MeshTextureCoordinateBuffer
         {
             get { return mesh.TextureCoordinates.ToDoubleArray(); }
         }
 
-        public double[] PointVertexBuffer
+        public IEnumerable<double> PointVertexBuffer
         {
             get { return points.Positions.ToDoubleArray(); }
         }
 
-        public byte[] PointColorBuffer
+        public IEnumerable<byte> PointVertexColorBuffer
         {
             get { return points.Colors.ToByteArray(); }
         }
 
-        public int[] PointIndexBuffer
+        public IEnumerable<int> PointIndexBuffer
         {
             get { return points.Indices.ToArray(); }
         }

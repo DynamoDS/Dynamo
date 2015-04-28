@@ -118,7 +118,7 @@ namespace Dynamo.Core.Threading
                 var rps = duplicatedNodeReference.RenderPackages;
                 foreach (var renderPackage in rps.OfType<IRenderPackage>())
                 {
-                    if (!renderPackage.HasData)
+                    if (!renderPackage.HasRenderingData)
                         continue;
 
                     if (renderPackage.IsSelected)

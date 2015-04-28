@@ -237,7 +237,7 @@ namespace Dynamo
                     //This is also a target for memory optimisation
 
                     packages.AddRange(
-                        node.RenderPackages.Where(x => x.Tag == path || x.Tag.Contains(path + ":")));
+                        node.RenderPackages.Where(x => x.Description == path || x.Description.Contains(path + ":")));
                 }
             }
 
@@ -247,11 +247,11 @@ namespace Dynamo
                 //package already and add the one we want
                 if (currentTaggedPackages.Any())
                 {
-                    currentTaggedPackages.ForEach(x => x.IsDisplayingLabels = false);
+                    currentTaggedPackages.ForEach(x => x.DisplayLabels = false);
                     currentTaggedPackages.Clear();
                 }
 
-                packages.ToList().ForEach(x => x.IsDisplayingLabels = true);
+                packages.ToList().ForEach(x => x.DisplayLabels = true);
                 currentTaggedPackages.AddRange(packages);
 
                 var allPackages = new List<IRenderPackage>();
@@ -262,9 +262,9 @@ namespace Dynamo
                     lock (node.RenderPackagesMutex)
                     {
                         allPackages.AddRange(
-                            node.RenderPackages.Where(x => x.HasData && !x.IsSelected));
+                            node.RenderPackages.Where(x => x.HasRenderingData && !x.IsSelected));
                         selPackages.AddRange(
-                            node.RenderPackages.Where(x=>x.HasData && x.IsSelected));
+                            node.RenderPackages.Where(x => x.HasRenderingData && x.IsSelected));
                     }
                 }
 

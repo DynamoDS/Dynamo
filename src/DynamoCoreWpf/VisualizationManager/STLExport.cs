@@ -12,7 +12,7 @@ namespace Dynamo
             var packages = dynamoModel.CurrentWorkspace.Nodes
                 .Where(node => node.HasRenderPackages)
                 .SelectMany(node=>node.RenderPackages)
-                .Where(rp=>rp.HasData)
+                .Where(rp=>rp.HasRenderingData)
                 .ToList();
 
             var n = packages.SelectMany(p => p.MeshNormalBuffer).ToList();

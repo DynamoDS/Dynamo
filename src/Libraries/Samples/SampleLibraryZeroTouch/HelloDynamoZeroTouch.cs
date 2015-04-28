@@ -158,8 +158,8 @@ namespace SampleLibraryZeroTouch
         public void Tessellate(IRenderPackage package, double tol = -1, int maxGridLines = 512)
         {
             // This example contains information to draw a point
-            package.PushPointVertex(point.X, point.Y, point.Z);
-            package.PushPointVertexColor(255, 0, 0, 255);
+            package.AddPointVertex(point.X, point.Y, point.Z);
+            package.AddPointVertexColor(255, 0, 0, 255);
         }
 
         #endregion
