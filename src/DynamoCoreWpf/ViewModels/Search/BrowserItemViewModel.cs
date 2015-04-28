@@ -185,15 +185,15 @@ namespace Dynamo.Wpf.ViewModels
                 ElementType = ElementTypes.BuiltIn;
             else
             {
-                // If all items come from package, the whole category considers as package.
-                if (Items.All(item => item.ElementType.HasFlag(ElementTypes.Packaged)))
+                // If some items come from package, the whole category considers as package.
+                if (Items.Any(item => item.ElementType.HasFlag(ElementTypes.Packaged)))
                     ElementType = ElementTypes.Packaged;
                 else
                 {
-                    if (Items.All(item => item.ElementType.HasFlag(ElementTypes.ZeroTouch)))
+                    if (Items.Any(item => item.ElementType.HasFlag(ElementTypes.ZeroTouch)))
                         ElementType = ElementTypes.ZeroTouch;
                     else
-                        if (Items.All(item => item.ElementType.HasFlag(ElementTypes.CustomNode)))
+                        if (Items.Any(item => item.ElementType.HasFlag(ElementTypes.CustomNode)))
                             ElementType = ElementTypes.CustomNode;
                 }
             }
