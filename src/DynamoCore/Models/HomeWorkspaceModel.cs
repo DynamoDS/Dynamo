@@ -102,7 +102,15 @@ namespace Dynamo.Models
             // the data as historical. This will be used after the initial
             // run of this workspace, when the PreloadedTraceData has been
             // nulled, to check for node deletions and reconcile the trace data.
-            historicalTraceData = traceData;
+            // We do a deep copy of this data because the PreloadedTraceData is
+            // later set to null before the graph update.
+            var copiedData = new List<KeyValuePair<Guid, List<string>>>();
+            foreach (var kvp in PreloadedTraceData)
+            {
+                var strings = kvp.Value.Select(string.Copy).ToList();
+                copiedData.Add(new KeyValuePair<Guid, List<string>>(kvp.Key, strings));
+            }
+            historicalTraceData = copiedData;
         }
 
         public override void Dispose()
@@ -505,6 +513,11 @@ namespace Dynamo.Models
        
         #endregion
 
+        /// <summary>
+        /// Returns a list of ISerializable items which exist in the preloaded 
+        /// trace data but do not exist in the current CallSite data.
+        /// </summary>
+        /// <returns></returns>
         public IList<ISerializable> GetOrphanedSerializablesAndClearHistoricalTraceData()
         {
             var orphans = new List<ISerializable>();
