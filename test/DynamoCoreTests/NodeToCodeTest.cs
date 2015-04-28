@@ -404,5 +404,27 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(expr.RightNode.ToString().Equals("Point.ByCoordinates(x, x)"));
         }
+
+        [Test]
+        public void TestBasicNode2Code()
+        {
+            // 1 -> a -> x
+            OpenModel(@"core\node2code\workflow1.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            Assert.IsTrue(result != null && result.AstNodes != null);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+            var expr2 = result.AstNodes.Last() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.IsNotNull(expr2);
+
+            Assert.IsTrue(expr1.ToString().StartsWith("a = 1;"));
+            Assert.IsTrue(expr2.ToString().StartsWith("x = a;"));
+        }
     }
 }
