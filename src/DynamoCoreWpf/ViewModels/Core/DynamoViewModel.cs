@@ -28,7 +28,6 @@ using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 using System.Reflection;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
-using Dynamo.Wpf.Views.Gallery;
 
 namespace Dynamo.ViewModels
 {
