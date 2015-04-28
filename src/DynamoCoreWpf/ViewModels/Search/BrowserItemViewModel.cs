@@ -168,6 +168,7 @@ namespace Dynamo.Wpf.ViewModels
             {
                 if (value == elementType) return;
                 elementType = value;
+                RaisePropertyChanged("ElementType");
             }
         }
 
