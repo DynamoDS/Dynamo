@@ -9,6 +9,7 @@ using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.ViewModels.Core;
 
 using DynamoShapeManager;
 
@@ -18,51 +19,99 @@ using TestServices;
 
 namespace Dynamo.Tests
 {
-    [TestFixture]
-    public class CallsiteTests : DynamoModelTestBase
+    internal class TestTraceReconciliationProcessor : ITraceReconciliationProcessor
     {
-        private readonly string callsiteDir = @"core\callsite";
+        public int ExpectedOrphanCount { get; internal set; }
 
-        [Test]
-        public void Callsite_MultiDimensionDecreaseDimensionOnOpenAndRun()
+        public TestTraceReconciliationProcessor(int expectedOrphanCount)
         {
-            CurrentDynamoModel.EngineController.TraceReconcliationComplete += MultiDimensionCheck;
-
-            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "RebindingSingleDimension.dyn");
-            var numNode = ws.FirstNodeFromWorkspace<DoubleInput>();
-
-            // File is saved with a value of 5 (elements)
-            numNode.Value = "3";
-
-            BeginRun();
+            ExpectedOrphanCount = expectedOrphanCount;
         }
 
-        private static void MultiDimensionCheck(TraceReconciliationEventArgs args)
+        public void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
         {
-            Assert.AreEqual(args.OrphanedSerializables.Count, 2);
+            Assert.AreEqual(orphanedSerializables.SelectMany(kvp=>kvp.Value).Count(), ExpectedOrphanCount);
+        }
+    }
+
+    [TestFixture]
+    public sealed class CallsiteTests : DynamoModelTestBase
+    {
+        private const string callsiteDir = @"core\callsite";
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        /* Multi-dimension tests
+         * This graph contains:
+         * One list: {"Tywin","Cersei","Hodor"}
+         * One double input: 0..2
+         * A + node with the list and the double connected and CARTESIAN PRODUCT lacing.
+         */
+
+        [Test]
+        public void Callsite_MultiDimensionDecreaseDimensionOnOpenAndRun_OrphanCountCorrect()
+        {
+            OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..1", 3);
         }
 
         [Test]
         public void CallSite_MultiDimensionIncreaseDimensionOnOpenAndRun()
         {
-            
+            OpenChangeAndCheckOrphans("RebindingMultiDimension.dyn", "0..3", 0);
         }
+
+
+        /* Single-dimension tests
+         * This graph contains:
+         * One list: {"Tywin","Cersei","Hodor"}
+         * One double input: 0..2
+         * A + node with the list and the double connected and SINGLE lacing.
+         */
 
         [Test]
         public void Callsite_SingleDimensionDecreaseDimensionOnOpenAndRun()
         {
+            OpenChangeAndCheckOrphans("RebindingSingleDimension.dyn", "0..1", 1);
         }
 
         [Test]
         public void Callsite_SingleDimensionIncreaseDimensionOnOpenAndRun()
         {
-            
+            OpenChangeAndCheckOrphans("RebindingSingleDimension.dyn", "0..3", 0);
+        }
+
+        private void OpenChangeAndCheckOrphans(string testFileName, string numNodeValue, int expectedOrphanCount)
+        {
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, testFileName);
+
+            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(expectedOrphanCount);
+
+            var numNode = ws.FirstNodeFromWorkspace<DoubleInput>();
+
+            // Increase the number values.
+            numNode.Value = numNodeValue;
+
+            BeginRun();
         }
 
         [Test]
         public void Callsite_DeleteNodeBeforeRun()
         {
-            
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "RebindingSingleDimension.dyn");
+
+            CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
+
+            var traceNode = ws.Nodes.Where(n=>n is DSFunction).FirstOrDefault(f=>f.NickName == "TraceExampleWrapper.ByString");
+            Assert.NotNull(traceNode);
+
+            ws.RemoveNode(traceNode);
+
+            BeginRun();
         }
     }
 }
