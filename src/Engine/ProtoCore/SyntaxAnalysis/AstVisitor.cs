@@ -444,6 +444,19 @@ namespace ProtoCore.SyntaxAnalysis
             return node;
         }
 
+        public override AssociativeNode VisitIdentifierListNode(IdentifierListNode node)
+        {
+            var newLeftNode = node.LeftNode.Accept(this);
+            if (newLeftNode != node.LeftNode)
+                node.LeftNode = newLeftNode;
+
+            var newRightNode = node.RightNode.Accept(this);
+            if (newRightNode != node.RightNode)
+                node.RightNode = newRightNode;
+
+            return node;
+        }
+
         public override AssociativeNode VisitFunctionCallNode(FunctionCallNode node)
         {
             List<AssociativeNode> arguments = new List<AssociativeNode>();

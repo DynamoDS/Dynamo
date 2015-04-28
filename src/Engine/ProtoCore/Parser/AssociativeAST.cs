@@ -2188,7 +2188,15 @@ namespace ProtoCore.AST.AssociativeAST
             return buf.ToString();
         }
 
+        public override void Accept(AssociativeAstVisitor visitor)
+        {
+            visitor.VisitRangeExprNode(this);
+        }
 
+        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitRangeExprNode(this);
+        }
     }
 
     public class ExprListNode : ArrayNameNode
@@ -2237,6 +2245,16 @@ namespace ProtoCore.AST.AssociativeAST
             buf.Append(base.ToString());
 
             return buf.ToString();
+        }
+
+        public override void Accept(AssociativeAstVisitor visitor)
+        {
+            visitor.VisitExprListNode(this);
+        }
+
+        public override TResult Accept<TResult>(AssociativeAstVisitor<TResult> visitor)
+        {
+            return visitor.VisitExprListNode(this);
         }
     }
 
