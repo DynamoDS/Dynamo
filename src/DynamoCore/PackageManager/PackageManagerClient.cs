@@ -25,7 +25,7 @@ namespace Dynamo.PackageManager
 
         private readonly IGregClient client;
         private readonly IFileSystem fileSystem;
-        private readonly IDataCompressor dataCompressor;
+        private readonly ICompressor _compressor;
 
         private readonly CustomNodeManager customNodeManager;
         private readonly string packagesDirectory;
@@ -92,10 +92,10 @@ namespace Dynamo.PackageManager
             public IFileSystem FileSystem { get; set; }
 
             /// <summary>
-            ///     A DataCompressor for mocking purposes.  If left null, a
-            ///     MutatingDataCompressor will be used.     
+            ///     A _compressor for mocking purposes.  If left null, a
+            ///     MutatingCompressor will be used.     
             /// </summary>
-            public IDataCompressor DataCompressor { get; set; }
+            public ICompressor Compressor { get; set; }
 
             public StartConfig(string packagesDirectory, CustomNodeManager customNodeManager,
                 IGregClient gregClient)
@@ -113,7 +113,7 @@ namespace Dynamo.PackageManager
         internal PackageManagerClient(StartConfig p)
         {
             this.fileSystem = p.FileSystem ?? new MutatingFileSystem();
-            this.dataCompressor = p.DataCompressor ?? new MutatingDataCompressor();
+            this._compressor = p.Compressor ?? new MutatingCompressor();
 
             this.packagesDirectory = p.PackagesDirectory;
             this.customNodeManager = p.CustomNodeManager;
@@ -203,7 +203,7 @@ namespace Dynamo.PackageManager
             {
                 try
                 {
-                    var uploadBuilder = new PackageUploadBuilder( this.fileSystem, this.dataCompressor );
+                    var uploadBuilder = new PackageUploadBuilder( this.fileSystem, this._compressor );
                     var uploadParams = new PackageUploadParams()
                     {
                         RootDirectory = this.packagesDirectory,

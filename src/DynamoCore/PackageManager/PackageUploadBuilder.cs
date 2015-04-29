@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Annotations;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -13,106 +12,38 @@ using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
-    internal class MutatingFileSystem : IFileSystem
+    internal class ICustomNodeManager
     {
-        public void CopyFile([NotNull] string filePath, [NotNull] string destinationPath)
-        {
-            File.Copy(filePath, destinationPath);
-        }
-
-        public void DeleteFile([NotNull] string filePath)
-        {
-            File.Delete(filePath);
-        }
-
-        public  IDirectoryInfo TryCreateDirectory(string path)
-        {
-            return this.DirectoryExists(path)
-                ? new TrueDirectoryInfo(new System.IO.DirectoryInfo(path))
-                : new TrueDirectoryInfo(Directory.CreateDirectory(path));
-        }
-
-        public bool DirectoryExists([NotNull] string directoryPath)
-        {
-            return Directory.Exists(directoryPath);
-        }
-
-        public bool FileExists([NotNull] string filePath)
-        {
-            return File.Exists(filePath);
-        }
-
-        public void WriteAllText([NotNull] string filePath, [NotNull] string content)
-        {
-            File.WriteAllText(filePath, content);
-        }
-    }
-
-    internal class MutatingDataCompressor : IDataCompressor
-    {
-        public string Zip(string directoryPath)
-        {
-            return Greg.Utility.FileUtilities.Zip(directoryPath);
-        }
-    }
-
-    internal class TrueDirectoryInfo : IDirectoryInfo
-    {
-        private readonly System.IO.DirectoryInfo dirInfo;
-
-        public TrueDirectoryInfo(System.IO.DirectoryInfo dirInfo)
-        {
-            this.dirInfo = dirInfo;
-        }
-
-        public string FullName
-        {
-            get { return dirInfo.FullName; }
-        }
-    }
-
-    internal class TrueFileInfo : IFileInfo
-    {
-        private readonly System.IO.FileInfo fileInfo;
-
-        public TrueFileInfo(string path)
-        {
-            this.fileInfo = new FileInfo(path);
-        }
-
-        public long Length
-        {
-            get { return fileInfo.Length; }
-        }
-    }
-
-    internal struct PackageUploadParams
-    {
-        public string RootDirectory;
-        public CustomNodeManager CustomNodeManager;
-        public Package Package;
-        public IEnumerable<string> Files;
-        public PackageUploadHandle Handle;
-        public bool IsTestMode;
+        
     }
 
     internal class PackageUploadBuilder
     {
         private readonly IFileSystem fileSystem;
-        private readonly IDataCompressor dataCompressor;
+        private readonly ICompressor compressor;
 
         public const string PackageEngineName = "dynamo";
         public const long MaximumPackageSize = 100 * 1024 * 1024;
 
-        public PackageUploadBuilder(IFileSystem fileSystem, IDataCompressor dataCompressor)
+        internal struct UploadParams
+        {
+            public string RootDirectory;
+            public ICustomNodeManager CustomNodeManager;
+            public Package Package;
+            public IEnumerable<string> Files;
+            public PackageUploadHandle Handle;
+            public bool IsTestMode;
+        }
+
+        public PackageUploadBuilder(IFileSystem fileSystem, ICompressor compressor)
         {
             this.fileSystem = fileSystem;
-            this.dataCompressor = dataCompressor;
+            this.compressor = compressor;
         }
 
         #region Core operative methods
 
-        public PackageUpload NewPackage(PackageUploadParams p)
+        public PackageUpload NewPackage(UploadParams p)
         {
             var requestBody = NewRequestBody(p.Package);
             var zipPath = UpdateFilesAndZip(requestBody, p);
@@ -120,7 +51,7 @@ namespace Dynamo.PackageManager
             return new PackageUpload(requestBody, zipPath);
         }
 
-        public PackageVersionUpload NewPackageVersion(PackageUploadParams p)
+        public PackageVersionUpload NewPackageVersion(UploadParams p)
         {
             var requestBody = NewRequestBody(p.Package);
             var zipPath = UpdateFilesAndZip(requestBody, p);
@@ -142,7 +73,7 @@ namespace Dynamo.PackageManager
                                                          l.SiteUrl, l.RepositoryUrl, l.ContainsBinaries, l.NodeLibraries.Select(x => x.FullName));
         }
 
-        private string UpdateFilesAndZip( PackageUploadRequestBody requestBody, PackageUploadParams p)
+        private string UpdateFilesAndZip( PackageUploadRequestBody requestBody, UploadParams p)
         {
             p.Handle.UploadState = PackageUploadHandle.State.Copying;
 
@@ -156,13 +87,11 @@ namespace Dynamo.PackageManager
 
             p.Handle.UploadState = PackageUploadHandle.State.Compressing;
 
-            string zipPath;
             IFileInfo info;
 
             try
             {
-                zipPath = dataCompressor.Zip(rootDir.FullName);
-                info = new TrueFileInfo(zipPath);
+                info = compressor.Zip(rootDir.FullName);
             }
             catch
             {
@@ -172,7 +101,7 @@ namespace Dynamo.PackageManager
 
             if (info.Length > MaximumPackageSize) throw new Exception(Properties.Resources.PackageTooLarge);
 
-            return zipPath;
+            return info.Name;
         }
 
         private static void RemapCustomNodeFilePaths(CustomNodeManager customNodeManager, IEnumerable<string> filePaths, string dyfRoot, bool isTestMode)
