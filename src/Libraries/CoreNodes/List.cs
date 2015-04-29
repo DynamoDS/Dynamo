@@ -807,6 +807,9 @@ namespace DSCore
         /// <returns></returns>
         public static IList AllIndicesOf(IList list, object item)
         {
+            if (list == null)
+                return new List<int> { }; 
+
             var indices = Enumerable.Range(0, list.Count).Where(i => list[i].Equals(item)).ToList();
             return indices;
         }
