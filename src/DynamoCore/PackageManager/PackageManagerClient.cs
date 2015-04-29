@@ -24,8 +24,11 @@ namespace Dynamo.PackageManager
             "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
         private readonly IGregClient client;
+        private readonly IFileSystem fileSystem;
+        private readonly IDataCompressor dataCompressor;
+
         private readonly CustomNodeManager customNodeManager;
-        private readonly string rootPackageDirectory;
+        private readonly string packagesDirectory;
         private readonly IAuthProvider authProvider;
 
         public event Action<LoginState> LoginStateChanged;
@@ -53,7 +56,7 @@ namespace Dynamo.PackageManager
         {
             get { return this.client.BaseUrl; }
         }
-
+        s
         /// <summary>
         ///     Determines if the this.client has login capabilities
         /// </summary>
@@ -64,13 +67,62 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        internal PackageManagerClient(IGregClient client, string rootPackageDirectory, CustomNodeManager customNodeManager)
+        internal class StartConfig
         {
-            this.rootPackageDirectory = rootPackageDirectory;
-            this.customNodeManager = customNodeManager;
-            this.client = client;
+            /// <summary>
+            ///     The directory where all packages will be saved
+            ///     for this session
+            /// </summary>
+            public string PackagesDirectory { get; set; }
+
+            /// <summary>
+            ///     A CustomNodeManager instance for remapping moved customnodes
+            /// </summary>
+            public CustomNodeManager CustomNodeManager { get; set; }
+
+            /// <summary>
+            ///     A GregClient instance for this session
+            /// </summary>
+            public IGregClient GregClient { get; set; }
+
+            /// <summary>
+            ///     A FileSystem object for mocking purposes.  If left null,
+            ///     a MutatingFileSystem object will be used
+            /// </summary>
+            public IFileSystem FileSystem { get; set; }
+
+            /// <summary>
+            ///     A DataCompressor for mocking purposes.  If left null, a
+            ///     MutatingDataCompressor will be used.     
+            /// </summary>
+            public IDataCompressor DataCompressor { get; set; }
+
+            public StartConfig(string packagesDirectory, CustomNodeManager customNodeManager,
+                IGregClient gregClient)
+            {
+                if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+                if (customNodeManager == null) throw new ArgumentNullException("customNodeManager");
+                if (gregClient == null) throw new ArgumentNullException("gregClient");
+
+                this.PackagesDirectory = packagesDirectory;
+                this.CustomNodeManager = customNodeManager;
+                this.GregClient = gregClient;
+            }
+        }
+
+        internal PackageManagerClient(StartConfig p)
+        {
+            this.fileSystem = p.FileSystem ?? new MutatingFileSystem();
+            this.dataCompressor = p.DataCompressor ?? new MutatingDataCompressor();
+
+            this.packagesDirectory = p.PackagesDirectory;
+            this.customNodeManager = p.CustomNodeManager;
+            this.client = p.GregClient;
+
             this.authProvider = this.client.AuthProvider;
 
+            // The lack of AuthProvider indicates that the user cannot login for this
+            // session.  Hence, we do not subscribe to this event.
             if (this.authProvider != null)
             {
                 this.authProvider.LoginStateChanged += OnLoginStateChanged;
@@ -140,7 +192,7 @@ namespace Dynamo.PackageManager
 
         internal PackageUploadHandle Publish(Package package, List<string> files, bool isNewVersion, bool isTestMode)
         {
-            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewPackageHeader(package));
+            var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
             return PublishPackage(isNewVersion, package, files, packageUploadHandle, isTestMode);
         }
 
@@ -151,18 +203,27 @@ namespace Dynamo.PackageManager
             {
                 try
                 {
+                    var uploadBuilder = new PackageUploadBuilder( this.fileSystem, this.dataCompressor );
+                    var uploadParams = new PackageUploadParams()
+                    {
+                        RootDirectory = this.packagesDirectory,
+                        CustomNodeManager = this.customNodeManager,
+                        Files = files,
+                        Handle = packageUploadHandle,
+                        IsTestMode = isTestMode,
+                        Package = package
+                    };
+
                     ResponseBody ret = null;
                     if (isNewVersion)
                     {
-                        var pkg = PackageUploadBuilder.NewPackageVersion(this.rootPackageDirectory, this.customNodeManager, package, files,
-                            packageUploadHandle, isTestMode);
+                        var pkg = uploadBuilder.NewPackageVersion(uploadParams);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = this.client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
-                        var pkg = PackageUploadBuilder.NewPackage(this.rootPackageDirectory, this.customNodeManager, package, files,
-                            packageUploadHandle, isTestMode);
+                        var pkg = uploadBuilder.NewPackage(uploadParams);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = this.client.ExecuteAndDeserialize(pkg);
                     }

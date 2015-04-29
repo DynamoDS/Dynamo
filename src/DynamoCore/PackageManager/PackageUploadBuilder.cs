@@ -8,11 +8,12 @@ using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
 using Greg.Requests;
+using Greg.Responses;
 using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
-    internal class TrueFileSystem : IFileSystem
+    internal class MutatingFileSystem : IFileSystem
     {
         public void CopyFile([NotNull] string filePath, [NotNull] string destinationPath)
         {
@@ -47,6 +48,14 @@ namespace Dynamo.PackageManager
         }
     }
 
+    internal class MutatingDataCompressor : IDataCompressor
+    {
+        public string Zip(string directoryPath)
+        {
+            return Greg.Utility.FileUtilities.Zip(directoryPath);
+        }
+    }
+
     internal class TrueDirectoryInfo : IDirectoryInfo
     {
         private readonly System.IO.DirectoryInfo dirInfo;
@@ -77,10 +86,23 @@ namespace Dynamo.PackageManager
         }
     }
 
+    internal struct PackageUploadParams
+    {
+        public string RootDirectory;
+        public CustomNodeManager CustomNodeManager;
+        public Package Package;
+        public IEnumerable<string> Files;
+        public PackageUploadHandle Handle;
+        public bool IsTestMode;
+    }
+
     internal class PackageUploadBuilder
     {
         private readonly IFileSystem fileSystem;
         private readonly IDataCompressor dataCompressor;
+
+        public const string PackageEngineName = "dynamo";
+        public const long MaximumPackageSize = 100 * 1024 * 1024;
 
         public PackageUploadBuilder(IFileSystem fileSystem, IDataCompressor dataCompressor)
         {
@@ -88,46 +110,51 @@ namespace Dynamo.PackageManager
             this.dataCompressor = dataCompressor;
         }
 
-        public static PackageUploadRequestBody NewPackageHeader( Package l )
+        #region Core operative methods
+
+        public PackageUpload NewPackage(PackageUploadParams p)
+        {
+            var requestBody = NewRequestBody(p.Package);
+            var zipPath = UpdateFilesAndZip(requestBody, p);
+
+            return new PackageUpload(requestBody, zipPath);
+        }
+
+        public PackageVersionUpload NewPackageVersion(PackageUploadParams p)
+        {
+            var requestBody = NewRequestBody(p.Package);
+            var zipPath = UpdateFilesAndZip(requestBody, p);
+
+            return new PackageVersionUpload(requestBody, zipPath);
+        }
+
+        #endregion
+
+        #region Utility methods
+
+        public static PackageUploadRequestBody NewRequestBody(Package l)
         {
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
 
-            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, l.License, l.Contents, "dynamo",
-                                                         engineVersion, engineMetadata, l.Group, l.Dependencies, 
-                                                         l.SiteUrl, l.RepositoryUrl, l.ContainsBinaries, l.NodeLibraries.Select(x => x.FullName) ); 
-        } 
-
-        public PackageUpload NewPackage(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
-        {
-            var header = NewPackageHeader(pkg);
-            var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, header, pkg, files, uploadHandle, isTestMode);
-            return new PackageUpload(header, zipPath);
+            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, l.License, l.Contents, PackageEngineName,
+                                                         engineVersion, engineMetadata, l.Group, l.Dependencies,
+                                                         l.SiteUrl, l.RepositoryUrl, l.ContainsBinaries, l.NodeLibraries.Select(x => x.FullName));
         }
 
-        public PackageVersionUpload NewPackageVersion(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
+        private string UpdateFilesAndZip( PackageUploadRequestBody requestBody, PackageUploadParams p)
         {
-            var header = NewPackageHeader(pkg);
-            var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, header, pkg, files, uploadHandle, isTestMode);
-            return new PackageVersionUpload(header, zipPath);
-        }
-
-    #region Utility methods
-
-        private string DoPackageFileOperationsAndZip(string rootPkgDir, CustomNodeManager customNodeManager, 
-            PackageUploadRequestBody header, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
-        {
-            uploadHandle.UploadState = PackageUploadHandle.State.Copying;
+            p.Handle.UploadState = PackageUploadHandle.State.Copying;
 
             IDirectoryInfo rootDir, dyfDir, binDir, extraDir;
-            FormPackageDirectory(rootPkgDir, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
-            pkg.RootDirectory = rootDir.FullName;
-            WritePackageHeader(header, rootDir);
-            CopyFilesIntoPackageDirectory(files, dyfDir, binDir, extraDir);
-            RemoveDyfFiles(files, dyfDir); 
-            RemapCustomNodeFilePaths(customNodeManager, files, dyfDir.FullName, isTestMode);
+            FormPackageDirectory(p.RootDirectory, p.Package.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
+            p.Package.RootDirectory = rootDir.FullName;
+            WritePackageHeader(requestBody, rootDir);
+            CopyFilesIntoPackageDirectory(p.Files, dyfDir, binDir, extraDir);
+            RemoveDyfFiles(p.Files, dyfDir);
+            RemapCustomNodeFilePaths(p.CustomNodeManager, p.Files, dyfDir.FullName, p.IsTestMode);
 
-            uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
+            p.Handle.UploadState = PackageUploadHandle.State.Compressing;
 
             string zipPath;
             IFileInfo info;
@@ -143,7 +170,7 @@ namespace Dynamo.PackageManager
                 throw new Exception(Properties.Resources.CouldNotCompressFile);
             }
 
-            if (info.Length > 100 * 1024 * 1024) throw new Exception(Properties.Resources.PackageTooLarge);
+            if (info.Length > MaximumPackageSize) throw new Exception(Properties.Resources.PackageTooLarge);
 
             return zipPath;
         }
@@ -158,7 +185,9 @@ namespace Dynamo.PackageManager
                         CustomNodeWorkspaceModel def;
                         return
                             new { Success = customNodeManager.TryGetFunctionWorkspace(id, isTestMode, out def), Workspace = def };
-                    }).Where(result => result.Success).Select(result => result.Workspace);
+                    })
+                    .Where(result => result.Success)
+                    .Select(result => result.Workspace);
 
             foreach (var func in defList)
             {
@@ -167,17 +196,16 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private static void RemoveDyfFiles(IEnumerable<string> filePaths, IDirectoryInfo dyfDir)
+        private void RemoveDyfFiles(IEnumerable<string> filePaths, IDirectoryInfo dyfDir)
         {
             filePaths
                 .Where(x => x.EndsWith(".dyf") && File.Exists(x) && Path.GetDirectoryName(x) != dyfDir.FullName)
                 .ToList()
-                .ForEach( File.Delete );
+                .ForEach( fileSystem.DeleteFile );
         }
 
         private void FormPackageDirectory(string packageDirectory, string packageName, out IDirectoryInfo root, out IDirectoryInfo dyfDir, out IDirectoryInfo binDir, out IDirectoryInfo extraDir)
         {
-            // create a directory where the package will be stored
             var rootPath = Path.Combine(packageDirectory, packageName);
             var dyfPath = Path.Combine(rootPath, "dyf");
             var binPath = Path.Combine(rootPath, "bin");
@@ -201,6 +229,7 @@ namespace Dynamo.PackageManager
             {
                 fileSystem.DeleteFile(headerPath);
             }
+
             fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 

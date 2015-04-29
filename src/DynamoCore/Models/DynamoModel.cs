@@ -654,9 +654,7 @@ namespace Dynamo.Models
             }
 
             return new PackageManagerClient(
-                new GregClient(provider, url),
-                rootDirectory,
-                customNodeManager);
+                new PackageManagerClient.StartConfig(rootDirectory, customNodeManager, new GregClient(provider, url)));
         }
 
         private void InitializeCustomNodeManager()
