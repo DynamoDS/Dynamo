@@ -1544,6 +1544,20 @@ c = f(a<1L>,b<2>);";
         }
 
         [Test]
+        public void TestEq()
+        {
+            string code= @"
+class A {}
+a = A();
+b = 42;
+c = a == b;
+            ";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", false);
+        }
+
+        [Test]
         public void RangeExpr001()
         {
             String code =
