@@ -359,18 +359,18 @@ namespace DynamoCoreUITests
             cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<1>,a<1>);", elementResolver);
 
             // run the expression
-            Assert.AreEqual(4, BackgroundPreview.Points.Positions.Count());
+            Assert.True(BackgroundPreview.HasNumberOfPointVertices(4));
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
             cbn.DisplayLabels = true;
-            Assert.AreEqual(BackgroundPreview.Text.TextInfo.Count(), 4);
+            Assert.True(BackgroundPreview.HasNumberOfTextObjects(4));
 
             cbn.SetCodeContent("Autodesk.Point.ByCoordinates(a<1>,a<2>,a<3>);", elementResolver);
 
             Assert.DoesNotThrow(() => ViewModel.HomeSpace.Run());
-            Assert.AreEqual(64, BackgroundPreview.Points.Positions.Count());
-            Assert.AreEqual(64, BackgroundPreview.Text.TextInfo.Count());
+            Assert.True(BackgroundPreview.HasNumberOfPointVertices(64));
+            Assert.True(BackgroundPreview.HasNumberOfTextObjects(64));
 
             cbn.DisplayLabels = false;
             Assert.Null(BackgroundPreview.Text);
@@ -397,7 +397,7 @@ namespace DynamoCoreUITests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.AreEqual(6, BackgroundPreview.Lines.Positions.Count()/2);
+            Assert.True(BackgroundPreview.HasNumberOfLines(6));
 
             //label displayed should be possible now because
             //some nodes have values. toggle on label display
@@ -407,7 +407,7 @@ namespace DynamoCoreUITests
             Assert.IsNotNull(crvNode);
             crvNode.DisplayLabels = true;
 
-            Assert.AreEqual(6,BackgroundPreview.Text.TextInfo.Count());
+            Assert.True(BackgroundPreview.HasNumberOfTextObjects(6));
         }
 
         [Test]
@@ -461,8 +461,6 @@ namespace DynamoCoreUITests
         [Test]
         public void VisualizationManager_Solids_Render()
         {
-            var model = ViewModel.Model;
-
             string openPath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
                 @"core\visualization\ASM_thicken.dyn");
@@ -471,7 +469,7 @@ namespace DynamoCoreUITests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            Assert.IsTrue(BackgroundPreview.Mesh.Indices.Count > 0);
+            Assert.True(BackgroundPreview.HasMeshes());
 
             ViewModel.HomeSpace.HasUnsavedChanges = false;
         }
@@ -479,8 +477,6 @@ namespace DynamoCoreUITests
         [Test]
         public void VisualizationManager_Surfaces_Render()
         {
-            var viz = ViewModel.VisualizationManager;
-
             string openPath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
                 @"core\visualization\ASM_cuboid.dyn");
@@ -489,8 +485,7 @@ namespace DynamoCoreUITests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            //var meshes = viz.Visualizations.SelectMany(x => x.Value.Meshes);
-            Assert.AreEqual(36, BackgroundPreview.Mesh.Positions.Count);
+            Assert.True(BackgroundPreview.HasNumberOfMeshVertices(36));
         }
 
         [Test]
@@ -646,12 +641,37 @@ namespace DynamoCoreUITests
         }
     }
 
-    public static class Watch3DViewExtensions
+    internal static class Watch3DViewExtensions
     {
         public static bool HasNumberOfLinesOfColor(this Watch3DView view, int lineCount, Color4 color)
         {
             var ptsOfColor = view.Lines.Colors.Where(c => c == color);
             return ptsOfColor.Count() == lineCount * 2;
+        }
+
+        public static bool HasNumberOfPointVertices(this Watch3DView view, int numberOfPoints)
+        {
+            return view.Points.Positions.Count == numberOfPoints;
+        }
+
+        public static bool HasNumberOfTextObjects(this Watch3DView view, int numberOfTextObjects)
+        {
+            return view.Text.TextInfo.Count == numberOfTextObjects;
+        }
+
+        public static bool HasMeshes(this Watch3DView view)
+        {
+            return view.Mesh.Positions.Count > 0;
+        }
+
+        public static bool HasNumberOfMeshVertices(this Watch3DView view, int numberOfVertices)
+        {
+            return view.Mesh.Positions.Count == numberOfVertices;
+        }
+
+        public static bool HasNumberOfLines(this Watch3DView view, int numberOfLines)
+        {
+            return view.Lines.Positions.Count == numberOfLines*2;
         }
     }
 
