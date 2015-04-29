@@ -509,8 +509,8 @@ namespace ProtoCore
             switch (targetType.UID)
             {
                 case (int)PrimitiveType.kInvalidType:
-                    Validity.Assert(false, "Can't convert invalid type");
-                    break;
+                    runtimeCore.RuntimeStatus.LogWarning(Runtime.WarningID.kInvalidType, Resources.kInvalidType);
+                    return StackValue.Null;
 
                 case (int)PrimitiveType.kTypeBool:
                     return sv.ToBoolean(runtimeCore);

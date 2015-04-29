@@ -3169,6 +3169,21 @@ c = [Associative]
             thisTest.Verify("b", false);
         }
 
+        [Test]
+        public void TestUndefinedTypedIdentifier()
+        {
+            string code =
+@"
+        a : UndefinedType;
+        b : UndefinedType2 = 2;
+        c : UndefinedType3 = null;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+            thisTest.Verify("b", null);
+            thisTest.Verify("c", null);
 
+            thisTest.VerifyRuntimeWarningCount(3);
+        }
     }
 }
