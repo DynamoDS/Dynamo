@@ -594,14 +594,17 @@ namespace ProtoCore.DSASM
             }
         }
 
-        public StackValue Callr(int functionIndex, 
+        public StackValue Callr(int blockDeclId,
+                                int functionIndex, 
                                 int classIndex, 
-                                int depth, 
                                 ref bool explicitCall, 
                                 bool isDynamicCall = false, 
                                 bool hasDebugInfo = false)
         {
             // This is curently unused but required for stack alignment
+            var svDepth = rmem.Pop();
+            int depth = (int)svDepth.opdata;
+
             if (!isDynamicCall)
             {
                 StackValue svType = rmem.Pop();
@@ -614,11 +617,6 @@ namespace ProtoCore.DSASM
             // f()[0][1] -> 2 dimensions
             StackValue svDim = rmem.Pop();
             runtimeVerify(svDim.IsArrayDimension);
-
-            // Jun Comment: The block where the function was declared in
-            StackValue svBlockDeclaration = rmem.Pop();
-            runtimeVerify(svBlockDeclaration.IsBlockIndex);
-            int blockDeclId = (int)svBlockDeclaration.opdata;
 
             bool isCallingMemberFunction = Constants.kInvalidIndex != classIndex;
             if (isCallingMemberFunction)
@@ -749,7 +747,7 @@ namespace ProtoCore.DSASM
 
             int returnAddr = pc + 1;
 
-            int blockDecl = (int)svBlockDeclaration.opdata;
+            int blockDecl = blockDeclId;
 
             if (null != Properties.executingGraphNode)
             {
@@ -870,8 +868,8 @@ namespace ProtoCore.DSASM
                     }
                 }
 
-                SX = svBlockDeclaration;
-                stackFrame.SX = svBlockDeclaration;
+                SX = StackValue.BuildBlockIndex(blockDeclId);
+                stackFrame.SX = SX;
 
                 //Dispatch without recursion tracking 
                 explicitCall = false;
@@ -973,16 +971,17 @@ namespace ProtoCore.DSASM
             return sv;
         }
 
-        private StackValue CallrForMemberFunction(int classIndex,
+        private StackValue CallrForMemberFunction(int blockIndex,
+                                                  int classIndex,
                                                   int procIndex,
                                                   bool hasDebugInfo,
                                                   ref bool isExplicitCall)
         {
+            var svDepth = rmem.Pop();
+            Validity.Assert(svDepth.IsInteger);
+
             var arrayDim = rmem.Pop();
             Validity.Assert(arrayDim.IsArrayDimension);
-
-            var blockIndex = rmem.Pop();
-            Validity.Assert(blockIndex.IsBlockIndex);
 
             ClassNode classNode = exe.classTable.ClassNodes[classIndex];
             ProcedureNode procNode = classNode.vtable.procList[procIndex];
@@ -3469,7 +3468,7 @@ namespace ProtoCore.DSASM
             int fptr = Constants.kInvalidIndex;
             int functionDynamicIndex = (int)instr.op1.opdata;
             int classIndex = (int)instr.op2.opdata;
-            int depth = (int)instr.op3.opdata;
+            int depth = (int)rmem.Pop().opdata;
             bool isDotMemFuncBody = functionDynamicIndex == Constants.kInvalidIndex;
             bool isFunctionPointerCall = false;
             if (isDotMemFuncBody)
@@ -3730,8 +3729,9 @@ namespace ProtoCore.DSASM
                 if (isLeftClass || (isFunctionPointerCall && depth > 0)) //constructor or static function or function pointer call
                 {
                     rmem.Pop(); //remove the array dimension for "isLeftClass" or final pointer for "isFunctionPointerCall"
-                    instr.op3.opdata = 0; //depth = 0
+                    depth = 0;
                 }
+
                 //push back the function arguments
                 for (int i = argSvList.Count - 1; i >= 0; i--)
                 {
@@ -3745,11 +3745,13 @@ namespace ProtoCore.DSASM
 
                 // Push the function declaration block  
                 StackValue opblock = StackValue.BuildBlockIndex(procNode.runtimeIndex);
-                rmem.Push(opblock);
+                instr.op3 = opblock;
 
                 int dimensions = 0;
                 StackValue opdim = StackValue.BuildArrayDimension(dimensions);
                 rmem.Push(opdim);
+
+                rmem.Push(StackValue.BuildInt(depth));
 
                 //Modify the operand data
                 instr.op1.opdata = procNode.procId;
@@ -3762,6 +3764,7 @@ namespace ProtoCore.DSASM
             if (!(isFunctionPointerCall && depth == 0))
             {
                 rmem.Pop(); //remove the array dimension for "isLeftClass" or final pointer
+                rmem.Push(StackValue.BuildInt(0));
             }
             return false;
         }
@@ -3982,9 +3985,7 @@ namespace ProtoCore.DSASM
                 runtimeVerify(svDim.IsArrayDimension);
                 dimensions = (int)svDim.opdata;
 
-                StackValue svBlock = rmem.Pop();
-                runtimeVerify(svBlock.IsBlockIndex);
-                blockId = (int)svBlock.opdata;
+                blockId = (int)instruction.op3.opdata;
 
                 objectIndexing = true;
             }
@@ -4048,7 +4049,7 @@ namespace ProtoCore.DSASM
                 runtimeVerify(svDim.IsArrayDimension);
                 dimensions = (int)svDim.opdata;
 
-                StackValue svBlock = rmem.Pop();
+                StackValue svBlock = instruction.op3; 
                 runtimeVerify(svBlock.IsBlockIndex);
                 blockId = (int)svBlock.opdata;
             }
@@ -4434,18 +4435,9 @@ namespace ProtoCore.DSASM
                 runtimeVerify(svDim.IsArrayDimension);
                 dimensions = (int)svDim.opdata;
 
-                StackValue svBlock = rmem.Pop();
-                runtimeVerify(svBlock.IsBlockIndex);
-                blockId = (int)svBlock.opdata;
+                blockId = (int)instruction.op3.opdata;
 
                 objectIndexing = true;
-                // TODO(Jun/Jiong): Find a more reliable way to update the current block Id
-                //  eg: [Imperative] { a = 10; if (a > 10) c = a; else c = 10; m = a; } 
-                //  when the execution cursor is at "m = a;", the user should not be allowed to inspect the value of c 
-                //  because it is in the inner scope, 3, of the current block, 1. 
-                //  for now, since the pop instruction in "m = a" has not been executed, the currentBlockId has not been updated 
-                //  from 3 to 1, the user will be able to inspect the value of c 
-                //runtimeCore.DebugProps.CurrentBlockId = blockId;
             }
 
             bool isSSANode = Properties.executingGraphNode != null && Properties.executingGraphNode.IsSSANode();
@@ -4540,18 +4532,9 @@ namespace ProtoCore.DSASM
                 runtimeVerify(svDim.IsArrayDimension);
                 dimensions = (int)svDim.opdata;
 
-                StackValue svBlock = rmem.Pop();
+                StackValue svBlock = instruction.op3;
                 runtimeVerify(svBlock.IsBlockIndex);
                 blockId = (int)svBlock.opdata;
-
-
-                // TODO(Jun/Jiong): Find a more reliable way to update the current block Id
-                //  eg: [Imperative] { a = 10; if (a > 10) c = a; else c = 10; m = a; } 
-                //  when the execution cursor is at "m = a;", the user should not be allowed to inspect the value of c 
-                //  because it is in the inner scope, 3, of the current block, 1. 
-                //  for now, since the pop instruction in "m = a" has not been executed, the currentBlockId has not been updated 
-                //  from 3 to 1, the user will be able to inspect the value of c 
-                //runtimeCore.DebugProps.CurrentBlockId = blockId;
             }
 
             StackValue svData;
@@ -4613,6 +4596,10 @@ namespace ProtoCore.DSASM
             StackValue op1 = instruction.op1;
             runtimeVerify(op1.IsMemberVariableIndex || op1.IsStaticVariableIndex);
 
+            StackValue svBlock = instruction.op2;
+            runtimeVerify(svBlock.IsBlockIndex);
+            blockId = (int)svBlock.opdata;
+
             StackValue svType = rmem.Pop();
             runtimeVerify(svType.IsStaticType);
             int staticType = svType.metaData.type;
@@ -4621,10 +4608,6 @@ namespace ProtoCore.DSASM
             StackValue svDim = rmem.Pop();
             runtimeVerify(svDim.IsArrayDimension);
             int dimensions = (int)svDim.opdata;
-
-            StackValue svBlock = rmem.Pop();
-            runtimeVerify(svBlock.IsBlockIndex);
-            blockId = (int)svBlock.opdata;
 
             List<StackValue> dimList = new List<StackValue>();
             for (int i = 0; i < dimensions; ++i)
@@ -5688,8 +5671,8 @@ namespace ProtoCore.DSASM
             runtimeVerify(instr.op2.IsClassIndex);
             int classIndex = (int)instr.op2.opdata;
 
-            runtimeVerify(instr.op3.IsInteger);
-            int depth = (int)instr.op3.opdata;
+            runtimeVerify(instr.op3.IsBlockIndex);
+            int blockIndex = (int)instr.op3.opdata;
 
             ++runtimeCore.FunctionCallDepth;
 
@@ -5706,11 +5689,11 @@ namespace ProtoCore.DSASM
             //
             if (isMemberFunctionPointer)
             {
-                RX = CallrForMemberFunction(classIndex, functionIndex, instr.debug != null, ref explicitCall);
+                RX = CallrForMemberFunction(blockIndex, classIndex, functionIndex, instr.debug != null, ref explicitCall);
             }
             else if (!runtimeCore.Options.IsDeltaExecution)
             {
-                RX = Callr(functionIndex, classIndex, depth, ref explicitCall, isDynamicCall, instr.debug != null);
+                RX = Callr(blockIndex, functionIndex, classIndex, ref explicitCall, isDynamicCall, instr.debug != null);
             }
             else
             {
@@ -5720,7 +5703,7 @@ namespace ProtoCore.DSASM
                 //      The only affected downstream operations are the ones connected to the graph associated with this call
                 try
                 {
-                    RX = Callr(functionIndex, classIndex, depth, ref explicitCall, isDynamicCall, instr.debug != null);
+                    RX = Callr(blockIndex, functionIndex, classIndex, ref explicitCall, isDynamicCall, instr.debug != null);
                 }
                 catch (ReplicationCaseNotCurrentlySupported e)
                 {
@@ -6164,8 +6147,11 @@ namespace ProtoCore.DSASM
             // This is unused in Callr() but needed for stack alignment
             rmem.Push(StackValue.BuildStaticType((int)PrimitiveType.kTypeVar));
 
+            // Depth
+            rmem.Push(StackValue.BuildInt(runtimeCore.ContinuationStruct.InitialDepth));
+
             bool explicitCall = true;
-            Callr(fi, ci, runtimeCore.ContinuationStruct.InitialDepth, ref explicitCall);
+            Callr(procNode.runtimeIndex, fi, ci, ref explicitCall);
         }
 
         private void JMP_Handler(Instruction instruction)
