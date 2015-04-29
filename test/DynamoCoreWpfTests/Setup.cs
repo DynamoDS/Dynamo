@@ -4,7 +4,7 @@ using System.Reflection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [SetUpFixture]
     public class Setup

@@ -18,7 +18,7 @@ using System.Text.RegularExpressions;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     //public delegate void CommandCallback(string commandTag);
 

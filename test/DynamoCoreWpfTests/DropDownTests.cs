@@ -7,7 +7,7 @@ using DSCoreNodesUI;
 using Dynamo.Nodes;
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class DropDownTests : SystemTestBase
