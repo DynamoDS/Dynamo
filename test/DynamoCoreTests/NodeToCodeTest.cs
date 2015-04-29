@@ -497,6 +497,36 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestBasicNode2CodeWorkFlow3()
+        {
+            OpenModel(@"core\node2code\workflow3.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            ViewModel.SelectAll(null);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            ViewModel.ExecuteCommand(command);
+
+            Assert.IsTrue(ViewModel.CurrentSpace.Connectors.Count() == 3);
+            Assert.IsTrue(ViewModel.CurrentSpace.Nodes.Count == 3);
+        }
+
+        [Test]
+        public void TestBasicNode2CodeWorkFlow4()
+        {
+            OpenModel(@"core\node2code\workflow4.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            ViewModel.SelectAll(null);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            ViewModel.ExecuteCommand(command);
+
+            Assert.IsTrue(ViewModel.CurrentSpace.Connectors.Count() == 3);
+            Assert.IsTrue(ViewModel.CurrentSpace.Nodes.Count == 3);
+        }
+
+        [Test]
         public void TestShortName1()
         {
             OpenModel(@"core\node2code\shortName1.dyn");

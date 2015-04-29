@@ -415,55 +415,45 @@ namespace Dynamo.DSEngine
             out Dictionary<string, string> outputMap,
             out Dictionary<string, string> renamingMap)
         {
+            inputMap = new Dictionary<string, string>();
             outputMap = new Dictionary<string, string>();
             renamingMap = new Dictionary<string, string>();
-            var inputVariableSet = new HashSet<string>();
 
             foreach (var node in nodes)
             {
-                // Collects all inputs of selected nodes
+                // Collects all inputs of selected nodes.
                 foreach (var inport in node.InPorts)
                 {
                     if (inport.Connectors.Count == 0)
                         continue;
 
-                    var startPort = inport.Connectors[0].Start;
+                    var startPort = inport.Connectors.First().Start;
                     var inputNode = startPort.Owner;
-                    var portIndex = startPort.Index; 
-                    var cbn = inputNode as CodeBlockNodeModel;
+                    var portIndex = startPort.Index;
 
-                    //if (nodes.Contains(inputNode))
-                    //{
-                        // internal node
-                        if (cbn != null)
-                        {
-                            string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
-                            string originalVar = cbn.GetRawAstIdentifierForOutputIndex(portIndex).Value;
-
-                            renamingMap[inputVar] = originalVar;
-                            var key = String.Format("{0}%{1}", originalVar, cbn.GUID);
-                            renamingMap[key] = inputVar;
-                        }
-                    //}
-                    else // extern node, so they should be added to inputMap
+                    if (!nodes.Contains(inputNode) || !(inputNode is CodeBlockNodeModel))
                     {
                         string inputVar = inputNode.GetAstIdentifierForOutputIndex(portIndex).Value;
-                        inputVariableSet.Add(inputVar);
+                        inputMap[inputVar] = string.Empty;
                     }
                 }
 
-                // Collect all outputs of selected nodes
+                // For all outputs from non code block node, simply put them 
+                // in output map because they are unique. Otherwise, need to
+                // save to renaming map because they would be renumbered.
                 var thisCBN = node as CodeBlockNodeModel;
                 if (thisCBN != null)
                 {
                     for (int i = 0; i < thisCBN.OutPorts.Count; ++i)
                     {
-                        var inputVar = thisCBN.GetAstIdentifierForOutputIndex(i).Value;
+                        var mappedInputVar = thisCBN.GetAstIdentifierForOutputIndex(i).Value;
                         var originalVar = thisCBN.GetRawAstIdentifierForOutputIndex(i).Value;
 
-                        outputMap[inputVar] = originalVar;
+                        renamingMap[mappedInputVar] = originalVar;
                         var key = String.Format("{0}%{1}", originalVar, thisCBN.GUID);
-                        outputMap[key] = inputVar;
+                        renamingMap[key] = mappedInputVar;
+
+                        outputMap[mappedInputVar] = originalVar;
                     }
                 }
                 else
@@ -475,8 +465,6 @@ namespace Dynamo.DSEngine
                     }
                 }
             }
-
-            inputMap = inputVariableSet.ToDictionary(v => v, _ => string.Empty);
         }
 
         /// <summary>
@@ -499,9 +487,9 @@ namespace Dynamo.DSEngine
             {
                 var ident = n.Value;
 
-                // This ident is from other node's output port, so it should be
-                // renamed later on VarialbeMapping()
-                if (renamingMap.ContainsKey(ident) || inputMap.ContainsKey(ident))
+                // This ident is from other node's output port, it is not necessary to 
+                // do renumbering.
+                if (inputMap.ContainsKey(ident))
                     return;
 
                 NumberingState ns; 
@@ -536,7 +524,8 @@ namespace Dynamo.DSEngine
 
                 if (ns.ID != 0)
                 {
-                    n.Name = n.Value = ns.NumberedVariable;
+                    var numberedVar = ns.NumberedVariable;
+                    n.Name = n.Value = numberedVar;
 
                     // If this variable is numbered, and it is also output to
                     // other node, we should remap the output variable to
@@ -545,18 +534,18 @@ namespace Dynamo.DSEngine
                     if (renamingMap.ContainsKey(name))
                     {
                         var mappedName = renamingMap[name];
-                        renamingMap[mappedName] = ns.NumberedVariable;
-                    }
+                        renamingMap[mappedName] = numberedVar;
 
-                    // Record in output map.
-                    if (outputMap.ContainsKey(name))
-                    {
-                        var mappedName = outputMap[name];
-                        outputMap[mappedName] = ns.NumberedVariable;
+                        // Record in output map.
+                        if (outputMap.ContainsKey(mappedName))
+                            outputMap[mappedName] = numberedVar;
                     }
                 }
 
-                mappedVariables.Add(ns.NumberedVariable);
+                // If this one is not the variable that going to be renamed, then
+                // add to mapped variable set
+                if (!renamingMap.ContainsKey(ns.NumberedVariable))
+                    mappedVariables.Add(ns.NumberedVariable);
             };
 
             IdentifierVisitor visitor = new IdentifierVisitor(func, core);
@@ -571,13 +560,20 @@ namespace Dynamo.DSEngine
         private static void VariableRemapping(
             ProtoCore.Core core,
             AssociativeNode astNode, 
-            Dictionary<string, string> renamingMap)
+            Dictionary<string, string> renamingMap,
+            Dictionary<string, string> outuptMap,
+            HashSet<string> mappedVariable)
         {
             Action<IdentifierNode> func = n =>
                 {
                     string newIdent;
                     if (renamingMap.TryGetValue(n.Value, out newIdent))
+                    {
+                        var ident = n.Value;
                         n.Value = n.Name = newIdent;
+                        outuptMap[ident] = newIdent;
+                        mappedVariable.Add(newIdent);
+                    }
                 };
 
             IdentifierVisitor visitor = new IdentifierVisitor(func, core);
@@ -816,16 +812,10 @@ namespace Dynamo.DSEngine
             #endregion
 
             #region Step 2 Varialbe numbering
-            // In this step, we'll renumber all variables that going to be in 
-            // the same code block node. That is, 
-            // 
-            //     "x = 1; y = x;"   and
-            //     "x = 2; y = x;" 
-            //
-            // Will be renumbered to 
-            //
-            //    "x1 = 1; y1 = x1;" and
-            //    "x2 = 2; y2 = x2;"
+           
+            // External inputs will be in input map
+            // Internal non-cbn will be input map & output map
+            // Internal cbn will be in renaming map and output map
 
             // Map from mapped variable to its original name. These variables 
             // are from code block nodes that in the selection.
@@ -845,6 +835,16 @@ namespace Dynamo.DSEngine
             // t1, t2, ... tn and the ID of variable t's NumberingState is n.
             var numberingMap = new Dictionary<string, NumberingState>();
 
+            // In this step, we'll renumber all variables that going to be in 
+            // the same code block node. That is, 
+            // 
+            //     "x = 1; y = x;"   and
+            //     "x = 2; y = x;" 
+            //
+            // Will be renumbered to 
+            //
+            //    "x1 = 1; y1 = x1;" and
+            //    "x2 = 2; y2 = x2;"
             var mappedVariables = new HashSet<string>();
             foreach (var t in allAstNodes)
             {
@@ -858,16 +858,13 @@ namespace Dynamo.DSEngine
 
             renamingMap = renamingMap.Where(p => !p.Key.Contains("%"))
                                      .ToDictionary(p => p.Key, p => p.Value);
-
-            outputMap = outputMap.Where(p => !p.Key.Contains("%"))
-                                 .ToDictionary(p => p.Key, p => p.Value);
             #endregion
 
             #region Step 3 Variable remapping
             foreach (var ts in allAstNodes)
             {
                 foreach (var astNode in ts.Item2)
-                    VariableRemapping(core, astNode, renamingMap);
+                    VariableRemapping(core, astNode, renamingMap, outputMap, mappedVariables);
             }
             #endregion
 
@@ -875,23 +872,6 @@ namespace Dynamo.DSEngine
             var nameGenerator = new ShortNameGenerator();
 
             // temporary variables are double mapped.
-            foreach (var key in inputMap.Keys.ToList())
-            {
-               if (key.StartsWith(Constants.kTempVarForNonAssignment) &&
-                   inputMap[key].StartsWith(Constants.kTempVarForNonAssignment))
-               {
-                   string shortName = nameGenerator.GetNextName();
-                   while (mappedVariables.Contains(shortName))
-                       shortName = nameGenerator.GetNextName();
-
-                   var tempVar = inputMap[key];
-                   inputMap[key] = shortName;
-                   inputMap[tempVar] = shortName;
-
-                   mappedVariables.Add(shortName);
-               }
-            }
-
             foreach (var key in outputMap.Keys.ToList())
             {
                if (key.StartsWith(Constants.kTempVarForNonAssignment) &&
@@ -914,6 +894,11 @@ namespace Dynamo.DSEngine
                 foreach (var astNode in ts.Item2)
                 {
                     ShortNameMapping(core, astNode, inputMap, nameGenerator, mappedVariables);
+                    foreach (var kvp in inputMap)
+                    {
+                        if (kvp.Value != String.Empty && outputMap.ContainsKey(kvp.Key))
+                            outputMap[kvp.Key] = kvp.Value;
+                    }
                     ShortNameMapping(core, astNode, outputMap, nameGenerator, mappedVariables);
                 }
             }
