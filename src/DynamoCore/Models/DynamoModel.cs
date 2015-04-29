@@ -1669,7 +1669,7 @@ namespace Dynamo.Models
 
             string description = (exception is HeapCorruptionException)
                 ? exception.Message
-                : @Properties.Resources.ExceptionIsNotHeapCorruptionDescription;
+                : @Properties.Resources.DisplayEngineFailureMessageDescription;
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(

@@ -233,7 +233,7 @@
   <data name="CannotOpenFile" xml:space="preserve">
     <value>Your file cannot be opened</value>
   </data>
-  <data name="DisplayEnigineFailureMessageDescription" xml:space="preserve">
+  <data name="DisplayEngineFailureMessageDescription" xml:space="preserve">
     <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely "having great difficulties pulling itself together. It is "recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
 
 If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
@@ -416,11 +416,6 @@ Sorry about that.</value>
   </data>
   <data name="DuplicateMigrationTypeRegistered" xml:space="preserve">
     <value>Duplicate migration type registered for {0}</value>
-  </data>
-  <data name="ExceptionIsNotHeapCorruptionDescription" xml:space="preserve">
-    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better.
-
-If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
   </data>
   <data name="FileCannotBeOpened" xml:space="preserve">
     <value>Your file cannot be opened.</value>

@@ -440,10 +440,14 @@ namespace Dynamo.Models
         public event EventHandler<EvaluationCompletedEventArgs> EvaluationCompleted;
         public virtual void OnEvaluationCompleted(EvaluationCompletedEventArgs e)
         {
-            this.HasRunWithoutCrash = true;
+            if(e.EvaluationSucceeded)
+            {
+                this.HasRunWithoutCrash = true;
+            }
 
             var handler = EvaluationCompleted;
             if (handler != null) handler(this, e);
+
         }
 
         public event EventHandler<DeltaComputeStateEventArgs> SetNodeDeltaState;
