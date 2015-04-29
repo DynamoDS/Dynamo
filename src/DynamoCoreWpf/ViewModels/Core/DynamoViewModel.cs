@@ -312,8 +312,22 @@ namespace Dynamo.ViewModels
         }
 
         public bool IsMouseDown { get; set; }
-        public bool IsPanning { get { return CurrentSpaceViewModel.IsPanning; } }
-        public bool IsOrbiting { get { return CurrentSpaceViewModel.IsOrbiting; } }
+
+        public bool IsPanning
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
+            }
+        }
+
+        public bool IsOrbiting
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
+            }
+        }
 
         public ConnectorType ConnectorType
         {
