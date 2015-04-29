@@ -1,71 +1,59 @@
-﻿using System.Collections.Generic;
-using System.Text;
-
-using DSCore;
-
-using Dynamo.Nodes;
-using Dynamo.PackageManager.UI;
-using Dynamo.Utilities;
-
-using Greg.Responses;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    class PackageUploadBuilderTests : DynamoViewModelUnitTest
+    class PackageUploadBuilderTests
     {
-
         [Test]
-        public void FormPackageDirectoryBuildsDirectoryForValidDirectory()
+        public void FormPackageDirectory_BuildsDirectoryForValidDirectory()
         {
             Assert.Inconclusive("Finish me");
         }
 
         [Test]
-        public void FormPackageDirectoryDoesNothingForInvalidDirectory()
+        public void FormPackageDirectory_DoesNothingForInvalidDirectory()
         {
             Assert.Inconclusive("Finish me");
         }
 
         [Test]
-        public void WritePackageHeaderWritesValidPackageHeader()
+        public void WritePackageHeader_WritesValidPackageHeader()
         {
             Assert.Inconclusive("Finish me");
         }
 
         [Test]
-        public void CopyFilesIntoPackageDirectorySucceedsForInvalidTargetDirectory()
+        public void CopyFilesIntoPackageDirectory_SucceedsForInvalidTargetDirectory()
         {
             Assert.Inconclusive("Finish me");
         }
 
         [Test]
-        public void CopyFilesIntoPackageDirectoryFailsForInvalidTargetDirectory()
+        public void CopyFilesIntoPackageDirectory_FailsForInvalidTargetDirectory()
         {
             Assert.Inconclusive("Finish me");
         }
 
         [Test]
-        public void RemoveDyfFilesSucceedsForValidFiles()
+        public void RemoveDyfFiles_SucceedsForValidFiles()
         {
             Assert.Inconclusive("Finish me");
         }
 
         [Test]
-        public void RemoveDyfFilesFailsForInvalidFiles()
+        public void RemoveDyfFiles_FailsForInvalidFiles()
         {
             Assert.Inconclusive("Finish me");
         }
 
         [Test]
-        public void RemapCustomNodeFilePathsSuccedsForValidFiles()
+        public void RemapCustomNodeFilePaths_SucceedsForValidFiles()
         {
             Assert.Inconclusive("Finish me");
         }
 
         [Test]
-        public void RemapCustomNodeFilePathsFailsForInvalidFiles()
+        public void RemapCustomNodeFilePaths_FailsForInvalidFiles()
         {
             Assert.Inconclusive("Finish me");
         }

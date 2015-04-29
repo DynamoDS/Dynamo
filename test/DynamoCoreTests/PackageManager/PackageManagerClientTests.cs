@@ -5,11 +5,12 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
-    class PackageManagerClientTests : DynamoViewModelUnitTest
+    class PackageManagerClientTests : DynamoModelTestBase
     {
         // All of these tests do not require authentication
 
         #region DownloadAndInstall
+
         [Test]
         public void DownloadAndInstallSucceedsForValidPackage()
         {
@@ -33,7 +34,7 @@ namespace Dynamo.Tests
         [Test]
         public void ListAllReturnsAllPackages()
         {
-            var elements = ViewModel.Model.PackageManagerClient.ListAll();
+            var elements = this.CurrentDynamoModel.PackageManagerClient.ListAll();
             Assert.AreNotEqual(0, elements.Count());
             Console.WriteLine(elements.Count());
         }

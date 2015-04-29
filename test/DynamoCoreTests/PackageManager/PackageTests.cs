@@ -8,7 +8,6 @@ using NUnit.Framework;
 
 namespace Dynamo.PackageManager
 {
-    
     class PackageTests
     {
         private readonly AssemblyName assemName =
