@@ -723,5 +723,32 @@ namespace DSCoreNodesTests
 
 
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void FirstIndexOf()
+        {
+            List<int> input = Enumerable.Range(0, 10).ToList();
+
+            int index = List.FirstIndexOf(input, 3);
+            Assert.AreEqual(index, 3);
+
+            index = List.FirstIndexOf(input, 21);
+            Assert.AreEqual(index, -1);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void AllIndicesOf()
+        {
+            List<int> input = new List<int> { 1, 2, 3, 1, 2, 3 };
+
+            var indices = List.AllIndicesOf(input, 3).Cast<int>();
+            Assert.IsTrue(indices.SequenceEqual(new [] {2, 5}));
+
+            indices = List.AllIndicesOf(input, 21).Cast<int>();
+            Assert.IsEmpty(indices);
+        }
+ 
     }
 }
