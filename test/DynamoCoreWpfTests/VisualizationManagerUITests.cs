@@ -17,11 +17,11 @@ using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 
-using DynamoCoreUITests.Utility;
+using DynamoCoreWpfTests.Utility;
 
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class VisualizationManagerUITests : SystemTestBase

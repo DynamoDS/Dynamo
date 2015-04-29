@@ -849,4 +849,7 @@
   <data name="try_expected" xml:space="preserve">
     <value>"try" expected</value>
   </data>
+  <data name="kInvalidType" xml:space="preserve">
+    <value>The type is invalid</value>
+  </data>
 </root>

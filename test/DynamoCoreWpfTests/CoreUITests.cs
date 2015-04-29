@@ -15,7 +15,7 @@ using Dynamo.Services;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class CoreUserInterfaceTests : SystemTestBase

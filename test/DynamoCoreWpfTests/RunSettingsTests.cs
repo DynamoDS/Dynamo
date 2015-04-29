@@ -14,7 +14,7 @@ using Dynamo.Wpf.ViewModels;
 
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class RunSettingsTests : SystemTestBase
