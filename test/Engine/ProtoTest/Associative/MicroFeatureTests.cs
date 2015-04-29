@@ -3170,6 +3170,17 @@ c = [Associative]
         }
 
         [Test]
+        public void TestAddNullToString()
+        {
+            string code =
+@"
+a = ""hello"" + null;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+        }
+        
+        [Test]
         public void TestUndefinedTypedIdentifier()
         {
             string code =

@@ -4950,23 +4950,9 @@ namespace ProtoCore.DSASM
 
                 opdata2 = StackValue.BuildDouble(value1 + value2);
             }
-            else if (opdata1.IsString && opdata2.IsString)
-            {
-                opdata2 = StringUtils.ConcatString(opdata2, opdata1, runtimeCore);
-            }
             else if (opdata1.IsString || opdata2.IsString)
             {
-                StackValue newSV;
-                if (opdata1.IsString)
-                {
-                    newSV = StringUtils.ConvertToString(opdata2, runtimeCore, rmem);
-                    opdata2 = StringUtils.ConcatString(newSV, opdata1, runtimeCore);
-                }
-                else if (opdata2.IsString)
-                {
-                    newSV = StringUtils.ConvertToString(opdata1, runtimeCore, rmem);
-                    opdata2 = StringUtils.ConcatString(opdata2, newSV, runtimeCore);
-                }
+                opdata2 = CoreUtils.AddStackValueString(opdata1, opdata2, runtimeCore);
             }
             else if (opdata2.IsArrayKey && opdata1.IsInteger)
             {

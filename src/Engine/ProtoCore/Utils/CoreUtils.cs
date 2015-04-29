@@ -972,5 +972,41 @@ namespace ProtoCore.Utils
             }
             return StackValue.BuildNull();
         }
+
+        /// <summary>
+        /// Performs addition on 2 StackValues
+        /// This is used by the VM when adding strings
+        /// </summary>
+        /// <param name="sv1"></param>
+        /// <param name="sv2"></param>
+        /// <returns></returns>
+        public static StackValue AddStackValueString(StackValue sv1, StackValue sv2, RuntimeCore runtimeCore)
+        {
+            Validity.Assert(sv1.IsString || sv2.IsString);
+
+            if (sv1.IsString && sv2.IsString)
+            {
+                return StringUtils.ConcatString(sv2, sv1, runtimeCore);
+            }
+            else if (sv1.IsString || sv2.IsString)
+            {
+                StackValue newSV;
+                if (sv1.IsNull || sv2.IsNull)
+                {
+                    return StackValue.BuildNull();
+                }
+                else if (sv1.IsString)
+                {
+                    newSV = StringUtils.ConvertToString(sv2, runtimeCore, runtimeCore.RuntimeMemory);
+                    return StringUtils.ConcatString(newSV, sv1, runtimeCore);
+                }
+                else if (sv2.IsString)
+                {
+                    newSV = StringUtils.ConvertToString(sv1, runtimeCore, runtimeCore.RuntimeMemory);
+                    return StringUtils.ConcatString(sv2, newSV, runtimeCore);
+                }
+            }
+            return StackValue.BuildNull();
+        }
     }
 }
