@@ -209,20 +209,9 @@ namespace ProtoImperative
                 {
                     DfsEmitArraySize(array.Type);
 
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
-                    StackValue opBX = StackValue.BuildRegister(Registers.BX);
-                    EmitPop(opBX, Constants.kGlobalScope);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                    StackValue opAX = StackValue.BuildRegister(Registers.AX);
-                    EmitPop(opAX, Constants.kGlobalScope);
-
                     string op = Op.GetOpName(ProtoCore.DSASM.Operator.add);
-                    EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
-                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add), opAX, opBX);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                    EmitPush(opAX);
+                    EmitInstrConsole(op);
+                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add));
                 }
             }
             else
@@ -255,41 +244,17 @@ namespace ProtoImperative
                 EmitPush(opWidth);
 
                 string op = null;
-                StackValue opAX = StackValue.BuildRegister(Registers.AX);
-                StackValue opBX = StackValue.BuildRegister(Registers.BX);
-                StackValue opRes = StackValue.BuildRegister(Registers.AX);
-
-                // Multiplying the max array size by the number of elements
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
-                EmitPop(opBX, Constants.kGlobalScope);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                EmitPop(opAX, Constants.kGlobalScope);
-
                 op = Op.GetOpName(ProtoCore.DSASM.Operator.mul);
-                EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
-                EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.mul), opAX, opBX);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                EmitPush(opRes);
+                EmitInstrConsole(op);
+                EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.mul));
 
                 if (array.Type is ArrayNode)
                 {
                     DfsEmitArrayIndex(array.Type, symbolindex, index + 1);
 
-                    // Adding the previous arraysize to the current one
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
-                    EmitPop(opBX, Constants.kGlobalScope);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                    EmitPop(opAX, Constants.kGlobalScope);
-
                     op = Op.GetOpName(ProtoCore.DSASM.Operator.add);
-                    EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
-                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add), opAX, opBX);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                    EmitPush(opRes);
+                    EmitInstrConsole(op);
+                    EmitBinary(Op.GetOpCode(ProtoCore.DSASM.Operator.add));
                 }
             }
             else
@@ -1564,10 +1529,6 @@ namespace ProtoImperative
                 IfStmtNode ifnode = node as IfStmtNode;
                 DfsTraverse(ifnode.IfExprNode, ref inferedType, false, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone, parentNode);
 
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-                StackValue opCX = StackValue.BuildRegister(Registers.CX);
-                EmitPop(opCX, Constants.kGlobalScope);
-
                 L1 = pc + 1;
                 L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
                 bp = pc;
@@ -1655,10 +1616,6 @@ namespace ProtoImperative
                 foreach (ElseIfBlock elseifNode in ifnode.ElseIfList)
                 {
                     DfsTraverse(elseifNode.Expr, ref inferedType, false, graphNode);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-                    opCX = StackValue.BuildRegister(Registers.CX);
-                    EmitPop(opCX, Constants.kGlobalScope);
 
                     L1 = pc + 1;
                     L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -1825,10 +1782,6 @@ namespace ProtoImperative
 
                 WhileStmtNode whileNode = node as WhileStmtNode;
                 DfsTraverse(whileNode.Expr, ref inferedType);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regCX);
-                StackValue opCX = StackValue.BuildRegister(Registers.CX);
-                EmitPop(opCX, Constants.kGlobalScope);
 
                 L1 = pc + 1;
                 L2 = ProtoCore.DSASM.Constants.kInvalidIndex;
@@ -2482,17 +2435,9 @@ namespace ProtoImperative
 
                 if (!isPrefixOperation)
                 {
-                    EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-                    StackValue opAX = StackValue.BuildRegister(Registers.AX);
-                    EmitPop(opAX, Constants.kGlobalScope);
-
                     string op = Op.GetUnaryOpName(u.Operator);
-                    EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX);
-                    EmitUnary(Op.GetUnaryOpCode(u.Operator), opAX);
-
-                    EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-                    StackValue opRes = StackValue.BuildRegister(Registers.AX);
-                    EmitPush(opRes);
+                    EmitInstrConsole(op);
+                    EmitUnary(Op.GetUnaryOpCode(u.Operator));
                 }
             }
         }

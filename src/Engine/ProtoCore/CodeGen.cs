@@ -269,16 +269,6 @@ namespace ProtoCore
         protected void AllocateVar(ProtoCore.DSASM.SymbolNode symbol)
         {
             symbol.isArray = false;
-            if (ProtoCore.DSASM.MemoryRegion.kMemHeap == symbol.memregion)
-            {
-                SetHeapData(symbol);
-
-                StackValue opDX = StackValue.BuildRegister(Registers.DX);
-                StackValue opAllocSize = StackValue.BuildInt(symbol.size);
-
-                EmitInstrConsole(ProtoCore.DSASM.kw.mov, ProtoCore.DSASM.kw.regDX, opAllocSize.opdata.ToString());
-                EmitBinary(ProtoCore.DSASM.OpCode.MOV, opDX, opAllocSize);
-            }
             SetStackIndex(symbol);
         }
 
@@ -1477,10 +1467,10 @@ namespace ProtoCore
                 codeBlock.instrStream.instrList[bp].op1.opdata = pc;
             }
             else if (ProtoCore.DSASM.OpCode.CJMP == codeBlock.instrStream.instrList[bp].opCode
-                && codeBlock.instrStream.instrList[bp].op3.IsLabelIndex)
+                && codeBlock.instrStream.instrList[bp].op2.IsLabelIndex)
             {
-                Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op3.opdata);
-                codeBlock.instrStream.instrList[bp].op3.opdata = pc;
+                Validity.Assert(ProtoCore.DSASM.Constants.kInvalidIndex == codeBlock.instrStream.instrList[bp].op2.opdata);
+                codeBlock.instrStream.instrList[bp].op2.opdata = pc;
             }
         }
 
@@ -1610,9 +1600,8 @@ namespace ProtoCore
 
             Instruction instr = new Instruction();
             instr.opCode = ProtoCore.DSASM.OpCode.CJMP;
-            instr.op1 = StackValue.BuildRegister(Registers.CX);
-            instr.op2 = StackValue.BuildLabelIndex(L1);
-            instr.op3 = StackValue.BuildLabelIndex(L2);
+            instr.op1 = StackValue.BuildLabelIndex(L1);
+            instr.op2 = StackValue.BuildLabelIndex(L2);
 
             ++pc;
             if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
@@ -2006,33 +1995,28 @@ namespace ProtoCore
             }
         }
 
-        protected void EmitBinary(ProtoCore.DSASM.OpCode opcode, StackValue op1, StackValue op2, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
+        protected void EmitBinary(
+            ProtoCore.DSASM.OpCode opcode, 
+            int line = ProtoCore.DSASM.Constants.kInvalidIndex, 
+            int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+            int eline = ProtoCore.DSASM.Constants.kInvalidIndex, 
+            int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = opcode;
-            instr.op1 = op1;
-            instr.op2 = op2;
-
-            // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(op1.IsVariableIndex || op1.IsRegister);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
             AppendInstruction(instr, line, col);
         }
 
-        protected void EmitUnary(ProtoCore.DSASM.OpCode opcode, StackValue op1, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
+        protected void EmitUnary(ProtoCore.DSASM.OpCode opcode, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
         {
             SetEntry();
             Instruction instr = new Instruction();
             instr.opCode = opcode;
-            instr.op1 = op1;
-
-            // For debugging, assert here but these should raise runtime errors in the VM
-            Validity.Assert(op1.IsVariableIndex || op1.IsRegister);
 
             ++pc;
             instr.debug = GetDebugObject(line, col, eline, ecol, pc);
@@ -2540,21 +2524,9 @@ namespace ProtoCore
 
         protected void EmitBinaryOperation(Type leftType, Type rightType, ProtoCore.DSASM.Operator optr)
         {
-            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regBX);
-            StackValue opBX = StackValue.BuildRegister(Registers.BX);
-            EmitPop(opBX, Constants.kGlobalScope);
-
-            EmitInstrConsole(ProtoCore.DSASM.kw.pop, ProtoCore.DSASM.kw.regAX);
-            StackValue opAX = StackValue.BuildRegister(Registers.AX);
-            EmitPop(opAX, Constants.kGlobalScope);
-
             string op = Op.GetOpName(optr);
-            EmitInstrConsole(op, ProtoCore.DSASM.kw.regAX, ProtoCore.DSASM.kw.regBX);
-            EmitBinary(Op.GetOpCode(optr), opAX, opBX);
-
-            EmitInstrConsole(ProtoCore.DSASM.kw.push, ProtoCore.DSASM.kw.regAX);
-            StackValue opRes = StackValue.BuildRegister(Registers.AX);
-            EmitPush(opRes);
+            EmitInstrConsole(op);
+            EmitBinary(Op.GetOpCode(optr));
         }
 
 
