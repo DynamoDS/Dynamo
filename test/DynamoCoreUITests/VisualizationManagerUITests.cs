@@ -24,6 +24,10 @@ using NUnit.Framework;
 
 using HelixToolkit.Wpf.SharpDX;
 
+using ProtoCore.AST.AssociativeAST;
+
+using SharpDX;
+
 namespace DynamoCoreUITests
 {
     [TestFixture]
@@ -492,9 +496,7 @@ namespace DynamoCoreUITests
         [Test]
         public void VisualizationManager_CoordinateSystems_Render()
         {
-            var viz = ViewModel.VisualizationManager;
-
-            string openPath = Path.Combine(
+            var openPath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
                 @"core\visualization\ASM_coordinateSystem.dyn");
             Open(openPath);
@@ -502,9 +504,9 @@ namespace DynamoCoreUITests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             ws.RunSettings.RunType = RunType.Automatic;
 
-            //Assert.AreEqual(2, BackgroundPreview.XAxes.Positions.Count);
-            //Assert.AreEqual(2, BackgroundPreview.YAxes.Positions.Count);
-            //Assert.AreEqual(2, BackgroundPreview.ZAxes.Positions.Count);
+            Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(1f,0f,0f,1f)));
+            Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(0f,1f,0f,1f)));
+            Assert.True(BackgroundPreview.HasNumberOfLinesOfColor(1, new SharpDX.Color4(0f,0f,1f,1f)));
         }
 
         [Test]
@@ -641,6 +643,15 @@ namespace DynamoCoreUITests
         {
             OpenDynamoDefinition(relativePath);
             DispatcherUtil.DoEvents();
+        }
+    }
+
+    public static class Watch3DViewExtensions
+    {
+        public static bool HasNumberOfLinesOfColor(this Watch3DView view, int lineCount, Color4 color)
+        {
+            var ptsOfColor = view.Lines.Colors.Where(c => c == color);
+            return ptsOfColor.Count() == lineCount * 2;
         }
     }
 
