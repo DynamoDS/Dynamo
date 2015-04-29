@@ -24,7 +24,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Microsoft.Practices.Prism.Logging;
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     public delegate void CommandCallback(string commandTag);
 

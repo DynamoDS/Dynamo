@@ -7,7 +7,7 @@ using Dynamo.Models;
 using NUnit.Framework;
 using DoubleSlider = DSCoreNodesUI.Input.DoubleSlider;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class SliderTests

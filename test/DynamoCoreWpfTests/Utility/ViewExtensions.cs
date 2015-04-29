@@ -5,7 +5,7 @@ using Dynamo.Models;
 using Dynamo.Utilities;
 using Dynamo.Views;
 
-namespace DynamoCoreUITests.Utility
+namespace DynamoCoreWpfTests.Utility
 {
     public static class ViewExtensions
     {
