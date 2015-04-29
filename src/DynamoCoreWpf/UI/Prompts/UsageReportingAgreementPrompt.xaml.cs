@@ -27,11 +27,6 @@ namespace Dynamo.UI.Prompts
             Message2TextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.AgreementTwo);
             Message3TextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.AgreementThree);
 
-            // Check boxes...
-            AcceptUsageReportingTextBlock.Text = string.Format(
-                Wpf.Properties.Resources.ConsentDialogInstrumentationCheckBox,
-                resourceProvider.ProductName);
-
             AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
             AcceptAnalyticsReportingCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
 

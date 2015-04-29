@@ -1544,6 +1544,20 @@ c = f(a<1L>,b<2>);";
         }
 
         [Test]
+        public void TestEq()
+        {
+            string code= @"
+class A {}
+a = A();
+b = 42;
+c = a == b;
+            ";
+
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("c", false);
+        }
+
+        [Test]
         public void RangeExpr001()
         {
             String code =
@@ -2326,7 +2340,7 @@ r3 = 'h' + 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("r1", true);
             thisTest.Verify("r2", true);
-            thisTest.Verify("r3", "h1");
+            thisTest.Verify("r3", null);
         }
 
         [Test]
@@ -3169,6 +3183,32 @@ c = [Associative]
             thisTest.Verify("b", false);
         }
 
+        [Test]
+        public void TestAddNullToString()
+        {
+            string code =
+@"
+a = ""hello"" + null;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+        }
+        
+        [Test]
+        public void TestUndefinedTypedIdentifier()
+        {
+            string code =
+@"
+        a : UndefinedType;
+        b : UndefinedType2 = 2;
+        c : UndefinedType3 = null;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("a", null);
+            thisTest.Verify("b", null);
+            thisTest.Verify("c", null);
 
+            thisTest.VerifyRuntimeWarningCount(3);
+        }
     }
 }
