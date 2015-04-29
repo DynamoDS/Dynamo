@@ -850,7 +850,7 @@ namespace Dynamo.Controls
             MeshCount = 0;
 
             var packages = e.Packages.Concat(e.SelectedPackages)
-                .Cast<HelixRenderPackage>();
+                .Cast<HelixRenderPackage>().Where(rp=>rp.MeshVertexCount % 3 == 0);
 
             var points = HelixRenderPackage.InitPointGeometry();
             var lines = HelixRenderPackage.InitLineGeometry();
@@ -926,7 +926,6 @@ namespace Dynamo.Controls
                         var pt = p.Positions[0];
                         text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
-
                 }
 
                 var l = rp.Lines;
