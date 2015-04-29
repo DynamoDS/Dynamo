@@ -2326,7 +2326,7 @@ r3 = 'h' + 1;";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
             thisTest.Verify("r1", true);
             thisTest.Verify("r2", true);
-            thisTest.Verify("r3", "h1");
+            thisTest.Verify("r3", null);
         }
 
         [Test]

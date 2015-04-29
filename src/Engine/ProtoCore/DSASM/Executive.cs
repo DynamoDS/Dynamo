@@ -5003,6 +5003,10 @@ namespace ProtoCore.DSASM
                 double value2 = opdata1.IsDouble ? opdata1.RawDoubleValue : opdata1.RawIntValue;
                 opdata2 = StackValue.BuildDouble(value1 - value2);
             }
+            else
+            {
+                opdata2 = StackValue.Null;
+            }
 
             rmem.Push(opdata2);
             ++pc;
