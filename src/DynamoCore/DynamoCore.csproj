@@ -123,6 +123,10 @@ limitations under the License.
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Core\Threading\AsyncTaskExtensions.cs" />
     <Compile Include="Interfaces\IPathResolver.cs" />
+    <Compile Include="PackageManager\IDataCompressor.cs" />
+    <Compile Include="PackageManager\IDirectoryInfo.cs" />
+    <Compile Include="PackageManager\IFileInfo.cs" />
+    <Compile Include="PackageManager\IFileSystem.cs" />
     <Compile Include="PackageManager\PackageManagerResult.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />
@@ -323,7 +327,9 @@ limitations under the License.
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="PackageManager\Interfaces\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
     <ItemGroup>

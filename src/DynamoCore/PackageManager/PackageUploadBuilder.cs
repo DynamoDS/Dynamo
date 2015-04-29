@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Annotations;
 using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -11,8 +12,82 @@ using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
-    static class PackageUploadBuilder
+    internal class TrueFileSystem : IFileSystem
     {
+        public void CopyFile([NotNull] string filePath, [NotNull] string destinationPath)
+        {
+            File.Copy(filePath, destinationPath);
+        }
+
+        public void DeleteFile([NotNull] string filePath)
+        {
+            File.Delete(filePath);
+        }
+
+        public  IDirectoryInfo TryCreateDirectory(string path)
+        {
+            return this.DirectoryExists(path)
+                ? new TrueDirectoryInfo(new System.IO.DirectoryInfo(path))
+                : new TrueDirectoryInfo(Directory.CreateDirectory(path));
+        }
+
+        public bool DirectoryExists([NotNull] string directoryPath)
+        {
+            return Directory.Exists(directoryPath);
+        }
+
+        public bool FileExists([NotNull] string filePath)
+        {
+            return File.Exists(filePath);
+        }
+
+        public void WriteAllText([NotNull] string filePath, [NotNull] string content)
+        {
+            File.WriteAllText(filePath, content);
+        }
+    }
+
+    internal class TrueDirectoryInfo : IDirectoryInfo
+    {
+        private readonly System.IO.DirectoryInfo dirInfo;
+
+        public TrueDirectoryInfo(System.IO.DirectoryInfo dirInfo)
+        {
+            this.dirInfo = dirInfo;
+        }
+
+        public string FullName
+        {
+            get { return dirInfo.FullName; }
+        }
+    }
+
+    internal class TrueFileInfo : IFileInfo
+    {
+        private readonly System.IO.FileInfo fileInfo;
+
+        public TrueFileInfo(string path)
+        {
+            this.fileInfo = new FileInfo(path);
+        }
+
+        public long Length
+        {
+            get { return fileInfo.Length; }
+        }
+    }
+
+    internal class PackageUploadBuilder
+    {
+        private readonly IFileSystem fileSystem;
+        private readonly IDataCompressor dataCompressor;
+
+        public PackageUploadBuilder(IFileSystem fileSystem, IDataCompressor dataCompressor)
+        {
+            this.fileSystem = fileSystem;
+            this.dataCompressor = dataCompressor;
+        }
+
         public static PackageUploadRequestBody NewPackageHeader( Package l )
         {
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -23,14 +98,14 @@ namespace Dynamo.PackageManager
                                                          l.SiteUrl, l.RepositoryUrl, l.ContainsBinaries, l.NodeLibraries.Select(x => x.FullName) ); 
         } 
 
-        public static PackageUpload NewPackage(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
+        public PackageUpload NewPackage(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
         {
             var header = NewPackageHeader(pkg);
             var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, header, pkg, files, uploadHandle, isTestMode);
             return new PackageUpload(header, zipPath);
         }
 
-        public static PackageVersionUpload NewPackageVersion(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
+        public PackageVersionUpload NewPackageVersion(string rootPkgDir, CustomNodeManager customNodeManager, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
         {
             var header = NewPackageHeader(pkg);
             var zipPath = DoPackageFileOperationsAndZip(rootPkgDir, customNodeManager, header, pkg, files, uploadHandle, isTestMode);
@@ -39,11 +114,12 @@ namespace Dynamo.PackageManager
 
     #region Utility methods
 
-        private static string DoPackageFileOperationsAndZip(string rootPkgDir, CustomNodeManager customNodeManager, PackageUploadRequestBody header, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
+        private string DoPackageFileOperationsAndZip(string rootPkgDir, CustomNodeManager customNodeManager, 
+            PackageUploadRequestBody header, Package pkg, List<string> files, PackageUploadHandle uploadHandle, bool isTestMode)
         {
             uploadHandle.UploadState = PackageUploadHandle.State.Copying;
 
-            DirectoryInfo rootDir, dyfDir, binDir, extraDir;
+            IDirectoryInfo rootDir, dyfDir, binDir, extraDir;
             FormPackageDirectory(rootPkgDir, pkg.Name, out rootDir, out  dyfDir, out binDir, out extraDir); // shouldn't do anything for pkg versions
             pkg.RootDirectory = rootDir.FullName;
             WritePackageHeader(header, rootDir);
@@ -54,12 +130,12 @@ namespace Dynamo.PackageManager
             uploadHandle.UploadState = PackageUploadHandle.State.Compressing;
 
             string zipPath;
-            FileInfo info;
+            IFileInfo info;
 
             try
             {
-                zipPath = Greg.Utility.FileUtilities.Zip(rootDir.FullName);
-                info = new FileInfo(zipPath);
+                zipPath = dataCompressor.Zip(rootDir.FullName);
+                info = new TrueFileInfo(zipPath);
             }
             catch
             {
@@ -91,7 +167,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private static void RemoveDyfFiles(IEnumerable<string> filePaths, DirectoryInfo dyfDir)
+        private static void RemoveDyfFiles(IEnumerable<string> filePaths, IDirectoryInfo dyfDir)
         {
             filePaths
                 .Where(x => x.EndsWith(".dyf") && File.Exists(x) && Path.GetDirectoryName(x) != dyfDir.FullName)
@@ -99,12 +175,7 @@ namespace Dynamo.PackageManager
                 .ForEach( File.Delete );
         }
 
-        private static DirectoryInfo TryCreateDirectory(string path)
-        {
-            return Directory.Exists(path) ? new DirectoryInfo(path) : Directory.CreateDirectory(path);
-        }
-
-        private static void FormPackageDirectory(string packageDirectory, string packageName, out DirectoryInfo root, out DirectoryInfo dyfDir, out DirectoryInfo binDir, out DirectoryInfo extraDir )
+        private void FormPackageDirectory(string packageDirectory, string packageName, out IDirectoryInfo root, out IDirectoryInfo dyfDir, out IDirectoryInfo binDir, out IDirectoryInfo extraDir)
         {
             // create a directory where the package will be stored
             var rootPath = Path.Combine(packageDirectory, packageName);
@@ -112,13 +183,13 @@ namespace Dynamo.PackageManager
             var binPath = Path.Combine(rootPath, "bin");
             var extraPath = Path.Combine(rootPath, "extra");
 
-            root = TryCreateDirectory(rootPath);
-            dyfDir = TryCreateDirectory(dyfPath);
-            binDir = TryCreateDirectory(binPath);
-            extraDir = TryCreateDirectory(extraPath);
+            root = fileSystem.TryCreateDirectory(rootPath);
+            dyfDir = fileSystem.TryCreateDirectory(dyfPath);
+            binDir = fileSystem.TryCreateDirectory(binPath);
+            extraDir = fileSystem.TryCreateDirectory(extraPath);
         }
 
-        private static void WritePackageHeader(PackageUploadRequestBody pkgHeader, DirectoryInfo rootDir)
+        private void WritePackageHeader(PackageUploadRequestBody pkgHeader, IDirectoryInfo rootDir)
         {
             // build the package header json, which will be stored with the pkg
             var jsSer = new JsonSerializer();
@@ -126,8 +197,11 @@ namespace Dynamo.PackageManager
 
             // write the pkg header to the root directory of the pkg
             var headerPath = Path.Combine(rootDir.FullName, "pkg.json");
-            if (File.Exists(headerPath)) File.Delete(headerPath);
-            File.WriteAllText(headerPath, pkgHeaderStr);
+            if (fileSystem.FileExists(headerPath))
+            {
+                fileSystem.DeleteFile(headerPath);
+            }
+            fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 
         private static bool IsXmlDocFile(string path, IEnumerable<string> files)
@@ -165,14 +239,21 @@ namespace Dynamo.PackageManager
                        .ToUpperInvariant();
         }
 
-        private static void CopyFilesIntoPackageDirectory(IEnumerable<string> files, DirectoryInfo dyfDir,
-                                                          DirectoryInfo binDir, DirectoryInfo extraDir)
+        private void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IDirectoryInfo dyfDir,
+                                                          IDirectoryInfo binDir, IDirectoryInfo extraDir)
         {
             // copy the files to their destination
             foreach (var file in files)
             {
-                if (file == null) continue;
-                if (!File.Exists(file)) continue;
+                if (file == null)
+                {
+                    continue;
+                }
+
+                if (!fileSystem.FileExists(file))
+                {
+                    continue;
+                }
                 string destPath;
 
                 if (file.ToLower().EndsWith(".dyf"))
@@ -189,13 +270,17 @@ namespace Dynamo.PackageManager
                     destPath = Path.Combine(extraDir.FullName, Path.GetFileName(file));
                 }
 
-                if (NormalizePath(destPath) == NormalizePath(file)) continue;
-                if (File.Exists(destPath))
+                if (NormalizePath(destPath) == NormalizePath(file))
                 {
-                    File.Delete(destPath);
+                    continue;
                 }
 
-                File.Copy(file, destPath);
+                if (fileSystem.FileExists(destPath))
+                {
+                    fileSystem.DeleteFile(destPath);
+                }
+
+                fileSystem.CopyFile(file, destPath);
             }
         }
 
