@@ -8,10 +8,10 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Controls;
-using DynamoCoreUITests.Utility;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     public class NodeViewCustomizationTests : DynamoTestUIBase
     {

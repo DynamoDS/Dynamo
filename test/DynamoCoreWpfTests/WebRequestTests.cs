@@ -11,7 +11,7 @@ using NUnit.Framework;
 
 using WebRequest = DSCoreNodesUI.WebRequest;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class WebRequestTests : SystemTestBase

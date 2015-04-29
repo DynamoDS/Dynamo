@@ -10,7 +10,7 @@ using Dynamo.Selection;
 using Dynamo.Tests;
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     class NodePreviewTests : SystemTestBase

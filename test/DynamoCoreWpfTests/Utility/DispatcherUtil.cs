@@ -5,7 +5,7 @@ using System.Text;
 using System.Security.Permissions;
 using System.Windows.Threading;
 
-namespace DynamoCoreUITests.Utility
+namespace DynamoCoreWpfTests.Utility
 {
     internal static class DispatcherUtil
     {
