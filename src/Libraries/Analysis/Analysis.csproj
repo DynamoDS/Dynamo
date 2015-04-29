@@ -93,9 +93,9 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)Analysis_DynamoCustomization.xml" "$(OutDir)Analysis_DynamoCustomization.xml"</PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="BeforeBuild">
+    <Copy SourceFiles="$(ProjectDir)Analysis_DynamoCustomization.xml" DestinationFiles="$(OutDir)Analysis_DynamoCustomization.xml" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

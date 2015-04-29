@@ -508,7 +508,7 @@ namespace Dynamo.ViewModels
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
 
-            UsageReportingManager.Instance.InitializeCore(this.model);
+            UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             this.VisualizationManager = startConfiguration.VisualizationManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);

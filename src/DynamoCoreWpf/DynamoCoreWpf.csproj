@@ -213,7 +213,6 @@
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
-    <Compile Include="ViewModels\Search\BrowserRootElementViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
     <Compile Include="ViewModels\Search\ClassInformationViewModel.cs" />
@@ -1136,6 +1135,12 @@
     <Resource Include="UI\Images\nodes.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="sharpdx_direct3d11_1_effects_x64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sharpdx_direct3d11_1_effects_x86.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
