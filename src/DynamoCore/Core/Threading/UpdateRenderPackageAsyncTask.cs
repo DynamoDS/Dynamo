@@ -233,22 +233,22 @@ namespace Dynamo.Core.Threading
                         var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
                         package.AddLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
 
-                        for (var i = 0; i < package.LineVertexCount / 3 / 2; i++)
+                        for (var i = 0; i < package.LineVertexCount / 2; i++)
                         {
                             package.AddLineStripVertexCount(2);
                         }
 
-                        for (var i = 0; i < (package.LineVertexCount / 3) * 4; i += 4)
+                        for (var i = 0; i < package.LineVertexCount; i ++)
                         {
                             package.AddLineStripVertexColor(180,180,180,255);
                         }
 
-                        for (var i = 0; i < 6; i++)
+                        for (var i = 0; i < package.MeshVertexCount; i++)
                         {
                             package.AddTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
                         }
 
-                        for (var i = 0; i < 6; i++)
+                        for (var i = 0; i < package.MeshVertexCount; i++)
                         {
                             package.AddTriangleVertexColor(0, 0, 0, 10);
                         }
