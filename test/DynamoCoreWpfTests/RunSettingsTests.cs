@@ -131,7 +131,7 @@ namespace DynamoCoreWpfTests
             homeSpace.FileName = tmpPath;
             homeSpace.RunSettings.RunType = RunType.Periodic;
             homeSpace.RunSettings.RunPeriod = 10;
-            ViewModel.Model.CurrentWorkspace.Save(Model.EngineController.LiveRunnerRuntimeCore);
+            ViewModel.Model.CurrentWorkspace.Save(Model.EngineController.LiveRunnerCore);
             homeSpace.Clear();
             Model.OpenFileFromPath(tmpPath);
             homeSpace = GetHomeSpace();

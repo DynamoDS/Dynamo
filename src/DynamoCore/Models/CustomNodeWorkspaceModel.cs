@@ -194,11 +194,11 @@ namespace Dynamo.Models
             if (handler != null) handler(oldId);
         }
 
-        public override bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore)
+        public override bool SaveAs(string newPath, ProtoCore.Core core)
         {
             var originalPath = FileName;
 
-            if (!base.SaveAs(newPath, runtimeCore))
+            if (!base.SaveAs(newPath, core))
                 return false;
 
             // A SaveAs to an existing function id prompts the creation of a new 
@@ -234,7 +234,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        protected override void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
+        protected override void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
         {
             // Since custom workspace does not have any runtime data to persist,
             // do not allow base class to serialize any session data.

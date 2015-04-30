@@ -96,7 +96,6 @@ namespace ProtoCore
 
             RuntimeStatus = new ProtoCore.RuntimeStatus(this);
             StartPC = Constants.kInvalidPC;
-            RuntimeData = new ProtoCore.RuntimeData();
         }
 
         /// <summary>
@@ -142,7 +141,7 @@ namespace ProtoCore
                 FFIExecutionManager.Instance.RegisterExtensionApplicationType(this, type);
             }
         }
-        public RuntimeData RuntimeData { get; set; }
+
         public IExecutiveProvider ExecutiveProvider { get; set; }
         public Executive ExecutionInstance { get; private set; }
         public Executive CurrentExecutive { get; private set; }
