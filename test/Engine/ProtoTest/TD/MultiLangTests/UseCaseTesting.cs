@@ -193,6 +193,7 @@ b  = b2 + 2;    // 5";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void T007_surface_trimmed_with_modifier_and_named_states_Robert()
         {
 
@@ -292,6 +293,7 @@ test = trimmedSurface.x;
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void T009_modifier_test_1_Robert()
         {
             string code = @"

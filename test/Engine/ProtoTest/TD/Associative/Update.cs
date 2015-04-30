@@ -1719,6 +1719,7 @@ x3 = [Imperative]
 
         [Test]
         [Category("SmokeTest")]
+        [Category("ModifierBlock")]
         public void T028_Modifier_Stack_Simple()
         {
             string code = @"
