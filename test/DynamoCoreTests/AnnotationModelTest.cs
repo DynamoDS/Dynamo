@@ -83,5 +83,93 @@ namespace Dynamo.Tests
             Assert.AreEqual("This is a test group", annotation.AnnotationText);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void UndoAModelDeleteShouldGetTheModelInThatGroup()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
+            Assert.AreNotEqual(0, annotation.Width);
+
+            var modelToDelete = new List<ModelBase>();
+            modelToDelete.Add(addNode);
+
+            //Delete the model
+            model.DeleteModelInternal(modelToDelete);
+
+            //Check for the model count now
+            Assert.AreEqual(1, annotation.SelectedModels.Count());
+
+            //Undo the operation
+            model.CurrentWorkspace.Undo();
+
+            //Check for the model count now
+            Assert.AreEqual(1, annotation.SelectedModels.Count());
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UndoDeleteAllTheModelsShouldBringTheModelsAndGroupBack()
+        {
+            //Add a Node
+            var model = CurrentDynamoModel;
+            var addNode = new DSFunction(model.LibraryServices.GetFunctionDescriptor("+"));
+            model.CurrentWorkspace.AddNode(addNode, false);
+            Assert.AreEqual(model.CurrentWorkspace.Nodes.Count, 1);
+
+            //Add a Note 
+            Guid id = Guid.NewGuid();
+            var addNote = model.CurrentWorkspace.AddNote(false, 200, 200, "This is a test note", id);
+            Assert.AreEqual(model.CurrentWorkspace.Notes.Count, 1);
+
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
+            DynamoSelection.Instance.Selection.Add(addNote);
+
+            //create the group around selected nodes and notes
+            Guid groupid = Guid.NewGuid();
+            var annotation = model.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+            Assert.AreEqual(model.CurrentWorkspace.Annotations.Count, 1);
+            Assert.AreNotEqual(0, annotation.Width);
+
+            var modelsToDelete = new List<ModelBase>();
+            modelsToDelete.Add(addNote);
+            modelsToDelete.Add(addNode);
+
+            //Delete the models
+            model.DeleteModelInternal(modelsToDelete);
+
+            //Group should be deleted
+            Assert.AreEqual(null, model.CurrentWorkspace.Annotations.FirstOrDefault());
+
+            //Undo the operation
+            model.CurrentWorkspace.Undo();
+
+            //Check for the annotation count 
+            Assert.AreEqual(1, model.CurrentWorkspace.Annotations.Count());
+
+            //Check for the model count 
+            Assert.AreEqual(2, annotation.SelectedModels.Count());
+
+        }
+
     }
 }

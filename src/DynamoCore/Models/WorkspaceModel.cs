@@ -1426,7 +1426,12 @@ namespace Dynamo.Models
             }
             else if (typeName.StartsWith("Dynamo.Models.AnnotationModel"))
             {
-                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData, Nodes,Notes);
+                var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
+                var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
+
+                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData, selectedNodes, selectedNotes);
+                annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+                annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
                 Annotations.Add(annotationModel);
             }
             else // Other node types.
