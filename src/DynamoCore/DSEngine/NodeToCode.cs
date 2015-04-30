@@ -86,43 +86,14 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        /// Replace identfier's name with the other name.
-        /// </summary>
-        private class IdentifierReplacer : AssociativeAstVisitor
-        {
-            private string oldVariable;
-            private string newVariable;
-
-            public IdentifierReplacer(string oldVar, string newVar)
-            {
-                oldVariable = oldVar;
-                newVariable = newVar;
-            }
-
-            public override void VisitIdentifierNode(IdentifierNode node)
-            {
-                if (node.Value.Equals(oldVariable))
-                    node.Value = newVariable;
-
-                if (node.ArrayDimensions != null)
-                    node.ArrayDimensions.Accept(this);
-            }
-
-            public override void VisitBinaryExpressionNode(BinaryExpressionNode node)
-            {
-                node.RightNode.Accept(this);
-            }
-        }
-
-        /// <summary>
         /// Replace an identifier with a constant value.
         /// </summary>
-        private class ConstantIdentifierReplacer : AstReplacer 
+        private class IdentifierReplacer : AstReplacer 
         {
             private string variableName;
             private AssociativeNode constantValue;
 
-            public ConstantIdentifierReplacer(string variable, AssociativeNode newValue)
+            public IdentifierReplacer(string variable, AssociativeNode newValue)
             {
                 variableName = variable;
                 constantValue = newValue;
@@ -138,18 +109,19 @@ namespace Dynamo.DSEngine
 
             public override AssociativeNode VisitBinaryExpressionNode(BinaryExpressionNode node)
             {
-                var leftNode = node.LeftNode;
+                if (node.Optr != Operator.assign)
+                {
+                    var newLeftNode = node.LeftNode.Accept(this);
+                    if (node.LeftNode != newLeftNode)
+                        node.LeftNode = newLeftNode;
+                }
+
                 var newRightNode = node.RightNode.Accept(this);
-                if (newRightNode == node.RightNode)
-                {
-                    return node;
-                }
-                else
-                {
-                    var newNode = new BinaryExpressionNode(node.LeftNode, newRightNode, node.Optr);
-                    return newNode;
-                }
-            }
+                if (newRightNode != node.RightNode)
+                    node.RightNode = newRightNode;
+
+                return node;
+           }
         }
 
         /// <summary>
@@ -179,6 +151,120 @@ namespace Dynamo.DSEngine
                 }
 
                 return node;
+            }
+        }
+
+        /// <summary>
+        /// Check if an identifier is used.
+        /// </summary>
+        private class IdentifierFinder : AssociativeAstVisitor<bool>
+        {
+            private string identifier = string.Empty;
+            private bool forDefinition = false;
+
+            public IdentifierFinder(string identifier, bool isForDefinition)
+            {
+                this.identifier = identifier;
+                this.forDefinition = isForDefinition;
+            }
+
+            public override bool VisitIdentifierNode(IdentifierNode node)
+            {
+                if (node.Value.Equals(identifier))
+                    return true;
+
+                if (forDefinition)
+                    return false;
+
+                return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;
+            }
+
+            public override bool VisitGroupExpressionNode(GroupExpressionNode node)
+            {
+                if (forDefinition)
+                    return false;
+
+                return node.Expression.Accept(this);
+            }
+
+            public override bool VisitIdentifierListNode(IdentifierListNode node)
+            {
+                if (forDefinition)
+                    return false;
+
+                return node.LeftNode.Accept(this) || node.RightNode.Accept(this);
+            }
+
+            public override bool VisitFunctionCallNode(FunctionCallNode node)
+            {
+                if (forDefinition)
+                    return false;
+
+                if (node.FormalArguments.Any(f => f.Accept(this)))
+                    return true;
+
+                return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;
+            }
+
+            public override bool VisitInlineConditionalNode(InlineConditionalNode node)
+            {
+                if (forDefinition)
+                    return false;
+
+                return node.ConditionExpression.Accept(this) ||
+                       node.TrueExpression.Accept(this) ||
+                       node.FalseExpression.Accept(this);
+            }
+
+            public override bool VisitBinaryExpressionNode(BinaryExpressionNode node)
+            {
+                if (forDefinition && node.Optr == Operator.assign)
+                    return node.LeftNode.Accept(this);
+
+                return node.Optr == Operator.assign 
+                    ? node.RightNode.Accept(this)
+                    : node.LeftNode.Accept(this) || node.RightNode.Accept(this);
+            }
+
+            public override bool VisitUnaryExpressionNode(UnaryExpressionNode node)
+            {
+                if (forDefinition)
+                    return false;
+
+                return node.Expression.Accept(this);
+            }
+
+            public override bool VisitRangeExprNode(RangeExprNode node)
+            {
+                if (forDefinition)
+                    return false;
+
+                if (node.FromNode.Accept(this) || node.ToNode.Accept(this))
+                    return true;
+
+                return node.StepNode != null ? node.StepNode.Accept(this) : false;
+            }
+
+            public override bool VisitExprListNode(ExprListNode node)
+            {
+                if (forDefinition)
+                    return false;
+
+                if (node.list.Any(e => e.Accept(this)))
+                    return true;
+
+                return node.ArrayDimensions != null ? node.ArrayDimensions.Accept(this) : false;
+            }
+
+            public override bool VisitArrayNode(ArrayNode node)
+            {
+                if (forDefinition)
+                    return false;
+
+                if (node.Expr.Accept(this))
+                    return true;
+
+                return node.Type != null ? node.Type.Accept(this) : false;
             }
         }
 
@@ -623,113 +709,75 @@ namespace Dynamo.DSEngine
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
-        private static NodeToCodeResult RemoveTemporaryAssignments(NodeToCodeResult result)
+        public static NodeToCodeResult ConstantPropagationForTemp(NodeToCodeResult result, IEnumerable<string> outputVariables)
         {
-            var tempVariables = result.OutputMap.Where(p => p.Key.StartsWith(Constants.kTempVarForNonAssignment))
-                                                .Select(p => p.Value);
-            var tempVariableSet = new HashSet<string>(tempVariables);
+            var tempVars = new HashSet<string>(
+                result.OutputMap.Where(p => p.Key.StartsWith(Constants.kTempVarForNonAssignment))
+                                .Select(p => p.Value));
             
-            // Check if the LHS of a binary expression is temorary variable 
-            // where the RHS isn't
-            Func<AssociativeNode, bool> isTempAssignment = x =>
-            {
-                var expr = x as BinaryExpressionNode;
-                if (expr == null)
-                    return false;
+            var nonTempAsts = new List<AssociativeNode>();
+            var tempAssignments = new List<Tuple<IdentifierNode, AssociativeNode>>();
 
+            foreach (var ast in result.AstNodes)
+	        {
+                var expr = ast as BinaryExpressionNode;
+                if (expr == null || expr.Optr != Operator.assign)
+                {
+                    nonTempAsts.Add(ast);
+                    continue;
+                }
+		
                 var lhs = expr.LeftNode as IdentifierNode;
-                var rhs = expr.RightNode as IdentifierNode;
-                if (lhs == null || rhs == null)
-                    return false;
+                var rhs = expr.RightNode;
+                if (lhs == null 
+                    || !tempVars.Contains(lhs.Value) 
+                    || outputVariables.Contains(lhs.Value) 
+                    || !(rhs.IsLiteral || rhs is IdentifierNode))
+                {
+                    nonTempAsts.Add(ast);
+                    continue;
+                }
 
-                return tempVariableSet.Contains(lhs.Value) &&
-                       !tempVariableSet.Contains(rhs.Value);
-            };
+                IdentifierFinder finder = new IdentifierFinder(lhs.Value, false);
+                bool isReferenced = result.AstNodes.Any(n => n.Accept(finder));
 
-            // Get all temporary assignments. 
-            var tmpExprs = result.AstNodes
-                                 .Where(isTempAssignment)
-                                 .Select(n => n as BinaryExpressionNode)
-                                 .Select(e => new {lhs = (e.LeftNode as IdentifierNode).Value, 
-                                                   rhs = (e.RightNode as IdentifierNode).Value});
-            var newAsts = result.AstNodes.Where(n => !isTempAssignment(n));
+                bool isRhsDefined = false;
+                if (rhs is IdentifierNode)
+                {
+                    var defFinder = new IdentifierFinder((rhs as IdentifierNode).Value, true);
+                    isRhsDefined = result.AstNodes.Any(n => n.Accept(defFinder));
+                }
 
-            foreach (var pair in tmpExprs)
+                if (isReferenced || isRhsDefined)
+                    tempAssignments.Add(Tuple.Create(lhs, rhs));
+                else
+                    nonTempAsts.Add(ast);
+	        }
+
+            foreach (var pair in tempAssignments)
             {
                 // Update the map.
                 var keys = result.OutputMap.Keys.ToList();
                 for (int i = 0; i < keys.Count; ++i)
                 {
                     var value = result.OutputMap[keys[i]];
-                    if (value.Equals(pair.lhs))
-                        result.OutputMap[keys[i]] = pair.rhs;
+                    if (value.Equals(pair.Item1.Value))
+                    {
+                        var rhs = pair.Item2 as IdentifierNode;
+                        if (rhs != null)
+                            result.OutputMap[keys[i]] = rhs.Value; 
+                    }
                 }
 
                 // Update ASTs.
-                IdentifierReplacer replacer = new IdentifierReplacer(pair.lhs, pair.rhs);
-                foreach (var ast in newAsts)
+                IdentifierReplacer replacer = new IdentifierReplacer(pair.Item1.Value, pair.Item2);
+                foreach (var ast in nonTempAsts)
                 {
                     ast.Accept(replacer);
                 }
             }
 
-            return new NodeToCodeResult(newAsts, result.InputMap, result.OutputMap);
-        }
-
-        /// <summary>
-        /// Temporary propagation for temporary assignment like "t1 = 1", 
-        /// propagate "1" to all expressions that use "t1" and the assignment
-        /// node will be removed from the final result.  
-        /// </summary>
-        /// <param name="result"></param>
-        /// <param name="outputVariables"></param>
-        /// <returns></returns>
-        public static NodeToCodeResult ConstantPropagationForTemp(NodeToCodeResult result, IEnumerable<string> outputVariables)
-        {
-            var tempVariables = result.OutputMap.Where(p => p.Key.StartsWith(Constants.kTempVarForNonAssignment))
-                                                .Select(p => p.Value);
-
-            // Check if the LHS of a binary expression is temorary variable 
-            // where the RHS is constant value
-            Func<AssociativeNode, bool> isConstantTempAssignment = x =>
-            {
-                var expr = x as BinaryExpressionNode;
-                if (expr == null)
-                    return false;
-
-                var lhs = expr.LeftNode as IdentifierNode;
-                return lhs != null 
-                       && tempVariables.Contains(lhs.Value) 
-                       && !outputVariables.Contains(lhs.Value)
-                       && expr.RightNode.IsLiteral ; 
-            };
-
-            // Get all temporary assignments. 
-            var tmpExprs = result.AstNodes
-                                 .Where(isConstantTempAssignment)
-                                 .Select(n => n as BinaryExpressionNode)
-                                 .Select(e => new
-                                 {
-                                     lhs = (e.LeftNode as IdentifierNode).Value,
-                                     rhs = e.RightNode
-                                 });
-            var nonTempExprs = result.AstNodes.Where(n => !isConstantTempAssignment(n));
-            var finalNodes = new List<AssociativeNode>();
-
-            var newAsts = new List<AssociativeNode>();
-            // Update ASTs.
-            foreach (var ast in nonTempExprs)
-            {
-                AssociativeNode astNode = ast;
-                foreach (var pair in tmpExprs)
-                {
-                    ConstantIdentifierReplacer replacer = new ConstantIdentifierReplacer(pair.lhs, pair.rhs);
-                    astNode = astNode.Accept(replacer);
-                }
-                newAsts.Add(astNode);
-            }
-
-            return new NodeToCodeResult(newAsts, result.InputMap, result.OutputMap);
+            return new NodeToCodeResult(nonTempAsts, result.InputMap, result.OutputMap);
         }
 
         /// <summary>
@@ -905,7 +953,6 @@ namespace Dynamo.DSEngine
             #endregion
 
             var result = new NodeToCodeResult(allAstNodes.SelectMany(x => x.Item2), inputMap, outputMap);
-            result = RemoveTemporaryAssignments(result);
             return result;
         }
     }
