@@ -13,6 +13,7 @@ using Dynamo.Nodes;
 using Dynamo.DSEngine;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Interfaces;
 
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -1624,7 +1625,7 @@ namespace Dynamo.Models
         /// <param name="scheduler"></param>
         /// <param name="maxTessellationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
-        public void RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, int maxTessellationDivisions)
+        public void RequestVisualUpdateAsync(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             //if (Workspace.DynamoModel == null)
             //    return;
@@ -1641,7 +1642,7 @@ namespace Dynamo.Models
                 HasRenderPackages = false;
             }
 
-            RequestVisualUpdateAsyncCore(scheduler, engine, maxTessellationDivisions);
+            RequestVisualUpdateAsyncCore(scheduler, engine, factory);
         }
 
         /// <summary>
@@ -1656,12 +1657,12 @@ namespace Dynamo.Models
         /// <param name="maxTesselationDivisions">The maximum number of 
         /// tessellation divisions to use for regenerating render packages.</param>
         protected virtual void 
-            RequestVisualUpdateAsyncCore(IScheduler scheduler, EngineController engine, int maxTessellationDivisions)
+            RequestVisualUpdateAsyncCore(IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             var initParams = new UpdateRenderPackageParams()
             {
                 Node = this,
-                MaxTessellationDivisions = maxTessellationDivisions,
+                RenderPackageFactory = factory,
                 EngineController = engine,
                 DrawableIds = GetDrawableIds(),
                 PreviewIdentifierName = AstIdentifierForPreview.Name

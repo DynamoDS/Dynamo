@@ -401,10 +401,10 @@ namespace Dynamo.ViewModels
 
         public int MaxTessellationDivisions
         {
-            get { return model.MaxTessellationDivisions; }
+            get { return VisualizationManager.RenderPackageFactory.MaxTessellationDivisions; }
             set
             {
-                model.MaxTessellationDivisions = value;
+                VisualizationManager.RenderPackageFactory.MaxTessellationDivisions = value;
                 model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }

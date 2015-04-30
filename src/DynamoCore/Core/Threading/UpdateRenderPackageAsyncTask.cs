@@ -10,6 +10,7 @@ using Autodesk.DesignScript.Interfaces;
 using Dynamo.DSEngine;
 using Dynamo.Models;
 using Dynamo.Properties;
+using Dynamo.Interfaces;
 
 using ProtoCore.Mirror;
 
@@ -17,7 +18,7 @@ namespace Dynamo.Core.Threading
 {
     class UpdateRenderPackageParams
     {
-        internal int MaxTessellationDivisions { get; set; }
+        internal IRenderPackageFactory RenderPackageFactory { get; set; }
         internal string PreviewIdentifierName { get; set; }
         internal NodeModel Node { get; set; }
         internal EngineController EngineController { get; set; }
@@ -44,13 +45,13 @@ namespace Dynamo.Core.Threading
 
         protected Guid nodeGuid;
 
-        private int maxTessellationDivisions;
         private bool displayLabels;
         private bool isNodeSelected;
         private string previewIdentifierName;
         private EngineController engineController;
         private IEnumerable<string> drawableIds;
         private readonly List<IRenderPackage> renderPackages;
+        private IRenderPackageFactory factory;
 
         internal IEnumerable<IRenderPackage> RenderPackages
         {
@@ -103,7 +104,7 @@ namespace Dynamo.Core.Threading
 
             displayLabels = nodeModel.DisplayLabels;
             isNodeSelected = nodeModel.IsSelected;
-            maxTessellationDivisions = initParams.MaxTessellationDivisions;
+            factory = initParams.RenderPackageFactory;
             engineController = initParams.EngineController;
             previewIdentifierName = initParams.PreviewIdentifierName;
 
@@ -161,19 +162,19 @@ namespace Dynamo.Core.Threading
                     return;
                 }
 
-                var package = DynamoModel.RenderPackageFactory.CreateRenderPackage();
+                var package = factory.CreateRenderPackage();
                 package.Description = labelMap.Count > count ? labelMap[count] : "?";
 
                 try
                 {
-                    graphicItem.Tessellate(package, -1.0, maxTessellationDivisions);
+                    graphicItem.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
 
                     var surf = graphicItem as Surface;
                     if (surf != null)
                     {
                         foreach (var curve in surf.PerimeterCurves())
                         {
-                            curve.Tessellate(package, -1.0, maxTessellationDivisions);
+                            curve.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
                             curve.Dispose();
                         }
                     }
@@ -182,7 +183,7 @@ namespace Dynamo.Core.Threading
                     if (solid != null)
                     {
                         foreach (var geom in solid.Edges.Select(edge => edge.CurveGeometry)) {
-                            geom.Tessellate(package, -1.0, maxTessellationDivisions);
+                            geom.Tessellate(package, -1.0, factory.MaxTessellationDivisions);
                             geom.Dispose();
                         }
                     }
@@ -259,10 +260,15 @@ namespace Dynamo.Core.Threading
                     // color of 0,0,0,255 (Black), we adjust the color components here.
                     if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
                     {
-                        if(package.LineVertexCount > 0)
-                            package.ApplyLineVertexColors(0, package.LineVertexCount-1, defR, defG, defB, defA);
-                        if(package.PointVertexCount > 0)
-                            package.ApplyPointVertexColors(0, package.PointVertexCount-1, defR, defG, defB, defA);
+                        if (package.LineVertexCount > 0)
+                        {
+                            package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, defR, defG, defB, defA));
+                        }
+
+                        if (package.PointVertexCount > 0)
+                        {
+                            package.ApplyPointVertexColors(CreateColorByteArrayOfSize(package.PointVertexCount, defR, defG, defB, defA));
+                        }
                     }
                 }
                 catch (Exception e)
@@ -277,6 +283,19 @@ namespace Dynamo.Core.Threading
                 renderPackages.Add(package);
                 count++;
             }
+        }
+
+        private static byte[] CreateColorByteArrayOfSize(int size, byte red, byte green, byte blue, byte alpha)
+        {
+            var arr = new byte[size * 4];
+            for (var i = 0; i < arr.Count(); i += 4)
+            {
+                arr[i] = red;
+                arr[i + 1] = green;
+                arr[i + 2] = blue;
+                arr[i + 3] = alpha;
+            }
+            return arr;
         }
 
         protected override void HandleTaskCompletionCore()

@@ -35,13 +35,14 @@ namespace Dynamo.Nodes
     public class Watch3DNodeViewCustomization : INodeViewCustomization<Watch3D>
     {
         private Watch3D watch3dModel;
+
         public Watch3DView View { get; private set; }
 
         public void CustomizeView(Watch3D model, NodeView nodeView)
         {
             model.ViewModel = nodeView.ViewModel.DynamoViewModel;
             this.watch3dModel = model;
-
+            
             var renderingTier = (RenderCapability.Tier >> 16);
             if (renderingTier < 2) return;
 
@@ -113,21 +114,9 @@ namespace Dynamo.Nodes
         private void RenderData(object data)
         {
             if (View == null) return;
-
+            
             View.RenderDrawables(
-                new VisualizationEventArgs(UnpackRenderData(data).Select(CreateRenderPackageFromGraphicItem), new List<IRenderPackage>(), watch3dModel.GUID));
-        }
-
-        /// <summary>
-        /// Create an IRenderPackage object provided an IGraphicItem
-        /// </summary>
-        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
-        /// <returns>An IRenderPackage object.</returns>
-        private IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
-        {
-            var renderPackage = DynamoModel.RenderPackageFactory.CreateRenderPackage();
-            gItem.Tessellate(renderPackage, -1.0, DynamoModel.RenderPackageFactory.MaxTessellationDivisions);
-            return renderPackage;
+                new VisualizationEventArgs(UnpackRenderData(data).Select(watch3dModel.ViewModel.VisualizationManager.CreateRenderPackageFromGraphicItem), new List<IRenderPackage>(), watch3dModel.GUID));
         }
 
         void mi_Click(object sender, RoutedEventArgs e)
@@ -356,7 +345,7 @@ namespace Dynamo.Nodes
         }
 
         protected override void RequestVisualUpdateAsyncCore(
-            IScheduler scheduler, EngineController engine, int maxTessellationDivisions)
+            IScheduler scheduler, EngineController engine, IRenderPackageFactory factory)
         {
             // No visualization update is required for this node type.
         }

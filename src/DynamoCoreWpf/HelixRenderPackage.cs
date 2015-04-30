@@ -176,24 +176,24 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Apply a color to a sequence of point vertices.
         /// </summary>
-        public void ApplyPointVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
-        {
-            var message = string.Empty;
-            if (!HasValidStartEnd(startIndex, endIndex, points, out message))
-            {
-                if (!string.IsNullOrEmpty(message))
-                {
-                    throw new Exception(message);
-                }
+        //public void ApplyPointVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        //{
+        //    var message = string.Empty;
+        //    if (!HasValidStartEnd(startIndex, endIndex, points, out message))
+        //    {
+        //        if (!string.IsNullOrEmpty(message))
+        //        {
+        //            throw new Exception(message);
+        //        }
 
-                return;
-            }
+        //        return;
+        //    }
 
-            for (var i = startIndex; i <= endIndex; i++)
-            {
-                points.Colors[i] = Color4FromBytes(red, green, blue, alpha);
-            }
-        }
+        //    for (var i = startIndex; i <= endIndex; i++)
+        //    {
+        //        points.Colors[i] = Color4FromBytes(red, green, blue, alpha);
+        //    }
+        //}
 
         /// <summary>
         /// Apply a color to each point vertex.
@@ -213,24 +213,24 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Apply a color to a sequence of line vertices.
         /// </summary>
-        public void ApplyLineVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
-        {
-            var message = string.Empty;
-            if (!HasValidStartEnd(startIndex, endIndex, lines, out message))
-            {
-                if (!string.IsNullOrEmpty(message))
-                {
-                    throw new Exception(message);
-                }
+        //public void ApplyLineVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        //{
+        //    var message = string.Empty;
+        //    if (!HasValidStartEnd(startIndex, endIndex, lines, out message))
+        //    {
+        //        if (!string.IsNullOrEmpty(message))
+        //        {
+        //            throw new Exception(message);
+        //        }
 
-                return;
-            }
+        //        return;
+        //    }
 
-            for (var i = startIndex; i <= endIndex; i++)
-            {
-                lines.Colors[i] = Color4FromBytes(red, green, blue, alpha);
-            }
-        }
+        //    for (var i = startIndex; i <= endIndex; i++)
+        //    {
+        //        lines.Colors[i] = Color4FromBytes(red, green, blue, alpha);
+        //    }
+        //}
 
         /// <summary>
         /// Apply a color to each line vertex.
@@ -250,24 +250,24 @@ namespace Dynamo.Wpf
         /// <summary>
         /// Apply a color to a sequence of mesh vertices.
         /// </summary>
-        public void ApplyMeshVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
-        {
-            var message = string.Empty;
-            if (!HasValidStartEnd(startIndex, endIndex, mesh, out message))
-            {
-                if (!string.IsNullOrEmpty(message))
-                {
-                    throw new Exception(message);
-                }
+        //public void ApplyMeshVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        //{
+        //    var message = string.Empty;
+        //    if (!HasValidStartEnd(startIndex, endIndex, mesh, out message))
+        //    {
+        //        if (!string.IsNullOrEmpty(message))
+        //        {
+        //            throw new Exception(message);
+        //        }
 
-                return;
-            }
+        //        return;
+        //    }
 
-            for (var i = startIndex; i <= endIndex; i++)
-            {
-                mesh.Colors[i] = Color4FromBytes(red, green, blue, alpha);
-            }
-        }
+        //    for (var i = startIndex; i <= endIndex; i++)
+        //    {
+        //        mesh.Colors[i] = Color4FromBytes(red, green, blue, alpha);
+        //    }
+        //}
 
         /// <summary>
         /// Apply a color to each mesh vertex.
@@ -371,57 +371,57 @@ namespace Dynamo.Wpf
             }
         }
 
-        public IEnumerable<double> LineStripVertexBuffer
+        public IEnumerable<double> LineStripVertices
         {
             get { return lines.Positions.ToDoubleArray(); }
         }
 
-        public IEnumerable<byte> LineStripVertexColorBuffer
+        public IEnumerable<byte> LineStripVertexColors
         {
             get { return lines.Colors.ToByteArray(); }
         }
 
-        public IEnumerable<int> LineStripIndexBuffer
+        public IEnumerable<int> LineStripIndices
         {
             get { return lines.Indices.ToArray(); }
         }
 
-        public IEnumerable<double> MeshVertexBuffer
+        public IEnumerable<double> MeshVertices
         {
             get { return mesh.Positions.ToDoubleArray(); }
         }
 
-        public IEnumerable<byte> MeshVertexColorBuffer
+        public IEnumerable<byte> MeshVertexColors
         {
             get { return mesh.Colors.ToByteArray(); }
         }
 
-        public IEnumerable<int> MeshIndexBuffer
+        public IEnumerable<int> MeshIndices
         {
             get { return mesh.Indices.ToArray(); }
         }
 
-        public IEnumerable<double> MeshNormalBuffer
+        public IEnumerable<double> MeshNormals
         {
             get { return mesh.Normals.ToDoubleArray(); }
         }
 
-        public IEnumerable<double> MeshTextureCoordinateBuffer
+        public IEnumerable<double> MeshTextureCoordinates
         {
             get { return mesh.TextureCoordinates.ToDoubleArray(); }
         }
 
-        public IEnumerable<double> PointVertexBuffer
+        public IEnumerable<double> PointVertices
         {
             get { return points.Positions.ToDoubleArray(); }
         }
 
-        public IEnumerable<byte> PointVertexColorBuffer
+        public IEnumerable<byte> PointVertexColors
         {
             get { return points.Colors.ToByteArray(); }
         }
 
-        public IEnumerable<int> PointIndexBuffer
+        public IEnumerable<int> PointIndices
         {
             get { return points.Indices.ToArray(); }
         }

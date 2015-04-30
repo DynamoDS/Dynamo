@@ -1,6 +1,8 @@
 ﻿using System;
 
 using Dynamo.Models;
+using Dynamo.Interfaces;
+using Autodesk.DesignScript.Interfaces;
 
 namespace Dynamo.Interfaces
 {
@@ -54,5 +56,15 @@ namespace Dynamo.Interfaces
         /// Request updated visuals for a branch of the graph.
         /// </summary>
         void RequestBranchUpdate(NodeModel node);
+
+        /// <summary>
+        /// An IRenderPackageFactory object.
+        /// </summary>
+        IRenderPackageFactory RenderPackageFactory { get; }
+
+        /// <summary>
+        /// Create an IRenderPackage given an IGraphicItem
+        /// </summary>
+        IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem graphicItem);
     }
 }

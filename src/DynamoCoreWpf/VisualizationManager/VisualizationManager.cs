@@ -4,6 +4,8 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
+using System.Reflection;
 
 using Autodesk.DesignScript.Interfaces;
 
@@ -18,7 +20,6 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo
 {
-    /// <summary>
     /*
     * The VisualizationManager is reponsible for handling events from the DynamoModel
     * that result in the updating of RenderPackages on NodeModels. After these updates,
@@ -42,9 +43,10 @@ namespace Dynamo
     *        |                             |                               ResultsReadyToVisualizeHandler
     *        |                             |                               Render
     */ 
-    /// </summary>
     public class VisualizationManager : NotificationObject, IVisualizationManager
     {
+        public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
+
         #region private members
 
         private string alternateContextName = "Host";
@@ -54,6 +56,7 @@ namespace Dynamo
         private readonly List<IRenderPackage> currentTaggedPackages = new List<IRenderPackage>();
         private bool alternateDrawingContextAvailable;
         private List<NodeModel> recentlyAddedNodes = new List<NodeModel>();
+        private IRenderPackageFactory renderPackageFactory;
  
         #endregion
 
@@ -115,6 +118,11 @@ namespace Dynamo
         {
             get { return alternateContextName; }
             set { alternateContextName = value; }
+        }
+
+        public IRenderPackageFactory RenderPackageFactory
+        {
+            get { return renderPackageFactory; }
         }
 
         #endregion
@@ -181,6 +189,8 @@ namespace Dynamo
             // events from the pre-existing workspace.
             WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
+            renderPackageFactory = GetRenderPackageFactory();
+            
             Start();
         }
 
@@ -368,7 +378,7 @@ namespace Dynamo
                 case "IsVisible":
                 case "IsUpstreamVisible":
                 case "DisplayLabels":
-                    RequestNodeVisualUpdateAsync(sender as NodeModel);
+                    RequestNodeVisualUpdateAsync(sender as NodeModel, renderPackageFactory);
                     break;
             }
         }
@@ -436,10 +446,10 @@ namespace Dynamo
             if (args != null && !args.EvaluationTookPlace)
                 return;
 
-            RequestNodeVisualUpdateAsync(null);
+            RequestNodeVisualUpdateAsync(null, renderPackageFactory);
         }
 
-        private void RequestNodeVisualUpdateAsync(NodeModel nodeModel)
+        private void RequestNodeVisualUpdateAsync(NodeModel nodeModel, IRenderPackageFactory factory)
         {
             if (nodeModel != null)
             {
@@ -447,7 +457,7 @@ namespace Dynamo
                 nodeModel.RequestVisualUpdateAsync(
                     dynamoModel.Scheduler,
                     dynamoModel.EngineController,
-                    dynamoModel.MaxTessellationDivisions);
+                    factory);
             }
             else
             {
@@ -457,7 +467,7 @@ namespace Dynamo
                     node.RequestVisualUpdateAsync(
                         dynamoModel.Scheduler,
                         dynamoModel.EngineController,
-                        dynamoModel.MaxTessellationDivisions);
+                        factory);
                 }
             }
 
@@ -519,6 +529,67 @@ namespace Dynamo
         }
 
         #endregion
+
+        /// <summary>
+        /// Use the renderPackageFactoryAssembly tag in the DynamoCore.dll.cfg file to find an
+        /// IRenderPackageFactory implementation.
+        /// </summary>
+        private IRenderPackageFactory GetRenderPackageFactory()
+        {
+            var renderPackageFactoryAsm = Dynamo.Utilities.AssemblyConfiguration.Instance.GetAppSetting("renderPackageFactoryAssembly");
+
+            if (string.IsNullOrEmpty(renderPackageFactoryAsm))
+            {
+                return CreateDefaultRenderPackageFactory();
+            }
+
+            var asmPath =
+                Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    renderPackageFactoryAsm);
+
+            if (!File.Exists(asmPath))
+            {
+                throw new Exception("The specified render package factory assembly does not exist.");
+            }
+
+            var asm = Assembly.LoadFrom(asmPath);
+
+            var factoryType = asm.GetTypes().FirstOrDefault(t => typeof(IRenderPackageFactory).IsAssignableFrom(t));
+            if (factoryType == null)
+            {
+                throw new Exception("An implementation of IRenderPackageFactory could not be found.");
+            }
+
+            // Construct the factory using the default constructor.
+            var factoryConstructor = factoryType.GetConstructor(System.Type.EmptyTypes);
+            var factory = (IRenderPackageFactory)factoryConstructor.Invoke(null);
+            factory.MaxTessellationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
+
+            return factory;
+        }
+
+        private static IRenderPackageFactory CreateDefaultRenderPackageFactory()
+        {
+            var factory = new DefaultRenderPackageFactory()
+            {
+                MaxTessellationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT
+            };
+
+            return factory;
+        }
+
+        /// <summary>
+        /// Create an IRenderPackage object provided an IGraphicItem
+        /// </summary>
+        /// <param name="gItem">An IGraphicItem object to tessellate.</param>
+        /// <returns>An IRenderPackage object.</returns>
+        public IRenderPackage CreateRenderPackageFromGraphicItem(IGraphicItem gItem)
+        {
+            var renderPackage = renderPackageFactory.CreateRenderPackage();
+            gItem.Tessellate(renderPackage, -1.0, renderPackageFactory.MaxTessellationDivisions);
+            return renderPackage;
+        }
     }
 
     /// <summary>

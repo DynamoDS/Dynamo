@@ -88,16 +88,6 @@ namespace DynamoCoreUITests
         }
 
         [Test]
-        public void HelixRenderPackage_ApplyPointVertexColors_ReturnsFalseWhenOutOfBounds()
-        {
-            var p = new HelixRenderPackage();
-            Assert.NotNull(p);
-
-            PushPointIntoPackage(p);
-            Assert.Throws<Exception>(() => p.ApplyPointVertexColors(0, 2, 255, 255, 255, 255));
-        }
-
-        [Test]
         public void HelixRenderPackage_ApplyLineVertexColors_Array_Success()
         {
             var p = new HelixRenderPackage();
@@ -106,16 +96,6 @@ namespace DynamoCoreUITests
             PushLineIntoPackage(p);
             p.ApplyLineVertexColors(WhiteByteArrayOfLength(2));
             Assert.AreEqual(2, p.Lines.Colors.Count);
-        }
-
-        [Test]
-        public void HelixRenderPackage_ApplyLineVertexColors_ReturnsFalseWhenOutOfBounds()
-        {
-            var p = new HelixRenderPackage();
-            Assert.NotNull(p);
-
-            PushLineIntoPackage(p);
-            Assert.Throws<Exception>(() => p.ApplyLineVertexColors(0, 3, 255, 255, 255, 255));
         }
 
         [Test]
@@ -128,16 +108,6 @@ namespace DynamoCoreUITests
 
             p.ApplyMeshVertexColors(WhiteByteArrayOfLength(6));
             Assert.AreEqual(6, p.Mesh.Colors.Count);
-        }
-
-        [Test]
-        public void HelixRenderPackage_ApplyMeshVertexColors_ReturnsFalseWhenOutOfBounds()
-        {
-            var p = new HelixRenderPackage();
-            Assert.NotNull(p);
-
-            PushLineIntoPackage(p);
-            Assert.Throws<Exception>(() => p.ApplyMeshVertexColors(0, 7, 255, 255, 255, 255));
         }
 
         [Test]
@@ -171,8 +141,8 @@ namespace DynamoCoreUITests
 
             PushQuadIntoPackage(p);
 
-            var test1 = p.MeshVertexBuffer.Skip(3).Take(3).ToArray();
-            var test2 = p.MeshNormalBuffer.Take(3).ToArray();
+            var test1 = p.MeshVertices.Skip(3).Take(3).ToArray();
+            var test2 = p.MeshNormals.Take(3).ToArray();
 
             // Expect Y Up.
             Assert.AreEqual(test1, new double[]{1,0,0});
@@ -190,7 +160,7 @@ namespace DynamoCoreUITests
 
             p.ApplyMeshVertexColors(testColors);
 
-            Assert.AreEqual(p.MeshVertexColorBuffer, testColors);
+            Assert.AreEqual(p.MeshVertexColors, testColors);
         }
 
         /// <summary>

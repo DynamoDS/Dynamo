@@ -188,8 +188,8 @@ namespace Analysis
             var colorCount = 0;
             var uvCount = 0;
 
-            var uvs = package.MeshTextureCoordinateBuffer.ToList();
-            var colors = package.MeshVertexColorBuffer.ToList();
+            var uvs = package.MeshTextureCoordinates.ToList();
+            var colors = package.MeshVertexColors.ToList();
 
             var newColors = new byte[colors.Count()];
 

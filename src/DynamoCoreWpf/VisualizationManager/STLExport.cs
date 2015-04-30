@@ -15,8 +15,8 @@ namespace Dynamo
                 .Where(rp=>rp.HasRenderingData)
                 .ToList();
 
-            var n = packages.SelectMany(p => p.MeshNormalBuffer).ToList();
-            var v = packages.SelectMany(rp => rp.MeshVertexBuffer).ToList();
+            var n = packages.SelectMany(p => p.MeshNormals).ToList();
+            var v = packages.SelectMany(rp => rp.MeshVertices).ToList();
 
             using (TextWriter tw = new StreamWriter(path))
             {

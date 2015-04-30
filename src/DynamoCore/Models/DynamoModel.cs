@@ -49,8 +49,6 @@ namespace Dynamo.Models
 
     public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager // : ModelBase
     {
-        public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
-
         #region private members
 
         private readonly string geometryFactoryPath;
@@ -140,12 +138,6 @@ namespace Dynamo.Models
         /// </summary>
         public static bool EnableMigrationLogging { get; set; }
 
-        /// <summary>
-        /// An IRenderPackageFactory implementation which is used to generate
-        /// render packages.
-        /// </summary>
-        public static IRenderPackageFactory RenderPackageFactory { get; private set; }
-
         #endregion
 
         #region public properties
@@ -220,22 +212,6 @@ namespace Dynamo.Models
         ///     threads.
         /// </summary>
         public DynamoScheduler Scheduler { get; private set; }
-
-        /// <summary>
-        ///     The maximum amount of tesselation divisions used for geometry visualization.
-        /// </summary>
-        public int MaxTessellationDivisions
-        {
-            get { return maxTessellationDivisions; }
-            set
-            {
-                maxTessellationDivisions = value;
-                if (RenderPackageFactory != null)
-                {
-                    RenderPackageFactory.MaxTessellationDivisions = maxTessellationDivisions;
-                }
-            }
-        }
 
         /// <summary>
         ///     The Dynamo Node Library, complete with Search.
@@ -323,8 +299,6 @@ namespace Dynamo.Models
         ///     The private collection of visible workspaces in Dynamo
         /// </summary>
         private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
-
-        private int maxTessellationDivisions;
 
         public IEnumerable<WorkspaceModel> Workspaces 
         {
@@ -447,7 +421,6 @@ namespace Dynamo.Models
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
-            MaxTessellationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
             pathManager = new PathManager(new PathManagerParams
             {
@@ -565,9 +538,6 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
-            var renderPackageFactoryAsm = AssemblyConfiguration.Instance.GetAppSetting("renderPackageFactoryAssembly");
-            SetRenderPackageFactory(renderPackageFactoryAsm);
-
             StartBackupFilesTimer();
 
         }
@@ -634,8 +604,6 @@ namespace Dynamo.Models
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            RenderPackageFactory = null;
-
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
             
@@ -1758,36 +1726,6 @@ namespace Dynamo.Models
         {
             if (args.PropertyName == "RunEnabled")
                 OnPropertyChanged("RunEnabled");
-        }
-
-        /// <summary>
-        /// Use the renderPackageFactoryAssembly tag in the DynamoCore.dll.cfg file to find an
-        /// IRenderPackageFactory implementation.
-        /// </summary>
-        private void SetRenderPackageFactory(string renderPackageFactoryAsm)
-        {
-            var asmPath =
-                Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    renderPackageFactoryAsm);
-
-            if (!File.Exists(asmPath))
-            {
-                throw new Exception("The specified render package factory assembly does not exist.");
-            }
-
-            var asm = Assembly.LoadFrom(asmPath);
-
-            var factoryType = asm.GetTypes().FirstOrDefault(t =>typeof(IRenderPackageFactory).IsAssignableFrom(t));
-            if (factoryType == null)
-            {
-                throw new Exception("An implementation of IRenderPackageFactory could not be found.");
-            }
-
-            // Construct the factory using the default constructor.
-            var factoryConstructor = factoryType.GetConstructor(System.Type.EmptyTypes);
-            RenderPackageFactory = (IRenderPackageFactory)factoryConstructor.Invoke(null);
-            RenderPackageFactory.MaxTessellationDivisions = MaxTessellationDivisions;
         }
 
         #endregion
