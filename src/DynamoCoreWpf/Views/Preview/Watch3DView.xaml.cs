@@ -860,7 +860,19 @@ namespace Dynamo.Controls
             var perVertexMesh = HelixRenderPackage.InitMeshGeometry();
             var text = HelixRenderPackage.InitText3D();
 
-            AggregateRenderPackages(packages, points, lines, linesSel, mesh, perVertexMesh, meshSel, text);
+            var aggParams = new PackageAggregationParameters
+            {
+                Packages = packages,
+                Points = points,
+                Lines = lines,
+                SelectedLines = linesSel,
+                Mesh = mesh,
+                PerVertexMesh = perVertexMesh,
+                SelectedMesh = meshSel,
+                Text = text
+            };
+
+            AggregateRenderPackages(aggParams);
 
             if (!points.Positions.Any())
                 points = null;
@@ -895,16 +907,16 @@ namespace Dynamo.Controls
             //DrawTestMesh();
         }
 
-        private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages, 
-            PointGeometry3D points, LineGeometry3D lines, 
-            LineGeometry3D linesSel, MeshGeometry3D mesh, MeshGeometry3D perVertexMesh, MeshGeometry3D meshSelected, BillboardText3D text)
+        private void AggregateRenderPackages(PackageAggregationParameters parameters)
         {
             MeshCount = 0;
-            foreach (var rp in packages)
+            foreach (var rp in parameters.Packages)
             {
                 var p = rp.Points;
                 if (p.Positions.Any())
                 {
+                    var points = parameters.Points;
+
                     var startIdx = points.Positions.Count;
 
                     points.Positions.AddRange(p.Positions);
@@ -924,16 +936,15 @@ namespace Dynamo.Controls
                     if (rp.DisplayLabels)
                     {
                         var pt = p.Positions[0];
-                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
                 }
 
                 var l = rp.Lines;
                 if (l.Positions.Any())
                 {
-
                     // Choose a collection to store the line data.
-                    var lineSet = rp.IsSelected ? linesSel : lines;
+                    var lineSet = rp.IsSelected ? parameters.SelectedLines : parameters.Lines;
 
                     var startIdx = lineSet.Positions.Count;
 
@@ -954,7 +965,7 @@ namespace Dynamo.Controls
                     if (rp.DisplayLabels)
                     {
                         var pt = lineSet.Positions[startIdx];
-                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
                 }
 
@@ -967,8 +978,8 @@ namespace Dynamo.Controls
                     // goes into the plain mesh.
 
                     var meshSet = rp.IsSelected ? 
-                        meshSelected :
-                        rp.RequiresPerVertexColoration ? perVertexMesh : mesh;
+                        parameters.SelectedMesh :
+                        rp.RequiresPerVertexColoration ? parameters.PerVertexMesh : parameters.Mesh;
 
                     var idxCount = meshSet.Positions.Count;
 
@@ -982,7 +993,7 @@ namespace Dynamo.Controls
                     if (rp.DisplayLabels)
                     {
                         var pt = meshSet.Positions[idxCount];
-                        text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
+                        parameters.Text.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description), new Vector3(pt.X + 0.025f, pt.Y + 0.025f, pt.Z + 0.025f)));
                     }
 
                     MeshCount++;
@@ -1012,5 +1023,17 @@ namespace Dynamo.Controls
         }
 
         #endregion
+    }
+
+    internal class PackageAggregationParameters
+    {
+        public IEnumerable<HelixRenderPackage> Packages { get; set; } 
+        public PointGeometry3D Points { get; set; }
+        public LineGeometry3D Lines { get; set; }
+        public LineGeometry3D SelectedLines { get; set; }
+        public MeshGeometry3D Mesh { get; set; }
+        public MeshGeometry3D PerVertexMesh { get; set; }
+        public MeshGeometry3D SelectedMesh { get; set; }
+        public BillboardText3D Text { get; set; }
     }
 }
