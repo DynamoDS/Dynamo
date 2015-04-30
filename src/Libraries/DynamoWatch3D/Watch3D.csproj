@@ -109,8 +109,6 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
 
 	<!-- Get System.Drawing.dll -->

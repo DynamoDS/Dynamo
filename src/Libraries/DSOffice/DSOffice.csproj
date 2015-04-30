@@ -85,8 +85,6 @@
   <PropertyGroup>
     <PreBuildEvent>copy /Y "$(ProjectDir)*_DynamoCustomization.xml" "$(OutputPath)"</PreBuildEvent>
   </PropertyGroup>
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
 
 	<!-- Get System.Drawing.dll -->
