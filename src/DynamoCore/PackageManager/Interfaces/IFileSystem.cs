@@ -1,5 +1,8 @@
 namespace Dynamo.PackageManager
 {
+    /// <summary>
+    ///     An abstract FileSystem for mocking purposes
+    /// </summary>
     interface IFileSystem
     {
         void CopyFile(string filePath, string destinationPath);
