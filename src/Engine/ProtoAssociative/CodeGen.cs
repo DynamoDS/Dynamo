@@ -4014,7 +4014,8 @@ namespace ProtoAssociative
                             this.core.ClassTable.AuditMultipleDefinition(this.core.BuildStatus, graphNode);
                         }
                         codeblock.Body = BuildSSA(codeblock.Body, context);
-                       
+                        core.DSExecutable.CachedSSANodes.Clear();
+                        core.DSExecutable.CachedSSANodes.AddRange(codeblock.Body);
                         ssaTransformed = true;
                         if (core.Options.DumpIL)
                         {
@@ -4085,7 +4086,7 @@ namespace ProtoAssociative
             this.localCodeBlockNode = codeBlockNode;
 
             // Reset the callsite guids in preparation for the next compilation
-            core.CallsiteGuidMap = new Dictionary<Guid, int>();
+            core.DSExecutable.CallsiteGuidMap = new Dictionary<Guid, int>();
 
             return codeBlock.codeBlockId;
         }
@@ -5955,7 +5956,13 @@ namespace ProtoAssociative
                         }
                     });
 
-                    
+                    // TODO Jun: Remove this once agree that alltest cases assume the default assoc block is block 0
+                    // NOTE: Only affects mirror, not actual execution
+                    if (null == codeBlock.parent && pc <= 0)
+                    {
+                        // The first node in the top level block is a function
+                        core.DSExecutable.isSingleAssocBlock = false;
+                    }
                 }
                 else
                 {

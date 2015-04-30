@@ -554,14 +554,14 @@ namespace Dynamo.Models
         /// </summary>
         /// <param name="newPath">The path to save to</param>
         /// <param name="core"></param>
-        public virtual bool SaveAs(string newPath, ProtoCore.RuntimeCore runtimeCore)
+        public virtual bool SaveAs(string newPath, ProtoCore.Core core)
         {
             if (String.IsNullOrEmpty(newPath)) return false;
 
             Log(String.Format(Resources.SavingInProgress, newPath));
             try
             {
-                if (SaveInternal(newPath, runtimeCore))
+                if (SaveInternal(newPath, core))
                     OnWorkspaceSaved();
             }
             catch (Exception ex)
@@ -745,9 +745,9 @@ namespace Dynamo.Models
         /// <summary>
         /// Save assuming that the Filepath attribute is set.
         /// </summary>
-        public virtual bool Save(ProtoCore.RuntimeCore runtimeCore)
+        public virtual bool Save(ProtoCore.Core core)
         {
-            return SaveAs(FileName, runtimeCore);
+            return SaveAs(FileName, core);
         }
 
         internal void ResetWorkspace()
@@ -789,8 +789,8 @@ namespace Dynamo.Models
         #endregion
 
         #region private/internal methods
-
-        private bool SaveInternal(string targetFilePath, ProtoCore.RuntimeCore runtimeCore)
+        
+        private bool SaveInternal(string targetFilePath, ProtoCore.Core core)
         {
             // Create the xml document to write to.
             var document = new XmlDocument();
@@ -802,7 +802,7 @@ namespace Dynamo.Models
             if (!PopulateXmlDocument(document))
                 return false;
 
-            SerializeSessionData(document, runtimeCore);
+            SerializeSessionData(document, core);
 
             try
             {
@@ -915,7 +915,7 @@ namespace Dynamo.Models
 
         // TODO(Ben): Documentation to come before pull request.
         // TODO(Steve): This probably only belongs on HomeWorkspaceModel. -- MAGN-5715
-        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.RuntimeCore runtimeCore)
+        protected virtual void SerializeSessionData(XmlDocument document, ProtoCore.Core core)
         {
             if (document.DocumentElement == null)
             {
@@ -925,7 +925,7 @@ namespace Dynamo.Models
 
             try
             {
-                if (runtimeCore == null) // No execution yet as of this point.
+                if (core == null) // No execution yet as of this point.
                     return;
 
                 // Selecting all nodes that are either a DSFunction,
@@ -935,7 +935,7 @@ namespace Dynamo.Models
                         n => n is DSFunction || n is DSVarArgFunction || n is CodeBlockNodeModel)
                         .Select(n => n.GUID);
 
-                var nodeTraceDataList = runtimeCore.RuntimeData.GetTraceDataForNodes(nodeGuids, runtimeCore.DSExecutable);
+                var nodeTraceDataList = core.DSExecutable.RuntimeData.GetTraceDataForNodes(nodeGuids, core.DSExecutable);
 
                 if (nodeTraceDataList.Any())
                     Utils.SaveTraceDataToXmlDocument(document, nodeTraceDataList);

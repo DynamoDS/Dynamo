@@ -755,7 +755,7 @@ namespace ProtoCore.DSASM
             }
 
             // Get the cached callsite, creates a new one for a first-time call
-            CallSite callsite = runtimeCore.RuntimeData.GetCallSite(
+            CallSite callsite = exe.RuntimeData.GetCallSite(
                 exe.ExecutingGraphnode, 
                 classIndex, 
                 fNode.name, 
@@ -1027,7 +1027,7 @@ namespace ProtoCore.DSASM
                                             registers,
                                             new List<bool>());
 
-            var callsite = runtimeCore.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
+            var callsite = exe.RuntimeData.GetCallSite(exe.ExecutingGraphnode,
                                             classIndex,
                                             procNode.name,
                                             exe, runtimeCore.RunningBlock, runtimeCore.Options, runtimeCore.RuntimeStatus);

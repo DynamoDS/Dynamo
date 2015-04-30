@@ -33,7 +33,7 @@ namespace Dynamo.Tests
             Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace );
 
             var newPath = GetNewFileNameOnTempPath("dyn");
-            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, dynamoModel.EngineController.LiveRunnerRuntimeCore);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, dynamoModel.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -83,7 +83,7 @@ namespace Dynamo.Tests
             var ws = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
                 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            var res = ws.SaveAs(newPath, dynamoModel.EngineController.LiveRunnerRuntimeCore);
+            var res = ws.SaveAs(newPath, dynamoModel.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -101,7 +101,7 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(examplePath);
 
             var newPath = GetNewFileNameOnTempPath("dyn");
-            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -123,7 +123,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(nodeWorkspace);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -139,7 +139,7 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\math", "Add.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            var res = ViewModel.Model.CurrentWorkspace.SaveAs("", ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs("", ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsFalse(res);
         }
@@ -158,7 +158,7 @@ namespace Dynamo.Tests
 
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
-            var res = def.SaveAs(null, dynamoModel.EngineController.LiveRunnerRuntimeCore);
+            var res = def.SaveAs(null, dynamoModel.EngineController.LiveRunnerCore);
 
             Assert.IsFalse(res);
         }
@@ -174,7 +174,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(dynamoModel.CurrentWorkspace);
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
-            var res = ViewModel.Model.CurrentWorkspace.Save(dynamoModel.EngineController.LiveRunnerRuntimeCore);
+            var res = ViewModel.Model.CurrentWorkspace.Save(dynamoModel.EngineController.LiveRunnerCore);
 
             Assert.IsFalse(res);
         }
@@ -192,7 +192,7 @@ namespace Dynamo.Tests
 
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
-            var res = def.Save(dynamoModel.EngineController.LiveRunnerRuntimeCore);
+            var res = def.Save(dynamoModel.EngineController.LiveRunnerCore);
 
             Assert.IsFalse(res);
         }
@@ -210,7 +210,7 @@ namespace Dynamo.Tests
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             var newPath = GetNewFileNameOnTempPath("dyn");
-            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -232,7 +232,7 @@ namespace Dynamo.Tests
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            var res = def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            var res = def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -256,7 +256,7 @@ namespace Dynamo.Tests
             foreach (var i in Enumerable.Range(0, 10))
             {
                 var newPath = GetNewFileNameOnTempPath("dyn");
-                var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+                var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
                 Assert.IsTrue(res);
                 Assert.IsTrue(File.Exists(newPath));
@@ -283,7 +283,7 @@ namespace Dynamo.Tests
             foreach (var i in Enumerable.Range(0, 10))
             {
                 var newPath = GetNewFileNameOnTempPath("dyf");
-                var res = def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+                var res = def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
                 Assert.IsTrue(res);
                 Assert.IsTrue(File.Exists(newPath));
@@ -307,7 +307,7 @@ namespace Dynamo.Tests
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             var newPath = GetNewFileNameOnTempPath("dyn");
-            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -315,7 +315,7 @@ namespace Dynamo.Tests
             var saveAsTime = File.GetLastWriteTime(newPath);
 
             Thread.Sleep(1);
-            var resSave = ViewModel.Model.CurrentWorkspace.Save(dynamoModel.EngineController.LiveRunnerRuntimeCore);
+            var resSave = ViewModel.Model.CurrentWorkspace.Save(dynamoModel.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(resSave);
             Assert.IsTrue(File.Exists(newPath));
@@ -344,7 +344,7 @@ namespace Dynamo.Tests
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            var res = def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            var res = def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -352,7 +352,7 @@ namespace Dynamo.Tests
             var saveAsTime = File.GetLastWriteTime(newPath);
 
             Thread.Sleep(1);
-            var resSave = def.Save(dynamoModel.EngineController.LiveRunnerRuntimeCore);
+            var resSave = def.Save(dynamoModel.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(resSave);
             Assert.IsTrue(File.Exists(newPath));
@@ -378,7 +378,7 @@ namespace Dynamo.Tests
             Assert.IsAssignableFrom(typeof(HomeWorkspaceModel), dynamoModel.CurrentWorkspace);
 
             var newPath = GetNewFileNameOnTempPath("dyn");
-            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            var res = ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -388,7 +388,7 @@ namespace Dynamo.Tests
             foreach (var i in Enumerable.Range(0, 10))
             {
                 Thread.Sleep(1);
-                var resSave = ViewModel.Model.CurrentWorkspace.Save(dynamoModel.EngineController.LiveRunnerRuntimeCore);
+                var resSave = ViewModel.Model.CurrentWorkspace.Save(dynamoModel.EngineController.LiveRunnerCore);
 
                 Assert.IsTrue(resSave);
                 Assert.IsTrue(File.Exists(newPath));
@@ -417,7 +417,7 @@ namespace Dynamo.Tests
             var def = dynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName, "");
 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            var res = def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            var res = def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -427,7 +427,7 @@ namespace Dynamo.Tests
             foreach (var i in Enumerable.Range(0, 10))
             {
                 Thread.Sleep(1);
-                var resSave = def.Save(dynamoModel.EngineController.LiveRunnerRuntimeCore);
+                var resSave = def.Save(dynamoModel.EngineController.LiveRunnerCore);
 
                 Assert.IsTrue(resSave);
                 Assert.IsTrue(File.Exists(newPath));
@@ -462,7 +462,7 @@ namespace Dynamo.Tests
 
             // save
             var newPath = GetNewFileNameOnTempPath("dyn");
-            ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            ViewModel.Model.CurrentWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             // check expected
             Assert.IsFalse(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
@@ -491,7 +491,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, def.Nodes.Count );
             
             var newPath = GetNewFileNameOnTempPath("dyf");
-            def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            def.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             Assert.IsFalse(def.HasUnsavedChanges);
         }
@@ -516,7 +516,7 @@ namespace Dynamo.Tests
             var workspace = (CustomNodeWorkspaceModel)def;
 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            workspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            workspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             var newDef = workspace.CustomNodeId;
 
@@ -525,7 +525,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(initialId, newDef);
 
             var newPath2 = GetNewFileNameOnTempPath("dyf");
-            workspace.SaveAs(newPath2, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            workspace.SaveAs(newPath2, ViewModel.Model.EngineController.LiveRunnerCore);
             var newDef2 = workspace.CustomNodeId;
             Assert.AreNotEqual(Guid.Empty, newDef2);
             Assert.AreNotEqual(initialId, newDef2);
@@ -550,7 +550,7 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore); // introduces new function id
+            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore); // introduces new function id
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -581,7 +581,7 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore); // introduces new function id
+            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore); // introduces new function id
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -611,7 +611,7 @@ namespace Dynamo.Tests
             var oldId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+            nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
             var newDef = nodeWorkspace.CustomNodeDefinition;
         }
@@ -634,7 +634,7 @@ namespace Dynamo.Tests
             Assert.IsNotNull(nodeWorkspace);
 
             var newPath = GetNewFileNameOnTempPath("dyf");
-            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore); // introduces new function id
+            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore); // introduces new function id
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -678,7 +678,7 @@ namespace Dynamo.Tests
 
             var newPath = Path.Combine(TempFolder, "Constant2.dyf");
             var originalNumElements = ViewModel.Model.SearchModel.NumElements;
-            nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore); // introduces new function id
+            nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore); // introduces new function id
 
             var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
@@ -732,7 +732,7 @@ namespace Dynamo.Tests
             // SaveAs
             var newPath = GetNewFileNameOnTempPath("dyf");
             var newName = Path.GetFileNameWithoutExtension(newPath);
-            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore); // introduces new function id
+            var res = nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore); // introduces new function id
 
             Assert.IsTrue(res);
             Assert.IsTrue(File.Exists(newPath));
@@ -771,7 +771,7 @@ namespace Dynamo.Tests
             var originalNumElements = ViewModel.Model.SearchModel.NumElements;
 
             // save as
-            nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore); // introduces new function id
+            nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore); // introduces new function id
 
             var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
@@ -823,7 +823,7 @@ namespace Dynamo.Tests
             var originalNumElements = ViewModel.Model.SearchModel.NumElements;
 
             // save as
-            nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore); // introduces new function id
+            nodeWorkspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore); // introduces new function id
 
             var newId = nodeWorkspace.CustomNodeDefinition.FunctionId;
 
@@ -874,7 +874,7 @@ namespace Dynamo.Tests
             for (var i = 0; i < 10; i++)
             {
                 var newPath = GetNewFileNameOnTempPath("dyf");
-                workspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerRuntimeCore);
+                workspace.SaveAs(newPath, ViewModel.Model.EngineController.LiveRunnerCore);
 
                 var newId = workspace.CustomNodeDefinition.FunctionId;
                 var newName = workspace.Name;
