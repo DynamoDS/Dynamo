@@ -212,6 +212,16 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
+        ///     Indicates whether it is custom node or zero-touch element.
+        ///     And whether this element comes from package or not.
+        /// </summary>
+        public ElementTypes ElementType
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
         ///     Event fired when this search element produces a new NodeModel. This typically
         ///     happens when it is selected in the library by the user.
         /// </summary>

@@ -103,9 +103,9 @@ namespace Dynamo.Views
         /// <param name="e"></param>
         void OnViewModelDragSelectionEnded(object sender, EventArgs e)
         {
-            if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(false))
+            if (ViewModel.UnPauseVisualizationManagerCommand.CanExecute(true))
             {
-                ViewModel.UnPauseVisualizationManagerCommand.Execute(false);
+                ViewModel.UnPauseVisualizationManagerCommand.Execute(true);
             }
         }
 
@@ -147,6 +147,10 @@ namespace Dynamo.Views
         {
             if (ViewModel == null) return;
             ViewModel.NodeFromSelectionCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.AddAnnotationCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.UngroupAnnotationCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.UngroupModelCommand.RaiseCanExecuteChanged();
+            ViewModel.DynamoViewModel.AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
         }
 
         /// <summary>

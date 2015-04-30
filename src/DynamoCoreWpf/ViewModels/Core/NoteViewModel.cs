@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
 
@@ -83,6 +84,13 @@ namespace Dynamo.ViewModels
             this.WorkspaceViewModel = workspaceViewModel;
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
+        }
+
+        private void SelectionOnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            AddToGroupCommand.RaiseCanExecuteChanged();
+            UngroupCommand.RaiseCanExecuteChanged();
         }
 
         private void Select(object parameter)
@@ -92,8 +100,7 @@ namespace Dynamo.ViewModels
 
         public void UpdateSizeFromView(double w, double h)
         {
-            this._model.Width = w;
-            this._model.Height = h;
+            this._model.SetSize(w,h);     
         }
 
         private bool CanSelect(object parameter)
@@ -124,6 +131,44 @@ namespace Dynamo.ViewModels
                     break;
 
             }
+        }
+
+        private void CreateGroup(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.AddAnnotationCommand.Execute(null);
+        }
+
+        private bool CanCreateGroup(object parameters)
+        {
+            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+        }
+
+        private void UngroupNote(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.UngroupModelCommand.Execute(null);
+        }
+
+        private bool CanUngroupNote(object parameters)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            if (groups != null
+                && DynamoSelection.Instance.Selection.OfType<NoteModel>().Any())
+                return (from model in groups
+                        let noteModel = DynamoSelection.Instance.Selection.OfType<NoteModel>().FirstOrDefault()
+                        where model.SelectedModels.Any(x => x.GUID == noteModel.GUID)
+                        select model).Any();
+            return false;
+        }
+
+        private void AddToGroup(object parameters)
+        {
+            WorkspaceViewModel.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
+        }
+
+        private bool CanAddToGroup(object parameters)
+        {
+            var groups = WorkspaceViewModel.Model.Annotations;
+            return groups != null && groups.Any(x => x.IsSelected);
         }
     }
 }

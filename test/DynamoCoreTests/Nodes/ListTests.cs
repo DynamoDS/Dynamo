@@ -1134,7 +1134,9 @@ namespace Dynamo.Tests
 
 		}
 
-		[Test]
+        // NOTE: This test itself increases the memory consumption by 2.1 GB.
+        // Temporary disabling it so that the build server can continue...
+        [Test, Category("Failure")]
         public void LaceLongest_ListWith10000Element()
 		{
 			var model = ViewModel.Model;
@@ -2492,6 +2494,15 @@ namespace Dynamo.Tests
         {
 	        var openPath = Path.Combine(TestDirectory, @"core\list\RegressMagn4838_2.dyn");
             RunModel(openPath);
+        }
+
+        [Test]
+        public void TestFilterOnEmptyList()
+        {
+	        var openPath = Path.Combine(TestDirectory, @"core\list\testFilterOnEmptyInput.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("068bec9b-6da0-4379-af7c-5062f4fb0f92", new object[] { });
+            AssertPreviewValue("fe77da6f-71db-4712-bffb-27d5acc86e0b", new object[] { });
         }
         #endregion
     }

@@ -14,7 +14,7 @@
              KeyUp="OnKeyUp"
              PreviewKeyUp="OnPreviewKeyUp"
              MouseLeftButtonDown="topControl_MouseLeftButtonDown"
-             MouseRightButtonDown="topControl_MouseRightButtonDown"
+             MouseRightButtonDown="topControl_MouseRightButtonDown"              
              Canvas.Left="{Binding Left, Mode=TwoWay}"
              Canvas.Top="{Binding Top, Mode=TwoWay}">
     <Grid Name="grid"
@@ -40,10 +40,19 @@
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu"
-                         x:FieldModifier="public">
+                         x:FieldModifier="public">               
                 <MenuItem Name="deleteElem_cm"
                           Header="{x:Static p:Resources.ContextMenuDelete}"
                           Command="{Binding Path=DeleteCommand}" />
+                <MenuItem Name="createGroup_cm"
+                          Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
+                          Command="{Binding Path=CreateGroupCommand}" />
+                <MenuItem Name="unGroup_cm"
+                          Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
+                          Command="{Binding Path=UngroupCommand}" />
+                <MenuItem Name="addtoGroup"
+                          Header="{x:Static p:Resources.ContextAddGroupFromSelection}"
+                          Command="{Binding Path=AddToGroupCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
                     <MenuItem IsCheckable="True"

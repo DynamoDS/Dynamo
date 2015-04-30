@@ -20,8 +20,9 @@ namespace Dynamo.Tests
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            libraries.Add("DSCoreNodes.dll");
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
+            
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -578,6 +579,16 @@ b = c[w][x][y][z];";
 
             Assert.AreEqual(0, codeBlockNode.InPortData.Count);
             Assert.AreEqual(1, codeBlockNode.OutPortData.Count);
+        }
+
+        [Test]
+        public void Defect_MAGN_6723()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            string code = @"x + ""anyString"";";
+
+            UpdateCodeBlockNodeContent(codeBlockNode, code);
+            Assert.AreEqual(1, codeBlockNode.InPortData.Count);
         }
 
         #region CodeBlockUtils Specific Tests

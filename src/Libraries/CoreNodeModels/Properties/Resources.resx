@@ -139,17 +139,17 @@
     <value>Get a color given a color range.</value>
     <comment>Description for Color Range</comment>
   </data>
-  <data name="ColorRangePortDataEndToolTip" xml:space="preserve">
-    <value>The end color.</value>
+  <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
+    <value>A list of values between 0.0 and 1.0 which position the input colors along the range.</value>
   </data>
   <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
-    <value>The selected color.</value>
+    <value>The selected colors.</value>
   </data>
-  <data name="ColorRangePortDataStartToolTip" xml:space="preserve">
-    <value>The start color.</value>
+  <data name="ColorRangePortDataColorsToolTip" xml:space="preserve">
+    <value>A list of colors to include in the range.</value>
   </data>
   <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
-    <value>The value between 0 and 1 of the selected color.</value>
+    <value>A list of values between 0.0 and 1.0. These values are used to look up the color within the range.</value>
   </data>
   <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
     <value>Combinator</value>
@@ -440,10 +440,6 @@
   <data name="ReplacePortDataResultToolTip" xml:space="preserve">
     <value>If condition(item) = True, then "replaceWith" is returned. Otherwise "item" is returned unaltered.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Resources_en_US" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources.en-US.resx;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
-  </data>
   <data name="ScanPortDataReductorToolTip" xml:space="preserve">
     <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
   </data>
@@ -515,5 +511,9 @@
   </data>
   <data name="SelectFromComboBoxToolTip" xml:space="preserve">
     <value>This is your Revit display unit settings</value>
+  </data>
+  <data name="ListCreateSearchTags" xml:space="preserve">
+    <value>entwine;listcreate,newlist;makelist;list;</value>
+    <comment>search tags for list.create</comment>
   </data>
 </root>

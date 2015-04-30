@@ -93,6 +93,67 @@
 
             <Canvas.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Name="WorkspaceLacingMenu"
+                              Header="{x:Static p:Resources.ContextMenuLacing}">
+                        <MenuItem IsCheckable="True"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="Shortest"
+                                  Header="{x:Static p:Resources.ContextMenuLacingShortest}">
+                            <MenuItem.IsChecked>
+                                <Binding Path="SelectionArgumentLacing"
+                                         Mode="OneWay"
+                                         Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="Shortest" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+                        <MenuItem IsCheckable="True"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="Longest"
+                                  Header="{x:Static p:Resources.ContextMenuLacingLongest}">
+                            <MenuItem.IsChecked>
+                                <Binding Path="SelectionArgumentLacing"
+                                         Mode="OneWay"
+                                         Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="Longest" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+                        <MenuItem IsCheckable="True"
+                                  Command="{Binding Path=SetArgumentLacingCommand}"
+                                  CommandParameter="CrossProduct"
+                                  Header="{x:Static p:Resources.ContextMenuLacingCrossProduct}">
+                            <MenuItem.IsChecked>
+                                <Binding Path="SelectionArgumentLacing"
+                                         Mode="OneWay"
+                                         Converter="{StaticResource EnumToBoolConverter}"
+                                         ConverterParameter="CrossProduct" />
+                            </MenuItem.IsChecked>
+                        </MenuItem>
+                    </MenuItem>
+
+
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static  p:Resources.ContextMenuShowAllGeometry}"
+                              Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
+                              CommandParameter="true"
+                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
+
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static p:Resources.ContextMenuHideAllGeometry}"
+                              Command="{Binding Path=ShowHideAllGeometryPreviewCommand}"
+                              CommandParameter="false"
+                              Visibility="{Binding Path=AnyNodeVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
+
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static  p:Resources.ContextMenuShowUpstreamPreview}"
+                              Command="{Binding Path=ShowHideAllUpstreamPreviewCommand}"
+                              CommandParameter="true"
+                              Visibility="{Binding Path=AnyNodeUpstreamVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
+
+                    <MenuItem IsEnabled="{Binding Path=HasSelection}"
+                              Header="{x:Static p:Resources.ContextMenuHideUpstreamPreview}"
+                              Command="{Binding Path=ShowHideAllUpstreamPreviewCommand}"
+                              CommandParameter="false"
+                              Visibility="{Binding Path=AnyNodeUpstreamVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
 
                     <MenuItem  Header="{x:Static p:Resources.DynamoViewEditMenuAlignSelection}"
                                Name="Align">
@@ -124,10 +185,13 @@
 
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromSelection}"
                                Command="{Binding NodeFromSelectionCommand}" />
-                    <!--
-                    <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
-                               Command="{Binding NodeToCodeCommand}" />
-                    -->
+
+                    <!--<MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
+                               Command="{Binding NodeToCodeCommand}" /> -->
+
+                    <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"                                 
+                               Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
+                    
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromGeometry}"
                                Visibility="{Binding Path=CanFindNodesFromElements, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                Command="{Binding FindNodesFromSelectionCommand}" />

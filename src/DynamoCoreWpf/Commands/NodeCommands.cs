@@ -19,6 +19,9 @@ namespace Dynamo.ViewModels
         //private DelegateCommand _fadeOutTooltipCommand;
         private DelegateCommand _setModelSizeCommand;
         private DelegateCommand _gotoWorkspaceCommand;
+        private DelegateCommand _createGroupCommand;
+        private DelegateCommand _ungroupCommand;
+        private DelegateCommand _addToGroupCommand;
 
         public DelegateCommand RenameCommand
         {
@@ -157,5 +160,42 @@ namespace Dynamo.ViewModels
                 return _gotoWorkspaceCommand;
             }
         }
+
+        public DelegateCommand CreateGroupCommand
+        {
+            get
+            {
+                if (_createGroupCommand == null)
+                    _createGroupCommand =
+                        new DelegateCommand(CreateGroup, CanCreateGroup);
+
+                return _createGroupCommand;
+            }
+        }
+       
+        public DelegateCommand UngroupCommand
+        {
+            get
+            {
+                if (_ungroupCommand == null)
+                    _ungroupCommand =
+                        new DelegateCommand(UngroupNode, CanUngroupNode);
+
+                return _ungroupCommand;
+            }
+        }
+
+        public DelegateCommand AddToGroupCommand
+        {
+            get
+            {
+                if (_addToGroupCommand == null)
+                    _addToGroupCommand =
+                        new DelegateCommand(AddToGroup, CanAddToGroup);
+
+                return _addToGroupCommand;
+            }
+        }
+        
     }
 }

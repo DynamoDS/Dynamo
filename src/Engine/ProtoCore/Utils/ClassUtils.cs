@@ -138,13 +138,13 @@ namespace ProtoCore.Utils
                 bool isAccessible = false;
                 if (isInMemberFunctionContext)
                 {
-                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.CompilerDefinitions.AccessSpecifier.kPrivate);
+                    isAccessible = (symbol.classScope == myself) || (symbol.access != ProtoCore.CompilerDefinitions.AccessModifier.kPrivate);
                     if (isInStaticFunction)
                         isAccessible = isAccessible && symbol.isStatic;
                 }
                 else
                 {
-                    isAccessible = symbol.access == ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic;
+                    isAccessible = symbol.access == ProtoCore.CompilerDefinitions.AccessModifier.kPublic;
                 }
 
                 if (isAccessible)

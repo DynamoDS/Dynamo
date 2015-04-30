@@ -33,7 +33,8 @@ namespace ProtoCore
             kTypeMismatch,
             kReplicationWarning,
             kInvalidIndexing,
-            kModuloByZero
+            kModuloByZero,
+            kInvalidType
         }
 
         public struct WarningEntry
@@ -160,7 +161,7 @@ namespace ProtoCore
                 // internal graph node. 
                 if (executingGraphNode != null && executingGraphNode.guid.Equals(System.Guid.Empty))
                 {
-                    executingGraphNode = runtimeCore.DSExecutable.RuntimeData.ExecutingGraphnode;
+                    executingGraphNode = runtimeCore.DSExecutable.ExecutingGraphnode;
                 }
             }
 
@@ -210,7 +211,7 @@ namespace ProtoCore
 
                 if (String.IsNullOrEmpty(filePath))
                 {
-                    filePath = runtimeCore.DSExecutable.RuntimeData.CurrentDSFileName;
+                    filePath = runtimeCore.DSExecutable.CurrentDSFileName;
                 }
             }
             if (runtimeCore.Options.IsDeltaExecution)
@@ -242,12 +243,12 @@ namespace ProtoCore
             ulong mergedKey = (((ulong)blk) << 32 | ((uint)pc));
             ulong location = (((ulong)line) << 32 | ((uint)column));
 
-            if (runtimeCore.DSExecutable.RuntimeData.CodeToLocation.ContainsKey(mergedKey))
+            if (runtimeCore.DSExecutable.CodeToLocation.ContainsKey(mergedKey))
             {
-                location = runtimeCore.DSExecutable.RuntimeData.CodeToLocation[mergedKey];
+                location = runtimeCore.DSExecutable.CodeToLocation[mergedKey];
             }
 
-            foreach (KeyValuePair<ulong, ulong> kv in runtimeCore.DSExecutable.RuntimeData.CodeToLocation)
+            foreach (KeyValuePair<ulong, ulong> kv in runtimeCore.DSExecutable.CodeToLocation)
             {
                 //Conditions: within same blk && find the largest key which less than mergedKey we want to find
                 if ((((int)(kv.Key >> 32)) == blk) && (kv.Key < mergedKey))
@@ -298,7 +299,7 @@ namespace ProtoCore
                     continue;
 
 
-                foreach (var kv in runtimeCore.DSExecutable.RuntimeData.CodeToLocation)
+                foreach (var kv in runtimeCore.DSExecutable.CodeToLocation)
                 {
                     if ((((int)(kv.Key >> 32)) == block) && (kv.Key >= (ulong)startpc && kv.Key <= (ulong)endpc))
                     {

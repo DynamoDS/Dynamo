@@ -7,6 +7,7 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
+using ProtoCore.AST;
 using ProtoCore.Namespace;
 using Symbol = Dynamo.Nodes.Symbol;
 
@@ -172,7 +173,7 @@ namespace Dynamo.Core
                 }
             };
             InfoUpdated += infoUpdatedHandler;
-            node.Disposed += () =>
+            node.Disposed += (args) =>
             {
                 if (!disposed)
                     InfoUpdated -= infoUpdatedHandler;
@@ -195,7 +196,7 @@ namespace Dynamo.Core
                 node.Category = info.Category;
             };
             workspace.InfoChanged += infoChangedHandler;
-            node.Disposed += () =>
+            node.Disposed += (args) =>
             {
                 workspace.DefinitionUpdated -= defUpdatedHandler;
                 workspace.InfoChanged -= infoChangedHandler;
@@ -287,12 +288,17 @@ namespace Dynamo.Core
         /// <param name="isTestMode">
         ///     Flag specifying whether or not this should operate in "test mode".
         /// </param>
+        /// <param name="isPackageMember">
+        ///     Indicates whether custom node comes from package or not.
+        /// </param>
         /// <returns></returns>
-        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode)
+        public IEnumerable<CustomNodeInfo> AddUninitializedCustomNodesInPath(string path, bool isTestMode, bool isPackageMember = false)
         {
             var result = new List<CustomNodeInfo>();
             foreach (var info in ScanNodeHeadersInDirectory(path, isTestMode))
             {
+                info.IsPackageMember = isPackageMember;
+
                 SetNodeInfo(info);
                 result.Add(info);
             }
@@ -495,7 +501,9 @@ namespace Dynamo.Core
                 nodeFactory,
                 nodeGraph.Nodes,
                 nodeGraph.Notes,
+                nodeGraph.Annotations,                               
                 workspaceInfo);
+
             
             RegisterCustomNodeWorkspace(newWorkspace);
 
@@ -1036,6 +1044,7 @@ namespace Dynamo.Core
                     nodeFactory,
                     newNodes,
                     Enumerable.Empty<NoteModel>(),
+                    Enumerable.Empty<AnnotationModel>(),                
                     new WorkspaceInfo()
                     {
                         X = 0,

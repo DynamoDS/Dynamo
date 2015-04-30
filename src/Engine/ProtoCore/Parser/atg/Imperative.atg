@@ -137,12 +137,6 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         |
         Imperative_languageblock<out node>      
         |
-        Imperative_ThrowStatement<out node>
-        (. #if ENABLE_EXCEPTION_HANDLING .)
-        |
-        Imperative_ExceptionBlock<out node>
-        (. #endif .)
-        |
         (
             kw_break 
             (.
@@ -182,21 +176,6 @@ Imperative_stmt<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
             endline 
         )
     )   
-.
-
-Imperative_ThrowStatement<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
-=
-                                (. ProtoCore.AST.ImperativeAST.ThrowNode throwNode = new ProtoCore.AST.ImperativeAST.ThrowNode(); .)
-    "throw"
-                                (. ProtoCore.AST.ImperativeAST.ImperativeNode expression; .)
-    Imperative_expr<out expression>
-                                (. throwNode.expression = expression; .)
-                                (.
-                                    if (la.kind != _endline)
-                                       SynErr(Resources.SemiColonExpected);
-                                .)
-    endline
-                                (. node = throwNode; .)
 .
 
 Imperative_stmtlist<.out List<ProtoCore.AST.ImperativeAST.ImperativeNode> nodelist.> 
@@ -1323,73 +1302,6 @@ Imperative_num<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
                 NodeUtils.SetNodeLocation(node, t); }
         .)
     )
-.
-
-Imperative_TryBlock<out ProtoCore.AST.ImperativeAST.TryBlockNode tryBlockNode>
-=    
-                                    (. tryBlockNode = new ProtoCore.AST.ImperativeAST.TryBlockNode(); .)
-    "try"
-    '{'
-                                    (. List<ProtoCore.AST.ImperativeAST.ImperativeNode> tryBlockBody = null; .)
-        Imperative_stmtlist<out tryBlockBody>
-                                    (. tryBlockNode.body = tryBlockBody; .)
-    '}'
-.
-
-Imperative_CatchFilter<out ProtoCore.AST.ImperativeAST.CatchFilterNode catchFilterNode>
-=
-                                    (. catchFilterNode = new ProtoCore.AST.ImperativeAST.CatchFilterNode(); .)
-
-    ident                       
-                                    (. 
-                                        if (IsKeyWord(t.val, true))
-                                        {
-                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
-                                        }
-
-                                        catchFilterNode.var =  BuildImperativeIdentifier(t.val);
-                                    .)  
-    ':'
-    ident                           (. 
-                                        ProtoCore.Type exceptionType = new ProtoCore.Type()
-                                        {
-                                            Name = t.val, 
-                                            rank = 0, 
-                                        };
-                                        catchFilterNode.type = exceptionType;
-                                    .)
-.
-
-Imperative_CatchBlock<out ProtoCore.AST.ImperativeAST.CatchBlockNode catchBlockNode>
-=    
-    "catch"                         (. catchBlockNode = new ProtoCore.AST.ImperativeAST.CatchBlockNode(); .)
-    "("
-                                    (. ProtoCore.AST.ImperativeAST.CatchFilterNode catchFilterNode = null; .)
-        Imperative_CatchFilter<out catchFilterNode>
-                                    (. catchBlockNode.catchFilter = catchFilterNode; .)  
-    ")"
-    '{'
-                                    (. List<ProtoCore.AST.ImperativeAST.ImperativeNode> catchBlockBody = null; .)
-        Imperative_stmtlist<out catchBlockBody>
-                                    (. catchBlockNode.body = catchBlockBody; .)
-    '}'
-.
-
-Imperative_ExceptionBlock<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
-=
-                                    (. ProtoCore.AST.ImperativeAST.ExceptionHandlingNode exceptionNode = new ProtoCore.AST.ImperativeAST.ExceptionHandlingNode(); .)
-                                    (. ProtoCore.AST.ImperativeAST.TryBlockNode tryBlockNode; .)
-    Imperative_TryBlock<out tryBlockNode>
-                                    (. exceptionNode.tryBlock = tryBlockNode; .)
-                                    (. ProtoCore.AST.ImperativeAST.CatchBlockNode catchBlockNode; .)
-    Imperative_CatchBlock<out catchBlockNode>
-                                    (. exceptionNode.catchBlocks.Add(catchBlockNode); .)
-    {
-        Imperative_CatchBlock<out catchBlockNode>
-                                    (. exceptionNode.catchBlocks.Add(catchBlockNode); .)
-    }
-    
-                                    (. node = exceptionNode; .)
 .
 
 Imperative_mulop<out Operator op>       

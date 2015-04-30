@@ -98,11 +98,6 @@ namespace Dynamo.Models
         //TODO(Steve): Model should not have to worry about UI thread synchronization -- MAGN-5709
 
         /// <summary>
-        ///     Fired when this NodeModel is disposed.
-        /// </summary>
-        public event Action Disposed;
-
-        /// <summary>
         ///     Called by nodes for behavior that they want to dispatch on the UI thread
         ///     Triggers event to be received by the UI. If no UI exists, behavior will not be executed.
         /// </summary>
@@ -637,14 +632,7 @@ namespace Dynamo.Models
 
             RaisesModificationEvents = true;
         }
-
-        public virtual void Dispose()
-        {
-            var handler = Disposed;
-            if (handler != null)
-                handler();
-        }
-
+     
         /// <summary>
         ///     Gets the most recent value of this node stored in an EngineController that has evaluated it.
         /// </summary>
@@ -713,7 +701,8 @@ namespace Dynamo.Models
         /// Wraps the publically overrideable `BuildOutputAst` method so that it works with Preview.
         /// </summary>
         /// <param name="inputAstNodes"></param>
-        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        /// <param name="context">Compilation context</param>
+        internal virtual IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             OnBuilt();
 

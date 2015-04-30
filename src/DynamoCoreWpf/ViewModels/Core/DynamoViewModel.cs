@@ -370,12 +370,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                var um = UpdateManager.UpdateManager.Instance;
-                if (um.ForceUpdate)
-                {
-                    return true;
-                }
-                return um.AvailableVersion > um.ProductVersion;
+                var um = model.UpdateManager;
+                return um.IsUpdateAvailable;
             }
         }
 
@@ -391,11 +387,11 @@ namespace Dynamo.ViewModels
 
         public int MaxTesselationDivisions
         {
-            get { return VisualizationManager.MaxTesselationDivisions; }
+            get { return model.MaxTesselationDivisions; }
             set
             {
-                VisualizationManager.MaxTesselationDivisions = value;
-                this.model.OnRequestsRedraw(this, EventArgs.Empty);
+                model.MaxTesselationDivisions = value;
+                model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }
 
@@ -445,6 +441,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool showWatchSettingsControl = false;
+
+        public bool ShowWatchSettingsControl
+        {
+            get { return showWatchSettingsControl; }
+            set
+            {
+                showWatchSettingsControl = value;
+                RaisePropertyChanged("ShowWatchSettingsControl");   
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration
@@ -486,7 +494,7 @@ namespace Dynamo.ViewModels
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
 
-            UsageReportingManager.Instance.InitializeCore(this.model);
+            UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             this.VisualizationManager = startConfiguration.VisualizationManager;
             this.PackageManagerClientViewModel = new PackageManagerClientViewModel(this, model.PackageManagerClient);
@@ -575,14 +583,14 @@ namespace Dynamo.ViewModels
 
         private void SubscribeUpdateManagerHandlers()
         {
-            UpdateManager.UpdateManager.Instance.UpdateDownloaded += Instance_UpdateDownloaded;
-            UpdateManager.UpdateManager.Instance.ShutdownRequested += updateManager_ShutdownRequested;
+            model.UpdateManager.UpdateDownloaded += Instance_UpdateDownloaded;
+            model.UpdateManager.ShutdownRequested += UpdateManager_ShutdownRequested;
         }
 
         private void UnsubscribeUpdateManagerEvents()
         {
-            UpdateManager.UpdateManager.Instance.UpdateDownloaded -= Instance_UpdateDownloaded;
-            UpdateManager.UpdateManager.Instance.ShutdownRequested -= updateManager_ShutdownRequested;
+            model.UpdateManager.UpdateDownloaded -= Instance_UpdateDownloaded;
+            model.UpdateManager.ShutdownRequested -= UpdateManager_ShutdownRequested;
         }
 
         private void SubscribeModelUiEvents()
@@ -750,7 +758,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsUpdateAvailable");
         }
 
-        void updateManager_ShutdownRequested(IUpdateManager updateManager)
+        void UpdateManager_ShutdownRequested(IUpdateManager updateManager)
         {
             PerformShutdownSequence(new ShutdownParams(
                 shutdownHost: true, allowCancellation: true));
@@ -771,6 +779,8 @@ namespace Dynamo.ViewModels
             PublishSelectedNodesCommand.RaiseCanExecuteChanged();
             AlignSelectedCommand.RaiseCanExecuteChanged();
             DeleteCommand.RaiseCanExecuteChanged();
+            UngroupModelCommand.RaiseCanExecuteChanged();
+            AddModelsToGroupModelCommand.RaiseCanExecuteChanged();
         }
 
         void Instance_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -819,7 +829,7 @@ namespace Dynamo.ViewModels
         //    }
         //}
 
-        private void CleanUp(DynamoModel dynamoModel)
+        private void CleanUp()
         {
             UnsubscribeAllEvents();
         }
@@ -877,6 +887,90 @@ namespace Dynamo.ViewModels
         internal bool CanAddNote(object parameters)
         {
             return true;
+        }
+
+        internal void AddAnnotation(object parameters)
+        {
+            if (null != parameters) // See above for details of this exception.
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+
+            var command = new DynamoModel.CreateAnnotationCommand(Guid.NewGuid(), null, 0, 0, true);
+            this.ExecuteCommand(command);
+        }
+
+        internal bool CanAddAnnotation(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+        }
+
+        internal void UngroupAnnotation(object parameters)
+        {
+            if (null != parameters)
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+            //Check for multiple groups - Delete the group and not the nodes.
+            foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>().ToList())
+            {
+                var command = new DynamoModel.DeleteModelCommand(group.GUID);
+                this.ExecuteCommand(command);
+            }            
+        }
+
+        internal bool CanUngroupAnnotation(object parameter)
+        {
+            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
+        }
+
+        internal void UngroupModel(object parameters)
+        {
+            if (null != parameters)
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+            //Check for multiple groups - Delete the group and not the nodes.
+            foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>().ToList())
+            {
+                if (!(modelb is AnnotationModel))
+                {
+                    var command = new DynamoModel.UngroupModelCommand(modelb.GUID);
+                    this.ExecuteCommand(command);
+                }
+            }  
+        }
+
+        internal bool CanUngroupModel(object parameter)
+        {
+            var tt = DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+        }
+
+        internal bool CanAddModelsToGroup(object obj)
+        {          
+            return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
+        }
+
+        internal void AddModelsToGroup(object parameters)
+        {
+            if (null != parameters)
+            {
+                var message = "Internal error, argument must be null";
+                throw new ArgumentException(message, "parameters");
+            }
+            //Check for multiple groups - Delete the group and not the nodes.
+            foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+            {
+                if (!(modelb is AnnotationModel))
+                {
+                    var command = new DynamoModel.AddModelToGroupCommand(modelb.GUID);
+                    this.ExecuteCommand(command);
+                }
+            }  
         }
 
         private void WorkspaceAdded(WorkspaceModel item)
@@ -939,12 +1033,12 @@ namespace Dynamo.ViewModels
             if (workspace == HomeSpace)
             {
                 ext = ".dyn";
-                fltr = string.Format(Resources.FileDialogDynamoWorkspace,"*.dyn");
+                fltr = string.Format(Resources.FileDialogDynamoWorkspace,BrandingResourceProvider.ProductName,"*.dyn");
             }
             else
             {
                 ext = ".dyf";
-                fltr = string.Format(Resources.FileDialogDynamoCustomNode,"*.dyf");
+                fltr = string.Format(Resources.FileDialogDynamoCustomNode,BrandingResourceProvider.ProductName,"*.dyf");
             }
             fltr += "|" + string.Format(Resources.FileDialogAllFiles, "*.*");
 
@@ -998,9 +1092,10 @@ namespace Dynamo.ViewModels
 
             FileDialog _fileDialog = new OpenFileDialog()
             {
-                Filter = string.Format(Resources.FileDialogDynamoDefinitions, "*.dyn; *.dyf") + "|" +
+                Filter = string.Format(Resources.FileDialogDynamoDefinitions,
+                         BrandingResourceProvider.ProductName, "*.dyn;*.dyf") + "|" +
                          string.Format(Resources.FileDialogAllFiles, "*.*"),
-                Title = Resources.OpenDynamoDefinitionDialogTitle
+                Title = string.Format(Resources.OpenDynamoDefinitionDialogTitle,BrandingResourceProvider.ProductName)
             };
 
             // if you've got the current space path, use it as the inital dir
@@ -1971,10 +2066,12 @@ namespace Dynamo.ViewModels
             if (shutdownParams.CloseDynamoView)
                 OnRequestClose(this, EventArgs.Empty);
 
+            VisualizationManager.Dispose();
+
             model.ShutDown(shutdownParams.ShutdownHost);
             if (shutdownParams.ShutdownHost)
             {
-                UpdateManager.UpdateManager.Instance.HostApplicationBeginQuit();
+                model.UpdateManager.HostApplicationBeginQuit();
             }
 
             UsageReportingManager.DestroyInstance();
@@ -2026,11 +2123,7 @@ namespace Dynamo.ViewModels
 
         public bool CanGetBranchVisualization(object parameter)
         {
-            if (FullscreenWatchShowing)
-            {
-                return true;
-            }
-            return false;
+            return FullscreenWatchShowing;
         }
 
         public DynamoViewModel ViewModel { get { return this; } }

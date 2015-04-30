@@ -38,6 +38,10 @@
       <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ProtoGeometry">
+      <HintPath>..\..\..\bin\AnyCPU\Debug\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="ProtoInterface">
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoInterface.dll</HintPath>
       <Private>False</Private>
@@ -108,7 +112,7 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoConversions\DynamoConversions.csproj">
-      <Project>{67cf6cf2-cd6a-442c-babe-864f896dd8ea}</Project>
+      <Project>{c5adc05b-34e8-47bf-8e78-9c7bf96418c2}</Project>
       <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
@@ -122,10 +126,12 @@
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

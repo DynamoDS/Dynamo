@@ -247,5 +247,6 @@ namespace Dynamo
         public string Category { get; set; }
         public string Description { get; set; }
         public string Path { get; set; }
+        public bool IsPackageMember { get; set; }
     }
 }

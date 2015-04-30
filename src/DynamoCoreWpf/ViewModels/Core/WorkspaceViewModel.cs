@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Data;
-using Dynamo.Controls;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
@@ -142,11 +139,13 @@ namespace Dynamo.ViewModels
         ObservableCollection<NodeViewModel> _nodes = new ObservableCollection<NodeViewModel>();
         ObservableCollection<NoteViewModel> _notes = new ObservableCollection<NoteViewModel>();
         ObservableCollection<InfoBubbleViewModel> _errors = new ObservableCollection<InfoBubbleViewModel>();
+        ObservableCollection<AnnotationViewModel> _annotations = new ObservableCollection<AnnotationViewModel>();
 
         public ObservableCollection<ConnectorViewModel> Connectors { get { return _connectors; } }
         public ObservableCollection<NodeViewModel> Nodes { get { return _nodes; } }
         public ObservableCollection<NoteViewModel> Notes { get { return _notes; } }
         public ObservableCollection<InfoBubbleViewModel> Errors { get { return _errors; } }
+        public ObservableCollection<AnnotationViewModel> Annotations { get { return _annotations; } }
 
         public string Name
         {
@@ -263,6 +262,8 @@ namespace Dynamo.ViewModels
             var errorsColl = new CollectionContainer { Collection = Errors };
             _workspaceElements.Add(errorsColl);
 
+            var annotationsColl = new CollectionContainer {Collection = Annotations};
+            _workspaceElements.Add(annotationsColl);
             // Add EndlessGrid
             var endlessGrid = new EndlessGridViewModel(this);
             _workspaceElements.Add(endlessGrid);
@@ -272,15 +273,18 @@ namespace Dynamo.ViewModels
             //connector view models are added during connection
             Model.Nodes.CollectionChanged += Nodes_CollectionChanged;
             Model.Notes.CollectionChanged += Notes_CollectionChanged;
+            Model.Annotations.CollectionChanged +=Annotations_CollectionChanged;
             Model.ConnectorAdded += Connectors_ConnectorAdded;
             Model.ConnectorDeleted += Connectors_ConnectorDeleted;
             Model.PropertyChanged += ModelPropertyChanged;
 
-            DynamoSelection.Instance.Selection.CollectionChanged += this.AlignSelectionCanExecuteChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += 
+                (sender, e) => RefreshViewOnSelectionChange();
 
             // sync collections
             Nodes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Nodes));
             Notes_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Notes));
+            Annotations_CollectionChanged(null, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Model.Annotations));
             foreach (var c in Model.Connectors)
                 Connectors_ConnectorAdded(c);
         }
@@ -339,6 +343,29 @@ namespace Dynamo.ViewModels
             }
         }
 
+        void Annotations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in e.NewItems)
+                    {                     
+                        var viewModel = new AnnotationViewModel(this, item as AnnotationModel);
+                        _annotations.Add(viewModel);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    _annotations.Clear();
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in e.OldItems)
+                    {
+                        _annotations.Remove(_annotations.First(x => x.AnnotationModel == item));
+                    }
+                    break;
+            }
+        }
+        
         void Nodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -492,8 +519,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            Guid nodeID = Guid.NewGuid();
-            var command = new DynamoModel.ConvertNodesToCodeCommand(nodeID);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
             this.DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -524,6 +550,23 @@ namespace Dynamo.ViewModels
             }
 
             foreach (var n in Model.Notes)
+            {
+                double x0 = n.X;
+                double y0 = n.Y;
+
+                if (IsInRegion(region, n, fullyEnclosed))
+                {
+                    if (!DynamoSelection.Instance.Selection.Contains(n))
+                        DynamoSelection.Instance.Selection.Add(n);
+                }
+                else
+                {
+                    if (n.IsSelected)
+                        DynamoSelection.Instance.Selection.Remove(n);
+                }
+            }
+
+            foreach (var n in Model.Annotations)
             {
                 double x0 = n.X;
                 double y0 = n.Y;
@@ -744,6 +787,51 @@ namespace Dynamo.ViewModels
             return DynamoSelection.Instance.Selection.Count > 1;
         }
 
+        private void ShowHideAllGeometryPreview(object parameter)
+        {
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
+
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "IsVisible", (string) parameter);
+
+            DynamoViewModel.Model.ExecuteCommand(command);
+            RefreshViewOnSelectionChange();
+        }
+
+        private void ShowHideAllUpstreamPreview(object parameter)
+        {
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
+
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "IsUpstreamVisible", (string) parameter);
+
+            DynamoViewModel.Model.ExecuteCommand(command);
+            RefreshViewOnSelectionChange();
+        }
+
+        private void SetArgumentLacing(object parameter)
+        {
+            var modelGuids = DynamoSelection.Instance.Selection.
+                OfType<NodeModel>().Select(n => n.GUID);
+
+            if (!modelGuids.Any())
+                return;
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+                modelGuids, "ArgumentLacing", (string) parameter);
+
+            DynamoViewModel.Model.ExecuteCommand(command);
+            RaisePropertyChanged("SelectionArgumentLacing");
+        }
+
         private void Hide(object parameters)
         {
             // Closing of custom workspaces will simply close those workspaces,
@@ -810,6 +898,7 @@ namespace Dynamo.ViewModels
         private void AlignSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             AlignSelectedCommand.RaiseCanExecuteChanged();
+
         }
 
         private static bool CanCreateNodeFromSelection(object parameter)
@@ -1016,7 +1105,7 @@ namespace Dynamo.ViewModels
 
         private void PauseVisualizationManagerUpdates(object parameter)
         {
-            DynamoViewModel.VisualizationManager.Pause();
+            DynamoViewModel.VisualizationManager.Stop();
         }
 
         private static bool CanPauseVisualizationManagerUpdates(object parameter)
@@ -1026,12 +1115,25 @@ namespace Dynamo.ViewModels
 
         private void UnPauseVisualizationManagerUpdates(object parameter)
         {
-            DynamoViewModel.VisualizationManager.UnPause();
+            var update = (bool)parameter;
+            DynamoViewModel.VisualizationManager.Start(update);
         }
 
         private static bool CanUnPauseVisualizationManagerUpdates(object parameter)
         {
             return true;
+        }
+
+        private void RefreshViewOnSelectionChange()
+        {
+            AlignSelectedCommand.RaiseCanExecuteChanged();
+            ShowHideAllUpstreamPreviewCommand.RaiseCanExecuteChanged();
+            ShowHideAllGeometryPreviewCommand.RaiseCanExecuteChanged();
+            SetArgumentLacingCommand.RaiseCanExecuteChanged();
+            RaisePropertyChanged("HasSelection");
+            RaisePropertyChanged("AnyNodeVisible");
+            RaisePropertyChanged("AnyNodeUpstreamVisible");
+            RaisePropertyChanged("SelectionArgumentLacing");
         }
     }
 

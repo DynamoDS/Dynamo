@@ -15,9 +15,18 @@
     
     <Grid Name="BaseGrid">
         <Grid.ContextMenu>
-            <ContextMenu>
-                <MenuItem Name="deleteItem" Header="{x:Static p:Resources.NoteViewContextMenuDelete}" Click="OnDeleteItemClick"  />
+            <ContextMenu>               
+                <MenuItem Name="deleteItem" Header="{x:Static p:Resources.NoteViewContextMenuDelete}" Click="OnDeleteItemClick"  />               
                 <MenuItem Name="editItem" Header="{x:Static p:Resources.NoteViewContextMenuEdit}" Click="OnEditItemClick" />
+                <MenuItem Name="createGroup_cm"
+                          Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"
+                          Command="{Binding Path=CreateGroupCommand}" />
+                <MenuItem Name="addtoGroup"
+                          Header="{x:Static p:Resources.ContextAddGroupFromSelection}"
+                          Command="{Binding Path=AddToGroupCommand}" />
+                <MenuItem Name="unGroup_cm"
+                          Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
+                          Command="{Binding Path=UngroupCommand}" />
             </ContextMenu>
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">

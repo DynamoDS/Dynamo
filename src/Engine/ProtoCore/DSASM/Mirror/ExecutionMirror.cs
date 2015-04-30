@@ -163,7 +163,7 @@ namespace ProtoCore.DSASM.Mirror
                         return "{ " + arrTrace + " }";
                 case AddressType.FunctionPointer:
                     ProcedureNode procNode;
-                    if (runtimeCore.DSExecutable.RuntimeData.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
+                    if (runtimeCore.DSExecutable.FuncPointerTable.TryGetFunction(val, runtimeCore, out procNode))
                     {
                         string className = String.Empty;
                         if (procNode.classScope != Constants.kGlobalScope)

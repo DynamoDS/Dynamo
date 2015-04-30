@@ -278,7 +278,7 @@ namespace Dynamo.ViewModels
         {
             foreach (var item in tree)
             {
-                var classes = item.SubCategories.Where(cat => cat.SubCategories.Count == 0).ToList();
+                var classes = item.SubCategories.Where(cat => cat.IsClassButton).ToList();
                 foreach (var item2 in classes)
                     item.SubCategories.Remove(item2);
 
@@ -474,7 +474,7 @@ namespace Dynamo.ViewModels
                     // New category should be added to existing ClassesNodeCategoryViewModel.
                     // Make notice: ClassesNodeCategoryViewModel is always first item in 
                     // all subcategories.
-                    if (nameStack.Count == 0 && target.SubCategories.Count > 0 &&
+                    if (nameStack.Count == 0 && !target.IsClassButton &&
                         target.SubCategories[0] is ClassesNodeCategoryViewModel)
                     {
                         target.SubCategories[0].SubCategories.Add(newTarget);
@@ -491,7 +491,7 @@ namespace Dynamo.ViewModels
                         if (targetClass.SubCategories.Remove(target))
                             targetClass.Parent.SubCategories.Add(target);
                         // Delete empty classes container.
-                        if (targetClass.SubCategories.Count == 0)
+                        if (targetClass.IsClassButton)
                             targetClass.Parent.SubCategories.RemoveAt(0);
 
                         targetClass.Dispose();
@@ -764,7 +764,7 @@ namespace Dynamo.ViewModels
                 newTarget = target.SubCategories.FirstOrDefault(c => c.Name == currentCategory);
                 if (newTarget == null)
                 {
-                    if (!isCheckedForClassesCategory && target.SubCategories.Count > 0 &&
+                    if (!isCheckedForClassesCategory && !target.IsClassButton &&
                         target.SubCategories[0] is ClassesNodeCategoryViewModel)
                     {
                         isCheckedForClassesCategory = true;

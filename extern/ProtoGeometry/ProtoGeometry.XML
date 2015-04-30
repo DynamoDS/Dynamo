@@ -421,11 +421,27 @@
              <summary>
              Exports the specified geometry to the given SAT file path
              </summary>
-             <param name="filePath"></param>
+             <param name="filePath">The name of the file to export the geometry to</param>
+             <returns></returns>
+            WARNING: non-ascii characters are not supported in file nams.
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String,System.Double)">
+             <summary>
+             Exports the specified geometry to the given SAT file path
+             </summary>
+             <param name="filePath">The name of the file to export the geometry to</param>
              <returns></returns>
             WARNING: non-ascii characters are not supported in file nams.
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String)">
+            <summary>
+            Exports a list of specified geometry to the given SAT file path
+            </summary>
+            <param name="geometry"></param>
+            <param name="filePath"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
             <summary>
             Exports a list of specified geometry to the given SAT file path
             </summary>

@@ -92,7 +92,7 @@ namespace Dynamo.ViewModels
             {
                 case "OpenFileCommand":
                     this.AddToRecentFiles((command as DynamoModel.OpenFileCommand).XmlFilePath);
-                    this.VisualizationManager.UnPause();
+                    this.VisualizationManager.Start();
                     break;
 
                 case "MutateTestCommand":
@@ -118,10 +118,13 @@ namespace Dynamo.ViewModels
                 case "CreateNodeCommand":
                 case "CreateProxyNodeCommand":
                 case "CreateNoteCommand":
+                case "CreateAnnotationCommand":
                 case "UndoRedoCommand":
                 case "ModelEventCommand":
                 case "UpdateModelValueCommand":
                 case "ConvertNodesToCodeCommand":
+                case "UngroupModelCommand":
+                case "AddModelToGroupCommand":
                     UndoCommand.RaiseCanExecuteChanged();
                     RedoCommand.RaiseCanExecuteChanged();
                     break;
@@ -151,7 +154,7 @@ namespace Dynamo.ViewModels
             switch (name)
             {
                 case "OpenFileCommand":
-                    this.VisualizationManager.Pause();
+                    this.VisualizationManager.Stop();
                     break;
 
                 case "MakeConnectionCommand":
@@ -163,6 +166,7 @@ namespace Dynamo.ViewModels
                 case "CreateNodeCommand":
                 case "CreateProxyNodeCommand":
                 case "CreateNoteCommand":
+                case "CreateAnnotationCommand":
                 case "SelectModelCommand":
                 case "SelectInRegionCommand":
                 case "DragSelectionCommand":
@@ -174,6 +178,8 @@ namespace Dynamo.ViewModels
                 case "CreateCustomNodeCommand":
                 case "SwitchTabCommand":
                 case "MutateTestCommand":
+                case "UngroupModelCommand":
+                case "AddModelToGroupCommand":
                     // for this commands there is no need
                     // to do anything before execution
                     break;

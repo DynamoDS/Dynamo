@@ -62,12 +62,12 @@
                                PreviewMouseDown="OnPreviewMouseDown"
                                HorizontalAlignment="Center">
                         <Run Foreground="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableBrushConverter}}" 
-                             Text="{Binding IsUpdateAvailable, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
+                             Text="{Binding Model.UpdateManager, Converter={StaticResource IsUpdateAvailableToTextConverter}, 
                              ConverterParameter=DataContext, Mode=OneWay}"/>
                     </TextBlock>
                 </StackPanel>
             </Grid>
-            <Button Grid.Row="2" Content="{x:Static p:Resources.AboutWIndowDynamoWebsiteButton}" Click="OnClickLink" Style="{StaticResource STextButton}"/>
+            <Button Name="DynamoWebsiteButton" Grid.Row="2" Click="OnClickLink" Style="{StaticResource STextButton}"/>
             <Image Grid.Column="0"
                    Grid.Row="0"
                    Source="/DynamoCoreWpf;component/UI/Images/AboutWindow/logo_about.png" Height="128" Width="128"/>

@@ -81,7 +81,6 @@ namespace ProtoCore.DSASM
         public const string mov = "mov";
         public const string call = "call";
         public const string callr = "callr";
-        public const string callc = "callc";
         public const string add = "add";
         public const string sub = "sub";
         public const string mul = "mul";
@@ -128,7 +127,6 @@ namespace ProtoCore.DSASM
         public const string not = "not";
         public const string negate = "negate";
         public const string dep = "dep";
-        public const string depx = "depx";
         public const string setexpuid = "setexpuid";
         public const string pushb = "pushb";
         public const string popb = "popb";
@@ -146,10 +144,6 @@ namespace ProtoCore.DSASM
         public const string regSX = "_sx";
         public const string regLX = "_lx";
         public const string regTX = "_tx";
-
-        // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
-        public const string cast = "cast";
-        public const string throwexception = "throw";
 
         // TODO: Replace with ProtoCore.DSDefinitions.Keyword struct
         public const string associative = "Associative";
@@ -450,7 +444,7 @@ namespace ProtoCore.DSASM
         public const string kTempProcConstant = "temp_proc_var_";
         public const string kTempProcLeftVar = "%" + kTempProcConstant;
         public const string kImportData = "ImportData";
-        public const string kTempVarForNonAssignment = "temp_";
+        public const string kTempVarForNonAssignment = "temp6BBA4B28C5E54CF89F300D510499A00E_";
         public const char kLongestPostfix = 'L';
         public const string kDoubleUnderscores = "__";
         public const string kSingleUnderscore = "_";
