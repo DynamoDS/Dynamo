@@ -333,6 +333,21 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestTemporaryVariableRenaming3()
+        {
+            // 1 x 
+            // 2 y
+            OpenModel(@"core\node2code\tempVariable3.dyn");
+            var nodes = ViewModel.CurrentSpaceViewModel.Model.Nodes;
+            var engine = ViewModel.Model.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeUtils.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            Assert.True(result != null && result.AstNodes != null && result.AstNodes.Count() == 4);
+            Assert.True(result.AstNodes.All(n => n is BinaryExpressionNode));
+        }
+
+        [Test]
         public void TestUnqualifiedNameReplacer1()
         {
             var functionCall = AstFactory.BuildFunctionCall(
