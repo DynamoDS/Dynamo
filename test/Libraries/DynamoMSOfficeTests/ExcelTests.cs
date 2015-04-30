@@ -585,14 +585,17 @@ namespace Dynamo.Tests
             Assert.AreEqual(4, list.Count());
 
             // get data returns 2d array
+            // input array is Transpose of {{1,2,3,null}, {1,2,3,4}, {null,2,3}}
             Assert.IsTrue(list[0].IsCollection);
             var rowList = list[0].GetElements();
             Assert.AreEqual(3, rowList.Count());
             Assert.AreEqual(null, rowList[2].Data);
 
+            Assert.IsTrue(list[3].IsCollection);
             rowList = list[3].GetElements();
             Assert.AreEqual(3, rowList.Count());
             Assert.AreEqual(null, rowList[0].Data);
+            Assert.AreEqual(null, rowList[2].Data);
 
         }
 
