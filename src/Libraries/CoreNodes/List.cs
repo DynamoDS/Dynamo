@@ -676,8 +676,10 @@ namespace DSCore
 
             foreach (IList sublist in ilists)
             {
-                for (int i = 0; i < sublist.Count; i++)
-                    transposedList[i].Add(sublist[i]);
+                for (int i = 0; i < transposedList.Count; i++)
+                {
+                    transposedList[i].Add(i < sublist.Count ? sublist[i] : null);
+                }
             }
 
             return transposedList;
