@@ -47,7 +47,7 @@ namespace Dynamo.Wpf.UI
             switch (resourceName)
             {
                 case ResourceNames.MainWindow.Title:
-                    resource = "Dynamo";
+                    resource = ProductName;
                     break;
             }
             return EnsureStringLoaded(resource, resourceName.ToString());
@@ -59,10 +59,10 @@ namespace Dynamo.Wpf.UI
             switch (resourceName)
             {
                 case ResourceNames.ConsentForm.Title:
-                    resource = Properties.Resources.UsageReportPromptDialogTitle;
+                    resource = string.Format(Properties.Resources.UsageReportPromptDialogTitle,ProductName);
                     break;
                 case ResourceNames.ConsentForm.AgreementOne:
-                    resource = Properties.Resources.UsageReportPromptDialogMessagePart1;
+                    resource = string.Format(Properties.Resources.UsageReportPromptDialogMessagePart1,ProductName);
                     break;
                 case ResourceNames.ConsentForm.AgreementTwo:
                     resource = Properties.Resources.UsageReportPromptDialogMessagePart2;
@@ -71,19 +71,26 @@ namespace Dynamo.Wpf.UI
                     resource = Properties.Resources.UsageReportPromptDialogNodeUsage;
                     break;
                 case ResourceNames.ConsentForm.FeatureUsage:
-                    resource = Properties.Resources.UsageReportPromptDialogFeatureUsage;
+                    resource = string.Format(Properties.Resources.UsageReportPromptDialogFeatureUsage,ProductName);
                     break;
-                case ResourceNames.ConsentForm.Consent:
-                    resource = Properties.Resources.UsageReportPromptDialogConsent;
+                case ResourceNames.ConsentForm.AgreementThree:
+                    resource = string.Format(Properties.Resources.UsageReportPromptDialogMessagePart3, ProductName);
                     break;
-
             }
+
             return EnsureStringLoaded(resource, resourceName.ToString());
         }
 
         public Window CreateAboutBox(DynamoViewModel model)
         {
             return new AboutWindow(model);
+        }
+
+        public string ProductName { get { return "Dynamo"; } }
+
+        public string AdditionalPackagePublisherTermsOfUse
+        {
+            get { return String.Empty; } // No additional terms of use.
         }
 
         #endregion

@@ -293,6 +293,14 @@ namespace ProtoCore.Namespace
             symbolTable = new Dictionary<string, HashSet<Symbol>>();
         }
 
+        /// <summary>
+        /// Copy Constructor
+        /// </summary>
+        public SymbolTable(SymbolTable rhs)
+        {
+            symbolTable = new Dictionary<string, HashSet<Symbol>>(rhs.symbolTable);
+        }
+
         #region Public Methods
 
         /// <summary>

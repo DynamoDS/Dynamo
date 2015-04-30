@@ -3,92 +3,138 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-        SizeToContent="WidthAndHeight"
-        WindowStyle="SingleBorderWindow" ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+        Width="544"
+        Height="625"
+        ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </Window.Resources>
-    <Grid Width="544"
-          Height="auto"
-          Background="#444444">
+    <Grid Background="#444444">
+
         <Grid.RowDefinitions>
             <RowDefinition Height="100"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="60"></RowDefinition>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="110"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
         <!-- The top banner image -->
-        <Rectangle Width="544"
+        <Rectangle Grid.ColumnSpan="2"
+                   Width="544"
                    Height="100"
                    Stroke="Transparent"
                    VerticalAlignment="Top"
-                   Name="ConsentFormImageRectangle">
-        </Rectangle>
-        <StackPanel Grid.Row="1"
-                    Margin="15,4,8,15"
+                   Name="ConsentFormImageRectangle" />
+
+        <ScrollViewer Grid.Row="1"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="2"
+                      HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="15,4,8,15"
+                        Orientation="Vertical">
+                <TextBlock TextWrapping="Wrap"
+                           FontSize="13"
+                           Foreground="#FFC8C8C8"
+                           Name="Message1TextBlock" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="32"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0"
+                                Orientation="Vertical"
+                                Margin="0,0,8,0">
+                        <TextBlock HorizontalAlignment="Right"
+                                   FontSize="13"
+                                   Foreground="#FFC8C8C8">•</TextBlock>
+                        <TextBlock HorizontalAlignment="Right"
+                                   FontSize="13"
+                                   Foreground="#FFC8C8C8">•</TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1"
+                                Orientation="Vertical">
+                        <TextBlock TextWrapping="Wrap"
+                                   FontSize="13"
+                                   Foreground="#FFC8C8C8"
+                                   Name="FeatureTextBlock" />
+                        <TextBlock TextWrapping="Wrap"
+                                   FontSize="13"
+                                   Foreground="#FFC8C8C8"
+                                   Name="NodeTextBlock" />
+                    </StackPanel>
+                </Grid>
+                <TextBlock TextWrapping="Wrap"
+                           FontSize="13"
+                           Foreground="#FFC8C8C8"
+                           Name="Message2TextBlock" />
+                <TextBlock TextWrapping="Wrap"
+                           FontSize="13"
+                           Foreground="#FFC8C8C8"
+                           Margin="0,28,0,0"
+                           Name="Message3TextBlock" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
                     Orientation="Vertical">
-            <TextBlock TextWrapping="Wrap"
-                       FontSize="13"
-                       Foreground="#FFC8C8C8"
-                       Name="Message1TextBlock">
-            </TextBlock>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="32"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0"
-                            Orientation="Vertical"
-                            Margin="0,0,8,0">
-                    <TextBlock HorizontalAlignment="Right"
-                               FontSize="13"
-                               Foreground="#FFC8C8C8">•</TextBlock>
-                    <TextBlock HorizontalAlignment="Right"
-                               FontSize="13"
-                               Foreground="#FFC8C8C8">•</TextBlock>
-                </StackPanel>
-                <StackPanel Grid.Column="1"
-                            Orientation="Vertical">
-                    <TextBlock TextWrapping="Wrap"
-                               FontSize="13"
-                               Foreground="#FFC8C8C8" 
-                               Name="FeatureTextBlock"/>
-                    <TextBlock TextWrapping="Wrap"
-                               FontSize="13"
-                               Foreground="#FFC8C8C8" 
-                               Name="NodeTextBlock"/>
-                </StackPanel>
-            </Grid>
-            <TextBlock TextWrapping="Wrap"
-                       FontSize="13"
-                       Foreground="#FFC8C8C8"
-                       Name="Message2TextBlock">
-            </TextBlock>
+            <CheckBox x:Name="AcceptUsageReportingCheck"
+                      Click="ToggleIsUsageReportingChecked"
+                      Margin="15,10,15,4"
+                      VerticalAlignment="Center"
+                      Foreground="#4790cd"
+                      FontSize="13.333"
+                      Background="White">
+                <TextBlock FontWeight="SemiBold"
+                           Foreground="#4790cd"
+                           TextWrapping="Wrap"
+                           Name="AcceptUsageReportingTextBlock"
+                           Text="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}" />
+            </CheckBox>
+            <CheckBox x:Name="AcceptAnalyticsReportingCheck"
+                      Click="ToggleIsAnalyticsReportingChecked"
+                      Margin="15,4,15,4"
+                      VerticalAlignment="Center"
+                      Foreground="#4790cd"
+                      FontSize="13.333"
+                      Background="White">
+                <TextBlock FontWeight="SemiBold"
+                           Foreground="#4790cd"
+                           TextWrapping="Wrap"
+                           Name="AcceptAnalyticsReportingTextBlock"
+                           Text="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReporting}"/>
+            </CheckBox>
         </StackPanel>
 
-        <CheckBox Grid.Row="2"
-                  x:Name="acceptCheck"
-                  Margin="14,4,8,4"
-                  IsChecked="False"
-                  VerticalAlignment="Center"
-                  Foreground="#FFC8C8C8"
-                  FontSize="13.333"
-                  Background="White">
-            <TextBlock FontWeight="SemiBold"
-                       Name="ConsentTextBlock" />
-        </CheckBox>
-        <!-- Accept or Cancel -->
+        <TextBlock Grid.Row="3"
+                   Grid.Column="0"
+                   Margin="15,0,15,0"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Stretch">
+            <Hyperlink Click="OnLearnMoreClick">
+                <TextBlock Name="LearnMore"
+                           Text="{x:Static p:Resources.LearnMore}" />
+            </Hyperlink>
+        </TextBlock>
+
         <Button Grid.Row="3"
+                Grid.Column="1"
                 x:Name="okButton"
                 Style="{DynamicResource ResourceKey=STextButton}"
                 IsDefault="True"
                 VerticalAlignment="Bottom"
                 Margin="5"
                 Width="100"
-                Content="{x:Static p:Resources.ContinueButton}"
                 HorizontalAlignment="Right"
+                Content="{x:Static p:Resources.ContinueButton}"
                 Click="OnContinueClick" />
 
     </Grid>

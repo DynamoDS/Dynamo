@@ -556,7 +556,7 @@ namespace ProtoFFI
                     marshaller = new CLRObjectMarshler(core);
 
                     object value;
-                    if (core.DSExecutable.RuntimeData.Configurations.TryGetValue(ConfigurationKeys.GeometryXmlProperties, out value))
+                    if (core.DSExecutable.Configurations.TryGetValue(ConfigurationKeys.GeometryXmlProperties, out value))
                         marshaller.DumpXmlProperties = value == null ? false : (bool)value;
                     else
                         marshaller.DumpXmlProperties = false;

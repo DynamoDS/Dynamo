@@ -1,26 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Dynamo.Wpf
 {
-    public partial class BrowserWindow : Window
+    public partial class BrowserWindow
     {
         private readonly Uri _location;
 
         public BrowserWindow(Uri location)
         {
-            this._location = location;
-            this.Loaded += Window_Loaded;
+            _location = location;
+            Loaded += Window_Loaded;
 
             InitializeComponent();
         }
@@ -28,12 +18,44 @@ namespace Dynamo.Wpf
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             // hide loading grid when navigation ready
-            this.Browser.Navigated += (s, a) =>
+            Browser.Navigated += (s, a) =>
             {
-                this.LoadingGrid.Visibility = Visibility.Collapsed;
-                this.Browser.Visibility = Visibility.Visible;
+                LoadingTextBlock.Visibility = Visibility.Collapsed;
+                Browser.Visibility = Visibility.Visible;
+
+                var windowSize = new Size();
+                var localPath = ((a.Uri == null) ? string.Empty : a.Uri.LocalPath);
+                if (GetWindowSizeForContent(localPath, ref windowSize))
+                {
+                    Width = windowSize.Width;
+                    Height = windowSize.Height;
+                }
             };
-            this.Browser.Navigate( _location.AbsoluteUri );
+
+            Browser.Navigate(_location.AbsoluteUri);
+        }
+
+        private bool GetWindowSizeForContent(string localPath, ref Size size)
+        {
+            switch (localPath.ToLowerInvariant()) // All lower case!
+            {
+                case "/logon":
+                    size.Width = 360;
+                    size.Height = 365;
+                    return true;
+
+                case "/register":
+                    size.Width = 460;
+                    size.Height = 722;
+                    return true;
+
+                case "/account/forgotcredentials":
+                    size.Width = 640;
+                    size.Height = 260;
+                    return true;
+            }
+
+            return false; // No window size change required.
         }
     }
 }

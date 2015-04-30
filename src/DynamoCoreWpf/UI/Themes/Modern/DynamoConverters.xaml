@@ -111,7 +111,6 @@
     <controls:InverseBooleanToVisibilityCollapsedConverter x:Key="InverseBoolToVisibilityCollapsedConverter" />
     <controls:NavigationToOpacityConverter x:Key="NavigationToOpacityConverter" />
     <controls:ViewButtonClipRectConverter x:Key="ViewButtonClipRectConverter" />
-    <controls:BackgroundPreviewGestureConverter x:Key="BackgroundPreviewGestureConverter" />
     <controls:ZoomToVisibilityConverter x:Key="ZoomToVisibilityConverter" />
     <controls:ZoomToBooleanConverter x:Key="ZoomToBooleanConverter" />
     <controls:PortNameToWidthConverter x:Key="PortNameToWidthConverter" />
@@ -130,4 +129,21 @@
     <controls:RunPreviewToolTipConverter x:Key="RunPreviewToolTipConverter"/>
     <controls:MenuItemCheckConverter x:Key="MenuItemCheckConverter"/>
     <controls:AnnotationTextConverter x:Key="AnnotationTextConverter"/>
+    <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
+    <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
+    <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />
+    <controls:RootElementVMToBoolConverter x:Key="RootElementToBoolConverter" />
+    <controls:NodeCategoryVMToBoolConverter x:Key="NodeCategoryVMToBoolConverter" />
+    <controls:FullCategoryNameToMarginConverter x:Key="FullCategoryNameToMarginConverter" />
+    <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
+    <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
+    <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
+    <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
+    <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
+    <controls:NodeTypeToColorConverter x:Key="NodeTypeToColorConverter"
+                                       TrueBrush="#cccccc"
+                                       FalseBrush="#777777" />
+    <controls:BooleanToBrushConverter x:Key="DescriptionToColorConverter"
+                                      TrueBrush="#cccccc"
+                                      FalseBrush="#666666" />
 </ResourceDictionary>

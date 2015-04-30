@@ -68,11 +68,6 @@ namespace Dynamo.Wpf.ViewModels
             return WrapExplicit(itemDyn);
         }
 
-        internal static BrowserRootElementViewModel WrapExplicit(BrowserRootElement elem)
-        {
-            return new BrowserRootElementViewModel(elem);
-        }
-
         internal static BrowserInternalElementViewModel WrapExplicit(BrowserInternalElement elem)
         {
             return new BrowserInternalElementViewModel(elem);
@@ -89,6 +84,7 @@ namespace Dynamo.Wpf.ViewModels
         bool IsSelected { get; }
         string Description { get; }
         ICommand ClickedCommand { get; }
+        ElementTypes ElementType { get; }
     }
 
     public class NodeCategoryViewModel : NotificationObject, ISearchEntryViewModel
@@ -149,6 +145,52 @@ namespace Dynamo.Wpf.ViewModels
             {
                 if (!string.IsNullOrEmpty(assembly)) return;
                 assembly = value;
+            }
+        }
+
+
+        private ElementTypes elementType;
+        public ElementTypes ElementType
+        {
+            get
+            {
+                if (elementType == ElementTypes.None)
+                    DetermineElementType();
+                return elementType;
+            }
+
+            private set
+            {
+                if (value == elementType) return;
+                elementType = value;
+                RaisePropertyChanged("ElementType");
+            }
+        }
+
+        private void DetermineElementType()
+        {
+            if (Items.Count == 0)
+            {
+                ElementType = ElementTypes.None;
+                return;
+            }
+
+            // If at list one item is builtin, the whole category considers as builtin.
+            if (Items.Any(item => item.ElementType.HasFlag(ElementTypes.BuiltIn)))
+                ElementType = ElementTypes.BuiltIn;
+            else
+            {
+                // If some items come from package, the whole category considers as package.
+                if (Items.Any(item => item.ElementType.HasFlag(ElementTypes.Packaged)))
+                    ElementType = ElementTypes.Packaged;
+                else
+                {
+                    if (Items.Any(item => item.ElementType.HasFlag(ElementTypes.ZeroTouch)))
+                        ElementType = ElementTypes.ZeroTouch;
+                    else
+                        if (Items.Any(item => item.ElementType.HasFlag(ElementTypes.CustomNode)))
+                            ElementType = ElementTypes.CustomNode;
+                }
             }
         }
 

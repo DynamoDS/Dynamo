@@ -38,7 +38,7 @@
             <Image Source="/DynamoCoreWpf;component/UI/Images/Update/update_static.png" 
                        Width="40" Height="30" Margin="-3,-3,0,0"/>
             <Button.ToolTip>
-                <Label Content="{x:Static p:Resources.DynamoUpdateAvailabeToolTip}"/>
+                <Label Content="{x:Static p:Resources.DynamoUpdateAvailableToolTip}"/>
             </Button.ToolTip>
         </Button>
     </Grid>

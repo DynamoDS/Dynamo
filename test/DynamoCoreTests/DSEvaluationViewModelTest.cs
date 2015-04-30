@@ -159,13 +159,41 @@ namespace Dynamo.Tests
         public void AssertValue(MirrorData data, object value)
         {
             if (data.IsCollection)
+            {
+                if (!(value is IEnumerable))
+                {
+                    Assert.Fail("Data is collection but expected vlaue is not.");
+                }
                 AssertCollection(data, value as IEnumerable);
+            }
             else if (value == null)
+            {
                 Assert.IsTrue(data.IsNull);
+            }
             else if (value is int)
-                Assert.AreEqual((int)value, Convert.ToInt32(data.Data));
+            {
+                try
+                {
+                    int mirrorData = Convert.ToInt32(data.Data);
+                    Assert.AreEqual((int)value, mirrorData);
+                }
+                catch (Exception e)
+                {
+                    Assert.Fail(e.Message);
+                }
+            }
             else if (value is double)
-                Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+            {
+                try
+                {
+                    double mirrorData = Convert.ToDouble(data.Data);
+                    Assert.AreEqual((double)value, Convert.ToDouble(data.Data), 0.00001);
+                }
+                catch (Exception e)
+                {
+                    Assert.Fail(e.Message);
+                }
+            }
             else
                 Assert.AreEqual(value, data.Data);
         }
@@ -199,6 +227,41 @@ namespace Dynamo.Tests
             {
                 AssertValue(elements[i++], item);
             }
+        }
+
+        public List<object> GetFlattenedPreviewValues(string guid)
+        {
+            string varname = GetVarName(guid);
+            var mirror = GetRuntimeMirror(varname);
+            Assert.IsNotNull(mirror);
+            var data = mirror.GetData();
+            if (data == null) return null;
+            if (!data.IsCollection)
+            {
+                return data.Data == null ? new List<object>() : new List<object>() { data.Data };
+            }
+            var elements = data.GetElements();
+
+            var objects = GetSublistItems(elements);
+
+            return objects;
+        }
+
+        private static List<object> GetSublistItems(IEnumerable<MirrorData> datas)
+        {
+            var objects = new List<object>();
+            foreach (var data in datas)
+            {
+                if (!data.IsCollection)
+                {
+                    objects.Add(data.Data);
+                }
+                else
+                {
+                    objects.AddRange(GetSublistItems(data.GetElements()));
+                }
+            }
+            return objects;
         }
 
     }
@@ -736,7 +799,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\BasicRuntimeWarning.dyn");
             var guid = System.Guid.Parse("0fc83562-2cfe-4a63-84f8-f6836cbaf9c5");
             var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
-            Assert.IsTrue(node.State == Models.ElementState.Warning);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
         }
 
         [Test]

@@ -7,9 +7,8 @@
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
-        d:DataContext="{d:DesignData Source=./SampleData/PackageManagerSearchViewModelSampleData.xaml}"
         mc:Ignorable="d" 
-        Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="480" MinWidth="480" MaxWidth="480">
+        Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="490" MinWidth="490" MaxWidth="490">
     
     <Window.Resources>
         <ResourceDictionary>
@@ -109,28 +108,28 @@
 
                         <ContextMenu>
                             
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="NAME" Margin="3" 
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="Name" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=NAME, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="LAST_UPDATE" Margin="3" 
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Name, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="LastUpdate" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortyByUpdate}"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=LAST_UPDATE, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="DOWNLOADS" Margin="3" 
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=LastUpdate, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="Downloads" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByDownloads}"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DOWNLOADS, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="VOTES" Margin="3" 
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Downloads, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="Votes" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByVotes}"
-                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=VOTES, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="MAINTAINERS" Margin="3" 
+                                      IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Votes, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingKeyCommand}" CommandParameter="Maintainers" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByAuthor}" 
-                                      IsChecked="{Binding Path=SortingKey,Converter={StaticResource EnumToBoolConverter},ConverterParameter=MAINTAINERS, Mode=TwoWay}" />
+                                      IsChecked="{Binding Path=SortingKey,Converter={StaticResource EnumToBoolConverter},ConverterParameter=Maintainers, Mode=TwoWay}" />
                             <Separator></Separator>
-                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="ASCENDING" Margin="3" 
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="Ascending" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderAscending}"
-                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=ASCENDING, Mode=TwoWay}" />
-                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="DESCENDING" Margin="3" 
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Ascending, Mode=TwoWay}" />
+                            <MenuItem Command="{Binding Path=SetSortingDirectionCommand}" CommandParameter="Descending" Margin="3" 
                                       IsCheckable="True" Header="{x:Static p:Resources.PackageSearchViewContextMenuOrderDescending}"
-                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=DESCENDING, Mode=TwoWay}" />
+                                      IsChecked="{Binding Path=SortingDirection, Converter={StaticResource EnumToBoolConverter},ConverterParameter=Descending, Mode=TwoWay}" />
                         </ContextMenu>
 
                     </Button.ContextMenu>
@@ -160,7 +159,7 @@
                     <DataTemplate DataType="viewModels:PackageManagerSearchElementViewModel">
                         <Border Name="ItemBG" BorderBrush="#444" BorderThickness="0,1,0,0" Background="#333">
 
-                            <StackPanel Width ="445" Name="SearchEle">
+                            <StackPanel Width ="455" Name="SearchEle">
 
                                 <TextBlock Text="{x:Static p:Resources.PackageSearchViewDeprecated}" 
                                            Padding="5" 
@@ -182,70 +181,80 @@
                                     </TextBlock.Style>
                                 </TextBlock>
 
-                                <StackPanel Orientation="Horizontal" Margin="1" Width="440">
-
+                                <StackPanel Orientation="Horizontal" Margin="1" Width="450">
+   
                                     <Button Name="DownloadButton" Style="{StaticResource FlatButton}" Command="{Binding DownloadLatestCommand }" Foreground="#666">
-                                        <Grid Width="40" Height="64">
-                                            <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="12">⬇</TextBlock>
-                                            <Ellipse
-                                                        Fill="Transparent"
-                                                        Height="36"
-                                                        Width="36"
-                                                        StrokeThickness="3"
-                                                        Stroke="#666" />
-                                        </Grid>
-                                    </Button>
+                                            <Grid Width="40" Height="64">
+                                                <TextBlock IsHitTestVisible="True" Background="Transparent" FontSize="30" Padding="12">⬇</TextBlock>
+                                                <Ellipse
+                                                            Fill="Transparent"
+                                                            Height="36"
+                                                            Width="36"
+                                                            StrokeThickness="3"
+                                                            Stroke="#666" />
+                                            </Grid>
+                                        </Button>
 
-                                    <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpandedCommand }" Background="#333">
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpandedCommand }" Background="#333">
 
-                                        <StackPanel Width="350" Height="75" IsHitTestVisible="True" >
-                                            <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
+                                                <StackPanel Width="350" IsHitTestVisible="True" >
+                                                    <TextBlock FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
 
-                                            <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
 
-                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
-                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="✎   " Foreground="Gray" />
-                                                    <TextBlock FontSize="10" MaxWidth="100" Text="{Binding Path= Model.Maintainers}" TextTrimming="WordEllipsis" Foreground="Gray"  />
+                                                        <StackPanel Orientation="Horizontal" Margin="5" Width="100">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="✎   " Foreground="Gray" />
+                                                            <TextBlock FontSize="10" MaxWidth="100" Text="{Binding Path= Model.Maintainers}" TextTrimming="WordEllipsis" Foreground="Gray"  />
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" Margin="5" Width="60">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="⚑   " Foreground="Gray" />
+                                                            <TextBlock FontSize="10" Text="{Binding Path= Model.LatestVersion}" Foreground="Gray"  />
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" Margin="5" Width="50">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="▼   " Foreground="Gray" />
+                                                            <TextBlock FontSize="10" Text="{Binding Path= Model.Downloads}" Foreground="Gray"  />
+                                                        </StackPanel>
+
+                                                        <StackPanel Orientation="Horizontal" Margin="5" Width="80">
+                                                            <TextBlock FontSize="10" FontWeight="Bold" Text="◷   " Foreground="Gray" />
+                                                            <TextBlock FontSize="10" Text="{Binding Path= Model.LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" Foreground="Gray"  />
+                                                        </StackPanel>
+
+                                                    </StackPanel>
+
+
                                                 </StackPanel>
+                                            </Button>
 
-                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
-                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="⚑   " Foreground="Gray" />
-                                                    <TextBlock FontSize="10" Text="{Binding Path= Model.LatestVersion}" Foreground="Gray"  />
+                                            <StackPanel Width="40"  Orientation="Vertical" Margin="3,0,0,0">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Name="UpvoteButton" 
+                                                        FontSize="15" 
+                                                        ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
+                                                        Content="⬆"
+                                                        Margin="0,0,8,0"
+                                                        Foreground="Gray" 
+                                                        Command="{Binding Path=UpvoteCommand}" 
+                                                        Style="{StaticResource FlatButton}" />
+                                                    <Button Name="DownvoteButton" 
+                                                        FontSize="15" 
+                                                        ToolTip="{x:Static p:Resources.PackageSearchViewDownvoteButtonTooltip}" 
+                                                        Foreground="Gray" 
+                                                        Content="⬇"  
+                                                        Command="{Binding Path=DownvoteCommand}" 
+                                                        Style="{StaticResource FlatButton}" />
                                                 </StackPanel>
-
-                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
-                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="▼   " Foreground="Gray" />
-                                                    <TextBlock FontSize="10" Text="{Binding Path= Model.Downloads}" Foreground="Gray"  />
-                                                </StackPanel>
-
-                                                <StackPanel Orientation="Horizontal" Margin="5" Width="75">
-                                                    <TextBlock FontSize="10" FontWeight="Bold" Text="◷   " Foreground="Gray" />
-                                                    <TextBlock FontSize="10" Text="{Binding Path= Model.LatestVersionCreated, Converter={StaticResource PrettyDateConverter}}" Foreground="Gray"  />
-                                                </StackPanel>
-
+                                                <TextBlock FontSize="10" TextAlignment="Center" Margin="0,0,5,0" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
                                             </StackPanel>
-
-                                            <TextBlock FontSize="11" Margin="3" Foreground="#AAA" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
-
                                         </StackPanel>
-                                    </Button>
 
-                                    <StackPanel Width="30"  Orientation="Vertical" Margin="10,0,0,0">
-                                        <Button Name="UpvoteButton" 
-                                                FontSize="10" 
-                                                ToolTip="{x:Static p:Resources.PackageSearchViewUpvoteButtonTooltip}"  
-                                                Content="▲" 
-                                                Foreground="Gray" 
-                                                Command="{Binding Path=UpvoteCommand}" 
-                                                Style="{StaticResource FlatButton}" />
-                                        <TextBlock FontSize="10"  HorizontalAlignment="Center" Padding="0,10" Text="{Binding Path=Model.Votes}" Foreground="Gray"  />
-                                        <Button Name="DownvoteButton" 
-                                                FontSize="10" 
-                                                ToolTip="{x:Static p:Resources.PackageSearchViewDownvoteButtonTooltip}" 
-                                                Foreground="Gray" 
-                                                Content="▼" 
-                                                Command="{Binding Path=DownvoteCommand}" 
-                                                Style="{StaticResource FlatButton}" />
+                                        <Button Style="{StaticResource FlatButton}" Command="{Binding ToggleIsExpandedCommand }" Background="#333">
+                                            <TextBlock FontSize="11" Margin="3" Width="390" Foreground="#AAA" Text="{Binding Path=Model.Description}" TextWrapping="Wrap" TextTrimming="WordEllipsis" MaxHeight="20"/>
+                                        </Button>
                                     </StackPanel>
                                 </StackPanel>
 
