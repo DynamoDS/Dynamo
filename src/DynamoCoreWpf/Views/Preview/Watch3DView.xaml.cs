@@ -902,7 +902,18 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            SendGraphicsToView(points, lines, linesSel, mesh, meshSel, perVertexMesh, text);
+            var updateGraphicsParams = new GraphicsUpdateParameters
+            {
+                Points = points,
+                Lines = lines,
+                SelectedLines = linesSel,
+                Mesh = mesh,
+                SelectedMesh = meshSel,
+                PerVertexMesh = perVertexMesh,
+                Text = text
+            };
+
+            SendGraphicsToView(updateGraphicsParams);
 
             //DrawTestMesh();
         }
@@ -1001,28 +1012,32 @@ namespace Dynamo.Controls
             }
         }
 
-        private void SendGraphicsToView(
-            PointGeometry3D points,
-            LineGeometry3D lines,
-            LineGeometry3D linesSelected,
-            MeshGeometry3D mesh,
-            MeshGeometry3D meshSelected,
-            MeshGeometry3D perVertexMesh,
-            BillboardText3D text)
+        private void SendGraphicsToView(GraphicsUpdateParameters parameters)
         {
-            Points = points;
-            Lines = lines;
-            LinesSelected = linesSelected;
-            Mesh = mesh;
-            MeshSelected = meshSelected;
-            PerVertexMesh = perVertexMesh;
-            Text = text;
+            Points = parameters.Points;
+            Lines = parameters.Lines;
+            LinesSelected = parameters.SelectedLines;
+            Mesh = parameters.Mesh;
+            MeshSelected = parameters.SelectedMesh;
+            PerVertexMesh = parameters.PerVertexMesh;
+            Text = parameters.Text;
 
             // Send property changed notifications for everything
             NotifyPropertyChanged(string.Empty);
         }
 
         #endregion
+    }
+
+    internal class GraphicsUpdateParameters
+    {
+        public PointGeometry3D Points { get; set; }
+        public LineGeometry3D Lines { get; set; }
+        public LineGeometry3D SelectedLines { get; set; }
+        public MeshGeometry3D Mesh { get; set; }
+        public MeshGeometry3D SelectedMesh { get; set; }
+        public MeshGeometry3D PerVertexMesh { get; set; }
+        public BillboardText3D Text { get; set; }
     }
 
     internal class PackageAggregationParameters
