@@ -118,9 +118,6 @@
     <EmbeddedResource Include="Properties\Resources.en-US.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>copy /Y "$(ProjectDir)*_DynamoCustomization.xml" "$(OutputPath)"</PreBuildEvent>
-  </PropertyGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="$(ProjectDir)DSCoreNodes_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>

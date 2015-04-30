@@ -94,9 +94,6 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(ProjectDir)Analysis_DynamoCustomization.xml" "$(OutDir)Analysis_DynamoCustomization.xml"</PostBuildEvent>
-  </PropertyGroup>
   <Target Name="BeforeBuild">
     <Copy SourceFiles="$(ProjectDir)Analysis_DynamoCustomization.xml" DestinationFiles="$(OutDir)Analysis_DynamoCustomization.xml" />
   </Target>
