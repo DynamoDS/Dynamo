@@ -1030,19 +1030,19 @@ y = 1;
             string src = @"
 a = 5;
 b = 2 * a;
-sum;
+count;
 [Imperative] {
-	sum = 0;
+	count = 0;
 	arr = 0..b;
 	for (i  in arr) {
-		sum = sum + 1;
+		count = count + 1;
 	}
 }
 a = 10;
-// expected: sum = 21
-// result: sum = 11";
+// expected: count = 21
+// result: count = 11";
             ExecutionMirror mirror = thisTest.RunScriptSource(src);
-            Assert.IsTrue((Int64)mirror.GetValue("sum").Payload == 11);
+            Assert.IsTrue((Int64)mirror.GetValue("count").Payload == 21);
 
         }
 

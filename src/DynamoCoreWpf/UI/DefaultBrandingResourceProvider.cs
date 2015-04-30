@@ -73,11 +73,11 @@ namespace Dynamo.Wpf.UI
                 case ResourceNames.ConsentForm.FeatureUsage:
                     resource = string.Format(Properties.Resources.UsageReportPromptDialogFeatureUsage,ProductName);
                     break;
-                case ResourceNames.ConsentForm.Consent:
-                    resource = string.Format(Properties.Resources.UsageReportPromptDialogConsent,ProductName);
+                case ResourceNames.ConsentForm.AgreementThree:
+                    resource = string.Format(Properties.Resources.UsageReportPromptDialogMessagePart3, ProductName);
                     break;
-
             }
+
             return EnsureStringLoaded(resource, resourceName.ToString());
         }
 
@@ -87,6 +87,12 @@ namespace Dynamo.Wpf.UI
         }
 
         public string ProductName { get { return "Dynamo"; } }
+
+        public string AdditionalPackagePublisherTermsOfUse
+        {
+            get { return String.Empty; } // No additional terms of use.
+        }
+
         #endregion
 
         #region private members

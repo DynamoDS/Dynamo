@@ -200,6 +200,7 @@
     <Compile Include="TD\TraceUtilsTests.cs" />
     <Compile Include="FFITests\TestCSharpAttribute.cs" />
     <Compile Include="UtilsTests\AstFactoryTest.cs" />
+    <Compile Include="UtilsTests\AstVisitorTest.cs" />
     <Compile Include="UtilsTests\ClassUtilsTest.cs" />
     <Compile Include="UtilsTests\CoreDump.cs" />
     <Compile Include="UtilsTests\CoreUtilsTest.cs" />
