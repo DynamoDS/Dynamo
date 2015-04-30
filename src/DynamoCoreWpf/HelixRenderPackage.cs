@@ -41,7 +41,7 @@ namespace Dynamo.Wpf
         private MeshGeometry3D mesh;
         private bool hasData;
         private List<int> lineStripVertexCounts;
- 
+
         #endregion
 
         #region constructors
@@ -511,52 +511,34 @@ namespace Dynamo.Wpf
 
     internal static class HelixRenderExtensions
     {
-        public static double[] ToDoubleArray(this Vector2Collection collection)
+        public static IEnumerable<double> ToDoubleArray(this Vector2Collection collection)
         {
-            var doubles = new double[collection.Count*2];
-
-            var count = 0;
             foreach (var v in collection)
             {
-                doubles[count] = v.X;
-                doubles[count + 1] = v.Y;
-                count += 2;
+                yield return v.X;
+                yield return v.Y;
             }
-
-            return doubles;
         }
 
-        public static double[] ToDoubleArray(this Vector3Collection collection)
+        public static IEnumerable<double> ToDoubleArray(this Vector3Collection collection)
         {
-            var doubles = new double[collection.Count*3];
-
-            var count = 0;
             foreach (var v in collection)
             {
-                doubles[count] = v.X;
-                doubles[count + 1] = v.Y;
-                doubles[count + 2] = v.Z;
-                count += 3;
+                yield return v.X;
+                yield return v.Y;
+                yield return v.Z;
             }
-
-            return doubles;
         }
 
-        public static byte[] ToByteArray(this Color4Collection collection)
+        public static IEnumerable<byte> ToByteArray(this Color4Collection collection)
         {
-            var bytes = new byte[collection.Count * 4];
-
-            var count = 0;
             foreach (var c in collection)
             {
-                bytes[count] = (byte)(c.Red * 255.0f);
-                bytes[count + 1] = (byte)(c.Green * 255.0f);
-                bytes[count + 2] = (byte)(c.Blue * 255.0f);
-                bytes[count + 3] = (byte)(c.Alpha * 255.0f);
-                count += 4;
+                yield return (byte)(c.Red*255.0f);
+                yield return (byte)(c.Green*255.0f);
+                yield return (byte)(c.Blue*255.0f);
+                yield return (byte)(c.Alpha*255.0f);
             }
-
-            return bytes;
         }
 
         public static Color4Collection ToColor4Collection(this byte[] collection)
@@ -571,6 +553,7 @@ namespace Dynamo.Wpf
                 var newColor = new Color4(a, b, c, d);
                 colors.Add(newColor);
             }
+
             return colors;
         }
     }
