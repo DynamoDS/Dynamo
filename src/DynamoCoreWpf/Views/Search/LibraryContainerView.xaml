@@ -43,7 +43,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
+
             <Label Grid.Column="0"
                    FontWeight="Normal"
                    Padding="16,0,0,0"
@@ -124,7 +124,7 @@
                                HorizontalAlignment="Center"
                                Height="18"
                                Margin="3,0,0,0">
-                        
+
                     </TextBlock>
                 </StackPanel>
 
