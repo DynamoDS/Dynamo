@@ -28,18 +28,7 @@ namespace Dynamo.Search.SearchElements
                 path = value;
                 OnPropertyChanged("Path");
             }
-        }
-
-        public string CustomizationAssembly
-        {
-            get
-            {
-                string customizationPath = System.IO.Path.GetDirectoryName(Path);
-                customizationPath = System.IO.Directory.GetParent(customizationPath).FullName;
-                customizationPath = customizationPath + Dynamo.UI.Configurations.PackageCustomizationAssemblyPostfix;
-                return customizationPath;
-            }
-        }            
+        }         
 
         public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {

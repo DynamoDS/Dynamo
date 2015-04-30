@@ -261,9 +261,11 @@ namespace Dynamo.Wpf.ViewModels
 
         protected override ImageSource GetIcon(string fullNameOfIcon)
         {
-            string customizationAssemblyPath = Model.CustomizationAssembly;
+            string customizationPath = System.IO.Path.GetDirectoryName(Path);
+            customizationPath = System.IO.Directory.GetParent(customizationPath).FullName;
+            customizationPath = System.IO.Path.Combine(customizationPath, "bin", "Package.dll");
 
-            var iconRequest = new IconRequestEventArgs(customizationAssemblyPath, fullNameOfIcon, false);
+            var iconRequest = new IconRequestEventArgs(customizationPath, fullNameOfIcon, false);
             OnRequestBitmapSource(iconRequest);
 
             if (iconRequest.Icon != null)
