@@ -173,30 +173,6 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
     |      
         Associative_LanguageBlock<out node>
     |
-        (. #if ENABLE_EXCEPTION_HANDLING .)
-        Associative_ExceptionBlock<out node>
-    | 
-        (. #endif .)
-        Associative_ThrowStatement<out node>
-    |
-        (
-            kw_break 
-                (. 
-                    if (la.val != ";")
-                        SynErr(Resources.SemiColonExpected);  
-                .)
-            endline
-        )      (. node = new ProtoCore.AST.AssociativeAST.BreakNode(); .)
-    |   
-        (
-            kw_continue 
-                (. 
-                    if (la.val != ";")
-                        SynErr(Resources.SemiColonExpected); 
-                .)
-            endline
-        )   (. node = new ProtoCore.AST.AssociativeAST.ContinueNode(); .)
-    |
         (
             (
                 IF(core.ParsingMode == ParseMode.AllowNonAssignment)  
@@ -215,26 +191,6 @@ Associative_Statement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             )      
         )
 )
-.
-
-Associative_ThrowStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
-=
-                                (. ProtoCore.AST.AssociativeAST.ThrowNode throwNode = new ProtoCore.AST.AssociativeAST.ThrowNode(); .)
-    "throw"
-                                (. ProtoCore.AST.AssociativeAST.AssociativeNode expression; .)
-    Associative_Expression<out expression>
-                                (. throwNode.expression = expression; .)
-                                (. 
-                                    if (la.val != ";")
-                                        SynErr(Resources.SemiColonExpected);  
-                                .)
-        
-                                (. 
-                                    if (la.val != ";")
-                                        SynErr(Resources.SemiColonExpected); 
-                                .)
-    endline
-                                (. node = throwNode; .)
 .
 
 Associative_StatementList<.out List<ProtoCore.AST.AssociativeAST.AssociativeNode> nodelist.> 
@@ -280,7 +236,7 @@ Associative_classdecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Li
                 Associative_AttributeDeclaration<out attributes>
             ]
             
-                                               (. ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic; .)
+                                               (. ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; .)
             [
                 Associative_AccessSpecifier<out access>
             ]
@@ -423,7 +379,7 @@ Associative_LanguageBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                                             (. node = langblock; .)
 .       
 
-Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessSpecifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
+Associative_constructordecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode constrNode, ProtoCore.CompilerDefinitions.AccessModifier access, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>
 =                           (.
                                 ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode constr = new ProtoCore.AST.AssociativeAST.ConstructorDefinitionNode(); ;                                 
                                 string methodName;  
@@ -489,18 +445,18 @@ Associative_ExternalLibraryReference<out string libname>
 .
 
 //------------------------------------------------------------------------
-Associative_AccessSpecifier<out ProtoCore.CompilerDefinitions.AccessSpecifier access>
-=                   (. access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic; .)
+Associative_AccessSpecifier<out ProtoCore.CompilerDefinitions.AccessModifier access>
+=                   (. access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic; .)
     (
         "public"        
         |
-        "private"       (. access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPrivate; .)
+        "private"       (. access = ProtoCore.CompilerDefinitions.AccessModifier.kPrivate; .)
         |
-        "protected"     (. access = ProtoCore.CompilerDefinitions.AccessSpecifier.kProtected; .)
+        "protected"     (. access = ProtoCore.CompilerDefinitions.AccessModifier.kProtected; .)
     )
 .
 
-Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, bool isStatic = false.>
+Associative_functiondecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false.>
 =                           
                             (. 
                                 ProtoCore.AST.AssociativeAST.FunctionDefinitionNode f = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode(); 
@@ -632,7 +588,7 @@ Associative_ArgumentSignatureDefinition<out ProtoCore.AST.AssociativeAST.Associa
                                                 (. argumentSign = argumentSignature; .)
 .
 
-Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
+Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic, bool isStatic = false, List<ProtoCore.AST.AssociativeAST.AssociativeNode> attrs = null.>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -718,7 +674,7 @@ Associative_vardecl<.out ProtoCore.AST.AssociativeAST.AssociativeNode node, Prot
 
 .
 
-Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic>    
+Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic>    
 = 
                                     (.
                                         ProtoCore.AST.AssociativeAST.IdentifierNode tNode = null; 
@@ -775,7 +731,7 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
 .
 
 
-Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessSpecifier access = ProtoCore.CompilerDefinitions.AccessSpecifier.kPublic>	
+Associative_DefaultArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, ProtoCore.CompilerDefinitions.AccessModifier access = ProtoCore.CompilerDefinitions.AccessModifier.kPublic>	
 =
     Associative_ArgDecl<out node>    (. ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = node as ProtoCore.AST.AssociativeAST.VarDeclNode; .)
     '=' 
@@ -1266,9 +1222,6 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                 .)
         |
         (
-                                (. 
-                                    if(!(leftNode is ProtoCore.AST.AssociativeAST.PostFixNode)) {
-                                .)
             '='                 
                                 (. 
                                     ProtoCore.AST.AssociativeAST.AssociativeNode rightNode = null;
@@ -1484,7 +1437,6 @@ Associative_FunctionalStatement<out ProtoCore.AST.AssociativeAST.AssociativeNode
                                         isLeftVarIdentList = false;                                  
                                     }  
                                 .)
-            (. } .)
         )
         |
         (
@@ -1674,96 +1626,6 @@ Associative_RangeExpr<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 
                                         (. node = rnode; .)
     ]
-.
-//------------------------------------------------------------------------
-/*
-Associative_ForLoop<out ProtoCore.AST.AssociativeAST.AssociativeNode forLoop>
-=                                   (. 
-                                        ProtoCore.AST.AssociativeAST.AssociativeNode node;
-                                        ProtoCore.AST.AssociativeAST.ForLoopNode loop = new ProtoCore.AST.AssociativeAST.ForLoopNode(); 
-                                        List<ProtoCore.AST.AssociativeAST.AssociativeNode> forBody = null; 
-                                    .)
-    "for"                           (. NodeUtils.SetNodeStartLocation(loop, t); .)
-    '('
-        Associative_IdentifierList<out node>        (. loop.loopVar = node; .)
-    "in"
-        Associative_Expression<out node>            (. loop.expression = node; .)
-    ')'
-    '{'
-        Associative_StatementList<out forBody>  (. loop.body = forBody; .)
-    '}'                 
-                                    (.
-                                        NodeUtils.SetNodeEndLocation(loop, t);
-                                        forLoop = loop;
-                                    .)
-.
-*/
-
-Associative_TryBlock<out ProtoCore.AST.AssociativeAST.TryBlockNode tryBlockNode>
-=    
-                                    (. tryBlockNode = new ProtoCore.AST.AssociativeAST.TryBlockNode(); .)
-    "try"
-    '{'
-                                    (. List<ProtoCore.AST.AssociativeAST.AssociativeNode> tryBlockBody = null; .)
-        Associative_StatementList<out tryBlockBody>
-                                    (. tryBlockNode.body = tryBlockBody; .)
-    '}'
-.
-
-Associative_CatchFilter<out ProtoCore.AST.AssociativeAST.CatchFilterNode catchFilterNode>
-=
-                                    (. catchFilterNode = new ProtoCore.AST.AssociativeAST.CatchFilterNode(); .)
-
-    ident                       
-                                    (. 
-                                        if (IsKeyWord(t.val, true))
-                                        {
-                                            errors.SemErr(t.line, t.col, String.Format(Resources.keywordCantBeUsedAsIdentifier, t.val));
-                                        }
-
-                                        catchFilterNode.var =  ProtoCore.Utils.CoreUtils.BuildAssocIdentifier(core, t.val);
-                                    .)  
-    ':'
-    ident                           (. 
-                                        ProtoCore.Type exceptionType = new ProtoCore.Type()
-                                        {
-                                            Name = t.val, 
-                                            rank = 0, 
-                                        };
-                                        catchFilterNode.type = exceptionType;
-                                    .)
-.
-
-Associative_CatchBlock<out ProtoCore.AST.AssociativeAST.CatchBlockNode catchBlockNode>
-=    
-    "catch"                         (. catchBlockNode = new ProtoCore.AST.AssociativeAST.CatchBlockNode(); .)
-    "("
-                                    (. ProtoCore.AST.AssociativeAST.CatchFilterNode catchFilterNode = null; .)
-        Associative_CatchFilter<out catchFilterNode>
-                                    (. catchBlockNode.catchFilter = catchFilterNode; .)  
-    ")"
-    '{'
-                                    (. List<ProtoCore.AST.AssociativeAST.AssociativeNode> catchBlockBody = null; .)
-        Associative_StatementList<out catchBlockBody>
-                                    (. catchBlockNode.body = catchBlockBody; .)
-    '}'
-.
-
-Associative_ExceptionBlock<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
-=
-                                    (. ProtoCore.AST.AssociativeAST.ExceptionHandlingNode exceptionNode = new ProtoCore.AST.AssociativeAST.ExceptionHandlingNode(); .)
-                                    (. ProtoCore.AST.AssociativeAST.TryBlockNode tryBlockNode; .)
-    Associative_TryBlock<out tryBlockNode>
-                                    (. exceptionNode.tryBlock = tryBlockNode; .)
-                                    (. ProtoCore.AST.AssociativeAST.CatchBlockNode catchBlockNode; .)
-    Associative_CatchBlock<out catchBlockNode>
-                                    (. exceptionNode.catchBlocks.Add(catchBlockNode); .)
-    {
-        Associative_CatchBlock<out catchBlockNode>
-                                    (. exceptionNode.catchBlocks.Add(catchBlockNode); .)
-    }
-    
-                                    (. node = exceptionNode; .)
 .
 
 //------------------------------------------------------------------------
@@ -2042,9 +1904,8 @@ Associative_String<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
                 node = new ProtoCore.AST.AssociativeAST.StringNode() 
                 { 
                     value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)),
-                    line = t.line,
-                    col = t.col
                 }; 
+                NodeUtils.SetNodeLocation(node, t);
             .)
 .
 

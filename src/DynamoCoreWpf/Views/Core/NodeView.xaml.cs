@@ -342,6 +342,9 @@ namespace Dynamo.Controls
 
         private void topControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+            Guid nodeGuid = ViewModel.NodeModel.GUID;
+            ViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
             //Debug.WriteLine("Node right selected.");
             e.Handled = true;
         }
@@ -443,5 +446,6 @@ namespace Dynamo.Controls
         }
 
         #endregion
+      
     }
 }

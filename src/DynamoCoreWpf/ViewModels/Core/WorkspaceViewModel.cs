@@ -519,8 +519,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            Guid nodeID = Guid.NewGuid();
-            var command = new DynamoModel.ConvertNodesToCodeCommand(nodeID);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
             this.DynamoViewModel.ExecuteCommand(command);
         }
 
@@ -895,6 +894,12 @@ namespace Dynamo.ViewModels
         //{
         //    NodeFromSelectionCommand.RaiseCanExecuteChanged();
         //}
+
+        private void AlignSelectionCanExecuteChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            AlignSelectedCommand.RaiseCanExecuteChanged();
+
+        }
 
         private static bool CanCreateNodeFromSelection(object parameter)
         {

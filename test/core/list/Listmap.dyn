@@ -1,0 +1,27 @@
+<Workspace Version="0.8.1.910" X="443.631754818448" Y="398.917683064928" zoom="0.618821322632651" Name="Home" RunType="Manual" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="fd6738ef-4228-49ae-8922-f3c1475739dc" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-766.083099549565" y="-222.604730826979" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="{{{1,2},{3,4}},{{10,20},{30,40}}};" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="5cda986b-a099-4dca-9ffa-22b6ad9e9ca0" type="Dynamo.Nodes.DSFunction" nickname="Point.ByCoordinates" x="-314.808860339817" y="-265.207022282746" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double">
+      <PortInfo index="0" default="True" />
+      <PortInfo index="1" default="True" />
+      <PortInfo index="2" default="True" />
+    </Dynamo.Nodes.DSFunction>
+    <Dynamo.Nodes.DSFunction guid="4465a061-6b1d-4a59-8e0c-fba96831d10c" type="Dynamo.Nodes.DSFunction" nickname="Flatten" x="-305.396749045494" y="-381.207022282746" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="Flatten@var[]..[]" />
+    <DSCore.Map guid="0af8a082-0d22-476f-bc28-e61b4ce01170" type="DSCore.Map" nickname="List.Map" x="34.6032509545063" y="-261.207022282746" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
+    <Dynamo.Nodes.DSFunction guid="b63b850f-a9cc-4c5d-9bbd-ad144d74e227" type="Dynamo.Nodes.DSFunction" nickname="Point.X" x="191.914101601237" y="-471.386583156103" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.X" />
+    <Dynamo.Nodes.DSFunction guid="2a5daf0c-1316-4ff0-be16-74e3241eff58" type="Dynamo.Nodes.DSFunction" nickname="Point.Y" x="248.773119875058" y="-183.214740541055" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.Y" />
+    <Dynamo.Nodes.DSFunction guid="24b75bda-4e39-48d1-98ec-de103f739567" type="Dynamo.Nodes.DSFunction" nickname="Point.Z" x="446.487433418117" y="-282.718022520242" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Point.Z" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="fd6738ef-4228-49ae-8922-f3c1475739dc" start_index="0" end="5cda986b-a099-4dca-9ffa-22b6ad9e9ca0" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd6738ef-4228-49ae-8922-f3c1475739dc" start_index="0" end="5cda986b-a099-4dca-9ffa-22b6ad9e9ca0" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fd6738ef-4228-49ae-8922-f3c1475739dc" start_index="0" end="5cda986b-a099-4dca-9ffa-22b6ad9e9ca0" end_index="2" portType="0" />
+    <Dynamo.Models.ConnectorModel start="5cda986b-a099-4dca-9ffa-22b6ad9e9ca0" start_index="0" end="0af8a082-0d22-476f-bc28-e61b4ce01170" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="4465a061-6b1d-4a59-8e0c-fba96831d10c" start_index="0" end="0af8a082-0d22-476f-bc28-e61b4ce01170" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0af8a082-0d22-476f-bc28-e61b4ce01170" start_index="0" end="b63b850f-a9cc-4c5d-9bbd-ad144d74e227" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0af8a082-0d22-476f-bc28-e61b4ce01170" start_index="0" end="2a5daf0c-1316-4ff0-be16-74e3241eff58" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="0af8a082-0d22-476f-bc28-e61b4ce01170" start_index="0" end="24b75bda-4e39-48d1-98ec-de103f739567" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+</Workspace>

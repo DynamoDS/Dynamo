@@ -185,10 +185,10 @@
 
                     <MenuItem  Header="{x:Static p:Resources.ContextMenuNodesFromSelection}"
                                Command="{Binding NodeFromSelectionCommand}" />
-                    <!--
-                    <MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
-                               Command="{Binding NodeToCodeCommand}" />
-                    -->
+
+                    <!--<MenuItem  Header="{x:Static p:Resources.ContextMenuNodeToCode}"
+                               Command="{Binding NodeToCodeCommand}" /> -->
+
                     <MenuItem  Header="{x:Static p:Resources.ContextCreateGroupFromSelection}"                                 
                                Command="{Binding DynamoViewModel.AddAnnotationCommand}" />
                     

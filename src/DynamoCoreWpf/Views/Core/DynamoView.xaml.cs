@@ -71,6 +71,10 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
+            ToggleIsUsageReportingApprovedCommand.ToolTip = string.Format(
+                Wpf.Properties.Resources.DynamoViewSettingMenuEnableDataReportingTooltip,
+                dynamoViewModel.BrandingResourceProvider.ProductName);
+
             Loaded += DynamoView_Loaded;
             Unloaded += DynamoView_Unloaded;
 
@@ -329,7 +333,7 @@ namespace Dynamo.Controls
 
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
-                                                                     _timer.Elapsed));
+                                                                     _timer.Elapsed, dynamoViewModel.BrandingResourceProvider.ProductName));
             InitializeLogin();
             InitializeShortcutBar();
             InitializeStartPage();
@@ -387,6 +391,30 @@ namespace Dynamo.Controls
 
             // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
+
+            watchSettingsControl.DataContext = background_preview;
+        }
+
+        /// <summary>
+        /// Call this method to optionally bring up terms of use dialog. User 
+        /// needs to accept terms of use before any packages can be downloaded 
+        /// from package manager.
+        /// </summary>
+        /// <returns>Returns true if the terms of use for downloading a package 
+        /// is accepted by the user, or false otherwise. If this method returns 
+        /// false, then download of package should be terminated.</returns>
+        /// 
+        bool DisplayTermsOfUseForAcceptance()
+        {
+            var prefSettings = dynamoViewModel.Model.PreferenceSettings;
+            if (prefSettings.PackageDownloadTouAccepted)
+                return true; // User accepts the terms of use.
+
+            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null);
+            prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
+
+            // User may or may not accept the terms.
+            return prefSettings.PackageDownloadTouAccepted;
         }
 
         void DynamoView_Unloaded(object sender, RoutedEventArgs e)
@@ -425,6 +453,9 @@ namespace Dynamo.Controls
         private PackageManagerSearchViewModel _pkgSearchVM;
         void DynamoViewModelRequestShowPackageManagerSearch(object s, EventArgs e)
         {
+            if (!DisplayTermsOfUseForAcceptance())
+                return; // Terms of use not accepted.
+
             if (_pkgSearchVM == null)
             {
                 _pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
@@ -521,7 +552,7 @@ namespace Dynamo.Controls
 
         void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var prompt = new CrashPrompt(args);
+            var prompt = new CrashPrompt(args,dynamoViewModel);
             prompt.ShowDialog();
         }
 

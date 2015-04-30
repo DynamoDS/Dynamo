@@ -75,14 +75,6 @@ namespace ProtoCore.DSASM
         END,
         JMP,
         CJMP,
-        JMP_EQ,
-        JMP_NEQ,
-        JMP_GT,
-        JMP_LT,
-        JMP_GTEQ,
-        JMP_LTEQ,
-        JLZ,
-        JGZ,
         JZ,
         JDEP,
         AND,
@@ -95,11 +87,10 @@ namespace ProtoCore.DSASM
         GE,
         LE,
         BOUNCE,
-        ALLOC,
         ALLOCA,
         ALLOCC,
         POPM,
-        CALLC,
+      
         POPLIST,
         PUSHLIST,
         RETC,
@@ -112,11 +103,10 @@ namespace ProtoCore.DSASM
         NEG,
         CAST,
         DEP,
-        DEPX,
+        
         PUSHB,
         POPB,
 
-        THROW,
         // TODO Jun: This is temporary until the lib system is implemented. 
         PUSH_ARRAYKEY,
         SETEXPUID

@@ -38,9 +38,6 @@ namespace Dynamo.DSEngine
         private readonly SyncDataManager syncDataManager;
         private readonly Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
         private readonly Queue<List<Guid>> previewGraphQueue = new Queue<List<Guid>>();
-        private readonly DynamoModel dynamoModel;
-        private readonly ProtoCore.Core libraryCore;
-        private int shortVarCounter;
         public bool VerboseLogging;
         private readonly Object macroMutex = new Object();
 
@@ -55,6 +52,7 @@ namespace Dynamo.DSEngine
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
+            libraryServices.SetLiveCore(LiveRunnerCore);
 
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
 
@@ -190,7 +188,7 @@ namespace Dynamo.DSEngine
                 var activeNodes = nodes.Where(n => !n.IsInErrorState);
 
                 if (activeNodes.Any())
-                    astBuilder.CompileToAstNodes(activeNodes, true, verboseLogging);
+                    astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
 
                 return VerifyGraphSyncData(nodes);
             }
@@ -214,7 +212,7 @@ namespace Dynamo.DSEngine
             var activeNodes = updatedNodes.Where(n => !n.IsInErrorState);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, true, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
             }
 
             if (!VerifyGraphSyncData(nodes) || ((graphSyncDataQueue.Count <= 0)))
@@ -241,7 +239,7 @@ namespace Dynamo.DSEngine
             var activeNodes = updatedNodes.Where(n => n.State != ElementState.Error);
             if (activeNodes.Any())
             {
-                astBuilder.CompileToAstNodes(activeNodes, true, verboseLogging);
+                astBuilder.CompileToAstNodes(activeNodes, AstBuilder.CompilationContext.DeltaExecution, verboseLogging);
             }
 
             GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
@@ -526,6 +524,7 @@ namespace Dynamo.DSEngine
             // The LiveRunner core is newly instantiated whenever a new library is imported
             // due to which a new instance of CodeCompletionServices needs to be created with the new Core
             codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
+            libraryServices.SetLiveCore(LiveRunnerCore);
         }
 
         #region Implement IAstNodeContainer interface
@@ -559,89 +558,9 @@ namespace Dynamo.DSEngine
 
         #region Node2Code
 
-        [Obsolete("Node2Code disabled, API subject to change.")]
-        public string ConvertNodesToCode(IEnumerable<NodeModel> nodes, out Dictionary<string, string> variableNames, bool verboseLogging)
+        public NodeToCodeResult ConvertNodesToCode(IEnumerable<NodeModel> graph, IEnumerable<NodeModel> nodes)
         {
-            variableNames = new Dictionary<string, string>();
-            if (!nodes.Any())
-                return string.Empty;
-
-            string code = NodeToCodeUtils.ConvertNodesToCode(astBuilder, nodes, verboseLogging);
-            if (string.IsNullOrEmpty(code))
-                return code;
-
-            StringBuilder sb = new StringBuilder(code);
-            string newVar;
-            foreach (var node in nodes)
-            {
-                if (node is CodeBlockNodeModel)
-                {
-                    var tempVars = (node as CodeBlockNodeModel).TempVariables;
-                    foreach (var tempVar in tempVars)
-                    {
-                        newVar = GenerateShortVariable();
-                        sb = sb.Replace(tempVar, newVar);
-                        variableNames.Add(tempVar, newVar);
-                    }
-                }
-                else
-                {
-                    string thisVar = node.AstIdentifierForPreview.ToString();
-                    newVar = GenerateShortVariable();
-                    sb = sb.Replace(thisVar, newVar);
-                    variableNames.Add(thisVar, newVar);
-                }
-
-                //get the names of inputs as well and replace them with simpler names
-                foreach (var inport in node.InPorts)
-                {
-                    if (inport.Connectors.Count == 0)
-                        continue;
-                    var inputNode = inport.Connectors[0].Start.Owner;
-                    if (nodes.Contains(inputNode))
-                        continue;
-                    if (!(inputNode is CodeBlockNodeModel))
-                    {
-                        string inputVar = inputNode.AstIdentifierForPreview.ToString();
-                        if (!variableNames.ContainsKey(inputVar))
-                        {
-                            newVar = GenerateShortVariable();
-                            variableNames.Add(inputVar, newVar);
-                            sb = sb.Replace(inputVar, newVar);
-                        }
-                    }
-                    else
-                    {
-                        var cbn = inputNode as CodeBlockNodeModel;
-                        int portIndex = cbn.OutPorts.IndexOf(inport.Connectors[0].Start);
-                        string inputVar = cbn.GetAstIdentifierForOutputIndex(portIndex).Value;
-                        if (cbn.TempVariables.Contains(inputVar))
-                        {
-                            if (!variableNames.ContainsKey(inputVar))
-                            {
-                                newVar = GenerateShortVariable();
-                                variableNames.Add(inputVar, newVar);
-                                sb = sb.Replace(inputVar, newVar);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return sb.ToString();
-        }
-
-
-        private string GenerateShortVariable()
-        {
-            while (true)
-            {
-                shortVarCounter++;
-                string var = AstBuilder.StringConstants.ShortVarPrefix + shortVarCounter.ToString();
-
-                if (!HasVariableDefined(var))
-                    return var;
-            }
+            return NodeToCodeUtils.NodeToCode(libraryServices.LibraryManagementCore, astBuilder, graph, nodes);
         }
 
         private bool HasVariableDefined(string var)

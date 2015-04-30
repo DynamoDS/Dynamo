@@ -91,6 +91,12 @@
   <PropertyGroup>
     <PreBuildEvent>copy /Y "$(ProjectDir)*_DynamoCustomization.xml" "$(OutputPath)"</PreBuildEvent>
   </PropertyGroup>
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="$(ProjectDir)Tessellation_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
+  </Target>
+
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
@@ -110,4 +116,6 @@
     	<AL TargetType="library" EmbedResources="$(ProjectDir)TessellationImages.resources" OutputAssembly="$(OutDir)Tessellation.customization.dll" Version="%(AssemblyInfo.Version)" />
 
   </Target>
+</Project>
+  -->
 </Project>

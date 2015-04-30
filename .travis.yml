@@ -1,0 +1,8 @@
+# See http://docs.travis-ci.com/user/languages/csharp/
+
+language: csharp
+solution: src/Dynamo.Mono.2013.sln
+install:
+  - nuget restore src/Dynamo.Mono.2013.sln
+script:
+  - xbuild /p:Configuration=Release src/Dynamo.Mono.2013.sln

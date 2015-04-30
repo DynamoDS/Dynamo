@@ -18,6 +18,7 @@
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:preview="clr-namespace:Dynamo.Wpf.Views.Preview"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -124,6 +125,9 @@
         <KeyBinding Key="G"
                     Modifiers="Control"
                     Command="{Binding Path=DataContext.AddAnnotationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="U"
+                    Modifiers="Control"
+                    Command="{Binding Path=DataContext.UngroupAnnotationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Left"
                     Modifiers="Ctrl+Alt"
                     CommandParameter="Left"
@@ -343,6 +347,11 @@
                                   Command="{Binding AddAnnotationCommand}"
                                   Name="noteMenuAnnotation"
                                   InputGestureText="Ctrl + G" />
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
+                                  Command="{Binding UngroupAnnotationCommand}"
+                                  Name="ungroupGroup"
+                                  InputGestureText="Ctrl + U" />
                         <MenuItem Focusable="False"                                
                                   Header="{x:Static p:Resources.DynamoViewEditMenuCreateNodeFromSelection}"
                                   Command="{Binding Path=CurrentSpaceViewModel.NodeFromSelectionCommand}"
@@ -808,6 +817,10 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />
+                        <MenuItem Focusable="False"
+                                  Header="Show Watch Settings Control"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding ShowWatchSettingsControl, Mode=TwoWay}"/>
                     </MenuItem>
                 </Menu>
 
@@ -860,11 +873,13 @@
                     <SolidColorBrush Color="{Binding ViewingHomespace, Converter={StaticResource WorkspaceBackgroundColorConverter}}" />
                 </Canvas.Background>
             </Canvas>
+
             <controls:Watch3DView x:Name="background_preview"
                                   Margin="0,20,0,0"
                                   Visibility="{Binding FullscreenWatchShowing, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}"
                                   IsHitTestVisible="{Binding WatchPreviewHitTest}">
             </controls:Watch3DView>
+            
         </Grid>
 
         <!--
@@ -1687,6 +1702,13 @@
             </ItemsControl.Visibility>
         </ItemsControl>
 
+        <Grid Grid.Row="2"
+              Grid.Column="2" Visibility="{Binding ShowWatchSettingsControl, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <preview:Watch3DSettingsControl x:Name="watchSettingsControl"  
+                                            DataContext=""
+                                            HorizontalAlignment="Left" 
+                                            VerticalAlignment="Top" Margin="10,30" />
+        </Grid>
     </Grid>
 
 
