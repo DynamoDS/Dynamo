@@ -46108,6 +46108,7 @@ a  = a2 + b;    // 6";
 
         [Test]
         [Category("WatchFx Tests")]
+        [Category("ModifierBlock")]
         public void DebugWatch1691_T005_modifiers_with_right_assignments_Robert()
         {
             Dictionary<int, List<string>> map = new Dictionary<int, List<string>>();

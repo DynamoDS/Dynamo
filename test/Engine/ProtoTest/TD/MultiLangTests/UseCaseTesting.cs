@@ -146,6 +146,7 @@ a  = a2 + b;    // 6";
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void T005_modifiers_with_right_assignments_Robert()
         {
             string code = @"

@@ -9,6 +9,7 @@ namespace ProtoTest
     class ModifierStackTests : ProtoTestBase
     {
         [Test]
+        [Category("ModifierBlock")]
         public void SimpleExpr()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -16,6 +17,7 @@ namespace ProtoTest
                         @"                        [Associative]                        {                            a = 10;                        }                        ", core, out runtimeCore);
         }
         [Test]
+        [Category("ModifierBlock")]
         public void SimpleFuncDef()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -23,6 +25,7 @@ namespace ProtoTest
                         @"                        [Associative]                        {                            def foo : int (b : int)                            {                                return = 2;                            }                            x = foo(2);                        }                        ", core, out runtimeCore);
         }
         [Test]
+        [Category("ModifierBlock")]
         public void SimpleExprInModifierStack()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -32,6 +35,7 @@ namespace ProtoTest
 
         }
         [Test]
+        [Category("ModifierBlock")]
         public void TwoSimpleExprInModifierStack()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -40,6 +44,7 @@ namespace ProtoTest
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 20);
         }
         [Test]
+        [Category("ModifierBlock")]
         public void TwoExprInModifierStackWithOp()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -50,6 +55,7 @@ namespace ProtoTest
 
 
         [Test]
+        [Category("ModifierBlock")]
         public void ModifierStackWithName()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -59,6 +65,7 @@ namespace ProtoTest
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 6);
         }
         [Test]
+        [Category("ModifierBlock")]
         public void ModifierStackWithTwoNames()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -69,6 +76,7 @@ namespace ProtoTest
             Assert.IsTrue((Int64)mirror.GetValue("a", 0).Payload == 16);
         }
         [Test]
+        [Category("ModifierBlock")]
         public void ModifierStackWithArray()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -84,6 +92,7 @@ namespace ProtoTest
             Assert.IsTrue((Int64)mirror.GetValue("a@first", 0).Payload == 1);
         }
         [Test]
+        [Category("ModifierBlock")]
         public void ModifierStackWithArrayAndFunction()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -100,6 +109,7 @@ namespace ProtoTest
         }
 
         [Test]
+        [Category("ModifierBlock")]
         public void ModifierStackWithArrayAndFunction2()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -110,6 +120,7 @@ namespace ProtoTest
             Assert.IsTrue((Int64)mirror.GetValue("b", 0).Payload == 10);
         }
         [Test]
+        [Category("ModifierBlock")]
         public void ModifierStackWithArrayAndFunctionReplication()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
@@ -135,6 +146,7 @@ namespace ProtoTest
             Assert.IsTrue((Int64)os[2].Payload == 5);
         }
         [Test]
+        [Category("ModifierBlock")]
         public void ClassTest()
         {
             ProtoScript.Runners.ProtoScriptTestRunner fsr = new ProtoScript.Runners.ProtoScriptTestRunner();
