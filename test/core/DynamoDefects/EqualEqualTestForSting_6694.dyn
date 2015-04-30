@@ -1,0 +1,17 @@
+<Workspace Version="0.8.1.1191" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="fed93c02-499a-489c-b25d-344037ef19af" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="120" y="191" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;DesignScript&quot;;&#xA;&quot;Dynamo&quot;;" ShouldFocus="false" />
+    <Dynamo.Nodes.DSFunction guid="68e9538f-278d-44a7-8b35-a594cea07dca" type="Dynamo.Nodes.DSFunction" nickname="==" x="423.5" y="175" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="==@var[]..[],var[]..[]" />
+    <Dynamo.Nodes.DSFunction guid="56f3c0fd-d39c-46cb-a4ea-4f266f7a9fce" type="Dynamo.Nodes.DSFunction" nickname="==" x="358.5" y="369" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="==@var[]..[],var[]..[]" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="f17bb2cf-5c9c-442e-af12-e2106cb06c18" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="122" y="366" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="&quot;DesignScript&quot;;&#xA;&quot;Dynamo&quot;;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="fed93c02-499a-489c-b25d-344037ef19af" start_index="0" end="68e9538f-278d-44a7-8b35-a594cea07dca" end_index="0" portType="0" />
+    <Dynamo.Models.ConnectorModel start="fed93c02-499a-489c-b25d-344037ef19af" start_index="1" end="68e9538f-278d-44a7-8b35-a594cea07dca" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f17bb2cf-5c9c-442e-af12-e2106cb06c18" start_index="1" end="56f3c0fd-d39c-46cb-a4ea-4f266f7a9fce" end_index="1" portType="0" />
+    <Dynamo.Models.ConnectorModel start="f17bb2cf-5c9c-442e-af12-e2106cb06c18" start_index="1" end="56f3c0fd-d39c-46cb-a4ea-4f266f7a9fce" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>
