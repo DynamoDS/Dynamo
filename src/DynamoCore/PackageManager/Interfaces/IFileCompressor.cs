@@ -1,6 +1,6 @@
 ﻿namespace Dynamo.PackageManager
 {
-    interface ICompressor
+    interface IFileCompressor
     {
         IFileInfo Zip(string directoryPath);
     }

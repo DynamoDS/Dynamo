@@ -32,7 +32,7 @@ namespace Dynamo.Tests
             }
         }
 
-        private class MockFileCompressor : ICompressor
+        private class MockFileFileCompressor : IFileCompressor
         {
             private readonly Func<string, IFileInfo> zipFunc;
 
@@ -81,7 +81,7 @@ namespace Dynamo.Tests
 
             public IDirectoryInfo TryCreateDirectory(string directoryPath)
             {
-                var m = new MockDirectoryInfo(directoryPath);
+                var m = new MockDirectoryInfo(() => directoryPath);
                 this.directoriesCreated.Add(m);
                 return m;
             }
@@ -143,15 +143,10 @@ namespace Dynamo.Tests
             bigFile.Setup(x => x.Length).Returns(PackageUploadBuilder.MaximumPackageSize + 1);
             bigFile.Setup(x => x.Name).Returns("Foo");
             
-            var zip = new Mock<ICompressor>();
+            var zip = new Mock<IFileCompressor>();
             zip.Setup((x) => x.Zip("directory")).Returns(bigFile.Object);
 
-            var pub = new PackageUploadBuilder(fs, zip.Object);
-
-            pub.NewPackage(new PackageUploadBuilder.UploadParams()
-            {
-                
-            });
+            //var pub = new PackageDirectoryBuilder(fs, zip.Object);
 
         }
 

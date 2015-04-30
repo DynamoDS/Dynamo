@@ -73,6 +73,7 @@
     <Compile Include="MessageLogTests.cs" />
     <Compile Include="IconsTests.cs" />
     <Compile Include="NodeConstructionTests.cs" />
+    <Compile Include="PackageManager\PackageDirectoryBuilderTests.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />

@@ -24,13 +24,12 @@ namespace Dynamo.PackageManager
             "|ContainsPythonScripts(58B25C0B-CBBE-4DDC-AC39-ECBEB8B55B10)";
 
         private readonly IGregClient client;
-        private readonly IFileSystem fileSystem;
-        private readonly ICompressor _compressor;
-
-        private readonly CustomNodeManager customNodeManager;
-        private readonly string packagesDirectory;
         private readonly IAuthProvider authProvider;
 
+        private readonly PackageUploadBuilder uploadBuilder;
+
+        private readonly string packagesDirectory;
+       
         public event Action<LoginState> LoginStateChanged;
 
         /// <summary>
@@ -56,7 +55,7 @@ namespace Dynamo.PackageManager
         {
             get { return this.client.BaseUrl; }
         }
-        s
+        
         /// <summary>
         ///     Determines if the this.client has login capabilities
         /// </summary>
@@ -67,57 +66,10 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        internal class StartConfig
+        internal PackageManagerClient(IGregClient client, PackageUploadBuilder builder)
         {
-            /// <summary>
-            ///     The directory where all packages will be saved
-            ///     for this session
-            /// </summary>
-            public string PackagesDirectory { get; set; }
-
-            /// <summary>
-            ///     A CustomNodeManager instance for remapping moved customnodes
-            /// </summary>
-            public CustomNodeManager CustomNodeManager { get; set; }
-
-            /// <summary>
-            ///     A GregClient instance for this session
-            /// </summary>
-            public IGregClient GregClient { get; set; }
-
-            /// <summary>
-            ///     A FileSystem object for mocking purposes.  If left null,
-            ///     a MutatingFileSystem object will be used
-            /// </summary>
-            public IFileSystem FileSystem { get; set; }
-
-            /// <summary>
-            ///     A _compressor for mocking purposes.  If left null, a
-            ///     MutatingCompressor will be used.     
-            /// </summary>
-            public ICompressor Compressor { get; set; }
-
-            public StartConfig(string packagesDirectory, CustomNodeManager customNodeManager,
-                IGregClient gregClient)
-            {
-                if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
-                if (customNodeManager == null) throw new ArgumentNullException("customNodeManager");
-                if (gregClient == null) throw new ArgumentNullException("gregClient");
-
-                this.PackagesDirectory = packagesDirectory;
-                this.CustomNodeManager = customNodeManager;
-                this.GregClient = gregClient;
-            }
-        }
-
-        internal PackageManagerClient(StartConfig p)
-        {
-            this.fileSystem = p.FileSystem ?? new MutatingFileSystem();
-            this._compressor = p.Compressor ?? new MutatingCompressor();
-
-            this.packagesDirectory = p.PackagesDirectory;
-            this.customNodeManager = p.CustomNodeManager;
-            this.client = p.GregClient;
+            this.uploadBuilder = builder;
+            this.client = client;
 
             this.authProvider = this.client.AuthProvider;
 
@@ -190,40 +142,26 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle Publish(Package package, List<string> files, bool isNewVersion, bool isTestMode)
+        internal PackageUploadHandle Publish(Package package, List<string> files, bool isNewVersion)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
-            return PublishPackage(isNewVersion, package, files, packageUploadHandle, isTestMode);
-        }
 
-        private PackageUploadHandle PublishPackage(bool isNewVersion, Package package, List<string> files,
-            PackageUploadHandle packageUploadHandle, bool isTestMode)
-        {
             Task.Factory.StartNew(() =>
             {
                 try
                 {
-                    var uploadBuilder = new PackageUploadBuilder( this.fileSystem, this._compressor );
-                    var uploadParams = new PackageUploadParams()
-                    {
-                        RootDirectory = this.packagesDirectory,
-                        CustomNodeManager = this.customNodeManager,
-                        Files = files,
-                        Handle = packageUploadHandle,
-                        IsTestMode = isTestMode,
-                        Package = package
-                    };
-
                     ResponseBody ret = null;
                     if (isNewVersion)
                     {
-                        var pkg = uploadBuilder.NewPackageVersion(uploadParams);
+                        var pkg = uploadBuilder.NewPackageVersionUpload(package, packagesDirectory, files,
+                            packageUploadHandle);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = this.client.ExecuteAndDeserialize(pkg);
                     }
                     else
                     {
-                        var pkg = uploadBuilder.NewPackage(uploadParams);
+                        var pkg = uploadBuilder.NewPackageUpload(package, packagesDirectory, files,
+                            packageUploadHandle);
                         packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
                         ret = this.client.ExecuteAndDeserialize(pkg);
                     }

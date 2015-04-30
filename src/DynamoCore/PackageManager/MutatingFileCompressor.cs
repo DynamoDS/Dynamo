@@ -1,6 +1,9 @@
 ﻿namespace Dynamo.PackageManager
 {
-    internal class MutatingCompressor : ICompressor
+    /// <summary>
+    ///     An IFileCompressor that actually attempts to compress a directory
+    /// </summary>
+    internal class MutatingFileCompressor : IFileCompressor
     {
         public IFileInfo Zip(string directoryPath)
         {

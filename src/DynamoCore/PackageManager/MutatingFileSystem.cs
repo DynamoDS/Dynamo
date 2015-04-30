@@ -3,36 +3,39 @@ using Dynamo.Annotations;
 
 namespace Dynamo.PackageManager
 {
+    /// <summary>
+    ///     An IFileSystem that actually mutates the underlying file system
+    /// </summary>
     internal class MutatingFileSystem : IFileSystem
     {
-        public void CopyFile([NotNull] string filePath, [NotNull] string destinationPath)
+        public void CopyFile(string filePath, string destinationPath)
         {
             File.Copy(filePath, destinationPath);
         }
 
-        public void DeleteFile([NotNull] string filePath)
+        public void DeleteFile(string filePath)
         {
             File.Delete(filePath);
         }
 
         public  IDirectoryInfo TryCreateDirectory(string path)
         {
-            return this.DirectoryExists(path)
-                ? new TrueDirectoryInfo(new System.IO.DirectoryInfo(path))
+            return Directory.Exists(path)
+                ? new TrueDirectoryInfo(new DirectoryInfo(path))
                 : new TrueDirectoryInfo(Directory.CreateDirectory(path));
         }
 
-        public bool DirectoryExists([NotNull] string directoryPath)
+        public bool DirectoryExists(string directoryPath)
         {
             return Directory.Exists(directoryPath);
         }
 
-        public bool FileExists([NotNull] string filePath)
+        public bool FileExists(string filePath)
         {
             return File.Exists(filePath);
         }
 
-        public void WriteAllText([NotNull] string filePath, [NotNull] string content)
+        public void WriteAllText(string filePath, string content)
         {
             File.WriteAllText(filePath, content);
         }
