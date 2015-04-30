@@ -563,6 +563,39 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void CanWriteJaggedArrayToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteJaggedArrayToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            Assert.AreEqual(4, list.Count());
+
+            // get data returns 2d array
+            Assert.IsTrue(list[0].IsCollection);
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(3, rowList.Count());
+            Assert.AreEqual(null, rowList[2].Data);
+
+            rowList = list[3].GetElements();
+            Assert.AreEqual(3, rowList.Count());
+            Assert.AreEqual(null, rowList[0].Data);
+
+        }
+
 
         #endregion
 
