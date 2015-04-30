@@ -12,10 +12,6 @@ namespace Dynamo.Wpf
 {
     public class PerVertexMeshGeometryModel3D : MeshGeometryModel3D
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="host"></param>
         public override void Attach(IRenderHost host)
         {
             // --- attach
@@ -45,8 +41,6 @@ namespace Dynamo.Wpf
             // -- set geometry if given
             if (geometry != null)
             {
-                //throw new HelixToolkitException("Geometry not found!");                
-
                 /// --- init vertex buffer
                 this.vertexBuffer = Device.CreateBuffer(BindFlags.VertexBuffer, DefaultVertex.SizeInBytes, this.CreateDefaultVertexArray());
 
@@ -73,9 +67,6 @@ namespace Dynamo.Wpf
             this.Device.ImmediateContext.Flush();
         }
 
-        /// <summary>
-        /// Creates a <see cref="T:DefaultVertex[]"/>.
-        /// </summary>
         private DefaultVertex[] CreateDefaultVertexArray()
         {
             var geometry = (MeshGeometry3D)this.Geometry;
