@@ -35,20 +35,11 @@ namespace Dynamo.Search.SearchElements
             get
             {
                 string customizationPath = System.IO.Path.GetDirectoryName(Path);
-                customizationPath = System.IO.Directory.GetParent(customizationPath).ToString();
+                customizationPath = System.IO.Directory.GetParent(customizationPath).FullName;
                 customizationPath = customizationPath + Dynamo.UI.Configurations.PackageCustomizationAssemblyPostfix;
                 return customizationPath;
             }
-        }
-
-        public override string IconName
-        {
-            get
-            {
-                return ID.ToString();
-            }
-        }
-                    
+        }            
 
         public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
@@ -69,6 +60,8 @@ namespace Dynamo.Search.SearchElements
             FullCategoryName = info.Category;
             Description = info.Description;
             Path = info.Path;
+            iconName = ID.ToString();
+
             ElementType = ElementTypes.CustomNode;
             if (info.IsPackageMember)
                 ElementType |= ElementTypes.Packaged; // Add one more flag.

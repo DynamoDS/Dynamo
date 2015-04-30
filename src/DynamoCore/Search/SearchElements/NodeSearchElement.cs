@@ -148,7 +148,7 @@ namespace Dynamo.Search.SearchElements
             }
         }
 
-        public virtual string IconName
+        public string IconName
         {
             get { return iconName; }
         }
