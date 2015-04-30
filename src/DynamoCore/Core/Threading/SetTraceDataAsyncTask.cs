@@ -52,7 +52,8 @@ namespace Dynamo.Core.Threading
 
         protected override void HandleTaskExecutionCore()
         {
-            engineController.LiveRunnerCore.DSExecutable.RuntimeData.SetTraceDataForNodes(traceData);
+           
+            engineController.LiveRunnerRuntimeCore.RuntimeData.SetTraceDataForNodes(traceData);
         }
 
         protected override void HandleTaskCompletionCore()

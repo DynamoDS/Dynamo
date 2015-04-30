@@ -2128,18 +2128,18 @@ namespace DynamoCoreWpfTests
             preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyFunctionParamValue.xml", false, (commandTag) =>
             {
-                ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
+                ProtoCore.RuntimeCore core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2147,14 +2147,14 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }
@@ -2226,18 +2226,18 @@ namespace DynamoCoreWpfTests
             preloadGeometry = true;
             RunCommandsFromFile("TestCallsiteMapModifyModifyInputConnection.xml", false, (commandTag) =>
             {
-                ProtoCore.Core core = ViewModel.Model.EngineController.LiveRunnerCore;
+                ProtoCore.RuntimeCore core = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
                 if (commandTag == "ModifyX_FirstTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidFirstCall = kvp.Key;
                     }
@@ -2245,14 +2245,14 @@ namespace DynamoCoreWpfTests
                 else if (commandTag == "ModifyX_SecondTime")
                 {
                     // There must only be 1 callsite at this point
-                    Assert.AreEqual(1, core.DSExecutable.CallSiteToNodeMap.Count);
+                    Assert.AreEqual(1, core.RuntimeData.CallSiteToNodeMap.Count);
 
                     // Verify that the nodemap contains the node guid
-                    bool containsNodeGuid = core.DSExecutable.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
+                    bool containsNodeGuid = core.RuntimeData.CallSiteToNodeMap.ContainsValue(FunctionCallNodeGuid);
                     Assert.AreEqual(true, containsNodeGuid);
 
                     // Get the callsite guid
-                    foreach (KeyValuePair<Guid, Guid> kvp in core.DSExecutable.CallSiteToNodeMap)
+                    foreach (KeyValuePair<Guid, Guid> kvp in core.RuntimeData.CallSiteToNodeMap)
                     {
                         callsiteGuidSecondCall = kvp.Key;
                     }

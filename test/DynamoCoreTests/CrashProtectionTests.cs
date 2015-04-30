@@ -74,7 +74,7 @@ namespace Dynamo.Tests
 
             // save the file to a temp location
             var tp = Path.Combine(TempFolder, "tempCrashProtection.dyn");
-            ws.SaveAs(tp, CurrentDynamoModel.EngineController.LiveRunnerCore);
+            ws.SaveAs(tp, CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore);
 
             // open the file
             var nws = Open<HomeWorkspaceModel>(tp);

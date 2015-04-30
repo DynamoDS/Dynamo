@@ -230,6 +230,8 @@ namespace ProtoCore
 
     public class Core
     {
+        public Dictionary<Guid, int> CallsiteGuidMap { get; set; }
+
         public IDictionary<string, object> Configurations { get; set; }
         public List<System.Type> DllTypesToLoad { get; private set; }
 
@@ -246,9 +248,8 @@ namespace ProtoCore
 #region COMPILER_GENERATED_TO_RUNTIME_DATA
 
         public LangVerify Langverify { get; private set; }
-        public FunctionTable FunctionTable { get; private set; }
-
-        public RuntimeData RuntimeData { get; set; }
+        public FunctionTable FunctionTable { get; private set; }    
+    
 
 #endregion
 
@@ -570,9 +571,8 @@ namespace ProtoCore
             Heap = new Heap();
             //Rmem = new RuntimeMemory(Heap);
             Configurations = new Dictionary<string, object>();
-            DllTypesToLoad = new List<System.Type>();
-
-            RuntimeData = new ProtoCore.RuntimeData();
+            DllTypesToLoad = new List<System.Type>();           
+          
 
             Validity.AssertExpiry();
             Options = options;
@@ -597,8 +597,7 @@ namespace ProtoCore
             RuntimeTableIndex = 0;
             CodeBlockList = new List<CodeBlock>();
             CompleteCodeBlockList = new List<CodeBlock>();
-            DSExecutable = new Executable();
-
+            CallsiteGuidMap = new Dictionary<Guid, int>();
             AssocNode = null;
 
             // TODO Jun/Luke type system refactoring
@@ -915,13 +914,11 @@ namespace ProtoCore
             ExprInterpreterExe.Configurations = Configurations;
             ExprInterpreterExe.CodeToLocation = codeToLocation;
             ExprInterpreterExe.CurrentDSFileName = CurrentDSFileName;
-            ExprInterpreterExe.RuntimeData = GenerateRuntimeData();
+          
             // Copy all tables
             ExprInterpreterExe.classTable = DSExecutable.classTable;
             ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
             ExprInterpreterExe.runtimeSymbols = DSExecutable.runtimeSymbols;
-            ExprInterpreterExe.isSingleAssocBlock = DSExecutable.isSingleAssocBlock;
-
             ExprInterpreterExe.TypeSystem = TypeSystem;
             
             // Copy all instruction streams
@@ -951,28 +948,11 @@ namespace ProtoCore
             }
         }
 
-        /// <summary>
-        /// Populate the runtime data
-        /// </summary>
-        /// <returns></returns>
-        private RuntimeData GenerateRuntimeData()
-        {
-            Validity.Assert(RuntimeData != null);
-          //  RuntimeData.FunctionTable = FunctionTable;
-          //  RuntimeData.DynamicVarTable = DynamicVariableTable;
-          //  RuntimeData.DynamicFuncTable = DynamicFunctionTable;
-          //  RuntimeData.FuncPointerTable = FunctionPointerTable;
-          //  RuntimeData.ContextDataMngr = ContextDataManager;
-           // RuntimeData.Configurations = Configurations;
-          //  RuntimeData.CodeToLocation = codeToLocation;
-          //  RuntimeData.CurrentDSFileName = CurrentDSFileName;
-            return RuntimeData;
-        }
-
+       
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
-
+            DSExecutable = new Executable();
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
             DSExecutable.CodeBlocks.AddRange(CodeBlockList);
@@ -1010,13 +990,7 @@ namespace ProtoCore
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
             }
 
-            // Single associative block means the first instruction is an immediate bounce 
-            // This variable is only used by the mirror to determine if the GetValue()
-            // block parameter needs to be incremented or not in order to get the correct global variable
-            if (DSExecutable.isSingleAssocBlock)
-            {
-                DSExecutable.isSingleAssocBlock = (OpCode.BOUNCE == CodeBlockList[0].instrStream.instrList[0].opCode) ? true : false;
-            }
+            
             GenerateExprExe();
             DSExecutable.FunctionTable = FunctionTable;
             DSExecutable.DynamicVarTable = DynamicVariableTable;
@@ -1026,7 +1000,8 @@ namespace ProtoCore
             DSExecutable.Configurations = Configurations;
             DSExecutable.CodeToLocation = codeToLocation;
             DSExecutable.CurrentDSFileName = CurrentDSFileName;
-            DSExecutable.RuntimeData = GenerateRuntimeData();
+        
+             
         }
 
 
