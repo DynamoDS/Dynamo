@@ -100,11 +100,11 @@ namespace Dynamo.DSEngine
 
                 resourceAssemblyPath = fn + Configurations.IconResourcesDLL;
 
-                if (useAdditionalPaths)
-                    // Side-by-side customization dll not found, try other resolution paths.
-                    return pathManager.ResolveLibraryPath(ref resourceAssemblyPath);
-                else
+                if (!useAdditionalPaths) // Should only look up alongside the main assembly.
                     return false;
+
+                // Side-by-side customization dll not found, try other resolution paths.
+                return pathManager.ResolveLibraryPath(ref resourceAssemblyPath);
             }
             catch
             {
