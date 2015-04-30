@@ -10,7 +10,7 @@ using Dynamo.PackageManager.UI;
 
 using NUnit.Framework;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class PackageManagerUITests : SystemTestBase

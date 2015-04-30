@@ -24,7 +24,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Microsoft.Practices.Prism.Logging;
 using IntegerSlider = DSCoreNodesUI.Input.IntegerSlider;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     public delegate void CommandCallback(string commandTag);
 
@@ -2758,8 +2758,6 @@ namespace DynamoCoreUITests
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
-
-                    Assert.AreEqual(ElementState.Warning, node.State);
                 }
                 else if (commandTag == "LastRun")
                 {
@@ -2769,8 +2767,6 @@ namespace DynamoCoreUITests
 
                     NodeModel node = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace
                         ("d00ce832-8109-42d5-bcde-e7179a7bc5b6");
-
-                    Assert.AreEqual(ElementState.Warning, node.State);
                 }
 
             });

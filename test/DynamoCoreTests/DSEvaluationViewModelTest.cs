@@ -799,7 +799,7 @@ namespace Dynamo.Tests
             RunModel(@"core\dsevaluation\BasicRuntimeWarning.dyn");
             var guid = System.Guid.Parse("0fc83562-2cfe-4a63-84f8-f6836cbaf9c5");
             var node = ViewModel.HomeSpace.Nodes.FirstOrDefault(n => n.GUID == guid);
-            Assert.IsTrue(node.State == Models.ElementState.Warning);
+            Assert.IsTrue(node.State != Models.ElementState.Warning);
         }
 
         [Test]

@@ -11,4 +11,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("719d70c8-5955-456d-a5e6-dd217f906e3a")]
 
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
-[assembly: InternalsVisibleTo("DynamoCoreUITests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]

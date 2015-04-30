@@ -12,7 +12,7 @@ using DynamoShapeManager;
 using NUnit.Framework;
 using TestServices;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     public class DynamoTestUIBase
     {

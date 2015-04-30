@@ -15,7 +15,7 @@ using Dynamo.Nodes;
 using NUnit.Framework;
 using DynamoConverter = DSCoreNodesUI.DynamoConvert;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class DynamoConverterTest : DSEvaluationViewModelUnitTest

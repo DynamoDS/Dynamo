@@ -4,9 +4,9 @@ using Dynamo.UpdateManager;
 using Moq;
 using NUnit.Framework;
 using SystemTestServices;
-using DynamoCoreUITests.Utility;
+using DynamoCoreWpfTests.Utility;
 
-namespace DynamoCoreUITests
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class UpdateManagerUITests : SystemTestBase
