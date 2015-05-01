@@ -519,8 +519,7 @@ namespace Dynamo.ViewModels
                 throw new ArgumentException(message, "parameters");
             }
 
-            Guid nodeID = Guid.NewGuid();
-            var command = new DynamoModel.ConvertNodesToCodeCommand(nodeID);
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
             this.DynamoViewModel.ExecuteCommand(command);
         }
 

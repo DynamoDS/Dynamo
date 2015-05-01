@@ -5,106 +5,114 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
              Background="Transparent"
              MinWidth="100">
     <UserControl.Resources>
-        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
-        <controls:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
-        <controls:NodeSearchElementVMToBoolConverter x:Key="NodeSearchElementVMToBoolConverter" />
-        <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
-                                          TrueBrush="#333333"
-                                          FalseBrush="#272727" />
+        <ResourceDictionary>
 
-        <Style TargetType="{x:Type ScrollViewer}">
-            <Setter Property="HorizontalScrollBarVisibility"
-                    Value="Hidden" />
-            <EventSetter Event="PreviewMouseWheel"
-                         Handler="OnShiftMouseWheel" />
-        </Style>
-        <Style x:Key="ListBoxItemStyle"
-               TargetType="{x:Type ListBoxItem}">
-            <Setter Property="BorderBrush"
-                    Value="Transparent" />
-            <Setter Property="BorderThickness"
-                    Value="1" />
-            <Setter Property="Height"
-                    Value="40" />
-            <Setter Property="ScrollViewer.CanContentScroll"
-                    Value="True" />
-            <Setter Property="FocusVisualStyle"
-                    Value="{x:Null}" />
-            <Setter Property="Visibility"
-                    Value="{Binding Path=Visibility, Converter={StaticResource BoolToVisibilityCollapsedConverter}}" />
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.SidebarGridDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
 
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border Background="{TemplateBinding Background}">
-                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
-                                              Content="{TemplateBinding Content}" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="#404040" />
-                            </Trigger>
-                            <Trigger Property="IsFocused"
-                                     Value="True">
-                                <Setter Property="Background"
-                                        Value="#404040" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <EventSetter Event="PreviewMouseLeftButtonDown"
-                         Handler="OnMouseLeftButtonDown" />
-            <EventSetter Event="KeyDown"
-                         Handler="OnMemberButtonKeyDown" />
-            <EventSetter Event="MouseEnter"
-                         Handler="OnListBoxItemMouseEnter" />
-            <EventSetter Event="MouseLeave"
-                         Handler="OnPopupMouseLeave" />
-        </Style>
-        <Style x:Key="MoreButtonStyle"
-               TargetType="{x:Type Button}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Grid x:Name="container">
-                            <TextBlock x:Name="text"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       TextAlignment="Center"
-                                       Foreground="#4691CE"
-                                       FontSize="12"
-                                       Margin="71,0,0,0">
-                                <TextBlock.Text>
-                                    <Binding Path="Content"
-                                             RelativeSource="{RelativeSource TemplatedParent}" />
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="Button.IsMouseOver"
-                                     Value="true">
-                                <Setter TargetName="container"
-                                        Property="Background"
-                                        Value="#2F2F2F" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+            <controls:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
+                                              TrueBrush="{StaticResource LibraryCommonBackground}"
+                                              FalseBrush="{StaticResource ClassButtonClickedBackground}" />
+
+            <Style TargetType="{x:Type ScrollViewer}">
+                <Setter Property="HorizontalScrollBarVisibility"
+                        Value="Hidden" />
+                <EventSetter Event="PreviewMouseWheel"
+                             Handler="OnShiftMouseWheel" />
+            </Style>
+            <Style x:Key="ListBoxItemStyle"
+                   TargetType="{x:Type ListBoxItem}">
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+                <Setter Property="BorderThickness"
+                        Value="1" />
+                <Setter Property="Height"
+                        Value="40" />
+                <Setter Property="ScrollViewer.CanContentScroll"
+                        Value="True" />
+                <Setter Property="FocusVisualStyle"
+                        Value="{x:Null}" />
+                <Setter Property="Visibility"
+                        Value="{Binding Path=Visibility, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  Content="{TemplateBinding Content}" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="{StaticResource LibraryMemberOnHover}" />
+                                </Trigger>
+                                <Trigger Property="IsFocused"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="{StaticResource LibraryMemberOnHover}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <EventSetter Event="PreviewMouseLeftButtonDown"
+                             Handler="OnMouseLeftButtonDown" />
+                <EventSetter Event="KeyDown"
+                             Handler="OnMemberButtonKeyDown" />
+                <EventSetter Event="MouseEnter"
+                             Handler="OnListBoxItemMouseEnter" />
+                <EventSetter Event="MouseLeave"
+                             Handler="OnPopupMouseLeave" />
+            </Style>
+            <Style x:Key="MoreButtonStyle"
+                   TargetType="{x:Type Button}">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Grid x:Name="container">
+                                <TextBlock x:Name="text"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Center"
+                                           Foreground="#4691CE"
+                                           FontSize="12"
+                                           Margin="71,0,0,0">
+                                    <TextBlock.Text>
+                                        <Binding Path="Content"
+                                                 RelativeSource="{RelativeSource TemplatedParent}" />
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Button.IsMouseOver"
+                                         Value="true">
+                                    <Setter TargetName="container"
+                                            Property="Background"
+                                            Value="#2F2F2F" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.Visibility>
         <Binding Path="ClassDetailsVisibility"
-                 Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                 Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
     </UserControl.Visibility>
     <Border Padding="0,10,0,3">
         <Border.Background>
@@ -147,7 +155,7 @@
                                        Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
-                                       Foreground="#CCCCCC"
+                                       Foreground="{StaticResource CommonSidebarTextColor}"
                                        FontSize="13" />
                         </StackPanel>
                     </DataTemplate>
@@ -159,7 +167,7 @@
                     HorizontalAlignment="Left">
                 <Border.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
-                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                             Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </Border.Visibility>
                 <uicontrols:HeaderStrip x:Name="secondaryHeaderStrip" />
             </Border>
@@ -172,7 +180,7 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                 <ListBox.Visibility>
                     <Binding Path="AreSecondaryHeadersVisible"
-                             Converter="{StaticResource BoolToVisibilityCollapsedConverter}" />
+                             Converter="{StaticResource BooleanToVisibilityCollapsedConverter}" />
                 </ListBox.Visibility>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -187,7 +195,7 @@
                                        Text="{Binding Name}"
                                        VerticalAlignment="Top"
                                        Margin="5,10,0,0"
-                                       Foreground="#CCCCCC"
+                                       Foreground="{StaticResource CommonSidebarTextColor}"
                                        FontSize="13" />
                         </StackPanel>
                     </DataTemplate>
