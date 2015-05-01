@@ -504,7 +504,7 @@ namespace Dynamo.Models
             PackageLoader.MessageLogged += LogMessage;
             PackageLoader.RequestLoadNodeLibrary += LoadNodeLibrary;
             PackageLoader.RequestLoadCustomNodeDirectory +=
-                (dir) => this.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode);
+                (dir) => this.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, isTestMode, true);
 
             DisposeLogic.IsShuttingDown = false;
 
@@ -816,6 +816,7 @@ namespace Dynamo.Models
                 {
                     NodeFactory.AddTypeFactoryAndLoader(type.Type);
                     NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
+                    type.IsPackageMember = true;
                     AddNodeTypeToSearch(type);
                 }
                 catch (Exception e)

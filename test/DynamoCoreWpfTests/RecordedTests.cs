@@ -1844,10 +1844,10 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("t_2", cbn.OutPorts[0].ToolTipContent);
+            Assert.AreEqual("t3", cbn.OutPorts[0].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("t_1", cbn.OutPorts[1].ToolTipContent);
+            Assert.AreEqual("t4", cbn.OutPorts[1].ToolTipContent);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
         }
 
@@ -3320,7 +3320,65 @@ namespace DynamoCoreWpfTests
 
             });
 
-        } 
+        }
+
+        [Test, RequiresSTA]
+        [Category("RegressionTests")]
+        public void EqualEqualTest_Defect6694()
+        {
+            // Details are available in defect 
+            // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6694
+
+            RunCommandsFromFile("Defect_6694_EqualEqualOperatorTest.xml", true, (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+
+                string equalequalNode = "9ab64309-4cc5-4ea6-9281-85fe7dd46ebb";
+
+                if (commandTag == "FirstRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
+                    AssertPreviewValue(equalequalNode, false );
+                }
+                else if (commandTag == "SecondRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
+                    AssertPreviewValue(equalequalNode, true);
+                }
+                else if (commandTag == "ThirdRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
+                    AssertPreviewValue(equalequalNode, false);
+                }
+                else if (commandTag == "FourthRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(4, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
+                    AssertPreviewValue(equalequalNode, false);
+                }
+                else if (commandTag == "FifthRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(1, workspace.Nodes.Count);
+                    Assert.AreEqual(0, workspace.Connectors.Count());
+                }
+                else if (commandTag == "FinalRun")
+                {
+                    // check for number of Nodes and Connectors
+                    Assert.AreEqual(3, workspace.Nodes.Count);
+                    Assert.AreEqual(2, workspace.Connectors.Count());
+                    AssertPreviewValue(equalequalNode, false);
+                }
+            });
+
+        }
        
 
         #endregion
