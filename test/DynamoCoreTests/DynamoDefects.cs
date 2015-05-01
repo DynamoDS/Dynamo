@@ -496,5 +496,29 @@ namespace Dynamo.Tests
             Assert.IsNotNull(combinedValue);
 
         }
+
+        [Test, Category("RegressionTests")]
+        public void EqualEqualTest_ForStrings_Defect6694()
+        {
+            //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-6694
+            DynamoModel model = ViewModel.Model;
+
+
+            string openPath = Path.Combine(TestDirectory, 
+                                        @"core\DynamoDefects\EqualEqualTestForSting_6694.dyn");
+            RunModel(openPath);
+
+            // check for number of Nodes and Connectors
+            Assert.AreEqual(4, model.CurrentWorkspace.Nodes.Count);
+            Assert.AreEqual(4, model.CurrentWorkspace.Connectors.Count());
+
+
+            // Different Stinrg input
+            AssertPreviewValue("68e9538f-278d-44a7-8b35-a594cea07dca", false);
+
+            // Same Stinrg input
+            AssertPreviewValue("56f3c0fd-d39c-46cb-a4ea-4f266f7a9fce", true);
+
+        }
     }
 }
