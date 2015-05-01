@@ -13,7 +13,7 @@ namespace Analysis
     /// </summary>
     public class VectorData : IStructuredData<Point, Vector>, IGraphicItem
     {
-        private const byte vColor = 120;
+        private const byte VectorColor = 120;
 
         /// <summary>
         /// A list of calculation locations.
@@ -90,12 +90,12 @@ namespace Analysis
             var v = data.Item1;
 
             package.AddLineStripVertex(p.X, p.Y, p.Z);
-            package.AddLineStripVertexColor(vColor, vColor, vColor, 255);
+            package.AddLineStripVertexColor(VectorColor, VectorColor, VectorColor, 255);
 
             var o = p.Add(v);
 
             package.AddLineStripVertex(o.X, o.Y, o.Z);
-            package.AddLineStripVertexColor(vColor, vColor, vColor, 255);
+            package.AddLineStripVertexColor(VectorColor, VectorColor, VectorColor, 255);
 
             package.AddLineStripVertexCount(2);
         }
