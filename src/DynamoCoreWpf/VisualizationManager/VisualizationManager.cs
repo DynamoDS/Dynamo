@@ -233,7 +233,6 @@ namespace Dynamo
         /// Display a label for one or several render packages 
         /// based on the paths of those render packages.
         /// </summary>
-        /// <param name="path"></param>
         public void TagRenderPackageForPath(string path)
         {
             var packages = new List<IRenderPackage>();
