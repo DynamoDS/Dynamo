@@ -159,7 +159,7 @@ namespace Dynamo.ViewModels
         public List<PackageManagerSearchElement> CachedPackageList { get; private set; }
 
         public readonly DynamoViewModel DynamoViewModel;
-        public PackageManagerClient Model { get; private set; }
+        internal PackageManagerClient Model { get; private set; }
 
         public LoginState LoginState
         {
@@ -186,7 +186,7 @@ namespace Dynamo.ViewModels
 
         public ICommand ToggleLoginStateCommand { get; private set; }
 
-        public PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
+        internal PackageManagerClientViewModel(DynamoViewModel dynamoViewModel, PackageManagerClient model )
         {
             this.DynamoViewModel = dynamoViewModel;
             Model = model;

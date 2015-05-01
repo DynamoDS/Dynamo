@@ -10,9 +10,11 @@ using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
-    public class PackageManagerClient
+    internal class PackageManagerClient
     {
         #region Properties/Fields
+
+        public const string PackageEngineName = "dynamo";
 
         // These were used early on in order to identify packages with binaries and python scripts
         // This is now a bona fide field in the DB so they are obsolete. 
@@ -150,50 +152,53 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal PackageUploadHandle Publish(Package package, List<string> files, bool isNewVersion)
+        internal PackageUploadHandle PublishAsync(Package package, IEnumerable<string> files, bool isNewVersion)
         {
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
             Task.Factory.StartNew(() =>
             {
-                try
-                {
-                    ResponseBody ret = null;
-                    if (isNewVersion)
-                    {
-                        var pkg = uploadBuilder.NewPackageVersionUpload(package, packagesDirectory, files,
-                            packageUploadHandle);
-                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
-                        ret = this.client.ExecuteAndDeserialize(pkg);
-                    }
-                    else
-                    {
-                        var pkg = uploadBuilder.NewPackageUpload(package, packagesDirectory, files,
-                            packageUploadHandle);
-                        packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
-                        ret = this.client.ExecuteAndDeserialize(pkg);
-                    }
-                    if (ret == null)
-                    {
-                        packageUploadHandle.Error("Failed to submit.  Try again later.");
-                        return;
-                    }
-
-                    if (ret != null && !ret.success)
-                    {
-                        packageUploadHandle.Error(ret.message);
-                        return;
-                    }
-
-                    packageUploadHandle.Done(null);
-                }
-                catch (Exception e)
-                {
-                    packageUploadHandle.Error(e.GetType() + ": " + e.Message);
-                }
+                Publish(package, files, isNewVersion, packageUploadHandle);
             });
 
             return packageUploadHandle;
+        }
+
+        internal void Publish(Package package, IEnumerable<string> files, bool isNewVersion, PackageUploadHandle packageUploadHandle)
+        {
+            try
+            {
+                ResponseBody ret = null;
+                if (isNewVersion)
+                {
+                    var pkg = uploadBuilder.NewPackageVersionUpload(package, packagesDirectory, files,
+                        packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                else
+                {
+                    var pkg = uploadBuilder.NewPackageUpload(package, packagesDirectory, files,
+                        packageUploadHandle);
+                    packageUploadHandle.UploadState = PackageUploadHandle.State.Uploading;
+                    ret = this.client.ExecuteAndDeserialize(pkg);
+                }
+                if (ret == null)
+                {
+                    packageUploadHandle.Error("Failed to submit.  Try again later.");
+                }
+
+                if (ret != null && !ret.success)
+                {
+                    packageUploadHandle.Error(ret.message);
+                }
+
+                packageUploadHandle.Done(null);
+            }
+            catch (Exception e)
+            {
+                packageUploadHandle.Error(e.GetType() + ": " + e.Message);
+            }
         }
 
         internal PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
@@ -220,7 +225,7 @@ namespace Dynamo.PackageManager
         {
             return FailFunc.TryExecute(() =>
             {
-                var pkgResponse = this.client.ExecuteAndDeserialize(new Deprecate(name, "dynamo"));
+                var pkgResponse = this.client.ExecuteAndDeserialize(new Deprecate(name, PackageEngineName));
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }, new PackageManagerResult("Failed to send.", false));
         }
@@ -229,7 +234,7 @@ namespace Dynamo.PackageManager
         {
             return FailFunc.TryExecute(() =>
             {
-                var pkgResponse = this.client.ExecuteAndDeserialize(new Undeprecate(name, "dynamo"));
+                var pkgResponse = this.client.ExecuteAndDeserialize(new Undeprecate(name, PackageEngineName));
                 return new PackageManagerResult(pkgResponse.message, pkgResponse.success);
             }, new PackageManagerResult("Failed to send.", false));
         }

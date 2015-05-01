@@ -195,7 +195,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Dynamo Package Manager Instance.
         /// </summary>
-        public readonly PackageManagerClient PackageManagerClient;
+        internal readonly PackageManagerClient PackageManagerClient;
 
         /// <summary>
         ///     Custom Node Manager instance, manages all loaded custom nodes.

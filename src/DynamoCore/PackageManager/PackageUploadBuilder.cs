@@ -22,7 +22,6 @@ namespace Dynamo.PackageManager
         private readonly PackageDirectoryBuilder builder;
         private readonly IFileCompressor fileCompressor;
 
-        internal const string PackageEngineName = "dynamo";
         internal const long MaximumPackageSize = 100 * 1024 * 1024;
 
         internal PackageUploadBuilder(PackageDirectoryBuilder builder, IFileCompressor fileCompressor)
@@ -41,7 +40,7 @@ namespace Dynamo.PackageManager
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
 
-            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, l.License, l.Contents, PackageEngineName,
+            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, l.License, l.Contents, PackageManagerClient.PackageEngineName,
                                                          engineVersion, engineMetadata, l.Group, l.Dependencies,
                                                          l.SiteUrl, l.RepositoryUrl, l.ContainsBinaries, l.NodeLibraries.Select(x => x.FullName));
         }
