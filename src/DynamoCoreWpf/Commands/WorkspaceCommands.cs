@@ -245,6 +245,11 @@ namespace Dynamo.ViewModels
             // For now this returns the most common lacing strategy in the collection.
             get
             {
+                // We were still hitting this getter when the Selection
+                // was empty, and throwing an exception when attempting to
+                // sort a null collection. If the Selection is empty, just
+                // return First lacing.
+
                 if(!DynamoSelection.Instance.Selection.Any())
                     return LacingStrategy.First;
 
