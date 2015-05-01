@@ -121,7 +121,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.Undo();
 
             //Check for the model count now
-            Assert.AreEqual(1, annotation.SelectedModels.Count());
+            Assert.AreEqual(2, annotation.SelectedModels.Count());
 
         }
 
@@ -165,10 +165,11 @@ namespace Dynamo.Tests
 
             //Check for the annotation count 
             Assert.AreEqual(1, model.CurrentWorkspace.Annotations.Count());
-
+           
             //Check for the model count 
-            Assert.AreEqual(2, annotation.SelectedModels.Count());
-
+            annotation = model.CurrentWorkspace.Annotations.FirstOrDefault();
+            Assert.AreNotEqual(null,annotation);            
+            Assert.AreEqual(2, annotation.SelectedModels.Count());     
         }
 
         [Test]
@@ -209,7 +210,7 @@ namespace Dynamo.Tests
             model.CurrentWorkspace.Undo();
 
             //Check for the model count now
-            Assert.AreEqual(1, annotation.SelectedModels.Count());
+            Assert.AreEqual(2, annotation.SelectedModels.Count());
 
         }
 
@@ -294,11 +295,7 @@ namespace Dynamo.Tests
             //Undo again should get the first model into the group
             model.CurrentWorkspace.Undo();
             annotation = model.CurrentWorkspace.Annotations.FirstOrDefault();
-            Assert.AreEqual(1, annotation.SelectedModels.Count());
-
-            //Undo again should get the second model into the group
-            model.CurrentWorkspace.Undo();
-            Assert.AreEqual(2, annotation.SelectedModels.Count());
+            Assert.AreEqual(2, annotation.SelectedModels.Count());           
         }
     }
 }
