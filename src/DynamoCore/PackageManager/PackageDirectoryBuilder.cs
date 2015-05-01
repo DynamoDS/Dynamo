@@ -13,6 +13,11 @@ using RestSharp.Serializers;
 
 namespace Dynamo.PackageManager
 {
+    public interface IPackageDirectoryBuilder
+    {
+        IDirectoryInfo BuildDirectory(Package packages, string packagesDirectory, IEnumerable<string> files);
+    }
+
     /// <summary>
     ///     This class provides all of the tools to build a Package directory of the correct structure.
     /// </summary>

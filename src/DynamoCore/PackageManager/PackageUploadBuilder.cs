@@ -19,12 +19,12 @@ namespace Dynamo.PackageManager
 
     internal class PackageUploadBuilder : IPackageUploadBuilder
     {
-        private readonly PackageDirectoryBuilder builder;
+        private readonly IPackageDirectoryBuilder builder;
         private readonly IFileCompressor fileCompressor;
 
         internal const long MaximumPackageSize = 100 * 1024 * 1024;
 
-        internal PackageUploadBuilder(PackageDirectoryBuilder builder, IFileCompressor fileCompressor)
+        internal PackageUploadBuilder(IPackageDirectoryBuilder builder, IFileCompressor fileCompressor)
         {
             if (builder == null) throw new ArgumentNullException("builder");
             if (fileCompressor == null) throw new ArgumentNullException("fileCompressor");

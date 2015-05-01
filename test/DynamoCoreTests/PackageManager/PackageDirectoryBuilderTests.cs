@@ -12,10 +12,10 @@ namespace Dynamo.PackageManager.Tests
 {
     class PackageDirectoryBuilderTests
     {
-        #region FormPackageDirectory
+        #region BuildPackageDirectory
 
         [Test]
-        public void FormPackageDirectory_DoesExpectedNumberOfOperations()
+        public void BuildPackageDirectory_DoesExpectedNumberOfOperations()
         {
             var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
@@ -35,7 +35,7 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        public void FormPackageDirectory_BuildsExpectedDirectories()
+        public void BuildPackageDirectory_BuildsExpectedDirectories()
         {
             var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
@@ -60,7 +60,7 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        public void FormPackageDirectory_FormsPackageHeader()
+        public void BuildPackageDirectory_FormsPackageHeader()
         {
             var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
@@ -81,7 +81,7 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        public void FormPackageDirectory_RemapsCustomNodePaths()
+        public void BuildPackageDirectory_RemapsCustomNodePaths()
         {
             var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
@@ -111,7 +111,7 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        public void FormPackageDirectory_UpdatesTheArgumentPackageWithNewDirectories()
+        public void BuildPackageDirectory_UpdatesTheArgumentPackageWithNewDirectories()
         {
             var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
@@ -139,7 +139,7 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        public void FormPackageDirectory_CopiesTheOriginalFiles()
+        public void BuildPackageDirectory_CopiesTheOriginalFiles()
         {
             var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
@@ -160,7 +160,7 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        public void FormPackageDirectory_DeletesTheOriginalFiles()
+        public void BuildPackageDirectory_DeletesTheOriginalFiles()
         {
             var files = new[] { @"C:\file1.dyf", @"C:\file2.dyf" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
