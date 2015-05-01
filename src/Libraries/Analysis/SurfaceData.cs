@@ -191,12 +191,12 @@ namespace Analysis
             var uvs = package.MeshTextureCoordinates.ToList();
             var colors = package.MeshVertexColors.ToList();
 
-            var newColors = new byte[colors.Count()];
+            var newColors = new byte[colors.Count];
 
-            for (var i = 0; i < colors.Count(); i += 4)
+            for (var i = 0; i < colors.Count; i += 4)
             {
-                var uvu = uvs.ElementAt(uvCount);
-                var uvv = uvs.ElementAt(uvCount + 1);
+                var uvu = uvs[uvCount];
+                var uvv = uvs[uvCount + 1];
 
                 var uu = (int)(uvu * (COLOR_MAP_WIDTH - 1));
                 var vv = (int)(uvv * (COLOR_MAP_HEIGHT - 1));
