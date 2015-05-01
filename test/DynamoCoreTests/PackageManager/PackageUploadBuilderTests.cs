@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Dynamo.PackageManager;
+using Dynamo.PackageManager.Interfaces;
 using Moq;
 using NUnit.Framework;
 
@@ -9,53 +11,6 @@ namespace Dynamo.Tests
     class PackageUploadBuilderTests
     {
         #region Mocks
-
-        private class MockFileInfo : IFileInfo
-        {
-            private readonly Func<string> nameFunc;
-            private readonly Func<long> lengthFunc;
-
-            public MockFileInfo(Func<string> nameFunc, Func<long> lengthFunc)
-            {
-                this.nameFunc = nameFunc;
-                this.lengthFunc = lengthFunc;
-            }
-
-            public string Name
-            {
-                get { return nameFunc(); }
-            }
-
-            public long Length
-            {
-                get { return lengthFunc(); }
-            }
-        }
-
-        private class MockFileFileCompressor : IFileCompressor
-        {
-            private readonly Func<string, IFileInfo> zipFunc;
-
-            public IFileInfo Zip(string directoryPath)
-            {
-                return zipFunc(directoryPath);
-            }
-        }
-
-        private class MockDirectoryInfo : IDirectoryInfo
-        {
-            private readonly Func<string> nameFunc;
-
-            public MockDirectoryInfo(Func<string> nameFunc)
-            {
-                this.nameFunc = nameFunc;
-            }
-
-            public string FullName
-            {
-                get { return nameFunc(); }
-            }
-        }
 
         private class RecordedFileSystemMock : IFileSystem
         {
@@ -81,9 +36,12 @@ namespace Dynamo.Tests
 
             public IDirectoryInfo TryCreateDirectory(string directoryPath)
             {
-                var m = new MockDirectoryInfo(() => directoryPath);
-                this.directoriesCreated.Add(m);
-                return m;
+                var m = new Mock<IDirectoryInfo>();
+                m.Setup(x => x.FullName).Returns(directoryPath);
+                var mo = m.Object;
+
+                this.directoriesCreated.Add(mo);
+                return mo;
             }
 
             public bool DirectoryExists(string directoryPath)

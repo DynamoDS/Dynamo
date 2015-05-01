@@ -1,6 +1,6 @@
-namespace Dynamo.PackageManager
+namespace Dynamo.PackageManager.Interfaces
 {
-    interface IDirectoryInfo
+    public interface IDirectoryInfo
     {
         string FullName { get; }
     }

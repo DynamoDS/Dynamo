@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Dynamo.PackageManager.Interfaces;
 using Greg.Requests;
 
 namespace Dynamo.PackageManager
 {
-    internal class PackageUploadBuilder
+    public interface IPackageUploadBuilder
+    {
+        PackageUpload NewPackageUpload(Package package, string packagesDirectory, IEnumerable<string> files,
+            PackageUploadHandle handle);
+
+        PackageVersionUpload NewPackageVersionUpload(Package package, string packagesDirectory,
+            IEnumerable<string> files, PackageUploadHandle handle);
+    }
+
+    internal class PackageUploadBuilder : IPackageUploadBuilder
     {
         private readonly PackageDirectoryBuilder builder;
         private readonly IFileCompressor fileCompressor;
@@ -26,7 +36,7 @@ namespace Dynamo.PackageManager
          
         #region Public Operational Class Methods
 
-        internal static PackageUploadRequestBody NewRequestBody(Package l)
+        public static PackageUploadRequestBody NewRequestBody(Package l)
         {
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
@@ -37,7 +47,7 @@ namespace Dynamo.PackageManager
         }
 
 
-        internal PackageUpload NewPackageUpload(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
+        public PackageUpload NewPackageUpload(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
         {
             handle.UploadState = PackageUploadHandle.State.Copying;
 
@@ -50,7 +60,7 @@ namespace Dynamo.PackageManager
             return new PackageUpload(NewRequestBody(package), zipFile.Name);
         }
 
-        internal PackageVersionUpload NewPackageVersionUpload(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
+        public PackageVersionUpload NewPackageVersionUpload(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
         {
             handle.UploadState = PackageUploadHandle.State.Copying;
 

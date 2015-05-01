@@ -1,5 +1,6 @@
 using System.IO;
 using Dynamo.Annotations;
+using Dynamo.PackageManager.Interfaces;
 
 namespace Dynamo.PackageManager
 {

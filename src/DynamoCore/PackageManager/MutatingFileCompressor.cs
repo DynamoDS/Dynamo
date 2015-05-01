@@ -1,4 +1,6 @@
-﻿namespace Dynamo.PackageManager
+﻿using Dynamo.PackageManager.Interfaces;
+
+namespace Dynamo.PackageManager
 {
     /// <summary>
     ///     An IFileCompressor that actually attempts to compress a directory

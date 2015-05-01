@@ -1,9 +1,9 @@
-﻿namespace Dynamo.PackageManager
+﻿namespace Dynamo.PackageManager.Interfaces
 {
     /// <summary>
     ///     An abstract IFileCompressor for mocking purposes
     /// </summary>
-    interface IFileCompressor
+    public interface IFileCompressor
     {
         IFileInfo Zip(string directoryPath);
     }

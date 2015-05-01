@@ -1,6 +1,6 @@
-namespace Dynamo.PackageManager
+namespace Dynamo.PackageManager.Interfaces
 {
-    interface IFileInfo
+    public interface IFileInfo
     {
         string Name { get; }
         long Length { get; }

@@ -25,8 +25,7 @@ namespace Dynamo.PackageManager
 
         private readonly IGregClient client;
         private readonly IAuthProvider authProvider;
-
-        private readonly PackageUploadBuilder uploadBuilder;
+        private readonly IPackageUploadBuilder uploadBuilder;
 
         private readonly string packagesDirectory;
        
@@ -66,7 +65,7 @@ namespace Dynamo.PackageManager
 
         #endregion
 
-        internal PackageManagerClient(IGregClient client, PackageUploadBuilder builder)
+        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder)
         {
             this.uploadBuilder = builder;
             this.client = client;
@@ -107,10 +106,19 @@ namespace Dynamo.PackageManager
             }, false);
         }
 
-        internal string DownloadPackage(string packageId, string version)
+        internal PackageManagerResult DownloadPackage(string packageId, string version, out string pathToPackage)
         {
-            var response = this.client.Execute( new PackageDownload( packageId, version) );
-            return PackageDownload.GetFileFromResponse(response);
+            try
+            {
+                var response = this.client.Execute(new PackageDownload(packageId, version));
+                pathToPackage = PackageDownload.GetFileFromResponse(response);
+                return PackageManagerResult.Succeeded();
+            }
+            catch (Exception e)
+            {
+                pathToPackage = null;
+                return PackageManagerResult.Failed(e.Message);
+            }
         }
 
         internal IEnumerable<PackageHeader> ListAll()

@@ -1,4 +1,6 @@
-﻿namespace Dynamo.PackageManager
+﻿using Dynamo.PackageManager.Interfaces;
+
+namespace Dynamo.PackageManager
 {
     /// <summary>
     ///     An IDirectoryInfo representing a real DirectoryInfo object
