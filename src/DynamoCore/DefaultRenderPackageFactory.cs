@@ -11,6 +11,11 @@ namespace Dynamo
     {
         public int MaxTessellationDivisions { get; set; }
 
+        public DefaultRenderPackageFactory()
+        {
+            MaxTessellationDivisions = 32;
+        }
+
         public IRenderPackage CreateRenderPackage()
         {
             return new DefaultRenderPackage();
