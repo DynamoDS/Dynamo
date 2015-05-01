@@ -4,9 +4,10 @@ using System.Linq;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager.UI;
+using Dynamo.Tests;
 using NUnit.Framework;
 
-namespace Dynamo.Tests
+namespace Dynamo.PackageManager.Tests
 {
     internal class PackageDependencyTests : DynamoModelTestBase
     {

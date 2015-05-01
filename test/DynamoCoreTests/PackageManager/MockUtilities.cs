@@ -2,7 +2,7 @@ using Moq;
 
 namespace Dynamo.Tests
 {
-    public static class Mocks
+    public static class MockUtilities
     {
         public static T Empty<T>() where T : class
         {

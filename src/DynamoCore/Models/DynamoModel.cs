@@ -655,7 +655,7 @@ namespace Dynamo.Models
             
             var dirBuilder = new PackageDirectoryBuilder(
                 new MutatingFileSystem(), 
-                new MutatingPathRemapper(customNodeManager, isTestMode));
+                new CustomNodePathRemapper(customNodeManager, isTestMode));
 
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 

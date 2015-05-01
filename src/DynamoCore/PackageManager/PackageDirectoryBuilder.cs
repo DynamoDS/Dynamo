@@ -18,6 +18,11 @@ namespace Dynamo.PackageManager
     /// </summary>
     internal class PackageDirectoryBuilder
     {
+        internal const string CustomNodeDirectoryName = "dyf";
+        internal const string BinaryDirectoryName = "bin";
+        internal const string ExtraDirectoryName = "extra";
+        internal const string PackageJsonName = "pkg.json";
+
         private readonly IFileSystem fileSystem;
         private readonly IPathRemapper pathRemapper;
 
@@ -41,10 +46,7 @@ namespace Dynamo.PackageManager
         ///     Forms a properly formed package directory
         /// </summary>
         /// <param name="package">The package to be formed</param>
-        /// <param name="targetDirectory">The directory where the package should end up.  It is
-        ///     assumed that this directory is empty.  If it doesn't exist,
-        ///     it will be created.
-        /// </param>
+        /// <param name="packagesDirectory">The parent directory for the parent directory</param>
         /// <param name="files">The collection of files to be moved</param>
         /// <returns></returns>
         internal IDirectoryInfo BuildDirectory(Package package, string packagesDirectory, IEnumerable<string> files)
@@ -84,9 +86,9 @@ namespace Dynamo.PackageManager
         internal void FormPackageDirectory(string packageDirectory, string packageName, out IDirectoryInfo root, out IDirectoryInfo dyfDir, out IDirectoryInfo binDir, out IDirectoryInfo extraDir)
         {
             var rootPath = Path.Combine(packageDirectory, packageName);
-            var dyfPath = Path.Combine(rootPath, "dyf");
-            var binPath = Path.Combine(rootPath, "bin");
-            var extraPath = Path.Combine(rootPath, "extra");
+            var dyfPath = Path.Combine(rootPath, CustomNodeDirectoryName);
+            var binPath = Path.Combine(rootPath, BinaryDirectoryName);
+            var extraPath = Path.Combine(rootPath, ExtraDirectoryName);
 
             root = fileSystem.TryCreateDirectory(rootPath);
             dyfDir = fileSystem.TryCreateDirectory(dyfPath);
@@ -103,7 +105,7 @@ namespace Dynamo.PackageManager
             var pkgHeaderStr = jsSer.Serialize(pkgHeader);
 
             // write the pkg header to the root directory of the pkg
-            var headerPath = Path.Combine(rootDir.FullName, "pkg.json");
+            var headerPath = Path.Combine(rootDir.FullName, PackageJsonName);
             if (fileSystem.FileExists(headerPath))
             {
                 fileSystem.DeleteFile(headerPath);
@@ -152,15 +154,18 @@ namespace Dynamo.PackageManager
         {
             foreach (var file in files)
             {
+                // If this file is null, then just continue
                 if (file == null)
                 {
                     continue;
                 }
 
+                // If the file doesn't actually exist, don't copy it
                 if (!fileSystem.FileExists(file))
                 {
                     continue;
                 }
+
                 string destPath;
 
                 if (file.ToLower().EndsWith(".dyf"))

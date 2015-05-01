@@ -5,7 +5,7 @@ using Dynamo.PackageManager;
 
 using NUnit.Framework;
 
-namespace Dynamo.Tests
+namespace Dynamo.PackageManager.Tests
 {
     class PackageLoaderTests : DynamoModelTestBase
     {

@@ -129,7 +129,7 @@ limitations under the License.
     <Compile Include="PackageManager\Interfaces\IFileSystem.cs" />
     <Compile Include="PackageManager\MutatingFileCompressor.cs" />
     <Compile Include="PackageManager\MutatingFileSystem.cs" />
-    <Compile Include="PackageManager\MutatingPathRemapper.cs" />
+    <Compile Include="PackageManager\CustomNodePathRemapper.cs" />
     <Compile Include="PackageManager\PackageManagerResult.cs" />
     <Compile Include="PackageManager\PackageUploadBuilder.cs" />
     <Compile Include="PackageManager\TrueDirectoryInfo.cs" />

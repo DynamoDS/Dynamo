@@ -12,7 +12,7 @@ namespace Dynamo.PackageManager
     ///     A simplified interface for remapping the file path of a CustomNodeWorkspace.
     ///     Useful for when a custom node will be moved by a package creation operation.
     /// </summary>
-    internal interface IPathRemapper
+    public interface IPathRemapper
     {
         /// <summary>
         ///     Remap the custom node path
@@ -24,14 +24,14 @@ namespace Dynamo.PackageManager
     }
 
     /// <summary>
-    ///     A MutatingPathRemapper that requires a CustomNodeManager to mutate a custom node workspace path
+    ///     An IPathRemapper that requires a CustomNodeManager to mutate a custom node workspace path
     /// </summary>
-    internal class MutatingPathRemapper : IPathRemapper
+    internal class CustomNodePathRemapper : IPathRemapper
     {
         private readonly CustomNodeManager customNodeManager;
         private readonly bool isTestMode;
 
-        internal MutatingPathRemapper(CustomNodeManager customNodeManager, bool isTestMode)
+        internal CustomNodePathRemapper(CustomNodeManager customNodeManager, bool isTestMode)
         {
             this.customNodeManager = customNodeManager;
             this.isTestMode = isTestMode;
