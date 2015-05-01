@@ -367,7 +367,7 @@ namespace Dynamo.Models
                         listOfModels.Add(model);
                     }                  
                 }
-                selectedModels = listOfModels;        
+                SelectedModels = listOfModels;        
             }
 
             //On any Undo Operation, current values are restored to previous values.

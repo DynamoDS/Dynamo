@@ -1252,6 +1252,7 @@ namespace Dynamo.Models
         }
 
         internal void RecordAndDeleteModels(List<ModelBase> models)
+        
         {
             if (!ShouldProceedWithRecording(models))
                 return; // There's nothing for deletion.
@@ -1429,9 +1430,10 @@ namespace Dynamo.Models
                 var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
                 var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
 
-                var annotationModel = NodeGraph.LoadAnnotationFromXml(modelData, selectedNodes, selectedNotes);
+                var annotationModel = new AnnotationModel(selectedNodes, selectedNotes);
                 annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
                 annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
+                annotationModel.Deserialize(modelData, SaveContext.Undo);                
                 Annotations.Add(annotationModel);
             }
             else // Other node types.

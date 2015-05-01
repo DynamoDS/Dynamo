@@ -1171,24 +1171,29 @@ namespace Dynamo.Models
                 {
                     if (annotation.SelectedModels.Any(x => x.GUID == model.GUID))
                     {
-                        CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                         var list = annotation.SelectedModels.ToList();
-                        if (list.Remove(model))
+
+                        if(list.Count > 1)
                         {
-                            annotation.SelectedModels = list;
-                            annotation.UpdateBoundaryFromSelection();
+                            CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
+                            if (list.Remove(model))
+                            {
+                                annotation.SelectedModels = list;
+                                annotation.UpdateBoundaryFromSelection();
+                            }
                         }
-                        if(!annotation.SelectedModels.Any())
-                        {
-                            emptyGroup.Add(annotation);
-                        }
+                        else
+                        {                          
+                            emptyGroup.Add(annotation);                            
+                        }                        
                     }
                 }
             }
-
-            //Delete the empty group
+           
             if(emptyGroup.Any())
+            {
                 DeleteModelInternal(emptyGroup);
+            }
         }
 
         internal void AddToGroup(List<ModelBase> modelsToAdd)
