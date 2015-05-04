@@ -15,7 +15,7 @@ namespace Dynamo.DSEngine
         private static Dictionary<string, bool> triedPaths = new Dictionary<string, bool>();
         private static Dictionary<string, LibraryCustomization> cache = new Dictionary<string, LibraryCustomization>();
 
-        public static LibraryCustomization GetForAssembly(string assemblyPath, IPathManager pathManager)
+        public static LibraryCustomization GetForAssembly(string assemblyPath, IPathManager pathManager, bool useAdditionalPaths = true)
         {
             if (triedPaths.ContainsKey(assemblyPath))
             {
@@ -33,7 +33,7 @@ namespace Dynamo.DSEngine
                 xDocument = XDocument.Load(customizationPath);
             }
 
-            if (ResolveResourceAssembly(assemblyPath, pathManager, out resourceAssemblyPath))
+            if (ResolveResourceAssembly(assemblyPath, pathManager, useAdditionalPaths, out resourceAssemblyPath))
             {
                 resAssembly = Assembly.LoadFrom(resourceAssemblyPath);
             }
@@ -83,6 +83,7 @@ namespace Dynamo.DSEngine
         private static bool ResolveResourceAssembly(
             string assemblyLocation,
             IPathManager pathManager,
+            bool useAdditionalPaths,
             out string resourceAssemblyPath)
         {
             try
@@ -98,6 +99,10 @@ namespace Dynamo.DSEngine
                     return false;
 
                 resourceAssemblyPath = fn + Configurations.IconResourcesDLL;
+
+                if (!useAdditionalPaths) // Should only look up alongside the main assembly.
+                    return false;
+
                 // Side-by-side customization dll not found, try other resolution paths.
                 return pathManager.ResolveLibraryPath(ref resourceAssemblyPath);
             }
