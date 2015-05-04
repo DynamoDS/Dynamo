@@ -327,6 +327,8 @@ limitations under the License.
     <PostBuildEvent>copy /Y "$(SolutionDir)..\README.md" "$(OutputPath)README.txt"
 xcopy  /Y "$(SolutionDir)..\doc\distrib\License.rtf" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)..\doc\distrib\GoogleAnalyticsConsent.rtf" "$(OutputPath)"
+xcopy /Y "$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\*" "$(OutputPath)"
 xcopy /Y "$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.xml" "$(OutputPath)\$(UICulture)"
 xcopy /Y /e "$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" "$(OutputPath)\$(UICulture)"

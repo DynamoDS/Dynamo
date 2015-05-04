@@ -166,6 +166,35 @@ namespace Dynamo.Core
             return library != default(string);
         }
 
+        public bool ResolveDocumentPath(ref string document)
+        {
+            if (string.IsNullOrEmpty(document))
+            {
+                throw new ArgumentNullException("document");
+            }
+
+            try
+            {
+                document = Path.GetFullPath(document);
+                if (File.Exists(document)) // "document" is already an absolute path.
+                    return true;
+
+                // Restore "document" back to just its file name first...
+                document = Path.GetFileName(document);
+
+                // Search alongside the main assembly location...
+                var executingAssemblyPathName = Assembly.GetExecutingAssembly().Location;
+                var rootModuleDirectory = Path.GetDirectoryName(executingAssemblyPathName);
+                document = Path.Combine(rootModuleDirectory, document);
+
+                return File.Exists(document);
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         #region Public Class Operational Methods
