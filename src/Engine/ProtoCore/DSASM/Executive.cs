@@ -720,12 +720,18 @@ namespace ProtoCore.DSASM
             }
             else
             {
-                // There is no depth but check if the function is a member function
+                // There is no depth, but check if the function is a member function
                 // If its a member function, the this pointer is required by the core to pass on to the FEP call
                 if (isCallingMemberFunction && !fNode.isConstructor && !fNode.isStatic)
                 {
                     // A member function
                     // Get the this pointer as this class instance would have already been cosntructed
+                    svThisPtr = rmem.CurrentStackFrame.ThisPtr;
+                }
+                else if (fNode.name.Equals(Constants.kInlineConditionalMethodName))
+                {
+                    // The built-in inlinecondition function is global but it is treated as a conditional execution rather than a normal function call
+                    // This is why the class scope  needs to be preserved such that the auto-generated language blocks in an inline conditional can still refer to member functions and properties
                     svThisPtr = rmem.CurrentStackFrame.ThisPtr;
                 }
                 else
