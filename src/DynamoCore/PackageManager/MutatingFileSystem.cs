@@ -22,8 +22,8 @@ namespace Dynamo.PackageManager
         public  IDirectoryInfo TryCreateDirectory(string path)
         {
             return Directory.Exists(path)
-                ? new TrueDirectoryInfo(new DirectoryInfo(path))
-                : new TrueDirectoryInfo(Directory.CreateDirectory(path));
+                ? new RealDirectoryInfo(new DirectoryInfo(path))
+                : new RealDirectoryInfo(Directory.CreateDirectory(path));
         }
 
         public bool DirectoryExists(string directoryPath)

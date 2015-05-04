@@ -9,7 +9,7 @@ namespace Dynamo.PackageManager
     {
         public IFileInfo Zip(IDirectoryInfo directory)
         {
-            return new TrueFileInfo(Greg.Utility.FileUtilities.Zip(directory.FullName));
+            return new RealFileInfo(Greg.Utility.FileUtilities.Zip(directory.FullName));
         }
     }
 }

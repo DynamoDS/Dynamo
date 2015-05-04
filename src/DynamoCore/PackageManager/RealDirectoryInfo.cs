@@ -5,11 +5,11 @@ namespace Dynamo.PackageManager
     /// <summary>
     ///     An IDirectoryInfo representing a real DirectoryInfo object
     /// </summary>
-    internal class TrueDirectoryInfo : IDirectoryInfo
+    internal class RealDirectoryInfo : IDirectoryInfo
     {
         private readonly System.IO.DirectoryInfo dirInfo;
 
-        public TrueDirectoryInfo(System.IO.DirectoryInfo dirInfo)
+        public RealDirectoryInfo(System.IO.DirectoryInfo dirInfo)
         {
             this.dirInfo = dirInfo;
         }

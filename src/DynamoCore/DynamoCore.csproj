@@ -132,8 +132,8 @@ limitations under the License.
     <Compile Include="PackageManager\CustomNodePathRemapper.cs" />
     <Compile Include="PackageManager\PackageManagerResult.cs" />
     <Compile Include="PackageManager\PackageUploadBuilder.cs" />
-    <Compile Include="PackageManager\TrueDirectoryInfo.cs" />
-    <Compile Include="PackageManager\TrueFileInfo.cs" />
+    <Compile Include="PackageManager\RealDirectoryInfo.cs" />
+    <Compile Include="PackageManager\RealFileInfo.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />
     <Compile Include="Search\NodeSearchModel.cs" />

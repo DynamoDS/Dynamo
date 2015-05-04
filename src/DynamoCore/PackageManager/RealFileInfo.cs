@@ -6,11 +6,11 @@ namespace Dynamo.PackageManager
     /// <summary>
     ///     An IFileInfo representing a real file on disk
     /// </summary>
-    internal class TrueFileInfo : IFileInfo
+    internal class RealFileInfo : IFileInfo
     {
         private readonly System.IO.FileInfo fileInfo;
 
-        public TrueFileInfo(string path)
+        public RealFileInfo(string path)
         {
             this.fileInfo = new FileInfo(path);
         }
