@@ -485,7 +485,7 @@ namespace Dynamo.PackageManager
                     var sb = new StringBuilder();
                     foreach (var elem in futureDeps)
                     {
-                        sb.AppendLine(elem.Item1.name + " " + elem.Item2);
+                        sb.AppendLine(elem.Item1.name + " " + elem.Item2.version);
                     }
 
                     // If the user
