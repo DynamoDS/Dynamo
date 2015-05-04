@@ -2,6 +2,7 @@
 using System.Linq;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.ViewModels
 {
@@ -165,7 +166,7 @@ namespace Dynamo.ViewModels
         private bool CanUngroupNote(object parameters)
         {
             var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups != null && !groups.Any(x => x.IsSelected))
+            if (!groups.Any(x => x.IsSelected))
             {
                 return (groups.CheckIfModelExistsInAGroup(Model.GUID));
             }
@@ -180,7 +181,7 @@ namespace Dynamo.ViewModels
         private bool CanAddToGroup(object parameters)
         {
             var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups != null && groups.Any(x => x.IsSelected))
+            if (groups.Any(x => x.IsSelected))
             {
                 return !(groups.CheckIfModelExistsInAGroup(Model.GUID));
             }

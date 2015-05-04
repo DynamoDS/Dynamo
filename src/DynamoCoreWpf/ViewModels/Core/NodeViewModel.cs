@@ -12,6 +12,7 @@ using Dynamo.Nodes;
 
 using System.Windows;
 using Dynamo.Selection;
+using Dynamo.Wpf.ViewModels.Core;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -970,17 +971,6 @@ namespace Dynamo.ViewModels
             Model = model;
             Handled = false;
         }
-    }
-
-    /// <summary>
-    /// Extension method to check if a model exists in a group
-    /// </summary>
-    internal static class Extensions
-    {
-        public static bool CheckIfModelExistsInAGroup(this ObservableCollection<AnnotationModel> groups, Guid nodeGuid)
-        {
-            return (groups.SelectMany(m => m.SelectedModels).Any(m => m.GUID == nodeGuid));
-        }
-    }
+    }   
 }
 
