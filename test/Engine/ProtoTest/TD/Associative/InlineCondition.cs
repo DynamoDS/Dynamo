@@ -931,7 +931,6 @@ d;
 
 
         [Test]
-        [Category("Failure")]
         public void T019_conditionequalto_1467469()
         {
             // Tracked by http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-1692
