@@ -21,7 +21,7 @@ namespace Dynamo.PackageManager
     /// <summary>
     ///     This class provides all of the tools to build a Package directory of the correct structure.
     /// </summary>
-    internal class PackageDirectoryBuilder
+    internal class PackageDirectoryBuilder : IPackageDirectoryBuilder
     {
         internal const string CustomNodeDirectoryName = "dyf";
         internal const string BinaryDirectoryName = "bin";
@@ -36,7 +36,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="fileSystem">For moving files around</param>
         /// <param name="pathRemapper">For modifying custom node paths</param>
-        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper)
+        internal PackageDirectoryBuilder(IFileSystem fileSystem, IPathRemapper pathRemapper) 
         {
             if (fileSystem == null) throw new ArgumentNullException("fileSystem");
             if (pathRemapper == null) throw new ArgumentNullException("pathRemapper");
@@ -45,7 +45,7 @@ namespace Dynamo.PackageManager
             this.pathRemapper = pathRemapper;
         }
 
-        #region Utility methods
+        #region Public Class Operational Methods
 
         /// <summary>
         ///     Forms a properly formed package directory
@@ -54,7 +54,7 @@ namespace Dynamo.PackageManager
         /// <param name="packagesDirectory">The parent directory for the parent directory</param>
         /// <param name="files">The collection of files to be moved</param>
         /// <returns></returns>
-        internal IDirectoryInfo BuildDirectory(Package package, string packagesDirectory, IEnumerable<string> files)
+        public IDirectoryInfo BuildDirectory(Package package, string packagesDirectory, IEnumerable<string> files)
         {
             IDirectoryInfo rootDir, dyfDir, binDir, extraDir;
 
@@ -69,7 +69,11 @@ namespace Dynamo.PackageManager
             return rootDir;
         }
 
-        internal void RemapCustomNodeFilePaths(IEnumerable<string> filePaths, string dyfRoot)
+        #endregion
+
+        #region Private Utility Methods
+
+        private void RemapCustomNodeFilePaths(IEnumerable<string> filePaths, string dyfRoot)
         {
             foreach (var func in filePaths.Where(x => x.EndsWith(".dyf")))
             {
@@ -77,7 +81,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal void RemoveDyfFiles(IEnumerable<string> filePaths, IDirectoryInfo dyfDir)
+        private void RemoveDyfFiles(IEnumerable<string> filePaths, IDirectoryInfo dyfDir)
         {
             var dyfsToRemove = filePaths
                 .Where(x => x.EndsWith(".dyf") && fileSystem.FileExists(x) && Path.GetDirectoryName(x) != dyfDir.FullName);
@@ -88,7 +92,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        internal void FormPackageDirectory(string packageDirectory, string packageName, out IDirectoryInfo root, out IDirectoryInfo dyfDir, out IDirectoryInfo binDir, out IDirectoryInfo extraDir)
+        private void FormPackageDirectory(string packageDirectory, string packageName, out IDirectoryInfo root, out IDirectoryInfo dyfDir, out IDirectoryInfo binDir, out IDirectoryInfo extraDir)
         {
             var rootPath = Path.Combine(packageDirectory, packageName);
             var dyfPath = Path.Combine(rootPath, CustomNodeDirectoryName);
@@ -101,7 +105,7 @@ namespace Dynamo.PackageManager
             extraDir = fileSystem.TryCreateDirectory(extraPath);
         }
 
-        internal void WritePackageHeader(Package package, IDirectoryInfo rootDir)
+        private void WritePackageHeader(Package package, IDirectoryInfo rootDir)
         {
             var pkgHeader = PackageUploadBuilder.NewRequestBody(package);
 
@@ -119,42 +123,8 @@ namespace Dynamo.PackageManager
             fileSystem.WriteAllText(headerPath, pkgHeaderStr);
         }
 
-        internal static bool IsXmlDocFile(string path, IEnumerable<string> files)
-        {
-            if (!path.ToLower().EndsWith(".xml")) return false;
 
-            var fn = Path.GetFileNameWithoutExtension(path);
-
-            return
-                files.Where(x => x.EndsWith(".dll"))
-                    .Select(Path.GetFileNameWithoutExtension)
-                    .Contains(fn);
-        }
-
-        internal static bool IsDynamoCustomizationFile(string path, IEnumerable<string> files)
-        {
-            if (!path.ToLower().EndsWith(".xml")) return false;
-
-            var name = Path.GetFileNameWithoutExtension(path);
-
-            if (!name.EndsWith("_DynamoCustomization")) return false;
-
-            name = name.Remove(name.Length - "_DynamoCustomization".Length);
-
-            return
-                files.Where(x => x.EndsWith(".dll"))
-                    .Select(Path.GetFileNameWithoutExtension)
-                    .Contains(name);
-        }
-
-        public static string NormalizePath(string path)
-        {
-            return Path.GetFullPath(new Uri(path).LocalPath)
-                       .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-                       .ToUpperInvariant();
-        }
-
-        internal void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IDirectoryInfo dyfDir,
+        public void CopyFilesIntoPackageDirectory(IEnumerable<string> files, IDirectoryInfo dyfDir,
                                                           IDirectoryInfo binDir, IDirectoryInfo extraDir)
         {
             foreach (var file in files)
@@ -201,7 +171,46 @@ namespace Dynamo.PackageManager
             }
         }
 
-#endregion
+        #endregion
+
+        #region Public Static Utility Methods 
+        
+        public static bool IsXmlDocFile(string path, IEnumerable<string> files)
+        {
+            if (!path.ToLower().EndsWith(".xml")) return false;
+
+            var fn = Path.GetFileNameWithoutExtension(path);
+
+            return
+                files.Where(x => x.EndsWith(".dll"))
+                    .Select(Path.GetFileNameWithoutExtension)
+                    .Contains(fn);
+        }
+
+        public static bool IsDynamoCustomizationFile(string path, IEnumerable<string> files)
+        {
+            if (!path.ToLower().EndsWith(".xml")) return false;
+
+            var name = Path.GetFileNameWithoutExtension(path);
+
+            if (!name.EndsWith("_DynamoCustomization")) return false;
+
+            name = name.Remove(name.Length - "_DynamoCustomization".Length);
+
+            return
+                files.Where(x => x.EndsWith(".dll"))
+                    .Select(Path.GetFileNameWithoutExtension)
+                    .Contains(name);
+        }
+
+        public static string NormalizePath(string path)
+        {
+            return Path.GetFullPath(new Uri(path).LocalPath)
+                       .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                       .ToUpperInvariant();
+        }
+
+        #endregion
 
     }
 }

@@ -7,9 +7,9 @@ namespace Dynamo.PackageManager
     /// </summary>
     internal class MutatingFileCompressor : IFileCompressor
     {
-        public IFileInfo Zip(string directoryPath)
+        public IFileInfo Zip(IDirectoryInfo directory)
         {
-            return new TrueFileInfo(Greg.Utility.FileUtilities.Zip(directoryPath));
+            return new TrueFileInfo(Greg.Utility.FileUtilities.Zip(directory.FullName));
         }
     }
 }

@@ -5,6 +5,6 @@
     /// </summary>
     public interface IFileCompressor
     {
-        IFileInfo Zip(string directoryPath);
+        IFileInfo Zip(IDirectoryInfo directory);
     }
 }

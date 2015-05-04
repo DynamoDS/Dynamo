@@ -73,7 +73,7 @@
     <Compile Include="MessageLogTests.cs" />
     <Compile Include="IconsTests.cs" />
     <Compile Include="NodeConstructionTests.cs" />
-    <Compile Include="PackageManager\MockUtilities.cs" />
+    <Compile Include="PackageManager\MockMaker.cs" />
     <Compile Include="PackageManager\PackageDirectoryBuilderTests.cs" />
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />

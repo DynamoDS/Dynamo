@@ -22,7 +22,7 @@ namespace Dynamo.PackageManager.Tests
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn));
 
-            var db = new PackageDirectoryBuilder(fs, MockUtilities.Empty<IPathRemapper>());
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
 
             var pkgsDir = @"C:\dynamopackages";
 
@@ -42,7 +42,7 @@ namespace Dynamo.PackageManager.Tests
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn));
 
-            var db = new PackageDirectoryBuilder(fs, MockUtilities.Empty<IPathRemapper>());
+            var db = new PackageDirectoryBuilder(fs, MockMaker.Empty<IPathRemapper>());
 
             var pkgsDir = @"C:\dynamopackages";
 

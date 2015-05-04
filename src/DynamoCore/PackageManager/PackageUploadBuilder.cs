@@ -35,31 +35,45 @@ namespace Dynamo.PackageManager
          
         #region Public Operational Class Methods
 
-        public static PackageUploadRequestBody NewRequestBody(Package l)
+        public static PackageUploadRequestBody NewRequestBody(Package package)
         {
+            if (package == null) throw new ArgumentNullException("package");
+
             var engineVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
 
-            return new PackageUploadRequestBody(l.Name, l.VersionName, l.Description, l.Keywords, l.License, l.Contents, PackageManagerClient.PackageEngineName,
-                                                         engineVersion, engineMetadata, l.Group, l.Dependencies,
-                                                         l.SiteUrl, l.RepositoryUrl, l.ContainsBinaries, l.NodeLibraries.Select(x => x.FullName));
+            return new PackageUploadRequestBody(package.Name, package.VersionName, package.Description, package.Keywords, package.License, package.Contents, PackageManagerClient.PackageEngineName,
+                                                         engineVersion, engineMetadata, package.Group, package.Dependencies,
+                                                         package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries, package.NodeLibraries.Select(x => x.FullName));
         }
 
 
         public PackageUpload NewPackageUpload(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
         {
-            handle.UploadState = PackageUploadHandle.State.Copying;
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
 
-            var dir = builder.BuildDirectory(package, packagesDirectory, files);
-
-            handle.UploadState = PackageUploadHandle.State.Compressing;
-
-            var zipFile = Zip(dir);
-
-            return new PackageUpload(NewRequestBody(package), zipFile.Name);
+            return new PackageUpload(NewRequestBody(package),
+                BuildAndZip(package, packagesDirectory, files, handle).Name);
         }
 
         public PackageVersionUpload NewPackageVersionUpload(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
+        {
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
+
+            return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, files, handle).Name);
+        }
+
+        #endregion
+
+        #region Private Class Methods
+
+        private IFileInfo BuildAndZip(Package package, string packagesDirectory, IEnumerable<string> files, PackageUploadHandle handle)
         {
             handle.UploadState = PackageUploadHandle.State.Copying;
 
@@ -67,14 +81,8 @@ namespace Dynamo.PackageManager
 
             handle.UploadState = PackageUploadHandle.State.Compressing;
 
-            var zipFile = Zip(dir);
-
-            return new PackageVersionUpload(NewRequestBody(package), zipFile.Name);
+            return Zip(dir);
         }
-
-        #endregion
-
-        #region Private Class Methods
 
         private IFileInfo Zip(IDirectoryInfo directory)
         {
@@ -82,7 +90,7 @@ namespace Dynamo.PackageManager
 
             try
             {
-                info = fileCompressor.Zip(directory.FullName);
+                info = fileCompressor.Zip(directory);
             }
             catch
             {

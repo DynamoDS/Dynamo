@@ -36,7 +36,7 @@ namespace Dynamo.PackageManager.Tests
                 x.ExecuteAndDeserializeWithContent<List<PackageHeader>>(It.IsAny<HeaderCollectionDownload>()))
                 .Returns(mpl);
 
-            var m = new PackageManagerClient(c.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var m = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var pl = m.ListAll();
             Assert.AreNotEqual(0, pl.Count());
@@ -51,7 +51,7 @@ namespace Dynamo.PackageManager.Tests
                 x.ExecuteAndDeserializeWithContent<List<PackageHeader>>(It.IsAny<HeaderCollectionDownload>()))
                 .Throws(new Exception("Fail!"));
 
-            var m = new PackageManagerClient(c.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var m = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var pl = m.ListAll();
             Assert.AreEqual(0, pl.Count());
@@ -82,7 +82,7 @@ namespace Dynamo.PackageManager.Tests
                 x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
                 .Returns(mp);
 
-            var pc = new PackageManagerClient(c.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             PackageHeader header;
             var res = pc.DownloadPackageHeader(id, out header);
@@ -100,7 +100,7 @@ namespace Dynamo.PackageManager.Tests
                 x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
                 .Throws<Exception>();
 
-            var pc = new PackageManagerClient(c.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             PackageHeader header;
             var res = pc.DownloadPackageHeader("1", out header);
@@ -123,7 +123,7 @@ namespace Dynamo.PackageManager.Tests
             //var gc = new Mock<IGregClient>();
             //gc.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Returns( Mockable
 
-            //var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            //var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
         }
 
         [Test]
@@ -132,7 +132,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             string downloadPath;
             var res = pc.DownloadPackage("1", "0.1", out downloadPath);
@@ -154,7 +154,7 @@ namespace Dynamo.PackageManager.Tests
                 success = true
             });
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Upvote("id");
 
@@ -167,7 +167,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<Upvote>())).Throws<Exception>();
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Upvote("id");
 
@@ -187,7 +187,7 @@ namespace Dynamo.PackageManager.Tests
                 success = true
             });
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Downvote("id");
 
@@ -200,7 +200,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<Downvote>())).Throws<Exception>();
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Downvote("id");
 
@@ -225,7 +225,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.ExecuteAndDeserializeWithContent<TermsOfUseStatus>(It.IsAny<TermsOfUse>())).Returns(resp);
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.GetTermsOfUseAcceptanceStatus();
 
@@ -246,7 +246,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.ExecuteAndDeserializeWithContent<TermsOfUseStatus>(It.IsAny<TermsOfUse>())).Returns(resp);
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.GetTermsOfUseAcceptanceStatus();
 
@@ -260,7 +260,7 @@ namespace Dynamo.PackageManager.Tests
             gc.Setup(x => x.ExecuteAndDeserializeWithContent<TermsOfUseStatus>(It.IsAny<TermsOfUse>()))
                 .Throws<Exception>();
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.GetTermsOfUseAcceptanceStatus();
 
@@ -285,7 +285,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.ExecuteAndDeserializeWithContent<TermsOfUseStatus>(It.IsAny<TermsOfUse>())).Returns(resp);
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.SetTermsOfUseAcceptanceStatus();
 
@@ -298,7 +298,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.ExecuteAndDeserializeWithContent<TermsOfUseStatus>(It.IsAny<TermsOfUse>())).Throws<Exception>();
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.SetTermsOfUseAcceptanceStatus();
 
@@ -319,7 +319,7 @@ namespace Dynamo.PackageManager.Tests
                     success = true
                 });
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
@@ -339,7 +339,7 @@ namespace Dynamo.PackageManager.Tests
                     success = true
                 });
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
@@ -355,7 +355,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<PackageUpload>())).Throws<Exception>();
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var pkg = new Package("", "Package", "0.1.0", "MIT");
 
@@ -378,7 +378,7 @@ namespace Dynamo.PackageManager.Tests
                 success = true
             });
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Deprecate("id");
 
@@ -394,7 +394,7 @@ namespace Dynamo.PackageManager.Tests
                 success = false // set to false
             });
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Deprecate("id");
 
@@ -407,7 +407,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<Deprecate>())).Throws(new Exception());
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Deprecate("id");
 
@@ -427,7 +427,7 @@ namespace Dynamo.PackageManager.Tests
                 success = true
             });
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Undeprecate("id");
 
@@ -443,7 +443,7 @@ namespace Dynamo.PackageManager.Tests
                 success = false // set to false
             });
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Undeprecate("id");
 
@@ -456,7 +456,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.ExecuteAndDeserialize(It.IsAny<Undeprecate>())).Throws(new Exception());
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             var res = pc.Undeprecate("id");
 
@@ -478,7 +478,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.AuthProvider).Returns(ap.Object);
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             pc.Logout();
 
@@ -500,7 +500,7 @@ namespace Dynamo.PackageManager.Tests
             var gc = new Mock<IGregClient>();
             gc.Setup(x => x.AuthProvider).Returns(ap.Object);
 
-            var pc = new PackageManagerClient(gc.Object, MockUtilities.Empty<IPackageUploadBuilder>());
+            var pc = new PackageManagerClient(gc.Object, MockMaker.Empty<IPackageUploadBuilder>());
 
             pc.Login();
 
