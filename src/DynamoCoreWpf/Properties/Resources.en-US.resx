@@ -454,7 +454,9 @@
     <comment>Setting menu | Enable data reporting during usage</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableDataReportingTooltip" xml:space="preserve">
-    <value>Detailed reporting sends behaviour data that we use for improving {0}.&amp;#x0a;It includes the graph being created as well as errors and warnings</value>
+    <value>Detailed reporting sends behaviour data that we use for improving {0}.
+
+It includes the graph being created as well as errors and warnings</value>
     <comment>Setting menu | Tooltip for enable data reporting during usage menu item</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReporting" xml:space="preserve">
@@ -462,7 +464,9 @@
     <comment>Setting menu | Eanble summary reporting</comment>
   </data>
   <data name="DynamoViewSettingMenuEnableSummaryReportingTooltip" xml:space="preserve">
-    <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.&amp;#x0a;It does not contain your graph or any personal data</value>
+    <value>Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.
+
+It does not contain your graph or any personal data</value>
     <comment>Setting menu | Tooltip for enable summary reporting during usage menu item</comment>
   </data>
   <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
