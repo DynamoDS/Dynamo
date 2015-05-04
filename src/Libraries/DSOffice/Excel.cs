@@ -332,10 +332,19 @@ namespace DSOffice
 
         private static object[,] ConvertToDimensionalArray(object[][] input, out int rows, out int cols)
         {
+            if (input == null)
+            {
+                rows = cols = 1;
+                return new object[,]{{""}};
+            }
+
             rows = input.GetUpperBound(0) + 1;
             cols = 0;
             for (int i = 0; i < rows; i++)
-                cols = Math.Max(cols, input[i].GetUpperBound(0) + 1);
+            {
+                if(input[i] != null)
+                    cols = Math.Max(cols, input[i].GetUpperBound(0) + 1);
+            }
 
             object[,] output = new object[rows, cols];
 
@@ -343,7 +352,7 @@ namespace DSOffice
             {
                 for (int j = 0; j < cols; j++)
                 {
-                    if (j > input[i].GetUpperBound(0))
+                    if (input[i] == null || j > input[i].GetUpperBound(0))
                         output[i, j] = "";
                     else
                     {
