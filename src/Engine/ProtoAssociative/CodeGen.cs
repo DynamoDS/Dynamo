@@ -6730,13 +6730,12 @@ namespace ProtoAssociative
                     core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
                     EmitDynamicLanguageBlockNode(langblockT, bExprTrue, ref inferedType, ref trueBlockId, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone);
                     List<GraphNode> trueBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
+
+                    // Append dependent nodes of the inline conditional 
                     foreach (GraphNode gnode in trueBodyNodes)
-                    {
                         foreach (GraphNode dNode in gnode.dependentList)
-                        {
                             graphNode.PushDependent(dNode);
-                        }
-                    }
+
                     core.AssocNode = null;
                     DynamicBlockNode dynBlockT = new DynamicBlockNode(trueBlockId);
 
@@ -6755,13 +6754,12 @@ namespace ProtoAssociative
                     core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
                     EmitDynamicLanguageBlockNode(langblockF, bExprFalse, ref inferedType, ref falseBlockId, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone);
                     List<GraphNode> falseBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
+
+                    // Append dependent nodes of the inline conditional 
                     foreach (GraphNode gnode in falseBodyNodes)
-                    {
                         foreach (GraphNode dNode in gnode.dependentList)
-                        {
                             graphNode.PushDependent(dNode);
-                        }
-                    }
+
                     core.AssocNode = null;
                     DynamicBlockNode dynBlockF = new DynamicBlockNode(falseBlockId);
 
