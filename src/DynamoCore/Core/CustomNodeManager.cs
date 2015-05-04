@@ -543,7 +543,9 @@ namespace Dynamo.Core
 
             newWorkspace.FunctionIdChanged += oldGuid =>
             {
-                Uninitialize(oldGuid);
+                loadedWorkspaceModels.Remove(oldGuid);
+                loadedCustomNodes.Remove(oldGuid);
+                loadOrder.Remove(oldGuid);
                 loadedWorkspaceModels[newWorkspace.CustomNodeId] = newWorkspace;
             };
         }
