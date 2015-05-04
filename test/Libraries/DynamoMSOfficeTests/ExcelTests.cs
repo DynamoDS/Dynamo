@@ -599,6 +599,104 @@ namespace Dynamo.Tests
 
         }
 
+        [Test]
+        public void CanWriteEmptyArrayToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteEmptyArrayToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            Assert.AreEqual(3, list.Count());
+
+            // get data returns 1d array
+            // input array is {2, null, 3}
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(2, rowList[0].Data);
+
+            rowList = list[1].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(null, rowList[0].Data);
+
+            rowList = list[2].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(3, rowList[0].Data);
+            
+        }
+
+        [Test]
+        public void CanWriteNullValuesToExcel()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            // returns empty list
+            Assert.AreEqual(0, list.Count());
+
+        }
+
+        [Test]
+        public void CanWriteNullValuesToExcel1()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel1.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
+            stringNode.Value = filePath;
+
+            var writeNode = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.WriteToFile");
+
+            ViewModel.HomeSpace.Run();
+
+            Assert.IsTrue(File.Exists(filePath));
+
+            Assert.IsTrue(writeNode.CachedValue.IsCollection);
+            var list = writeNode.CachedValue.GetElements();
+
+            Assert.AreEqual(3, list.Count());
+
+            // get data returns 1d array
+            // input array is {2, null, 3}
+            var rowList = list[0].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(2, rowList[0].Data);
+
+            rowList = list[1].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(null, rowList[0].Data);
+
+            rowList = list[2].GetElements();
+            Assert.AreEqual(1, rowList.Count());
+            Assert.AreEqual(3, rowList[0].Data);
+
+        }
+
 
         #endregion
 
