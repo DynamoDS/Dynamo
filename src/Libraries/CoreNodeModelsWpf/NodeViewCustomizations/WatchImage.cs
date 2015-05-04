@@ -48,6 +48,8 @@ namespace Dynamo.Wpf.Nodes
             if (data == null)
                 return;
 
+            // There is a pending memory leak issue with this bitmap object and is being
+            // tracked by: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7305
             var bitmap = data.Data as Bitmap;
             if (bitmap != null)
             {
