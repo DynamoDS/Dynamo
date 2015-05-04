@@ -903,7 +903,27 @@ namespace Dynamo.ViewModels
 
         internal bool CanAddAnnotation(object parameter)
         {
-            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+            var groups = Model.CurrentWorkspace.Annotations;
+            //Create Group should be disabled when a group is selected
+            if (groups.Any(x => x.IsSelected))
+            {
+                return false;
+            }
+
+            //Create Group should be disabled when a node selected is already in a group
+            if (!groups.Any(x => x.IsSelected))
+            {
+                var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
+                foreach (var model in modelSelected)
+                {
+                    if (groups.CheckIfModelExistsInAGroup(model.GUID))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         internal void UngroupAnnotation(object parameters)

@@ -149,10 +149,17 @@ namespace Dynamo.ViewModels
                 return false;
             }
 
-            //Create Group should be disabled when a note selected is already in a group
-            if (groups != null && !groups.Any(x => x.IsSelected))
+            //Create Group should be disabled when a node selected is already in a group
+            if (!groups.Any(x => x.IsSelected))
             {
-                return !(groups.CheckIfModelExistsInAGroup(Model.GUID));
+                var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
+                foreach (var model in modelSelected)
+                {
+                    if (groups.CheckIfModelExistsInAGroup(model.GUID))
+                    {
+                        return false;
+                    }
+                }
             }
 
             return true;

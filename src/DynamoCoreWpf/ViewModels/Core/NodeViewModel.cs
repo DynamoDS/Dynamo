@@ -911,8 +911,14 @@ namespace Dynamo.ViewModels
             //Create Group should be disabled when a node selected is already in a group
             if (!groups.Any(x => x.IsSelected))
             {
-                return
-                    !(groups.CheckIfModelExistsInAGroup(NodeLogic.GUID));
+                var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
+                foreach (var model in modelSelected)
+                {
+                    if (groups.CheckIfModelExistsInAGroup(model.GUID))
+                    {
+                        return false;
+                    }
+                }
             }
 
             return true;
