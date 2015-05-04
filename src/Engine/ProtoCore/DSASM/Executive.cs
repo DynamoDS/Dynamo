@@ -256,10 +256,14 @@ namespace ProtoCore.DSASM
 
         // TODO Jun: Optimization - instead of inspecting the stack, just store the 'is in function' flag in the stackframe
         // Performance would only siffer if you have so a huge number of nested language blocks
-        private bool IsInsideFunction()
+        // TODO Jun: Optimization - instead of inspecting the stack, just store the 'is in function' flag in the stackframe
+        // Performance would only siffer if you have so a huge number of nested language blocks
+        private bool GetCurrentScope(out int classIndex, out int functionIndex)
         {
             int fpRestore = rmem.FramePointer;
             StackValue svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
+            classIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+            functionIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
             while (svFrameType.IsFrameType)
             {
                 StackFrameType frametype = (StackFrameType)svFrameType.opdata;
@@ -267,6 +271,7 @@ namespace ProtoCore.DSASM
                 if (frametype == StackFrameType.kTypeFunction)
                 {
                     rmem.FramePointer = fpRestore;
+
                     return true;
                 }
 
@@ -274,6 +279,8 @@ namespace ProtoCore.DSASM
                 if (rmem.FramePointer >= StackFrame.kStackFrameSize)
                 {
                     svFrameType = rmem.GetAtRelative(StackFrame.kFrameIndexStackFrameType);
+                    classIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
+                    functionIndex = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
                 }
                 else
                 {
@@ -1412,6 +1419,11 @@ namespace ProtoCore.DSASM
             else
             {
                 graphNodeList = istream.dependencyGraph.GraphList;
+            }
+
+            if (graphNodeList.Count > 0)
+            {
+                Properties.executingGraphNode = graphNodeList[0];
             }
 
             foreach (ProtoCore.AssociativeGraph.GraphNode graphNode in graphNodeList)
@@ -6218,7 +6230,11 @@ namespace ProtoCore.DSASM
             // The current function and class scope
             int ci = Constants.kInvalidIndex;
             int fi = Constants.kGlobalScope;
-            bool isInFunction = IsInsideFunction();
+
+
+            int classIndex = Constants.kInvalidIndex;
+            int functionIndex = Constants.kGlobalScope;
+            bool isInFunction = GetCurrentScope(out classIndex, out functionIndex);
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
@@ -6230,8 +6246,8 @@ namespace ProtoCore.DSASM
 
             if (isInFunction)
             {
-                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+                ci = classIndex;
+                fi = functionIndex;
             }
 
             if (null != Properties.executingGraphNode)
@@ -6347,7 +6363,11 @@ namespace ProtoCore.DSASM
             // The current function and class scope
             int ci = DSASM.Constants.kInvalidIndex;
             int fi = DSASM.Constants.kGlobalScope;
-            bool isInFunction = IsInsideFunction();
+
+            int classIndex = Constants.kInvalidIndex;
+            int functionIndex = Constants.kGlobalScope;
+            bool isInFunction = GetCurrentScope(out classIndex, out functionIndex);
+
 
             if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.kExpressionInterpreter)
             {
@@ -6357,8 +6377,8 @@ namespace ProtoCore.DSASM
 
             if (isInFunction)
             {
-                ci = (int)rmem.GetAtRelative(StackFrame.kFrameIndexClass).opdata;
-                fi = (int)rmem.GetAtRelative(StackFrame.kFrameIndexFunction).opdata;
+                ci = classIndex;
+                fi = functionIndex;
             }
             SetupNextExecutableGraph(fi, ci);
         }

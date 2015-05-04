@@ -3284,20 +3284,20 @@ namespace ProtoAssociative
                 inlineExpressionASTList.Clear();
 
 
-                // Emit the True exprssion
-                DFSEmitSSA_AST(ilnode.TrueExpression, ssaStack, ref inlineExpressionASTList);
-                AssociativeNode trueExpr = ssaStack.Pop();
-                ilnode.TrueExpression = trueExpr is BinaryExpressionNode ? (trueExpr as BinaryExpressionNode).LeftNode : trueExpr;
-                astlist.AddRange(inlineExpressionASTList);
-                inlineExpressionASTList.Clear();
+                //// Emit the True exprssion
+                //DFSEmitSSA_AST(ilnode.TrueExpression, ssaStack, ref inlineExpressionASTList);
+                //AssociativeNode trueExpr = ssaStack.Pop();
+                //ilnode.TrueExpression = trueExpr is BinaryExpressionNode ? (trueExpr as BinaryExpressionNode).LeftNode : trueExpr;
+                //astlist.AddRange(inlineExpressionASTList);
+                //inlineExpressionASTList.Clear();
 
 
-                // Emit the True exprssion
-                DFSEmitSSA_AST(ilnode.FalseExpression, ssaStack, ref inlineExpressionASTList);
-                AssociativeNode falseExpr = ssaStack.Pop();
-                ilnode.FalseExpression = falseExpr is BinaryExpressionNode ? (falseExpr as BinaryExpressionNode).LeftNode : falseExpr;
-                astlist.AddRange(inlineExpressionASTList);
-                inlineExpressionASTList.Clear();
+                //// Emit the True exprssion
+                //DFSEmitSSA_AST(ilnode.FalseExpression, ssaStack, ref inlineExpressionASTList);
+                //AssociativeNode falseExpr = ssaStack.Pop();
+                //ilnode.FalseExpression = falseExpr is BinaryExpressionNode ? (falseExpr as BinaryExpressionNode).LeftNode : falseExpr;
+                //astlist.AddRange(inlineExpressionASTList);
+                //inlineExpressionASTList.Clear();
 
                 BinaryExpressionNode bnode = new BinaryExpressionNode();
                 bnode.Optr = ProtoCore.DSASM.Operator.assign;
@@ -4875,7 +4875,7 @@ namespace ProtoAssociative
                     throw new BuildHaltException("Invalid language block type (B1C57E37)");
 
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                context.applySSATransform = false;
+                //context.applySSATransform = false;
 
                 // Set the current class scope so the next language can refer to it
                 core.ClassIndex = globalClassIndex;
@@ -4888,7 +4888,7 @@ namespace ProtoAssociative
                         core.ProcNode = codeBlock.procedureTable.procList[globalProcIndex];
                 }
 
-                core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, graphNode);
+                core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, null);
                 
             }
         }
