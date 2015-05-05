@@ -384,6 +384,9 @@ namespace ProtoCore
         // A list of graphnodes that contain a function call
         public List<GraphNode> GraphNodeCallList { get; set; }
 
+        // A stack of graphnodes that are generated on the body of an inline conditional
+        public Stack<List<GraphNode>> InlineConditionalBodyGraphNodes { get; set; }
+
         public int newEntryPoint { get; private set; }
 
         public void SetNewEntryPoint(int pc)
@@ -669,6 +672,7 @@ namespace ProtoCore
             ForLoopBlockIndex = Constants.kInvalidIndex;
 
             GraphNodeCallList = new List<GraphNode>();
+            InlineConditionalBodyGraphNodes = new Stack<List<GraphNode>>();
 
             newEntryPoint = Constants.kInvalidIndex;
         }

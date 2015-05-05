@@ -3374,20 +3374,7 @@ namespace ProtoAssociative
                 inlineExpressionASTList.Clear();
 
 
-                // Emit the True exprssion
-                DFSEmitSSA_AST(ilnode.TrueExpression, ssaStack, ref inlineExpressionASTList);
-                AssociativeNode trueExpr = ssaStack.Pop();
-                ilnode.TrueExpression = trueExpr is BinaryExpressionNode ? (trueExpr as BinaryExpressionNode).LeftNode : trueExpr;
-                astlist.AddRange(inlineExpressionASTList);
-                inlineExpressionASTList.Clear();
-
-
-                // Emit the True exprssion
-                DFSEmitSSA_AST(ilnode.FalseExpression, ssaStack, ref inlineExpressionASTList);
-                AssociativeNode falseExpr = ssaStack.Pop();
-                ilnode.FalseExpression = falseExpr is BinaryExpressionNode ? (falseExpr as BinaryExpressionNode).LeftNode : falseExpr;
-                astlist.AddRange(inlineExpressionASTList);
-                inlineExpressionASTList.Clear();
+                // SSA for true and false body are handled by EmitInlineConditionalNode
 
                 BinaryExpressionNode bnode = new BinaryExpressionNode();
                 bnode.Optr = ProtoCore.DSASM.Operator.assign;
@@ -4946,7 +4933,6 @@ namespace ProtoAssociative
                     throw new BuildHaltException("Invalid language block type (B1C57E37)");
 
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
-                context.applySSATransform = false;
 
                 // Set the current class scope so the next language can refer to it
                 core.ClassIndex = globalClassIndex;
@@ -4959,7 +4945,8 @@ namespace ProtoAssociative
                         core.ProcNode = codeBlock.procedureTable.procList[globalProcIndex];
                 }
 
-                core.Compilers[langblock.codeblock.language].Compile(out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, graphNode);
+                core.Compilers[langblock.codeblock.language].Compile(
+                    out blockId, codeBlock, langblock.codeblock, context, codeBlock.EventSink, langblock.CodeBlockNode, null);
                 
             }
         }
@@ -6770,7 +6757,15 @@ namespace ProtoAssociative
                     langblockT.codeblock.fingerprint = "";
                     langblockT.codeblock.version = "";
                     core.AssocNode = bExprTrue;
+                    core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
                     EmitDynamicLanguageBlockNode(langblockT, bExprTrue, ref inferedType, ref trueBlockId, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone);
+                    List<GraphNode> trueBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
+
+                    // Append dependent nodes of the inline conditional 
+                    foreach (GraphNode gnode in trueBodyNodes)
+                        foreach (GraphNode dNode in gnode.dependentList)
+                            graphNode.PushDependent(dNode);
+
                     core.AssocNode = null;
                     DynamicBlockNode dynBlockT = new DynamicBlockNode(trueBlockId);
 
@@ -6786,7 +6781,15 @@ namespace ProtoAssociative
                     langblockF.codeblock.fingerprint = "";
                     langblockF.codeblock.version = "";
                     core.AssocNode = bExprFalse;
+                    core.InlineConditionalBodyGraphNodes.Push(new List<GraphNode>());
                     EmitDynamicLanguageBlockNode(langblockF, bExprFalse, ref inferedType, ref falseBlockId, graphNode, ProtoCore.CompilerDefinitions.Associative.SubCompilePass.kNone);
+                    List<GraphNode> falseBodyNodes = core.InlineConditionalBodyGraphNodes.Pop();
+
+                    // Append dependent nodes of the inline conditional 
+                    foreach (GraphNode gnode in falseBodyNodes)
+                        foreach (GraphNode dNode in gnode.dependentList)
+                            graphNode.PushDependent(dNode);
+
                     core.AssocNode = null;
                     DynamicBlockNode dynBlockF = new DynamicBlockNode(falseBlockId);
 
@@ -8693,6 +8696,10 @@ namespace ProtoAssociative
                     }
 
                     PushGraphNode(graphNode);
+                    if (core.InlineConditionalBodyGraphNodes.Count > 0)
+                    {
+                        core.InlineConditionalBodyGraphNodes.Last().Add(graphNode);
+                    }
 
                     SymbolNode cyclicSymbol1 = null;
                     SymbolNode cyclicSymbol2 = null;
