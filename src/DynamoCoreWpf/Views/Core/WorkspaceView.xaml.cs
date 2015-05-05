@@ -712,8 +712,8 @@ namespace Dynamo.Views
 
             var nodeModel = nodeInfo.SearchElement.CreateNode();
             var mousePosition = e.GetPosition(this.WorkspaceElements);
-            ViewModel.DynamoViewModel.
-                ExecuteCommand(new DynamoModel.CreateNodeCommand(nodeModel, mousePosition.X, mousePosition.Y, false, true));
+            ViewModel.DynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
+                nodeModel, mousePosition.X, mousePosition.Y, false, true));
         }
 
     }
