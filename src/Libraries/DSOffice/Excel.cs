@@ -90,6 +90,7 @@ namespace DSOffice
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
             excel.Visible = ShowOnStartup;
+            excel.DisplayAlerts = false;
 
             return excel;
         }
@@ -416,7 +417,7 @@ namespace DSOffice
         /// </summary>
         /// <param name="wbook"></param>
         /// <param name="sheetName"></param>
-        internal WorkSheet (WorkBook wbook, string sheetName)
+        internal WorkSheet (WorkBook wbook, string sheetName, bool overWrite = true)
         {
             wb = wbook;
 
@@ -426,15 +427,20 @@ namespace DSOffice
             // If you find one, then use it.
             if (wSheet != null)
             {
-                ws = wSheet.ws;
+                if (overWrite)
+                {
+                    wSheet.ws.Delete();
+                }
+                else
+                {
+                    ws = wSheet.ws;
+                    return;
+                }
             }
             // If you don't find one, create one.
-            else
-            {
-                ws = (Worksheet)wb.Add();
-                ws.Name = sheetName;
-                wb.Save();
-            }
+            ws = (Worksheet)wb.Add();
+            ws.Name = sheetName;
+            wb.Save();
         }
 
         internal WorkSheet(Worksheet ws, WorkBook wb)
