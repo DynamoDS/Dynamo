@@ -787,6 +787,44 @@ namespace DSCore
                     .ToList();
         }
 
+        /// <summary>
+        ///     Given an item, returns the zero-based index of its first occurrence 
+        ///     in the list. If the item cannot be found in the list, -1 is returned.
+        /// </summary>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, -1 is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>Zero-based index of the item in the list, or -1 if it is not found.
+        /// </returns>
+        public static int FirstIndexOf(IList list, object item)
+        {
+            if (list == null)
+                return -1;
+
+            int index = list.IndexOf(item);
+            return index;
+        }
+
+        /// <summary>
+        ///     Given an item, returns the zero-based indices of all its occurrences
+        ///     in the list. If the item cannot be found, an empty list is returned.
+        /// </summary>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, an empty list is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>A list of zero-based indices of all occurrences of the item if 
+        /// found, or an empty list if the item does not exist in the list.</returns>
+        public static IList AllIndicesOf(IList list, object item)
+        {
+            if (list == null)
+                return new List<int> { }; 
+
+            var indices = Enumerable.Range(0, list.Count).Where(i => list[i].Equals(item)).ToList();
+            return indices;
+        }
+
         #region Combinatorics Helpers
         private static IEnumerable<T> Singleton<T>(T t)
         {
