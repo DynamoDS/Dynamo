@@ -992,8 +992,6 @@ namespace Dynamo.ViewModels
             if (item is HomeWorkspaceModel)
             {
                 var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
-                Model.RemoveWorkspace(HomeSpace);
-                Model.ResetEngine();
                 workspaces.Insert(0, newVm);
 
                 // The RunSettings control is a child of the DynamoView, 
