@@ -188,7 +188,7 @@ namespace Dynamo
             // events from the pre-existing workspace.
             WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
-            renderPackageFactory = new DefaultRenderPackageFactory();
+            renderPackageFactory = new HelixRenderPackageFactory();
 
             Start();
         }
