@@ -93,13 +93,11 @@ namespace ProtoCore
         kTypeArray,
         kTypeDouble,
         kTypeInt,
-        kTypeDynamic,
         kTypeBool,
         kTypeChar,
         kTypeString,
         kTypeVar,
         kTypeVoid,
-        kTypeHostEntityID,
         kTypePointer,
         kTypeFunctionPointer,
         kTypeReturn,
@@ -138,7 +136,6 @@ namespace ProtoCore
                 primitiveTypeNames[PrimitiveType.kTypeNull] = DSDefinitions.Keyword.Null;
                 primitiveTypeNames[PrimitiveType.kTypeVoid] = DSDefinitions.Keyword.Void;
                 primitiveTypeNames[PrimitiveType.kTypeArray] = DSDefinitions.Keyword.Array;
-                primitiveTypeNames[PrimitiveType.kTypeHostEntityID] = "hostentityid";
                 primitiveTypeNames[PrimitiveType.kTypePointer] = DSDefinitions.Keyword.PointerReserved;
                 primitiveTypeNames[PrimitiveType.kTypeFunctionPointer] = DSDefinitions.Keyword.FunctionPointer;
                 primitiveTypeNames[PrimitiveType.kTypeReturn] = "return_reserved";
@@ -241,10 +238,6 @@ namespace ProtoCore
             cnode = new ClassNode { name = DSDefinitions.Keyword.Void, rank = 0, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeVoid;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeVoid);
-
-            cnode = new ClassNode { name = "hostentityid", rank = 0, typeSystem = this };
-            cnode.classId = (int)PrimitiveType.kTypeHostEntityID;
-            classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeHostEntityID);
 
             cnode = new ClassNode { name = DSDefinitions.Keyword.PointerReserved, rank = 0, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
@@ -494,13 +487,6 @@ namespace ProtoCore
                         return StackValue.Null;
                     }
                     return sv;
-
-                case (int)PrimitiveType.kTypeHostEntityID:
-                    {
-                        StackValue newSV = sv.ShallowClone();
-                        newSV.metaData = new MetaData { type = (int)PrimitiveType.kTypeHostEntityID };
-                        return newSV;
-                    }
 
                 case (int)PrimitiveType.kTypeInt:
                     {
