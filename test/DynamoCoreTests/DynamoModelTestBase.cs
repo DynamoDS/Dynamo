@@ -56,6 +56,23 @@ namespace Dynamo
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
 
+            TestPathResolver pathResolver = null;
+            var preloadedLibraries = new List<string>();
+            GetLibrariesToPreload(preloadedLibraries);
+
+            if (preloadedLibraries.Any())
+            {
+                // Only when any library needs preloading will a path resolver be 
+                // created, otherwise DynamoModel gets created without preloading 
+                // any library.
+                // 
+                pathResolver = new TestPathResolver();
+                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
+                {
+                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
+                }
+            }
+
             this.CurrentDynamoModel = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
@@ -63,6 +80,15 @@ namespace Dynamo
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath
                 });
+        }
+
+        protected virtual void GetLibrariesToPreload(List<string> libraries)
+        {
+            // Nothing here by design. If you find yourself having to add 
+            // anything here, something must be wrong. DynamoViewModelUnitTest
+            // is designed to contain no test cases, so it does not need any 
+            // preloaded library, all of which should only be specified in the
+            // derived class.
         }
 
         protected T Open<T>(params string[] relativePathParts) where T : WorkspaceModel

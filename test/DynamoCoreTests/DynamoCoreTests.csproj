@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="AnnotationModelTest.cs" />
     <Compile Include="AstBuilderTest.cs" />
+    <Compile Include="CallsiteTests.cs" />
     <Compile Include="ConverterTests.cs" />
     <Compile Include="CrashProtectionTests.cs" />
     <Compile Include="DynamoModelTestBase.cs" />

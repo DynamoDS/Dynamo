@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -45,7 +46,7 @@ namespace Dynamo.Models
         EngineController EngineController { get; }
     }
 
-    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager // : ModelBase
+    public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
         public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
 
@@ -55,10 +56,10 @@ namespace Dynamo.Models
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
+
         #endregion
 
         #region events
-
 
         public delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
         public event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
@@ -310,6 +311,12 @@ namespace Dynamo.Models
             get { return _workspaces; } 
         }
 
+        /// <summary>
+        /// An object which implements the ITraceReconciliationProcessor interface,
+        /// and is used for handlling the results of a trace reconciliation.
+        /// </summary>
+        public ITraceReconciliationProcessor TraceReconciliationProcessor { get; set; }
+
         #endregion
 
         #region initialization and disposal
@@ -422,7 +429,6 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -545,6 +551,71 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
 
             StartBackupFilesTimer();
+
+            TraceReconciliationProcessor = this;
+        }
+
+        private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
+        {
+            Debug.WriteLine("TRACE RECONCILIATION: {0} total serializables were orphaned.", obj.CallsiteToOrphanMap.SelectMany(kvp=>kvp.Value).Count());
+            
+            // The orphans will come back here as a dictionary of lists of ISerializables jeyed by their callsite id.
+            // This dictionary gets redistributed into a dictionary keyed by the workspace id.
+
+            var workspaceOrphanMap = new Dictionary<Guid, List<ISerializable>>();
+
+            foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
+            {
+                // Get the orphaned serializables to this workspace
+                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
+
+                if (!wsOrphans.Any())
+                    continue;
+
+                if (!workspaceOrphanMap.ContainsKey(ws.Guid))
+                {
+                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
+                }
+                else
+                {
+                    workspaceOrphanMap[ws.Guid].AddRange(wsOrphans);
+                }
+            }
+
+            foreach (var kvp in obj.CallsiteToOrphanMap)
+            {
+                if (!kvp.Value.Any()) continue;
+
+                var nodeGuid = EngineController.LiveRunnerCore.DSExecutable.CallSiteToNodeMap[kvp.Key];
+
+                // TODO: MAGN-7314
+                // Find the owning workspace for a node.
+                var nodeSpace =
+                    Workspaces.FirstOrDefault(
+                        ws =>
+                            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
+                                != null);
+
+                if (nodeSpace == null) continue;
+
+                // Add the node's orphaned serializables to the workspace
+                // orphan map.
+                if (workspaceOrphanMap.ContainsKey(nodeSpace.Guid))
+                {
+                    workspaceOrphanMap[nodeSpace.Guid].AddRange(kvp.Value);
+                }
+                else
+                {
+                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);  
+                }
+            }
+
+            TraceReconciliationProcessor.PostTraceReconciliation(workspaceOrphanMap);
+        }
+
+        public virtual void PostTraceReconciliation(Dictionary<Guid, List<ISerializable>> orphanedSerializables)
+        {
+            // Override in derived classes to deal with orphaned serializables.
         }
 
         void UpdateManager_Log(LogEventArgs args)
@@ -609,6 +680,8 @@ namespace Dynamo.Models
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
+            EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
+
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
             
@@ -944,13 +1017,16 @@ namespace Dynamo.Models
         {
             ResetEngineInternal();
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
+            {
                 workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
+            }
         }
 
         protected void ResetEngineInternal()
         {
             if (EngineController != null)
             {
+                EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
                 EngineController.MessageLogged -= LogMessage;
                 EngineController.Dispose();
                 EngineController = null;
@@ -960,7 +1036,9 @@ namespace Dynamo.Models
                 LibraryServices,
                 geometryFactoryPath,
                 DebugSettings.VerboseLogging);
+            
             EngineController.MessageLogged += LogMessage;
+            EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
 
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
@@ -972,7 +1050,9 @@ namespace Dynamo.Models
         public void ForceRun()
         {
             Logger.Log("Beginning engine reset");
+
             ResetEngine(true);
+
             Logger.Log("Reset complete");
 
             ((HomeWorkspaceModel)CurrentWorkspace).Run();
@@ -999,7 +1079,26 @@ namespace Dynamo.Models
                     WorkspaceModel ws;
                     if (OpenFile(workspaceInfo, xmlDoc, out ws))
                     {
+                        // TODO: #4258
+                        // The logic to remove all other home workspaces from the model
+                        // was moved from the ViewModel. When #4258 is implemented, we will need to
+                        // remove this step.
+                        var currentHomeSpaces = Workspaces.OfType<HomeWorkspaceModel>().ToList();
+                        if (currentHomeSpaces.Any())
+                        {
+                            foreach (var s in currentHomeSpaces)
+                            {
+                                RemoveWorkspace(s);
+                            }
+                        }
+
                         AddWorkspace(ws);
+
+                        // TODO: #4258
+                        // Remove this ResetEngine call when multiple home workspaces is supported.
+                        // This call formerly lived in DynamoViewModel
+                        ResetEngine();
+
                         CurrentWorkspace = ws;
                         return;
                     }
