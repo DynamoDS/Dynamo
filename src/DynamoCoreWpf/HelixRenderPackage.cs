@@ -378,12 +378,12 @@ namespace Dynamo.Wpf
 
         public IEnumerable<double> LineStripVertices
         {
-            get { return lines.Positions.ToDoubleArray(); }
+            get { return lines.Positions.ToEnumerable(); }
         }
 
         public IEnumerable<byte> LineStripVertexColors
         {
-            get { return lines.Colors.ToByteArray(); }
+            get { return lines.Colors.ToEnumerable(); }
         }
 
         public IEnumerable<int> LineStripIndices
@@ -393,12 +393,12 @@ namespace Dynamo.Wpf
 
         public IEnumerable<double> MeshVertices
         {
-            get { return mesh.Positions.ToDoubleArray(); }
+            get { return mesh.Positions.ToEnumerable(); }
         }
 
         public IEnumerable<byte> MeshVertexColors
         {
-            get { return mesh.Colors.ToByteArray(); }
+            get { return mesh.Colors.ToEnumerable(); }
         }
 
         public IEnumerable<int> MeshIndices
@@ -408,22 +408,22 @@ namespace Dynamo.Wpf
 
         public IEnumerable<double> MeshNormals
         {
-            get { return mesh.Normals.ToDoubleArray(); }
+            get { return mesh.Normals.ToEnumerable(); }
         }
 
         public IEnumerable<double> MeshTextureCoordinates
         {
-            get { return mesh.TextureCoordinates.ToDoubleArray(); }
+            get { return mesh.TextureCoordinates.ToEnumerable(); }
         }
 
         public IEnumerable<double> PointVertices
         {
-            get { return points.Positions.ToDoubleArray(); }
+            get { return points.Positions.ToEnumerable(); }
         }
 
         public IEnumerable<byte> PointVertexColors
         {
-            get { return points.Colors.ToByteArray(); }
+            get { return points.Colors.ToEnumerable(); }
         }
 
         public IEnumerable<int> PointIndices
@@ -516,7 +516,7 @@ namespace Dynamo.Wpf
 
     internal static class HelixRenderExtensions
     {
-        public static IEnumerable<double> ToDoubleArray(this Vector2Collection collection)
+        public static IEnumerable<double> ToEnumerable(this Vector2Collection collection)
         {
             foreach (var v in collection)
             {
@@ -525,7 +525,7 @@ namespace Dynamo.Wpf
             }
         }
 
-        public static IEnumerable<double> ToDoubleArray(this Vector3Collection collection)
+        public static IEnumerable<double> ToEnumerable(this Vector3Collection collection)
         {
             foreach (var v in collection)
             {
@@ -535,7 +535,7 @@ namespace Dynamo.Wpf
             }
         }
 
-        public static IEnumerable<byte> ToByteArray(this Color4Collection collection)
+        public static IEnumerable<byte> ToEnumerable(this Color4Collection collection)
         {
             foreach (var c in collection)
             {
