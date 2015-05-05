@@ -14,7 +14,6 @@ namespace Dynamo.Wpf
     {
         public override void Attach(IRenderHost host)
         {
-            // --- attach
             base.Attach(host);
 
             this.renderTechnique = Techniques.RenderPerVertexPhong;
@@ -22,37 +21,25 @@ namespace Dynamo.Wpf
             if (this.Geometry == null)
                 return;
 
-            // --- get variables
             this.vertexLayout = EffectsManager.Instance.GetLayout(this.renderTechnique);
             this.effectTechnique = effect.GetTechniqueByName(this.renderTechnique.Name);
 
-            // --- transformations
             this.effectTransforms = new EffectTransformVariables(this.effect);
 
-            // --- material 
             this.AttachMaterial();
 
-            // --- scale texcoords
-            var texScale = TextureCoodScale;
-
-            // --- get geometry
             var geometry = this.Geometry as MeshGeometry3D;
 
-            // -- set geometry if given
             if (geometry != null)
             {
-                /// --- init vertex buffer
                 this.vertexBuffer = Device.CreateBuffer(BindFlags.VertexBuffer, DefaultVertex.SizeInBytes, this.CreateDefaultVertexArray());
-
-                /// --- init index buffer
                 this.indexBuffer = Device.CreateBuffer(BindFlags.IndexBuffer, sizeof(int), this.Geometry.Indices.ToArray());
             }
             else
             {
                 throw new Exception("Geometry must not be null");
             }
-
-            /// --- init instances buffer            
+           
             this.hasInstances = (this.Instances != null) && (this.Instances.Any());
             this.bHasInstances = this.effect.GetVariableByName("bHasInstances").AsScalar();
             if (this.hasInstances)
@@ -60,10 +47,8 @@ namespace Dynamo.Wpf
                 this.instanceBuffer = Buffer.Create(this.Device, this.instanceArray, new BufferDescription(Matrix.SizeInBytes * this.instanceArray.Length, ResourceUsage.Dynamic, BindFlags.VertexBuffer, CpuAccessFlags.Write, ResourceOptionFlags.None, 0));
             }
 
-            /// --- set rasterstate
             this.OnRasterStateChanged(this.DepthBias);
 
-            /// --- flush
             this.Device.ImmediateContext.Flush();
         }
 
