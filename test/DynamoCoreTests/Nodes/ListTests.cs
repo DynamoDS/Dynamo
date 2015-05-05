@@ -2505,5 +2505,23 @@ namespace Dynamo.Tests
             AssertPreviewValue("fe77da6f-71db-4712-bffb-27d5acc86e0b", new object[] { });
         }
         #endregion
+
+        [Test]
+        public void FirstIndexOf()
+        {
+            var model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\list\FirstIndexOf.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("04a0347f-b931-40ff-81c9-7c0e5c61d051", 0); 
+        }
+
+        [Test]
+        public void AllIndicesOf()
+        {
+            var model = ViewModel.Model;
+            string openPath = Path.Combine(TestDirectory, @"core\list\AllIndicesOf.dyn");
+            RunModel(openPath);
+            AssertPreviewValue("404af9cd-3668-4aa8-aea1-314a228bd6e1", new object[] { 0, 2 });
+        }
     }
 }
