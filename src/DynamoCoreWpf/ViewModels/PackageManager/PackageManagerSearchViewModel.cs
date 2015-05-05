@@ -488,7 +488,6 @@ namespace Dynamo.PackageManager
                         sb.AppendLine(elem.Item1.name + " " + elem.Item2.version);
                     }
 
-                    // If the user
                     if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
                         PackageManagerClientViewModel.DynamoViewModel.BrandingResourceProvider.ProductName, 
                         sb.ToString()),
@@ -527,8 +526,6 @@ namespace Dynamo.PackageManager
 
                     immediateUninstalls.Add(localPkg);
                 }
-
-                string msg;
 
                 if (uninstallRequiringUserModifications.Any())
                 {
