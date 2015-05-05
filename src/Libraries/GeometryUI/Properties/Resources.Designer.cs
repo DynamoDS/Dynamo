@@ -86,5 +86,14 @@ namespace GeometryUI.Properties {
                 return ResourceManager.GetString("ExportToSatGeometryInputDescription", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Export;SAT.
+        /// </summary>
+        internal static string ExportWithUnitsSearchTags {
+            get {
+                return ResourceManager.GetString("ExportWithUnitsSearchTags", resourceCulture);
+            }
+        }
     }
 }
