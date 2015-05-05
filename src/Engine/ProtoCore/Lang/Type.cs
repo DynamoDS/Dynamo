@@ -197,39 +197,39 @@ namespace ProtoCore
             cnode.classId = (int)PrimitiveType.kTypeArray;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeArray);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Double, size = 0, rank = 4, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Double, size = 0, rank = 4, symbols = null, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceDoubleToIntScore);
             cnode.classId = (int)PrimitiveType.kTypeDouble;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeDouble);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Int, size = 0, rank = 3, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Int, size = 0, rank = 3, symbols = null, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeDouble, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceIntToDoubleScore);
             cnode.classId = (int)PrimitiveType.kTypeInt;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeInt);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Bool, size = 0, rank = 2, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Bool, size = 0, rank = 2, symbols = null, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeBool;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeBool);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Char, size = 0, rank = 1, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Char, size = 0, rank = 1, symbols = null, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeString, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
 
             cnode.classId = (int)PrimitiveType.kTypeChar;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeChar);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.String, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.String, size = 0, rank = 0, symbols = null, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.classId = (int)PrimitiveType.kTypeString;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeString);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Var, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Var, size = 0, rank = 0, symbols = null, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeVar;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeVar);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Null, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Null, size = 0, rank = 0, symbols = null, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeDouble, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeBool, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
@@ -238,25 +238,25 @@ namespace ProtoCore
             cnode.classId = (int)PrimitiveType.kTypeNull;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeNull);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.Void, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.Void, size = 0, rank = 0, symbols = null, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeVoid;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeVoid);
 
-            cnode = new ClassNode { name = "hostentityid", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = "hostentityid", size = 0, rank = 0, symbols = null, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeHostEntityID;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeHostEntityID);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.PointerReserved, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.PointerReserved, size = 0, rank = 0, symbols = null, typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.classId = (int)PrimitiveType.kTypePointer;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypePointer);
 
-            cnode = new ClassNode { name = DSDefinitions.Keyword.FunctionPointer, size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = DSDefinitions.Keyword.FunctionPointer, size = 0, rank = 0, symbols = null,typeSystem = this };
             cnode.coerceTypes.Add((int)PrimitiveType.kTypeInt, (int)ProtoCore.DSASM.ProcedureDistance.kCoerceScore);
             cnode.classId = (int)PrimitiveType.kTypeFunctionPointer;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeFunctionPointer);
 
-            cnode = new ClassNode { name = "return_reserved", size = 0, rank = 0, symbols = null, vtable = null, typeSystem = this };
+            cnode = new ClassNode { name = "return_reserved", size = 0, rank = 0, symbols = null, typeSystem = this };
             cnode.classId = (int)PrimitiveType.kTypeReturn;
             classTable.SetClassNodeAt(cnode, (int)PrimitiveType.kTypeReturn);
         }
