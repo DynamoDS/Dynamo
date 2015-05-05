@@ -36,10 +36,11 @@ namespace Dynamo.Core.Threading
     /// 
     class UpdateRenderPackageAsyncTask : AsyncTask
     {
-        private const byte defR = 101;
-        private const byte defG = 86;
-        private const byte defB = 130;
-        private const byte defA = 255;
+        private const byte DefR = 101;
+        private const byte DefG = 86;
+        private const byte DefB = 130;
+        private const byte DefA = 255;
+        private const byte MidTone = 180;
 
         #region Class Data Members and Properties
 
@@ -241,7 +242,7 @@ namespace Dynamo.Core.Threading
 
                         for (var i = 0; i < package.LineVertexCount; i ++)
                         {
-                            package.AddLineStripVertexColor(180,180,180,255);
+                            package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
                         }
 
                         for (var i = 0; i < package.MeshVertexCount; i++)
@@ -262,12 +263,12 @@ namespace Dynamo.Core.Threading
                     {
                         if (package.LineVertexCount > 0)
                         {
-                            package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, defR, defG, defB, defA));
+                            package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, DefR, DefG, DefB, DefA));
                         }
 
                         if (package.PointVertexCount > 0)
                         {
-                            package.ApplyPointVertexColors(CreateColorByteArrayOfSize(package.PointVertexCount, defR, defG, defB, defA));
+                            package.ApplyPointVertexColors(CreateColorByteArrayOfSize(package.PointVertexCount, DefR, DefG, DefB, DefA));
                         }
                     }
                 }
