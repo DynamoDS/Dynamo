@@ -860,7 +860,7 @@ namespace Dynamo.Controls
             var perVertexMesh = HelixRenderPackage.InitMeshGeometry();
             var text = HelixRenderPackage.InitText3D();
 
-            var aggParams = new PackageAggregationParameters
+            var aggParams = new PackageAggregationParams
             {
                 Packages = packages,
                 Points = points,
@@ -902,7 +902,7 @@ namespace Dynamo.Controls
             renderTimer.Start();
 #endif
 
-            var updateGraphicsParams = new GraphicsUpdateParameters
+            var updateGraphicsParams = new GraphicsUpdateParams
             {
                 Points = points,
                 Lines = lines,
@@ -918,7 +918,7 @@ namespace Dynamo.Controls
             //DrawTestMesh();
         }
 
-        private void AggregateRenderPackages(PackageAggregationParameters parameters)
+        private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
             MeshCount = 0;
             foreach (var rp in parameters.Packages)
@@ -1012,7 +1012,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private void SendGraphicsToView(GraphicsUpdateParameters parameters)
+        private void SendGraphicsToView(GraphicsUpdateParams parameters)
         {
             Points = parameters.Points;
             Lines = parameters.Lines;
@@ -1029,7 +1029,7 @@ namespace Dynamo.Controls
         #endregion
     }
 
-    internal class GraphicsUpdateParameters
+    internal class GraphicsUpdateParams
     {
         public PointGeometry3D Points { get; set; }
         public LineGeometry3D Lines { get; set; }
@@ -1040,7 +1040,7 @@ namespace Dynamo.Controls
         public BillboardText3D Text { get; set; }
     }
 
-    internal class PackageAggregationParameters
+    internal class PackageAggregationParams
     {
         public IEnumerable<HelixRenderPackage> Packages { get; set; } 
         public PointGeometry3D Points { get; set; }
