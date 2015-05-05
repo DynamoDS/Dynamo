@@ -12,6 +12,7 @@ using Dynamo.Nodes;
 
 using System.Windows;
 using Dynamo.Selection;
+using Dynamo.Wpf.ViewModels.Core;
 using DynCmd = Dynamo.ViewModels.DynamoViewModel;
 
 namespace Dynamo.ViewModels
@@ -372,6 +373,7 @@ namespace Dynamo.ViewModels
 
         private void SelectionOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+           CreateGroupCommand.RaiseCanExecuteChanged();
            AddToGroupCommand.RaiseCanExecuteChanged();
            UngroupCommand.RaiseCanExecuteChanged();
         }
@@ -899,7 +901,27 @@ namespace Dynamo.ViewModels
 
         private bool CanCreateGroup(object parameters)
         {
-            return DynamoSelection.Instance.Selection.OfType<ModelBase>().Any();
+            var groups = WorkspaceViewModel.Model.Annotations;
+            //Create Group should be disabled when a group is selected
+            if (groups.Any(x => x.IsSelected))
+            {
+                return false;
+            }
+
+            //Create Group should be disabled when a node selected is already in a group
+            if (!groups.Any(x => x.IsSelected))
+            {
+                var modelSelected = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(x => x.IsSelected);
+                foreach (var model in modelSelected)
+                {
+                    if (groups.ContainsModel(model.GUID))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         private void UngroupNode(object parameters)
@@ -910,12 +932,10 @@ namespace Dynamo.ViewModels
         private bool CanUngroupNode(object parameters)
         {
             var groups = WorkspaceViewModel.Model.Annotations;
-            if (groups != null
-                && DynamoSelection.Instance.Selection.OfType<NodeModel>().Any())
-                return (from model in groups
-                    let nodeModel = DynamoSelection.Instance.Selection.OfType<NodeModel>().FirstOrDefault()
-                    where model.SelectedModels.Any(x => x.GUID == nodeModel.GUID)
-                    select model).Any();
+            if (!groups.Any(x => x.IsSelected))
+            {
+                return (groups.ContainsModel(NodeLogic.GUID));
+            }
             return false;
         }
 
@@ -925,9 +945,13 @@ namespace Dynamo.ViewModels
         }
 
         private bool CanAddToGroup(object parameters)
-        {
+        {          
             var groups = WorkspaceViewModel.Model.Annotations;
-            return groups != null && groups.Any(x => x.IsSelected);
+            if (groups.Any(x => x.IsSelected))
+            {
+                return !(groups.ContainsModel(NodeLogic.GUID));
+            }
+            return false;
         }
 
 
@@ -953,6 +977,6 @@ namespace Dynamo.ViewModels
             Model = model;
             Handled = false;
         }
-    }
+    }   
 }
 
