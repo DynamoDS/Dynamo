@@ -783,12 +783,15 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Return the first index of item in the given list. 
-        ///     Return -1 if not found.
+        ///     Given an item, returns the zero-based index of its first occurrence 
+        ///     in the list. If the item cannot be found in the list, -1 is returned.
         /// </summary>
-        /// <param name="list">List to search in</param>
-        /// <param name="item">Item to look for</param>
-        /// <returns></returns>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, -1 is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>Zero-based index of the item in the list, or -1 if it is not found.
+        /// </returns>
         public static int FirstIndexOf(IList list, object item)
         {
             if (list == null)
@@ -799,12 +802,15 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Return all indice of item in the given list.
-        ///     Return empty list if not found.
+        ///     Given an item, returns the zero-based indices of all its occurrences
+        ///     in the list. If the item cannot be found, an empty list is returned.
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// <param name="list">
+        ///     List to search in. If this argument is null, an empty list is returned.
+        /// </param>
+        /// <param name="item">Item to look for.</param>
+        /// <returns>A list of zero-based indices of all occurrences of the item if 
+        /// found, or an empty list if the item does not exist in the list.</returns>
         public static IList AllIndicesOf(IList list, object item)
         {
             if (list == null)
