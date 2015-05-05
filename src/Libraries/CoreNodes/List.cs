@@ -659,7 +659,10 @@ namespace DSCore
 
 
         /// <summary>
-        ///     Swaps rows and columns in a list of lists.
+        ///     Swaps rows and columns in a list of lists. 
+        ///     If there are some rows that are shorter than others,
+        ///     null values are inserted as place holders in the resultant 
+        ///     array such that it is always rectangular.
         /// </summary>
         /// <param name="lists">A list of lists to be transposed.</param>
         /// <returns name="lists">A list of transposed lists.</returns>
