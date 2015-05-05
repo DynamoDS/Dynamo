@@ -312,8 +312,22 @@ namespace Dynamo.ViewModels
         }
 
         public bool IsMouseDown { get; set; }
-        public bool IsPanning { get { return CurrentSpaceViewModel.IsPanning; } }
-        public bool IsOrbiting { get { return CurrentSpaceViewModel.IsOrbiting; } }
+
+        public bool IsPanning
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsPanning;
+            }
+        }
+
+        public bool IsOrbiting
+        {
+            get
+            {
+                return CurrentSpaceViewModel != null && CurrentSpaceViewModel.IsOrbiting;
+            }
+        }
 
         public ConnectorType ConnectorType
         {
@@ -385,12 +399,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public int MaxTesselationDivisions
+        public int MaxTessellationDivisions
         {
-            get { return model.MaxTesselationDivisions; }
+            get { return VisualizationManager.RenderPackageFactory.MaxTessellationDivisions; }
             set
             {
-                model.MaxTesselationDivisions = value;
+                VisualizationManager.RenderPackageFactory.MaxTessellationDivisions = value;
                 model.OnRequestsRedraw(this, EventArgs.Empty);
             }
         }

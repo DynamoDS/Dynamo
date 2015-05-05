@@ -117,6 +117,8 @@ limitations under the License.
     <Compile Include="Core\DynamoMigrator.cs" />
     <Compile Include="Core\PulseMaker.cs" />
     <Compile Include="Core\NodeGraph.cs" />
+    <Compile Include="DefaultRenderPackageFactory.cs" />
+    <Compile Include="Interfaces\IRenderPackageFactory.cs" />
     <Compile Include="Models\AnnotationModel.cs" />
     <Compile Include="Core\PathManager.cs" />
     <Compile Include="Library\MemberDocumentNode.cs" />
@@ -271,7 +273,6 @@ limitations under the License.
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Search\SearchDictionary.cs" />
-    <Compile Include="DSEngine\RenderPackage.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

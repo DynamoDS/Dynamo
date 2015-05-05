@@ -8,36 +8,34 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
-﻿using DSCoreNodesUI;
+using DSCoreNodesUI;
 using Dynamo.Core;
 using Dynamo.Core.Threading;
 using Dynamo.DSEngine;
 using Dynamo.Interfaces;
-using Dynamo.Library;
+using Dynamo.Models.NodeLoaders;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
+using Dynamo.Properties;
 using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI;
 using Dynamo.UpdateManager;
 using Dynamo.Utilities;
-
 using DynamoServices;
-
 using DynamoUnits;
-using DynamoUtilities;
-using Greg; // Dynamo package manager
+using Greg;
 using ProtoCore;
-using Dynamo.Models.NodeLoaders;
-using Dynamo.Search.SearchElements;
 using ProtoCore.Exceptions;
-using Dynamo.UI;
-using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
-using Symbol = Dynamo.Nodes.Symbol;
+using ProtoCore.Runtime;
+using Compiler = ProtoAssociative.Compiler;
+// Dynamo package manager
 using Utils = Dynamo.Nodes.Utilities;
 using DefaultUpdateManager = Dynamo.UpdateManager.UpdateManager;
+using FunctionGroup = Dynamo.DSEngine.FunctionGroup;
 
 namespace Dynamo.Models
 {
@@ -48,8 +46,6 @@ namespace Dynamo.Models
 
     public partial class DynamoModel : INotifyPropertyChanged, IDisposable, IEngineControllerManager, ITraceReconciliationProcessor // : ModelBase
     {
-        public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
-
         #region private members
 
         private readonly string geometryFactoryPath;
@@ -213,11 +209,6 @@ namespace Dynamo.Models
         ///     threads.
         /// </summary>
         public DynamoScheduler Scheduler { get; private set; }
-
-        /// <summary>
-        ///     The maximum amount of tesselation divisions used for geometry visualization.
-        /// </summary>
-        public int MaxTesselationDivisions { get; set; }
 
         /// <summary>
         ///     The Dynamo Node Library, complete with Search.
@@ -432,7 +423,6 @@ namespace Dynamo.Models
         protected DynamoModel(IStartConfiguration config)
         {
             ClipBoard = new ObservableCollection<ModelBase>();
-            MaxTesselationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
 
             pathManager = new PathManager(new PathManagerParams
             {
@@ -518,8 +508,8 @@ namespace Dynamo.Models
             var libraryCore =
                 new ProtoCore.Core(new Options { RootCustomPropertyFilterPathName = string.Empty });
 
-            libraryCore.Compilers.Add(ProtoCore.Language.kAssociative, new ProtoAssociative.Compiler(libraryCore));
-            libraryCore.Compilers.Add(ProtoCore.Language.kImperative, new ProtoImperative.Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.kAssociative, new Compiler(libraryCore));
+            libraryCore.Compilers.Add(Language.kImperative, new ProtoImperative.Compiler(libraryCore));
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             LibraryServices = new LibraryServices(libraryCore, pathManager);
@@ -666,7 +656,7 @@ namespace Dynamo.Models
                             e.Task.GetType().Name,
                             executionTimeSpan);
 
-                        Debug.WriteLine(String.Format(Properties.Resources.EvaluationCompleted, executionTimeSpan));
+                        Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
 
                         ExecutionEvents.OnGraphPostExecution();
                     }
@@ -849,7 +839,7 @@ namespace Dynamo.Models
 
             // Import Zero Touch libs
             var functionGroups = LibraryServices.GetAllFunctionGroups();
-            if (!DynamoModel.IsTestMode)
+            if (!IsTestMode)
                 AddZeroTouchNodesToSearch(functionGroups);
 #if DEBUG_LIBRARY
             DumpLibrarySnapshot(functionGroups);
@@ -955,7 +945,7 @@ namespace Dynamo.Models
         private void LogWarningMessage(LogWarningMessageEventArgs args)
         {
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
-            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(ProtoCore.Runtime.WarningID.kDefault, args.message);
+            EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogWarning(WarningID.kDefault, args.message);
         }
 
         #endregion
@@ -1166,7 +1156,7 @@ namespace Dynamo.Models
         /// </summary>
         protected void SaveBackupFiles(object state)
         {
-            DynamoModel.OnRequestDispatcherBeginInvoke(() =>
+            OnRequestDispatcherBeginInvoke(() =>
             {
                 foreach (var workspace in Workspaces)
                 {
@@ -1213,7 +1203,7 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            Logger.Log(Properties.Resources.WelcomeMessage);
+            Logger.Log(Resources.WelcomeMessage);
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
@@ -1319,7 +1309,7 @@ namespace Dynamo.Models
 
             SearchModel.DumpLibraryToXml(fullFileName);
 
-            Logger.Log(string.Format(Properties.Resources.LibraryIsDumped, fullFileName));
+            Logger.Log(string.Format(Resources.LibraryIsDumped, fullFileName));
         }
 
         internal bool CanDumpLibraryToXml(object obj)
@@ -1755,10 +1745,10 @@ namespace Dynamo.Models
                 "ObsoleteFileMessage",
                 fullFilePath + " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            string summary = Properties.Resources.FileCannotBeOpened;
+            string summary = Resources.FileCannotBeOpened;
             var description =
                 string.Format(
-                    Properties.Resources.ObsoleteFileDescription,
+                    Resources.ObsoleteFileDescription,
                     fullFilePath,
                     fileVersion,
                     currVersion);
@@ -1766,11 +1756,11 @@ namespace Dynamo.Models
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_obsolete_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Properties.Resources.ObsoleteFileTitle,
+                Resources.ObsoleteFileTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.OKButton);
+            args.AddRightAlignedButton((int)ButtonId.Ok, Resources.OKButton);
 
             OnRequestTaskDialog(null, args);
         }
@@ -1791,21 +1781,21 @@ namespace Dynamo.Models
                 InstrumentationLogger.LogException(exception);
             }
 
-            string summary = Properties.Resources.UnhandledExceptionSummary;
+            string summary = Resources.UnhandledExceptionSummary;
 
             string description = (exception is HeapCorruptionException)
                 ? exception.Message
-                : @Properties.Resources.ExceptionIsNotHeapCorruptionDescription;
+                : Resources.ExceptionIsNotHeapCorruptionDescription;
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_crash.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Properties.Resources.UnhandledExceptionTitle,
+                Resources.UnhandledExceptionTitle,
                 summary,
                 description);
 
-            args.AddRightAlignedButton((int)ButtonId.Submit, Properties.Resources.SubmitBugButton);
-            args.AddRightAlignedButton((int)ButtonId.Ok, Properties.Resources.ArggOKButton);
+            args.AddRightAlignedButton((int)ButtonId.Submit, Resources.SubmitBugButton);
+            args.AddRightAlignedButton((int)ButtonId.Ok, Resources.ArggOKButton);
             args.Exception = exception;
 
             OnRequestTaskDialog(null, args);
@@ -1824,23 +1814,23 @@ namespace Dynamo.Models
         /// <returns> true if the file must be opened and false otherwise </returns>
         private bool DisplayFutureFileMessage(string fullFilePath, Version fileVersion, Version currVersion)
         {
-            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Properties.Resources.UnknownVersion);
-            var currVer = ((currVersion != null) ? currVersion.ToString() : Properties.Resources.UnknownVersion);
+            var fileVer = ((fileVersion != null) ? fileVersion.ToString() : Resources.UnknownVersion);
+            var currVer = ((currVersion != null) ? currVersion.ToString() : Resources.UnknownVersion);
 
             InstrumentationLogger.LogPiiInfo("FutureFileMessage", fullFilePath +
                 " :: fileVersion:" + fileVer + " :: currVersion:" + currVer);
 
-            string summary = Properties.Resources.FutureFileSummary;
-            var description = string.Format(Properties.Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
+            string summary = Resources.FutureFileSummary;
+            var description = string.Format(Resources.FutureFileDescription, fullFilePath, fileVersion, currVersion);
 
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
                 new Uri(imageUri, UriKind.Relative),
-                Properties.Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
+                Resources.FutureFileTitle, summary, description) { ClickedButtonId = (int)ButtonId.Cancel };
 
-            args.AddRightAlignedButton((int)ButtonId.Cancel, Properties.Resources.CancelButton);
-            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, Properties.Resources.DownloadLatestButton);
-            args.AddRightAlignedButton((int)ButtonId.Proceed, Properties.Resources.ProceedButton);
+            args.AddRightAlignedButton((int)ButtonId.Cancel, Resources.CancelButton);
+            args.AddRightAlignedButton((int)ButtonId.DownloadLatest, Resources.DownloadLatestButton);
+            args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.ProceedButton);
 
             OnRequestTaskDialog(null, args);
             if (args.ClickedButtonId == (int)ButtonId.DownloadLatest)
