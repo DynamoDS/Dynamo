@@ -28,7 +28,7 @@ namespace Dynamo.Search.SearchElements
                 path = value;
                 OnPropertyChanged("Path");
             }
-        }
+        }         
 
         public CustomNodeSearchElement(ICustomNodeSource customNodeManager, CustomNodeInfo info)
         {
@@ -49,6 +49,8 @@ namespace Dynamo.Search.SearchElements
             FullCategoryName = info.Category;
             Description = info.Description;
             Path = info.Path;
+            iconName = ID.ToString();
+
             ElementType = ElementTypes.CustomNode;
             if (info.IsPackageMember)
                 ElementType |= ElementTypes.Packaged; // Add one more flag.

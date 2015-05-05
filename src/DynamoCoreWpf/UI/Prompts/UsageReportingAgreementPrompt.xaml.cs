@@ -21,16 +21,24 @@ namespace Dynamo.UI.Prompts
             ConsentFormImageRectangle.Fill = new ImageBrush(
                 resourceProvider.GetImageSource(Wpf.Interfaces.ResourceNames.ConsentForm.Image));
 
-            Message1TextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.AgreementOne);
-            FeatureTextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.FeatureUsage);
-            NodeTextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.NodeUsage);
-            Message2TextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.AgreementTwo);
-            Message3TextBlock.Text = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.AgreementThree);
+            viewModel = dynamoViewModel;
 
+            var instrumentationFile = "InstrumentationConsent.rtf";
+
+            if (viewModel.Model.PathManager.ResolveDocumentPath(ref instrumentationFile))
+                InstrumentationContent.File = instrumentationFile;
+
+            var googleAnalyticsFile = "GoogleAnalyticsConsent.rtf";
+
+            if (viewModel.Model.PathManager.ResolveDocumentPath(ref googleAnalyticsFile))
+                GoogleAnalyticsContent.File = googleAnalyticsFile;
+
+            AcceptUsageReportingTextBlock.Text =
+                string.Format(Wpf.Properties.Resources.ConsentFormInstrumentationCheckBoxContent,
+                    dynamoViewModel.BrandingResourceProvider.ProductName);
             AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
             AcceptAnalyticsReportingCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
 
-            viewModel = dynamoViewModel;
         }
 
         private void ToggleIsUsageReportingChecked(object sender, RoutedEventArgs e)
