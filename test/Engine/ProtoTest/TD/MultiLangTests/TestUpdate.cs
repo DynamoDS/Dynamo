@@ -4176,37 +4176,6 @@ a1.a = -1;
 
         [Test]
         [Category("SmokeTest")]
-        public void T57_Defect_1467399_3()
-        {
-            String code = @"
-class A
-{
-    a : int[];            
-}
-def foo ( x1 : A)
-{
-    x1.a = -1;
-    return = x1;
-}
-def foo1 ( x1 : A)
-{
-    x1.a = 1;
-    return = x1;
-}
-a1 = A.A();
-a1 = foo ( a1);
-b = a1.a;
-a1 = foo1 ( a1);
-//received b =1 - 15,16,17,18,17 - correct 
- ";
-            Object n1 = null;
-            string errmsg = "DNL-1467342 Design issue with inline condition : only the condition being replicated";
-            ExecutionMirror mirror = thisTest.VerifyRunScriptSource(code, errmsg);
-            thisTest.Verify("b", new object[] { 1 });
-        }
-
-        [Test]
-        [Category("SmokeTest")]
         public void T57_Defect_1467399_4()
         {
             String code = @"
