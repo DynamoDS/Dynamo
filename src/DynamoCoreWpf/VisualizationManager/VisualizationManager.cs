@@ -14,6 +14,7 @@ using Dynamo.DSEngine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Wpf;
 using Dynamo.Wpf.ViewModels;
 
 using Microsoft.Practices.Prism.ViewModel;
@@ -45,8 +46,6 @@ namespace Dynamo
     */ 
     public class VisualizationManager : NotificationObject, IVisualizationManager
     {
-        public static readonly int MAX_TESSELLATION_DIVISIONS_DEFAULT = 128;
-
         #region private members
 
         private string alternateContextName = "Host";
@@ -189,8 +188,8 @@ namespace Dynamo
             // events from the pre-existing workspace.
             WorkspaceAdded(dynamoModel.CurrentWorkspace);
 
-            renderPackageFactory = GetRenderPackageFactory();
-            
+            renderPackageFactory = new DefaultRenderPackageFactory();
+
             Start();
         }
 
@@ -528,55 +527,6 @@ namespace Dynamo
         }
 
         #endregion
-
-        /// <summary>
-        /// Use the renderPackageFactoryAssembly tag in the DynamoCore.dll.cfg file to find an
-        /// IRenderPackageFactory implementation.
-        /// </summary>
-        private IRenderPackageFactory GetRenderPackageFactory()
-        {
-            var renderPackageFactoryAsm = Dynamo.Utilities.AssemblyConfiguration.Instance.GetAppSetting("renderPackageFactoryAssembly");
-
-            if (string.IsNullOrEmpty(renderPackageFactoryAsm))
-            {
-                return CreateDefaultRenderPackageFactory();
-            }
-
-            var asmPath =
-                Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    renderPackageFactoryAsm);
-
-            if (!File.Exists(asmPath))
-            {
-                throw new Exception("The specified render package factory assembly does not exist.");
-            }
-
-            var asm = Assembly.LoadFrom(asmPath);
-
-            var factoryType = asm.GetTypes().FirstOrDefault(t => typeof(IRenderPackageFactory).IsAssignableFrom(t));
-            if (factoryType == null)
-            {
-                throw new Exception("An implementation of IRenderPackageFactory could not be found.");
-            }
-
-            // Construct the factory using the default constructor.
-            var factoryConstructor = factoryType.GetConstructor(System.Type.EmptyTypes);
-            var factory = (IRenderPackageFactory)factoryConstructor.Invoke(null);
-            factory.MaxTessellationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT;
-
-            return factory;
-        }
-
-        private static IRenderPackageFactory CreateDefaultRenderPackageFactory()
-        {
-            var factory = new DefaultRenderPackageFactory()
-            {
-                MaxTessellationDivisions = MAX_TESSELLATION_DIVISIONS_DEFAULT
-            };
-
-            return factory;
-        }
 
         /// <summary>
         /// Create an IRenderPackage object provided an IGraphicItem
