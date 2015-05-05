@@ -61,21 +61,6 @@ namespace Dynamo.Wpf.UI
                 case ResourceNames.ConsentForm.Title:
                     resource = string.Format(Properties.Resources.UsageReportPromptDialogTitle,ProductName);
                     break;
-                case ResourceNames.ConsentForm.AgreementOne:
-                    resource = string.Format(Properties.Resources.UsageReportPromptDialogMessagePart1,ProductName);
-                    break;
-                case ResourceNames.ConsentForm.AgreementTwo:
-                    resource = Properties.Resources.UsageReportPromptDialogMessagePart2;
-                    break;
-                case ResourceNames.ConsentForm.NodeUsage:
-                    resource = Properties.Resources.UsageReportPromptDialogNodeUsage;
-                    break;
-                case ResourceNames.ConsentForm.FeatureUsage:
-                    resource = string.Format(Properties.Resources.UsageReportPromptDialogFeatureUsage,ProductName);
-                    break;
-                case ResourceNames.ConsentForm.AgreementThree:
-                    resource = string.Format(Properties.Resources.UsageReportPromptDialogMessagePart3, ProductName);
-                    break;
             }
 
             return EnsureStringLoaded(resource, resourceName.ToString());

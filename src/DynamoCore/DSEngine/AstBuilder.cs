@@ -31,6 +31,16 @@ namespace Dynamo.DSEngine
     /// </summary>
     public class AstBuilder : LogSourceBase
     {
+        /// <summary>
+        /// The context of AST compilation
+        /// </summary>
+        public enum CompilationContext
+        {
+            None,
+            DeltaExecution,
+            NodeToCode,
+        }
+
         private readonly IAstNodeContainer nodeContainer;
 
         public AstBuilder(IAstNodeContainer nodeContainer)
@@ -72,18 +82,101 @@ namespace Dynamo.DSEngine
         /// <returns></returns>
         public static IEnumerable<NodeModel> TopologicalSort(IEnumerable<NodeModel> nodes)
         {
+            if (nodes == null)
+                throw new ArgumentNullException("nodes");
+
             var sortedNodes = new Stack<NodeModel>();
             IList<NodeModel> nodeModels = nodes as IList<NodeModel> ?? nodes.ToList();
 
             Dictionary<NodeModel, MarkFlag> nodeFlags = nodeModels.ToDictionary(node => node, _ => MarkFlag.NoMark);
 
-            foreach (NodeModel candidate in SortCandidates(nodeFlags))
+            foreach (NodeModel candidate in GetUnvisitedNodes(nodeFlags))
                 MarkNode(candidate, nodeFlags, sortedNodes);
 
             return sortedNodes.Where(nodeModels.Contains);
         }
 
-        private static IEnumerable<NodeModel> SortCandidates(Dictionary<NodeModel, MarkFlag> nodeFlags)
+        /// <summary>
+        /// Starts from the input node as root, do breadth-first and post-order
+        /// traversal of the graph (inputs nodes as children nodes). Breadth-first
+        /// traversal ensures all inputs nodes are visited in their input order 
+        /// and post-order traversal ensures all upstream nodes are visited 
+        /// firstly. 
+        /// </summary>
+        /// <param name="node">Root node</param>
+        /// <param name="nodeFlags">Dictionary to record if a node has been visited or not</param>
+        /// <param name="sortedNodes">Record all visited nodes</param>
+        private static void BfsTraverse(
+            NodeModel node, 
+            Dictionary<NodeModel, MarkFlag> nodeFlags, 
+            Queue<NodeModel> sortedNodes)
+        {
+            MarkFlag flag;
+            if (!nodeFlags.TryGetValue(node, out flag))
+            {
+                flag = MarkFlag.NoMark;
+                nodeFlags[node] = flag;
+            }
+
+            if (flag != MarkFlag.NoMark)
+                return;
+
+            nodeFlags[node] = MarkFlag.TempMark;
+
+            for (int i = 0; i < node.InPortData.Count; ++i)
+            {
+                Tuple<int, NodeModel> t;
+                if (!node.TryGetInput(i, out t))
+                    continue;
+
+                BfsTraverse(t.Item2, nodeFlags, sortedNodes);
+            }
+
+            sortedNodes.Enqueue(node);
+            nodeFlags[node] = MarkFlag.Marked;
+        }
+
+        /// <summary>
+        /// Topological sort *the whole graph*. If the input nodes are part of a
+        /// graph, it does not promise to generate a good topological order. For 
+        /// example, for the following graph:
+        /// 
+        ///         +---+
+        ///         | A | -----+
+        ///         +---+      +----> +---+
+        ///                           | C |
+        ///                    +----> +---+
+        ///         +---+      |
+        ///         | B | -----+
+        ///         +---+
+        /// 
+        /// Their ideal topological order is A -> B -> C. If the input is only {A, B}, 
+        /// it may return {B, A} which is not OK in node to code.
+        ///
+        /// Note it is much slower thanopologiclSort().
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <returns></returns>
+        public static IEnumerable<NodeModel> TopologicalSortForGraph(IEnumerable<NodeModel> nodes)
+        {
+            if (nodes == null)
+                throw new ArgumentNullException("nodes");
+
+            var nodeFlags = nodes.ToDictionary(node => node, _ => MarkFlag.NoMark);
+            var sortedNodes = new Queue<NodeModel>();
+
+            // Get roots of these nodes
+            var roots = nodes.Where(n => !n.OutputNodes.Any());
+            foreach (NodeModel candidate in roots)
+                BfsTraverse(candidate, nodeFlags, sortedNodes);
+
+            foreach (NodeModel candidate in GetUnvisitedNodes(nodeFlags))
+                BfsTraverse(candidate, nodeFlags, sortedNodes);
+
+            return sortedNodes;
+        }
+
+        private static IEnumerable<NodeModel> GetUnvisitedNodes(Dictionary<NodeModel, MarkFlag> nodeFlags)
         {
             while (true)
             {
@@ -95,7 +188,7 @@ namespace Dynamo.DSEngine
             }
         }
 
-        private void _CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, bool isDeltaExecution, bool verboseLogging)
+        private void CompileToAstNodes(NodeModel node, List<AssociativeNode> resultList, CompilationContext context, bool verboseLogging)
         {
 
             var inputAstNodes = new List<AssociativeNode>();
@@ -126,7 +219,7 @@ namespace Dynamo.DSEngine
             if (node.State == ElementState.Error)
                 Log("Error in Node. Not sent for building and compiling");
 
-            if (isDeltaExecution)
+            if (context == CompilationContext.DeltaExecution)
                 OnAstNodeBuilding(node.GUID);
 
 #if DEBUG
@@ -138,8 +231,8 @@ namespace Dynamo.DSEngine
             IEnumerable<AssociativeNode> astNodes = 
                 scopedNode != null
                     ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
-                    : node.BuildAst(inputAstNodes);
-            
+                    : node.BuildAst(inputAstNodes, context);
+
             if (verboseLogging)
             {
                 foreach (var n in astNodes)
@@ -150,9 +243,13 @@ namespace Dynamo.DSEngine
 
             if(null == astNodes)
                 resultList.AddRange(new AssociativeNode[0]);
-            else if (isDeltaExecution)
+            else if (context == CompilationContext.DeltaExecution)
             {
                 OnAstNodeBuilt(node.GUID, astNodes);
+                resultList.AddRange(astNodes);
+            }
+            else if (context == CompilationContext.NodeToCode)
+            {
                 resultList.AddRange(astNodes);
             }
             else //Inside custom node compilation.
@@ -177,35 +274,49 @@ namespace Dynamo.DSEngine
         }
 
         /// <summary>
-        ///     Compiling a collection of Dynamo nodes to AST nodes, no matter
-        ///     whether Dynamo node has been compiled or not.
+        /// Compile a collection of NodeModel to AST nodes in different contexts.
+        /// If the context is ForNodeToCode, nodes should already be sorted in 
+        /// topological order.
         /// </summary>
         /// <param name="nodes"></param>
-        /// <param name="isDeltaExecution"></param>
+        /// <param name="context"></param>
         /// <param name="verboseLogging"></param>
-        public List<AssociativeNode> CompileToAstNodes(IEnumerable<NodeModel> nodes, bool isDeltaExecution, bool verboseLogging)
+        /// <returns></returns>
+        public IEnumerable<Tuple<NodeModel, IEnumerable<AssociativeNode>>> CompileToAstNodes(
+            IEnumerable<NodeModel> nodes, 
+            CompilationContext context, 
+            bool verboseLogging)
         {
-            // TODO: compile to AST nodes should be triggered after a node is 
-            // modified.
+            if (nodes == null)
+                throw new ArgumentNullException("nodes");
 
             var topScopedNodes = ScopedNodeModel.GetNodesInTopScope(nodes);
-            var sortedNodes = TopologicalSort(topScopedNodes);
 
-            if (isDeltaExecution)
+            IEnumerable<NodeModel> sortedNodes = null;
+            // Node should already be sorted!
+            if (context == CompilationContext.NodeToCode)
+                sortedNodes = topScopedNodes;
+            else
+                sortedNodes = TopologicalSort(topScopedNodes);
+
+            if (context == CompilationContext.DeltaExecution)
             {
                 sortedNodes = sortedNodes.Where(n => n.IsModified);
             }
 
-            var result = new List<AssociativeNode>();
+            var result = new List<List<AssociativeNode>>();
 
             foreach (NodeModel node in sortedNodes)
             {
-                _CompileToAstNodes(node, result, isDeltaExecution, verboseLogging);
+                var astNodes = new List<AssociativeNode>();
+                CompileToAstNodes(node, astNodes, context, verboseLogging);
+                result.Add(astNodes);
             }
 
-            return result;
+            return result.Zip(
+                sortedNodes, 
+                (astNodes, node) => Tuple.Create(node, astNodes as IEnumerable<AssociativeNode>));
         }
-
 
         /// <summary>
         ///     Compiles a collection of Dynamo nodes into a function definition for a custom node.
@@ -225,7 +336,8 @@ namespace Dynamo.DSEngine
             OnAstNodeBuilding(functionId);
 
             var functionBody = new CodeBlockNode();
-            functionBody.Body.AddRange(CompileToAstNodes(funcBody, false, verboseLogging));
+            var asts = CompileToAstNodes(funcBody, CompilationContext.None, verboseLogging);
+            functionBody.Body.AddRange(asts.SelectMany(t => t.Item2));
 
             var outputs = outputNodes.ToList();
             if (outputs.Count > 1)
@@ -340,7 +452,7 @@ namespace Dynamo.DSEngine
             public const string ParamPrefix = @"p_";
             public const string FunctionPrefix = @"__func_";
             public const string VarPrefix = @"var_";
-            public const string ShortVarPrefix = @"t_";
+            public const string ShortVarPrefix = @"t";
             public const string CustomNodeReturnVariable = @"%arr";
         }
     }
