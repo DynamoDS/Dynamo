@@ -320,7 +320,7 @@ namespace Dynamo.Tests
             // remap the filename as Excel requires an absolute path
             filename.Value = filename.Value.Replace(@"..\..\..\test", TestDirectory);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
@@ -523,7 +523,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNodeAndUpdateData.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
@@ -569,7 +569,11 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteJaggedArrayToExcel.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            // Makes use of UnitTestBase.TempFolder since that folder is always 
+            // guaranteed to be different for each test, and will get deleted when 
+            // the test shuts down.
+            // 
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
@@ -605,7 +609,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteEmptyArrayToExcel.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
@@ -642,7 +646,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
@@ -666,7 +670,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel1.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
             stringNode.Value = filePath;
 
@@ -708,7 +712,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_SaveAs.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString() + ".xlsx";
+            var filePath = System.IO.Path.Combine(TempFolder, "output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Dynamo.Nodes.StringInput>();
 
             stringNode.Value = filePath;
