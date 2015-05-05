@@ -501,19 +501,33 @@ namespace DSCoreNodesTests
                 List.DiagonalLeft(Enumerable.Range(0, 20).ToList(), 5));
         }
 
-        //[Test]
-        //public static void TransposeListOfLists()
-        //{
-        //    Assert.AreEqual(
-        //        new List<IList> { new ArrayList { 0, 3, 6 }, new ArrayList { 1, 4, 7 }, new ArrayList { 2, 5, 8 } },
-        //        List.Transpose(
-        //            new List<IList<object>>
-        //            {
-        //                new List<object> { 0, 1, 2 },
-        //                new List<object> { 3, 4, 5 },
-        //                new List<object> { 6, 7, 8 }
-        //            }));
-        //}
+        [Test]
+        public static void TransposeListOfLists()
+        {
+            Assert.AreEqual(
+                new List<IList> { new ArrayList { 0, 3, 6 }, new ArrayList { 1, 4, 7 }, new ArrayList { 2, 5, 8 } },
+                List.Transpose(
+                    new List<IList<object>>
+                    {
+                        new List<object> { 0, 1, 2 },
+                        new List<object> { 3, 4, 5 },
+                        new List<object> { 6, 7, 8 }
+                    }));
+        }
+
+        [Test]
+        public static void TransposeJaggedListOfLists()
+        {
+            Assert.AreEqual(
+                new List<IList> { new ArrayList { 0, 3, 6 }, new ArrayList { 1, 4, 7 }, new ArrayList { 2, 5, 8 }, new ArrayList { null, 6, null} },
+                List.Transpose(
+                    new List<IList<object>>
+                    {
+                        new List<object> { 0, 1, 2 },
+                        new List<object> { 3, 4, 5, 6 },
+                        new List<object> { 6, 7, 8 }
+                    }));
+        }
 
         [Test]
         [Category("UnitTests")]
