@@ -75,8 +75,11 @@
     <Compile Include="MessageLogTests.cs" />
     <Compile Include="IconsTests.cs" />
     <Compile Include="NodeConstructionTests.cs" />
+    <Compile Include="PackageManager\MockMaker.cs" />
+    <Compile Include="PackageManager\PackageDirectoryBuilderTests.cs" />
     <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
+    <Compile Include="PackageManager\RecordedFileSystem.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />

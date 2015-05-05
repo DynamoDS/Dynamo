@@ -125,7 +125,17 @@ limitations under the License.
     <Compile Include="Models\RunSettings.cs" />
     <Compile Include="Core\Threading\AsyncTaskExtensions.cs" />
     <Compile Include="Interfaces\IPathResolver.cs" />
+    <Compile Include="PackageManager\Interfaces\IFileCompressor.cs" />
+    <Compile Include="PackageManager\Interfaces\IDirectoryInfo.cs" />
+    <Compile Include="PackageManager\Interfaces\IFileInfo.cs" />
+    <Compile Include="PackageManager\Interfaces\IFileSystem.cs" />
+    <Compile Include="PackageManager\MutatingFileCompressor.cs" />
+    <Compile Include="PackageManager\MutatingFileSystem.cs" />
+    <Compile Include="PackageManager\CustomNodePathRemapper.cs" />
     <Compile Include="PackageManager\PackageManagerResult.cs" />
+    <Compile Include="PackageManager\PackageUploadBuilder.cs" />
+    <Compile Include="PackageManager\RealDirectoryInfo.cs" />
+    <Compile Include="PackageManager\RealFileInfo.cs" />
     <Compile Include="Search\Interfaces\ISearchCategory.cs" />
     <Compile Include="Search\Interfaces\ISearchEntry.cs" />
     <Compile Include="Search\NodeSearchModel.cs" />
@@ -221,7 +231,7 @@ limitations under the License.
     <Compile Include="Services\Log.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="PackageManager\Package.cs" />
-    <Compile Include="PackageManager\PackageUploadBuilder.cs" />
+    <Compile Include="PackageManager\PackageDirectoryBuilder.cs" />
     <Compile Include="PackageManager\PackageUploadHandle.cs" />
     <Compile Include="Models\DynamoModel.cs" />
     <Compile Include="Models\ModelBase.cs" />
