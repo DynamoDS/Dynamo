@@ -69,6 +69,8 @@ namespace Dynamo.Controls
         private Vector3 fillLightDirection;
         private Color4 fillLightColor;
         private Color4 ambientLightColor;
+        private Color4 defaultLineColor;
+        private Color4 defaultPointColor;
 
 #if DEBUG
         private Stopwatch renderTimer = new Stopwatch();
@@ -434,6 +436,12 @@ namespace Dynamo.Controls
 
         private void SetupScene()
         {
+            var ptColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PointColor"];
+            defaultPointColor = new Color4(ptColor.R/255.0f, ptColor.G/255.0f, ptColor.B/255.0f, ptColor.A/255.0f);
+
+            var lineColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["EdgeColor"];
+            defaultLineColor = new Color4(lineColor.R/255.0f, lineColor.G/255.0f, lineColor.B/255.0f, lineColor.A/255.0f);
+
             ShadowMapResolution = new Vector2(2048, 2048);
             ShowShadows = false;
             
@@ -920,6 +928,8 @@ namespace Dynamo.Controls
 
         private void AggregateRenderPackages(PackageAggregationParams parameters)
         {
+
+
             MeshCount = 0;
             foreach (var rp in parameters.Packages)
             {
@@ -931,7 +941,7 @@ namespace Dynamo.Controls
                     var startIdx = points.Positions.Count;
 
                     points.Positions.AddRange(p.Positions);
-                    points.Colors.AddRange(p.Colors);
+                    points.Colors.AddRange(p.Colors.Any() ? p.Colors : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
                     points.Indices.AddRange(p.Indices.Select(i=> i + startIdx));
 
                     var endIdx = points.Positions.Count;
@@ -960,7 +970,7 @@ namespace Dynamo.Controls
                     var startIdx = lineSet.Positions.Count;
 
                     lineSet.Positions.AddRange(l.Positions);
-                    lineSet.Colors.AddRange(l.Colors);
+                    lineSet.Colors.AddRange(l.Colors.Any() ? l.Colors : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
                     lineSet.Indices.AddRange(l.Indices.Select(i=>i + startIdx));
 
                     var endIdx = lineSet.Positions.Count;
