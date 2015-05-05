@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Excel;
 
@@ -273,7 +275,7 @@ namespace DSOffice
         {
             WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
-            return ws.Data;
+            return ws.ConvertToJaggedArray();
         }
 
         [Obsolete("Use File.FromPath -> Excel.ReadFromFile node instead.")]
@@ -329,6 +331,49 @@ namespace DSOffice
                 }
             }
 
+            return output;
+        }
+
+        private static bool IsBlankRow(Range range, int row)
+        {
+            for (int i = 0; i < range.Columns.Count; i++)
+            {
+                if (null != ((Range)range.Cells[row, i + 1]).Value)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        internal object[][] ConvertToJaggedArray()
+        {
+            var input = this.ws.UsedRange;
+            int rows = 0;
+            int cols = input.Columns.Count;
+            var nonNullRowIndices = new List<int>();
+            for (int i = 0; i < input.Rows.Count; i++)
+            {
+                if (IsBlankRow(input, i + 1))
+                    continue;
+
+                nonNullRowIndices.Add(i + 1);
+                rows++;
+            }
+
+            var output = new object[rows][];
+            for (int i = 0; i < nonNullRowIndices.Count; i++)
+            {
+                int j = cols - 1;
+                while (j >= 0 && ((Range)input[nonNullRowIndices[i], j + 1]).Value == null)
+                    j--;
+
+                output[i] = new object[j + 1];
+                for (int k = 0; k <= j; k++)
+                {
+                    output[i][k] = ((Range)input[nonNullRowIndices[i], k + 1]).Value;
+                }
+            }
             return output;
         }
 
