@@ -314,8 +314,9 @@ namespace ProtoCore.Lang
                             ci = stackFrame.ClassScope;
                             fi = stackFrame.FunctionScope;
                         }
-                        StackValue svThisPtr = ProtoCore.DSASM.StackValue.BuildPointer(ProtoCore.DSASM.Constants.kInvalidPointer);
-                        // TODO: Need to verify that inline condition dynamic blocks are always created in the global scope - pratapa
+
+                        // The class scope does not change for inline conditional calls
+                        StackValue svThisPtr = stackFrame.ThisPtr;
 
 
                         int blockDecl = 0;

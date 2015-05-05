@@ -1121,7 +1121,19 @@ namespace Dynamo.Models
             var annotations = Workspaces.SelectMany(ws => ws.Annotations);
             foreach (var annotation in annotations)
             {
-                if (!annotation.SelectedModels.Except(modelsToDelete).Any())
+                //record the annotation before the models in it are deleted.
+                foreach (var model in modelsToDelete)
+                {
+                    //If there is only one model, then deleting that model should delete the group. In that case, do not record 
+                    //the group for modification. Until we have one model in a group, group should be recorded for modification
+                    //otherwise, undo operation cannot get the group back.
+                    if (annotation.SelectedModels.Count() > 1 && annotation.SelectedModels.Where(x => x.GUID == model.GUID).Any())
+                    {
+                        CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
+                    }
+                }
+
+                if (annotation.SelectedModels.Any() && !annotation.SelectedModels.Except(modelsToDelete).Any())
                 {
                     //Annotation Model has to be serialized first - before the nodes.
                     //so, store the Annotation model as first object. This will serialize the 
@@ -1147,6 +1159,7 @@ namespace Dynamo.Models
 
         internal void UngroupModel(List<ModelBase> modelsToUngroup)
         {
+            var emptyGroup = new List<ModelBase>();
             var annotations = Workspaces.SelectMany(ws => ws.Annotations);
             foreach (var model in modelsToUngroup)
             {
@@ -1154,15 +1167,28 @@ namespace Dynamo.Models
                 {
                     if (annotation.SelectedModels.Any(x => x.GUID == model.GUID))
                     {
-                        CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                         var list = annotation.SelectedModels.ToList();
-                        if (list.Remove(model))
+
+                        if(list.Count > 1)
                         {
-                            annotation.SelectedModels = list;
-                            annotation.UpdateBoundaryFromSelection();
+                            CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
+                            if (list.Remove(model))
+                            {
+                                annotation.SelectedModels = list;
+                                annotation.UpdateBoundaryFromSelection();
+                            }
+                        }
+                        else
+                        {                          
+                            emptyGroup.Add(annotation);                            
                         }                        
                     }
                 }
+            }
+           
+            if(emptyGroup.Any())
+            {
+                DeleteModelInternal(emptyGroup);
             }
         }
 
