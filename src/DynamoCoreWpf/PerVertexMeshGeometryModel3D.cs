@@ -30,16 +30,16 @@ namespace Dynamo.Wpf
 
             var geometry = this.Geometry as MeshGeometry3D;
 
-            if (geometry != null)
-            {
-                this.vertexBuffer = Device.CreateBuffer(BindFlags.VertexBuffer, DefaultVertex.SizeInBytes, this.CreateDefaultVertexArray());
-                this.indexBuffer = Device.CreateBuffer(BindFlags.IndexBuffer, sizeof(int), this.Geometry.Indices.ToArray());
-            }
-            else
+            if (geometry == null)
             {
                 throw new Exception("Geometry must not be null");
             }
-           
+
+            this.vertexBuffer = Device.CreateBuffer(BindFlags.VertexBuffer, DefaultVertex.SizeInBytes,
+                this.CreateDefaultVertexArray());
+            this.indexBuffer = Device.CreateBuffer(BindFlags.IndexBuffer, sizeof (int),
+                this.Geometry.Indices.ToArray());
+            
             this.hasInstances = (this.Instances != null) && (this.Instances.Any());
             this.bHasInstances = this.effect.GetVariableByName("bHasInstances").AsScalar();
             if (this.hasInstances)
