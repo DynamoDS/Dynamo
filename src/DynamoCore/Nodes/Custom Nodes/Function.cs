@@ -40,7 +40,7 @@ namespace Dynamo.Nodes
 
         public CustomNodeDefinition Definition { get { return Controller.Definition; } }
         
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             return Controller.BuildAst(this, inputAstNodes);
         }
@@ -458,7 +458,7 @@ namespace Dynamo.Nodes
             return AstIdentifierForPreview;
         }
 
-        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes)
+        internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, AstBuilder.CompilationContext context)
         {
             AssociativeNode assignment;
             if (null == inputAstNodes || inputAstNodes.Count == 0)

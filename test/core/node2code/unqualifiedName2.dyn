@@ -1,0 +1,14 @@
+<Workspace Version="0.8.1.1170" X="0" Y="0" zoom="1" Name="Home" RunType="Automatic" RunPeriod="100" HasRunWithoutCrash="True">
+  <NamespaceResolutionMap>
+    <ClassMap partialName="Point" resolvedName="Autodesk.DesignScript.Geometry.Point" assemblyName="ProtoGeometry.dll" />
+  </NamespaceResolutionMap>
+  <Elements>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="db92e8c2-7247-42fc-b1ea-075c6e72a2fd" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="663" y="467" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="Point.ByCoordinates(x,x);" ShouldFocus="false" />
+    <Dynamo.Nodes.CodeBlockNodeModel guid="a3701bf8-2f12-4087-9e62-700b74318b74" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="413" y="439" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="1;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Models.ConnectorModel start="a3701bf8-2f12-4087-9e62-700b74318b74" start_index="0" end="db92e8c2-7247-42fc-b1ea-075c6e72a2fd" end_index="0" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+</Workspace>

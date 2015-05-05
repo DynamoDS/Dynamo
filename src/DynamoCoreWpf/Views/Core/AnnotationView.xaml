@@ -200,7 +200,7 @@
             </Rectangle.Fill>
         </Rectangle>
         <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 
-              Margin="0,0,0,0"
+              Margin="5,0,0,0"
               VerticalAlignment="Top">            
             <TextBlock x:Name="GroupTextBlock"                                     
                     Text ="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}}"    
@@ -209,8 +209,7 @@
                     MinHeight="20"   
                     FontFamily="Trebuchet" 
                     FontSize="{Binding FontSize}"                   
-                    LineStackingStrategy="BlockLineHeight"
-                    IsVisibleChanged="GroupTextBlock_OnIsVisibleChanged"   
+                    LineStackingStrategy="BlockLineHeight"                    
                     TextWrapping="Wrap">                  
             </TextBlock>
             <TextBox 

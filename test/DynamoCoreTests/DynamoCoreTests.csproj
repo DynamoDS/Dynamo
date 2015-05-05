@@ -66,6 +66,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnotationModelTest.cs" />
     <Compile Include="AstBuilderTest.cs" />
     <Compile Include="CallsiteTests.cs" />
     <Compile Include="ConverterTests.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="MessageLogTests.cs" />
     <Compile Include="IconsTests.cs" />
     <Compile Include="NodeConstructionTests.cs" />
+    <Compile Include="NodeToCodeTest.cs" />
     <Compile Include="PackageManager\PackageTests.cs" />
     <Compile Include="SearchMemberGroupTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
