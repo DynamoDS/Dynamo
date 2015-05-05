@@ -266,33 +266,20 @@ namespace Dynamo.UI.Views
             e.Handled = true;
         }
 
+        /// <summary>
+        /// Position of mouse, when user clicks on button.
+        /// </summary>
         private Point startPosition;
-        private bool IsDragging;
-        private void StartDrag(MouseEventArgs e)
-        {
-            IsDragging = true;
-
-            var senderButton = e.OriginalSource as FrameworkElement;
-
-            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
-            if (searchElementVM == null)
-            {
-                IsDragging = false;
-                return;
-            }
-
-            DragDrop.DoDragDrop(senderButton, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
-
-            IsDragging = false;
-        }
 
         private void OnExpanderButtonPreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton != MouseButtonState.Pressed || IsDragging)
+            if (e.LeftButton != MouseButtonState.Pressed)
                 return;
 
             Point currentPosition = e.GetPosition(null);
 
+            // If item was dragged enough, then fire DoDragDrop. 
+            // Otherwise it means user click on item and there is no need to fire DoDragDrop.
             if (System.Math.Abs(currentPosition.X - startPosition.X) > SystemParameters.MinimumHorizontalDragDistance ||
                 System.Math.Abs(currentPosition.Y - startPosition.Y) > SystemParameters.MinimumVerticalDragDistance)
             {
@@ -301,6 +288,16 @@ namespace Dynamo.UI.Views
 
         }
 
+        private void StartDrag(MouseEventArgs e)
+        {
+            var senderButton = e.OriginalSource as FrameworkElement;
+
+            var searchElementVM = senderButton.DataContext as NodeSearchElementViewModel;
+            if (searchElementVM == null)
+                return;
+
+            DragDrop.DoDragDrop(senderButton, new DragDropNodeSearchElementInfo(searchElementVM.Model), DragDropEffects.Copy);
+        }
 
         private void OnExpanderButtonMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
